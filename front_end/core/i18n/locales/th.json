@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "ไม่ต้องจับคู่รูปแบบสีของ Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "รับป้าย"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "เปิดใช้แป้นพิมพ์ลัด Ctrl + 1-9 เพื่อเปลี่ยนแผง"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "เปิดใช้แป้นพิมพ์ลัด ⌘ + 1-9 เพื่อเปลี่ยนแผง"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "เปิดใช้การซิงค์การตั้งค่า"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "ค้นหาผลการค้นหาถัดไป"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "แผงก่อนหน้า"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "รับป้าย"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "โหลดเครื่องมือสำหรับนักพัฒนาเว็บซ้ำ"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "ขวา"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "บันทึกการตั้งค่าDevToolsในบัญชี Google ของคุณ"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "เปิดใช้การค้นหาขณะพิมพ์"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "รีเซ็ต"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "อัตราการดาวน์โหลด {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (จากแคช)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (จาก ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "เวลาในการตอบสนอง {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "เวลาในการตอบสนอง {PH1} ดาวน์โหลด {PH2} (รวม {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "ป้อนเส้นทาง"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem อ่านไฟล์ไม่ได้"
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "เพิ่มโฟลเดอร์"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "ยกเว้นจากพื้นที่ทำงาน"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "ระบบอนุมานการเชื่อมโยงโดยอัตโนมัติ"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "นำออก"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "พื้นที่ทำงาน"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "ปิดใช้การลบล้างคำขอของเครือข่าย"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "เขียนใหม่"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "แสดงการตั้งค่าพื้นที่ทำงาน"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(ไม่ระบุชื่อ)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "พื้นที่ทำงาน"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "กิจกรรม: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "เฟรม"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "การเปลี่ยนแปลงเลย์เอาต์"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "ปิด WebSocket แล้ว"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "เปิด WebSocket แล้ว"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "เปิด WebSocket แล้ว: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "ยกเลิก postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "ภาพเคลื่อนไหว"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "เฟรมของภาพเคลื่อนไหวทำงาน"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "ไม่พร้อมกัน"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "งานที่ไม่พร้อมกัน"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "แคชโค้ดโมดูล"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "แคชโค้ดสคริปต์"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "แคชโมดูล Wasm แล้ว"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "ยกเลิกเฟรมภาพเคลื่อนไหว"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "ยกเลิก Callback ที่ไม่มีการใช้งาน"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "คอมมิต"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "คอมไพล์โค้ด"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "คอมไพล์โมดูล"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "คอมไพล์สคริปต์"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "คอมไพล์โมดูล Wasm แล้ว"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "เลเยอร์ผสม"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "คำนวณจุดตัด"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "เรียกใช้งานคอนโซล"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "เวลาในคอนโซล"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "GC สำหรับ CPP"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "สร้าง WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "ถอดรหัส"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "ถอดรหัสคำตอบ"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "ดีซีเรียลไลซ์แคชโค้ด"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "ทำลาย WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "ไดเจสต์"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "การตอบกลับไดเจสต์"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "เหตุการณ์ DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "วาดเฟรม"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "การวาดภาพ"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Callback เครื่องมือฝัง"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "เข้ารหัส"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "เข้ารหัสคำตอบ"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "ประเมินโมดูล"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "ประเมินสคริปต์"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "เหตุการณ์"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "ระยะเวลาของเหตุการณ์"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "ประสบการณ์"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "เสร็จสิ้นการโหลด"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "เริ่มใช้ Callback ที่ไม่มีการใช้งาน"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "First Paint"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "เริ่มเฟรม"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "เริ่มต้นเฟรม (เทรดหลัก)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "เฟรมเริ่มโหลด"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "การเรียกใช้ฟังก์ชัน"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "เหตุการณ์ GC"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "การทดสอบตัวชี้"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "ไม่มีการใช้งาน"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "ถอดรหัสรูปภาพ"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "ติดตั้งตัวจับเวลา"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "ระบุว่าเลย์เอาต์ไม่ถูกต้อง"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "เฟรมของ JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "กำหนดเลเยอร์"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "เลย์เอาต์"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "การเปลี่ยนเลย์เอาต์"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "กำลังโหลด"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "GC ระดับใหญ่"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "การรับส่งข้อความ"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "GC ระดับเล็ก"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "เมื่อมีข้อความ"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "เหตุการณ์ในการโหลด"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "เพิ่มประสิทธิภาพโค้ด"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "อื่นๆ"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "การแสดงผล"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "รูปภาพการแสดงผล"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "การตั้งค่าการแสดงผล"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "การแสดงผล"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "แยกวิเคราะห์และคอมไพล์"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "แยกวิเคราะห์ HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "แยกวิเคราะห์สไตล์ชีต"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "ก่อนแสดงผล"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "เวลาที่ใช้ในการทำโปรไฟล์"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "แรสเตอร์การแสดงผล"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "การแรสเตอร์"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "คำนวณรูปแบบอีกครั้ง"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "รับข้อมูล"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "รับคำตอบ"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "รับแฮนด์เชค WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "นำตัวจับเวลาออก"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "การแสดงผล"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "ส่งคำขอเฟรมภาพเคลื่อนไหว"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "ขอ Callback ที่ไม่มีการใช้งาน"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "ส่งคำขอเฟรมของเทรดหลัก"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "เรียกใช้ Microtask"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "เรียกใช้งาน postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "ตั้งเวลา postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "กำหนดเวลา postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "กำหนดเวลาการคำนวณรูปแบบอีกครั้ง"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "การเขียนสคริปต์"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "เลื่อน"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "ส่งคำขอ"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "ส่งแฮนด์เชค WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "รับรอง"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "รับรองคำตอบ"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "งานคอมไพล์สตรีมมิง"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "คำตอบ Wasm ที่มีการสตรีม"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "ระบบ"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "งาน"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "ตัวจับเวลาเริ่มทำงาน"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "การประทับเวลา"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "อัปเดตเลเยอร์"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "อัปเดตแผนผังเลเยอร์"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "ระยะเวลาของผู้ใช้"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "ยืนยัน"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "ยืนยันคำตอบ"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "กำลังรอเครือข่าย"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "พบแคชโมดูล Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "แคชโมดูล Wasm ไม่ถูกต้อง"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "จะส่งคำขอ"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "รับข้อความ WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "ส่งข้อความ WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "โหลด XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "การเปลี่ยนแปลง XHR readyState"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "ภาพเคลื่อนไหว"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "หน้าที่มี WebRTC ไม่สามารถเข้าถึงแคชย้อนหลัง"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Back-Forward Cache ถูกปิดเนื่องจากมีการใช้ WebRTC"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "หน้าที่ใช้ WebShare ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "หน้าที่มี WebSocket ไม่สามารถเข้าถึงแคชย้อนหลัง"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Back-Forward Cache ถูกปิดเนื่องจากมีการใช้ WebSocket"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "หน้าที่มี WebTransport ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Back-Forward Cache ถูกปิดเนื่องจากมีการใช้ WebTransport"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "หน้าที่ใช้ WebXR ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
@@ -4710,7 +5085,7 @@
     "message": "(ไม่ชัดเจน)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "ต้นทาง"
+    "message": "ต้นทางของเฟรม"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "เป็นแบบคงอยู่"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "แสดงการเปลี่ยนแปลง"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "คุณได้รับป้าย {PH1} ระบบได้เพิ่มไปยังโปรไฟล์นักพัฒนาแอปของคุณแล้ว"
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "ปิด"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "สร้างโปรไฟล์"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "จัดการการตั้งค่า"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "เปิดใช้ป้าย"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "เตือนฉันในภายหลัง"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "คุณได้รับป้าย {PH1} สำหรับ {PH2} สร้างโปรไฟล์เพื่อรับป้าย"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "คุณได้รับป้าย {PH1} สำหรับ {PH2} เปิดใช้ป้ายเพื่อรับเลย"
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "ดูโปรไฟล์"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "ยกเลิก"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "สิ่งที่ควรพิจารณา"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "ยกเลิก"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "นโยบายเนื้อหา"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "ออกแบบมาเพื่อความสำเร็จของคุณ"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "พัฒนาทักษะ ใช้ AI สร้างสิ่งต่างๆ และรับป้ายที่แสดงในโปรไฟล์นักพัฒนาแอปได้"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "กล่องโต้ตอบการลงชื่อสมัครใช้ Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "คอยอัปเดตข้อมูลให้ฉันด้วย"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "ฟีเจอร์ล่าสุดในเครื่องมือสำหรับนักพัฒนาเว็บ คำเชิญเข้าร่วมกิจกรรม และข้อมูลเชิงลึกที่ปรับแต่งมาโดยเฉพาะจะส่งตรงถึงกล่องจดหมายของคุณ"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "ดูข้อมูลเพิ่มเติมเกี่ยวกับ Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "นโยบายความเป็นส่วนตัว"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "ลงชื่อสมัครใช้"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "สร้างโปรไฟล์ Google Developer Program ไม่ได้ โปรดลองอีกครั้งภายหลัง"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "ปรับแต่งโปรไฟล์"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "ระบบจะใช้ชื่อในบัญชี Google ของคุณและความสนใจในโปรไฟล์นักพัฒนาแอปของ Google ชื่อของคุณอาจปรากฏในตำแหน่งที่คุณมีส่วนร่วมและจะเปลี่ยนแปลงได้ทุกเมื่อ"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "การสร้างโปรไฟล์นักพัฒนาแอปถือว่าคุณยอมรับ{PH1} {PH2}และ{PH3}ของ Google จะมีผลกับการใช้บริการนี้"
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "ข้อกำหนดในการให้บริการ"
   },
   "panels/common/common.ts | allow": {
     "message": "อนุญาต"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "ปิดใช้การวางซ้อน Scroll Snap"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "ปิดใช้โหมด @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "กระจายรายการให้เท่ากัน"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "เปิดใช้การวางซ้อน Scroll Snap"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "เปิดใช้โหมด @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "ขยายซ้ำ"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "จัดให้จาก Signed HTTP Exchange ขนาดทรัพยากร: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "แสดงผลจาก Web Bundle ขนาดแหล่งข้อมูล: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "แสดงสถานะคำขอที่นี่ไม่ได้เพราะหน้าเว็บที่ออกคำขอยกเลิกการโหลดขณะกำลังดำเนินการ คุณสามารถใช้ chrome://net-export เพื่อเก็บข้อมูลจากบันทึกเครือข่ายและดูรายละเอียดคำขอทั้งหมด"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "ข้อผิดพลาดของ Web Bundle"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "แสดงผลจาก Web Bundle"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "ข้อมูลการเชื่อมต่อ"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "พื้นที่ของที่อยู่ผู้ริเริ่ม"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "เกี่ยวข้องกับโฆษณา"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "เวลาในการตอบสนอง"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(จาก Signed Exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(จาก Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ทั่วไป"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "หากต้องการใช้ทรัพยากรนี้จากเว็บไซต์อื่น เซิร์ฟเวอร์อาจคลายส่วนหัวการตอบกลับของนโยบายทรัพยากรแบบข้ามต้นทาง"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "ทรัพยากรในแพ็กเกจ"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "เพิ่มรูปแบบการบล็อกคำขอเครือข่าย"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "วิดีโอ"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "ถึงขีดจำกัดของโทเค็นการตรวจสอบสิทธิ์แล้ว การปกป้อง IP จะหยุดชั่วคราว"
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "การปกป้อง IP เปิดใช้งานอยู่"
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "เครื่องมือสำหรับนักพัฒนาเว็บกำลังข้ามการปกป้อง IP"
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "ไม่ได้เปิดใช้ฟีเจอร์การปกป้อง IP"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "ฟีเจอร์รายการโดเมนที่มาสก์ไม่ได้เปิดใช้อยู่"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "ไม่มีการป้อนข้อมูลรายการโดเมนที่มาสก์"
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "การปกป้อง IP ไม่พร้อมใช้งาน"
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "ข้ามการปกป้อง IP ชั่วคราวเพื่อการทดสอบ"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "ข้ามการปกป้อง IP"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "สถานะพร็อกซีการปกป้อง IP"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "รหัส"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "สถานะ"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "ไม่ทราบสถานะ"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "การทดสอบที่ไม่เสถียร"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (รายปี)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "เพิ่มโฟลเดอร์"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (รายเดือน)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "ยกเว้นจากพื้นที่ทำงาน"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (รายปี)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "ระบบอนุมานการเชื่อมโยงโดยอัตโนมัติ"
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (รายเดือน)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "นำออก"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "พื้นที่ทำงาน"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "(ส่ง{PH1}ไปยัง Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "แพ็กเกจมาตรฐาน"
@@ -12678,10 +13161,10 @@
     "message": "คุณไม่ได้ลงชื่อเข้าใช้ Chrome"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "หากต้องการเปิดการตั้งค่านี้ คุณต้องเปิดการตั้งค่าการซิงค์ใน Chrome ก่อน"
+    "message": "คุณต้องเปิดใช้การบันทึกการตั้งค่า Chrome ในบัญชี Google ก่อน"
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(ระบบจะส่งข้อมูลที่เกี่ยวข้องไปยัง Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "ข้อมูลที่เกี่ยวข้อง"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "ลงชื่อสมัครใช้"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "หากต้องการเปิดการตั้งค่านี้ คุณต้องเปิดใช้การซิงค์ของ Chrome"
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "เมื่อคุณมีคุณสมบัติได้รับป้าย ระบบจะส่งตัวระบุของป้ายและประเภทกิจกรรมที่คุณทำเพื่อให้ได้รับป้ายไปยัง Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "ดูโปรไฟล์"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "แสดงแป้นพิมพ์ลัด"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "แสดงการตั้งค่าพื้นที่ทำงาน"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "พื้นที่ทำงาน"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "ลิงก์กับ {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "ฟังก์ชัน"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "สแต็กฟังก์ชัน"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "ขอ Callback ที่ไม่มีการใช้งานแล้ว"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "แหล่งที่มา"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "สแต็กเทรซ"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "สตรีมแล้ว"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "บันทึก"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "รวมเนื้อหาทั้งหมดของทุกสคริปต์ที่โหลด (ยกเว้นส่วนขยาย)"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "บีบอัดด้วย gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "จัดเก็บการบันทึก…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "รวมการแมปแหล่งที่มาที่พร้อมใช้งาน ซึ่งอาจแสดงโค้ดที่เขียนขึ้นมา"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "ขั้นสูง"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "หยุด"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(ไม่ระบุชื่อ)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "กิจกรรม: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "เฟรม"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "การเปลี่ยนแปลงเลย์เอาต์"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "ปิด WebSocket แล้ว"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "เปิด WebSocket แล้ว"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "เปิด WebSocket แล้ว: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "ยกเลิก postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "ภาพเคลื่อนไหว"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "เฟรมของภาพเคลื่อนไหวทำงาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "ไม่พร้อมกัน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "งานที่ไม่พร้อมกัน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "แคชโค้ดโมดูล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "แคชโค้ดสคริปต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "แคชโมดูล Wasm แล้ว"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "ยกเลิกเฟรมภาพเคลื่อนไหว"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "ยกเลิก Callback ที่ไม่มีการใช้งาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "คอมมิต"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "คอมไพล์โค้ด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "คอมไพล์โมดูล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "คอมไพล์สคริปต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "คอมไพล์โมดูล Wasm แล้ว"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "เลเยอร์ผสม"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "คำนวณจุดตัด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "เรียกใช้งานคอนโซล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "เวลาในคอนโซล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "GC สำหรับ CPP"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "สร้าง WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "ถอดรหัส"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "ถอดรหัสคำตอบ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "ดีซีเรียลไลซ์แคชโค้ด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "ทำลาย WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "ไดเจสต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "การตอบกลับไดเจสต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "เหตุการณ์ DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "วาดเฟรม"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "การวาดภาพ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Callback เครื่องมือฝัง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "เข้ารหัส"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "เข้ารหัสคำตอบ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "ประเมินโมดูล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "ประเมินสคริปต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "เหตุการณ์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "ระยะเวลาของเหตุการณ์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "ประสบการณ์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "เสร็จสิ้นการโหลด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "เริ่มใช้ Callback ที่ไม่มีการใช้งาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "First Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "เริ่มเฟรม"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "เริ่มต้นเฟรม (เทรดหลัก)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "เฟรมเริ่มโหลด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "การเรียกใช้ฟังก์ชัน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "เหตุการณ์ GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "การทดสอบตัวชี้"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "ไม่มีการใช้งาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "ถอดรหัสรูปภาพ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "ติดตั้งตัวจับเวลา"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "ระบุว่าเลย์เอาต์ไม่ถูกต้อง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "เฟรมของ JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "กำหนดเลเยอร์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "เลย์เอาต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "การเปลี่ยนเลย์เอาต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "กำลังโหลด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "GC ระดับใหญ่"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "การรับส่งข้อความ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "GC ระดับเล็ก"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "เมื่อมีข้อความ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "เหตุการณ์ในการโหลด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "เพิ่มประสิทธิภาพโค้ด"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "อื่นๆ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "การแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "รูปภาพการแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "การตั้งค่าการแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "การแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "แยกวิเคราะห์และคอมไพล์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "แยกวิเคราะห์ HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "แยกวิเคราะห์สไตล์ชีต"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "ก่อนแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "เวลาที่ใช้ในการทำโปรไฟล์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "แรสเตอร์การแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "การแรสเตอร์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "คำนวณรูปแบบอีกครั้ง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "รับข้อมูล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "รับคำตอบ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "รับแฮนด์เชค WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "นำตัวจับเวลาออก"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "การแสดงผล"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "ส่งคำขอเฟรมภาพเคลื่อนไหว"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "ขอ Callback ที่ไม่มีการใช้งาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "ส่งคำขอเฟรมของเทรดหลัก"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "เรียกใช้ Microtask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "เรียกใช้งาน postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "ตั้งเวลา postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "กำหนดเวลา postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "กำหนดเวลาการคำนวณรูปแบบอีกครั้ง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "การเขียนสคริปต์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "เลื่อน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "ส่งคำขอ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "ส่งแฮนด์เชค WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "รับรอง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "รับรองคำตอบ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "งานคอมไพล์สตรีมมิง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "คำตอบ Wasm ที่มีการสตรีม"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "ระบบ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "งาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "ตัวจับเวลาเริ่มทำงาน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "การประทับเวลา"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "อัปเดตเลเยอร์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "อัปเดตแผนผังเลเยอร์"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "ระยะเวลาของผู้ใช้"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "ยืนยัน"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "ยืนยันคำตอบ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "กำลังรอเครือข่าย"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "พบแคชโมดูล Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "แคชโมดูล Wasm ไม่ถูกต้อง"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "จะส่งคำขอ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "รับข้อความ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "ส่งข้อความ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "โหลด XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "การเปลี่ยนแปลง XHR readyState"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "มีการทำเครื่องหมายด้วย ignoreList ในการแมปแหล่งที่มา"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} จาก {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "ปิดใช้การค้นหาที่คำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "ปิดใช้การค้นหาและแทนที่"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "ปิดใช้นิพจน์ทั่วไป"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "เปิดใช้การค้นหาที่คำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "ค้นหาและแทนที่"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "เปิดใช้นิพจน์ทั่วไป"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "ค้นหา"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "ตัวพิมพ์เล็กและตัวพิมพ์ใหญ่ตรงกัน"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "ตรงกัน 1 รายการ"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "ตรงกันทั้งคำ"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "แทนที่"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "แสดงผลการค้นหาก่อนหน้า"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "ใช้นิพจน์ทั่วไป"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "มีการเปลี่ยนการตั้งค่าอย่างน้อย 1 รายการซึ่งจะต้องโหลดซ้ำจึงจะมีผล"

@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Не падбіраць да колеравай схемы Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Зарабляць значкі"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Уключыць спалучэнні клавіш Ctrl + 1-9 для пераключэння панэляў"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Уключыць спалучэнні клавіш ⌘ + 1-9 для пераключэння панэляў"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Уключыць сінхранізацыю налад"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Знайсці наступны вынік"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Папярэдняя панэль"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Атрымліваць значкі"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Перазагрузіць інструменты распрацоўшчыка"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Справа"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Захаваць налады функцыі \"DevTools\" ва ўліковым запісе Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Уключыць пошук падчас набору"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "скінуць"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1} (спампоўванне)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (з кэша)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (ад ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Затрымка: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Затрымка: {PH1}, спампоўка: {PH2} (усяго: {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Увядзіце шлях"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem не можа прачытаць файлы."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Дадаць папку"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Выключыць з працоўнай вобласці"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Супастаўленні вызначаюцца аўтаматычна."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Выдаліць"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Працоўная вобласць"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Адключыць перавызначэнне запытаў сеткі"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "перазапісаць"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Паказаць налады працоўнай вобласці"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(ананімна)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Працоўная вобласць"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Падзея: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Фрэйм"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Зрушэнне макета"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket закрыты"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket адкрыты"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket адкрыты: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Адмяніць postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Анімацыя"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Спрацаваў кадр анімацыі"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Асінхроннае выкананне"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Асінхронная задача"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Кэшаваць код модуля"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Кэшаваць код сцэнарыя"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Кэшаваны модуль Wasm"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Скасаваць кадр анімацыі"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Скасаваць зваротны выклік бяздзейнасці"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Прымяненне"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Скампіляваць код"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Скампіляваць модуль"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Скампіляваць сцэнарый"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Скампіляваны модуль Wasm"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Састаўныя слаі"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Вылічыць скрыжаванні"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Запусціць кансольную задачу"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Час кансолі"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "Збіранне смецця C++"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Стварыць WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Расшыфраваць"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Расшыфраваць адказ"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Дэсерыялізацыя кэша кода"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Знішчыць WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Дайджэст"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Дайджэст-адказ"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "Збіранне смецця DOM"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "Падзея DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Нарысаваць фрэйм"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Рысаванне"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Зваротны выклік убудоўшчыка"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Зашыфраваць"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Зашыфраваць адказ"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Выканаць модуль"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Выканаць сцэнарый"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Падзея"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Час падзеі"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Вопыт"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Завяршыць загрузку"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Выклікаць зваротны выклік бяздзейнасці"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "Першае маляванне са змесцівам"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Першае маляванне"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Пачатак кадра"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Пачатак фрэйма (галоўны паток)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Пачалася загрузка фрэйма"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Выклік функцыі"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Падзея збірання смецця"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "Графічны працэсар"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Праверка пазіцыі"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Бяздзейнасць"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Дэкадаванне відарыса"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Усталяваць таймер"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Зрабіць макет неправадзейным"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "Фрэйм JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Найбольшае маляванне са змесцівам"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Планіраванне слаёў"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Макет"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Зрушэнне макета"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Кластар зрушэння макета"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Ідзе загрузка"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Асноўнае збіранне смецця"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Абмен паведамленнямі"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Дапаможнае збіранне смецця"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "Паведамленне пра ўключэнне"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Падзея Onload"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Аптымізаваць код"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Іншае"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Маляванне"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Адмалёўка відарыса"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Наладжванне адмалёўкі"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Маляванне"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Прааналізаваць і скампіляваць"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Выканаць сінтаксічны аналіз HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Прааналізаваць табліцу стыляў"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Папярэдняя адмалёўка"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Часавыя затраты прафіліравання"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Растрыраваць адмалёўку"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Растрыраванне"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Пералічыць стыль"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Атрымаць даныя"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Атрымаць адказ"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Атрымаць квіціраванне WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Выдаліць таймер"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Візуалізацыя"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Запытаць кадр анімацыі"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Запытаць зваротны выклік бяздзейнасці"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Запытаць фрэйм галоўнага патоку"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Выкананне мікразадач"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Выклікаць postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Запланаваць postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Запланаваць postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Запланаваць перападлік стылю"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Выкананне сцэнарыяў"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Прагартаць"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Адправіць запыт"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Адправіць квіціраванне WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Падпісаць"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Падпісанне адказу"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Задача кампіляцыі (плыневая перадача)"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Адказ Wasm (плыневая перадача)"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Сістэма"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Задача"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Спрацаваў таймер"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Метка часу"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Абнавіць слой"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Абнавіць дрэва слаёў"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Карыстальніцкія меткі часу"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Спраўдзіць"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Спраўдзіць адказ"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Чаканне адказу сеткі"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Траплянне ў кэш модуля Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Недапушчальны кэш модуля Wasm"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Будзе адпраўлены запыт"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Атрымаць паведамленне WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Адправіць паведамленне WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Загрузка XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Змяненне ўласцівасці readyState XHR"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Анімацыя"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Старонкі з WebRTC не могуць быць захаваны ў кэшы пераходу назад і наперад."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Кэш пераходу назад і наперад адключаны, бо выкарыстоўваецца WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Старонкі, якія выкарыстоўваюць WebShare, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Старонкі з WebSocket не могуць быць захаваны ў кэшы пераходу назад і наперад."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Кэш пераходу назад і наперад адключаны, бо выкарыстоўваецца WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Старонкі з WebTransport не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Кэш пераходу назад і наперад адключаны, бо выкарыстоўваецца WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Старонкі, якія выкарыстоўваюць WebXR, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
@@ -4710,7 +5085,7 @@
     "message": "(непразрысты)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Крыніца"
+    "message": "Крыніца фрэйма"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Пастаяннае"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Паказаць змены"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Вы зарабілі значок \"{PH1}\"! Ён дададзены ў ваш профіль распрацоўшчыка."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Закрыць"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Стварыць профіль"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Кіраваць наладамі"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Уключыць значкі"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Напомніць пазней"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Вы зарабілі значок \"{PH1}\" за наступнае дзеянне: {PH2}! Каб атрымаць значок, стварыце профіль."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Вы зарабілі значок \"{PH1}\" за наступнае дзеянне: {PH2}! Каб атрымаць яго, уключыце функцыю \"Значкі\"."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Праглядзець профіль"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Скасаваць"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Інфармацыя для разгляду"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Скасаваць"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Палітыка ў дачыненні да змесціва"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Створана для вашага поспеху"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Развівайце свае навыкі, распрацоўвайце праекты з дапамогай штучнага інтэлекту і зарабляйце значкі, якія можна прадэманстраваць у профілі распрацоўшчыка"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Дыялогавае акно ўваходу ў Праграму Google Developer"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Трымаць мяне ў курсе"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Новыя функцыі інструментаў распрацоўшчыка, запрашэнні да ўдзелу ў падзеях і персаналізаваная статыстыка будуць адразу прыходзіць на пошту"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Даведацца больш"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Даведацца больш аб Праграме Google Developer"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Палітыка прыватнасці"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Зарэгістравацца"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Не ўдалося стварыць профіль у Праграме Google Developer. Паўтарыце спробу пазней."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Персаналізацыя профілю"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "У профілі распрацоўшчыка Google будзе выкарыстоўвацца ваша імя, а таксама інтарэсы, указаныя ва Уліковым запісе Google. Імя можа з’яўляцца ў месцах, дзе прысутнічае ваша актыўнасць, і яго заўжды можна змяніць."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Ствараючы профіль распрацоўшчыка, вы згаджаецеся з палажэннямі дакумента \"{PH1}\". Выкарыстанне сэрвісу рэгулюецца наступнымі дакументамі: {PH2} і {PH3} Google."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Умовы выкарыстання"
   },
   "panels/common/common.ts | allow": {
     "message": "Дазволіць"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Адключыць накладку, якае дэманструе прагортку з прывязкай"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Адключэнне рэжыму @стыль-запуску"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Размеркаваць элементы раўнамерна"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Уключыць накладку, якая дэманструе прагортку з прывязкай"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Уключэнне рэжыму @стыль-запуску"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Разгарнуць рэкурсіўна"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Паказваецца з Signed HTTP Exchange, памер рэсурсу: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Паказваецца з Web Bundle, памер рэсурсу: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Стан запыту немагчыма паказаць тут, бо старонка, якая яго адправіла, была выгружана пры дастаўцы запыту. Вы можаце выкарыстаць інструмент chrome://net-export, каб уключыць вядзенне сеткавага журнала і паглядзець усе падрабязнасці запыту."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Памылка Web Bundle"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Паказваецца з Web Bundle"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Інфармацыя аб падключэнні"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Адрасная прастора ініцыятара"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Мае дачыненне да рэкламы"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Затрымка"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(крыніца: Signed Exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(з Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Агульныя"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага сайта, сервер можа паслабіць палітыку выкарыстання рэсурсаў, якія паходзяць з іншых крыніц, у загалоўку адказу:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Рэсурс у пакеце"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Дадаць шаблон блакіроўкі сеткавых запытаў"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Відэа"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Дасягнуты ліміт выкарыстання токенаў для аўтэнтыфікацыі. Абарона IP-адраса будзе прыпынена."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "Абарона IP-адраса ўключана і актыўная."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Інструменты распрацоўшчыка абыходзяць абарону IP-адраса."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Функцыя \"Абарона IP-адраса\" не ўключана."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Функцыя \"Спіс замаскіраваных даменаў\" не ўключана."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Спіс замаскіраваных даменаў не запоўнены."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "Абарона IP-адраса недаступная."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Часова абыходзіць абарону IP-адраса падчас тэсціравання"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Абход абароны IP-адраса"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Стан проксі-сервера для абароны IP-адраса"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Стан"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Стан невядомы"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL-адрас"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабільныя эксперыменты"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (штогадовая)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Дадаць папку"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (штомесячная)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Выключыць з працоўнай вобласці"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (штогадовая)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Супастаўленні вызначаюцца аўтаматычна."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (штомесячная)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Выдаліць"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Працоўная вобласць"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1}: адпраўлена ў Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Стандартны план"
@@ -12678,10 +13161,10 @@
     "message": "Вы не ўвайшлі ў Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Каб уключыць гэту наладу, вы павінны спачатку ўключыць сінхранізацыю налад у Chrome."
+    "message": "Спачатку трэба ўключыць захаванне налад функцыі \"Chrome\" ва ўліковым запісе Google."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Рэлевантныя даныя адпраўляюцца ў Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Рэлевантныя даныя"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Зарэгістравацца"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Каб уключыць гэту наладу, вы павінны ўключыць Сінхранізацыю Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Калі вы адпавядаеце ўмовам для атрымання значка, ідэнтыфікатар значка і тып дзеяння, якое вы выканалі, каб яго зарабіць, будуць адпраўлены ў Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Праглядзець профіль"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Паказаць спалучэнні клавіш"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Паказаць налады працоўнай вобласці"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Працоўная вобласць"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Звязана з: {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функцыя"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Стэк функцый"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Зваротны выклік бяздзейнасці запытаны"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Крыніца"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Трасіроўка стэка"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Ажыццяўлялася плыневая перадача"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Захаваць"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Будзе ўключацца поўнае змесціва ўсіх сцэнарыяў, якія загружаюцца (акрамя пашырэнняў)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Сціснуць з дапамогай gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Захаваць трасіроўку…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Будуць уключацца даступныя карты крыніц, у выніку чаго можа быць раскрыты код аўтарызацыі."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Пашыраныя налады"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Спыніць"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(ананімна)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Падзея: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Фрэйм"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Зрушэнне макета"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket закрыты"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket адкрыты"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket адкрыты: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Адмяніць postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Анімацыя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Спрацаваў кадр анімацыі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Асінхроннае выкананне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Асінхронная задача"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Кэшаваць код модуля"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Кэшаваць код сцэнарыя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Кэшаваны модуль Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Скасаваць кадр анімацыі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Скасаваць зваротны выклік бяздзейнасці"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Прымяненне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Скампіляваць код"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Скампіляваць модуль"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Скампіляваць сцэнарый"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Скампіляваны модуль Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Састаўныя слаі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Вылічыць скрыжаванні"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Запусціць кансольную задачу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Час кансолі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "Збіранне смецця C++"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Стварыць WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Расшыфраваць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Расшыфраваць адказ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Дэсерыялізацыя кэша кода"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Знішчыць WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Дайджэст"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Дайджэст-адказ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "Збіранне смецця DOM"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Падзея DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Нарысаваць фрэйм"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Рысаванне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Зваротны выклік убудоўшчыка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Зашыфраваць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Зашыфраваць адказ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Выканаць модуль"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Выканаць сцэнарый"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Падзея"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Час падзеі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Вопыт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Завяршыць загрузку"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Выклікаць зваротны выклік бяздзейнасці"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "Першае маляванне са змесцівам"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Першае маляванне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Пачатак кадра"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Пачатак фрэйма (галоўны паток)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Пачалася загрузка фрэйма"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Выклік функцыі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Падзея збірання смецця"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "Графічны працэсар"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Праверка пазіцыі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Бяздзейнасць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Дэкадаванне відарыса"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Усталяваць таймер"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Зрабіць макет неправадзейным"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "Фрэйм JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Найбольшае маляванне са змесцівам"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Планіраванне слаёў"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Макет"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Зрушэнне макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Кластар зрушэння макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Ідзе загрузка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Асноўнае збіранне смецця"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Абмен паведамленнямі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Дапаможнае збіранне смецця"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "Паведамленне пра ўключэнне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Падзея Onload"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Аптымізаваць код"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Іншае"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Маляванне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Адмалёўка відарыса"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Наладжванне адмалёўкі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Маляванне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Прааналізаваць і скампіляваць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Выканаць сінтаксічны аналіз HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Прааналізаваць табліцу стыляў"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Папярэдняя адмалёўка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Часавыя затраты прафіліравання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Растрыраваць адмалёўку"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Растрыраванне"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Пералічыць стыль"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Атрымаць даныя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Атрымаць адказ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Атрымаць квіціраванне WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Выдаліць таймер"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Візуалізацыя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Запытаць кадр анімацыі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Запытаць зваротны выклік бяздзейнасці"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Запытаць фрэйм галоўнага патоку"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Выкананне мікразадач"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Выклікаць postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Запланаваць postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Запланаваць postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Запланаваць перападлік стылю"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Выкананне сцэнарыяў"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Прагартаць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Адправіць запыт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Адправіць квіціраванне WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Падпісаць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Падпісанне адказу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Задача кампіляцыі (плыневая перадача)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Адказ Wasm (плыневая перадача)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Сістэма"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Задача"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Спрацаваў таймер"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Метка часу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Абнавіць слой"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Абнавіць дрэва слаёў"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Карыстальніцкія меткі часу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Спраўдзіць"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Спраўдзіць адказ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Чаканне адказу сеткі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Траплянне ў кэш модуля Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Недапушчальны кэш модуля Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Будзе адпраўлены запыт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Атрымаць паведамленне WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Адправіць паведамленне WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Загрузка XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Змяненне ўласцівасці readyState XHR"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Пазначаны ў спісе ігнаравання карты крыніц"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} з {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Адключыць пошук з улікам рэгістра"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Адключыць функцыю \"Знайсці і замяніць\""
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Адключыць рэгулярныя выразы"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Уключыць пошук з улікам рэгістра"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Знайсці і замяніць"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Уключыць рэгулярныя выразы"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Пошук"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Улічваць рэгістр"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 супадзенне"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Шукаць слова цалкам"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Замяніць"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Паказаць папярэдні вынік"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Выкарыстаць рэгулярны выраз"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Адна або некалькі налад змяніліся. Каб змяненні ўступілі ў сілу, патрабуецца перазагрузка"

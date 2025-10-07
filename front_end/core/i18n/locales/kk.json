@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Chrome түстер схемасын сәйкестендірмеу"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Танымбелгілер ұтып алу"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Панельдерді ауыстыру үшін Ctrl + 1-9 пернелер тіркесімін қосу"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Панельдерді ауыстыру үшін ⌘ + 1-9 пернелер тіркесімін қосу"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Параметрлерді синхрондауды қосу"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Келесі нәтижені табу"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Алдыңғы панель"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Танымбелгілерді алу"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools қайта жүктеу"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Оңға"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "DevTools параметрлерін Google аккаунтына сақтау"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Мәтін теру сәтінде іздеу пәрменін қосу"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "бастапқы күйге қайтару"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1} жүктеп алу"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (кэштен)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (ServiceWorker форматынан)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "{PH1} кідіріс"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "{PH1} кідіріс, {PH2} жүктеп алу (барлығы {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Жолды енгізіңіз."
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem файлдарды оқи алмайды."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Қалта қосу"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Жұмыс орнынан шығару"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Салыстыру автоматты түрде шығарылады."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Өшіру"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Жұмыс орны"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Желі сұрауларын қайта анықтау функциясын өшіру"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "қайта жазу"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Жұмыс орны параметрлерін көрсету"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(анонимді)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Жұмыс орны"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Оқиға: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Кадр"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Формат өзгерісі"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket жабылды"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket ашылды"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket ашылды: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "postTask-тан бас тарту"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Анимация"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Анимация кадры басталды."
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Бейсинхронды"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Бейсинхрондау тапсырмасы"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Модуль кодын кэштеу"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Скрипт кодын кэштеу"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Кэштелген Wasm модулі"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Анимация кадрынан бас тарту"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Күту режиміндегі кері шақырудан бас тарту"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Түрлендіру"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Компиляциялау коды"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Модуль компиляциялау"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Скрипт компиляциялау"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Компиляцияланған Wasm модулі"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Күрделі қабаттар"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Қиылыстарды есептеу"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Консоль тапсырмасын орындау"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Консоль уақыты"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "WebSocket жасау"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Шифрдан шығару"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Жауапты шифрдан шығару"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Код кэшін сериядан шығару"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "WebSocket бұзу"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Дайджест"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Дайджест жауабы"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM қоқысын жинау"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded оқиғасы"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Кадр сызу"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Сызу"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Ендірушінің кері шақыруы"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Шифрлау"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Жауапты шифрлау"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Модульді бағалау"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Скриптіні бағалау"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Оқиға"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Оқиға уақыты"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Тәжірибе"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Жүктеуді аяқтау"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Күту режиміндегі кері шақыруды іске қосу"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "Алғашқы контентті кескіндеу"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Бірінші бояу"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Кадрды бастау"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Кадрдың басталу уақыты (негізгі тізбек)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Кадр жүктеле бастады."
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Функциялық шақыру"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Қоқыс жинау іс-шарасы"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Басу сынағы"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Бос"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Кескіннің кодын ашу"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Таймер орнату"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Схемасын жарамсыз деп тану"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS кадры"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Ең үлкен контентті кескіндеу"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Қабаттау"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Орналасуы"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Формат өзгерісі"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Формат өзгерісінің кластері"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Жүктеу"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Негізгі GC"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Хабар алмасу"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Шағын қоқыс жинау"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "Хабарда"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Жүктеу оқиғасы"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Оңтайландыру коды"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Басқа"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Бояу"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Сурет салу"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Сурет салуды реттеу"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Кескіндеу"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Талдау және компиляциялау"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "HTML протоколын талдау"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Стильдер кестесін талдау"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Сурет салуға дейінгі қадам"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Профильдеу кезіндегі уақыт шығыны"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Сурет салуды растеризациялау"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Растеризация"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Стильді қайта есептеу"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Деректерді алу"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Жауап алу"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket келісімін алу"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Таймерді өшіру"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Рендеринг"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Анимация кадрын сұрау"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Күту режиміндегі кері шақыруды сұрау"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Негізгі тізбек кадрын сұрау"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Микротапсырмаларды іске қосу"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "postTask-ты іске қосу"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "postMessage жоспарлау"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "postTask арқылы жоспарлау"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Стильді қайта есептеуді жоспарлау"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Скрипт жазу"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Айналдыру"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Сұрау жіберу"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "WebSocket келісімін жіберу"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Белгі"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Жауапқа қол қою"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Трансляцияның компиляция тапсырмасы"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Wasm жауабын трансляциялау"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Жүйе"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Тапсырма"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Таймер іске қосылды"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Уақыт белгісі"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Қабатты жаңарту"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Қабат тармағын жаңарту"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Пайдаланушы өткізетін уақыт"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Растау"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Жауапты тексеру"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Желімен байланыс күтілуде"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Wasm модулін кэшке айналдыру"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm модуль кэші жарамсыз."
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Сұрау жібереді"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "WebSocket хабарын алу"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "WebSocket хабарын жіберу"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Жүктеу: XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState өзгерісі"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Анимация"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC интерфейсіндегі беттер алға-артқа өту кэшіне кірмейді."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Алға-артқа өту кэші өшірілген, себебі WebRTC пайдаланылған."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket протоколындағы беттер алға-артқа өту кэшіне кірмейді."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Алға-артқа өту кэші өшірілген, себебі WebSocket пайдаланылған."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport интерфейсіндегі беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Алға-артқа өту кэші өшірілген, себебі WebTransport пайдаланылған."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
@@ -4710,7 +5085,7 @@
     "message": "(анық емес)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Дереккөз"
+    "message": "Кадр дереккөзі"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Тұрақты"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Өзгерістерді көрсету"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "{PH1} танымбелгісін ұтып алдыңыз! Ол әзірлеуші профиліңізге қосылды."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Жабу"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Профиль жасау"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Параметрлерді басқару"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Танымбелгілерді қосу"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Кейінірек еске салу"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "{PH2} үшін {PH1} танымбелгісін ұтып алдыңыз! Оны қабылдау үшін профиль жасаңыз."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "{PH2} үшін {PH1} танымбелгісін ұтып алдыңыз! Оны қабылдау үшін танымбелгілерді қосыңыз."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Профильді көру"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Бас тарту"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Ескеретін жайттар"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Бас тарту"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Контент саясаты"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Жетістікке жетуіңіз үшін жасалған"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Дағдыларыңызды жетілдіріп, жасанды интеллект қолданып, алған танымбелгілеріңізді әзірлеуші профилінде көрсетіңіз."
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google Developer Program-ға тіркелудің диалогтік терезесі"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Жаңалықтардан хабардар ет"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Әзірлеуші құралдарының соңғы функциялары, іс-шара шақырулары және бейімделген статистика тікелей кіріс қалтасына келеді."
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Толық ақпарат"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Google Developer Program туралы толық ақпарат"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Құпиялық саясаты"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Тіркелу"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Google Developer Program профиліңіз жасалмады. Кейінірек қайталап көріңіз."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Профиліңізді бейімдеңіз"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Google аккаунтыңыздағы аты-жөніңіз және қызығушылықтарыңыз Google әзірлеуші профиліңізде қолданылады. Аты-жөніңіз сіз үлес қосқан жерде пайда болуы мүмкін. Оны кез келген уақытта өзгерте аласыз."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Әзірлеуші профилін жасау арқылы {PH1} ережелеріне келісесіз. Бұл қызметті пайдаланған кезде, Google-дың {PH2} және {PH3} ережелері қолданылады."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Қызмет көрсету шарттары"
   },
   "panels/common/common.ts | allow": {
     "message": "Рұқсат беру"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Айналдырып болғаннан кейінгі қабаттасуды өшіру"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "@starting-style режимін өшіру"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Элементтерді біркелкі тарату"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Айналдырып болғаннан кейінгі қабаттасуды қосу"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "@starting-style режимін қосу"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Кері ретпен кеңейту"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Signed HTTP Exchange арқылы ұсынылды, ресурс өлшемі: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Web Bundle арқылы көрсетілді, ресурс өлшемі: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Сұрау күйін бұл жерде көрсету мүмкін емес, себебі оны жіберген бет сұрау жасалып жатқанда босатылды. Желі журналын жазып алу немесе сұраудың барлық мәліметін көру үшін chrome://net-export пайдалануға болады."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle қатесі"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Web Bundle арқылы қызмет көрсетіледі"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Байланыс ақпараты"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Бастамашы мекенжайының орны"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Жарнамаға қатысты"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Кідіріс"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(from signed-exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(Web Bundle арқылы)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Жалпы"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Осы ресурсты басқа сайттан пайдалану үшін сервер түрлі түпнұсқалы ресурс саясаты жауабының тақырыбын босатуы мүмкін:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Жинақталған ресурс"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Желі сұрауын блоктау өрнегін қосу"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Бейне"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Аутентификация токендерінің шегіне жетті. IP қорғанысы кідіртіледі."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP қорғанысы қосылды және істеп тұр."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Әзірлеуші құралдары IP қорғанысын айналып өтіп жатыр."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "IP қорғанысы функциясы қосылмаған."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Жасырылған домендер тізімі функциясы қосылмаған."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Жасырылған домендер тізімі толтырылмаған."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP қорғанысы қолжетімді емес."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Сынақ мақсатында IP қорғанысын уақытша айналып өту"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "IP қорғанысын айналып өту"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP қорғанысының прокси-сервер күйі"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "Идентификатор"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Күйі"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Күйі белгісіз"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Тұрақсыз эксперименттер"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (жыл сайынғы)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Қалта қосу"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (ай сайынғы)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Жұмыс орнынан шығару"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (жыл сайынғы)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Салыстыру автоматты түрде шығарылады."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (ай сайынғы)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Өшіру"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Жұмыс орны"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} Google-ға жіберілді)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Стандартты жоспар"
@@ -12678,10 +13161,10 @@
     "message": "Chrome-ға кірмегенсіз."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Бұл параметрді қосу үшін алдымен Chrome-да параметрлерді синхрондау функциясын белсендіру керек."
+    "message": "Алдымен Google аккаунтында Chrome параметрлерін сақтау мүмкіндігін қосуыңыз қажет."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Тиісті деректер Google-ға жіберіледі)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Тиісті деректер"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Тіркелу"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Бұл параметрді қосу үшін Chrome Sync функциясын белсендіруіңіз керек."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Танымбелгі алу талаптарына сай болсаңыз, танымбелгі идентификаторы мен оны ұтып алу үшін жасаған әрекетіңіздің түрі Google-ға жіберіледі"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Профильді көру"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Жылдам пәрмендерді көрсету"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Жұмыс орны параметрлерін көрсету"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Жұмыс орны"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Келесіге байланыстырылған: {PH1}."
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функция"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Функция стэгі"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Күту режиміндегі кері шақыру сұралды."
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Дереккөз"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Стэкті трассалау"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Трансляцияланған"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Сақтау"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Барлық жүктелген скриптінің толық контентін қамтиды (кеңейтімдерді қоспайды)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "gzip көмегімен сығу"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Трассаны сақтау…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Авторлық кодты ашуы мүмкін қолжетімді дереккөз карталарын қамтиды."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Қосымша"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Тоқтату"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(анонимді)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Оқиға: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Кадр"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Формат өзгерісі"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket жабылды"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket ашылды"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket ашылды: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "postTask-тан бас тарту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Анимация"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Анимация кадры басталды."
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Бейсинхронды"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Бейсинхрондау тапсырмасы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Модуль кодын кэштеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Скрипт кодын кэштеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Кэштелген Wasm модулі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Анимация кадрынан бас тарту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Күту режиміндегі кері шақырудан бас тарту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Түрлендіру"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Компиляциялау коды"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Модуль компиляциялау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Скрипт компиляциялау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Компиляцияланған Wasm модулі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Күрделі қабаттар"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Қиылыстарды есептеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Консоль тапсырмасын орындау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Консоль уақыты"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "WebSocket жасау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Шифрдан шығару"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Жауапты шифрдан шығару"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Код кэшін сериядан шығару"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "WebSocket бұзу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Дайджест"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Дайджест жауабы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM қоқысын жинау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded оқиғасы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Кадр сызу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Сызу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Ендірушінің кері шақыруы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Шифрлау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Жауапты шифрлау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Модульді бағалау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Скриптіні бағалау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Оқиға"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Оқиға уақыты"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Тәжірибе"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Жүктеуді аяқтау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Күту режиміндегі кері шақыруды іске қосу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "Алғашқы контентті кескіндеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Бірінші бояу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Кадрды бастау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Кадрдың басталу уақыты (негізгі тізбек)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Кадр жүктеле бастады."
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Функциялық шақыру"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Қоқыс жинау іс-шарасы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Басу сынағы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Бос"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Кескіннің кодын ашу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Таймер орнату"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Схемасын жарамсыз деп тану"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS кадры"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Ең үлкен контентті кескіндеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Қабаттау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Орналасуы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Формат өзгерісі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Формат өзгерісінің кластері"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Жүктеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Негізгі GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Хабар алмасу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Шағын қоқыс жинау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "Хабарда"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Жүктеу оқиғасы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Оңтайландыру коды"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Басқа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Бояу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Сурет салу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Сурет салуды реттеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Кескіндеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Талдау және компиляциялау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "HTML протоколын талдау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Стильдер кестесін талдау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Сурет салуға дейінгі қадам"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Профильдеу кезіндегі уақыт шығыны"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Сурет салуды растеризациялау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Растеризация"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Стильді қайта есептеу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Деректерді алу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Жауап алу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket келісімін алу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Таймерді өшіру"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Рендеринг"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Анимация кадрын сұрау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Күту режиміндегі кері шақыруды сұрау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Негізгі тізбек кадрын сұрау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Микротапсырмаларды іске қосу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "postTask-ты іске қосу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "postMessage жоспарлау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "postTask арқылы жоспарлау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Стильді қайта есептеуді жоспарлау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Скрипт жазу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Айналдыру"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Сұрау жіберу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "WebSocket келісімін жіберу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Белгі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Жауапқа қол қою"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Трансляцияның компиляция тапсырмасы"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Wasm жауабын трансляциялау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Жүйе"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Тапсырма"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Таймер іске қосылды"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Уақыт белгісі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Қабатты жаңарту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Қабат тармағын жаңарту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Пайдаланушы өткізетін уақыт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Растау"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Жауапты тексеру"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Желімен байланыс күтілуде"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm модулін кэшке айналдыру"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm модуль кэші жарамсыз."
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Сұрау жібереді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "WebSocket хабарын алу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "WebSocket хабарын жіберу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Жүктеу: XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState өзгерісі"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Бастапқы картада елемеу тізімімен белгіленген"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH2}/{PH1}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Регистрге тәуелді іздеу мүмкіндігін өшіру"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Табу және ауыстыру функциясын өшіру"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Тұрақты өрнектерді өшіру"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Регистрге тәуелді іздеу мүмкіндігін қосу"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Табу және ауыстыру"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Тұрақты өрнектерді қосу"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Табу"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Регистрді есепке алу"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 сәйкестік"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Тұтас сөзді сәйкестендіру"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Алмастыру"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Алдыңғы нәтижені көрсету"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Тұрақты өрнекті қолдану"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Бір немесе бірнеше параметр өзгертілді. Өзгертулер күшіне енуі үшін, қайта жүктеу қажет."

@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Nezlaďovať farebnú schému Chromu"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Získavať odznaky"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Povoliť skratku Ctrl + 1 – 9 na prepínanie panelov"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Povoliť skratku ⌘ + 1 – 9 na prepínanie panelov"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Zapnúť synchronizáciu nastavení"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Vyhľadať ďalší výsledok"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Predchádzajúci panel"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Získavať odznaky"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Znova načítať Nástroje pre vývojárov"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Vpravo"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Uložiť nastavenia platformy DevTools do účtu Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Povoliť vyhľadávanie počas zadávania"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "resetovať"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Sťahovanie: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (z vyrovnávacej pamäte)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (od: ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Latencia: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Latencia: {PH1}. Stiahnutie: {PH2}. Celkove: {PH3}."
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Zadajte cestu"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem nemôže čítať súbory."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Pridať priečinok"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Vylúčiť z pracovného priestoru"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Mapovania sú odvodené automaticky."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Odstrániť"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Pracovný priestor"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Zakázať prepisovanie požiadaviek siete"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "prepísať"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Zobraziť nastavenia nástroja Workspace"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(anonymné)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Pracovný priestor"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Udalosť: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Rám"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Zmena rozloženia"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "Protokol WebSocket je zavretý"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "Protokol WebSocket je otvorený"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "Protokol WebSocket je otvorený: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Zrušenie rozhrania postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animácia"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Rám animácie bol spustený"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asynchrónne"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Asynchrónna úloha"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Kód modulu vyrovnávacej pamäte"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Kód skriptu vyrovnávacej pamäte"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Modul Wasm uložený do vyrovnávacej pamäte"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Zrušiť rám animácie"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Zrušiť spätné volanie pri nečinnosti"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Odoslať"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Kompilovať kód"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Kompilovať modul"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Kompilovať skript"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Kompilovaný modul Wasm"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Kompozitné vrstvy"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Vypočítať priesečníky"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Spustiť úlohu konzoly"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Čas konzoly"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CZS GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Vytvoriť pripojenie WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Dešifrovať"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Dešifrovať odpoveď"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Deserializácia vyrovnávacej pamäte kódu"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Zničiť WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Hodnota hash"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Odpoveď hodnoty hash"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "Udalosť DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Nakresliť rám"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Kreslenie"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Spätné volanie nástroja na vkladanie obsahu"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Šifrovať"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Šifrovať odpoveď"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Ohodnotenie modulu"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Ohodnotiť skript"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Udalosť"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Časovanie udalostí"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Prostredie"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Dokončiť načítavanie"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Spustiť spätné volanie pri nečinnosti"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "Prvé vykreslenie obsahu"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Prvé vykreslenie"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Začiatok rámu"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Začiatok rámu (hlavné vlákno)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Rám sa začal načítavať"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Volanie funkcie"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Udalosť GC"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "Grafický procesor"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Overenie pozície"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Nečinný"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Dekódovanie obrázkov"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Inštalovať časovač"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Zrušiť platnosť rozloženia"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "Rám JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Vykreslenie najväčšieho prvku"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Vrstvenie"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Rozloženie"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Zmena rozloženia"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Klaster zmien rozloženia"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Načítavanie"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Veľké uvoľnenie pamäte"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Čet"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Malé uvoľnenie pamäte"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "V správe"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Udalosť pri načítaní"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Optimalizovať kód"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Iné"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Vykresliť"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Vykreslenie obrázka"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Nastavenie vykreslenia"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Vykresľovanie"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Analyzovať a kompilovať"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Analyzovať HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Analyzovať šablónu so štýlmi"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Predbežné vykreslenie"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Réžia profilovania"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Rastrovať vykreslenie"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Rastrovanie"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Prepočítať štýl"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Prijať údaje"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Prijať odpoveď"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Prijať handshake WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Odstrániť časovač"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Vykresľovanie"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Požiadať o rám animácie"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Požiadať o spätné volanie pri nečinnosti"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Požiadať o rám hlavného vlákna"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Spustenie mikroúloh"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Spustiť postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Naplánujte odoslanie správy"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Naplánovanie rozhrania postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Naplánovať prepočítanie štýlu"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Skriptovanie"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Posúvať"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Odoslať žiadosť"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Odoslať handshake WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Podpísať"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Podpísanie odpovede"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Streamuje sa úloha kompilovania"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Streamuje sa odpoveď Wasm"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Systém"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Úloha"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Bol spustený časovač"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Časová pečiatka"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Aktualizovať vrstvu"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Aktualizovať strom vrstvy"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Trvanie aktivít používateľov"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Overiť"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Overiť odpoveď"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Čaká sa na sieť"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Prístup do vyrovnávacej pamäte modulu Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Vyrovnávacia pamäť modulu Wasm je neplatná"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Bude odoslaná požiadavka"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Prijať správu WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Odoslať správu WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR: načítanie"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Zmena XHR readyState"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animácia"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Stránky s rozhraním WebRTC nemajú prístup do spätnej vyrovnávacej pamäte."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná, pretože bol použitý protokol WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Stránky s rozhraním WebShare momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Stránky s rozhraním WebSocket nemajú prístup do spätnej vyrovnávacej pamäte."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Spätná vyrovnávacia pamäť je deaktivovaná, pretože bol použitý protokol WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Stránky s rozhraním WebTransport nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Spätná vyrovnávacia pamäť je deaktivovaná, pretože bol použitý protokol WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Stránky s rozhraním WebXR momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -4710,7 +5085,7 @@
     "message": "(nepriehľadné)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Zdroj"
+    "message": "Frame origin"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Je trvalý"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Zobraziť zmeny"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Získali ste odznak {PH1}. Bol pridaný do vášho profilu vývojára."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Zavrieť"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Vytvoriť profil"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Spravovať nastavenia"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Zapnúť odznaky"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Pripomenúť neskôr"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Získali ste odznak {PH1} do programu {PH2}. Ak si ho chcete nárokovať, vytvorte si profil."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Získali ste odznak {PH1} do programu {PH2}. Ak si ho chcete nárokovať, zapnite odznaky."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Zobraziť profil"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Zrušiť"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Čo je potrebné zohľadniť"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Zrušiť"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Pravidlá pre obsah"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Navrhnuté pre váš úspech"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Zlepšite si zručnosti, vytvárajte obsah pomocou umelej inteligencie a získajte odznaky, ktoré budete môcť prezentovať vo svojom profile vývojára"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Dialógové okno registrácie do programu Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Chcem dostávať aktuality"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Najnovšie funkcie nástrojov pre vývojárov, pozvánky na udalosti a prispôsobené štatistiky budete dostávať priamo do doručenej pošty"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Ďalšie informácie o programe Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Pravidlá ochrany súkromia"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Registrovať sa"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Váš profil v programe Google Developer Program sa nepodarilo vytvoriť. Skúste to neskôr."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Prispôsobte si profil podľa seba"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Meno vo vašom účte Google a vaše záujmy sa použijú vo vašom profile vývojára na Googli. Vaše meno sa môže zobrazovať vedľa vašich príspevkov a môžete ho kedykoľvek zmeniť."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Vytvorením profilu vývojára vyjadrujete súhlas s dokumentom {PH1}. Na vaše používanie tejto služby sa vzťahujú {PH2} a {PH3} spoločnosti Google."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Zmluvné podmienky"
   },
   "panels/common/common.ts | allow": {
     "message": "Povoliť"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Deaktivovať prekrytie typu posúvať a prichytiť"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Vypnúť režim @starting‑style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Distribuovať položky rovnomerne"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Aktivovať prekrytie typu posúvať a prichytiť"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Zapnúť režim @starting‑style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Rekurzívne rozbaliť"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Zobrazované z technológie Signed HTTP Exchange, veľkosť zdroja: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Zobrazované z webového balíka, veľkosť zdroja je {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Stav požiadavky tu nie je možné zobraziť, pretože načítanie stránky, ktorá ju odoslala, bolo zrušené počas prenosu požiadavky. Príkazom chrome://net-export môžete zaznamenať denník siete a zobraziť si všetky podrobnosti o požiadavke."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Webový balík)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Chyba webového balíka"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Zobrazené z balíka webu"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informácie o pripojení"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Priestor pre adresu pôvodcu"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Súvisí s reklamou"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Latencia"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(z podpísanej-výmeny)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(z webového balíka)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Všeobecné"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Ak chcete použiť tento zdroj z iného webu, server môže uvoľniť hlavičku odpovede pravidiel zmiešaného pôvodu."
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Zdroj v balíku"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Pridať vzor blokovania požiadavky siete"
@@ -11544,13 +11985,13 @@
     "message": "Vymazať"
   },
   "panels/search/SearchView.ts | disableCaseSensitive": {
-    "message": "Zakázať vyhľadávanie s rozlišovaním veľkých a malých písmen"
+    "message": "Vypnúť vyhľadávanie s rozlišovaním veľkých a malých písmen"
   },
   "panels/search/SearchView.ts | disableRegularExpression": {
     "message": "Zakázať regulárne výrazy"
   },
   "panels/search/SearchView.ts | enableCaseSensitive": {
-    "message": "Povoliť vyhľadávanie s rozlišovaním veľkých a malých písmen"
+    "message": "Zapnúť vyhľadávanie s rozlišovaním veľkých a malých písmen"
   },
   "panels/search/SearchView.ts | enableRegularExpression": {
     "message": "Povoliť regulárne výrazy"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Bol dosiahnutý limit overovacích tokenov. Ochrana adresy IP bude pozastavená."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "Ochrana adresy IP je zapnutá a aktívna."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Nástroje pre vývojárov obchádzajú ochranu adresy IP."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Funkcia ochrany adresy IP nie je zapnutá."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Funkcia zoznamu maskovaných domén nie je zapnutá."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Zoznam maskovaných domén nie je vyplnený."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "Ochrana adresy IP nie je k dispozícii."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Dočasne obchádzať ochranu adresy IP na účely testovania"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Obídenie ochrany adresy IP"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Stav proxy servera ochrany adresy IP"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "Identifikátor"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Stav"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Neznámy stav"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "Webová adresa"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Nestabilné experimenty"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (ročná tarifa)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Pridať priečinok"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (mesačná tarifa)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Vylúčiť z pracovného priestoru"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (ročná tarifa)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Mapovania sú odvodené automaticky."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (mesačná tarifa)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Odstrániť"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Pracovný priestor"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "(Údaje {PH1} sa odosielajú Googlu)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Tarifa Standard"
@@ -12678,10 +13161,10 @@
     "message": "Neprihlásili ste sa do Chromu."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Ak chcete toto nastavenie zapnúť, najprv musíte povoliť synchronizáciu nastavení v Chrome."
+    "message": "Najprv musíte povoliť ukladanie nastavení prehliadača Chrome vo svojom účte Google."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Relevantné údaje sa odosielajú Googlu)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Relevantné údaje"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Registrovať sa"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Ak chcete toto nastavenie zapnúť, musíte povoliť synchronizáciu Chromu."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Keď získate odznak, jeho identifikátor a typ aktivity, ktorou ste ho získali, sa odošlú Googlu"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Zobraziť profil"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Zobraziť skratky"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Zobraziť nastavenia nástroja Workspace"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Pracovný priestor"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Prepojené s webom {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Funkcia"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Zásobník funkcií"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Bolo požiadané o spätné volanie pri nečinnosti"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Zdroj"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Sledovanie zásobníka"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Streamované"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Uložiť"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Zahŕňa celý obsah všetkých načítaných skriptov (okrem rozšírení)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Komprimovať na formát gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Uložiť sledovanie…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Zahŕňa dostupné mapy zdrojov, ktoré môžu odhaliť autorský kód."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Rozšírené"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Ukončiť"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(anonymné)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Udalosť: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Rám"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Zmena rozloženia"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "Protokol WebSocket je zavretý"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "Protokol WebSocket je otvorený"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "Protokol WebSocket je otvorený: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Zrušenie rozhrania postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animácia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Rám animácie bol spustený"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asynchrónne"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Asynchrónna úloha"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Kód modulu vyrovnávacej pamäte"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Kód skriptu vyrovnávacej pamäte"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Modul Wasm uložený do vyrovnávacej pamäte"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Zrušiť rám animácie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Zrušiť spätné volanie pri nečinnosti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Odoslať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Kompilovať kód"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Kompilovať modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Kompilovať skript"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Kompilovaný modul Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Kompozitné vrstvy"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Vypočítať priesečníky"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Spustiť úlohu konzoly"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Čas konzoly"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CZS GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Vytvoriť pripojenie WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Dešifrovať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Dešifrovať odpoveď"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Deserializácia vyrovnávacej pamäte kódu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Zničiť WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Hodnota hash"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Odpoveď hodnoty hash"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Udalosť DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Nakresliť rám"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Kreslenie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Spätné volanie nástroja na vkladanie obsahu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Šifrovať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Šifrovať odpoveď"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Ohodnotenie modulu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Ohodnotiť skript"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Udalosť"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Časovanie udalostí"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Prostredie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Dokončiť načítavanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Spustiť spätné volanie pri nečinnosti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "Prvé vykreslenie obsahu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Prvé vykreslenie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Začiatok rámu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Začiatok rámu (hlavné vlákno)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Rám sa začal načítavať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Volanie funkcie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Udalosť GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "Grafický procesor"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Overenie pozície"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Nečinný"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Dekódovanie obrázkov"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Inštalovať časovač"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Zrušiť platnosť rozloženia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "Rám JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Vykreslenie najväčšieho prvku"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Vrstvenie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Rozloženie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Zmena rozloženia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Klaster zmien rozloženia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Načítavanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Veľké uvoľnenie pamäte"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Čet"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Malé uvoľnenie pamäte"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "V správe"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Udalosť pri načítaní"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Optimalizovať kód"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Iné"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Vykresliť"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Vykreslenie obrázka"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Nastavenie vykreslenia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Vykresľovanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Analyzovať a kompilovať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Analyzovať HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Analyzovať šablónu so štýlmi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Predbežné vykreslenie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Réžia profilovania"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Rastrovať vykreslenie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Rastrovanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Prepočítať štýl"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Prijať údaje"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Prijať odpoveď"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Prijať handshake WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Odstrániť časovač"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Vykresľovanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Požiadať o rám animácie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Požiadať o spätné volanie pri nečinnosti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Požiadať o rám hlavného vlákna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Spustenie mikroúloh"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Spustiť postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Naplánujte odoslanie správy"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Naplánovanie rozhrania postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Naplánovať prepočítanie štýlu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Skriptovanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Posúvať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Odoslať žiadosť"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Odoslať handshake WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Podpísať"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Podpísanie odpovede"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Streamuje sa úloha kompilovania"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Streamuje sa odpoveď Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Systém"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Úloha"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Bol spustený časovač"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Časová pečiatka"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Aktualizovať vrstvu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Aktualizovať strom vrstvy"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Trvanie aktivít používateľov"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Overiť"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Overiť odpoveď"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Čaká sa na sieť"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Prístup do vyrovnávacej pamäte modulu Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Vyrovnávacia pamäť modulu Wasm je neplatná"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Bude odoslaná požiadavka"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Prijať správu WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Odoslať správu WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR: načítanie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Zmena XHR readyState"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "V mape zdroja je označené ako ignorované v zozname ignorovaných"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} z {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Zakázať vyhľadávanie s rozlišovaním veľkých a malých písmen"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Zakázať vyhľadávanie a nahrádzanie"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Zakázať regulárne výrazy"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Povoliť vyhľadávanie s rozlišovaním veľkých a malých písmen"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Nájsť a nahradiť"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Povoliť regulárne výrazy"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Nájsť"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Rozlišovať malé a veľké písmená"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 zhoda"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Hľadať zhodu s celým slovom"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Nahradiť"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Zobraziť predchádzajúci výsledok"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Použiť regulárny výraz"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Zmenilo sa minimálne jedno nastavenie a uplatnenie zmeny vyžaduje opätovné načítanie"

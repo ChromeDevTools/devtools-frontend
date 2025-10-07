@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Älä sovita Chromen väriteemaan"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Ansaitse merkkejä"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Ota käyttöön paneelien vaihtaminen pikanäppäimillä Ctrl + 1–9"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Ota käyttöön paneelien vaihtaminen pikanäppäimillä ⌘ + 1–9"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Salli asetusten synkronointi"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Etsi seuraava tulos"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Edellinen paneeli"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Vastaanota merkkejä"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Lataa DevTools uudelleen"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Oikea"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Tallenna DevTools-asetukset Google-tilillesi"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Ota käyttöön Haku kirjoittaessa -ominaisuus"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "resetoi"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Lataus: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (välimuistista)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (lähde: ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Viive: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Viive: {PH1}, lataus: {PH2} (yhteensä: {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Lisää polku"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ei voi lukea tiedostoja."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Lisää kansio"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Sulje pois työtilasta"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Kartoitukset päätellään automaattisesti."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Poista"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Työtila"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Älä salli verkon ohituspyyntöjä"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "uudelleenkirjoitus"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Näytä työtilan asetukset"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(nimetön)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Työtila"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Tapahtuma: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Kehys"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Asettelun muutos"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket suljettu"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket avattu"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket avattu: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Peru postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animaatio"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Animaatiokehys käynnistetty"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asynkroninen"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Asynkroninen tehtävä"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Välimuistimoduulin koodi"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Välimuistiskriptin koodi"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Välimuistiin tallennettu Wasm-moduuli"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Peru animaatiokehys"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Peru epäaktiivisen ajan vastakutsu"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Vahvista"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Käännä koodi"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Käännä moduuli"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Käännä komentosarja"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Käännetty Wasm-moduuli"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Yhdistelmätasot"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Laske risteykset"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Suorita konsolitehtävä"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Konsoliaika"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Luo WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Pura salaus"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Pura vastauksen salaus"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Lue koodivälimuisti"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Tuhoa WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Tiivisteet"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Tiivistelmävastaus"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded-tapahtuma"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Piirrä kehys"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Piirtäminen"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Upotuksen takaisinkutsu"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Salaa"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Salaa vastaus"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Arvioi moduuli"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Arvioi komentosarja"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Tapahtuma"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Tapahtumien ajoitus"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Kokemus"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Viimeistele lataus"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Käynnistä epäaktiivisen ajan vastakutsu"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Ensimmäinen piirto"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Kehyksen alku"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Kehyksen aloitus (pääsäie)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Kehyksen lataus alkoi"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Toimintokutsu"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "GC-tapahtuma"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "Grafiikkasuoritin"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Osumatesti"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Epäaktiivinen"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Kuvan purkaminen"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Asennusajastin"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Merkitse asettelu kelpaamattomaksi"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS-kehys"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Tasojen laskenta"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Asettelu"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Asettelun muutos"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Asettelun muutosklusteri"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Ladataan"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Merkittävä GC"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Viestit"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Vähäinen GC"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "Viestissä"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Onload-tapahtuma"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Optimoi koodi"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Muu"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Piirtäminen"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Maalaa kuva"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Maalauskokoonpano"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Piirto"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Jäsennys ja kääntäminen"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "HTML:n jäsennys"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Jäsennä tyyliarkki"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Esimaalaus"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Profiloinnin enimmäisarvo"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Rasteroi piirtäminen"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Rasterointi"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Laske tyyli uudelleen"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Vastaanota dataa"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Vastaanota vastaus"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Vastaanota WebSocket-kättely"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Poista ajastin"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Renderöinti"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Pyynnön animaatiokehys"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Pyynnön epäaktiivisen ajan vastakutsu"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Pyydä pääsäikeen kehystä"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Suorita Microtask-tehtävät"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Käynnistä postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Ajoita postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Ajoita postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Ajasta tyylin uudelleenlaskenta"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Komentokielinen ohjelmointi"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Vieritys"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Lähetä pyyntö"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Lähetä WebSocket-kättely"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Allekirjoitus"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Allekirjoita vastaus"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Striimauksen kääntämistehtävä"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Striimauksen Wasm-vastaus"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Järjestelmä"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Tehtävä"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Ajastin käynnistetty"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Aikaleima"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Päivitä taso"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Päivitä tasopuu"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Käyttäjien ajankäyttö"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Vahvista"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Vahvista vastaus"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Odotetaan verkkoyhteyttä"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Wasm-moduulin välimuistiosuma"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Virheellinen Wasm-moduulin välimuisti"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Lähettää pyynnön"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Vastaanota WebSocket-viesti"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Lähetä WebSocket-viesti"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Lataus: XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Muutos: XHR readyState"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animaatio"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC:tä käyttävät sivut eivät voi käyttää siirtymisvälimuistia."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Siirtymisvälimuisti on poistettu käytöstä, koska WebRTC:tä on käytetty."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebSharea käyttävät sivut eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocketia käyttävät sivut eivät voi käyttää siirtymisvälimuistia."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Siirtymisvälimuisti on poistettu käytöstä, koska WebSocketia on käytetty."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransportia käyttävät sivut eivät voi käyttää siirtymisvälimuistia."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Siirtymisvälimuisti on poistettu käytöstä, koska WebTransportia on käytetty."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR:ää käyttävät sivut eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
@@ -4710,7 +5085,7 @@
     "message": "(läpinäkymätön)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Alkuperä"
+    "message": "Kehyksen alkuperä"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "On pysyvä"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Näytä muutokset"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Olet ansainnut merkin: {PH1}. Se on lisätty kehittäjäprofiiliisi."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Sulje"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Luo profiili"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Asetusten muuttaminen"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Laita merkit päälle"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Muistuta myöhemmin"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Ansaitsit merkin ({PH1}) tästä: {PH2}. Luo profiili, niin voit lunastaa merkkisi."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Ansaitsit merkin ({PH1}) tästä: {PH2}. Laita merkit päälle, niin voit lunastaa sen."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Näytä profiili"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Peru"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Huomioitavaa"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Peru"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Sisältökäytäntö"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Suunniteltu menestykseen"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Kehitä taitojasi, luo tekoälyn avulla ja ansaitse merkkejä, joita voit esitellä kehittäjäprofiilissasi"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google Developer Programin rekisteröitymisen valintaikkuna"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Pidä minut ajan tasalla"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Uusimmat DevTools-ominaisuudet, tapahtumakutsut ja räätälöidyt vinkit suoraan postilaatikkoosi"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Lue lisää"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Lue lisää Google Developer Programista"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Tietosuojakäytäntö"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Rekisteröidy"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Google Developer Program ‐profiilia ei voitu luoda. Yritä myöhemmin uudelleen."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Räätälöi profiiliasi"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Google-tililläsi olevaa nimeä ja kiinnostuksen kohteitasi käytetään Googlen kehittäjäprofiilissasi. Nimesi voi näkyä toimintasi yhteydessä, ja sen voi vaihtaa milloin tahansa."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Luomalla kehittäjäprofiilin hyväksyt {PH1}. Googlen {PH2} ja {PH3} ovat voimassa, kun käytät tätä palvelua."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Käyttöehdot"
   },
   "panels/common/common.ts | allow": {
     "message": "Salli"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Poista vierityksen peittokuva käytöstä"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Poista @starting-style-tila käytöstä"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Jaa kohteet tasaisesti"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Ota vierityksen peittokuva käyttöön"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Ota @starting-style-tila käyttöön"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Laajenna toistuvasti"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Lähde: Signed HTTP Exchange, resurssin koko: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Lähde: Web Bundle, resurssin koko: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Pyynnön tilaa ei voi näyttää täällä, koska sen määrittänyt sivu tyhjeni pyynnön ollessa kesken. Voit ottaa kuvakaappauksen verkon lokista ja nähdä kaikki pyynnön tiedot tällä: chrome://net-export."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle ‑virhe"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Toimitettu verkkopaketista"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Yhteyden tiedot"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Osoiteavaruuden aloittaja"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Liittyy mainokseen"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Viive"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(lähde: Signed Exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(lähde: Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Yleistä"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Käyttääkseen tätä toisen sivuston resurssia palvelin voi lieventää vastauksen otsikkoa, joka kuuluu eri lähteestä tulevan resurssin käytäntöön:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Materiaalipaketti"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Lisää verkkopyynnön estomalli"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Todennustunnusten enimmäismäärä on saavutettu. IP-suojaus keskeytetään."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP-suojaus on käytössä ja aktiivinen."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "DevTools ohittaa IP-suojauksen."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "IP-suojausominaisuus ei ole käytössä."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Masked Domain List ‑ominaisuus ei ole käytössä."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Masked Domain List on tyhjä."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP-suojaus ei ole käytettävissä."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Ohita IP-suojaus tilapäisesti testausta varten"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Ohita IP-suojaus"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP-suojauksen välityspalvelimen tila"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "Tunnus"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Tila"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Tuntematon tila"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL-osoite"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Epävakaat kokeilut"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (vuosittain)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Lisää kansio"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (kuukausittainen)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Sulje pois työtilasta"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (vuosittainen)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Kartoitukset päätellään automaattisesti."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (kuukausittain)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Poista"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Työtila"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} lähetetään Googlelle)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Standard-paketti"
@@ -12678,10 +13161,10 @@
     "message": "Et ole kirjautuneena Chromeen."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Tämän asetuksen valinta edellyttää, että otat asetusten synkronoinnin käyttöön Chromessa."
+    "message": "Sinun on ensin otettava Chrome-asetusten tallentaminen käyttöön Google-tilillä."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Asiaankuuluva data lähetetään Googlelle)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Olennainen data"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Rekisteröidy"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Tämän asetuksen valinta edellyttää, että otat Chromen synkronoinnin käyttöön."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Kun täytät merkin ehdot, merkin tunniste ja sen ansaitsemiseen vaadittu toiminta lähetetään Googlelle"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Näytä profiili"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Näytä pikakuvakkeet"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Näytä työtilan asetukset"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Työtila"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Linkitetty kohteeseen {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Käyttötarkoitus"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Funktiopino"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Epäaktiivisen ajan vastakutsu pyydetty"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Lähde"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Jäljityslista"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Suoratoistettu"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Tallenna"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Sisältää kaiken ladattujen skriptien sisällön (paitsi laajennukset)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Pakkaa gzipillä"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Tallenna jälki…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Sisältää saatavilla olevat lähdekartat, jotka voivat paljastaa kirjoitetun koodin."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Lisäasetukset"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Lopeta"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(nimetön)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Tapahtuma: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Kehys"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Asettelun muutos"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket suljettu"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket avattu"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket avattu: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Peru postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animaatio"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Animaatiokehys käynnistetty"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asynkroninen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Asynkroninen tehtävä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Välimuistimoduulin koodi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Välimuistiskriptin koodi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Välimuistiin tallennettu Wasm-moduuli"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Peru animaatiokehys"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Peru epäaktiivisen ajan vastakutsu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Vahvista"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Käännä koodi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Käännä moduuli"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Käännä komentosarja"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Käännetty Wasm-moduuli"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Yhdistelmätasot"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Laske risteykset"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Suorita konsolitehtävä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Konsoliaika"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Luo WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Pura salaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Pura vastauksen salaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Lue koodivälimuisti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Tuhoa WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Tiivisteet"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Tiivistelmävastaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded-tapahtuma"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Piirrä kehys"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Piirtäminen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Upotuksen takaisinkutsu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Salaa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Salaa vastaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Arvioi moduuli"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Arvioi komentosarja"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Tapahtuma"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Tapahtumien ajoitus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Kokemus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Viimeistele lataus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Käynnistä epäaktiivisen ajan vastakutsu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Ensimmäinen piirto"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Kehyksen alku"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Kehyksen aloitus (pääsäie)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Kehyksen lataus alkoi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Toimintokutsu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "GC-tapahtuma"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "Grafiikkasuoritin"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Osumatesti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Epäaktiivinen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Kuvan purkaminen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Asennusajastin"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Merkitse asettelu kelpaamattomaksi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS-kehys"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Tasojen laskenta"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Asettelu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Asettelun muutos"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Asettelun muutosklusteri"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Ladataan"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Merkittävä GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Viestit"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Vähäinen GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "Viestissä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Onload-tapahtuma"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Optimoi koodi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Muu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Piirtäminen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Maalaa kuva"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Maalauskokoonpano"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Piirto"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Jäsennys ja kääntäminen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "HTML:n jäsennys"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Jäsennä tyyliarkki"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Esimaalaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Profiloinnin enimmäisarvo"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Rasteroi piirtäminen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Rasterointi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Laske tyyli uudelleen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Vastaanota dataa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Vastaanota vastaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Vastaanota WebSocket-kättely"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Poista ajastin"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Renderöinti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Pyynnön animaatiokehys"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Pyynnön epäaktiivisen ajan vastakutsu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Pyydä pääsäikeen kehystä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Suorita Microtask-tehtävät"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Käynnistä postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Ajoita postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Ajoita postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Ajasta tyylin uudelleenlaskenta"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Komentokielinen ohjelmointi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Vieritys"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Lähetä pyyntö"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Lähetä WebSocket-kättely"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Allekirjoitus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Allekirjoita vastaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Striimauksen kääntämistehtävä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Striimauksen Wasm-vastaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Järjestelmä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Tehtävä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Ajastin käynnistetty"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Aikaleima"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Päivitä taso"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Päivitä tasopuu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Käyttäjien ajankäyttö"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Vahvista"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Vahvista vastaus"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Odotetaan verkkoyhteyttä"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm-moduulin välimuistiosuma"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Virheellinen Wasm-moduulin välimuisti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Lähettää pyynnön"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Vastaanota WebSocket-viesti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Lähetä WebSocket-viesti"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Lataus: XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Muutos: XHR readyState"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Lähdekartan ignoreList-ohituslistalla"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Poista käytöstä haku, jolla kirjainkoolla on väliä"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Etsi ja korvaa ‐toiminnon poistaminen käytöstä"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Poista säännölliset lausekkeet käytöstä"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Ota käyttöön haku kirjainkoolla"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Etsi ja korvaa"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Ota säännölliset lausekkeet käyttöön"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Hae"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Ota kirjainkoko huomioon"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 tulos"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Ota koko sana huomioon"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Korvaa"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Näytä edellinen tulos"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Käytä säännöllistä lauseketta"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ainakin yhtä asetusta on muutettu. Voimaantulo edellyttää päivitystä."

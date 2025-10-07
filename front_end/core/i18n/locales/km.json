@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "កុំផ្គូផ្គង​ផ្ទៃពណ៌ Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "ទទួលបាន​គ្រឿងសម្គាល់"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "បើក​ផ្លូវកាត់ Ctrl + 1-9 ដើម្បី​ប្ដូរ​ផ្ទាំង"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "បើក​ផ្លូវកាត់ ⌘ + 1-9 ដើម្បី​ប្ដូរ​ផ្ទាំង"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "បើកសមកាលកម្ម​ការកំណត់"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "ស្វែងរក​លទ្ធផល​បន្ទាប់"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "ផ្ទាំង​មុន"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "ទទួល​គ្រឿងសម្គាល់"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "ផ្ទុក DevTools ឡើងវិញ"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "ស្ដាំ"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "រក្សាទុក​ការ​កំណត់DevToolsទៅក្នុង​គណនី Google របស់អ្នក"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "បើក​ការស្វែងរក​ស្របពេលអ្នកវាយបញ្ចូល"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "កំណត់​ឡើងវិញ"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "ការ​ទាញយក {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (ពីឃ្លាំងបម្រុង)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (ពី ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "ការ​ពន្យារ {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "ការ​ពន្យារ {PH1}, ការទាញ​យក {PH2} (សរុប {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "បញ្ចូលផ្លូវ"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem មិនអាច​អាន​ឯកសារ​បានទេ​។"
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "បញ្ចូល​ថត"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "មិនរួមបញ្ចូល​ក្នុងលំហការងារទេ"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "ការ​បង្កើត​ផែនទីត្រូវបានសន្និដ្ឋានដោយស្វ័យប្រវត្តិ។"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "លុប"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "លំហ​ការងារ\n"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "បិទ​សំណើលុបពីលើ​បណ្ដាញ"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "សរសេរឡើងវិញ"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "បង្ហាញ​ការកំណត់ Workspace"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(អនាមិក)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "លំហ​ការងារ\n"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "ព្រឹត្តិការណ៍៖ {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "ហ្វ្រេម"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "ការប្ដូរ​ប្លង់"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "បានបិទ WebSocket"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "បានបើក WebSocket"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "បានបើក WebSocket៖ {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "បោះបង់ postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "រូបមានចលនា"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "បានបើកដំណើរការ​ហ្វ្រេម​រូបមានចលនា"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "អសម​កាលកម្ម"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "កិច្ចការអសមកាល"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "កូដម៉ូឌុល​នៃឃ្លាំងបម្រុង"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "កូដស្គ្រីប​នៃឃ្លាំងបម្រុង"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "ម៉ូឌុល Wasm ដែលបានទុកក្នុងឃ្លាំង​បម្រុង"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "បោះបង់​ហ្វ្រេម​រូបមានចលនា"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "បោះបង់​ការហៅត្រឡប់វិញ​ដែលអសកម្ម"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "ការប្រតិបត្តិ"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "ចងក្រង​កូដ"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "ចងក្រង​ម៉ូឌុល"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "ចងក្រង​ស្គ្រីប"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "ម៉ូឌុល Wasm ដែលបាន​ចងក្រង"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "ស្រទាប់​សមាសភាគ"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "គណនាចំណុចប្រសព្វ"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "ដំណើរការ​កិច្ចការ​កុងសូល"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "រយៈពេល​ក្នុងកុងសូល"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "បង្កើត WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "ឌិគ្រីប"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "ឌិគ្រីប​ការឆ្លើយតប"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "បញ្ច្រាស​ស៊េរីកម្ម​ឃ្លាំងបម្រុង​កូដ"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "បំផ្លាញ WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "ខ្លឹមសារ​សង្ខេប"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "ការឆ្លើយតប​នឹងការសង្ខេប"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "ព្រឹត្តិការណ៍ DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "គូរហ្វ្រេម"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "គំនូរ"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "ការហៅ​កម្មវិធីបង្កប់​ត្រឡប់វិញ"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "អ៊ីនគ្រីប"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "អ៊ីនគ្រីប​ការឆ្លើយតប"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "វាយតម្លៃ​ម៉ូឌុល"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "វាយតម្លៃ​ស្គ្រីប"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "ព្រឹត្តិការណ៍"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "ការកំណត់ពេលព្រឹត្តិការណ៍"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "បទពិសោធន៍"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "បញ្ចប់​ការផ្ទុក"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "បើក​ដំណើរការ​ការហៅត្រឡប់វិញ​ដែលអសកម្ម"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "ការគូរ​លើកដំបូង"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "ការចាប់ផ្ដើមហ្វ្រេម"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "ការចាប់ផ្ដើម​ហ្វ្រេម (thread ចម្បង)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "ស៊ុម​បានចាប់ផ្ដើម​ផ្ទុក"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "ការហៅ​មុខងារ"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "ព្រឹត្តិការណ៍ GC"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "តេស្ត​ដៅ"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "អសកម្ម"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "ការឌិកូដ​រូបភាព"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "ដំឡើង​កម្មវិធី​កំណត់ម៉ោង"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "បញ្ឈប់​សុពលភាព​ប្លង់"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "ស៊ុម JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "ការបង្កើតជាស្រទាប់"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "ប្លង់"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "ការប្ដូរ​ប្លង់"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "បណ្ដុំនៃការប្ដូរប្លង់"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "កំពុងផ្ទុក"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "GC ច្រើន"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "ការផ្ញើ​សារ"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "GC តិចតួច"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "នៅលើ​សារ"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "ព្រឹត្តិការណ៍​ផ្ទុក"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "បង្កើន​ប្រសិទ្ធភាព​កូដ"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "​ផ្សេងៗ​"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "ការគូរ"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "គូររូបភាព"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "ការរៀបចំ​ការគូរ"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "កំពុងគូរ"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "ញែក និង​ចងក្រង"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "ញែក HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "ញែក​បញ្ជី​រចនាបថ"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "មុនគូរ"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "រយៈពេលចំណាយបន្ថែមក្នុងការពិនិត្យកម្រងព័ត៌មាន"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "បំប្លែង​ការគូរ​ទៅជា​ភីកសែល"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "ការបំប្លែង​ទៅជា​ភីកសែល"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "គណនារចនាបថឡើងវិញ"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "ទទួល​ទិន្នន័យ"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "ទទួល​ការឆ្លើយតប"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "ទទួល​ការចាប់ដៃ WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "ដក​កម្មវិធី​កំណត់​ម៉ោងចេញ"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "កំពុងបំប្លែង"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "ស្នើសុំហ្វ្រេម​រូបមានចលនា"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "ស្នើសុំ​ការហៅត្រឡប់វិញដែល​អសកម្ម"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "ស្នើសុំ​ហ្វ្រេម thread ចម្បង"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "ដំណើរការ​កិច្ចការ​ខ្នាតតូច"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "ដំណើរការ postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "កំណត់ពេល postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "កំណត់ពេល postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "កំណត់ពេល​គណនា​រចនាបថឡើងវិញ"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "ការសរសេរ​ស្គ្រីប"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "រំកិល"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "ផ្ញើ​សំណើ"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "ផ្ញើការចាប់ដៃ WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "ចុះហត្ថលេខា"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "ចុះហត្ថលេខា​លើការឆ្លើយតប"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "កិច្ចការ​ចងក្រងក្នុងពេលបញ្ជូន"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "ការឆ្លើយតប Wasm ក្នុងពេលបញ្ជូន"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "ប្រព័ន្ធ"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "កិច្ចការ"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "បានបើក​ដំណើរការ​កម្មវិធី​កំណត់ម៉ោង"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "ពេលវេលា"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "ធ្វើបច្ចុប្បន្នភាព​ស្រទាប់"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "ធ្វើបច្ចុប្បន្នភាព​មែកធាង​នៃស្រទាប់"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "ការកំណត់ម៉ោង​អ្នកប្រើប្រាស់"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "ផ្ទៀងផ្ទាត់"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "ផ្ទៀងផ្ទាត់​ការឆ្លើយតប"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "កំពុងរង់ចាំ​បណ្ដាញ"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "ការរកឃើញខ្លឹមសារក្នុងឃ្លាំងបម្រុង​នៃម៉ូឌុល Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "ឃ្លាំងបម្រុង​ម៉ូឌុល Wasm មិនត្រឹមត្រូវ"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "នឹងផ្ញើសំណើ"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "ទទួល​សារ WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "ផ្ញើ​សារ WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "ការផ្ទុក XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "ការប្ដូរ XHR readyState"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "រូបមានចលនា"
@@ -2184,7 +2550,7 @@
     "message": "ចំណាយលើផ្ទាំងជ្រើសរើស CSS"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
-    "message": "រយៈពេល​ដែលបាន​ចំណាយ​ច្រើនបំផុតសម្រាប់សេឡិកទ័រ"
+    "message": "រយៈពេល​ដែលបាន​ចំណាយ​ច្រើនបំផុត​សម្រាប់​សេឡិកទ័រ"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorMatchAttempt": {
     "message": "ការព្យាយាម​ផ្គូផ្គង​សេឡិកទ័រ​ច្រើនដងបំផុត"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "មិនអាចទុកទំព័រដែលមាន WebRTC នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង​ត្រូវបានបិទ ដោយសារ WebRTC ត្រូវបានប្រើ។"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebShare នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "មិនអាចទុកទំព័រដែលមាន WebSocket នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង​ត្រូវបានបិទ ដោយសារ WebSocket ត្រូវបានប្រើ។"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "មិនអាចទុកទំព័រដែលមាន WebTransport នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង​ត្រូវបានបិទ ដោយសារ WebTransport ត្រូវបានប្រើ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebXR នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
@@ -4710,7 +5085,7 @@
     "message": "(ស្រអាប់)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "ប្រភពដើម"
+    "message": "Frame origin"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "មានលក្ខណៈជាប់លាប់"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "បង្ហាញ​ការផ្លាស់ប្ដូរ"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "អ្នក​បានទទួល​គ្រឿងសម្គាល់ {PH1} ហើយ! វាត្រូវបាន​បញ្ចូល​ទៅ​កម្រងព័ត៌មាន​អ្នក​អភិវឌ្ឍន៍​របស់អ្នក។"
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "បិទ"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "បង្កើត​កម្រង​ព័ត៌មាន"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "គ្រប់គ្រង​ការកំណត់"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "បើក​គ្រឿងសម្គាល់"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "រំលឹក​ខ្ញុំ​ពេលក្រោយ"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "អ្នក​បានទទួល​គ្រឿងសម្គាល់ {PH1} សម្រាប់ {PH2} ហើយ! សូម​បង្កើត​កម្រងព័ត៌មាន ដើម្បី​អះអាងយក​គ្រឿងសម្គាល់​របស់អ្នក។"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "អ្នក​បានទទួល​គ្រឿងសម្គាល់ {PH1} សម្រាប់ {PH2} ហើយ! សូមបើក​គ្រឿងសម្គាល់ ដើម្បី​អះអាងយក​វា។"
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "មើលកម្រងព័ត៌មាន"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "បោះបង់"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "ចំណុច​ដែលត្រូវ​ពិចារណា"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "បោះបង់"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "គោលការណ៍​ស្ដីពី​ខ្លឹមសារ"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "បាន​រចនាឡើង​សម្រាប់​ភាពជោគជ័យ​របស់អ្នក"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "បង្កើន​ជំនាញ​របស់អ្នក, បង្កើត​ដោយប្រើ AI និង​ទទួលបាន​គ្រឿងសម្គាល់​ដែលអ្នក​អាចតាំងរំលេច​នៅក្នុង​កម្រងព័ត៌មាន​អ្នក​អភិវឌ្ឍន៍​របស់អ្នក"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "ប្រអប់​ចុះ​ឈ្មោះ​ចូលរួមកម្មវិធីអ្នក​អភិវឌ្ឍន៍ Google"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "បន្តផ្ដល់ព័ត៌មានថ្មីៗមកខ្ញុំ"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "ព័ត៌មាន​ស៊ីជម្រៅ​ដែលមាន​លក្ខណៈ​ផ្ទាល់ខ្លួន ការអញ្ជើញ​ឱ្យចូលរួម​ព្រឹត្តិការណ៍ និង​មុខងារ​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ចុងក្រោយ​បំផុត​ចូលក្នុង​ប្រអប់សារ​របស់អ្នក​ដោយផ្ទាល់"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "ស្វែងយល់បន្ថែម​អំពី​កម្មវិធី​អ្នក​អភិវឌ្ឍន៍ Google"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "គោលការណ៍ឯកជនភាព"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "ចុះឈ្មោះ"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "មិនអាច​បង្កើត​កម្រងព័ត៌មាន​កម្មវិធី​អ្នក​អភិវឌ្ឍន៍ Google របស់អ្នក​បានទេ។ សូមព្យាយាមម្ដងទៀតនៅពេលក្រោយ។"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "កំណត់​កម្រងព័ត៌មាន​ឱ្យស្រប​នឹងអ្នក"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "ឈ្មោះ​នៅលើ​គណនី Google របស់អ្នក និង​ចំណាប់អារម្មណ៍​របស់អ្នក​នឹងត្រូវ​បានប្រើ​នៅក្នុង​កម្រងព័ត៌មាន​អ្នក​អភិវឌ្ឍន៍ Google របស់អ្នក។ ឈ្មោះ​របស់អ្នក​អាចបង្ហាញ​នៅកន្លែង​ដែលអ្នក​ចូលរួមចំណែក ហើយ​អាចប្ដូរ​វានៅពេលណាក៏បាន។"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "តាមរយៈ​ការបង្កើត​កម្រងព័ត៌មាន​អ្នក​អភិវឌ្ឍន៍ មានន័យថា​អ្នកយល់ព្រម​តាម{PH1}។ {PH2} និង{PH3}របស់ Google ត្រូវបាន​អនុវត្ត​ចំពោះ​ការប្រើប្រាស់​សេវាកម្មនេះ​របស់អ្នក។"
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "លក្ខខណ្ឌ​ប្រើប្រាស់"
   },
   "panels/common/common.ts | allow": {
     "message": "អនុញ្ញាត"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "បិទការ​ត្រួត​គ្នានៃគម្លាតរំកិល"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "បិទ​មុខងារ @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "ចែកចាយ​ធាតុ​ស្មើគ្នា"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "បើកការ​ត្រួត​គ្នានៃកម្រិតរំកិល"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "បើក​មុខងារ @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "ពង្រីកហើយ​ពង្រីក​ទៀត"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "បានផ្ដល់ជូនពីការផ្លាស់ប្ដូរ HTTP ដែលមានហត្ថលេខា, ទំហំធនធាន៖ {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "ត្រូវបាន​ផ្ដល់ពី Web Bundle, ទំហំ​ធនធាន៖ {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "មិនអាច​បង្ហាញស្ថានភាព​សំណើ​នៅទីនេះបានទេ ដោយសារ​ទំព័រដែលបាន​ចេញផ្សាយវា​បានឈប់ផ្ទុក នៅពេលសំណើនេះ​ស្ថិតក្នុង​ការផ្សាយ​ពាណិជ្ជកម្មដែលមានគម្លាតពេលផ្សាយ។ អ្នកអាចប្រើ chrome://net-export ដើម្បីថត​កំណត់ហេតុ​បណ្ដាញ និងមើល​ព័ត៌មានលម្អិត​អំពីសំណើ​ទាំងអស់។"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "មានបញ្ហា Web Bundle"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "បានផ្ដល់ជូនពី​កញ្ចប់បណ្ដាញ"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "ព័ត៌មាន​អំពី​ការតភ្ជាប់"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "ចន្លោះអាសយដ្ឋាននៃសមាសធាតុចាប់ផ្ដើម"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "គឺ​ពាក់ព័ន្ធនឹង​ការផ្សាយពាណិជ្ជកម្ម"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "ការ​ពន្យារ"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(ពីការដោះដូរដែលមានសញ្ញា)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(ពីកញ្ចប់បណ្ដាញ)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ទូទៅ"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "ដើម្បីប្រើ​ធនធាននេះ​ពីគេហទំព័រផ្សេង ម៉ាស៊ីនមេអាច​សម្រាក​ផ្នែកក្បាលនៃការឆ្លើយតបរបស់គោលការណ៍ស្ដីពីធនធានដែលមានប្រភពដើមផ្សេង៖"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "ធនធាន​ជាកញ្ចប់"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "បញ្ចូល​លំនាំទប់ស្កាត់​សំណើ​បណ្ដាញ"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "វីដេអូ"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "បានឈានដល់​ដែនកំណត់​សម្រាប់​ថូខិន​ផ្ទៀងផ្ទាត់​ហើយ។ ការការពារ IP នឹង​ត្រូវបាន​ផ្អាក។"
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "ការការពារ IP ត្រូវបាន​បើក និង​កំពុង​ដំណើរការ។"
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "ការការពារ IP កំពុង​ត្រូវបាន​រំលងដោយ​ឧបករណ៍អ្នកអភិវឌ្ឍន៍។"
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "មុខងារ​ការពារ IP មិនត្រូវបាន​បើកទេ។"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "មុខងារ​បញ្ជី​ដូមែន​ដែលបាន​បិទបាំង​មិនត្រូវបាន​បើកទេ។"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "បញ្ជី​ដូមែន​ដែលបាន​បិទបាំង​មិនត្រូវបាន​បំពេញដោយស្វ័យប្រវត្តិទេ។"
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "មិនអាចប្រើ​ការការពារ IP បានទេ។"
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "រំលង​ការការពារ IP ជាបណ្ដោះអាសន្ន​សម្រាប់​ការធ្វើតេស្ត"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "រំលង​ការការពារ IP"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "ស្ថានភាព​ប្រូកស៊ី​ការពារ IP"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "លេខកូដសម្គាល់"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "ស្ថានភាព"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "មិនដឹង​ពីស្ថានភាព"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "ការពិសោធ​ដែល​មិនមាន​ស្ថិរភាព"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (ប្រចាំឆ្នាំ)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "បញ្ចូល​ថត"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (ប្រចាំខែ)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "មិនរួមបញ្ចូល​ក្នុងលំហការងារទេ"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (ប្រចាំឆ្នាំ)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "ការ​បង្កើត​ផែនទីត្រូវបានសន្និដ្ឋានដោយស្វ័យប្រវត្តិ។"
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (ប្រចាំខែ)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "លុប"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "លំហ​ការងារ\n"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} ត្រូវបាន​បញ្ជូនទៅ Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "គម្រោង​ស្តង់ដា"
@@ -12678,10 +13161,10 @@
     "message": "អ្នក​មិនបាន​ចូលគណនី Chrome ទេ។"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "ដើម្បីបើកការកំណត់នេះ អ្នកត្រូវតែបើកការធ្វើសមកាលកម្មការកំណត់នៅក្នុង Chrome ជាមុនសិន។"
+    "message": "អ្នកត្រូវ​បើក​ការរក្សាទុក​ការ​កំណត់ Chrome នៅក្នុង​គណនី Google របស់អ្នក​ជាមុនសិន។"
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(ទិន្នន័យ​ដែល​ពាក់ព័ន្ធ​ត្រូវបាន​បញ្ជូនទៅ Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "ទិន្នន័យ​ដែល​ពាក់ព័ន្ធ"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "ចុះឈ្មោះ"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "ដើម្បីបើកការកំណត់នេះ អ្នកត្រូវតែបើក Chrome សមកាលកម្ម។"
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "នៅពេល​អ្នក​មានសិទ្ធិ​ទទួលបាន​គ្រឿងសម្គាល់ លេខកូដសម្គាល់​គ្រឿងសម្គាល់​នោះ និង​ប្រភេទ​សកម្មភាព​ដែលអ្នក​បានធ្វើ​ដើម្បី​ទទួលបានវា ត្រូវបាន​បញ្ជូនទៅ Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "មើលកម្រងព័ត៌មាន"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "បង្ហាញផ្លូវកាត់"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "បង្ហាញ​ការកំណត់ Workspace"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "លំហ​ការងារ\n"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "បាន​ភ្ជាប់​ទៅ {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "មុខងារ"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "គំនរ​មុខងារ"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "បានស្នើ​ការហៅ​ត្រឡប់វិញ​ដែលអសកម្ម"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "ប្រភព"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "ដានបង្គរ"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "បានផ្សាយ"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "រក្សាទុក"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "រួមបញ្ចូល​ខ្លឹមសារ​ពេញលេញ​នៃស្គ្រីប​ទាំងអស់​ដែលបាន​ផ្ទុក (លើកលែងតែ​កម្មវិធីបន្ថែម)។"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "បង្ហាប់​ដោយប្រើ gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "រក្សាទុក​ដាន…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "រួមបញ្ចូល​ផែនទី​ប្រភព​ដែលមាន ដែលអាច​បញ្ចេញ​កូដ​ដែលត្រូវបាន​សរសេរ។"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "កម្រិតខ្ពស់"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "បញ្ឈប់"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(អនាមិក)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "ព្រឹត្តិការណ៍៖ {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "ហ្វ្រេម"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "ការប្ដូរ​ប្លង់"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "បានបិទ WebSocket"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "បានបើក WebSocket"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "បានបើក WebSocket៖ {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "បោះបង់ postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "រូបមានចលនា"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "បានបើកដំណើរការ​ហ្វ្រេម​រូបមានចលនា"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "អសម​កាលកម្ម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "កិច្ចការអសមកាល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "កូដម៉ូឌុល​នៃឃ្លាំងបម្រុង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "កូដស្គ្រីប​នៃឃ្លាំងបម្រុង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "ម៉ូឌុល Wasm ដែលបានទុកក្នុងឃ្លាំង​បម្រុង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "បោះបង់​ហ្វ្រេម​រូបមានចលនា"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "បោះបង់​ការហៅត្រឡប់វិញ​ដែលអសកម្ម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "ការប្រតិបត្តិ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "ចងក្រង​កូដ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "ចងក្រង​ម៉ូឌុល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "ចងក្រង​ស្គ្រីប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "ម៉ូឌុល Wasm ដែលបាន​ចងក្រង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "ស្រទាប់​សមាសភាគ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "គណនាចំណុចប្រសព្វ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "ដំណើរការ​កិច្ចការ​កុងសូល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "រយៈពេល​ក្នុងកុងសូល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "បង្កើត WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "ឌិគ្រីប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "ឌិគ្រីប​ការឆ្លើយតប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "បញ្ច្រាស​ស៊េរីកម្ម​ឃ្លាំងបម្រុង​កូដ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "បំផ្លាញ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "ខ្លឹមសារ​សង្ខេប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "ការឆ្លើយតប​នឹងការសង្ខេប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "ព្រឹត្តិការណ៍ DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "គូរហ្វ្រេម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "គំនូរ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "ការហៅ​កម្មវិធីបង្កប់​ត្រឡប់វិញ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "អ៊ីនគ្រីប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "អ៊ីនគ្រីប​ការឆ្លើយតប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "វាយតម្លៃ​ម៉ូឌុល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "វាយតម្លៃ​ស្គ្រីប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "ព្រឹត្តិការណ៍"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "ការកំណត់ពេលព្រឹត្តិការណ៍"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "បទពិសោធន៍"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "បញ្ចប់​ការផ្ទុក"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "បើក​ដំណើរការ​ការហៅត្រឡប់វិញ​ដែលអសកម្ម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "ការគូរ​លើកដំបូង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "ការចាប់ផ្ដើមហ្វ្រេម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "ការចាប់ផ្ដើម​ហ្វ្រេម (thread ចម្បង)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "ស៊ុម​បានចាប់ផ្ដើម​ផ្ទុក"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "ការហៅ​មុខងារ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "ព្រឹត្តិការណ៍ GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "តេស្ត​ដៅ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "អសកម្ម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "ការឌិកូដ​រូបភាព"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "ដំឡើង​កម្មវិធី​កំណត់ម៉ោង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "បញ្ឈប់​សុពលភាព​ប្លង់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "ស៊ុម JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "ការបង្កើតជាស្រទាប់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "ប្លង់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "ការប្ដូរ​ប្លង់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "បណ្ដុំនៃការប្ដូរប្លង់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "កំពុងផ្ទុក"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "GC ច្រើន"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "ការផ្ញើ​សារ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "GC តិចតួច"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "នៅលើ​សារ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "ព្រឹត្តិការណ៍​ផ្ទុក"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "បង្កើន​ប្រសិទ្ធភាព​កូដ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "​ផ្សេងៗ​"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "ការគូរ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "គូររូបភាព"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "ការរៀបចំ​ការគូរ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "កំពុងគូរ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "ញែក និង​ចងក្រង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "ញែក HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "ញែក​បញ្ជី​រចនាបថ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "មុនគូរ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "រយៈពេលចំណាយបន្ថែមក្នុងការពិនិត្យកម្រងព័ត៌មាន"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "បំប្លែង​ការគូរ​ទៅជា​ភីកសែល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "ការបំប្លែង​ទៅជា​ភីកសែល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "គណនារចនាបថឡើងវិញ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "ទទួល​ទិន្នន័យ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "ទទួល​ការឆ្លើយតប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "ទទួល​ការចាប់ដៃ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "ដក​កម្មវិធី​កំណត់​ម៉ោងចេញ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "កំពុងបំប្លែង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "ស្នើសុំហ្វ្រេម​រូបមានចលនា"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "ស្នើសុំ​ការហៅត្រឡប់វិញដែល​អសកម្ម"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "ស្នើសុំ​ហ្វ្រេម thread ចម្បង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "ដំណើរការ​កិច្ចការ​ខ្នាតតូច"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "ដំណើរការ postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "កំណត់ពេល postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "កំណត់ពេល postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "កំណត់ពេល​គណនា​រចនាបថឡើងវិញ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "ការសរសេរ​ស្គ្រីប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "រំកិល"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "ផ្ញើ​សំណើ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "ផ្ញើការចាប់ដៃ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "ចុះហត្ថលេខា"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "ចុះហត្ថលេខា​លើការឆ្លើយតប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "កិច្ចការ​ចងក្រងក្នុងពេលបញ្ជូន"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "ការឆ្លើយតប Wasm ក្នុងពេលបញ្ជូន"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "ប្រព័ន្ធ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "កិច្ចការ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "បានបើក​ដំណើរការ​កម្មវិធី​កំណត់ម៉ោង"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "ពេលវេលា"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "ធ្វើបច្ចុប្បន្នភាព​ស្រទាប់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "ធ្វើបច្ចុប្បន្នភាព​មែកធាង​នៃស្រទាប់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "ការកំណត់ម៉ោង​អ្នកប្រើប្រាស់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "ផ្ទៀងផ្ទាត់"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "ផ្ទៀងផ្ទាត់​ការឆ្លើយតប"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "កំពុងរង់ចាំ​បណ្ដាញ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "ការរកឃើញខ្លឹមសារក្នុងឃ្លាំងបម្រុង​នៃម៉ូឌុល Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "ឃ្លាំងបម្រុង​ម៉ូឌុល Wasm មិនត្រឹមត្រូវ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "នឹងផ្ញើសំណើ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "ទទួល​សារ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "ផ្ញើ​សារ WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "ការផ្ទុក XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "ការប្ដូរ XHR readyState"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "បានសម្គាល់​ដោយ​បញ្ជី​មិនអើពើ​នៅក្នុង​ផែនទី​ប្រភព"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} នៃ {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "បិទការស្វែងរកដោយបែងចែកអក្សរធំតូច"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "បិទ \"រក និងជំនួស\""
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "បិទកន្សោម​ធម្មតា"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "បើកការស្វែងរកដោយបែងចែកអក្សរធំតូច"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "រក និង​ជំនួស"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "បើកកន្សោម​ធម្មតា"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "ស្វែង​រក"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "អក្សរតូចធំ​ត្រូវគ្នា"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "ត្រូវគ្នា 1"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "ត្រូវគ្នានឹងពាក្យទាំងមូល"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "ជំនួស"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "បង្ហាញលទ្ធផលមុន"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "ប្រើ​កន្សោម​ធម្មតា"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "ការកំណត់មួយ ឬច្រើនបានផ្លាស់ប្ដូរ ដែលតម្រូវឱ្យផ្ទុកឡើងវិញ ទើបមានប្រសិទ្ធភាព"

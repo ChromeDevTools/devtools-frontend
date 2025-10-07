@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Без съответствие с цветовата схема на Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Печелене на значки"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Активиране на клавишните комбинации Ctrl + 1 – 9 за превключване между панелите"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Активиране на клавишните комбинации ⌘ + 1 – 9 за превключване между панелите"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Активиране на синхронизирането на настройките"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Намиране на следващия резултат"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Предишен панел"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Получаване на значки"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Презареждане на DevTools"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Вдясно"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Запазване на настройките за DevTools в профила ви в Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Активиране на предложенията за търсене при писане"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "нулиране"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Изтегляне: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (от кеша)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (от ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Забавяне от {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Забавяне: {PH1}, изтегляне: {PH2} (общо: {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Въведете път"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem не може да прочете файловете."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Добавяне на папка"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Изключване от работното пространство"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Съответствията се извличат автоматично."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Премахване"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Работно пространство"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Деактивиране на замяната на заявки в мрежата"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "презаписване"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Показване на настройките за работното пространство"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(анонимно)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Работно пространство"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Събитие: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Рамка"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Структурна промяна"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "Връзката през WebSocket е прекратена"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "Установена е връзка през WebSocket"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "Установена е връзка през WebSocket: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Анулиране на postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Анимация"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Задействана анимирана рамка"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Асинхронна работа"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Асинхронна задача"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Кеширане на код за модул"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Кеширане на код за скрипт"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Кеширан Wasm модул"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Анулиране на анимираната рамка"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Анулиране на обратно извикване при неактивност"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Въвеждане"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Компилиране на кода"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Компилиране на модул"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Компилиране на скрипт"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Компилиран Wasm модул"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Композитни слоеве"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Изчисляване на пресечните точки"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Изпълняване на задачата в конзолата"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Време в конзолата"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "Почистване на памет за C++"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Създаване на WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Разшифроване"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Разшифроване на отговора"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Десериализиране на кеша на кода"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Унищожаване на WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Обобщен низ"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Хеширан отговор"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "Почистване на DOM"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "Събитие DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Изчертаване на рамка"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Рисуване"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Обратно извикване на вграден елемент"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Шифроване"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Шифроване на отговора"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Изпълнение на модул"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Изпълнение на скрипт"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Събитие"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Времеви данни за събитието"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Практическа работа"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Край на зареждането"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Задействане на обратно извикване при неактивност"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "Първо изобразяване на съдържание (FCP)"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Първо изобразяване (FP)"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Начало на рамката"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Стартиране на рамка (основна нишка)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Начало на зареждането на рамката"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Извикване на функция"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Събитие за почистване на паметта"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "ГП"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Корелационен тест"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Неактивно"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Декодиране на изображение"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Инсталиране на таймер"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Анулиране на валидността на оформление"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "Рамка на JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Изобразяване на най-голямото съдържание (LCP)"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Наслояване"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Оформление"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Структурна промяна"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Група със структурни промени"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Зареждане"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Изчистване на по-старите обекти"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Съобщения"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Изчистване на по-новите обекти"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "При съобщение"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Събитие при зареждане"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Оптимизиране на кода"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Друго"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Изобразяване"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Изобразяване на изображение"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Настройване на изобразяването"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Изобразяване"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Синтактичен анализ и компилиране"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Синтактичен анализ на HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Синтактичен анализ на стилов лист"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Предварително изобразяване"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Време за профилиране"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Растеризиране на изобразяването"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Растеризиране"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Преизчисляване на стил"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Получаване на данни"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Получаване на отговор"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Получаване на ръкостискане за WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Премахване на таймер"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Рендериране"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Заявка за анимирана рамка"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Заявка за обратно извикване при неактивност"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Заявка за рамка в основната нишка"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Изпълнение на микрозадачи"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Задействане на postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Насрочване на postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Насрочване на postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Насрочване на преизчисляване на стилове"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Изпълняване на скриптове"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Превъртане"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Изпращане на заявка"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Изпращане на ръкостискане за WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Подписване"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Подписване на отговора"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Поточно предаване на задача за компилиране"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Поточно предаване на отговор от Wasm"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Система"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Задача"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Таймерът е задействан"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Дата и час"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Актуализиране на слоя"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Актуализиране на дървото на слоя"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Време на потребителите"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Потвърждаване"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Потвърждаване на отговора"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Изчаква се мрежа"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Изпълнена заявка от кеша на Wasm модула"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Кешът на Wasm модула е невалиден"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Ще бъде изпратена заявка"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Получаване на съобщение от WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Изпращане на съобщение от WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Зареждане на XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Промяна на readyState на XHR"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Анимация"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Страниците с WebRTC не могат да бъдат добавени към кеша за назад/напред."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Кешът за назад/напред е деактивиран поради използване на WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Страниците, които използват WebShare, понастоящем не отговарят на условията за кеша за назад/напред."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Страниците с WebSocket не могат да бъдат добавени към кеша за назад/напред."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Кешът за назад/напред е деактивиран поради използване на WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Страниците с WebTransport не могат да бъдат добавени към кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Кешът за назад/напред е деактивиран поради използване на WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Страниците, които използват WebXR, понастоящем не отговарят на условията за кеша за назад/напред."
@@ -4710,7 +5085,7 @@
     "message": "(непрозрачно)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Източник"
+    "message": "Източник на рамката"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Постоянно"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Показване на промените"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Спечелихте значката „{PH1}“! Тя е добавена към потребителския ви профил на програмист."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Затваряне"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Създаване на потребителски профил"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Управление на настройките"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Включване на значките"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Напомняне по-късно"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Спечелихте значката „{PH1}“ за {PH2}! Създайте потребителски профил, за да я заявите."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Спечелихте значката „{PH1}“ за {PH2}! Включете значките, за да я заявите."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Преглед на потребителския профил"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Отказ"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Неща, които трябва да имате предвид"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Отказ"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Правилата за съдържанието"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Създадено, за да постигнете успех"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Развивайте уменията си, създавайте с AI и печелете значки, които можете да показвате в потребителския си профил на програмист"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Диалогов прозорец за регистрация за Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Искам да получавам актуална информация"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Най-новите функции на DevTools, покани за събития и персонализирана статистика директно във входящата ви поща"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Научете повече"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Научете повече за Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Декларацията за поверителност"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Регистриране"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Потребителският ви профил за Google Developer Program не бе създаден. Моля, опитайте отново по-късно."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Персонализиране на потребителския ви профил"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Името в профила ви в Google и интересите ви ще бъдат използвани в потребителския ви профил на програмист. Името ви може да се показва при приносите ви и да бъде променяно по всяко време."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Със създаването на потребителски профил на програмист приемате {PH1}. За използването на тази услуга от ваша страна се прилагат {PH2} и {PH3} на Google."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Общите условия"
   },
   "panels/common/common.ts | allow": {
     "message": "Разрешаване"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Деактивиране на наслагването за превъртане с подравняване"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Деактивиране на режима @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Равномерно разпределение на елементите"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Активиране на наслагването за превъртане с подравняване"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Активиране на режима @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Рекурсивно разгъване"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Показва се чрез технологията за обмен на подписани HTTP пакети, размер на ресурса: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Показано от уеб пакета. Размер на източника: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Състоянието на заявката не може да се покаже тук, защото страницата, изпратила заявката, бе затворена, докато заявката се изпълняваше. Можете да ползвате chrome://net-export за запис на регистрационен файл за мрежата и да видите всички подробности за заявки."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(уеб пакет)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Грешка в уеб пакета"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Предоставя се от уеб пакет"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Информация за връзката"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Адресно пространство на инициатора"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Свързано е с реклами"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Забавяне"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(от подписан обмен)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(от уеб пакета)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Общи"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "За да използвате този ресурс от друг сайт, сървърът може да пренебрегне заглавката за отговор за правило cross-origin resource:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Ресурс в пакет"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Добавяне на образец за блокиране на заявки в мрежата"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Видео"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Достигнат бе лимитът за означения за удостоверяване. Функцията за защита на IP адреса ще бъде поставена на пауза."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "Функцията за защита на IP адреса е активирана и работи."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Функцията за защита на IP адреса се заобикаля от DevTools."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Функцията за защита на IP адреса не е активирана."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Функцията за списък с маскирани домейни не е активирана."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Списъкът с маскирани домейни не е попълнен."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "Функцията за защита на IP адреса не е налице."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Временно заобикаляне на функцията за защита на IP адреса с цел тестване"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Заобикаляне на защитата на IP адреса"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Състояние на прокси сървъра във функцията за защита на IP адреса"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Състояние"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Неизвестно състояние"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL адрес"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабилни експерименти"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (годишно)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Добавяне на папка"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (месечно)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Изключване от работното пространство"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (годишно)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Съответствията се извличат автоматично."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (месечно)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Премахване"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Работно пространство"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "(следното се изпраща до Google: {PH1})"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "План Standard"
@@ -12678,10 +13161,10 @@
     "message": "Не сте влезли в профила си в Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "За да включите тази настройка, първо трябва да активирате синхронизирането на настройките в Chrome."
+    "message": "Първо трябва да активирате запазването на настройките за Chrome в профила си в Google."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(до Google се изпращат подходящи данни)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Подходящи данни"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Регистриране"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "За да включите тази настройка, трябва да активирате синхронизирането в Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Когато заслужите значка, до Google се изпращат идентификаторът ѝ и типът активност, която сте извършили, за да я спечелите"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Преглед на потребителския профил"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Показване на клавишните комбинации"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Показване на настройките за работното пространство"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Работно пространство"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Свързано с(ъс) {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функция"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Групирани функции"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Заявено обратно извикване при неактивност"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Източник"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Трасиране на стека"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Предадено поточно"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Запазване"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Включва пълното съдържание на всички заредени скриптове (с изключение на разширенията)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Компресиране с gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Запазване на трасирането…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Включва наличните карти на изходния код, които може да разкрият упълномощения код."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Разширени"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Спиране"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(анонимно)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Събитие: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Рамка"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Структурна промяна"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "Връзката през WebSocket е прекратена"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "Установена е връзка през WebSocket"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "Установена е връзка през WebSocket: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Анулиране на postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Анимация"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Задействана анимирана рамка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Асинхронна работа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Асинхронна задача"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Кеширане на код за модул"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Кеширане на код за скрипт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Кеширан Wasm модул"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Анулиране на анимираната рамка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Анулиране на обратно извикване при неактивност"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Въвеждане"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Компилиране на кода"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Компилиране на модул"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Компилиране на скрипт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Компилиран Wasm модул"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Композитни слоеве"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Изчисляване на пресечните точки"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Изпълняване на задачата в конзолата"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Време в конзолата"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "Почистване на памет за C++"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Създаване на WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Разшифроване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Разшифроване на отговора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Десериализиране на кеша на кода"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Унищожаване на WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Обобщен низ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Хеширан отговор"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "Почистване на DOM"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Събитие DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Изчертаване на рамка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Рисуване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Обратно извикване на вграден елемент"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Шифроване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Шифроване на отговора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Изпълнение на модул"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Изпълнение на скрипт"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Събитие"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Времеви данни за събитието"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Практическа работа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Край на зареждането"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Задействане на обратно извикване при неактивност"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "Първо изобразяване на съдържание (FCP)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Първо изобразяване (FP)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Начало на рамката"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Стартиране на рамка (основна нишка)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Начало на зареждането на рамката"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Извикване на функция"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Събитие за почистване на паметта"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "ГП"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Корелационен тест"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Неактивно"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Декодиране на изображение"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Инсталиране на таймер"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Анулиране на валидността на оформление"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "Рамка на JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Изобразяване на най-голямото съдържание (LCP)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Наслояване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Оформление"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Структурна промяна"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Група със структурни промени"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Зареждане"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Изчистване на по-старите обекти"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Съобщения"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Изчистване на по-новите обекти"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "При съобщение"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Събитие при зареждане"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Оптимизиране на кода"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Друго"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Изобразяване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Изобразяване на изображение"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Настройване на изобразяването"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Изобразяване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Синтактичен анализ и компилиране"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Синтактичен анализ на HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Синтактичен анализ на стилов лист"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Предварително изобразяване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Време за профилиране"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Растеризиране на изобразяването"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Растеризиране"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Преизчисляване на стил"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Получаване на данни"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Получаване на отговор"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Получаване на ръкостискане за WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Премахване на таймер"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Рендериране"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Заявка за анимирана рамка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Заявка за обратно извикване при неактивност"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Заявка за рамка в основната нишка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Изпълнение на микрозадачи"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Задействане на postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Насрочване на postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Насрочване на postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Насрочване на преизчисляване на стилове"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Изпълняване на скриптове"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Превъртане"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Изпращане на заявка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Изпращане на ръкостискане за WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Подписване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Подписване на отговора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Поточно предаване на задача за компилиране"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Поточно предаване на отговор от Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Система"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Задача"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Таймерът е задействан"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Дата и час"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Актуализиране на слоя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Актуализиране на дървото на слоя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Време на потребителите"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Потвърждаване"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Потвърждаване на отговора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Изчаква се мрежа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Изпълнена заявка от кеша на Wasm модула"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Кешът на Wasm модула е невалиден"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Ще бъде изпратена заявка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Получаване на съобщение от WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Изпращане на съобщение от WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Зареждане на XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Промяна на readyState на XHR"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Означено с ignoreList в картата на изходния код"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} от {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Деактивиране на търсенето, при което регистърът на буквите е от значение"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Деактивиране на функцията за търсене и замяна"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Деактивиране на регулярните изрази"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Активиране на търсенето, при което регистърът на буквите е от значение"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Търсене и замяна"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Активиране на регулярните изрази"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Търсене"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Със същия регистър"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 съответствие"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Съответствие с цялата дума"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Замяна"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Показване на предишния резултат"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Използване на регулярен израз"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Една или повече настройки бяха променени. За да влязат в сила, е необходимо презареждане"

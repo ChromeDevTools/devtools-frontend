@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "不必與 Chrome 色彩配置相符"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "收集徽章"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "啟用 Ctrl + 1 - 9 快速鍵切換面板"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "啟用 ⌘ + 1 - 9 快速鍵切換面板"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "啟用設定同步功能"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "尋找下一個結果"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "上一個面板"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "接收徽章"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "重新載入開發人員工具"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "右側"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "將DevTools設定儲存到 Google 帳戶"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "啟用即時搜尋功能"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "重設"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "下載速率：{PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (來自快取)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (來源：ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "延遲 {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "延遲時間：{PH1}，下載時間：{PH2} (總計 {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "輸入路徑"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem 無法讀取檔案。"
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "新增資料夾"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "從工作區中排除"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "系統會自動推論對應方式。"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "移除"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "工作區"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "停用覆寫網路要求"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "重新編寫"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "顯示工作區設定"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(匿名)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "工作區"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "事件：{PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "頁框"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "版面配置位移"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket 已關閉"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket 已開啟"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket 已開啟：{PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "取消執行 postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "動畫"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "已觸發動畫頁框"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "非同步"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "非同步工作"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "快取模組程式碼"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "快取指令碼程式碼"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "快取 Wasm 模組"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "取消動畫頁框"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "取消閒置回呼"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "提交"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "編譯程式碼"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "編譯模組"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "編譯指令碼"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "已編譯的 Wasm 模組"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "複合圖層"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "運算交集"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "執行控制台工作"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "控制台時間"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "建立 WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "解密"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "將回覆解密"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "反序列化程式碼快取"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "刪除 WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "摘要"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "產生回覆摘要"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC 時間"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded 事件"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "繪製頁框"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "繪圖"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "嵌入程式回呼"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "加密"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "將回覆加密"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "模擬模組"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "模擬指令碼"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "事件"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "事件時間"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "體驗"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "完成載入作業"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "觸發閒置回呼"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "畫面首次顯示所需時間"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "開始顯示頁框"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "開始顯示頁框 (主執行緒)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "已開始載入頁框"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "函式呼叫"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "GC 事件"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "點擊測試"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "閒置"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "圖片解碼"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "安裝計時器"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "讓版面配置失效"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS 頁框"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "分層"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "版面配置"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "版面配置位移"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "版面配置位移叢集"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "載入中"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "主要 GC"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "訊息"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "次要 GC"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "在訊息中"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Onload 事件"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "將程式碼最佳化"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "其他"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "繪製"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "繪製圖片"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "繪製設定"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "繪製時間"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "剖析及編譯"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "剖析 HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "剖析樣式表"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "預先繪製"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "剖析負擔"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "將繪製內容光柵化"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "柵格化"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "重新計算樣式"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "接收資料"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "接收回應"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "接收 WebSocket 握手"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "移除計時器"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "算繪時間"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "要求動畫頁框"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "要求閒置回呼"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "要求主執行緒頁框"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "執行 Microtask"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "觸發 postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "安排 postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "排定 postTask 執行時間"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "排定重新計算樣式的時間"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "編寫指令碼"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "捲動"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "傳送要求"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "傳送 WebSocket 握手"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "簽署"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "簽署回覆"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "串流編譯工作"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "串流 Wasm 回應"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "系統"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "工作"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "已觸發計時器"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "時間戳記"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "更新圖層"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "更新圖層樹狀結構"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "使用者載入時間"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "驗證"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "驗證回覆"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "正在等待網路連線"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Wasm 模組快取命中"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm 模組快取無效"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "即將傳送要求"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "接收 WebSocket 訊息"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "傳送 WebSocket 訊息"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "載入 XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState 已變更"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "動畫"
@@ -2184,7 +2550,7 @@
     "message": "CSS 選取器成本"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
-    "message": "最耗費時間的選取器"
+    "message": "最耗時的選取器"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorMatchAttempt": {
     "message": "最常嘗試比對的選取器"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "使用 WebRTC 的網頁無法儲存至往返快取。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "已使用 WebRTC，因此停用往返快取功能。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "使用 WebShare 的網頁目前不適用往返快取。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "使用 WebSocket 的網頁無法儲存至往返快取。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "已使用 WebSocket，因此停用往返快取功能。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "使用 WebTransport 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "已使用 WebTransport，因此停用往返快取功能。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "使用 WebXR 的網頁目前不適用往返快取。"
@@ -4710,7 +5085,7 @@
     "message": "(不透明)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "來源"
+    "message": "頁框來源"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "永久"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "顯示變更"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "恭喜你獲得「{PH1}」徽章！這個徽章已加到你的開發人員設定檔。"
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "關閉"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "建立設定檔"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "管理設定"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "開啟徽章"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "稍後提醒我"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "恭喜你獲得「{PH2}」的「{PH1}」徽章！如要領取徽章，請建立設定檔。"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "恭喜你獲得「{PH2}」的「{PH1}」徽章！開啟徽章即可領取。"
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "查看設定檔"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "取消"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "注意事項"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "取消"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "內容政策"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "全力協助你成功開發"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "精進技能、運用 AI 技術開發，並獲得可在開發人員設定檔中展示的徽章"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google Developer Program 註冊對話方塊"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "有新動態時通知我"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "直接在收件匣接收最新開發人員工具功能、活動邀請和專屬深入分析資訊"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "瞭解詳情"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "進一步瞭解 Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "隱私權政策"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "註冊"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "無法建立 Google Developer Program 設定檔，請稍後再試。"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "自訂設定檔"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Google 開發人員設定檔會沿用你的 Google 帳戶名稱和興趣。你的名稱可能會顯示在你發表的內容上，且隨時可以變更。"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "建立開發人員設定檔即表示同意《{PH1}》。使用這項服務時，必須遵循 Google 的《{PH2}》和《{PH3}》。"
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "服務條款"
   },
   "panels/common/common.ts | allow": {
     "message": "允許"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "停用捲動貼齊重疊顯示"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "停用 @starting-style 模式"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "平均分配項目"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "啟用捲動貼齊重疊顯示"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "啟用 @starting-style 模式"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "以遞迴方式展開"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "透過 Signed HTTP Exchange 提供，資源大小：{PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "透過 Web Bundle 提供，資源大小：{PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "此處無法顯示要求狀態，因為發出要求的頁面在要求傳送時已卸載。你可以使用 chrome://net-export 來擷取網路記錄，並查看所有要求詳細資料。"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle 錯誤"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "透過 Web Bundle 提供"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "連線資訊"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "啟動器位址空間"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "與廣告相關"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "延遲"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(來源：Signed Exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(透過 Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "一般"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "為了從不同網站使用這項資源，伺服器可能會放寬跨來源資源政策回應標頭："
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Web Bundle 中的資源"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "新增網路要求封鎖模式"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "影片"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "已達驗證權杖數量上限。IP 保護功能將暫停運作。"
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP 保護功能已啟用且運作中。"
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "開發人員工具將略過 IP 保護機制。"
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "未啟用 IP 保護功能。"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "未啟用「已加遮罩的網域清單」功能。"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "未填入「已加遮罩的網域清單」。"
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "無法使用 IP 保護功能。"
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "暫時略過 IP 保護機制以進行測試"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "略過 IP 保護"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP 保護 Proxy 狀態"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "狀態"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "狀態不明"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "網址"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "不穩定的實驗功能"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (年繳)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "新增資料夾"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (月繳)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "從工作區中排除"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (年繳)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "系統會自動推論對應方式。"
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (月繳)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "移除"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "工作區"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1}會傳送給 Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "標準方案"
@@ -12678,10 +13161,10 @@
     "message": "你尚未登入 Chrome。"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "如要開啟這項設定，你必須先在 Chrome 中啟用設定同步功能。"
+    "message": "請先前往 Google 帳戶啟用儲存 Chrome 設定的功能。"
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(相關資料會傳送給 Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "相關資料"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "註冊"
@@ -12692,8 +13175,11 @@
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "如要開啟這項設定，你必須啟用 Chrome 同步。"
   },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "取得徽章後，系統會將徽章 ID 和你獲得徽章的活動類型傳送給 Google"
+  },
   "panels/settings/components/SyncSection.ts | viewProfile": {
-    "message": "查看個人資料"
+    "message": "查看設定檔"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "新增自訂裝置"
@@ -12855,7 +13341,7 @@
     "message": "顯示裝置"
   },
   "panels/settings/settings-meta.ts | aiInnovations": {
-    "message": "AI 創新"
+    "message": "AI 創新功能"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "說明文件"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "顯示快速鍵"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "顯示工作區設定"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "工作區"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "已連結 {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "函式"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "函式堆疊"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "已要求閒置回呼"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "來源"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "堆疊追蹤"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "已串流播放"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "儲存"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "包括所有已載入指令碼的完整內容 (擴充功能除外)。"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "使用 gzip 壓縮"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "儲存追蹤記錄"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "包括可用的來源對應 (可能會顯示編寫的程式碼)。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "進階"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(匿名)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "事件：{PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "頁框"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "版面配置位移"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket 已關閉"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket 已開啟"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket 已開啟：{PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "取消執行 postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "動畫"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "已觸發動畫頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "非同步"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "非同步工作"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "快取模組程式碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "快取指令碼程式碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "快取 Wasm 模組"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "取消動畫頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "取消閒置回呼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "提交"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "編譯程式碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "編譯模組"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "編譯指令碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "已編譯的 Wasm 模組"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "複合圖層"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "運算交集"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "執行控制台工作"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "控制台時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "建立 WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "解密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "將回覆解密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "反序列化程式碼快取"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "刪除 WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "摘要"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "產生回覆摘要"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC 時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded 事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "繪製頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "繪圖"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "嵌入程式回呼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "加密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "將回覆加密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "模擬模組"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "模擬指令碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "事件時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "體驗"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "完成載入作業"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "觸發閒置回呼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "畫面首次顯示所需時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "開始顯示頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "開始顯示頁框 (主執行緒)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "已開始載入頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "函式呼叫"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "GC 事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "點擊測試"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "閒置"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "圖片解碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "安裝計時器"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "讓版面配置失效"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS 頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "分層"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "版面配置"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "版面配置位移"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "版面配置位移叢集"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "載入中"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "主要 GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "訊息"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "次要 GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "在訊息中"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Onload 事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "將程式碼最佳化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "其他"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "繪製"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "繪製圖片"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "繪製設定"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "繪製時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "剖析及編譯"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "剖析 HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "剖析樣式表"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "預先繪製"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "剖析負擔"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "將繪製內容光柵化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "柵格化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "重新計算樣式"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "接收資料"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "接收回應"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "接收 WebSocket 握手"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "移除計時器"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "算繪時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "要求動畫頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "要求閒置回呼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "要求主執行緒頁框"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "執行 Microtask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "觸發 postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "安排 postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "排定 postTask 執行時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "排定重新計算樣式的時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "編寫指令碼"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "捲動"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "傳送要求"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "傳送 WebSocket 握手"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "簽署"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "簽署回覆"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "串流編譯工作"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "串流 Wasm 回應"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "系統"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "工作"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "已觸發計時器"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "時間戳記"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "更新圖層"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "更新圖層樹狀結構"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "使用者載入時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "驗證"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "驗證回覆"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "正在等待網路連線"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm 模組快取命中"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm 模組快取無效"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "即將傳送要求"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "接收 WebSocket 訊息"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "傳送 WebSocket 訊息"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "載入 XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState 已變更"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "已在來源對應中標示為 ignoreList"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "停用搜尋功能 (區分大小寫)"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "停用「尋找與取代」"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "停用規則運算式"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "啟用搜尋功能 (區分大小寫)"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "尋找與取代"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "啟用規則運算式"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "尋找"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "大小寫相符"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 個相符項目"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "全字相符"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "取代"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "顯示上一筆結果"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "使用規則運算式"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "一或多項設定有變動，必須重新載入才能生效"

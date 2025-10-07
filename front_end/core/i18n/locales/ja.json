@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Chrome のカラーパターンに合わせない"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "バッジを獲得する"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "パネルの切り替えに Ctrl+1～9 のショートカットを有効にする"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "パネルの切り替えに ⌘+1～9 のショートカットを有効にする"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "設定の同期を有効にする"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "次の結果を探す"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "前のパネル"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "バッジを受け取る"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools を再読み込み"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "右"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "DevTools の設定を Google アカウントに保存する"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "入力逐次検索を有効にする"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "リセット"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1} ダウンロード"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1}（キャッシュから）"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1}（ServiceWorker から）"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "{PH1} レイテンシ"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "{PH1} レイテンシ、{PH2} ダウンロード（合計 {PH3}）"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "パスを入力"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem がファイルを読み取れません。"
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "フォルダの追加"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "ワークスペースから除外"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "マッピングは自動的に推測されます。"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "削除"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "ワークスペース"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "ネットワーク リクエストのオーバーライドを無効化"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "書き換え"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "ワークスペースの設定を表示"
+  "models/trace/Name.ts | anonymous": {
+    "message": "（匿名）"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "ワークスペース"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "イベント: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "フレーム"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "レイアウト シフト"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket を終了"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket を開始"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket を開始: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "postTask をキャンセル"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "アニメーション"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "アニメーション フレームの呼び出し"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "非同期"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "非同期タスク"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "モジュール コードのキャッシュ"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "スクリプト コードのキャッシュ"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "キャッシュに保存された Wasm モジュール"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "アニメーション フレームをキャンセル"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "アイドル状態のコールバックのキャンセル"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "確定"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "コードのコンパイル"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "モジュールのコンパイル"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "スクリプトのコンパイル"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "コンパイル済みの Wasm モジュール"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "レイヤの合成"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "交差の計算"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "コンソール タスクを実行"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "コンソール時間"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "WebSocket を作成"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "復号"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "返信の復号"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "コード キャッシュの逆シリアル化"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "WebSocket を破棄"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "ダイジェスト"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "ダイジェストの返信"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded イベント"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "フレームの描画"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "描画"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "埋め込みコールバック"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "暗号化"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "返信の暗号化"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "モジュールの評価"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "スクリプトの評価"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "イベント"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "イベントのタイミング"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "エクスペリエンス"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "読み込みの終了"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "アイドル状態のコールバックの呼び出し"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "First Paint"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "フレーム開始"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "フレーム開始（メインスレッド）"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "フレームの読み込み開始"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "関数呼び出し"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "GC イベント"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "ヒットテスト"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "アイドル状態"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "画像のデコード"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "タイマーのインストール"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "レイアウトを無効化"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS フレーム"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "レイヤ化"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "レイアウト"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "レイアウト シフト"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "レイアウト シフト クラスタ"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "読み込んでいます"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "メジャー GC"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "メッセージ"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "マイナー GC"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "メッセージ上"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "onload イベント"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "コードの最適化"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "その他"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "ペイント"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "画像のペイント"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "ペイントのセットアップ"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "ペイント"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "解析とコンパイル"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "HTML を解析"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "スタイルシートの解析"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "プリペイント"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "プロファイリングのオーバーヘッド"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "ペイントのラスター化"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "ラスター化"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "スタイルの再計算"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "データの受信"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "レスポンスの受信"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket handshake の受信"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "タイマーの削除"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "レンダリング"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "アニメーション フレームのリクエスト"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "アイドル状態のコールバックのリクエスト"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "メインスレッド フレームのリクエスト"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Microtasks の実行"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "postTask を実行"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "postMessage のスケジュールを設定"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "postTask のスケジュール実行"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "スタイル再計算のスケジュール"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "スクリプト"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "スクロール"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "リクエストの送信"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "WebSocket handshake の送信"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "署名"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "返信に署名"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "ストリーミング コンパイル タスク"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Wasm レスポンスのストリーミング"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "システム"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "タスク"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "タイマーの呼び出し"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "タイムスタンプ"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "レイヤの更新"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "レイヤツリーの更新"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "カスタム速度"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "確認"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "返信の確認"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "ネットワークの待機中"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Wasm モジュールのキャッシュ ヒット"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm モジュールのキャッシュ無効"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "リクエストを送信予定"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "WebSocket メッセージの受信"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "WebSocket メッセージの送信"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR の読み込み"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR の readyState の変更"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "アニメーション"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC を使用するページは、バックフォワード キャッシュに保存できません。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "バックフォワード キャッシュは、WebRTC が使用されているため無効になっています。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket を使用するページはバックフォワード キャッシュに保存できません。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "バックフォワード キャッシュは、WebSocket が使用されているため無効になっています。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport を使用するページはバックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "バックフォワード キャッシュは、WebTransport が使用されているため無効になっています。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
@@ -4710,7 +5085,7 @@
     "message": "（不透明）"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "オリジン"
+    "message": "フレーム オリジン"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "永続的"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "変更を表示"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "{PH1} バッジを獲得しました。デベロッパー プロフィールに追加されました。"
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "閉じる"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "プロフィールを作成"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "設定を管理"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "バッジをオンにする"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "後で通知"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "{PH2} の {PH1} バッジを獲得しました。バッジを受け取るにはプロフィールを作成してください。"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "{PH2} の {PH1} バッジを獲得しました。バッジをオンにして受け取りましょう。"
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "プロフィールを表示"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "キャンセル"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "留意事項"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "キャンセル"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "コンテンツ ポリシー"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "成功に向けて"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "スキルを磨き、AI を活用して開発し、デベロッパー プロフィールで実績をアピールできるバッジを獲得しましょう"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google Developer Program の登録ダイアログ"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "最新情報を受け取る"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "DevTools の最新機能、イベントへの招待、カスタマイズされた分析情報をメールで直接受け取ることができます"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "詳細"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Google Developer Program の詳細"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "プライバシー ポリシー"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "登録"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Google Developer Program のプロフィールを作成できませんでした。しばらくしてからもう一度お試しください。"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "プロフィールをカスタマイズ"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Google アカウントの名前と興味 / 関心が Google デベロッパー プロフィールで使用されます。名前は投稿先のプラットフォームに表示されることがあり、いつでも変更できます。"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "デベロッパー プロフィールを作成すると、{PH1} に同意したことになります。このサービスのご利用には、Google の {PH2} と {PH3} が適用されます。"
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "利用規約"
   },
   "panels/common/common.ts | allow": {
     "message": "許可"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "スクロール スナップのオーバーレイを無効にする"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "@starting-style モードを無効にする"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "アイテムを均等に配置"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "スクロール スナップのオーバーレイを有効にする"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "@starting-style モードを有効にする"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "再帰的に展開"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Signed HTTP Exchange から配信されました。リソースサイズ: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "ウェブバンドルから配信、リソースのサイズ: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "（ServiceWorker）"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "リクエスト中に発行元のページが読み込まれなかったため、リクエストのステータスを表示できません。chrome://net-export を使用してネットワーク ログを取得し、すべてのリクエストの詳細を確認できます。"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "（ウェブバンドル）"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "ウェブバンドル エラー"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "ウェブバンドルから配信"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "接続情報"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "イニシエータ アドレス空間"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "広告に関連している"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "レイテンシ"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "（signed-exchange から）"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "（ウェブバンドルから）"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "全般"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "このリソースを別のサイトから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "バンドルされたリソース"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "ネットワーク リクエストのブロック パターンを追加"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "動画"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "認証トークンの上限に達しました。IP 保護が一時停止されます。"
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP 保護が有効でアクティブです。"
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "IP 保護は DevTools によってバイパスされています。"
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "IP 保護機能が有効になっていません。"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Masked Domain List 機能が有効になっていません。"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Masked Domain List が入力されていません。"
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP 保護は使用できません。"
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "テストのために IP 保護を一時的にバイパスする"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "IP 保護のバイパス"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP 保護プロキシのステータス"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "ステータス"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "ステータスが不明です"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "不安定な試験運用機能"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium（年単位）"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "フォルダの追加"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium（月単位）"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "ワークスペースから除外"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro（年単位）"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "マッピングは自動的に推測されます。"
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro（月単位）"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "削除"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "ワークスペース"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "（{PH1} は Google に送信されます）"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "プレミアム"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "プロ"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "標準プラン"
@@ -12678,10 +13161,10 @@
     "message": "Chrome にログインしていません。"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "この設定をオンにするには、まず Chrome で設定の同期を有効にする必要があります。"
+    "message": "まず最初に Google アカウントで Chrome の設定の保存を有効にする必要があります。"
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "（関連データは Google に送信されます）"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "関連データ"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "登録"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "この設定をオンにするには、Chrome 同期を有効にする必要があります。"
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "バッジの獲得条件を満たすと、バッジの識別子と行ったアクティビティの種類が Google に送信されます"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "プロフィールを表示"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "ショートカットを表示"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "ワークスペースの設定を表示"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "ワークスペース"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "{PH1} にリンク"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "機能"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "関数スタック"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "アイドル状態のコールバックのリクエスト"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "ソース"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "スタック トレース"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "ストリーミング"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "保存"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "読み込まれたすべてのスクリプト（拡張機能を除く）のコンテンツ全体を含めます。"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "gzip で圧縮する"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "トレースを保存…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "利用可能なソースマップを含めます。作成元のコードが公開される可能性があります。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "詳細設定"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "（匿名）"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "イベント: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "フレーム"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "レイアウト シフト"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket を終了"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket を開始"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket を開始: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "postTask をキャンセル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "アニメーション"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "アニメーション フレームの呼び出し"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "非同期"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "非同期タスク"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "モジュール コードのキャッシュ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "スクリプト コードのキャッシュ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "キャッシュに保存された Wasm モジュール"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "アニメーション フレームをキャンセル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "アイドル状態のコールバックのキャンセル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "確定"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "コードのコンパイル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "モジュールのコンパイル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "スクリプトのコンパイル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "コンパイル済みの Wasm モジュール"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "レイヤの合成"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "交差の計算"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "コンソール タスクを実行"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "コンソール時間"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "WebSocket を作成"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "復号"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "返信の復号"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "コード キャッシュの逆シリアル化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "WebSocket を破棄"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "ダイジェスト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "ダイジェストの返信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded イベント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "フレームの描画"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "描画"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "埋め込みコールバック"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "暗号化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "返信の暗号化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "モジュールの評価"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "スクリプトの評価"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "イベント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "イベントのタイミング"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "エクスペリエンス"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "読み込みの終了"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "アイドル状態のコールバックの呼び出し"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "First Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "フレーム開始"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "フレーム開始（メインスレッド）"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "フレームの読み込み開始"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "関数呼び出し"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "GC イベント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "ヒットテスト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "アイドル状態"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "画像のデコード"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "タイマーのインストール"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "レイアウトを無効化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS フレーム"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "レイヤ化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "レイアウト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "レイアウト シフト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "レイアウト シフト クラスタ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "読み込んでいます"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "メジャー GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "メッセージ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "マイナー GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "メッセージ上"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "onload イベント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "コードの最適化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "その他"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "ペイント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "画像のペイント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "ペイントのセットアップ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "ペイント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "解析とコンパイル"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "HTML を解析"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "スタイルシートの解析"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "プリペイント"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "プロファイリングのオーバーヘッド"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "ペイントのラスター化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "ラスター化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "スタイルの再計算"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "データの受信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "レスポンスの受信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket handshake の受信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "タイマーの削除"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "レンダリング"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "アニメーション フレームのリクエスト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "アイドル状態のコールバックのリクエスト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "メインスレッド フレームのリクエスト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Microtasks の実行"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "postTask を実行"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "postMessage のスケジュールを設定"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "postTask のスケジュール実行"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "スタイル再計算のスケジュール"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "スクリプト"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "スクロール"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "リクエストの送信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "WebSocket handshake の送信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "署名"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "返信に署名"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "ストリーミング コンパイル タスク"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Wasm レスポンスのストリーミング"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "システム"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "タスク"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "タイマーの呼び出し"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "タイムスタンプ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "レイヤの更新"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "レイヤツリーの更新"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "カスタム速度"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "確認"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "返信の確認"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "ネットワークの待機中"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm モジュールのキャッシュ ヒット"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm モジュールのキャッシュ無効"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "リクエストを送信予定"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "WebSocket メッセージの受信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "WebSocket メッセージの送信"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR の読み込み"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR の readyState の変更"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "ソースマップで ignoreList とマーク"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "検索で大文字と小文字を区別しない"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "検索と置換を無効にする"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "正規表現を無効にする"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "検索で大文字と小文字を区別する"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "検索と置換"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "正規表現を有効にする"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "検索"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "大文字と小文字を区別"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 件の一致"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "完全一致"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "置換"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "前の結果を表示"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "正規表現を使用"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "1 つ以上の設定が変更されました。変更を有効にするには再読み込みが必要です"

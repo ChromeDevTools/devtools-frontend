@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Не использовать цветовую схему Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Получать значки"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Использовать сочетание клавиш Ctrl + 1–9 для переключения панелей"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Использовать сочетание клавиш ⌘ + 1–9 для переключения панелей"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Включить синхронизацию настроек"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Найти следующий результат"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Предыдущая панель"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Получать значки"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Перезагрузить инструменты разработчика"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "По правому краю"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Сохранить настройки набора \"DevTools\" в аккаунте Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Включить поиск при вводе запроса"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "сбросить"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Скачивание: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (из кеша)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (источник: ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Задержка: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Задержка: {PH1}, загрузка: {PH2} (всего: {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Укажите путь."
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem не может читать файлы."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Добавление папки"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Исключить из рабочей области"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Сопоставления определяются автоматически"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Удалить"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Рабочая область"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Отключить сетевые запросы на переопределение"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "перезаписать"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Показать настройки рабочей области"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(анонимно)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Рабочая область"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Событие: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Фрейм"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Смещение макета"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "Соединение WebSocket закрыто"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "Соединение WebSocket установлено"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "Соединение WebSocket установлено: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Отменить postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Анимация"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Запущен фрейм анимации"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Асинхронный"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Асинхронная задача"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Код модуля кеша"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Кеширование кода скрипта"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Кешированный модуль Wasm"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Отключить фрейм анимации"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Отмена вызова функции в период простоя"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Перенос"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Компиляция кода"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Компиляция модуля"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Компиляция скрипта"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Скомпилированный модуль Wasm"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Составные слои"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Рассчет пересечений"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Выполнение задачи через консоль"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Время консоли"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "Сборка мусора в C++"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Создать объект WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Расшифровка"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Расшифровка ответа"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Десериализация кеша кода"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Уничтожить WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Сводка"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Краткий ответ"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "Сборка мусора DOM"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "Событие DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Рисование фрейма"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Отрисовка"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Обратный вызов встраивателя"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Зашифровать"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Шифрование ответа"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Оценка модуля"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Оценка скрипта"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Событие"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Временные метки события"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Взаимодействие"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Завершение загрузки"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Вызов функции в период простоя"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Первое отображение"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Запуск фрейма"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Начало фрейма (основной поток)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Фрейм начал загружаться"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Вызов функции"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Событие сборки мусора"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "Графический процессор"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Проверка нажатия"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Бездействует"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Расшифровка изображения"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Установка таймера"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Аннулировать макет"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "Фрейм JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Создание слоев"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Макет"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Смещение макета"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Кластер смещения макета"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Загрузка"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Полная сборка мусора"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Сообщения"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Быстрая сборка мусора"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "Сообщение о включении"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Событие onload"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Оптимизировать код"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Другое"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Отображение"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Отрисовка изображения"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Настройка отрисовки"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Отображение"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Синтаксический анализ и компиляция"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Синтаксический анализ HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Синтаксический анализ таблицы стилей"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Предварительная отрисовка"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Ресурсопотребление профилирования"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Растрирование отрисовки"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Растрирование"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Повторный расчет стиля"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Прием данных"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Получение ответа"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Получение подтверждения WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Удалить таймер"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Отрисовка"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Запрос фрейма анимации"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Запрос вызова функции в период простоя"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Запрос фрейма основного потока"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Запуск микрозадач"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Запустить postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Запланировать выполнение функции postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Запланировать postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Расписание пересчета стилей"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Выполнение скриптов"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Прокрутка"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Отправка запроса"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Отправка подтверждения WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Подписание"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Подпись ответа"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Потоковая передача задачи компиляции"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Потоковая передача ответа Wasm"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Система"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Задача"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Таймер запущен"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Временная метка"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Обновление слоя"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Обновление дерева слоев"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Пользовательское время"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Подтвердить"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Проверка ответа"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Ожидание подключения к сети"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Совпадение в кеше модуля Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Недействительный кеш модуля Wasm"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Будет отправлен запрос"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Получение сообщения по протоколу WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Отправка сообщения по протоколу WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Загрузка XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Изменение XHR readyState"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Анимация"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Страницы, которые используют WebRTC, нельзя добавить в возвратный кеш."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Возвратный кеш отключен, потому что используется WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Страницы, которые используют WebShare, в настоящее время нельзя добавить в возвратный кеш."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Страницы, которые используют интерфейс WebSocket, нельзя добавить в возвратный кеш."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Возвратный кеш отключен, потому что используется WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Страницы, которые используют WebTransport, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Возвратный кеш отключен, потому что используется WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Страницы, которые используют WebXR, в настоящее время нельзя добавить в возвратный кеш."
@@ -4710,7 +5085,7 @@
     "message": "(не определен)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Источник"
+    "message": "Источник фрейма"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Постоянное"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Показать \"Изменения\""
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Вы получили значок \"{PH1}\"! Он добавлен в профиль разработчика."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Закрыть"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Создать профиль"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Открыть настройки"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Включить значки"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Напомнить позже"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Вы получили значок \"{PH1}\" за активность \"{PH2}\". Чтобы увидеть его, создайте профиль."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Вы получили значок \"{PH1}\" за активность \"{PH2}\". Чтобы увидеть его, включите функцию значков."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Открыть профиль"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Отмена"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Важная информация"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Отмена"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Правила в отношении контента"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Начните свой путь к успеху"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Улучшайте навыки, создавайте проекты с помощью ИИ и пополняйте коллекцию значков в профиле разработчика."
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Диалоговое окно для регистрации в Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Будьте в курсе новостей"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Новые функции инструментов разработчика, приглашения на мероприятия и персональные подсказки – все это в вашем ящике."
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Подробнее о Google Developer Program…"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Политика конфиденциальности"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Зарегистрироваться"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Не удалось создать профиль в Google Developer Program. Повторите попытку."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Настройка профиля"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "В профиле разработчика Google будут ваши интересы и имя из аккаунта Google, которое может показываться в разных разделах, где вы проявляете активность. Его можно изменить в любое время."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Создавая профиль разработчика, вы принимаете {PH1}. {PH2} и {PH3} Google регулируют работу с этим сервисом."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Условия использования"
   },
   "panels/common/common.ts | allow": {
     "message": "Разрешить"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Отключить оверлей с прокруткой и привязкой"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Отключить режим @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Распределить элементы равномерно"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Включить оверлей с прокруткой и привязкой"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Включить режим @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Рекурсивное расширение"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Источник: Signed HTTP Exchange, размер ресурса: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Показано с Web Bundle (размер ресурса: {PH1})"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Невозможно показать здесь статус запроса, так как страница, которая его отправила, была выгружена во время передачи запроса. Чтобы включить запись сетевого журнала и посмотреть всю информацию о запросе, используйте инструмент chrome://net-export."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Ошибка Web Bundle"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Показано с Web Bundle"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Информация о подключении"
@@ -9330,7 +9774,7 @@
     "message": "Копировать заголовки запроса"
   },
   "panels/network/NetworkLogView.ts | copyResponse": {
-    "message": "Копировать ответ"
+    "message": "Скопировать ответ"
   },
   "panels/network/NetworkLogView.ts | copyResponseHeaders": {
     "message": "Копировать заголовки ответов"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Адресное пространство инициатора"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Связан с рекламой"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Задержка"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(источник: Signed Exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(с Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Общие"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Чтобы использовать этот ресурс с другого сайта, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Ресурс в Web Bundle"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Добавить шаблон блокировки сетевых запросов"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Видео"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Достигнут лимит токенов аутентификации. Защита IP-адреса будет приостановлена."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "Защита IP-адреса включена."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Инструменты разработчика обходят защиту IP-адреса."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Функция защиты IP-адреса отключена."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Функция \"Список деидентифицированных доменов\" отключена."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Список деидентифицированных доменов не заполнен."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "Защита IP-адреса недоступна."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Временно обходить защиту IP-адреса для проверки"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Обход защиты IP-адреса"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Статус прокси-сервера для защиты IP-адреса"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Статус"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Статус неизвестен"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабильные эксперименты"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (ежегодная)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Добавление папки"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (ежемесячная)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Исключить из рабочей области"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (ежегодная)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Сопоставления определяются автоматически"
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (ежемесячная)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Удалить"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Рабочая область"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "(Отправлено в Google: {PH1})"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Стандартный план"
@@ -12678,10 +13161,10 @@
     "message": "Вы не вошли в Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Чтобы включить этот параметр, необходимо активировать синхронизацию настроек в Chrome."
+    "message": "Сначала нужно разрешить сохранять настройки Chrome в аккаунте Google."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Данные передаются в Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Соответствующие данные."
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Зарегистрироваться"
@@ -12692,8 +13175,11 @@
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Чтобы включить эту настройку, необходимо активировать синхронизацию Chrome."
   },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Когда вы получаете значок, мы отправляем в Google его идентификатор и активность, за которую значок был присвоен"
+  },
   "panels/settings/components/SyncSection.ts | viewProfile": {
-    "message": "Просмотреть профиль"
+    "message": "Открыть профиль"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Добавить свое устройство"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Показать быстрые клавиши"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Показать настройки рабочей области"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Рабочая область"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Связано с {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функция"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Стек функции"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Запрошен вызов функции в период простоя"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Источник"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Трассировка стека"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Завершено"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Сохранить"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Полностью включает содержимое всех загруженных скриптов, кроме расширений."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Сжать с помощью gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Сохранить трассировку…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Включает доступные карты исходного кода (в результате может быть раскрыт код, написанный разработчиком)."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Дополнительные настройки"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Остановить"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(анонимно)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Событие: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Фрейм"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Смещение макета"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "Соединение WebSocket закрыто"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "Соединение WebSocket установлено"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "Соединение WebSocket установлено: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Отменить postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Анимация"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Запущен фрейм анимации"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Асинхронный"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Асинхронная задача"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Код модуля кеша"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Кеширование кода скрипта"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Кешированный модуль Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Отключить фрейм анимации"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Отмена вызова функции в период простоя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Перенос"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Компиляция кода"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Компиляция модуля"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Компиляция скрипта"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Скомпилированный модуль Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Составные слои"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Рассчет пересечений"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Выполнение задачи через консоль"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Время консоли"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "Сборка мусора в C++"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Создать объект WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Расшифровка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Расшифровка ответа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Десериализация кеша кода"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Уничтожить WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Сводка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Краткий ответ"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "Сборка мусора DOM"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Событие DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Рисование фрейма"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Отрисовка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Обратный вызов встраивателя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Зашифровать"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Шифрование ответа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Оценка модуля"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Оценка скрипта"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Событие"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Временные метки события"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Взаимодействие"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Завершение загрузки"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Вызов функции в период простоя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Первое отображение"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Запуск фрейма"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Начало фрейма (основной поток)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Фрейм начал загружаться"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Вызов функции"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Событие сборки мусора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "Графический процессор"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Проверка нажатия"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Бездействует"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Расшифровка изображения"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Установка таймера"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Аннулировать макет"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "Фрейм JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Создание слоев"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Макет"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Смещение макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Кластер смещения макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Загрузка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Полная сборка мусора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Сообщения"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Быстрая сборка мусора"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "Сообщение о включении"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Событие onload"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Оптимизировать код"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Другое"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Отображение"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Отрисовка изображения"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Настройка отрисовки"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Отображение"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Синтаксический анализ и компиляция"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Синтаксический анализ HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Синтаксический анализ таблицы стилей"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Предварительная отрисовка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Ресурсопотребление профилирования"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Растрирование отрисовки"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Растрирование"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Повторный расчет стиля"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Прием данных"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Получение ответа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Получение подтверждения WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Удалить таймер"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Отрисовка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Запрос фрейма анимации"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Запрос вызова функции в период простоя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Запрос фрейма основного потока"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Запуск микрозадач"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Запустить postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Запланировать выполнение функции postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Запланировать postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Расписание пересчета стилей"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Выполнение скриптов"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Прокрутка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Отправка запроса"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Отправка подтверждения WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Подписание"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Подпись ответа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Потоковая передача задачи компиляции"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Потоковая передача ответа Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Система"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Задача"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Таймер запущен"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Временная метка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Обновление слоя"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Обновление дерева слоев"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Пользовательское время"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Подтвердить"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Проверка ответа"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Ожидание подключения к сети"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Совпадение в кеше модуля Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Недействительный кеш модуля Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Будет отправлен запрос"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Получение сообщения по протоколу WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Отправка сообщения по протоколу WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Загрузка XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Изменение XHR readyState"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Входит в список игнорирования для карты исходного кода"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} из {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Отключить поиск с учетом регистра"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Отключить \"Найти и заменить\""
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Отключить регулярные выражения"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Включить поиск с учетом регистра"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Включить \"Найти и заменить\""
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Включить регулярные выражения"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Найти"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Учитывать регистр"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 совпадение"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Учитывать слово целиком"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Заменить"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Показать предыдущий результат"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Использовать регулярное выражение"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Чтобы изменения настроек вступили в силу, перезапустите инструменты разработчика"

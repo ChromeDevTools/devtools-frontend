@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Desaktibatu Chrome-ren kolore-eskemarekin bat-etortzeko aukera"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Irabazi bereizgarriak"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Gaitu Ktrl + 1-9 lasterbideak panelak aldatzeko"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Gaitu ⌘ + 1-9 lasterbideak panelak aldatzeko"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Gaitu ezarpenen sinkronizazioa"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Bilatu hurrengo emaitza"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Aurreko panela"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Jaso bereizgarriak"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Kargatu berriro DevTools"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Eskuinean"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Gorde hauen ezarpenak zure Google-ko kontuan: DevTools"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Gaitu Bilatu idatzi ahala"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "berrezarri"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1} deskarga"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (cachetik)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Latentzia: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Latentzia: {PH1}. Deskarga-denbora: {PH2}. Guztira: {PH3}."
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Idatzi bide-izen bat"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem eginbideak ezin ditu irakurri fitxategiak."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Gehitu karpeta"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Ez sartu lan-eremuan"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Automatikoki ondorioztatzen dira esleipenak."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Kendu"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Lan-eremua"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Desgaitu sarearen eskaerak ez aplikatzeko aukera"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "idatzi berriro"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Erakutsi lan-eremuaren ezarpenak"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(anonimoa)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Lan-eremua"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Gertaera: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Markoa"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Diseinu-aldaketa"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket itxi da"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket ireki da"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket ireki da: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Utzi bertan behera postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animazioa"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Animazio-markoa abiarazita"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asinkronoa"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Zeregin asinkronoa"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Cacheko moduluaren kodea"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Cacheko scriptaren kodea"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Cachean dagoen WASM modulua"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Utzi bertan behera animazio-markoa"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Utzi dei bidezko erantzun inaktiboa"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Bidali"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Konpilatu kodea"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Konpilatu modulua"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Konpilatu scripta"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Konpilatutako WASM modulua"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Geruza konposatuak"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Kalkulatu bidegurutzeak"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Exekutatu kontsolaren zeregina"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Kontsola-denbora"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Sortu WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Desenkriptatu"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Desenkriptatu erantzuna"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Irakurri kode-cachea"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Suntsitu WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Laburpena"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Laburpenaren erantzuna"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOMen zabor-biltzailea"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded gertaera"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Marraztu markoa"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Marrazketa"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Kapsulatzearen dei bidezko erantzunak"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Enkriptatu"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Enkriptatu erantzuna"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Ebaluatu modulua"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Ebaluatu scripta"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Gertaera"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Gertaeraren denbora"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Eskarmentua"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Amaitu kargatzen"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Abiarazi dei bidezko erantzun inaktiboa"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "Lehen errendatze edukiduna"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Lehen errendatzea"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Markoaren hasiera"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Markoaren hasiera (hari nagusia)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Markoa kargatzen hasi da"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Funtzioa abiarazteko eskaera"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Hondar-memoriaren bilketaren gertaera"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPUa"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Posizionamendu-proba"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Inaktibo"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Deskodetu irudia"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Instalatu tenporizadorea"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Baliogabetu diseinua"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS-ko markoa"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Errendatze edukidun handiena"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Geruzak kalkulatzea"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Diseinua"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Diseinu-aldaketa"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Diseinu-aldaketen lukua"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Kargatzen"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "GC nagusia"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Mezuak"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Bigarren mailako GC"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "Mezuan"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Kargatzeko gertaera"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Optimizatu kodea"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Beste bat"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Errendatzea"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Errendatze-irudia"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Errendatzearen konfigurazioa"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Errendatzea"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Analizatu eta konpilatu"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Analizatu HTMLa"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Analizatu estilo-orria"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Errendatze aurreko urratsa"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Profilen ebaluazioaren gainkarga"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Egin errendatzearen bit-mapen irudia"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Bit-mapen irudia egitea"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Kalkulatu estiloa berriro"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Jaso datuak"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Jaso erantzuna"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Jaso WebSocket-en konexio-hitzarmena"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Kendu tenporizadorea"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Errendatzea"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Eskatu animazio-markoa"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Eskatu dei bidezko erantzun inaktiboa"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Eskatu hariaren marko nagusia"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Exekutatu mikrozereginak"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Exekutatu postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Programatu postMessage bat"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Programatu postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Programatu estiloa berriro kalkulatzeko prozesua"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Scriptgintza"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Egin gora edo behera"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Bidali eskaera"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Bidali WebSocket-eko konexio-hitzarmena"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Sinatu"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Sinadura duen erantzuna"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Fitxategi osoa deskargatu baino lehen konpilatzen hasteko zeregina"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "WASM erantzuna igortzea"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Sistema"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Zeregina"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Tenporizadorea abiarazi da"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Denbora-zigilua"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Eguneratu geruza"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Eguneratu geruzen zuhaitza"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Erabiltzailearen denbora"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Egiaztatu"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Egiaztatu erantzuna"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Sarera konektatzeko zain"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "WASM moduluaren cachearen posizionamendua"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "WASM moduluaren cachea baliogabea da"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Eskaera bidaliko da"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Jaso WebSocket-eko mezu bat"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Bidali WebSocket-eko mezu bat"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR kargatzea"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState aldaketa"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animazioa"
@@ -1941,7 +2307,7 @@
     "message": "Edukiaren doikuntza dinamiko behartu bat gertatzen da JavaScript-eko kontsultek propietate geometrikoak erabiltzen dituztenean (adibidez, offsetWidth), estiloak DOMaren egoeran aldaketa baten ondorioz baliogabetu ondoren. Baliteke horren ondorioz errendimendua okertzea. Lortu [edukiaren doikuntza dinamiko behartuei](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) eta arintze posibleei buruzko informazio gehiago."
   },
   "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Pilaren arrasto-txostena"
+    "message": "Pilaren arrastoa"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Edukiaren doikuntza dinamiko behartua"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri WebRTC erabiltzen duten orrietan."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, WebRTC erabili delako."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Une honetan, aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri WebShare erabiltzen duten orrietan."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri WebSocket erabiltzen duten orrietan."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, WebSocket erabili delako."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri WebTransport erabiltzen duten orrietan."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, WebTransport erabili delako."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Une honetan, aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri WebXR erabiltzen duten orrietan."
@@ -4710,7 +5085,7 @@
     "message": "(opakua)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Jatorria"
+    "message": "Markoaren jatorria"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Iraunkorra da"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Erakutsi aldaketak"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "{PH1} bereizgarria lortu duzu! Zure garatzaile-profilean gehitu da."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Itxi"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Sortu profil bat"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Kudeatu ezarpenak"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Aktibatu bereizgarriak"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Gogorarazi geroago"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "{PH1} bereizgarria lortu duzu honengatik: {PH2}. Hura eskuratzeko, sortu profil bat."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "{PH1} bereizgarria lortu duzu honengatik: {PH2}. Hura eskatzeko, aktibatu bereizgarriak."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Ikusi profila"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Utzi"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Kontuan hartu beharrekoak"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Utzi"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Edukiaren gidalerroak"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Zure arrakastarako diseinatua"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Garatu zure gaitasunak, sortu gauzak AA erabiliz eta lortu bereizgarriak zure garatzaile-profilean erakusteko"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google Developer Program-en izena emateko leihoa"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Bidali berritasunak"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Garatzaileentzako tresnetako eginbide, gertaeretarako gonbidapen eta estatistika egokitu berrienak zuzenean sarrera-ontzian izango dituzu"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Lortu informazio gehiago"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Lortu informazio gehiago Google Developer Program-i buruz"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Pribatutasun-gidalerroak"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Erregistratu"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Ezin izan da sortu Google Developer Program-eko profila. Saiatu berriro geroago."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Egokitu profila"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Zure Google-ko kontuaren izena eta interesak erabiliko dira Google-ren garatzaile-profila eratzeko. Baliteke zure izena agertzea zure ekarpenak dituzten tokietan, eta edonoiz alda daiteke."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Garatzaile-profila sortuz gero, onartu egingo dituzu {PH1}. Google-ren {PH2} eta {PH3} zerbitzu honen erabilerari aplikatuko zaizkie."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Zerbitzu-baldintzak"
   },
   "panels/common/common.ts | allow": {
     "message": "Eman baimena"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Desgaitu gora/behera egiteko atxikitzearen gainjartzea"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Desgaitu @starting-style modua"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Banatu elementuak uniformeki"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Gaitu gora/behera egiteko atxikitzearen gainjartzea"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Gaitu @starting-style modua"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Zabaldu modu errepikarian"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Signed HTTP Exchange-tik eman da. Baliabidearen tamaina: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Web sortatik eskainia. Baliabidearen tamaina: {PH1}."
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Eskaeraren egoera ezin da erakutsi hemen, hura jaulki duen orria deskargatu egin delako eskaera abian zen bitartean. chrome://net-export erabil dezakezu sarearen erregistro bat kapturatzeko eta eskaeraren xehetasun guztiak ikusteko."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web sorta)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web sortaren errorea"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Web sortatik dator"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Konexioari buruzko informazioa"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Abiarazlearen helbidearen eremua"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Iragarkiekin erlazionatuta dago"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Latentzia"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(signed-exchange teknologiatik)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(web sortatik)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Orokorrak"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Baliabide hau beste webgune batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Baliabide multzokatua"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Gehitu sareko eskaerak blokeatzeko eredua"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Bideoa"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Autentifikazio-tokenen mugara iritsi zara. IParen babesa pausatuko da."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IParen babesa gaituta eta aktibo dago."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Garatzaileentzako tresnek IParen babesa saihesten dute."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "IParen babesaren eginbidea ez dago gaituta."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Masked Domain List eginbidea ez dago gaituta."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Masked Domain List ez dago automatikoki beteta."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IParen babesa ez dago erabilgarri."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Saihestu IParen babesa aldi baterako probak egiteko"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Saihestu IParen babesa"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IParen babeserako proxy-aren egoera"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "Identifikatzailea"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Egoera"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Egoera ezezaguna"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URLa"
@@ -12396,10 +12867,10 @@
     "message": "Indartu produktibitatea AA erabiliz"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Kode-iradokizunak sortzeko, kontsolan emandako informazioa, oraingo kontsola-saioaren historia, unean ikuskatzen ari zaren CSSa eta irekita dagoen fitxategiaren edukiak Google-rekin partekatzen dira. Baliteke datu horiek gizakiak diren berrikusleek ikustea, eginbidea hobetzeko."
+    "message": "Kode-iradokizunak sortzeko, kontsolan emandako informazioa, oraingo kontsola-saioaren historia, ikuskatzen ari zaren CSSa eta irekita dagoen fitxategiaren edukiak Google-rekin partekatzen dira. Baliteke datu horiek gizakiak diren berrikusleek ikustea, eginbidea hobetzeko."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Kode-iradokizunak sortzeko, kontsolan emandako informazioa, oraingo kontsola-saioaren historia, unean ikuskatzen ari zaren CSSa eta irekita dagoen fitxategiaren edukiak Google-rekin partekatzen dira. Datuok ez dira erabiliko Google-ren AAko ereduak hobetzeko. Ezarpen horiek edonoiz alda ditzake erakundeak."
+    "message": "Kode-iradokizunak sortzeko, kontsolan emandako informazioa, oraingo kontsola-saioaren historia, ikuskatzen ari zaren CSSa eta irekita dagoen fitxategiaren edukiak Google-rekin partekatzen dira. Datuok ez dira erabiliko Google-ren AAko ereduak hobetzeko. Ezarpen horiek edonoiz alda ditzake erakundeak."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Azalpenak sortzeko, kontsolako mezua, lotutako pilaren arrastoa, erlazionatutako iturburu-kodea eta lotutako sareko goiburuak Google-ra bidaltzen dira. Baliteke datu horiek gizakiak diren berrikusleek ikustea, eginbidea hobetzeko."
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Esperimentu ezegonkorrak"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (urtero)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Gehitu karpeta"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (hilero)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Ez sartu lan-eremuan"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (urtero)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Automatikoki ondorioztatzen dira esleipenak."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (hilero)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Kendu"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Lan-eremua"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} Google-ra bidaltzen dira)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Profesionala"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Kidetza estandarra"
@@ -12678,19 +13161,22 @@
     "message": "Ez daukazu saioa hasita Chrome-n."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Ezarpen hau aktibatzeko, lehenik, ezarpenen sinkronizazioa gaitu behar duzu Chrome-n."
+    "message": "Lehenik, hauen ezarpenak zure Google-ko kontuan gordetzeko aukera gaitu behar duzu: Chrome."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Datu garrantzitsuak Google-ra bidaltzen dira)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Erlazionatutako datuak"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
-    "message": "Eman izena"
+    "message": "Erregistratu"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Kontu honekin hasi duzu saioa Chrome-n:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Ezarpen hau aktibatzeko, Chrome-ren sinkronizazioa gaitu behar duzu."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Bereizgarri bat lortzen duzunean, haren identifikatzailea eta bereizgarria lortzeko egin duzun jarduera mota Google-ri bidaltzen zaizkio"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Ikusi profila"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Erakutsi lasterbideak"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Erakutsi lan-eremuaren ezarpenak"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Lan-eremua"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Honekin lotuta: {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Funtzioa"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Funtzioen pila"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Dei bidezko erantzun inaktiboa eskatu da"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Iturburua"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Pilaren arrasto-txostena"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Zuzenean igorria"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Gorde"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Kargatutako script guztien eduki osoa sartzen da (luzapenena izan ezik)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Konprimatu gzip erabiliz"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Gorde arrastoa…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Iturburu-mapa erabilgarriak sartzen dira (baliteke sortutako kodea ikusgai ezartzea)."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Aurreratuak"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Gelditu"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(anonimoa)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Gertaera: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Markoa"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Diseinu-aldaketa"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket itxi da"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket ireki da"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket ireki da: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Utzi bertan behera postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animazioa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Animazio-markoa abiarazita"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asinkronoa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Zeregin asinkronoa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Cacheko moduluaren kodea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Cacheko scriptaren kodea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Cachean dagoen WASM modulua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Utzi bertan behera animazio-markoa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Utzi dei bidezko erantzun inaktiboa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Bidali"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Konpilatu kodea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Konpilatu modulua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Konpilatu scripta"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Konpilatutako WASM modulua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Geruza konposatuak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Kalkulatu bidegurutzeak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Exekutatu kontsolaren zeregina"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Kontsola-denbora"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Sortu WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Desenkriptatu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Desenkriptatu erantzuna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Irakurri kode-cachea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Suntsitu WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Laburpena"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Laburpenaren erantzuna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOMen zabor-biltzailea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded gertaera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Marraztu markoa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Marrazketa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Kapsulatzearen dei bidezko erantzunak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Enkriptatu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Enkriptatu erantzuna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Ebaluatu modulua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Ebaluatu scripta"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Gertaera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Gertaeraren denbora"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Eskarmentua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Amaitu kargatzen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Abiarazi dei bidezko erantzun inaktiboa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "Lehen errendatze edukiduna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Lehen errendatzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Markoaren hasiera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Markoaren hasiera (hari nagusia)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Markoa kargatzen hasi da"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Funtzioa abiarazteko eskaera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Hondar-memoriaren bilketaren gertaera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPUa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Posizionamendu-proba"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Inaktibo"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Deskodetu irudia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Instalatu tenporizadorea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Baliogabetu diseinua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS-ko markoa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Errendatze edukidun handiena"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Geruzak kalkulatzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Diseinua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Diseinu-aldaketa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Diseinu-aldaketen lukua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Kargatzen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "GC nagusia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Mezuak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Bigarren mailako GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "Mezuan"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Kargatzeko gertaera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Optimizatu kodea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Beste bat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Errendatzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Errendatze-irudia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Errendatzearen konfigurazioa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Errendatzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Analizatu eta konpilatu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Analizatu HTMLa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Analizatu estilo-orria"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Errendatze aurreko urratsa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Profilen ebaluazioaren gainkarga"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Egin errendatzearen bit-mapen irudia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Bit-mapen irudia egitea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Kalkulatu estiloa berriro"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Jaso datuak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Jaso erantzuna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Jaso WebSocket-en konexio-hitzarmena"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Kendu tenporizadorea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Errendatzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Eskatu animazio-markoa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Eskatu dei bidezko erantzun inaktiboa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Eskatu hariaren marko nagusia"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Exekutatu mikrozereginak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Exekutatu postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Programatu postMessage bat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Programatu postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Programatu estiloa berriro kalkulatzeko prozesua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Scriptgintza"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Egin gora edo behera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Bidali eskaera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Bidali WebSocket-eko konexio-hitzarmena"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Sinatu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Sinadura duen erantzuna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Fitxategi osoa deskargatu baino lehen konpilatzen hasteko zeregina"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "WASM erantzuna igortzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Sistema"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Zeregina"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Tenporizadorea abiarazi da"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Denbora-zigilua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Eguneratu geruza"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Eguneratu geruzen zuhaitza"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Erabiltzailearen denbora"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Egiaztatu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Egiaztatu erantzuna"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Sarera konektatzeko zain"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "WASM moduluaren cachearen posizionamendua"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "WASM moduluaren cachea baliogabea da"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Eskaera bidaliko da"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Jaso WebSocket-eko mezu bat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Bidali WebSocket-eko mezu bat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR kargatzea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState aldaketa"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "ignoreList gisa markatu da iturburu-mapan"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Desgaitu maiuskulak eta minuskulak bereiziz bilatzeko aukera"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Desgaitu bilatu eta ordezteko aukera"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Desgaitu adierazpen erregularrak"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Gaitu maiuskulak eta minuskulak bereiziz bilatzeko aukera"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Bilatu eta ordeztu"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Gaitu adierazpen erregularrak"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Bilatu"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Izan kontuan maiuskulak eta minuskulak"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 bat-etortze"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Bat etorrarazi hitz osoa"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Ordeztu"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Erakutsi aurreko emaitza"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Erabili adierazpen erregularra"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ezarpen bat edo gehiago aldatu direnez, berriro kargatu behar dira garatzaileentzako tresnak"

@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Не зіставляти з колірною схемою Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Отримувати значки"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Увімкнути комбінації клавіш Ctrl + 1–9, щоб переходити між панелями"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Увімкнути комбінації клавіш ⌘ + 1–9, щоб переходити між панелями"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Увімкнути синхронізацію налаштувань"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Знайти наступний результат"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Попередня панель"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Отримувати значки"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Перезавантажити Інструменти розробника"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Праворуч"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Зберегти налаштування, які зараз мають DevTools, в обліковому записі Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Увімкнути пошук під час введення"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "скинути"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Завантаження: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (з кешу)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (джерело: ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Затримка {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Затримка: {PH1}, завантаження: {PH2} (усього: {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Укажіть шлях"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem не вдається прочитати файли."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Додати папку"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Виключити з робочої області"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Зіставлення отримуються автоматично."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Видалити"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Робоча область"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Вимкнути перевизначення запитів мережі"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "переписати"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Показати налаштування робочої області"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(анонімно)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Робоча область"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Подія: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Фрейм"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Зміщення макета"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket закрито"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket відкрито"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket відкрито: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Скасовано подію із застосуванням postTask API"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Анімація"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Активовано фрейм з анімацією"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Асинхронізація"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Асинхронне завдання"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Код модуля кешу"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Код скрипту кешу"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Кешовано модуль Wasm"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Скасувати фрейм анімації"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Скасування неактивного зворотного виклику"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Надсилання"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Компілювання коду"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Компілювання модуля"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Компілювання скрипту"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Скомпільовано модуль Wasm"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Компонування шарів"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Обчислення перетинів"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Виконати завдання в консолі"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Час консолі"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "Збір сміття C++"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Створити WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Дешифрування"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Дешифрування відповіді"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Десеріалізація кешу коду"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Знищити WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Дайджест"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Зведення відповіді"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "Збір сміття DOM"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "Подія DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Малювання фрейму"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Малювання"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Зворотний виклик інструмента вставки"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Шифрування"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Шифрування відповіді"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Оцінювання модуля"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Оцінювання скрипту"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Подія"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Часові межі події"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Зручність"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Кінець завантаження"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Запуск неактивного зворотного виклику"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Перша візуалізація"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Початок фрейму"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Початок фрейму (основний потік)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Початок завантаження фрейму"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Виклик функції"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Подія збору сміття"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "ГП"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Перевірка натиску"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Бездіяльність"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Розкодування зображення"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Встановлення таймера"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Анулювання макета"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "Фрейм JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Візуалізація великого контенту"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Шарування"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Макет"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Зміщення макета"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Кластер зміщення макета"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Завантаження"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Повний збір сміття"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Повідомлення"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Скорочений збір сміття"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "У повідомленні"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Подія onload"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Оптимізація коду"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Інше"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Візуалізація"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Візуалізація зображення"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Налаштування візуалізації"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Візуалізація"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Синтаксичний аналіз і компілювання"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Синтаксичний аналіз HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Синтаксичний аналіз таблиці стилів"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Попередня візуалізація"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Час, витрачений на виконання операції, коли профілювальник активний"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Растрування візуалізації"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Растеризація"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Повторне обчислення стилю"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Отримання даних"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Отримання відповіді"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Підтвердження встановлення зв’язку з WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Видалення таймера"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Відрисовка"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Запит на фрейм анімації"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Запит на неактивний зворотний виклик"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Запит на фрейм основного потоку"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Запуск мікрозавдань"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Активовано подію із застосуванням postTask API"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Запланувати за допомогою postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Заплановано подію із застосуванням postTask API"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Планування повторного обчислення стилів"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Створення скриптів"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Прокручувати"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Надсилання запиту"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Надсилання запиту на встановлення зв’язку з WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Підписання"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Підписання відповіді"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Потокове передавання завдання компіляції"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Потокове передавання відповіді Wasm"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Система"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Завдання"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Таймер активовано"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Позначка часу"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Оновлення шару"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Оновлення дерева шарів"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Користувацький час"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Підтвердження"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Підтвердження відповіді"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Очікування на мережу"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Наявність даних у кеші модуля Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Недійсний кеш модуля Wasm"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Буде надіслано запит"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Отримати повідомлення WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Надсилання повідомлення WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Завантаження XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Зміна властивості readyState XHR"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Анімація"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Сторінки з WebRTC не можна додавати у зворотний кеш."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Зворотний кеш вимкнено, оскільки використовується WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Сторінки, які використовують WebShare, наразі не підходять для зворотного кешу."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Сторінки з WebSocket не можна додавати у зворотний кеш."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Зворотний кеш вимкнено, оскільки використовується WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Сторінки з WebTransport не можна додавати у зворотний кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Зворотний кеш вимкнено, оскільки використовується WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Сторінки, які використовують WebXR, наразі не підходять для зворотного кешу."
@@ -4710,7 +5085,7 @@
     "message": "(непрозоро)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Джерело"
+    "message": "Джерело фрейму"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Постійна"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Показати \"Зміни\""
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Ви отримали значок \"{PH1}\"! Його додано у ваш Профіль розробника."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Закрити"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Створити профіль"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Керувати налаштуваннями"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Увімкнути значки"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Нагадати пізніше"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Вам присвоєно значок \"{PH1}\" за виконання такої дії: {PH2}. Щоб отримати його, створіть профіль."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Вам присвоєно значок \"{PH1}\" за виконання такої дії: {PH2}. Щоб отримати його, увімкніть значки у своєму профілі."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Переглянути профіль"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Скасувати"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Що варто врахувати"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Скасувати"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "правила щодо контенту"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Цю програму створено, щоб сприяти вашому успіху"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Удосконалюйте свої навички, розробляйте продукти за допомогою ШІ й отримуйте значки, які відображатимуться в Профілі розробника"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Вікно реєстрації в програмі Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Отримувати оновлення"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Отримуйте сповіщення про найновіші функції Інструментів розробника, запрошення на події і персоналізовану статистику електронною поштою"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Докладніше"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Докладніше про Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Політика конфіденційності"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Зареєструватися"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Не вдалося створити профіль у Google Developer Program. Спробуйте пізніше."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Персоналізуйте свій профіль"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Ім’я і інтереси, які ви вказали в обліковому записі Google, використовуватимуться у вашому Профілі розробника Google. Ваше ім’я може відображатися, коли ви виконуватимете якусь дію. Його можна будь-коли змінити."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Створюючи Профіль розробника, ви приймаєте наші {PH1}. Застосовуються {PH2} й {PH3} Google."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Умови використання"
   },
   "panels/common/common.ts | allow": {
     "message": "Дозволити"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Вимкнути оверлей scroll-snap"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Вимкнути режим @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Розподіли об’єкти рівномірно"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Увімкнути оверлей scroll-snap"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Увімкнути режим @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Розгорнути рекурсивно"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Показано за допомогою технології Signed HTTP Exchange, розмір ресурсу: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Показано з Web Bundle, розмір ресурсу: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Не можна відобразити статус запиту, оскільки сторінку, яка його відправила, було вивантажено під час виконання запиту. На сторінці chrome://net-export можна записати журнал мережі та переглянути деталі запиту."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Помилка Web Bundle"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Отримано з Web Bundle"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Інформація про підключення"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Адресний простір ініціатора"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Пов’язано з рекламою"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Затримка"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(джерело: Signed Exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(з Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Загальні"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Щоб скористатися цим ресурсом з іншого сайту, сервер може послабити конфігурацію Cross-Origin Resource Policy в заголовку відповіді:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Ресурс у пакеті"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Додати шаблон блокування запитів мережі"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Відео"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Ви досягли ліміту маркерів автентифікації. Захист IP-адреси буде призупинено."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "Захист IP-адреси ввімкнено й активовано."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Інструменти розробника ігнорують захист IP-адреси."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Захист IP-адреси не ввімкнено."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Список замаскованих доменів не ввімкнено."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Список замаскованих доменів не заповнено."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "Захист IP-адреси недоступний."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Тимчасово ігнорувати захист IP-адреси під час тестування"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Ігнорувати захист IP-адреси"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Статус проксі-сервера для захисту IP-адреси"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "Ідентифікатор"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Статус"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Статус невідомий"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL-адреса"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабільні експерименти"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (річний план)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Додати папку"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (місячний план)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Виключити з робочої області"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (річний план)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Зіставлення отримуються автоматично."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (місячний план)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Видалити"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Робоча область"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} надсилаються в Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Стандартний план"
@@ -12678,10 +13161,10 @@
     "message": "Ви не ввійшли в Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Щоб увімкнути це налаштування, спершу потрібно ввімкнути синхронізацію налаштувань у Chrome."
+    "message": "Спершу потрібно ввімкнути зберігання налаштувань Chrome в обліковому записі Google."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Відповідні дані надсилаються в Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Відповідні дані"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Зареєструватися"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Щоб активувати це налаштування, потрібно ввімкнути синхронізацію Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Коли ви отримуєте значок, його ідентифікатор і тип дії, за яку його присвоєно, надсилаються в Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Переглянути профіль"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Показати комбінації клавіш"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Показати налаштування робочої області"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Робоча область"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Зв'язано з адресою {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функція"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Стек функцій"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Надіслано запит на неактивний зворотний виклик"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Джерело"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Трасування стека"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Передано"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Зберегти"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Включає контент усіх завантажених скриптів (крім розширень)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Стиснути за допомогою Gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Зберегти трасування…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Включає доступні карти джерел, які можуть розкривати авторський код."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Розширені"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Зупинити"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(анонімно)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Подія: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Фрейм"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Зміщення макета"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket закрито"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket відкрито"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket відкрито: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Скасовано подію із застосуванням postTask API"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Анімація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Активовано фрейм з анімацією"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Асинхронізація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Асинхронне завдання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Код модуля кешу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Код скрипту кешу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Кешовано модуль Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Скасувати фрейм анімації"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Скасування неактивного зворотного виклику"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Надсилання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Компілювання коду"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Компілювання модуля"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Компілювання скрипту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Скомпільовано модуль Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Компонування шарів"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Обчислення перетинів"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Виконати завдання в консолі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Час консолі"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "Збір сміття C++"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Створити WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Дешифрування"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Дешифрування відповіді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Десеріалізація кешу коду"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Знищити WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Дайджест"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Зведення відповіді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "Збір сміття DOM"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Подія DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Малювання фрейму"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Малювання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Зворотний виклик інструмента вставки"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Шифрування"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Шифрування відповіді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Оцінювання модуля"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Оцінювання скрипту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Подія"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Часові межі події"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Зручність"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Кінець завантаження"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Запуск неактивного зворотного виклику"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Перша візуалізація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Початок фрейму"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Початок фрейму (основний потік)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Початок завантаження фрейму"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Виклик функції"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Подія збору сміття"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "ГП"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Перевірка натиску"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Бездіяльність"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Розкодування зображення"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Встановлення таймера"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Анулювання макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "Фрейм JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Візуалізація великого контенту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Шарування"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Макет"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Зміщення макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Кластер зміщення макета"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Завантаження"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Повний збір сміття"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Повідомлення"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Скорочений збір сміття"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "У повідомленні"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Подія onload"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Оптимізація коду"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Інше"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Візуалізація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Візуалізація зображення"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Налаштування візуалізації"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Візуалізація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Синтаксичний аналіз і компілювання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Синтаксичний аналіз HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Синтаксичний аналіз таблиці стилів"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Попередня візуалізація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Час, витрачений на виконання операції, коли профілювальник активний"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Растрування візуалізації"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Растеризація"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Повторне обчислення стилю"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Отримання даних"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Отримання відповіді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Підтвердження встановлення зв’язку з WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Видалення таймера"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Відрисовка"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Запит на фрейм анімації"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Запит на неактивний зворотний виклик"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Запит на фрейм основного потоку"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Запуск мікрозавдань"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Активовано подію із застосуванням postTask API"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Запланувати за допомогою postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Заплановано подію із застосуванням postTask API"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Планування повторного обчислення стилів"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Створення скриптів"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Прокручувати"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Надсилання запиту"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Надсилання запиту на встановлення зв’язку з WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Підписання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Підписання відповіді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Потокове передавання завдання компіляції"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Потокове передавання відповіді Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Система"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Завдання"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Таймер активовано"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Позначка часу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Оновлення шару"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Оновлення дерева шарів"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Користувацький час"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Підтвердження"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Підтвердження відповіді"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Очікування на мережу"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Наявність даних у кеші модуля Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Недійсний кеш модуля Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Буде надіслано запит"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Отримати повідомлення WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Надсилання повідомлення WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Завантаження XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Зміна властивості readyState XHR"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Має позначку ignoreList на карті джерела"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} з {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Вимкнути пошук з урахуванням регістру"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Вимкнути функцію пошуку й заміни"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Вимкнути регулярні вирази"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Увімкнути пошук з урахуванням регістру"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Знайти й замінити"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Увімкнути регулярні вирази"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Пошук"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Враховувати регістр"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 збіг"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Точний збіг зі словом"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Замінити"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Показати попередній результат"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Використовувати регулярний вираз"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Принаймні одне налаштування змінено. Щоб зміни набули чинності, оновіть сторінку."

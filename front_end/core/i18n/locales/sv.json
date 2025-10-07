@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Matcha inte Chromes färgschema"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Få märken"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Aktivera kortkommandot Ctrl + 1–9 för att byta panel"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Aktivera kortkommandot ⌘ + 1–9 för att byta panel"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Aktivera synkronisering av inställningar"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Hitta nästa resultat"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Föregående panel"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Ta emot märken"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Läs in Verktyg för programmerare igen"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Höger"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Spara DevTools-inställningar i ditt Google-konto"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Aktivera funktionen Sök medan du skriver"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "återställ"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Nedladdning: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (från cacheminnet)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (från ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "{PH1} fördröjning"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "{PH1} fördröjning, {PH2} nedladdning ({PH3} totalt)"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Ange en sökväg"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem kan inte läsa filer."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Lägg till mapp"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Uteslut från arbetsytan"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Mappningar härleds automatiskt."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Ta bort"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Arbetsyta"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Inaktivera åsidosättning av nätverksförfrågningar"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "skriv om"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Visa inställningar för arbetsyta"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(anonym)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Arbetsyta"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Händelse: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Ram"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Layoutförskjutning"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket har stängts"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket har öppnats"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket har öppnats: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Avbryt postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animation"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Animationsram har aktiverats"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asynkront"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Asynkron uppgift"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Cachelagra modulkod"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Cachelagra skriptkod"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Cachad Wasm-modul"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Avbryt animationsram"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Avbryt inaktivt återanrop"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Bekräfta"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Kompilera kod"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Kompilera modul"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Kompilera skript"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Kompilerad Wasm-modul"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Sammansatta lager"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Beräkna skärningspunkter"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Kör konsoluppgift"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Tid i konsol"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Skapa WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Dekryptera"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Dekryptera svar"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Deserialisera kodcacheminnet"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Förstör WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Kondensat"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Kondensatsvar"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "Skräpinsamling för DOM"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded-händelse"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Uppritning av ram"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Ritning"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Återanrop för inbäddning"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Kryptera"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Kryptera svar"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Utvärdera modul"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Utvärdera skript"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Händelse"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Tidskod för händelse"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Upplevelse"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Slutför inläsning"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Aktivera inaktivt återanrop"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Första renderingen"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Start för ram"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Ramens start (huvudtråd)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Ramen började läsas in"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Funktionsanrop"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Händelse för skräpinsamling"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "Grafikprocessor"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Träfftest"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Inaktiv"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Bildavkodning"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Installera timer"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Ogiltigförklara layout"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS-ram"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Skapa preliminära lager"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Layout"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Layoutförskjutning"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Kluster med layoutförskjutningar"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Läser in"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Stor skräpinsamling"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Meddelanden"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Mindre skräpinsamling"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "I meddelandet"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Inläsningshändelse"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Optimera kod"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Annat"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Uppritning"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Uppritning av bild"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Konfigurering av uppritning"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Uppritning"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Analysera och kompilera"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Analysera HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Analysera formatmall"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Förberedelse inför uppritning"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Profilanvändning"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Rastrera uppritning"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Rastrering"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Räkna om format"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Ta emot data"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Ta emot svar"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Ta emot WebSocket-handskakning"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Ta bort timer"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Renderar"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Begär animationsram"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Begär inaktivt återanrop"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Begär ram i huvudtråd"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Kör mikrouppgifter"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Aktivera postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Schemalägg postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Schemalägg postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Schemalägg formatomräkning"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Skriptning"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Scrolla"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Skicka begäran"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Skicka WebSocket-handskakning"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Signera"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Signera svar"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Kompileringsuppgift för streaming"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Streamar Wasm-svar"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "System"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Uppgift"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Timern har aktiverats"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Tidsstämpel"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Uppdatera lager"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Uppdatera lagerträd"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Användartimer"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Verifiera"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Verifiera svar"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Väntar på nätverket"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Cacheminnesträff för Wasm-modul"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Ogiltigt cacheminne för Wasm-modul"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Ska skicka begäran"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Ta emot WebSocket-meddelande"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Skicka WebSocket-meddelande"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR-inläsning"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "Förändring av readyState i XHR"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animation"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Sidor med WebRTC kan inte lagras i vilocacheminnet."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Vilocacheminnet har inaktiverats eftersom WebRTC har använts."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Sidor som använder WebShare kan för närvarande inte placeras i vilocacheminnet."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Sidor med WebSocket kan inte lagras i vilocacheminnet."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Vilocacheminnet har inaktiverats eftersom WebSocket har använts."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Sidor med WebTransport kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Vilocacheminnet har inaktiverats eftersom WebTransport har använts."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Sidor som använder WebXR kan för närvarande inte placeras i vilocacheminnet."
@@ -4710,7 +5085,7 @@
     "message": "(ogenomskinlig)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Ursprung"
+    "message": "Ramens ursprung"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Är bestående"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Visa ändringar"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Du har fått {PH1}-märket! Det har lagts till i din utvecklarprofil."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Stäng"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Skapa profil"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Hantera inställningar"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Aktivera märken"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Påminn mig senare"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Du har fått {PH1}-märket för {PH2}! Skapa en profil för att hämta märket."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Du har fått {PH1}-märket för {PH2}! Aktivera märken för att hämta det."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Visa profil"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Avbryt"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Tänk på detta"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Avbryt"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Innehållspolicy"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Utformad för att du ska lyckas"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Utveckla dina färdigheter, skapa med AI och få märken som du kan visa upp i din utvecklarprofil"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Dialogruta för registrering i Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Håll mig uppdaterad"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "De senaste funktionerna i Verktyg för programmerare, inbjudningar till event och anpassade insikter hamnar direkt i inkorgen"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Läs mer"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Läs mer om Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "integritetspolicy"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Registrera dig"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Det gick inte att skapa din profil i Google Developer Program. Försök igen senare."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Anpassa din profil"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Namnet på ditt Google-konto och dina intressen används i din Google-utvecklarprofil. Ditt namn kan visas där du bidrar och kan ändras när som helst."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Genom att skapa en utvecklarprofil godkänner du {PH1}. Googles {PH2} och {PH3} gäller för din användning av den här tjänsten."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Användarvillkor"
   },
   "panels/common/common.ts | allow": {
     "message": "Tillåt"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Inaktivera överlagring med scroll-snap"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Inaktivera läget @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Fördela objekten jämnt"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Aktivera överlagring med scroll-snap"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Aktivera läget @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Utöka rekursivt"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Visas från Signed HTTP Exchange, resursstorlek: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Visas från Web Bundle, resursstorlek: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Det går inte att visa status för begäran här, eftersom sidan som begäran skickades från togs bort från minnet medan begäran bearbetades. Du kan göra en nätverkslogg med chrome://net-export och se all information om förfrågningar."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle-fel"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Skickades från ett Web Bundle"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Anslutningsinformation"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Utrymme för adress för initierare"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Är annonsrelaterat"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Fördröjning"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(från signed-exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(från Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Allmänt"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Om du vill använda den här resursen från en annan webbplats kan servern släppa på svarshuvudet för principen om resurser med korsursprung:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Resurs i arkiv"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Lägg till blockeringsmönster för nätverksbegäran"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Gränsen för autentiseringstokens har nåtts. IP-skydd pausas."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP-skydd är aktiverat och aktivt."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "IP-skyddet kringgås av Verktyg för programmerare."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Funktionen IP-skydd är inte aktiverad."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Funktionen Maskerad domänlista är inte aktiverad."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Listan över maskerade domäner är inte ifylld."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP-skydd är inte tillgängligt."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Kringgå IP-skyddet tillfälligt för testning"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Kringgå IP-skydd"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Proxystatus för IP-skydd"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Status"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Okänd status"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "Webbadress"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Instabila experiment"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (årsprenumeration)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Lägg till mapp"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (månadsprenumeration)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Uteslut från arbetsytan"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (årsprenumeration)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Mappningar härleds automatiskt."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (månadsprenumeration)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Ta bort"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Arbetsyta"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} skickas till Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Standardprenumeration"
@@ -12678,10 +13161,10 @@
     "message": "Du är inte inloggad i Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Du måste aktivera synkronisering av inställningar i Chrome innan du kan aktivera den här inställningen."
+    "message": "Du måste först aktivera att Chrome-inställningar sparas i ditt Google-konto."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Relevant data skickas till Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Relevant data"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Registrera dig"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Du måste aktivera synkronisering i Chrome innan du kan aktivera den här funktionen."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "När du uppfyller kraven för ett märke skickas märkesidentifieraren och typen av aktivitet som du utförde för att få märket till Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Visa profil"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Visa kortkommandon"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Visa inställningar för arbetsyta"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Arbetsyta"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Länkat till {PH1}"
@@ -14517,7 +15009,7 @@
     "message": "Dölj tyngsta stack"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "Matcha stor eller liten bokstav"
+    "message": "Matcha skiftläge"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "Matcha hela ord"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Funktion"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Funktionsstack"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Inaktivt återanrop har begärts"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Källa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Stackspårning"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Streamad"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Spara"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Inkluderar hela innehållet i alla inlästa skript (förutom tillägg)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Komprimera med gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Spara spårning …"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Inkluderar tillgängliga källkartor, som kan exponera skriven kod."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Avancerat"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stoppa"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(anonym)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Händelse: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Ram"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Layoutförskjutning"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket har stängts"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket har öppnats"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket har öppnats: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Avbryt postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animation"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Animationsram har aktiverats"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asynkront"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Asynkron uppgift"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Cachelagra modulkod"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Cachelagra skriptkod"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Cachad Wasm-modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Avbryt animationsram"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Avbryt inaktivt återanrop"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Bekräfta"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Kompilera kod"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Kompilera modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Kompilera skript"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Kompilerad Wasm-modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Sammansatta lager"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Beräkna skärningspunkter"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Kör konsoluppgift"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Tid i konsol"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Skapa WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Dekryptera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Dekryptera svar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Deserialisera kodcacheminnet"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Förstör WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Kondensat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Kondensatsvar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "Skräpinsamling för DOM"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded-händelse"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Uppritning av ram"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Ritning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Återanrop för inbäddning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Kryptera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Kryptera svar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Utvärdera modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Utvärdera skript"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Händelse"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Tidskod för händelse"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Upplevelse"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Slutför inläsning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Aktivera inaktivt återanrop"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Första renderingen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Start för ram"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Ramens start (huvudtråd)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Ramen började läsas in"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Funktionsanrop"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Händelse för skräpinsamling"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "Grafikprocessor"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Träfftest"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Inaktiv"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Bildavkodning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Installera timer"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Ogiltigförklara layout"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS-ram"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Skapa preliminära lager"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Layout"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Layoutförskjutning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Kluster med layoutförskjutningar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Läser in"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Stor skräpinsamling"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Meddelanden"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Mindre skräpinsamling"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "I meddelandet"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Inläsningshändelse"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Optimera kod"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Annat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Uppritning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Uppritning av bild"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Konfigurering av uppritning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Uppritning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Analysera och kompilera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Analysera HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Analysera formatmall"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Förberedelse inför uppritning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Profilanvändning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Rastrera uppritning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Rastrering"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Räkna om format"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Ta emot data"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Ta emot svar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Ta emot WebSocket-handskakning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Ta bort timer"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Renderar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Begär animationsram"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Begär inaktivt återanrop"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Begär ram i huvudtråd"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Kör mikrouppgifter"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Aktivera postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Schemalägg postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Schemalägg postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Schemalägg formatomräkning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Skriptning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Scrolla"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Skicka begäran"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Skicka WebSocket-handskakning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Signera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Signera svar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Kompileringsuppgift för streaming"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Streamar Wasm-svar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "System"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Uppgift"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Timern har aktiverats"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Tidsstämpel"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Uppdatera lager"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Uppdatera lagerträd"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Användartimer"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Verifiera"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Verifiera svar"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Väntar på nätverket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Cacheminnesträff för Wasm-modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Ogiltigt cacheminne för Wasm-modul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Ska skicka begäran"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Ta emot WebSocket-meddelande"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Skicka WebSocket-meddelande"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR-inläsning"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Förändring av readyState i XHR"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Märkt med ignoreList i källkartan"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} av {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Inaktivera skiftlägeskänslig sökning"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Inaktivera Sök och ersätt"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Inaktivera reguljära uttryck"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Aktivera skiftlägeskänslig sökning"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Sök och ersätt"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Aktivera reguljära uttryck"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Sök"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Matcha skiftläge"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 träff"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Matcha hela ord"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Ersätt"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Visa föregående resultat"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Använd reguljärt uttryck"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "En eller flera inställningar har ändrats. Läs in igen för att verkställa dem."

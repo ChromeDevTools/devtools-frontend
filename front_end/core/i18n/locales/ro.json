@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "Web Bundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "Cadru WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Nu sincroniza schema de culori Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Câștigă insigne"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Activează comanda rapidă Ctrl + 1 – 9 pentru a comuta între panouri"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Activează comanda rapidă ⌘ + 1 – 9 pentru a comuta între panouri"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Activează sincronizarea setărilor"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Găsește următorul rezultat"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Panoul anterior"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Primește insigne"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Reîncarcă DevTools"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Dreapta"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Salvează setările DevTools în contul tău Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Activează căutarea pe măsură ce introduci text"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "resetează"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1} descărcare"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (din memoria cache)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (de la ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "Latență de {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Latență de {PH1}, descărcare în {PH2} (în total {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Introdu o cale"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem nu poate citi fișierele."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Adaugă un dosar"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Exclude din spațiul de lucru"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Mapările sunt deduse automat."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Elimină"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Spațiu de lucru"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Dezactivează solicitările de modificare a rețelei"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "rescrie"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Afișează setările pentru Workspace"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(anonim)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Spațiu de lucru"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Eveniment: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Cadru"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Schimbarea aspectului"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket închis"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket deschis"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket deschis: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Anulează postarea"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animație"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "S-a declanșat cadrul animației"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asincron"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Activitate asincronă"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Codul modulului din memoria cache"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Codul scriptului din memoria cache"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Modul Wasm stocat în memoria cache"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Anulează cadrul animației"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Anulează apelarea inversă inactivă"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Salvează"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Compilează codul"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Compilează modulul"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Compilează scriptul"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Modul Wasm compilat"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Straturi combinate"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Calculează intersecțiile"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Execută activitatea pe consolă"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Ora consolei"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "GC CPP"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Creează un cadru WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Decriptează"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Decriptează răspunsul"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Deserializează memoria cache de cod"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Distruge cadrul WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Digest"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Răspuns la rezumat"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "Evenimentul DOMContentLoaded"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Trasează cadrul"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Desen"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Apelare inversă a elementelor de încorporare"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Criptează"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Criptează răspunsul"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Evaluează modulul"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Evaluează scriptul"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Eveniment"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Momentul evenimentului"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Experiență"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Finalizează încărcarea"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Declanșează apelarea inversă inactivă"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "First Paint"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Începerea cadrului"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Începerea cadrului (firul principal)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "A început încărcarea cadrului"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Apelul funcției"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Eveniment GC"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Testarea accesării"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Inactiv"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Decodarea imaginii"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Instalează temporizatorul"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Invalidează aspectul"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "Cadru JS"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Stratificare"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Aspect"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Schimbarea aspectului"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Grup de schimbări ale aspectului"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Se încarcă"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Major GC"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Mesaje"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Minor GC"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "În mesaj"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Încărcare eveniment"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Optimizează codul"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Altul"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Redare"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Reprezintă vizual imaginea"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Configurația reprezentării vizuale"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Redare"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Analizează și compilează"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Analizează HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Analizează foaia de stil"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Pre-desenare"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Timp pentru crearea de profiluri"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Rasterizează reprezentarea vizuală"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Se aplică rasterizarea"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Recalculează stilul"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Primește date"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Primește un răspuns"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "Primește un dialog de confirmare WebSocket"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Elimină temporizatorul"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Redare"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Solicită cadrul animației"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Solicită apelarea inversă inactivă"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Solicită cadrul firului principal"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Rulează microactivități"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Declanșează o postare"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Programează postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Programează postarea"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Programează recalcularea stilului"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Scriptare"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Derulare"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Trimite solicitarea"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "Trimite un dialog de confirmare WebSocket"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Semnează"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Semnează răspunsul"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Se redă în stream activitatea de compilare"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Se redă în stream răspunsul Wasm"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Sistem"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Activitate"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "S-a declanșat temporizatorul"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Marcaj temporal"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Actualizează stratul"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Actualizează structura arbore din straturi"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Durata utilizării"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Confirmă"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Verifică răspunsul"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Se așteaptă conectarea la rețea"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Reușită în memoria cache pentru modulul Wasm"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Memoria cache pentru modulul Wasm este nevalidă"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Va trimite solicitarea"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Primește un mesaj WebSocket"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Trimite un mesaj WebSocket"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "Încărcare XHR"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState modificare"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animație"
@@ -2184,7 +2550,7 @@
     "message": "Costurile selectorului CSS"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
-    "message": "Selectorul principal după timpul scurs"
+    "message": "Timpul scurs pentru selectorul principal"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorMatchAttempt": {
     "message": "Selectorul principal după încercarea de potrivire"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Paginile cu WebRTC nu pot intra în memoria cache înainte/înapoi."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Memoria cache înainte-înapoi este dezactivată deoarece s-a folosit WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Paginile care folosesc WebShare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Paginile cu WebSocket nu pot intra în memoria cache înainte/înapoi."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Memoria cache înainte-înapoi este dezactivată deoarece s-a folosit WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Paginile cu WebTransport nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Memoria cache înainte-înapoi este dezactivată deoarece s-a folosit WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Paginile care folosesc WebXR nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
@@ -4710,7 +5085,7 @@
     "message": "(opacă)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Origine"
+    "message": "Originea cadrului"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Este persistent"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Afișează modificările"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Ai primit insigna {PH1}! A fost adăugată în Profilul de dezvoltator."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Închide"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Creează un profil"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Gestionează setările"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Activează insignele"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Amintește-mi mai târziu"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Ai câștigat insigna {PH1} pentru {PH2}! Creează un profil pentru a revendica insigna."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Ai câștigat insigna {PH1} pentru {PH2}! Activează insignele pentru a o revendica."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Vezi profilul"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Anulează"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "De reținut"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Anulează"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Politica de conținut"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Conceput pentru succesul tău"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Dezvoltă-ți abilitățile, creează cu AI și câștigă insigne pe care le poți afișa în profilul de dezvoltator"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Dialogul de înscriere în Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Trimite-mi noutăți"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Cele mai recente funcții DevTools, invitații la evenimente și statistici personalizate ajung direct în secțiunea de mesaje primite"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Află mai multe"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Află mai multe despre Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Politica de confidențialitate"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Înscrie-te"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Profilul Google Developer Program nu a putut fi creat. Încearcă din nou mai târziu."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Personalizează-ți profilul"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Numele din Contul Google și interesele tale vor fi folosite în Profilul dezvoltatorului Google. Numele tău poate fi afișat în locurile unde ai contribuit și poate fi modificat oricând."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Dacă creezi un Profil de dezvoltator, ești de acord cu {PH1}. {PH2} și {PH3} Google se aplică modului în care folosești acest serviciu."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Termeni și condiții"
   },
   "panels/common/common.ts | allow": {
     "message": "Permite"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Dezactivează suprapunerea derulare-tragere"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Dezactivează modul @starting-style"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Distribuie uniform elementele"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Activează suprapunerea derulare-tragere"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Activează modul @starting-style"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Extinde recursiv"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Difuzată din schimbul HTTP cu semnătură, dimensiunea resursei: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Difuzat din web bundle, dimensiunea resursei: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Starea solicitării nu poate fi afișată aici deoarece pagina care a difuzat-o s-a descărcat în timp ce solicitarea se afla în perioada de difuzare sporadică. Poți să folosești chrome://net-export pentru a captura un jurnal de rețea și a vedea toate detaliile solicitării."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Eroare de web bundle"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Difuzată din web bundle"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informații despre conexiune"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Spațiu pentru adresa inițiatorului"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Este legată de anunțuri"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Latență"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(din schimbul cu semnătură)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(din web bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "General"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Pentru a folosi această resursă din alt site, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Resurse grupate"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Adaugă un model de blocare pentru solicitările din rețea"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "S-a atins limita pentru indicativele de autentificare. Protecția IP va fi întreruptă."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "Protecția IP este activată și activă."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Protecția IP este ocolită de DevTools."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "Funcția Protecție IP nu este activată."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Funcția Listă de domenii ascunse nu este activată."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Lista de domenii ascunse nu este completată."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "Protecția IP nu este disponibilă."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Ocolește temporar protecția IP pentru testare"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "Ocolește Protecția IP"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Starea proxyului pentru Protecția IP"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Stare"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Stare necunoscută"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "Adresa URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Experimente instabile"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (anual)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Adaugă un dosar"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (lunar)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Exclude din spațiul de lucru"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (anual)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Mapările sunt deduse automat."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (lunar)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Elimină"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Spațiu de lucru"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} se trimite la Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Planul Standard"
@@ -12678,10 +13161,10 @@
     "message": "Nu te-ai conectat la Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Ca să activezi această setare, trebuie să activezi întâi sincronizarea setărilor în Chrome."
+    "message": "Mai întâi, trebuie să activezi salvarea setărilor Chrome în contul Google."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Datele relevante sunt trimise la Google)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Date relevante"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Înscrie-te"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Pentru a activa această setare, trebuie să activezi sincronizarea Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Când te califici pentru o insignă, identificatorul insignei și tipul de activitate pe care ai făcut-o pentru a o câștiga sunt trimise la Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Vezi profilul"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Afișează comenzile rapide"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Afișează setările pentru Workspace"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Spațiu de lucru"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "S-a conectat la {PH1}"
@@ -14517,7 +15009,7 @@
     "message": "Ascunde stiva care consumă cele mai multe resurse"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "Potrivirea majusculelor și a minusculelor"
+    "message": "Potrivește majusculele și minusculele"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "Caută o potrivire pentru întregul cuvânt"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Funcție"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Stiva de funcții"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "S-a solicitat apelarea inversă inactivă"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Sursă"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Urmărirea stivei"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Redat în streaming"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Salvează"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Include conținutul complet al tuturor scripturilor încărcate (cu excepția extensiilor)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Comprimă cu gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Salvează fișierul de urmărire…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Include hărți pentru sursele disponibile, care pot expune codul creat."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Avansate"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Oprește"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(anonim)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Eveniment: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Cadru"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Schimbarea aspectului"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket închis"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket deschis"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket deschis: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Anulează postarea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animație"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "S-a declanșat cadrul animației"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asincron"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Activitate asincronă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Codul modulului din memoria cache"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Codul scriptului din memoria cache"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Modul Wasm stocat în memoria cache"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Anulează cadrul animației"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Anulează apelarea inversă inactivă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Salvează"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Compilează codul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Compilează modulul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Compilează scriptul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Modul Wasm compilat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Straturi combinate"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Calculează intersecțiile"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Execută activitatea pe consolă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Ora consolei"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "GC CPP"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Creează un cadru WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Decriptează"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Decriptează răspunsul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Deserializează memoria cache de cod"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Distruge cadrul WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Digest"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Răspuns la rezumat"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Evenimentul DOMContentLoaded"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Trasează cadrul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Desen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Apelare inversă a elementelor de încorporare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Criptează"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Criptează răspunsul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Evaluează modulul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Evaluează scriptul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Eveniment"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Momentul evenimentului"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Experiență"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Finalizează încărcarea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Declanșează apelarea inversă inactivă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "First Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Începerea cadrului"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Începerea cadrului (firul principal)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "A început încărcarea cadrului"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Apelul funcției"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Eveniment GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Testarea accesării"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Inactiv"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Decodarea imaginii"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Instalează temporizatorul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Invalidează aspectul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "Cadru JS"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Stratificare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Aspect"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Schimbarea aspectului"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Grup de schimbări ale aspectului"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Se încarcă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Major GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Mesaje"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Minor GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "În mesaj"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Încărcare eveniment"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Optimizează codul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Altul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Redare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Reprezintă vizual imaginea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Configurația reprezentării vizuale"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Redare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Analizează și compilează"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Analizează HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Analizează foaia de stil"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Pre-desenare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Timp pentru crearea de profiluri"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Rasterizează reprezentarea vizuală"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Se aplică rasterizarea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Recalculează stilul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Primește date"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Primește un răspuns"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Primește un dialog de confirmare WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Elimină temporizatorul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Redare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Solicită cadrul animației"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Solicită apelarea inversă inactivă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Solicită cadrul firului principal"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Rulează microactivități"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Declanșează o postare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Programează postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Programează postarea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Programează recalcularea stilului"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Scriptare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Derulare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Trimite solicitarea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Trimite un dialog de confirmare WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Semnează"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Semnează răspunsul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Se redă în stream activitatea de compilare"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Se redă în stream răspunsul Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Sistem"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Activitate"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "S-a declanșat temporizatorul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Marcaj temporal"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Actualizează stratul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Actualizează structura arbore din straturi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Durata utilizării"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Confirmă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Verifică răspunsul"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Se așteaptă conectarea la rețea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Reușită în memoria cache pentru modulul Wasm"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Memoria cache pentru modulul Wasm este nevalidă"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Va trimite solicitarea"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Primește un mesaj WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Trimite un mesaj WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "Încărcare XHR"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState modificare"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Marcat cu ignoreList în harta surselor"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} din {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Dezactivează căutarea care ține cont de scrierea cu majuscule sau minuscule"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Dezactivează găsirea și înlocuirea"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Dezactivează expresiile regulate"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Activează căutarea care ține cont de scrierea cu majuscule sau minuscule"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Găsește și înlocuiește"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Activează expresiile regulate"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Caută"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Potrivește majusculele și minusculele"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "O potrivire"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Caută o potrivire pentru întregul cuvânt"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Înlocuiește"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Afișează rezultatul anterior"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Folosește o expresie regulată"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Una sau mai multe setări au fost modificate și pentru aplicarea acestora este necesară reîncărcarea"

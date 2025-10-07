@@ -27,7 +27,7 @@ export const UIStrings = {
    * @description Text to describe the forced reflow.
    */
   description:
-      'A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) and possible mitigations.',
+      'A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.',
   /**
    * @description Title of a list to provide related stack trace data
    */
@@ -144,6 +144,7 @@ function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): 
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/forced-reflow',
     category: InsightCategory.ALL,
     state: partialModel.aggregatedBottomUpData.length !== 0 ? 'fail' : 'pass',
     ...partialModel,

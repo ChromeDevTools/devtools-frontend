@@ -1009,55 +1009,73 @@ ${this.#links()}`;
   }
 
   #links(): string {
+    const links = [];
+
+    if (this.#insight.docs) {
+      links.push(this.#insight.docs);
+    }
+
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
-        return `- https://web.dev/articles/cls
-- https://web.dev/articles/optimize-cls`;
+        links.push('https://web.dev/articles/cls');
+        links.push('https://web.dev/articles/optimize-cls');
+        break;
       case 'DocumentLatency':
-        return '- https://web.dev/articles/optimize-ttfb';
+        links.push('https://web.dev/articles/optimize-ttfb');
+        break;
       case 'DOMSize':
-        return '- https://developer.chrome.com/docs/lighthouse/performance/dom-size/';
-      case 'DuplicatedJavaScript':
-        return '';
+        links.push('https://developer.chrome.com/docs/lighthouse/performance/dom-size/');
+        break;
       case 'FontDisplay':
-        return `- https://web.dev/articles/preload-optional-fonts
-- https://fonts.google.com/knowledge/glossary/foit
-- https://developer.chrome.com/blog/font-fallbacks`;
+        links.push('https://web.dev/articles/preload-optional-fonts');
+        links.push('https://fonts.google.com/knowledge/glossary/foit');
+        links.push('https://developer.chrome.com/blog/font-fallbacks');
+        break;
       case 'ForcedReflow':
-        return '- https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts';
+        links.push(
+            'https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts');
+        break;
       case 'ImageDelivery':
-        return '- https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/';
+        links.push('https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/');
+        break;
       case 'INPBreakdown':
-        return `- https://web.dev/articles/inp
-- https://web.dev/explore/how-to-optimize-inp
-- https://web.dev/articles/optimize-long-tasks
-- https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing`;
-      case 'LCPDiscovery':
-        return `- https://web.dev/articles/lcp
-- https://web.dev/articles/optimize-lcp`;
+        links.push('https://web.dev/articles/inp');
+        links.push('https://web.dev/explore/how-to-optimize-inp');
+        links.push('https://web.dev/articles/optimize-long-tasks');
+        links.push('https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing');
+        break;
       case 'LCPBreakdown':
-        return `- https://web.dev/articles/lcp
-- https://web.dev/articles/optimize-lcp`;
-      case 'NetworkDependencyTree':
-        return `- https://web.dev/learn/performance/understanding-the-critical-path
-- https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/`;
+      case 'LCPDiscovery':
       case 'RenderBlocking':
-        return `- https://web.dev/articles/lcp
-- https://web.dev/articles/optimize-lcp`;
+        links.push('https://web.dev/articles/lcp');
+        links.push('https://web.dev/articles/optimize-lcp');
+        break;
+      case 'NetworkDependencyTree':
+        links.push('https://web.dev/learn/performance/understanding-the-critical-path');
+        links.push('https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/');
+        break;
       case 'SlowCSSSelector':
-        return '- https://developer.chrome.com/docs/devtools/performance/selector-stats';
+        links.push('https://developer.chrome.com/docs/devtools/performance/selector-stats');
+        break;
       case 'ThirdParties':
-        return '- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/';
+        links.push('https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/');
+        break;
       case 'Viewport':
-        return '- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/';
+        links.push('https://developer.chrome.com/blog/300ms-tap-delay-gone-away/');
+        break;
       case 'Cache':
-        return '- https://web.dev/uses-long-cache-ttl/';
+        links.push('https://web.dev/uses-long-cache-ttl/');
+        break;
       case 'ModernHTTP':
-        return '- https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2';
+        links.push('https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2');
+        break;
       case 'LegacyJavaScript':
-        return `- https://web.dev/articles/baseline-and-polyfills
-- https://philipwalton.com/articles/the-state-of-es5-on-the-web/`;
+        links.push('https://web.dev/articles/baseline-and-polyfills');
+        links.push('https://philipwalton.com/articles/the-state-of-es5-on-the-web/');
+        break;
     }
+
+    return links.map(link => '- ' + link).join('\n');
   }
 
   #description(): string {

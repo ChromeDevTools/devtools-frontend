@@ -29,7 +29,7 @@ export const UIStrings = {
    * @description Text to describe that there are requests blocking rendering, which may affect LCP.
    */
   description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
-      '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ' +
+      '[Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) ' +
       'can move these network requests out of the critical path.',
   /**
    * @description Label to describe a network request (that happens to be render-blocking).
@@ -169,6 +169,7 @@ function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>)
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/render-blocking',
     category: InsightCategory.LCP,
     state: partialModel.renderBlockingRequests.length > 0 ? 'fail' : 'pass',
     ...partialModel,

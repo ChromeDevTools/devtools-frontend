@@ -25,7 +25,7 @@ export const UIStrings = {
    * @description Description of an insight that recommends reducing the size of the DOM tree as a means to improve page responsiveness. "DOM" is an acronym and should not be translated. "layout reflows" are when the browser will recompute the layout of content on the page.
    */
   description:
-      'A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/).',
+      'A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/performance/insights/dom-size).',
   /**
    * @description Header for a column containing the names of statistics as opposed to the actual statistic values.
    */
@@ -97,6 +97,7 @@ function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSi
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/dom-size',
     category: InsightCategory.INP,
     state: relatedEvents.length > 0 ? 'informative' : 'pass',
     ...partialModel,

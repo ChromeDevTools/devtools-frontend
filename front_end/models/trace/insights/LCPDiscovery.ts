@@ -27,7 +27,7 @@ export const UIStrings = {
    * @description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
    */
   description:
-      'Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)',
+      '[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading',
   /**
    * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
    * @example {401ms} PH1
@@ -83,6 +83,7 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/lcp-discovery',
     category: InsightCategory.LCP,
     state: partialModel.lcpRequest && partialModel.checklist &&
             (!partialModel.checklist.eagerlyLoaded.value || !partialModel.checklist.requestDiscoverable.value ||

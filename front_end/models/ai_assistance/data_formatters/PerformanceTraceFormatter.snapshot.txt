@@ -516,20 +516,20 @@ Metrics (lab / observed):
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: LCPBreakdown
-    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
     relevant trace bounds: {min: 1020034834921, max: 1020034953358}
     example question: Help me optimize my LCP score
     example question: Which LCP phase was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: DocumentLatency
-    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    description: Your first network request is the most important. [Reduce its latency](https://developer.chrome.com/docs/performance/insights/document-latency) by avoiding redirects, ensuring a fast server response, and enabling text compression.
     relevant trace bounds: {min: 1020034836013, max: 1020034892491}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 52.1 kB
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: ThirdParties
-    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 1020034871372, max: 1020035171789}
     example question: Which third parties are having the largest impact on my page performance?
 === end content
@@ -551,44 +551,44 @@ Metrics (lab / observed):
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: LCPBreakdown
-    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
     relevant trace bounds: {min: 157423488682, max: 157423953162}
     example question: Help me optimize my LCP score
     example question: Which LCP phase was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: CLSCulprits
-    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.
+    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.
     relevant trace bounds: {min: 157425604232, max: 157426760958}
     example question: Help me optimize my CLS score
     example question: How can I prevent layout shifts on this page?
   - insight name: NetworkDependencyTree
-    description: [Avoid chaining critical requests](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.
+    description: [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.
     relevant trace bounds: {min: 157423489126, max: 157426527569}
     example question: How do I optimize my network dependency tree?
   - insight name: ImageDelivery
-    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
     relevant trace bounds: {min: 157423794709, max: 157424082831}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 97.8 kB
     example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
     example question: Are all images on my site optimized?
   - insight name: FontDisplay
-    description: Consider setting [font-display](https://developer.chrome.com/blog/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
+    description: Consider setting [font-display](https://developer.chrome.com/docs/performance/insights/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
     relevant trace bounds: {min: 157425661196, max: 157425696387}
     estimated metric savings: FCP 20 ms
     example question: How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?
   - insight name: ThirdParties
-    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 157423742399, max: 157427277086}
     example question: Which third parties are having the largest impact on my page performance?
   - insight name: Cache
-    description: A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).
+    description: A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache).
     relevant trace bounds: {min: 157423742399, max: 157426980482}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 847.4 kB
     example question: What caching strategies can I apply to improve my page performance?
   - insight name: LegacyJavaScript
-    description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)
+    description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)
     relevant trace bounds: {min: 157423489126, max: 157426132225}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 126.9 kB
@@ -613,49 +613,49 @@ Metrics (lab / observed):
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: Cache
-    description: A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).
+    description: A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache).
     relevant trace bounds: {min: 59728702014, max: 59728867430}
     estimated metric savings: FCP 0 ms, LCP 150 ms
     estimated wasted bytes: 971.5 kB
     example question: What caching strategies can I apply to improve my page performance?
   - insight name: ImageDelivery
-    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
     relevant trace bounds: {min: 59728701403, max: 59729395208}
     estimated metric savings: FCP 0 ms, LCP 100 ms
     estimated wasted bytes: 2 MB
     example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
     example question: Are all images on my site optimized?
   - insight name: LCPBreakdown
-    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
     relevant trace bounds: {min: 59728649746, max: 59729312744}
     example question: Help me optimize my LCP score
     example question: Which LCP phase was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: LCPDiscovery
-    description: Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)
+    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading
     relevant trace bounds: {min: 59728656735, max: 59729209036}
     example question: Suggest fixes to reduce my LCP
     example question: What can I do to reduce my LCP discovery time?
     example question: Why is LCP discovery time important?
   - insight name: CLSCulprits
-    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.
+    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.
     relevant trace bounds: {min: 59729100192, max: 59730317334}
     example question: Help me optimize my CLS score
     example question: How can I prevent layout shifts on this page?
   - insight name: DocumentLatency
-    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    description: Your first network request is the most important. [Reduce its latency](https://developer.chrome.com/docs/performance/insights/document-latency) by avoiding redirects, ensuring a fast server response, and enabling text compression.
     relevant trace bounds: {min: 59728651057, max: 59728790724}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 1.6 kB
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: Viewport
-    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.
+    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.
     relevant trace bounds: {min: 59728649746, max: 59734400108}
     estimated metric savings: INP 0 ms
     example question: How do I make sure my page is optimized for mobile viewing?
   - insight name: ThirdParties
-    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 59728701403, max: 59729465969}
     example question: Which third parties are having the largest impact on my page performance?
 === end content
@@ -684,49 +684,49 @@ Metrics (field / real users):
   - Lab metrics describe how this specific page load performed, while field metrics are an aggregation of results from real-world users. Best practice is to prioritize metrics that are bad in field data. Lab metrics may be better or worse than fields metrics depending on the developer's machine, network, or the actions performed while tracing.
 Available insights:
   - insight name: Cache
-    description: A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).
+    description: A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache).
     relevant trace bounds: {min: 59728702014, max: 59728867430}
     estimated metric savings: FCP 0 ms, LCP 150 ms
     estimated wasted bytes: 971.5 kB
     example question: What caching strategies can I apply to improve my page performance?
   - insight name: ImageDelivery
-    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
     relevant trace bounds: {min: 59728701403, max: 59729395208}
     estimated metric savings: FCP 0 ms, LCP 100 ms
     estimated wasted bytes: 2 MB
     example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
     example question: Are all images on my site optimized?
   - insight name: LCPBreakdown
-    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
     relevant trace bounds: {min: 59728649746, max: 59729312744}
     example question: Help me optimize my LCP score
     example question: Which LCP phase was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: LCPDiscovery
-    description: Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)
+    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading
     relevant trace bounds: {min: 59728656735, max: 59729209036}
     example question: Suggest fixes to reduce my LCP
     example question: What can I do to reduce my LCP discovery time?
     example question: Why is LCP discovery time important?
   - insight name: CLSCulprits
-    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.
+    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.
     relevant trace bounds: {min: 59729100192, max: 59730317334}
     example question: Help me optimize my CLS score
     example question: How can I prevent layout shifts on this page?
   - insight name: DocumentLatency
-    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    description: Your first network request is the most important. [Reduce its latency](https://developer.chrome.com/docs/performance/insights/document-latency) by avoiding redirects, ensuring a fast server response, and enabling text compression.
     relevant trace bounds: {min: 59728651057, max: 59728790724}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 1.6 kB
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: Viewport
-    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.
+    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.
     relevant trace bounds: {min: 59728649746, max: 59734400108}
     estimated metric savings: INP 0 ms
     example question: How do I make sure my page is optimized for mobile viewing?
   - insight name: ThirdParties
-    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 59728701403, max: 59729465969}
     example question: Which third parties are having the largest impact on my page performance?
 === end content
@@ -743,13 +743,13 @@ Metrics (lab / observed):
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: INPBreakdown
-    description: Start investigating with the longest subpart. [Delays can be minimized](https://web.dev/articles/optimize-inp#optimize_interactions). To reduce processing duration, [optimize the main-thread costs](https://web.dev/articles/optimize-long-tasks), often JS.
+    description: Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart.
     relevant trace bounds: {min: 337944870984, max: 337945010222}
     example question: Suggest fixes for my longest interaction
     example question: Why is a large INP score problematic?
     example question: What's the biggest contributor to my longest interaction?
   - insight name: ThirdParties
-    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 337944792445, max: 337944809570}
     example question: Which third parties are having the largest impact on my page performance?
 === end content

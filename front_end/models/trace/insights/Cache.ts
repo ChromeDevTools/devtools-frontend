@@ -27,7 +27,7 @@ export const UIStrings = {
    * @description Text to tell the user about how caching can help improve performance.
    */
   description:
-      'A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).',
+      'A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache).',
   /**
    * @description Column for a font loaded by the page to render text.
    */
@@ -67,6 +67,7 @@ function finalize(partialModel: PartialInsightModel<CacheInsightModel>): CacheIn
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/cache',
     category: InsightCategory.ALL,
     state: partialModel.requests.length > 0 ? 'fail' : 'pass',
     ...partialModel,

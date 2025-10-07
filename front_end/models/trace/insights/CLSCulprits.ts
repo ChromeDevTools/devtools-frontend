@@ -25,7 +25,7 @@ export const UIStrings = {
    * This is displayed after a user expands the section to see more. No character length limits.
    */
   description:
-      'Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.',
+      'Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.',
   /**
    * @description Text indicating the worst layout shift cluster.
    */
@@ -583,6 +583,7 @@ function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): C
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/cls-culprit',
     category: InsightCategory.CLS,
     state,
     ...partialModel,

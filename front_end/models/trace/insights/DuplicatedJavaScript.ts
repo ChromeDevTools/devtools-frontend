@@ -26,7 +26,7 @@ export const UIStrings = {
    * @description Description of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
    */
   description:
-      'Remove large, duplicate JavaScript modules from bundles to reduce unnecessary bytes consumed by network activity.',
+      'Remove large, [duplicate JavaScript modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) from bundles to reduce unnecessary bytes consumed by network activity.',
   /** Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a Javascript package or module. */
   columnSource: 'Source',
   /** Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource. */
@@ -53,6 +53,7 @@ function finalize(partialModel: PartialInsightModel<DuplicatedJavaScriptInsightM
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/duplicated-javascript',
     category: InsightCategory.LCP,
     state: Boolean(partialModel.duplication.values().next().value) ? 'fail' : 'pass',
     relatedEvents: [...new Set(requests)],

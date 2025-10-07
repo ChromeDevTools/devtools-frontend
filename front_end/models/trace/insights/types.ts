@@ -76,6 +76,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
       strings: UIStrings,
       title: Common.UIString.LocalizedString,
       description: Common.UIString.LocalizedString,
+      docs: string,
       category: InsightCategory,
       state: 'pass' | 'fail' | 'informative',
       /** Used by RelatedInsightChips.ts */
@@ -101,7 +102,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
     };
 
 export type PartialInsightModel<T> =
-    Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'|'navigationId'|'frameId'>;
+    Omit<T, 'strings'|'title'|'description'|'docs'|'category'|'state'|'insightKey'|'navigationId'|'frameId'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,

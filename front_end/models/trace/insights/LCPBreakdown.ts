@@ -28,7 +28,7 @@ export const UIStrings = {
    * This is displayed after a user expands the section to see more. No character length limits.
    */
   description:
-      'Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
+      'Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
   /**
    * @description Time to first byte title for the Largest Contentful Paint's subparts timespan breakdown.
    */
@@ -197,6 +197,7 @@ function finalize(partialModel: PartialInsightModel<LCPBreakdownInsightModel>): 
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/lcp-breakdown',
     category: InsightCategory.LCP,
     state,
     ...partialModel,

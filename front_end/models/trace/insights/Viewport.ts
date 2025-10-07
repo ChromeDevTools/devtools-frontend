@@ -24,7 +24,7 @@ export const UIStrings = {
    * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
    */
   description:
-      'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.',
+      'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.',
   /**
    * @description Text for a label describing the portion of an interaction event that was delayed due to a bad mobile viewport.
    */
@@ -46,6 +46,7 @@ function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): View
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/viewport',
     category: InsightCategory.INP,
     state: partialModel.mobileOptimized === false ? 'fail' : 'pass',
     ...partialModel,

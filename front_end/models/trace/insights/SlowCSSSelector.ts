@@ -27,7 +27,7 @@ export const UIStrings = {
    * @description Text to describe how to improve the performance of CSS selectors.
    */
   description:
-      'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
+      'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
   /**
    * @description Column name for count of elements that the engine attempted to match against a style rule
    */
@@ -108,6 +108,7 @@ function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    docs: 'https://developer.chrome.com/docs/performance/insights/slow-css-selector',
     category: InsightCategory.ALL,
     state: partialModel.topSelectorElapsedMs && partialModel.topSelectorMatchAttempts ? 'informative' : 'pass',
     ...partialModel,

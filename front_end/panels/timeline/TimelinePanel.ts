@@ -2243,8 +2243,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     }
 
-    UI.Context.Context.instance().setFlavor(
-        AiAssistanceModel.AgentFocus, AiAssistanceModel.AgentFocus.fromParsedTrace(parsedTrace));
+    if (parsedTrace.metadata.dataOrigin !== Trace.Types.File.DataOrigin.CPU_PROFILE) {
+      UI.Context.Context.instance().setFlavor(
+          AiAssistanceModel.AgentFocus, AiAssistanceModel.AgentFocus.fromParsedTrace(parsedTrace));
+    }
   }
 
   #onAnnotationModifiedEvent(e: Event): void {

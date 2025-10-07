@@ -101,10 +101,10 @@ describe('The Coverage Panel', () => {
 
         // This is the expected `textContent` for the coverage row.
         // It reads as {URL}{type: CSS}{Total Bytes: 176}{Unused Bytes: 176 100%}
-        await devToolsPage.waitForElementWithTextContent(`${URL_PREFIX}/not-initially-used.cssCSS176176100%`);
+        await devToolsPage.waitForElementWithTextContent(`${URL_PREFIX}/not-initially-used.cssCSS17615286.4%`);
         assert.deepInclude(await getCoverageData(6, devToolsPage), {
           total: '176',
-          unused: '176',
+          unused: '152',
           url: `${URL_PREFIX}/not-initially-used.css`,
         });
       });

@@ -33,6 +33,7 @@ devtools_module("coverage") {
     "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../ui/components/highlighting:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
   ]

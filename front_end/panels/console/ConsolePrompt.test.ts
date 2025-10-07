@@ -16,7 +16,7 @@ import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Console from './console.js';
@@ -47,7 +47,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
 
     consolePrompt = new Console.ConsolePrompt.ConsolePrompt();
-    editor = consolePrompt.element.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    editor = consolePrompt.element.querySelector('devtools-text-editor')!;
     setCodeMirrorContent('foo');
 
     target = createTarget();
@@ -81,8 +81,12 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     return executionContext;
   }
 
-  function dispatchKeydown(key: string): void {
-    editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key, bubbles: true}));
+  function dispatchKeydown(key: string, options: Omit<KeyboardEventInit, 'key'> = {}): void {
+    editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {
+      key,
+      bubbles: true,
+      ...options,
+    }));
   }
 
   function setCodeMirrorContent(
@@ -221,5 +225,29 @@ describeWithMockConnection('ConsoleContextSelector', () => {
 
     sinon.assert.calledOnce(onTextChangedSpy);
     assert.deepEqual(onTextChangedSpy.firstCall.args, ['let x = 1;\n\nconsole.log(', ');', 12]);
+  });
+
+  it('handles event sequence correctly', async () => {
+    const stub = sinon.stub(TextEditor.TextEditorHistory.TextEditorHistory.prototype, 'moveHistory');
+    // Verify that ArrowUp with repeat does not move history.
+    dispatchKeydown('ArrowUp', {repeat: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    sinon.assert.notCalled(stub);
+
+    // Verify that ArrowUp does move history.
+    dispatchKeydown('ArrowUp');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    sinon.assert.calledOnceWithExactly(stub, TextEditor.TextEditorHistory.Direction.BACKWARD);
+    stub.resetHistory();
+
+    // Verify that ArrowDown with repeat does not move history.
+    dispatchKeydown('ArrowDown', {repeat: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    sinon.assert.notCalled(stub);
+
+    // Verify that ArrowDown does move history.
+    dispatchKeydown('ArrowDown');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    sinon.assert.calledOnceWithExactly(stub, TextEditor.TextEditorHistory.Direction.FORWARD);
   });
 });

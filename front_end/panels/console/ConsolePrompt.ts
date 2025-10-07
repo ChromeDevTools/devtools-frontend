@@ -343,9 +343,29 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private editorKeymap(): readonly CodeMirror.KeyBinding[] {
-    const keymap = [
-      {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
-      {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
+    const keymap: CodeMirror.KeyBinding[] = [
+      {
+        // Handle the KeyboardEvent manually.
+        any: (_view, event) => {
+          // Events with `repeat=true` are excluded from altering the history state because
+          // they are often not intended as such. Example:
+          // Scrolling through long snippets.
+          if (event.repeat) {
+            return false;
+          }
+
+          if (event.key === 'ArrowUp') {
+            return this.#editorHistory.moveHistory(Direction.BACKWARD);
+          }
+
+          if (event.key === 'ArrowDown') {
+            return this.#editorHistory.moveHistory(Direction.FORWARD);
+          }
+
+          return false;
+        },
+      },
+
       {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
       {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
@@ -372,7 +392,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.isAiCodeCompletionEnabled()) {
       keymap.push({
         key: 'Tab',
-        run: (): boolean => {
+        run: () => {
           const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
           if (accepted) {
             this.dispatchEventToListeners(

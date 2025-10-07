@@ -55,6 +55,7 @@ describeWithMockConnection('ChildTargetManager', () => {
              ['background_page', SDK.Target.Type.FRAME],
              ['app', SDK.Target.Type.FRAME],
              ['popup_page', SDK.Target.Type.FRAME],
+             ['browser_ui', SDK.Target.Type.FRAME],
              ['worker', SDK.Target.Type.Worker],
              ['shared_worker', SDK.Target.Type.SHARED_WORKER],
              ['service_worker', SDK.Target.Type.ServiceWorker],

@@ -3,19 +3,22 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<style>
-  .hide {
-    display: none;
-  }
-</style>
-
-<input id="query" type="text">
-<p id="result" class="hide">dissappearing popup</p>
-
-<script>
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .hide {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <input id="query" type="text">
+  <p id="result" class="hide">dissappearing popup</p>
+  <input id="next-focus-field">
+  <script>
   const query = document.querySelector('#query');
   const result = document.querySelector('#result');
-
   query.addEventListener('input', ()=> {
     if (document.hasFocus()) {
       result.classList.remove('hide');
@@ -34,4 +37,6 @@
 
   query.value = 'ta';
 
-</script>
+    </script>
+  </body>
+</html>

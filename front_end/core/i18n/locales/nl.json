@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Chrome-kleurenschema niet gebruiken"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Badges verdienen"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Sneltoets Ctrl + 1-9 gebruiken om tussen deelvensters te schakelen"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Sneltoets ⌘ + 1-9 gebruiken om tussen deelvensters te schakelen"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Synchronisatie van instellingen aanzetten"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Volgende resultaat zoeken"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Vorig deelvenster"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Badges ontvangen"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools opnieuw laden"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Rechts"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "DevTools-instellingen opslaan in je Google-account"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Zoeken terwijl je typt aanzetten"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "opnieuw instellen"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1}-download"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (uit cachegeheugen)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (van ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "{PH1} latentie"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "{PH1} vertraging, {PH2} download ({PH3} in totaal)"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Voer een pad in"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem kan bestanden niet lezen."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Map toevoegen"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Uitsluiten van werkruimte"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Toewijzingen worden automatisch afgeleid."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Verwijderen"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Werkruimte"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Overschrijven van netwerkverzoeken uitzetten"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "herschrijven"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Werkruimte-instellingen tonen"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(anoniem)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Werkruimte"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Gebeurtenis: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Frame"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Indelingsverschuiving"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket gesloten"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket geopend"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket geopend: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "postTask annuleren"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animatie"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Animatieframe geactiveerd"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asynchroon"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Asynchrone taak"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Code voor cachemodule"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Code voor cachescript"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Gecachete Wasm-module"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Animatieframe annuleren"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Inactieve callback annuleren"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Toewijzen"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Code compileren"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Module compileren"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Script compileren"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "Wasm-module gecompileerd"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Samengestelde lagen"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Kruispunten berekenen"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Consoletaak uitvoeren"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Consoletijd"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "WebSocket maken"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Ontsleutelen"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Antwoord ontsleutelen"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Cachegeheugen voor code deserialiseren"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "WebSocket beëindigen"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Samenvatting"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Reactie verwerken"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM-GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded-gebeurtenis"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Frame tekenen"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Tekenen"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Callback van insluiting"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Versleutelen"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Reactie versleutelen"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Module evalueren"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Script evalueren"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Gebeurtenis"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Gebeurtenistiming"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Functionaliteit"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Stoppen met laden"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Inactieve callback activeren"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Eerste weergave"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Start van frame"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Start van frame (primaire thread)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Frame is begonnen met laden"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Functieaanroep"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "GC-gebeurtenis"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Hit-test"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Inactief"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Afbeelding decoderen"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Installatietimer"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Indeling ongeldig maken"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JavaScript-frame"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Lagen maken"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Indeling"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Indelingsverschuiving"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Indelingsverschuivingscluster"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Laden"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Hoofd-GC"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Berichten"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Beperkte GC"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "In bericht"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Onload-gebeurtenis"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Code optimaliseren"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Anders"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Weergave"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Weergave-afbeelding"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Weergave instellen"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Weergeven"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Parseren en compileren"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "HTML parseren"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Stylesheet parseren"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Voorafgaand aan weergave"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Overhead voor profileren"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Weergave via raster"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Raster maken"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Stijl opnieuw berekenen"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Gegevens krijgen"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Reactie krijgen"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket-handshake krijgen"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Timer verwijderen"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Renderen"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Animatieframe vragen"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Inactieve callback vragen"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Frame van primaire thread vragen"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Microtaken uitvoeren"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "postTask starten"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "postMessage plannen"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "postTask plannen"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Herberekening van stijl plannen"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Scripting"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Scrollen"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Verzoek sturen"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "WebSocket-handshake versturen"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Sterrenbeeld"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Reactie ondertekenen"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Streaming-compileertaak"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Stream Wasm-reactie"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Systeem"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Taak"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Timer geactiveerd"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Tijdstempel"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Laag updaten"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Laagstructuur updaten"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Gebruikerstiming"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Verifiëren"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Reactie verifiëren"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Wachten op netwerk"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Wasm-module aanwezig in cachegeheugen"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm-module in cachegeheugen ongeldig"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Verstuurt verzoek"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "WebSocket-bericht gekregen"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "WebSocket-bericht sturen"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR laden"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState wijzigen"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animatie"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Pagina's met WebRTC kunnen niet worden opgeslagen in Back-Forward Cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Back-Forward Cache is uitgezet omdat WebRTC is gebruikt."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Pagina's die WebShare gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Pagina's met WebSocket kunnen niet worden opgeslagen in Back-Forward Cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Back-Forward Cache is uitgezet omdat WebSocket is gebruikt."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Pagina's met WebTransport kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Back-Forward Cache is uitgezet omdat WebTransport is gebruikt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Pagina's die WebXR gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
@@ -4710,7 +5085,7 @@
     "message": "(ondoorzichtig)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Oorsprong"
+    "message": "Frameoorsprong"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Is persistent"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Wijzigingen tonen"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Je hebt de badge {PH1} verdiend. Deze is toegevoegd aan je ontwikkelaarsprofiel."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Sluiten"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Profiel maken"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Instellingen beheren"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Badges aanzetten"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Later herinneren"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Je hebt de badge {PH1} verdiend voor het {PH2}. Maak een profiel om je badge te claimen."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Je hebt de badge {PH1} verdiend voor het {PH2}. Zet badges aan om deze te claimen."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Profiel bekijken"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Annuleren"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Overwegingen"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Annuleren"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Contentbeleid"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Ontworpen voor jouw succes"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Verbeter je vaardigheden, bouw met AI en verdien badges die je kunt tonen in je ontwikkelaarsprofiel"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Dialoogvenster voor aanmelding voor het Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Houd me op de hoogte"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "De nieuwste DevTools-functies, uitnodigingen voor evenementen en inzichten op maat komen rechtstreeks in je inbox terecht"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Meer informatie"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Meer informatie over het Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Privacybeleid"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Aanmelden"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Je Google Developer Program-profiel kan niet worden gemaakt. Probeer het later opnieuw."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Je profiel aanpassen"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "De naam in je Google-account en je interesses worden gebruikt in je Google-ontwikkelaarsprofiel. Je naam kan verschijnen als je aan iets bijdraagt en kan op elk moment worden gewijzigd."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Door een ontwikkelaarsprofiel te maken, ga je akkoord met het {PH1}. De {PH2} en het {PH3} van Google zijn van toepassing op je gebruik van deze service."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Servicevoorwaarden"
   },
   "panels/common/common.ts | allow": {
     "message": "Toestaan"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Overlay voor scrolluitlijning uitzetten"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Modus @starting-style uitzetten"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Items gelijkmatig verdelen"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Overlay voor scroluitlijning aanzetten"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Modus @starting-style aanzetten"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Recursief uitvouwen"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Weergegeven vanuit Signed HTTP Exchange, resourcegrootte: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Weergegeven via webbundel, resourcegrootte: {PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "De status van het verzoek kan hier niet worden getoond omdat het laden van de pagina die het verzoek heeft uitgegeven, ongedaan is gemaakt terwijl het verzoek onderweg was. Je kunt chrome://net-export gebruiken om een netwerklogboek bij te houden en alle verzoekgegevens te bekijken."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Webbundel)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Fout met webbundel"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Getoond vanuit webbundel"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Verbindingsgegevens"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Ruimte voor adres van initiator"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Is advertentiegerelateerd"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Latentie"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(uit signed-exchange)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(van webbundel)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Algemeen"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Als je deze resource van een andere site wilt gebruiken, kan de server het cross-origin-resourcebeleid voor de kop van een reactie versoepelen:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Gebundelde bron"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Blokkeringspatroon voor netwerkverzoeken toevoegen"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "De limiet voor verificatietokens is bereikt. IP-beveiliging wordt onderbroken."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP-beveiliging staat aan en is actief."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "IP-beveiliging wordt omzeild door DevTools."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "De functie IP-beveiliging staat niet aan."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "De functie Lijst met gemaskeerde domeinen staat niet aan."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "De lijst met gemaskeerde domeinen is niet ingevuld."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP-beveiliging is niet beschikbaar."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "IP-beveiliging tijdelijk omzeilen voor tests"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "IP-beveiliging omzeilen"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Proxystatus voor IP-beveiliging"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Status"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Status onbekend"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Onstabiele experimenten"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (jaarlijks)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Map toevoegen"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (maandelijks)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Uitsluiten van werkruimte"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (jaarlijks)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Toewijzingen worden automatisch afgeleid."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (maandelijks)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Verwijderen"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Werkruimte"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "({PH1} wordt naar Google gestuurd)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Standaardprijsmodel"
@@ -12678,10 +13161,10 @@
     "message": "Je bent niet ingelogd bij Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Als je deze instelling wilt aanzetten, moet je eerst de synchronisatie van instellingen aanzetten in Chrome."
+    "message": "Je moet eerst het opslaan van Chrome-instellingen aanzetten in je Google-account."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Relevante gegevens worden naar Google gestuurd)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Relevante gegevens"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Aanmelden"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Als je deze instelling wilt aanzetten, moet je Chrome-synchronisatie aanzetten."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Als je in aanmerking komt voor een badge, worden de ID van de badge en het type activiteit dat je hebt uitgevoerd om de badge te verdienen naar Google gestuurd"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Profiel bekijken"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Sneltoetsen tonen"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Werkruimte-instellingen tonen"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Werkruimte"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Gekoppeld aan {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Functie"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Functiestack"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Inactieve callback gevraagd"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Bron"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Stacktrace"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Gestreamd"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Opslaan"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Bevat de volledige content van alle geladen scripts (behalve extensies)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Comprimeren met gzip"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Tracering opslaan…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Bevat beschikbare bronkaarten, die geschreven code kunnen tonen."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Geavanceerd"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stoppen"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(anoniem)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Gebeurtenis: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Frame"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Indelingsverschuiving"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket gesloten"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket geopend"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket geopend: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "postTask annuleren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animatie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Animatieframe geactiveerd"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asynchroon"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Asynchrone taak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Code voor cachemodule"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Code voor cachescript"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Gecachete Wasm-module"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Animatieframe annuleren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Inactieve callback annuleren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Toewijzen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Code compileren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Module compileren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Script compileren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "Wasm-module gecompileerd"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Samengestelde lagen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Kruispunten berekenen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Consoletaak uitvoeren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Consoletijd"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "WebSocket maken"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Ontsleutelen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Antwoord ontsleutelen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Cachegeheugen voor code deserialiseren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "WebSocket beëindigen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Samenvatting"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Reactie verwerken"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM-GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded-gebeurtenis"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Frame tekenen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Tekenen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Callback van insluiting"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Versleutelen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Reactie versleutelen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Module evalueren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Script evalueren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Gebeurtenis"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Gebeurtenistiming"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Functionaliteit"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Stoppen met laden"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Inactieve callback activeren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Eerste weergave"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Start van frame"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Start van frame (primaire thread)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Frame is begonnen met laden"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Functieaanroep"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "GC-gebeurtenis"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Hit-test"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Inactief"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Afbeelding decoderen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Installatietimer"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Indeling ongeldig maken"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JavaScript-frame"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Lagen maken"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Indeling"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Indelingsverschuiving"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Indelingsverschuivingscluster"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Laden"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Hoofd-GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Berichten"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Beperkte GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "In bericht"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Onload-gebeurtenis"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Code optimaliseren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Anders"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Weergave"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Weergave-afbeelding"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Weergave instellen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Weergeven"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Parseren en compileren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "HTML parseren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Stylesheet parseren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Voorafgaand aan weergave"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Overhead voor profileren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Weergave via raster"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Raster maken"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Stijl opnieuw berekenen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Gegevens krijgen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Reactie krijgen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket-handshake krijgen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Timer verwijderen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Renderen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Animatieframe vragen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Inactieve callback vragen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Frame van primaire thread vragen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Microtaken uitvoeren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "postTask starten"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "postMessage plannen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "postTask plannen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Herberekening van stijl plannen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Scripting"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Scrollen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Verzoek sturen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "WebSocket-handshake versturen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Sterrenbeeld"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Reactie ondertekenen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Streaming-compileertaak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Stream Wasm-reactie"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Systeem"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Taak"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Timer geactiveerd"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Tijdstempel"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Laag updaten"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Laagstructuur updaten"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Gebruikerstiming"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Verifiëren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Reactie verifiëren"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Wachten op netwerk"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm-module aanwezig in cachegeheugen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm-module in cachegeheugen ongeldig"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Verstuurt verzoek"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "WebSocket-bericht gekregen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "WebSocket-bericht sturen"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR laden"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState wijzigen"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Gemarkeerd met ignoreList in bronkaart"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} van {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Hoofdlettergevoelig zoeken uitzetten"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Zoeken en vervangen uitzetten"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Reguliere expressies uitzetten"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Hoofdlettergevoelig zoeken aanzetten"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Zoeken en vervangen"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Reguliere expressies aanzetten"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Zoeken"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Hoofdlettergevoelig"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 overeenkomst"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Moet overeenkomen met heel woord"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Vervangen"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Vorig resultaat tonen"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Reguliere expressie gebruiken"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Een of meer instellingen zijn gewijzigd. De wijzigingen worden pas na opnieuw laden van kracht."

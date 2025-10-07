@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Nepielāgot pārlūka Chrome krāsu shēmai"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Pelnīt emblēmas"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Lai pārslēgtu paneļus, iespējojiet īsinājumtaustiņu Ctrl + 1–9"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Lai mainītu paneļus, iespējojiet īsinājumtaustiņu ⌘ + 1–9"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "Iespējot iestatījumu sinhronizāciju"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Meklēt nākamo rezultātu"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Iepriekšējais panelis"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "Saņemt emblēmas"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Atkārtoti ielādēt izstrādātāja rīkus"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Pa labi"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "Saglabāt DevTools iestatījumus savā Google kontā"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "Iespējot meklēšanu teksta ievades laikā"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "atiestatīt"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "Lejupielāde: {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (no kešatmiņas)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (no skripta ServiceWorker)"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "{PH1} latentums"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "Latentums: {PH1}, lejupielāde: {PH2} (kopā: {PH3})"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Ievadiet ceļu"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem nevar nolasīt failus."
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Pievienot mapi"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Izslēgt no darbvietas"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Kartējumi tiek izsecināti automātiski."
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Noņemt"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Darbvieta"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Atspējot tīkla pieprasījumu ignorēšanu"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "pārrakstīšana"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Rādīt darbvietas iestatījumus"
+  "models/trace/Name.ts | anonymous": {
+    "message": "(anonīms)"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "Darbvieta"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "Notikums: {PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "Ietvars"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "Izkārtojuma nobīde"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "Pārtraukts WebSocket savienojums"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "Izveidots WebSocket savienojums"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "Izveidots WebSocket savienojums: {PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "Atcelt postTask izmantošanu"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "Animācija"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "Tika aktivizēts animācijas ietvars"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "Asinhrons"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "Asinhrons uzdevums"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "Moduļa koda ievietošana kešatmiņā"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "Skripta koda ievietošana kešatmiņā"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "Kešatmiņā ievietots WASM modulis"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "Atcelt animāciju ietvaru"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "Dīkstāves atzvanīšanas atcelšana"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "Fiksēšana"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "Koda kompilēšana"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "Moduļa kompilēšana"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "Skripta kompilēšana"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "WASM moduļa kompilēšana"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "Salikti slāņi"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "Krustpunktu aprēķināšana"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "Izpildīt konsoles uzdevumu"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "Konsoles laiks"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "Izveidot WebSocket protokolu"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "Atšifrēt"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "Atbildes atšifrēšana"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "Koda kešatmiņas serializācijas atcelšana"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "Iznīcināt WebSocket protokolu"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "Īssavilkums"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "Atbildes īssavilkums"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM tīrīšana"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded notikums"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "Zīmēt ietvaru"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "Zīmēšana"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "Iegulšanas elementa atzvanīšana"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "Šifrēt"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "Atbildes šifrēšana"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "Moduļa izvērtēšana"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "Skripta izvērtēšana"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "Notikums"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "Notikuma laiks"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "Pieredze"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "Ielādes pabeigšana"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "Dīkstāves atzvanīšanas aktivizēšana"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "Pirmais atveidojums"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "Ietvara sākums"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "Ietvara sākums (galvenais pavediens)"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "Ietvara ielāde tika sākta"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "Funkcijas izsaukums"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "Tīrīšanas notikums"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "Grafiskais procesors"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "Trāpījuma pārbaude"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "Dīkstāve"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "Attēla dekodēšana"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "Taimera instalēšana"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "Atzīmēt izkārtojumu kā nederīgu"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS ietvars"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "Slāņu aprēķināšana"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "Izkārtojums"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "Izkārtojuma nobīde"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "Izkārtojuma nobīdes kopa"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "Ielāde"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "Izvērsta tīrīšana"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "Ziņojumapmaiņa"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "Ierobežota tīrīšana"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "Ziņojumā"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "Ielādes notikums"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "Koda optimizēšana"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "Cits"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "Marķējums"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "Attēla gleznošana"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "Atveidojuma iestatīšana"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "Atveide"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "Analizēšana un kompilēšana"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "Analizēt HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "Stila lapas analizēšana"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "Pirms atveidošanas"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "Profilēšanas virstēriņš"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "Gleznošanas rasterizēšana"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "Rasterizēšana"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "Stila pārrēķināšana"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "Datu saņemšana"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "Atbildes saņemšana"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket izaicinājumrokasspiediena saņemšana"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "Taimera noņemšana"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "Renderēšana"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "Pieprasīt animāciju ietvaru"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "Dīkstāves atzvanīšanas pieprasīšana"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "Galvenā pavediena ietvara pieprasīšana"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "Mikrouzdevumu izpilde"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "Aktivizēt postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "Ieplānot postMessage"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "Ieplānot postTask izmantošanu"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "Stila pārrēķināšanas ieplānošana"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "Skriptēšana"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "Ritināšana"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "Sūtīt pieprasījumu"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "WebSocket izaicinājumrokasspiediena nosūtīšana"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "Parakstīšana"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "Atbildes parakstīšana"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "Kompilācijas uzdevuma straumēšana"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "Straumēšanas WASM atbildes"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "Sistēma"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "Uzdevums"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "Taimera aktivizēšana"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "Laikspiedols"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "Slāņa atjaunošana"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "Slāņu koka atjaunināšana"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "Lietotāja laiks"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "Verificēt"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "Atbildes apstiprināšana"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "Gaida tīklu"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "WASM moduļa kešatmiņas trāpījums"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Nederīga WASM moduļa kešatmiņa"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "Tiks nosūtīts pieprasījums"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "Saņemt WebSocket ziņojumu"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "Sūtīt WebSocket ziņojumu"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR ielāde"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState izmaiņas"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animācija"
@@ -1941,7 +2307,7 @@
     "message": "Piespiedu plūduma pārkārtošana rodas, kad JavaScript pieprasa ģeometriskos parametrus (piemēram, offsetWidth) pēc tam, kad stili tiek atzīti par nederīgiem, mainot DOM stāvokli. Tā rezultātā var pasliktināties veiktspēja. Uzziniet vairāk par [piespiedu plūduma pārkārtošanu](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) un iespējamiem novēršanas pasākumiem."
   },
   "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Steka trasējums"
+    "message": "Steka trasēšana"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Plūduma piespiedu pārkārtošana"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Lapas, kurās tiek izmantota saskarne WebRTC, nevar pilnīgi saglabāt kešatmiņā."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika izmantots protokols WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Lapas, kurās tiek izmantots starpniekserveris WebShare, pašlaik nav piemērotas pilnīgai saglabāšanai kešatmiņā."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Lapas, kurās tiek izmantots protokols WebSocket, nevar pilnīgi saglabāt kešatmiņā."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika izmantots protokols WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Lapas, kurās tiek izmantota saskarne WebTransport, nevar pilnīgi saglabāt kešatmiņā."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika izmantots protokols WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Lapas, kurās tiek izmantota saskarne WebXR, pašlaik nav piemērotas pilnīgai saglabāšanai kešatmiņā."
@@ -4710,7 +5085,7 @@
     "message": "(nepārredzama)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "Avots"
+    "message": "Ietvara izcelsme"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "Ir pastāvīga"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Rādīt izmaiņas"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "Jūs nopelnījāt emblēmu “{PH1}”! Tā ir pievienota jūsu izstrādātāja profilam."
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "Aizvērt"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "Izveidot profilu"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "Iestatījumu pārvaldība"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "Ieslēgt emblēmas"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "Atgādināt vēlāk"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "Jūs nopelnījāt emblēmu “{PH1}” par šo aktivitāti: {PH2}! Lai iegūtu emblēmu, izveidojiet profilu."
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "Jūs nopelnījāt emblēmu “{PH1}” par šo aktivitāti: {PH2}! Ieslēdziet emblēmas, lai to saņemtu."
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "Skatīt profilu"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Atcelt"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "Svarīgi apsvērumi"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "Atcelt"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "Satura politika"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "Izstrādāts jūsu panākumiem"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "Pilnveidojiet prasmes, izmantojiet MI un iegūstiet emblēmas, ko varat rādīt savā izstrādātāja profilā"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google Developer Program reģistrēšanās dialoglodziņš"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "Saņemt jaunāko informāciju"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "Jaunākās izstrādātāja rīku funkcijas, uzaicinājumi uz pasākumiem un pielāgoti ieskati tiek nosūtīti tieši uz jūsu iesūtni."
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "Uzzināt vairāk par Google Developer Program"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "Konfidencialitātes politika"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "Reģistrēties"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "Nevarēja izveidot jūsu Google Developer Program profilu. Lūdzu, vēlāk mēģiniet vēlreiz."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "Pielāgojiet savu profilu"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "Jūsu Google konta vārds un jūsu intereses tiks izmantotas jūsu Google izstrādātāja profilā. Jūsu vārds var tikt rādīts jūsu ieguldījumos un var tikt mainīts jebkurā laikā."
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "Izveidojot izstrādātāja profilu, jūs piekrītat šādiem noteikumiem: {PH1}. Uz šī pakalpojuma izmantošanu attiecas Google {PH2} un {PH3}."
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "Pakalpojumu sniegšanas noteikumi"
   },
   "panels/common/common.ts | allow": {
     "message": "Atļaut"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Atspējot ritināšanas-pārnešanas pārklājumu"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "Atspējot režīmu “@starting-style”"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "Vienmērīgi sadalīt vienumus"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Iespējot ritināšanas-pārnešanas pārklājumu"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "Iespējot režīmu “@starting-style”"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Rekursīvi izvērst"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Rādīšanai izmantota parakstīta HTTP apmaiņa, resursa lielums: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Nodrošina Web Bundle (resursa lielums: {PH1})"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Pieprasījuma statusu šeit nevar parādīt, jo pieprasījuma izpildes laikā tika atcelta tās lapas ielāde, kas aktivizēja pieprasījumu. Varat izmantot chrome://net-export, lai tvertu tīkla žurnālu un skatītu visu pieprasījuma informāciju."
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle kļūda"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "Piegādāts no tīmekļa komplekta"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informācija par savienojumu"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Ierosinātāja adreses vieta"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "Saistīts ar reklāmām"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Latentums"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(no parakstītas apmaiņas)"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(no Web Bundle)"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Vispārīga informācija"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Lai izmantotu šo resursu no citas vietnes, serveris var iestatīt mazāk stingru vērtību atbildes galvenē, kas nosaka politiku par citas izcelsmes resursu kopīgošanu:"
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "Resursu komplekts"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Pievienot tīkla pieprasījumu bloķēšanas šablonu"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "Tika sasniegts autentifikācijas pilnvaru ierobežojums. IP aizsardzība tiks pārtraukta."
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP aizsardzība ir iespējota un aktīva."
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "Izstrādātāja rīki apiet IP aizsardzību."
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "IP aizsardzības funkcija nav iespējota."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "Funkcija “Maskēto domēnu saraksts” nav iespējota."
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "Maskēto domēnu saraksts nav aizpildīts."
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP aizsardzība nav pieejama."
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "Īslaicīgi apiet IP aizsardzību testēšanas nolūkos"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "IP aizsardzības apiešana"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP aizsardzības starpniekservera statuss"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "Statuss"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "Statuss nav zināms"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "URL"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Nestabili eksperimenti"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium (gada abonements)"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Pievienot mapi"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium (mēneša abonements)"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Izslēgt no darbvietas"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro (gada abonements)"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Kartējumi tiek izsecināti automātiski."
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro (mēneša abonements)"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "Noņemt"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Darbvieta"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "(“{PH1}” tiek nosūtīts uzņēmumam Google)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "Standarta plāns"
@@ -12678,10 +13161,10 @@
     "message": "Jūs neesat pierakstījies pārlūkā Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Lai ieslēgtu šo iestatījumu, vispirms pārlūkā Chrome jāiespējo iestatījumu sinhronizācija."
+    "message": "Vispirms Google kontā ir jāiespējo Chrome iestatījumu saglabāšana."
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "(Uzņēmumam Google tiek sūtīti atbilstoši dati)"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "Atbilstoši dati"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "Reģistrēties"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Lai ieslēgtu šo iestatījumu, jums ir jāiespējo Chrome sinhronizācija."
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "Kad esat pelnījis emblēmu, uzņēmumam Google tiek nosūtīts emblēmas identifikators un informācija par to, kādu aktivitāti veicāt, lai to nopelnītu."
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Skatīt profilu"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "Rādīt īsinājumtaustiņus"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "Rādīt darbvietas iestatījumus"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "Darbvieta"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "Saistīts ar: {PH1}"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Funkcija"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "Funkciju kopa"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Pieprasīta dīkstāves atzvanīšana"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "Avots"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Steka trasēšana"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Straumēts"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Saglabāt"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "Ietver visu ielādēto skriptu saturu (izņemot paplašinājumus)."
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "Saspiest, izmantojot GZIP"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "Notiek izsekošanas datu saglabāšana…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "Ietver pieejamās avotu kartes, kas var atklāt autoru kodu."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Papildu"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Apturēt"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "(anonīms)"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "Notikums: {PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "Ietvars"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "Izkārtojuma nobīde"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "Pārtraukts WebSocket savienojums"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "Izveidots WebSocket savienojums"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "Izveidots WebSocket savienojums: {PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "Atcelt postTask izmantošanu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "Animācija"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "Tika aktivizēts animācijas ietvars"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "Asinhrons"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "Asinhrons uzdevums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "Moduļa koda ievietošana kešatmiņā"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "Skripta koda ievietošana kešatmiņā"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "Kešatmiņā ievietots WASM modulis"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Atcelt animāciju ietvaru"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Dīkstāves atzvanīšanas atcelšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "Fiksēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "Koda kompilēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "Moduļa kompilēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "Skripta kompilēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "WASM moduļa kompilēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "Salikti slāņi"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "Krustpunktu aprēķināšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "Izpildīt konsoles uzdevumu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "Konsoles laiks"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "Izveidot WebSocket protokolu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "Atšifrēt"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "Atbildes atšifrēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Koda kešatmiņas serializācijas atcelšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "Iznīcināt WebSocket protokolu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "Īssavilkums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "Atbildes īssavilkums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM tīrīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded notikums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "Zīmēt ietvaru"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "Zīmēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "Iegulšanas elementa atzvanīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "Šifrēt"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "Atbildes šifrēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "Moduļa izvērtēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "Skripta izvērtēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "Notikums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "Notikuma laiks"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "Pieredze"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "Ielādes pabeigšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "Dīkstāves atzvanīšanas aktivizēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "Pirmais atveidojums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "Ietvara sākums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "Ietvara sākums (galvenais pavediens)"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "Ietvara ielāde tika sākta"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "Funkcijas izsaukums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "Tīrīšanas notikums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "Grafiskais procesors"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "Trāpījuma pārbaude"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "Dīkstāve"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "Attēla dekodēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "Taimera instalēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "Atzīmēt izkārtojumu kā nederīgu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS ietvars"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "Slāņu aprēķināšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "Izkārtojums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "Izkārtojuma nobīde"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Izkārtojuma nobīdes kopa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "Ielāde"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "Izvērsta tīrīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "Ziņojumapmaiņa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "Ierobežota tīrīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "Ziņojumā"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "Ielādes notikums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "Koda optimizēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "Cits"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "Marķējums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "Attēla gleznošana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "Atveidojuma iestatīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "Atveide"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "Analizēšana un kompilēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "Analizēt HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "Stila lapas analizēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "Pirms atveidošanas"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "Profilēšanas virstēriņš"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "Gleznošanas rasterizēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "Rasterizēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "Stila pārrēķināšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "Datu saņemšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "Atbildes saņemšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket izaicinājumrokasspiediena saņemšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "Taimera noņemšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "Renderēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Pieprasīt animāciju ietvaru"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "Dīkstāves atzvanīšanas pieprasīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Galvenā pavediena ietvara pieprasīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "Mikrouzdevumu izpilde"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "Aktivizēt postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "Ieplānot postMessage"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "Ieplānot postTask izmantošanu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Stila pārrēķināšanas ieplānošana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "Skriptēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "Ritināšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "Sūtīt pieprasījumu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "WebSocket izaicinājumrokasspiediena nosūtīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "Parakstīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "Atbildes parakstīšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "Kompilācijas uzdevuma straumēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Straumēšanas WASM atbildes"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "Sistēma"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "Uzdevums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "Taimera aktivizēšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "Laikspiedols"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "Slāņa atjaunošana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "Slāņu koka atjaunināšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "Lietotāja laiks"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "Verificēt"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "Atbildes apstiprināšana"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "Gaida tīklu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "WASM moduļa kešatmiņas trāpījums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Nederīga WASM moduļa kešatmiņa"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "Tiks nosūtīts pieprasījums"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "Saņemt WebSocket ziņojumu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "Sūtīt WebSocket ziņojumu"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR ielāde"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState izmaiņas"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Avota kartē atzīmēts ar parametru ignoreList"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} no {PH2}"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "Atspējot reģistrjutīgu meklēšanu"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "Atspējot meklēšanu un aizstāšanu"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "Atspējot regulārās izteiksmes"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "Iespējot reģistrjutīgu meklēšanu"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "Atrast un aizstāt"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "Iespējot regulārās izteiksmes"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Atrast"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "Saskaņot reģistru"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 atbilstība"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "Atbilstība visam vārdam"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "Aizstāt"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Rādīt iepriekšējo rezultātu"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "Izmantot regulāro izteiksmi"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Viens vai vairāki iestatījumi ir mainījušies, tāpēc jāveic atkārtota ielāde."

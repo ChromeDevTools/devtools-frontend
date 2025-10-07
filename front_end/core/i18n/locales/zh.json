@@ -77,9 +77,6 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
-  "core/common/ResourceType.ts | webbundle": {
-    "message": "WebBundle"
-  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -1079,14 +1076,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "不与 Chrome 配色方案匹配"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "赢取徽章"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "启用 Ctrl + 1-9 快捷键切换面板"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "启用 ⌘ + 1-9 快捷键切换面板"
-  },
-  "entrypoints/main/main-meta.ts | enableSync": {
-    "message": "启用设置同步"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "查找下一个结果"
@@ -1130,9 +1127,6 @@
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "上一个面板"
   },
-  "entrypoints/main/main-meta.ts | receiveBadges": {
-    "message": "接收徽章"
-  },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "重新加载 DevTools"
   },
@@ -1144,6 +1138,9 @@
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "右侧"
+  },
+  "entrypoints/main/main-meta.ts | saveSettings": {
+    "message": "将DevTools设置保存到您的Google账号中"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "启用即输即搜功能"
@@ -1673,6 +1670,21 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "重置"
   },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
+    "message": "下载速度为 {PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1}（来自缓存）"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1}（来自 ServiceWorker）"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatency": {
+    "message": "延迟时间：{PH1}"
+  },
+  "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "{PH1} 延迟时间，{PH2} 下载时间（总计 {PH3}）"
+  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "输入路径"
   },
@@ -1742,21 +1754,6 @@
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem 无法读取文件。"
   },
-  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "添加文件夹"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "从工作区中排除"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "映射是系统自动推断出的。"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "移除"
-  },
-  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "工作区"
-  },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "禁止替换网络请求"
   },
@@ -1781,11 +1778,380 @@
   "models/persistence/persistence-meta.ts | rewrite": {
     "message": "重写"
   },
-  "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "显示工作区设置"
+  "models/trace/Name.ts | anonymous": {
+    "message": "（匿名）"
   },
-  "models/persistence/persistence-meta.ts | workspace": {
-    "message": "工作区"
+  "models/trace/Name.ts | eventDispatchS": {
+    "message": "事件类型：{PH1}"
+  },
+  "models/trace/Name.ts | frame": {
+    "message": "帧"
+  },
+  "models/trace/Name.ts | layoutShift": {
+    "message": "布局偏移"
+  },
+  "models/trace/Name.ts | wsConnectionClosed": {
+    "message": "WebSocket 已关闭"
+  },
+  "models/trace/Name.ts | wsConnectionOpened": {
+    "message": "WebSocket 已打开"
+  },
+  "models/trace/Name.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket 已打开：{PH1}"
+  },
+  "models/trace/Styles.ts | abortPostTaskCallback": {
+    "message": "取消 postTask"
+  },
+  "models/trace/Styles.ts | animation": {
+    "message": "动画"
+  },
+  "models/trace/Styles.ts | animationFrameFired": {
+    "message": "已触发动画帧"
+  },
+  "models/trace/Styles.ts | async": {
+    "message": "异步"
+  },
+  "models/trace/Styles.ts | asyncTask": {
+    "message": "异步任务"
+  },
+  "models/trace/Styles.ts | cacheModule": {
+    "message": "缓存模块代码"
+  },
+  "models/trace/Styles.ts | cacheScript": {
+    "message": "缓存脚本代码"
+  },
+  "models/trace/Styles.ts | cachedWasmModule": {
+    "message": "缓存的 Wasm 模块"
+  },
+  "models/trace/Styles.ts | cancelAnimationFrame": {
+    "message": "取消动画帧"
+  },
+  "models/trace/Styles.ts | cancelIdleCallback": {
+    "message": "取消空闲回调"
+  },
+  "models/trace/Styles.ts | commit": {
+    "message": "提交"
+  },
+  "models/trace/Styles.ts | compileCode": {
+    "message": "编译代码"
+  },
+  "models/trace/Styles.ts | compileModule": {
+    "message": "编译模块"
+  },
+  "models/trace/Styles.ts | compileScript": {
+    "message": "编译脚本"
+  },
+  "models/trace/Styles.ts | compiledWasmModule": {
+    "message": "已编译 Wasm 模块"
+  },
+  "models/trace/Styles.ts | compositeLayers": {
+    "message": "复合图层"
+  },
+  "models/trace/Styles.ts | computeIntersections": {
+    "message": "计算相交部分"
+  },
+  "models/trace/Styles.ts | consoleTaskRun": {
+    "message": "运行控制台任务"
+  },
+  "models/trace/Styles.ts | consoleTime": {
+    "message": "控制台时间事件"
+  },
+  "models/trace/Styles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "models/trace/Styles.ts | createWebsocket": {
+    "message": "创建 WebSocket"
+  },
+  "models/trace/Styles.ts | decrypt": {
+    "message": "解密"
+  },
+  "models/trace/Styles.ts | decryptReply": {
+    "message": "对回复解密"
+  },
+  "models/trace/Styles.ts | deserializeCodeCache": {
+    "message": "反序列化代码缓存"
+  },
+  "models/trace/Styles.ts | destroyWebsocket": {
+    "message": "销毁 WebSocket"
+  },
+  "models/trace/Styles.ts | digest": {
+    "message": "摘要"
+  },
+  "models/trace/Styles.ts | digestReply": {
+    "message": "生成回复摘要"
+  },
+  "models/trace/Styles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "models/trace/Styles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded 事件"
+  },
+  "models/trace/Styles.ts | drawFrame": {
+    "message": "绘制帧"
+  },
+  "models/trace/Styles.ts | drawing": {
+    "message": "绘制"
+  },
+  "models/trace/Styles.ts | embedderCallback": {
+    "message": "嵌入器回调"
+  },
+  "models/trace/Styles.ts | encrypt": {
+    "message": "加密"
+  },
+  "models/trace/Styles.ts | encryptReply": {
+    "message": "对回复加密"
+  },
+  "models/trace/Styles.ts | evaluateModule": {
+    "message": "评估模块"
+  },
+  "models/trace/Styles.ts | evaluateScript": {
+    "message": "评估脚本"
+  },
+  "models/trace/Styles.ts | event": {
+    "message": "事件"
+  },
+  "models/trace/Styles.ts | eventTiming": {
+    "message": "事件时间"
+  },
+  "models/trace/Styles.ts | experience": {
+    "message": "体验"
+  },
+  "models/trace/Styles.ts | finishLoading": {
+    "message": "完成加载"
+  },
+  "models/trace/Styles.ts | fireIdleCallback": {
+    "message": "触发空闲回调"
+  },
+  "models/trace/Styles.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "models/trace/Styles.ts | firstPaint": {
+    "message": "首次绘制"
+  },
+  "models/trace/Styles.ts | frameStart": {
+    "message": "帧开始"
+  },
+  "models/trace/Styles.ts | frameStartMainThread": {
+    "message": "帧开始（主线程）"
+  },
+  "models/trace/Styles.ts | frameStartedLoading": {
+    "message": "帧已开始加载"
+  },
+  "models/trace/Styles.ts | functionCall": {
+    "message": "函数调用"
+  },
+  "models/trace/Styles.ts | gcEvent": {
+    "message": "GC 事件"
+  },
+  "models/trace/Styles.ts | gpu": {
+    "message": "GPU"
+  },
+  "models/trace/Styles.ts | hitTest": {
+    "message": "点击测试"
+  },
+  "models/trace/Styles.ts | idle": {
+    "message": "空闲"
+  },
+  "models/trace/Styles.ts | imageDecode": {
+    "message": "图片解码"
+  },
+  "models/trace/Styles.ts | installTimer": {
+    "message": "安装计时器"
+  },
+  "models/trace/Styles.ts | invalidateLayout": {
+    "message": "使布局失效"
+  },
+  "models/trace/Styles.ts | jsFrame": {
+    "message": "JS 帧"
+  },
+  "models/trace/Styles.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | layerize": {
+    "message": "分层"
+  },
+  "models/trace/Styles.ts | layout": {
+    "message": "布局"
+  },
+  "models/trace/Styles.ts | layoutShift": {
+    "message": "布局偏移"
+  },
+  "models/trace/Styles.ts | layoutShiftCluster": {
+    "message": "布局偏移集群"
+  },
+  "models/trace/Styles.ts | loading": {
+    "message": "加载"
+  },
+  "models/trace/Styles.ts | majorGc": {
+    "message": "主要垃圾回收"
+  },
+  "models/trace/Styles.ts | messaging": {
+    "message": "消息功能"
+  },
+  "models/trace/Styles.ts | minorGc": {
+    "message": "次要垃圾回收"
+  },
+  "models/trace/Styles.ts | onMessage": {
+    "message": "与消息相关"
+  },
+  "models/trace/Styles.ts | onloadEvent": {
+    "message": "onload 事件"
+  },
+  "models/trace/Styles.ts | optimizeCode": {
+    "message": "优化代码"
+  },
+  "models/trace/Styles.ts | other": {
+    "message": "其他"
+  },
+  "models/trace/Styles.ts | paint": {
+    "message": "绘制"
+  },
+  "models/trace/Styles.ts | paintImage": {
+    "message": "绘制图片"
+  },
+  "models/trace/Styles.ts | paintSetup": {
+    "message": "绘制设置"
+  },
+  "models/trace/Styles.ts | painting": {
+    "message": "绘制"
+  },
+  "models/trace/Styles.ts | parseAndCompile": {
+    "message": "解析和编译"
+  },
+  "models/trace/Styles.ts | parseHtml": {
+    "message": "解析 HTML"
+  },
+  "models/trace/Styles.ts | parseStylesheet": {
+    "message": "解析样式表"
+  },
+  "models/trace/Styles.ts | prePaint": {
+    "message": "预先绘制"
+  },
+  "models/trace/Styles.ts | profilingOverhead": {
+    "message": "分析开销"
+  },
+  "models/trace/Styles.ts | rasterizePaint": {
+    "message": "光栅化绘制"
+  },
+  "models/trace/Styles.ts | rasterizing": {
+    "message": "正在光栅化"
+  },
+  "models/trace/Styles.ts | recalculateStyle": {
+    "message": "重新计算样式"
+  },
+  "models/trace/Styles.ts | receiveData": {
+    "message": "接收数据"
+  },
+  "models/trace/Styles.ts | receiveResponse": {
+    "message": "接收响应"
+  },
+  "models/trace/Styles.ts | receiveWebsocketHandshake": {
+    "message": "接收 WebSocket 握手"
+  },
+  "models/trace/Styles.ts | removeTimer": {
+    "message": "移除计时器"
+  },
+  "models/trace/Styles.ts | rendering": {
+    "message": "渲染"
+  },
+  "models/trace/Styles.ts | requestAnimationFrame": {
+    "message": "请求动画帧"
+  },
+  "models/trace/Styles.ts | requestIdleCallback": {
+    "message": "请求空闲回调"
+  },
+  "models/trace/Styles.ts | requestMainThreadFrame": {
+    "message": "请求主线程帧"
+  },
+  "models/trace/Styles.ts | runMicrotasks": {
+    "message": "运行微任务"
+  },
+  "models/trace/Styles.ts | runPostTaskCallback": {
+    "message": "触发 postTask"
+  },
+  "models/trace/Styles.ts | schedulePostMessage": {
+    "message": "安排 postMessage 的时间"
+  },
+  "models/trace/Styles.ts | schedulePostTaskCallback": {
+    "message": "安排 postTask"
+  },
+  "models/trace/Styles.ts | scheduleStyleRecalculation": {
+    "message": "安排重新计算样式的时间"
+  },
+  "models/trace/Styles.ts | scripting": {
+    "message": "执行脚本"
+  },
+  "models/trace/Styles.ts | scroll": {
+    "message": "滚动"
+  },
+  "models/trace/Styles.ts | sendRequest": {
+    "message": "发送请求"
+  },
+  "models/trace/Styles.ts | sendWebsocketHandshake": {
+    "message": "发送 WebSocket 握手"
+  },
+  "models/trace/Styles.ts | sign": {
+    "message": "签名"
+  },
+  "models/trace/Styles.ts | signReply": {
+    "message": "对回复签名"
+  },
+  "models/trace/Styles.ts | streamingCompileTask": {
+    "message": "流式编译任务"
+  },
+  "models/trace/Styles.ts | streamingWasmResponse": {
+    "message": "流式 Wasm 响应"
+  },
+  "models/trace/Styles.ts | system": {
+    "message": "系统"
+  },
+  "models/trace/Styles.ts | task": {
+    "message": "任务"
+  },
+  "models/trace/Styles.ts | timerFired": {
+    "message": "已触发计时器"
+  },
+  "models/trace/Styles.ts | timestamp": {
+    "message": "时间戳"
+  },
+  "models/trace/Styles.ts | updateLayer": {
+    "message": "更新图层"
+  },
+  "models/trace/Styles.ts | updateLayerTree": {
+    "message": "更新图层树"
+  },
+  "models/trace/Styles.ts | userTiming": {
+    "message": "用户计时"
+  },
+  "models/trace/Styles.ts | verify": {
+    "message": "验证"
+  },
+  "models/trace/Styles.ts | verifyReply": {
+    "message": "验证回复"
+  },
+  "models/trace/Styles.ts | waitingForNetwork": {
+    "message": "等待连接到网络"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheHit": {
+    "message": "Wasm 模块缓存命中"
+  },
+  "models/trace/Styles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm 模块缓存无效"
+  },
+  "models/trace/Styles.ts | willSendRequest": {
+    "message": "将发送请求"
+  },
+  "models/trace/Styles.ts | wsMessageReceived": {
+    "message": "接收 WebSocket 消息"
+  },
+  "models/trace/Styles.ts | wsMessageSent": {
+    "message": "发送 WebSocket 消息"
+  },
+  "models/trace/Styles.ts | xhrLoad": {
+    "message": "XHR 加载"
+  },
+  "models/trace/Styles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState 更改"
   },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "动画"
@@ -4208,14 +4574,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "使用 WebRTC 的网页无法储存至往返缓存。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
+    "message": "往返缓存已被停用，因为使用了 WebRTC。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "使用 Webshare 的网页目前无法储存至往返缓存。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "使用 WebSocket 的网页无法储存至往返缓存。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
+    "message": "往返缓存已被停用，因为使用了 WebSocket。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "使用 WebTransport 的网页无法储存至往返缓存。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
+    "message": "往返缓存已被停用，因为使用了 WebTransport。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "使用 WebXR 的网页目前无法储存至往返缓存。"
@@ -4710,7 +5085,7 @@
     "message": "（不透明）"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
-    "message": "源"
+    "message": "框架来源"
   },
   "panels/application/components/StorageMetadataView.ts | persistent": {
     "message": "是永久的"
@@ -5606,6 +5981,33 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "显示“更改”工具"
   },
+  "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
+    "message": "您赢得了“{PH1}”徽章！该徽章已添加到您的开发者资料中。"
+  },
+  "panels/common/BadgeNotification.ts | close": {
+    "message": "关闭"
+  },
+  "panels/common/BadgeNotification.ts | createProfile": {
+    "message": "创建资料"
+  },
+  "panels/common/BadgeNotification.ts | manageSettings": {
+    "message": "管理设置"
+  },
+  "panels/common/BadgeNotification.ts | receiveBadges": {
+    "message": "开启徽章功能"
+  },
+  "panels/common/BadgeNotification.ts | remindMeLater": {
+    "message": "以后再提醒我"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageNoGdpProfile": {
+    "message": "您赢得了{PH2}的“{PH1}”徽章！创建一份资料即可领取徽章。"
+  },
+  "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
+    "message": "您赢得了{PH2}的“{PH1}”徽章！开启徽章功能即可领取。"
+  },
+  "panels/common/BadgeNotification.ts | viewProfile": {
+    "message": "查看资料"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "取消"
   },
@@ -5617,6 +6019,54 @@
   },
   "panels/common/FreDialog.ts | thingsToConsider": {
     "message": "注意事项"
+  },
+  "panels/common/GdpSignUpDialog.ts | cancel": {
+    "message": "取消"
+  },
+  "panels/common/GdpSignUpDialog.ts | contentPolicy": {
+    "message": "内容政策"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccess": {
+    "message": "专为您的成功而设计"
+  },
+  "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
+    "message": "提升技能，利用 AI 进行构建，并赢取可在开发者资料中展示的徽章"
+  },
+  "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
+    "message": "Google 开发者计划注册对话框"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdated": {
+    "message": "有新动态时通知我"
+  },
+  "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
+    "message": "直接通过收件箱接收最新的开发者工具功能信息、活动邀请和量身定制的数据分析"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMore": {
+    "message": "了解详情"
+  },
+  "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
+    "message": "详细了解 Google 开发者计划"
+  },
+  "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
+    "message": "隐私权政策"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUp": {
+    "message": "注册"
+  },
+  "panels/common/GdpSignUpDialog.ts | signUpFailed": {
+    "message": "无法创建 Google 开发者计划资料。请稍后再试。"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfile": {
+    "message": "定制资料"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
+    "message": "您的 Google 开发者资料将使用您的 Google 账号名称和兴趣信息。您的名称可能会出现在您参与贡献的地方，并随时可以更改。"
+  },
+  "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
+    "message": "创建开发者资料即表示您同意遵守《{PH1}》。您使用此服务时须遵守 Google 的《{PH2}》和《{PH3}》。"
+  },
+  "panels/common/GdpSignUpDialog.ts | termsOfService": {
+    "message": "服务条款"
   },
   "panels/common/common.ts | allow": {
     "message": "允许"
@@ -6650,6 +7100,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "停用滚动贴靠叠加层"
   },
+  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
+    "message": "停用 @starting-style 模式"
+  },
   "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
     "message": "均匀分布元素"
   },
@@ -6679,6 +7132,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "启用滚动贴靠叠加层"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
+    "message": "启用 @starting-style 模式"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "以递归方式展开"
@@ -9128,9 +9584,6 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "通过 Signed HTTP Exchange 提供，资源大小：{PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "由 Web Bundle 提供，资源大小：{PH1}"
-  },
   "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
@@ -9145,15 +9598,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "无法在此处显示该请求的状态，因为发出该请求的网页在传输该请求的过程中被卸载了。您可以使用 chrome://net-export 来捕获网络日志并查看所有请求详情。"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle 错误"
-  },
-  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "由 Web Bundle 传回"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "连接信息"
@@ -9493,6 +9937,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "启动器地址空间"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
+    "message": "与广告相关"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "延迟时间"
@@ -10145,9 +10592,6 @@
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
     "message": "（来自 signed-exchange）"
   },
-  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "（来自 Web Bundle）"
-  },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "常规"
   },
@@ -10261,9 +10705,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "为了从其他网站使用此资源，服务器可能会放宽跨域资源政策响应标头："
-  },
-  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
-    "message": "捆绑的资源"
   },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "添加网络请求屏蔽模式"
@@ -11544,13 +11985,13 @@
     "message": "清除"
   },
   "panels/search/SearchView.ts | disableCaseSensitive": {
-    "message": "停用区分大小写的搜索功能"
+    "message": "搜索时不区分大小写"
   },
   "panels/search/SearchView.ts | disableRegularExpression": {
     "message": "停用正则表达式"
   },
   "panels/search/SearchView.ts | enableCaseSensitive": {
-    "message": "启用区分大小写的搜索功能"
+    "message": "搜索时区分大小写"
   },
   "panels/search/SearchView.ts | enableRegularExpression": {
     "message": "启用正则表达式"
@@ -11598,7 +12039,7 @@
     "message": "输入内容并按 {PH1} 键即可搜索"
   },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
-    "message": "仅在开发者工具已打开时"
+    "message": "仅在开发者工具打开时"
   },
   "panels/security/CookieControlsView.ts | cardTitle": {
     "message": "暂时限制第三方 Cookie"
@@ -11765,8 +12206,35 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "视频"
   },
-  "panels/security/IPProtectionView.ts | cardTitle": {
+  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
+    "message": "已达到身份验证令牌数量上限。IP 地址保护功能将会暂停。"
+  },
+  "panels/security/IPProtectionView.ts | Available": {
+    "message": "IP 地址保护功能已启用并正在运行。"
+  },
+  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
+    "message": "开发者工具正在绕过 IP 地址保护功能。"
+  },
+  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
+    "message": "IP 地址保护功能未启用。"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
+    "message": "未启用掩码网域列表功能。"
+  },
+  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
+    "message": "掩码网域列表未填充。"
+  },
+  "panels/security/IPProtectionView.ts | Unavailable": {
+    "message": "IP 地址保护功能不可用。"
+  },
+  "panels/security/IPProtectionView.ts | bypassDescription": {
+    "message": "暂时绕过 IP 地址保护功能以进行测试"
+  },
+  "panels/security/IPProtectionView.ts | bypassTitle": {
     "message": "绕过 IP 地址保护"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP 地址保护代理状态"
   },
   "panels/security/IPProtectionView.ts | idColumn": {
     "message": "ID"
@@ -11785,6 +12253,9 @@
   },
   "panels/security/IPProtectionView.ts | statusColumn": {
     "message": "状态"
+  },
+  "panels/security/IPProtectionView.ts | statusUnknown": {
+    "message": "状态未知"
   },
   "panels/security/IPProtectionView.ts | urlColumn": {
     "message": "网址"
@@ -12656,17 +13127,29 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "不稳定的实验"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
-    "message": "Premium（按年）"
+  "panels/settings/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "添加文件夹"
   },
-  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
-    "message": "Premium（按月）"
+  "panels/settings/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "从工作区中排除"
   },
-  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
-    "message": "Pro（按年）"
+  "panels/settings/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "映射是系统自动推断出的。"
   },
-  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
-    "message": "Pro（按月）"
+  "panels/settings/WorkspaceSettingsTab.ts | remove": {
+    "message": "移除"
+  },
+  "panels/settings/WorkspaceSettingsTab.ts | workspace": {
+    "message": "工作区"
+  },
+  "panels/settings/components/SyncSection.ts | dataDisclaimer": {
+    "message": "（{PH1}会发送给 Google）"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
+    "message": "Premium"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProSubscription": {
+    "message": "Pro"
   },
   "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
     "message": "标准版方案"
@@ -12678,10 +13161,10 @@
     "message": "您尚未登录 Chrome。"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "若要开启此设置，您必须先在 Chrome 中启用设置同步。"
+    "message": "您需要先在Google账号中启用保存Chrome设置的功能。"
   },
-  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
-    "message": "（相关数据会发送给 Google）"
+  "panels/settings/components/SyncSection.ts | relevantData": {
+    "message": "相关数据"
   },
   "panels/settings/components/SyncSection.ts | signUp": {
     "message": "注册"
@@ -12691,6 +13174,9 @@
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "若要开启此设置，您必须先启用 Chrome 同步。"
+  },
+  "panels/settings/components/SyncSection.ts | tooltipDisclaimerText": {
+    "message": "当您符合获得徽章的条件时，徽章的标识符以及您为获得徽章而完成的活动类型会发送给 Google"
   },
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "查看资料"
@@ -12889,6 +13375,12 @@
   },
   "panels/settings/settings-meta.ts | showShortcuts": {
     "message": "显示快捷键"
+  },
+  "panels/settings/settings-meta.ts | showWorkspace": {
+    "message": "显示工作区设置"
+  },
+  "panels/settings/settings-meta.ts | workspace": {
+    "message": "工作区"
   },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "已链接到 {PH1}"
@@ -13950,7 +14442,7 @@
     "message": "使用调试信息调试 Wasm 时，尽量别在 Wasm 字节码处暂停"
   },
   "panels/sources/sources-meta.ts | watch": {
-    "message": "手表"
+    "message": "监控"
   },
   "panels/sources/sources-meta.ts | wordWrap": {
     "message": "自动换行"
@@ -14696,6 +15188,9 @@
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "函数"
   },
+  "panels/timeline/TimelineUIUtils.ts | functionStack": {
+    "message": "函数堆栈"
+  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "已请求空闲回调"
   },
@@ -14833,9 +15328,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
     "message": "来源"
-  },
-  "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "堆栈轨迹"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "流式"
@@ -15002,8 +15494,17 @@
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "保存"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
+    "message": "包含所有已加载脚本（扩展程序除外）的完整内容。"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
+    "message": "使用 gzip 压缩"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
     "message": "保存跟踪记录…"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | sourceMapsContentPrivacyInfo": {
+    "message": "包含可用的源代码映射，可能会公开已编写的代码。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "高级"
@@ -15740,381 +16241,6 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
   },
-  "panels/timeline/utils/EntryName.ts | anonymous": {
-    "message": "（匿名）"
-  },
-  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
-    "message": "事件类型：{PH1}"
-  },
-  "panels/timeline/utils/EntryName.ts | frame": {
-    "message": "帧"
-  },
-  "panels/timeline/utils/EntryName.ts | layoutShift": {
-    "message": "布局偏移"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket 已关闭"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket 已打开"
-  },
-  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket 已打开：{PH1}"
-  },
-  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
-    "message": "取消 postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animation": {
-    "message": "动画"
-  },
-  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
-    "message": "已触发动画帧"
-  },
-  "panels/timeline/utils/EntryStyles.ts | async": {
-    "message": "异步"
-  },
-  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
-    "message": "异步任务"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
-    "message": "缓存模块代码"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
-    "message": "缓存脚本代码"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
-    "message": "缓存的 Wasm 模块"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "取消动画帧"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
-    "message": "取消空闲回调"
-  },
-  "panels/timeline/utils/EntryStyles.ts | commit": {
-    "message": "提交"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileCode": {
-    "message": "编译代码"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileModule": {
-    "message": "编译模块"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compileScript": {
-    "message": "编译脚本"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
-    "message": "已编译 Wasm 模块"
-  },
-  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
-    "message": "复合图层"
-  },
-  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
-    "message": "计算相交部分"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
-    "message": "运行控制台任务"
-  },
-  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
-    "message": "控制台时间事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
-    "message": "创建 WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decrypt": {
-    "message": "解密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
-    "message": "对回复解密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
-    "message": "反序列化代码缓存"
-  },
-  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
-    "message": "销毁 WebSocket"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digest": {
-    "message": "摘要"
-  },
-  "panels/timeline/utils/EntryStyles.ts | digestReply": {
-    "message": "生成回复摘要"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded 事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
-    "message": "绘制帧"
-  },
-  "panels/timeline/utils/EntryStyles.ts | drawing": {
-    "message": "绘制"
-  },
-  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
-    "message": "嵌入器回调"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encrypt": {
-    "message": "加密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
-    "message": "对回复加密"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
-    "message": "评估模块"
-  },
-  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
-    "message": "评估脚本"
-  },
-  "panels/timeline/utils/EntryStyles.ts | event": {
-    "message": "事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
-    "message": "事件时间"
-  },
-  "panels/timeline/utils/EntryStyles.ts | experience": {
-    "message": "体验"
-  },
-  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
-    "message": "完成加载"
-  },
-  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
-    "message": "触发空闲回调"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
-    "message": "首次绘制"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStart": {
-    "message": "帧开始"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
-    "message": "帧开始（主线程）"
-  },
-  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
-    "message": "帧已开始加载"
-  },
-  "panels/timeline/utils/EntryStyles.ts | functionCall": {
-    "message": "函数调用"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
-    "message": "GC 事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/utils/EntryStyles.ts | hitTest": {
-    "message": "点击测试"
-  },
-  "panels/timeline/utils/EntryStyles.ts | idle": {
-    "message": "空闲"
-  },
-  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
-    "message": "图片解码"
-  },
-  "panels/timeline/utils/EntryStyles.ts | installTimer": {
-    "message": "安装计时器"
-  },
-  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
-    "message": "使布局失效"
-  },
-  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
-    "message": "JS 帧"
-  },
-  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layerize": {
-    "message": "分层"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layout": {
-    "message": "布局"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
-    "message": "布局偏移"
-  },
-  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
-    "message": "布局偏移集群"
-  },
-  "panels/timeline/utils/EntryStyles.ts | loading": {
-    "message": "加载"
-  },
-  "panels/timeline/utils/EntryStyles.ts | majorGc": {
-    "message": "主要垃圾回收"
-  },
-  "panels/timeline/utils/EntryStyles.ts | messaging": {
-    "message": "消息功能"
-  },
-  "panels/timeline/utils/EntryStyles.ts | minorGc": {
-    "message": "次要垃圾回收"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onMessage": {
-    "message": "与消息相关"
-  },
-  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
-    "message": "onload 事件"
-  },
-  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
-    "message": "优化代码"
-  },
-  "panels/timeline/utils/EntryStyles.ts | other": {
-    "message": "其他"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paint": {
-    "message": "绘制"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintImage": {
-    "message": "绘制图片"
-  },
-  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
-    "message": "绘制设置"
-  },
-  "panels/timeline/utils/EntryStyles.ts | painting": {
-    "message": "绘制"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
-    "message": "解析和编译"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
-    "message": "解析 HTML"
-  },
-  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
-    "message": "解析样式表"
-  },
-  "panels/timeline/utils/EntryStyles.ts | prePaint": {
-    "message": "预先绘制"
-  },
-  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
-    "message": "分析开销"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
-    "message": "光栅化绘制"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
-    "message": "正在光栅化"
-  },
-  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
-    "message": "重新计算样式"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveData": {
-    "message": "接收数据"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
-    "message": "接收响应"
-  },
-  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "接收 WebSocket 握手"
-  },
-  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
-    "message": "移除计时器"
-  },
-  "panels/timeline/utils/EntryStyles.ts | rendering": {
-    "message": "渲染"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
-    "message": "请求动画帧"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
-    "message": "请求空闲回调"
-  },
-  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "请求主线程帧"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
-    "message": "运行微任务"
-  },
-  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
-    "message": "触发 postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
-    "message": "安排 postMessage 的时间"
-  },
-  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
-    "message": "安排 postTask"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "安排重新计算样式的时间"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scripting": {
-    "message": "执行脚本"
-  },
-  "panels/timeline/utils/EntryStyles.ts | scroll": {
-    "message": "滚动"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
-    "message": "发送请求"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "发送 WebSocket 握手"
-  },
-  "panels/timeline/utils/EntryStyles.ts | sign": {
-    "message": "签名"
-  },
-  "panels/timeline/utils/EntryStyles.ts | signReply": {
-    "message": "对回复签名"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
-    "message": "流式编译任务"
-  },
-  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
-    "message": "流式 Wasm 响应"
-  },
-  "panels/timeline/utils/EntryStyles.ts | system": {
-    "message": "系统"
-  },
-  "panels/timeline/utils/EntryStyles.ts | task": {
-    "message": "任务"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timerFired": {
-    "message": "已触发计时器"
-  },
-  "panels/timeline/utils/EntryStyles.ts | timestamp": {
-    "message": "时间戳"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
-    "message": "更新图层"
-  },
-  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
-    "message": "更新图层树"
-  },
-  "panels/timeline/utils/EntryStyles.ts | userTiming": {
-    "message": "用户计时"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verify": {
-    "message": "验证"
-  },
-  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
-    "message": "验证回复"
-  },
-  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
-    "message": "等待连接到网络"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm 模块缓存命中"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm 模块缓存无效"
-  },
-  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
-    "message": "将发送请求"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
-    "message": "接收 WebSocket 消息"
-  },
-  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
-    "message": "发送 WebSocket 消息"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
-    "message": "XHR 加载"
-  },
-  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState 更改"
-  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "已在源代码映射中标记为忽略列表"
   },
@@ -16601,29 +16727,23 @@
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} 个（共 {PH2} 个）"
   },
-  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
-    "message": "停用区分大小写的搜索功能"
-  },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "停用“查找和替换”功能"
-  },
-  "ui/legacy/SearchableView.ts | disableRegularExpression": {
-    "message": "停用正则表达式"
-  },
-  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
-    "message": "启用区分大小写的搜索功能"
   },
   "ui/legacy/SearchableView.ts | enableFindAndReplace": {
     "message": "查找和替换"
   },
-  "ui/legacy/SearchableView.ts | enableRegularExpression": {
-    "message": "启用正则表达式"
-  },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "查找"
   },
+  "ui/legacy/SearchableView.ts | matchCase": {
+    "message": "匹配大小写"
+  },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 个匹配项"
+  },
+  "ui/legacy/SearchableView.ts | matchWholeWord": {
+    "message": "全字匹配"
   },
   "ui/legacy/SearchableView.ts | replace": {
     "message": "替换"
@@ -16636,6 +16756,9 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "显示上一个结果"
+  },
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
+    "message": "使用正则表达式"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "一项或多项设置已更改，需要重新加载才能生效"

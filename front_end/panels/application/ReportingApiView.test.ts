@@ -4,9 +4,11 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
@@ -216,5 +218,57 @@ describeWithMockConnection('ReportingApiView', () => {
     view.input.onReportSelected('some_id');
     await view.nextInput;
     assert.strictEqual(view.input.focusedReport, reports[0]);
+  });
+
+  describe('view', () => {
+    let target!: HTMLElement;
+    let stub: sinon.SinonStub;
+
+    beforeEach(async () => {
+      const original = Date.prototype.toLocaleString;
+      stub = sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
+        return original.call(this, 'en-US', {timeZone: 'UTC'});
+      });
+
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      const widget = new UI.Widget.Widget();
+      widget.markAsRoot();
+      widget.show(container);
+      target = widget.element;
+      target.style.display = 'flex';
+      target.style.width = '780px';
+      target.style.height = '400px';
+    });
+
+    afterEach(() => {
+      stub.restore();
+    });
+
+    it('updates report details', async () => {
+      Application.ReportingApiView.DEFAULT_VIEW(
+          {
+            hasReports: true,
+            hasEndpoints: false,
+            endpoints: new Map(),
+            reports,
+            focusedReport: reports[0],
+            onReportSelected: () => {},
+          },
+          undefined, target);
+      await assertScreenshot('application/report_details.png');
+
+      Application.ReportingApiView.DEFAULT_VIEW(
+          {
+            hasReports: true,
+            hasEndpoints: false,
+            endpoints: new Map(),
+            reports,
+            focusedReport: reports[1],
+            onReportSelected: () => {},
+          },
+          undefined, target);
+      await assertScreenshot('application/report_details_updated.png');
+    });
   });
 });

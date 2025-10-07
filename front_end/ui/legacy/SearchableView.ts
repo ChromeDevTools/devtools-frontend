@@ -139,7 +139,7 @@ function createClearButton(jslogContext: string): Buttons.Button.Button {
   return button;
 }
 export class SearchableView extends VBox {
-  private searchProvider: Searchable;
+  protected searchProvider: Searchable;
   private replaceProvider: Replaceable|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

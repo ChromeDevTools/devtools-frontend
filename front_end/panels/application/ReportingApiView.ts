@@ -56,12 +56,11 @@ interface ViewInput {
   onReportSelected: (id: string) => void;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
-
-export const DEFAULT_VIEW: View = (input, _output, target) => {
+export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement): void => {
   if (input.hasReports || input.hasEndpoints) {
     // clang-format off
     render(html`
+      <style>${UI.inspectorCommonStyles}</style>
       <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${
           VisualLogging.pane('reporting-api')}>
         ${input.hasReports ? html`
@@ -73,9 +72,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             </div>
             <div slot="sidebar" class="vbox" jslog=${VisualLogging.pane('preview').track({resize: true})}>
               ${input.focusedReport ? html`
-                <devtools-widget .widgetConfig=${widgetConfig(
-                  element => SourceFrame.JSONView.JSONView.createViewSync(input.focusedReport?.body || '', element)
-                )}></devtools-widget>
+                <devtools-widget .widgetConfig=${widgetConfig(SourceFrame.JSONView.SearchableJsonView, {
+                  jsonObject: input.focusedReport.body,
+                })}></devtools-widget>
               ` : html`
                 <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
                   header: i18nString(UIStrings.noReportSelected),
@@ -111,6 +110,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     // clang-format on
   }
 };
+
+type View = typeof DEFAULT_VIEW;
 
 export class ReportingApiView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
@@ -164,7 +165,7 @@ export class ReportingApiView extends UI.Widget.VBox implements
       focusedReport: this.#focusedReport,
       onReportSelected: this.#onReportSelected.bind(this),
     };
-    this.#view(viewInput, {}, this.element);
+    this.#view(viewInput, undefined, this.element);
   }
 
   #onEndpointsChangedForOrigin({data}: {data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent}): void {

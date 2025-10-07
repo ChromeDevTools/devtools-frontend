@@ -113,4 +113,3 @@ export declare function getStaticMemberAccessValue(node: NodeWithKey, { sourceCo
  * or even `const v = 'value'; x[v]` (or optional variants thereof).
  */
 export declare const isStaticMemberAccessOfValue: (memberExpression: NodeWithKey, context: RuleContext<string, unknown[]>, ...values: (string | symbol)[]) => boolean;
-//# sourceMappingURL=misc.d.ts.map

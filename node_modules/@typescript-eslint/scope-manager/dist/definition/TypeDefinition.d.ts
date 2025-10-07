@@ -6,4 +6,3 @@ export declare class TypeDefinition extends DefinitionBase<DefinitionType.Type, 
     readonly isVariableDefinition = false;
     constructor(name: TSESTree.Identifier, node: TypeDefinition['node']);
 }
-//# sourceMappingURL=TypeDefinition.d.ts.map

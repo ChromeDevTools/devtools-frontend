@@ -59,6 +59,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExecutionContext = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
+const AriaQueryHandler_js_1 = require("../common/AriaQueryHandler.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
@@ -67,7 +68,6 @@ const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const disposable_js_1 = require("../util/disposable.js");
 const Function_js_1 = require("../util/Function.js");
 const Mutex_js_1 = require("../util/Mutex.js");
-const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
 const Binding_js_1 = require("./Binding.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const JSHandle_js_1 = require("./JSHandle.js");

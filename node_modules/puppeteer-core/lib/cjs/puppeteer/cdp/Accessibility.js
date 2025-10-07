@@ -192,9 +192,6 @@ class Accessibility {
         }
         const interestingNodes = new Set();
         this.collectInterestingNodes(interestingNodes, defaultRoot, false);
-        if (!interestingNodes.has(needle)) {
-            return null;
-        }
         return this.serializeTree(needle, interestingNodes)[0] ?? null;
     }
     serializeTree(node, interestingNodes) {
@@ -242,7 +239,6 @@ class AXNode {
     #name;
     #role;
     #ignored;
-    #cachedHasFocusableChild;
     #realm;
     constructor(realm, payload) {
         this.payload = payload;
@@ -278,18 +274,6 @@ class AXNode {
             role === 'text' ||
             role === 'InlineTextBox' ||
             role === 'StaticText');
-    }
-    #hasFocusableChild() {
-        if (this.#cachedHasFocusableChild === undefined) {
-            this.#cachedHasFocusableChild = false;
-            for (const child of this.children) {
-                if (child.#focusable || child.#hasFocusableChild()) {
-                    this.#cachedHasFocusableChild = true;
-                    break;
-                }
-            }
-        }
-        return this.#cachedHasFocusableChild;
     }
     find(predicate) {
         if (predicate(this)) {
@@ -331,13 +315,6 @@ class AXNode {
                 return true;
             default:
                 break;
-        }
-        // Here and below: Android heuristics
-        if (this.#hasFocusableChild()) {
-            return false;
-        }
-        if (this.#focusable && this.#name) {
-            return true;
         }
         if (this.#role === 'heading' && this.#name) {
             return true;
@@ -407,10 +384,25 @@ class AXNode {
         const node = {
             role: this.#role,
             elementHandle: async () => {
-                if (!this.payload.backendDOMNodeId) {
-                    return null;
+                const env_2 = { stack: [], error: void 0, hasError: false };
+                try {
+                    if (!this.payload.backendDOMNodeId) {
+                        return null;
+                    }
+                    const handle = __addDisposableResource(env_2, await this.#realm.adoptBackendNode(this.payload.backendDOMNodeId), false);
+                    // Since Text nodes are not elements, we want to
+                    // return a handle to the parent element for them.
+                    return (await handle.evaluateHandle(node => {
+                        return node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+                    }));
                 }
-                return (await this.#realm.adoptBackendNode(this.payload.backendDOMNodeId));
+                catch (e_2) {
+                    env_2.error = e_2;
+                    env_2.hasError = true;
+                }
+                finally {
+                    __disposeResources(env_2);
+                }
             },
         };
         const userStringProperties = [
@@ -446,7 +438,7 @@ class AXNode {
         };
         for (const booleanProperty of booleanProperties) {
             // RootWebArea's treat focus differently than other nodes. They report whether
-            // their frame  has focus, not whether focus is specifically on the root
+            // their frame has focus, not whether focus is specifically on the root
             // node.
             if (booleanProperty === 'focused' && this.#role === 'RootWebArea') {
                 continue;

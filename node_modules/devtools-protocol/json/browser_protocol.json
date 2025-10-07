@@ -1588,6 +1588,16 @@
                     ]
                 },
                 {
+                    "id": "UnencodedDigestError",
+                    "type": "string",
+                    "enum": [
+                        "MalformedDictionary",
+                        "UnknownAlgorithm",
+                        "IncorrectDigestType",
+                        "IncorrectDigestLength"
+                    ]
+                },
+                {
                     "id": "AttributionReportingIssueDetails",
                     "description": "Details for issues around \"Attribution Reporting API\" usage.\nExplainer: https://github.com/WICG/attribution-reporting-api",
                     "type": "object",
@@ -1689,6 +1699,20 @@
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        {
+                            "name": "request",
+                            "$ref": "AffectedRequest"
+                        }
+                    ]
+                },
+                {
+                    "id": "UnencodedDigestIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "error",
+                            "$ref": "UnencodedDigestError"
                         },
                         {
                             "name": "request",
@@ -1966,19 +1990,20 @@
                     ]
                 },
                 {
-                    "id": "SelectElementAccessibilityIssueReason",
+                    "id": "ElementAccessibilityIssueReason",
                     "type": "string",
                     "enum": [
                         "DisallowedSelectChild",
                         "DisallowedOptGroupChild",
                         "NonPhrasingContentOptionChild",
                         "InteractiveContentOptionChild",
-                        "InteractiveContentLegendChild"
+                        "InteractiveContentLegendChild",
+                        "InteractiveContentSummaryDescendant"
                     ]
                 },
                 {
-                    "id": "SelectElementAccessibilityIssueDetails",
-                    "description": "This issue warns about errors in the select element content model.",
+                    "id": "ElementAccessibilityIssueDetails",
+                    "description": "This issue warns about errors in the select or summary element content model.",
                     "type": "object",
                     "properties": [
                         {
@@ -1986,8 +2011,8 @@
                             "$ref": "DOM.BackendNodeId"
                         },
                         {
-                            "name": "selectElementAccessibilityIssueReason",
-                            "$ref": "SelectElementAccessibilityIssueReason"
+                            "name": "elementAccessibilityIssueReason",
+                            "$ref": "ElementAccessibilityIssueReason"
                         },
                         {
                             "name": "hasDisallowedAttributes",
@@ -2111,8 +2136,9 @@
                         "FederatedAuthUserInfoRequestIssue",
                         "PropertyRuleIssue",
                         "SharedDictionaryIssue",
-                        "SelectElementAccessibilityIssue",
+                        "ElementAccessibilityIssue",
                         "SRIMessageSignatureIssue",
+                        "UnencodedDigestIssue",
                         "UserReidentificationIssue"
                     ]
                 },
@@ -2233,14 +2259,19 @@
                             "$ref": "SharedDictionaryIssueDetails"
                         },
                         {
-                            "name": "selectElementAccessibilityIssueDetails",
+                            "name": "elementAccessibilityIssueDetails",
                             "optional": true,
-                            "$ref": "SelectElementAccessibilityIssueDetails"
+                            "$ref": "ElementAccessibilityIssueDetails"
                         },
                         {
                             "name": "sriMessageSignatureIssueDetails",
                             "optional": true,
                             "$ref": "SRIMessageSignatureIssueDetails"
+                        },
+                        {
+                            "name": "unencodedDigestIssueDetails",
+                            "optional": true,
+                            "$ref": "UnencodedDigestIssueDetails"
                         },
                         {
                             "name": "userReidentificationIssueDetails",
@@ -3423,6 +3454,30 @@
                     ]
                 },
                 {
+                    "name": "setContentsSize",
+                    "description": "Set size of the browser contents resizing browser window as necessary.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "windowId",
+                            "description": "Browser window id.",
+                            "$ref": "WindowID"
+                        },
+                        {
+                            "name": "width",
+                            "description": "The window contents width in DIP. Assumes current width if omitted.\nMust be specified if 'height' is omitted.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "height",
+                            "description": "The window contents height in DIP. Assumes current height if omitted.\nMust be specified if 'width' is omitted.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "name": "setDockTile",
                     "description": "Set dock tile details, platform-specific.",
                     "experimental": true,
@@ -3543,6 +3598,13 @@
                                 "completed",
                                 "canceled"
                             ]
+                        },
+                        {
+                            "name": "filePath",
+                            "description": "If download is \"completed\", provides the path of the downloaded file.\nDepending on the platform, it is not guaranteed to be set, nor the file\nis guaranteed to exist.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 }
@@ -4330,6 +4392,12 @@
                         {
                             "name": "queriesScrollState",
                             "description": "true if the query contains scroll-state() queries.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "queriesAnchored",
+                            "description": "true if the query contains anchored() queries.",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -5334,6 +5402,17 @@
                     ]
                 },
                 {
+                    "name": "getEnvironmentVariables",
+                    "description": "Returns the values of the default UA-defined environment variables used in env()",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "environmentVariables",
+                            "type": "object"
+                        }
+                    ]
+                },
+                {
                     "name": "getMediaQueries",
                     "description": "Returns all media queries parsed by the rendering engine.",
                     "returns": [
@@ -6283,12 +6362,14 @@
                         "view-transition",
                         "view-transition-group",
                         "view-transition-image-pair",
+                        "view-transition-group-children",
                         "view-transition-old",
                         "view-transition-new",
                         "placeholder",
                         "file-selector-button",
                         "details-content",
-                        "picker"
+                        "picker",
+                        "permission-icon"
                     ]
                 },
                 {
@@ -7143,6 +7224,13 @@
                             "description": "JavaScript object id of the node wrapper.",
                             "optional": true,
                             "$ref": "Runtime.RemoteObjectId"
+                        },
+                        {
+                            "name": "includeShadowDOM",
+                            "description": "Include all shadow roots. Equals to false if not specified.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -7768,7 +7856,7 @@
                 },
                 {
                     "name": "getContainerForNode",
-                    "description": "Returns the query container of the given node based on container query\nconditions: containerName, physical and logical axes, and whether it queries\nscroll-state. If no axes are provided and queriesScrollState is false, the\nstyle container is returned, which is the direct parent or the closest\nelement with a matching container-name.",
+                    "description": "Returns the query container of the given node based on container query\nconditions: containerName, physical and logical axes, and whether it queries\nscroll-state or anchored elements. If no axes are provided and\nqueriesScrollState is false, the style container is returned, which is the\ndirect parent or the closest element with a matching container-name.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -7792,6 +7880,11 @@
                         },
                         {
                             "name": "queriesScrollState",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "queriesAnchored",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -7849,6 +7942,33 @@
                             "name": "nodeId",
                             "description": "The anchor element of the given anchor query.",
                             "$ref": "NodeId"
+                        }
+                    ]
+                },
+                {
+                    "name": "forceShowPopover",
+                    "description": "When enabling, this API force-opens the popover identified by nodeId\nand keeps it open until disabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the popover HTMLElement",
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "enable",
+                            "description": "If true, opens the popover and keeps it open. If false, closes the\npopover if it was previously force-opened.",
+                            "type": "boolean"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "nodeIds",
+                            "description": "List of popovers that were closed in order to respect popover stacking order.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "NodeId"
+                            }
                         }
                     ]
                 }
@@ -9683,6 +9803,15 @@
                             "name": "wow64",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "formFactors",
+                            "description": "Used to specify User Agent form-factor values.\nSee https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     ]
                 },
@@ -10143,6 +10272,17 @@
                     ]
                 },
                 {
+                    "name": "setEmulatedOSTextScale",
+                    "description": "Emulates the given OS text scale.",
+                    "parameters": [
+                        {
+                            "name": "scale",
+                            "optional": true,
+                            "type": "number"
+                        }
+                    ]
+                },
+                {
                     "name": "setGeolocationOverride",
                     "description": "Overrides the Geolocation Position or Error. Omitting latitude, longitude or\naccuracy emulates position unavailable.",
                     "parameters": [
@@ -10458,6 +10598,19 @@
                             "items": {
                                 "$ref": "DisabledImageType"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "setDataSaverOverride",
+                    "description": "Override the value of navigator.connection.saveData",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "dataSaverEnabled",
+                            "description": "Override value. Omitting the parameter disables the override.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -13799,6 +13952,13 @@
                             "description": "Security details for the request.",
                             "optional": true,
                             "$ref": "SecurityDetails"
+                        },
+                        {
+                            "name": "isIpProtectionUsed",
+                            "description": "Indicates whether the request was sent through IP Protection proxies. If\nset to true, the request used the IP Protection privacy feature.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -14561,6 +14721,11 @@
                             "$ref": "Response"
                         },
                         {
+                            "name": "hasExtraInfo",
+                            "description": "Whether network response for the signed exchange was accompanied by\nextra headers.",
+                            "type": "boolean"
+                        },
+                        {
                             "name": "header",
                             "description": "Information about the signed exchange header.",
                             "optional": true,
@@ -14727,8 +14892,8 @@
                     "experimental": true,
                     "type": "string",
                     "enum": [
+                        "Loopback",
                         "Local",
-                        "Private",
                         "Public",
                         "Unknown"
                     ]
@@ -17575,7 +17740,6 @@
                         "searchForNode",
                         "searchForUAShadowDOM",
                         "captureAreaScreenshot",
-                        "showDistances",
                         "none"
                     ]
                 }
@@ -18141,19 +18305,41 @@
                 },
                 {
                     "id": "AdScriptId",
-                    "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad.",
+                    "description": "Identifies the script which caused a script or frame to be labelled as an\nad.",
                     "experimental": true,
                     "type": "object",
                     "properties": [
                         {
                             "name": "scriptId",
-                            "description": "Script Id of the bottom-most script which caused the frame to be labelled\nas an ad.",
+                            "description": "Script Id of the script which caused a script or frame to be labelled as\nan ad.",
                             "$ref": "Runtime.ScriptId"
                         },
                         {
                             "name": "debuggerId",
-                            "description": "Id of adScriptId's debugger.",
+                            "description": "Id of scriptId's debugger.",
                             "$ref": "Runtime.UniqueDebuggerId"
+                        }
+                    ]
+                },
+                {
+                    "id": "AdScriptAncestry",
+                    "description": "Encapsulates the script ancestry and the root script filterlist rule that\ncaused the frame to be labelled as an ad. Only created when `ancestryChain`\nis not empty.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "ancestryChain",
+                            "description": "A chain of `AdScriptId`s representing the ancestry of an ad script that\nled to the creation of a frame. The chain is ordered from the script\nitself (lower level) up to its root ancestor that was flagged by\nfilterlist.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AdScriptId"
+                            }
+                        },
+                        {
+                            "name": "rootScriptFilterlistRule",
+                            "description": "The filterlist rule that caused the root (last) script in\n`ancestryChain` to be ad-tagged. Only populated if the rule is\navailable.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -18200,6 +18386,7 @@
                         "accelerometer",
                         "all-screens-capture",
                         "ambient-light-sensor",
+                        "aria-notify",
                         "attribution-reporting",
                         "autoplay",
                         "bluetooth",
@@ -18260,6 +18447,7 @@
                         "join-ad-interest-group",
                         "keyboard-map",
                         "language-detector",
+                        "language-model",
                         "local-fonts",
                         "local-network-access",
                         "magnetometer",
@@ -19493,18 +19681,6 @@
                     ]
                 },
                 {
-                    "id": "AutoResponseMode",
-                    "description": "Enum of possible auto-response for permission / prompt dialogs.",
-                    "experimental": true,
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "autoAccept",
-                        "autoReject",
-                        "autoOptOut"
-                    ]
-                },
-                {
                     "id": "NavigationType",
                     "description": "The type of a frameNavigated event.",
                     "experimental": true,
@@ -19600,6 +19776,7 @@
                         "BroadcastChannel",
                         "WebXR",
                         "SharedWorker",
+                        "SharedWorkerMessage",
                         "WebLocks",
                         "WebHID",
                         "WebShare",
@@ -20082,7 +20259,7 @@
                     ]
                 },
                 {
-                    "name": "getAdScriptAncestryIds",
+                    "name": "getAdScriptAncestry",
                     "experimental": true,
                     "parameters": [
                         {
@@ -20092,12 +20269,10 @@
                     ],
                     "returns": [
                         {
-                            "name": "adScriptAncestryIds",
-                            "description": "The ancestry chain of ad script identifiers leading to this frame's\ncreation, ordered from the most immediate script (in the frame creation\nstack) to more distant ancestors (that created the immediately preceding\nscript). Only sent if frame is labelled as an ad and ids are available.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "AdScriptId"
-                            }
+                            "name": "adScriptAncestry",
+                            "description": "The ancestry chain of ad script identifiers leading to this frame's\ncreation, along with the root script's filterlist rule. The ancestry\nchain is ordered from the most immediate script (in the frame creation\nstack) to more distant ancestors (that created the immediately preceding\nscript). Only sent if frame is labelled as an ad and ids are available.",
+                            "optional": true,
+                            "$ref": "AdScriptAncestry"
                         }
                     ]
                 },
@@ -20284,6 +20459,13 @@
                             "description": "User friendly error message, present if and only if navigation has failed.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "isDownload",
+                            "description": "Whether the navigation resulted in a download.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -20945,7 +21127,14 @@
                     "parameters": [
                         {
                             "name": "mode",
-                            "$ref": "AutoResponseMode"
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "autoAccept",
+                                "autoChooseToAuthAnotherWay",
+                                "autoReject",
+                                "autoOptOut"
+                            ]
                         }
                     ]
                 },
@@ -20956,7 +21145,12 @@
                     "parameters": [
                         {
                             "name": "mode",
-                            "$ref": "AutoResponseMode"
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "autoAccept",
+                                "autoReject"
+                            ]
                         }
                     ]
                 },
@@ -21547,7 +21741,7 @@
                 },
                 {
                     "name": "compilationCacheProduced",
-                    "description": "Issued for every compilation cache generated. Is only available\nif Page.setGenerateCompilationCache is enabled.",
+                    "description": "Issued for every compilation cache generated.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -22452,15 +22646,6 @@
                     "name": "enable"
                 },
                 {
-                    "name": "inspectWorker",
-                    "parameters": [
-                        {
-                            "name": "versionId",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
                     "name": "setForceUpdateOnPageLoad",
                     "parameters": [
                         {
@@ -22885,7 +23070,7 @@
                         },
                         {
                             "name": "workletOrdinal",
-                            "description": "If the method is called on a shared storage worklet, or as part of\na shared storage worklet script, it will have a number for the\nassociated worklet, denoting the (0-indexed) order of the worklet's\ncreation relative to all other shared storage worklets created by\ndocuments using the current storage partition.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet,\nrun, selectURL, and any other SharedStorageAccessMethod when the\nSharedStorageAccessScope is sharedStorageWorklet.\nTODO(crbug.com/401011862): Pass this only for addModule & createWorklet.",
+                            "description": "A number denoting the (0-based) order of the worklet's\ncreation relative to all other shared storage worklets created by\ndocuments using the current storage partition.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet.",
                             "optional": true,
                             "type": "integer"
                         },
@@ -24559,6 +24744,39 @@
                             "type": "integer"
                         }
                     ]
+                },
+                {
+                    "name": "attributionReportingVerboseDebugReportSent",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "body",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "netError",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "netErrorName",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "httpStatusCode",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
                 }
             ]
         },
@@ -25416,6 +25634,25 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "openDevTools",
+                    "description": "Opens a DevTools window for the target.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "targetId",
+                            "description": "This can be the page or tab target ID.",
+                            "$ref": "TargetID"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "targetId",
+                            "description": "The targetId of DevTools page target.",
+                            "$ref": "TargetID"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -25597,7 +25834,7 @@
                     "properties": [
                         {
                             "name": "recordMode",
-                            "description": "Controls how the trace buffer stores data.",
+                            "description": "Controls how the trace buffer stores data. The default is `recordUntilFull`.",
                             "experimental": true,
                             "optional": true,
                             "type": "string",
@@ -27640,7 +27877,8 @@
                     "type": "string",
                     "enum": [
                         "SourceIsNotJsonObject",
-                        "InvalidRulesSkipped"
+                        "InvalidRulesSkipped",
+                        "InvalidRulesetLevelTag"
                     ]
                 },
                 {
@@ -27792,7 +28030,8 @@
                         "OtherPrerenderedPageActivated",
                         "V8OptimizerDisabled",
                         "PrerenderFailedDuringPrefetch",
-                        "BrowsingDataRemoved"
+                        "BrowsingDataRemoved",
+                        "PrerenderHostReused"
                     ]
                 },
                 {
@@ -28313,7 +28552,7 @@
                 },
                 {
                     "name": "install",
-                    "description": "Installs the given manifest identity, optionally using the given install_url\nor IWA bundle location.\n\nTODO(crbug.com/337872319) Support IWA to meet the following specific\nrequirement.\nIWA-specific install description: If the manifest_id is isolated-app://,\ninstall_url_or_bundle_url is required, and can be either an http(s) URL or\nfile:// URL pointing to a signed web bundle (.swbn). The .swbn file's\nsigning key must correspond to manifest_id. If Chrome is not in IWA dev\nmode, the installation will fail, regardless of the state of the allowlist.",
+                    "description": "Installs the given manifest identity, optionally using the given installUrlOrBundleUrl\n\nIWA-specific install description:\nmanifestId corresponds to isolated-app:// + web_package::SignedWebBundleId\n\nFile installation mode:\nThe installUrlOrBundleUrl can be either file:// or http(s):// pointing\nto a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to\nThe .swbn file's signing key.\n\nDev proxy installation mode:\ninstallUrlOrBundleUrl must be http(s):// that serves dev mode IWA.\nweb_package::SignedWebBundleId must be of type dev proxy.\n\nThe advantage of dev proxy mode is that all changes to IWA\nautomatically will be reflected in the running app without\nreinstallation.\n\nTo generate bundle id for proxy mode:\n1. Generate 32 random bytes.\n2. Add a specific suffix 0x00 at the end.\n3. Encode the entire sequence using Base32 without padding.\n\nIf Chrome is not in IWA dev\nmode, the installation will fail, regardless of the state of the allowlist.",
                     "parameters": [
                         {
                             "name": "manifestId",

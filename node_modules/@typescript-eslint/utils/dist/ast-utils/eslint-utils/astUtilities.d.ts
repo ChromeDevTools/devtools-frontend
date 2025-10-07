@@ -81,4 +81,3 @@ export declare const isParenthesized: {
      */
     (node: TSESTree.Node, sourceCode: TSESLint.SourceCode): boolean;
 };
-//# sourceMappingURL=astUtilities.d.ts.map

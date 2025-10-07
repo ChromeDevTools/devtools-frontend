@@ -5,6 +5,7 @@ const builtInOrders = [
   'alphabetical',
   'concentric-css',
   'smacss',
+  'frakto'
 ];
 
 export const cssDeclarationSorter = ({ order = 'alphabetical', keepOverrides = false } = {}) => ({

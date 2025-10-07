@@ -10,4 +10,3 @@ export declare enum AnyType {
  *          otherwise it returns `AnyType.Safe`.
  */
 export declare function discriminateAnyType(type: ts.Type, checker: ts.TypeChecker, program: ts.Program, tsNode: ts.Node): AnyType;
-//# sourceMappingURL=discriminateAnyType.d.ts.map

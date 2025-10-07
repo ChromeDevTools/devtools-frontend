@@ -1,7 +1,7 @@
-import { composeParslet } from './Parslet'
-import { Precedence } from '../Precedence'
-import { assertPlainKeyValueOrNameResult } from '../assertTypes'
-import { getParameters } from './FunctionParslet'
+import { composeParslet } from './Parslet.js'
+import { Precedence } from '../Precedence.js'
+import { assertPlainKeyValueOrNameResult } from '../assertTypes.js'
+import { getParameters } from './FunctionParslet.js'
 
 export const arrowFunctionParslet = composeParslet({
   name: 'arrowFunctionParslet',

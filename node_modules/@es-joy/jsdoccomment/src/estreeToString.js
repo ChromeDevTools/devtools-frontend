@@ -1,7 +1,9 @@
 import {stringify as prattStringify} from 'jsdoc-type-pratt-parser';
 
+/* eslint-disable jsdoc/reject-function-type -- Different functions */
 /** @type {Record<string, Function>} */
 const stringifiers = {
+  /* eslint-enable jsdoc/reject-function-type -- Different functions */
   JsdocBlock,
 
   /**

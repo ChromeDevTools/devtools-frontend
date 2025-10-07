@@ -10,4 +10,3 @@ import type { TSModuleNameDefinition } from './TSModuleNameDefinition';
 import type { TypeDefinition } from './TypeDefinition';
 import type { VariableDefinition } from './VariableDefinition';
 export type Definition = CatchClauseDefinition | ClassNameDefinition | FunctionNameDefinition | ImplicitGlobalVariableDefinition | ImportBindingDefinition | ParameterDefinition | TSEnumMemberDefinition | TSEnumNameDefinition | TSModuleNameDefinition | TypeDefinition | VariableDefinition;
-//# sourceMappingURL=Definition.d.ts.map

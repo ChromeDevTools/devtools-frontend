@@ -1,5 +1,5 @@
-import { composeParslet } from './Parslet'
-import { Precedence } from '../Precedence'
+import { composeParslet } from './Parslet.js'
+import { Precedence } from '../Precedence.js'
 
 export const importParslet = composeParslet({
   name: 'importParslet',

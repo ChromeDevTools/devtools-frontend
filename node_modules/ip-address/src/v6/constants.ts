@@ -75,5 +75,5 @@ export const RE_SUBNET_STRING = /\/\d{1,3}(?=%|$)/;
  */
 export const RE_ZONE_STRING = /%.*$/;
 
-export const RE_URL = new RegExp(/^\[{0,1}([0-9a-f:]+)\]{0,1}/);
-export const RE_URL_WITH_PORT = new RegExp(/\[([0-9a-f:]+)\]:([0-9]{1,5})/);
+export const RE_URL = /^\[{0,1}([0-9a-f:]+)\]{0,1}/;
+export const RE_URL_WITH_PORT = /\[([0-9a-f:]+)\]:([0-9]{1,5})/;

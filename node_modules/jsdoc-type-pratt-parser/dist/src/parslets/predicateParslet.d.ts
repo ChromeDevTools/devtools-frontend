@@ -1,1 +1,1 @@
-export declare const predicateParslet: import("./Parslet").ParsletFunction;
+export declare const predicateParslet: import("./Parslet.js").ParsletFunction;

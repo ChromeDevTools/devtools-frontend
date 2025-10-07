@@ -20,7 +20,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Accessibility.js"), exports);
-__exportStar(require("./AriaQueryHandler.js"), exports);
 __exportStar(require("./Binding.js"), exports);
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserContext.js"), exports);
@@ -52,6 +51,7 @@ __exportStar(require("./Page.js"), exports);
 __exportStar(require("./PredefinedNetworkConditions.js"), exports);
 __exportStar(require("./Target.js"), exports);
 __exportStar(require("./TargetManager.js"), exports);
+__exportStar(require("./TargetManageEvents.js"), exports);
 __exportStar(require("./Tracing.js"), exports);
 __exportStar(require("./utils.js"), exports);
 __exportStar(require("./WebWorker.js"), exports);

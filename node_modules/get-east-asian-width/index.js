@@ -26,6 +26,5 @@ export function eastAsianWidth(codePoint, {ambiguousAsWide = false} = {}) {
 	return 1;
 }
 
-// For Prettier. This doesn't count "ambiguous" characters or check for valid input.
-// https://github.com/sindresorhus/get-east-asian-width/pull/6
-export const _isNarrowWidth = codePoint => !(isFullWidth(codePoint) || isWide(codePoint));
+// Private exports for https://github.com/sindresorhus/is-fullwidth-code-point
+export {isFullWidth as _isFullWidth, isWide as _isWide} from './lookup.js';

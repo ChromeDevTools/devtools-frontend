@@ -11,4 +11,3 @@ export declare enum DefinitionType {
     Type = "Type",
     Variable = "Variable"
 }
-//# sourceMappingURL=DefinitionType.d.ts.map

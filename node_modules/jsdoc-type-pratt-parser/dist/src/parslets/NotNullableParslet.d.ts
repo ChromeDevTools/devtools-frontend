@@ -1,1 +1,1 @@
-export declare const notNullableParslet: import("./Parslet").ParsletFunction;
+export declare const notNullableParslet: import("./Parslet.js").ParsletFunction;

@@ -12,4 +12,3 @@ export declare function isObjectNotArray(obj: unknown): obj is ObjectLike;
  * @returns a new object
  */
 export declare function deepMerge(first?: ObjectLike, second?: ObjectLike): Record<string, unknown>;
-//# sourceMappingURL=deepMerge.d.ts.map

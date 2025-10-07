@@ -40,4 +40,3 @@ export declare namespace Scope {
         type WithScope = scopeManager.WithScope;
     }
 }
-//# sourceMappingURL=Scope.d.ts.map

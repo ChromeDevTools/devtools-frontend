@@ -6,4 +6,3 @@ export declare class TSEnumNameDefinition extends DefinitionBase<DefinitionType.
     readonly isVariableDefinition = true;
     constructor(name: TSESTree.Identifier, node: TSEnumNameDefinition['node']);
 }
-//# sourceMappingURL=TSEnumNameDefinition.d.ts.map

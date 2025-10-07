@@ -14,4 +14,3 @@ export declare function findTypeGuardAssertedArgument(services: ParserServicesWi
     asserts: boolean;
     type: ts.Type;
 } | undefined;
-//# sourceMappingURL=assertionFunctionUtils.d.ts.map

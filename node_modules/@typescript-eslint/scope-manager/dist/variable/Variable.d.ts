@@ -14,4 +14,3 @@ export declare class Variable extends VariableBase {
      */
     get isValueVariable(): boolean;
 }
-//# sourceMappingURL=Variable.d.ts.map

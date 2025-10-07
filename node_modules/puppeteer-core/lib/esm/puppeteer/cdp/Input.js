@@ -419,7 +419,7 @@ export class CdpMouse extends Mouse {
 /**
  * @internal
  */
-class CdpTouchHandle {
+export class CdpTouchHandle {
     #started = false;
     #touchScreen;
     #touchPoint;

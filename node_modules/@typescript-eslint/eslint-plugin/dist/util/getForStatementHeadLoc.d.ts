@@ -15,4 +15,3 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
  *    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export declare function getForStatementHeadLoc(sourceCode: TSESLint.SourceCode, node: TSESTree.ForInStatement | TSESTree.ForOfStatement | TSESTree.ForStatement): TSESTree.SourceLocation;
-//# sourceMappingURL=getForStatementHeadLoc.d.ts.map

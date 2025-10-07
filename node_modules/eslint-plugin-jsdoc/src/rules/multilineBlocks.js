@@ -331,7 +331,7 @@ export default iterateJsdoc(({
       }).length)
     ) {
       utils.reportJSDoc(
-        'Multiline jsdoc blocks are prohibited by ' +
+        'Multiline JSDoc blocks are prohibited by ' +
           'your configuration but fixing would result in a single ' +
           'line block which you have prohibited with `noSingleLineBlocks`.',
       );
@@ -342,7 +342,7 @@ export default iterateJsdoc(({
     if (jsdoc.tags.length > 1) {
       if (!allowMultipleTags) {
         utils.reportJSDoc(
-          'Multiline jsdoc blocks are prohibited by ' +
+          'Multiline JSDoc blocks are prohibited by ' +
             'your configuration but the block has multiple tags.',
         );
 
@@ -351,7 +351,7 @@ export default iterateJsdoc(({
     } else if (jsdoc.tags.length === 1 && jsdoc.description.trim()) {
       if (!allowMultipleTags) {
         utils.reportJSDoc(
-          'Multiline jsdoc blocks are prohibited by ' +
+          'Multiline JSDoc blocks are prohibited by ' +
             'your configuration but the block has a description with a tag.',
         );
 
@@ -419,7 +419,7 @@ export default iterateJsdoc(({
       };
 
       utils.reportJSDoc(
-        'Multiline jsdoc blocks are prohibited by ' +
+        'Multiline JSDoc blocks are prohibited by ' +
           'your configuration.',
         null,
         fixer,
@@ -434,7 +434,7 @@ export default iterateJsdoc(({
   iterateAllJsdocs: true,
   meta: {
     docs: {
-      description: 'Controls how and whether jsdoc blocks can be expressed as single or multiple line blocks.',
+      description: 'Controls how and whether JSDoc blocks can be expressed as single or multiple line blocks.',
       url: 'https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/multiline-blocks.md#repos-sticky-header',
     },
     fixable: 'code',
@@ -443,9 +443,28 @@ export default iterateJsdoc(({
         additionalProperties: false,
         properties: {
           allowMultipleTags: {
+            description: `If \`noMultilineBlocks\` is set to \`true\` with this option and multiple tags are
+found in a block, an error will not be reported.
+
+Since multiple-tagged lines cannot be collapsed into a single line, this option
+prevents them from being reported. Set to \`false\` if you really want to report
+any blocks.
+
+This option will also be applied when there is a block description and a single
+tag (since a description cannot precede a tag on a single line, and also
+cannot be reliably added after the tag either).
+
+Defaults to \`true\`.`,
             type: 'boolean',
           },
           minimumLengthForMultiline: {
+            description: `If \`noMultilineBlocks\` is set with this numeric option, multiline blocks will
+be permitted if containing at least the given amount of text.
+
+If not set, multiline blocks will not be permitted regardless of length unless
+a relevant tag is present and \`multilineTags\` is set.
+
+Defaults to not being in effect.`,
             type: 'integer',
           },
           multilineTags: {
@@ -462,23 +481,76 @@ export default iterateJsdoc(({
                 type: 'array',
               },
             ],
+            description: `If \`noMultilineBlocks\` is set with this option, multiline blocks may be allowed
+regardless of length as long as a tag or a tag of a certain type is present.
+
+If \`*\` is included in the array, the presence of a tags will allow for
+multiline blocks (but not when without any tags unless the amount of text is
+over an amount specified by \`minimumLengthForMultiline\`).
+
+If the array does not include \`*\` but lists certain tags, the presence of
+such a tag will cause multiline blocks to be allowed.
+
+You may set this to an empty array to prevent any tag from permitting multiple
+lines.
+
+Defaults to \`['*']\`.
+`,
           },
           noFinalLineText: {
+            description: `For multiline blocks, any non-whitespace text preceding the \`*/\` on the final
+line will be reported. (Text preceding a newline is not reported.)
+
+\`noMultilineBlocks\` will have priority over this rule if it applies.
+
+Defaults to \`true\`.`,
             type: 'boolean',
           },
           noMultilineBlocks: {
+            description: `Requires that JSDoc blocks are restricted to single lines only unless impacted
+by the options \`minimumLengthForMultiline\`, \`multilineTags\`, or
+\`allowMultipleTags\`.
+
+Defaults to \`false\`.`,
             type: 'boolean',
           },
           noSingleLineBlocks: {
+            description: `If this is \`true\`, any single line blocks will be reported, except those which
+are whitelisted in \`singleLineTags\`.
+
+Defaults to \`false\`.
+`,
             type: 'boolean',
           },
           noZeroLineText: {
+            description: `For multiline blocks, any non-whitespace text immediately after the \`/**\` and
+space will be reported. (Text after a newline is not reported.)
+
+\`noMultilineBlocks\` will have priority over this rule if it applies.
+
+Defaults to \`true\`.`,
             type: 'boolean',
           },
           requireSingleLineUnderCount: {
+            description: `If this number is set, it indicates a minimum line width for a single line of
+JSDoc content spread over a multi-line comment block. If a single line is under
+the minimum length, it will be reported so as to enforce single line JSDoc blocks
+for such cases. Blocks are not reported which have multi-line descriptions,
+multiple tags, a block description and tag, or tags with multi-line types or
+descriptions.
+
+Defaults to \`null\`.
+`,
             type: 'number',
           },
           singleLineTags: {
+            description: `An array of tags which can nevertheless be allowed as single line blocks when
+\`noSingleLineBlocks\` is set.  You may set this to a empty array to
+cause all single line blocks to be reported. If \`'*'\` is present, then
+the presence of a tag will allow single line blocks (but not if a tag is
+missing).
+
+Defaults to \`['lends', 'type']\`.`,
             items: {
               type: 'string',
             },

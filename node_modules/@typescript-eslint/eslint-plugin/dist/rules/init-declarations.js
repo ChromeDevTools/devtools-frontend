@@ -12,6 +12,7 @@ exports.default = (0, util_1.createRule)({
         docs: {
             description: 'Require or disallow initialization in variable declarations',
             extendsBaseRule: true,
+            frozen: true,
         },
         hasSuggestions: baseRule.meta.hasSuggestions,
         messages: baseRule.meta.messages,

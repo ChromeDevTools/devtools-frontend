@@ -9,4 +9,3 @@ export interface PreferOptionalChainOptions {
     checkUnknown?: boolean;
     requireNullish?: boolean;
 }
-//# sourceMappingURL=PreferOptionalChainOptions.d.ts.map

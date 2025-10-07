@@ -13,4 +13,3 @@ interface VariableAnalysis {
  */
 export declare function collectVariables<MessageIds extends string, Options extends readonly unknown[]>(context: Readonly<TSESLint.RuleContext<MessageIds, Options>>): VariableAnalysis;
 export {};
-//# sourceMappingURL=collectUnusedVariables.d.ts.map

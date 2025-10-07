@@ -27,11 +27,12 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
     #credentials = null;
     #attemptedAuthentications = new Set();
     #userRequestInterceptionEnabled = false;
-    #protocolRequestInterceptionEnabled = false;
+    #protocolRequestInterceptionEnabled;
     #userCacheDisabled;
     #emulatedNetworkConditions;
     #userAgent;
     #userAgentMetadata;
+    #platform;
     #handlers = [
         ['Fetch.requestPaused', this.#onRequestPaused],
         ['Fetch.authRequired', this.#onAuthRequired],
@@ -142,7 +143,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
     async emulateNetworkConditions(networkConditions) {
         if (!this.#emulatedNetworkConditions) {
             this.#emulatedNetworkConditions = {
-                offline: false,
+                offline: networkConditions?.offline ?? false,
                 upload: -1,
                 download: -1,
                 latency: 0,
@@ -157,6 +158,8 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this.#emulatedNetworkConditions.latency = networkConditions
             ? networkConditions.latency
             : 0;
+        this.#emulatedNetworkConditions.offline =
+            networkConditions?.offline ?? false;
         await this.#applyToAllClients(this.#applyNetworkConditions.bind(this));
     }
     async #applyToAllClients(fn) {
@@ -183,9 +186,10 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             throw error;
         }
     }
-    async setUserAgent(userAgent, userAgentMetadata) {
+    async setUserAgent(userAgent, userAgentMetadata, platform) {
         this.#userAgent = userAgent;
         this.#userAgentMetadata = userAgentMetadata;
+        this.#platform = platform;
         await this.#applyToAllClients(this.#applyUserAgent.bind(this));
     }
     async #applyUserAgent(client) {
@@ -196,6 +200,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             await client.send('Network.setUserAgentOverride', {
                 userAgent: this.#userAgent,
                 userAgentMetadata: this.#userAgentMetadata,
+                platform: this.#platform,
             });
         }
         catch (error) {
@@ -219,6 +224,9 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         await this.#applyToAllClients(this.#applyProtocolRequestInterception.bind(this));
     }
     async #applyProtocolRequestInterception(client) {
+        if (this.#protocolRequestInterceptionEnabled === undefined) {
+            return;
+        }
         if (this.#userCacheDisabled === undefined) {
             this.#userCacheDisabled = false;
         }

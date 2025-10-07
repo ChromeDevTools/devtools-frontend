@@ -871,7 +871,6 @@ export async function setupDevToolsPage(
   const session = await context.browser().target().createCDPSession();
   // FIXME: get rid of the reload below and configure
   // the initial DevTools state via the openDevTools command.
-  // @ts-expect-error no types yet
   const {targetId} = await session.send('Target.openDevTools', {
     // @ts-expect-error need to expose this via Puppeteer.
     targetId: inspectedPage.page.target()._getTargetInfo().targetId

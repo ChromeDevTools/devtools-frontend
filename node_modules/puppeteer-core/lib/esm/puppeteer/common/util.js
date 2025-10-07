@@ -184,9 +184,6 @@ export async function getReadableAsTypedArray(readable, path) {
 /**
  * @internal
  */
-/**
- * @internal
- */
 export async function getReadableFromProtocolStream(client, handle) {
     return new ReadableStream({
         async pull(controller) {

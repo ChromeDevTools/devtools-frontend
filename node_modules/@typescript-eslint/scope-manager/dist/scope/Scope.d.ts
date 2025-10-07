@@ -17,4 +17,3 @@ import type { TSModuleScope } from './TSModuleScope';
 import type { TypeScope } from './TypeScope';
 import type { WithScope } from './WithScope';
 export type Scope = BlockScope | CatchScope | ClassFieldInitializerScope | ClassScope | ClassStaticBlockScope | ConditionalTypeScope | ForScope | FunctionExpressionNameScope | FunctionScope | FunctionTypeScope | GlobalScope | MappedTypeScope | ModuleScope | SwitchScope | TSEnumScope | TSModuleScope | TypeScope | WithScope;
-//# sourceMappingURL=Scope.d.ts.map

@@ -25,4 +25,3 @@ type RuleId = keyof RuleMap;
 export declare const getESLintCoreRule: <R extends RuleId>(ruleId: R) => RuleMap[R];
 export declare function maybeGetESLintCoreRule<R extends RuleId>(ruleId: R): RuleMap[R] | null;
 export {};
-//# sourceMappingURL=getESLintCoreRule.d.ts.map

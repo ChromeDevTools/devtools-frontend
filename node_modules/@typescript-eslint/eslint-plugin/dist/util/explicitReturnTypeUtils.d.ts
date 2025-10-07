@@ -45,4 +45,3 @@ export declare function checkFunctionExpressionReturnType(info: FunctionInfo<Fun
  */
 export declare function ancestorHasReturnType(node: FunctionNode): boolean;
 export {};
-//# sourceMappingURL=explicitReturnTypeUtils.d.ts.map

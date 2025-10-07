@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class CatchScope extends ScopeBase<ScopeType.catch, TSESTree.CatchClause, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: CatchScope['upper'], block: CatchScope['block']);
 }
-//# sourceMappingURL=CatchScope.d.ts.map

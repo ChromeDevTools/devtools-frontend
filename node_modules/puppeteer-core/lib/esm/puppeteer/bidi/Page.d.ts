@@ -3,8 +3,8 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type Protocol from 'devtools-protocol';
+import * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
@@ -48,12 +48,20 @@ export declare class BidiPage extends Page {
      * @internal
      */
     _userAgentHeaders: Record<string, string>;
-    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
+    setUserAgent(userAgentOrOptions: string | {
+        userAgent?: string;
+        userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;
+        platform?: string;
+    }, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     setBypassCSP(enabled: boolean): Promise<void>;
     queryObjects<Prototype>(prototypeHandle: BidiJSHandle<Prototype>): Promise<BidiJSHandle<Prototype[]>>;
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     mainFrame(): BidiFrame;
+    resize(_params: {
+        contentWidth: number;
+        contentHeight: number;
+    }): Promise<void>;
     focusedFrame(): Promise<BidiFrame>;
     frames(): BidiFrame[];
     isClosed(): boolean;

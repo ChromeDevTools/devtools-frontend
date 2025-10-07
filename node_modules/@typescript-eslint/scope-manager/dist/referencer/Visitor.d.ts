@@ -11,4 +11,3 @@ export declare class Visitor extends VisitorBase {
     protected visitPattern(node: TSESTree.Node, callback: PatternVisitorCallback, options?: VisitPatternOptions): void;
 }
 export { VisitorBase, type VisitorOptions } from './VisitorBase';
-//# sourceMappingURL=Visitor.d.ts.map

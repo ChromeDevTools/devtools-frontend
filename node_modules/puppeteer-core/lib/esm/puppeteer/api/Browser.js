@@ -145,6 +145,19 @@ export class Browser extends EventEmitter {
         return await this.defaultBrowserContext().deleteCookie(...cookies);
     }
     /**
+     * Deletes cookies matching the provided filters from the default
+     * {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteMatchingCookies |
+     * browser.defaultBrowserContext().deleteMatchingCookies()}.
+     */
+    async deleteMatchingCookies(...filters) {
+        return await this.defaultBrowserContext().deleteMatchingCookies(...filters);
+    }
+    /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *
      * @deprecated Use {@link Browser | Browser.connected}.

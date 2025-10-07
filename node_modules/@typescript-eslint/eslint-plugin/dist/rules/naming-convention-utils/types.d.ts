@@ -37,4 +37,3 @@ export interface NormalizedSelector {
 export type ValidatorFunction = (node: TSESTree.Identifier | TSESTree.Literal | TSESTree.PrivateIdentifier, modifiers?: Set<Modifiers>) => void;
 export type ParsedOptions = Record<SelectorsString, ValidatorFunction>;
 export type Context = Readonly<TSESLint.RuleContext<MessageIds, Options>>;
-//# sourceMappingURL=types.d.ts.map

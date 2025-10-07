@@ -6,8 +6,6 @@ export class AddressError extends Error {
 
     this.name = 'AddressError';
 
-    if (parseMessage !== null) {
-      this.parseMessage = parseMessage;
-    }
+    this.parseMessage = parseMessage;
   }
 }

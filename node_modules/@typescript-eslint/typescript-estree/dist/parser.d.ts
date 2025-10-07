@@ -15,4 +15,3 @@ export interface ParseAndGenerateServicesResult<T extends TSESTreeOptions> {
 export declare function parse<T extends TSESTreeOptions = TSESTreeOptions>(code: string, options?: T): AST<T>;
 export declare function clearParseAndGenerateServicesCalls(): void;
 export declare function parseAndGenerateServices<T extends TSESTreeOptions = TSESTreeOptions>(code: string | ts.SourceFile, tsestreeOptions: T): ParseAndGenerateServicesResult<T>;
-//# sourceMappingURL=parser.d.ts.map

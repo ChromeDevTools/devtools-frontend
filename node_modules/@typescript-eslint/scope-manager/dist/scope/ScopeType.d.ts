@@ -18,4 +18,3 @@ export declare enum ScopeType {
     type = "type",
     with = "with"
 }
-//# sourceMappingURL=ScopeType.d.ts.map

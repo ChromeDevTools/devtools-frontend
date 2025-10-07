@@ -1,6 +1,6 @@
 {
   "name": "tar-fs",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "filesystem bindings for tar-stream",
   "dependencies": {
     "pump": "^3.0.0",

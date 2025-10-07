@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class ClassFieldInitializerScope extends ScopeBase<ScopeType.classFieldInitializer, TSESTree.Expression, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: ClassFieldInitializerScope['upper'], block: ClassFieldInitializerScope['block']);
 }
-//# sourceMappingURL=ClassFieldInitializerScope.d.ts.map

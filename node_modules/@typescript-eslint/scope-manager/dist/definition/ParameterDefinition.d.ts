@@ -10,4 +10,3 @@ export declare class ParameterDefinition extends DefinitionBase<DefinitionType.P
     readonly rest: boolean;
     constructor(name: TSESTree.BindingName, node: ParameterDefinition['node'], rest: boolean);
 }
-//# sourceMappingURL=ParameterDefinition.d.ts.map

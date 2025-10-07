@@ -8,9 +8,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiConnection = void 0;
 const CallbackRegistry_js_1 = require("../common/CallbackRegistry.js");
 const Debug_js_1 = require("../common/Debug.js");
+const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
-const assert_js_1 = require("../util/assert.js");
 const CDPSession_js_1 = require("./CDPSession.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:webDriverBiDi:RECV ◀');
@@ -50,7 +50,9 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
         return super.emit(type, event);
     }
     send(method, params, timeout) {
-        (0, assert_js_1.assert)(!this.#closed, 'Protocol error: Connection closed.');
+        if (this.#closed) {
+            return Promise.reject(new Errors_js_1.ConnectionClosedError('Connection closed.'));
+        }
         return this.#callbacks.create(method, timeout ?? this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 id,

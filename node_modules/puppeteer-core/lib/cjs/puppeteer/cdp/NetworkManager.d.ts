@@ -14,6 +14,14 @@ import { type NetworkManagerEvents } from '../common/NetworkManagerEvents.js';
  */
 export interface NetworkConditions {
     /**
+     * Emulates the offline mode.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Page.setOfflineMode}.
+     */
+    offline?: boolean;
+    /**
      * Download speed (bytes/s)
      */
     download: number;
@@ -51,7 +59,7 @@ export declare class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     inFlightRequestsCount(): number;
     setOfflineMode(value: boolean): Promise<void>;
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
-    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
+    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata, platform?: string): Promise<void>;
     setCacheEnabled(enabled: boolean): Promise<void>;
     setRequestInterception(value: boolean): Promise<void>;
 }

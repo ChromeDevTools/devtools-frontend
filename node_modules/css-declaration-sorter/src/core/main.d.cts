@@ -18,7 +18,7 @@ declare const cssDeclarationSorter: PluginCreator<{
 
 export = cssDeclarationSorter;
 
-type SortOrder = 'alphabetical' | 'concentric-css' | 'smacss';
+type SortOrder = 'alphabetical' | 'concentric-css' | 'smacss' | 'frakto';
 
 /**
  * This function receives two declaration property names and is expected

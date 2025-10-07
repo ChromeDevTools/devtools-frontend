@@ -10,4 +10,3 @@ export interface WatchCompilerHostOfConfigFile<T extends ts.BuilderProgram> exte
     onCachedDirectoryStructureHostCreate(host: CachedDirectoryStructureHost): void;
 }
 export {};
-//# sourceMappingURL=WatchCompilerHostOfConfigFile.d.ts.map

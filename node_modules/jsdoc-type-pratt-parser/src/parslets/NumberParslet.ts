@@ -1,4 +1,4 @@
-import { composeParslet } from './Parslet'
+import { composeParslet } from './Parslet.js'
 
 export const numberParslet = composeParslet({
   name: 'numberParslet',

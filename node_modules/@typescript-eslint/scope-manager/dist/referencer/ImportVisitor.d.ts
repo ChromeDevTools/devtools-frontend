@@ -10,4 +10,3 @@ export declare class ImportVisitor extends Visitor {
     protected ImportSpecifier(node: TSESTree.ImportSpecifier): void;
     protected visitImport(id: TSESTree.Identifier, specifier: TSESTree.ImportDefaultSpecifier | TSESTree.ImportNamespaceSpecifier | TSESTree.ImportSpecifier): void;
 }
-//# sourceMappingURL=ImportVisitor.d.ts.map

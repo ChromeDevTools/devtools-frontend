@@ -1,5 +1,3 @@
-import { sprintf } from 'sprintf-js';
-
 /**
  * @returns {String} the string with all zeroes contained in a <span>
  */
@@ -15,13 +13,7 @@ export function spanAll(s: string, offset: number = 0): string {
 
   return letters
     .map(
-      (n, i) =>
-        sprintf(
-          '<span class="digit value-%s position-%d">%s</span>',
-          n,
-          i + offset,
-          spanAllZeroes(n)
-        ) // XXX Use #base-2 .value-0 instead?
+      (n, i) => `<span class="digit value-${n} position-${i + offset}">${spanAllZeroes(n)}</span>`,
     )
     .join('');
 }
@@ -51,10 +43,6 @@ export function simpleGroup(addressString: string, offset: number = 0): string[]
       return g;
     }
 
-    return sprintf(
-      '<span class="hover-group group-%d">%s</span>',
-      i + offset,
-      spanLeadingZeroesSimple(g)
-    );
+    return `<span class="hover-group group-${i + offset}">${spanLeadingZeroesSimple(g)}</span>`;
   });
 }

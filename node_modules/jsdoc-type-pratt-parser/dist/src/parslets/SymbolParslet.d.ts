@@ -1,1 +1,1 @@
-export declare const symbolParslet: import("./Parslet").ParsletFunction;
+export declare const symbolParslet: import("./Parslet.js").ParsletFunction;

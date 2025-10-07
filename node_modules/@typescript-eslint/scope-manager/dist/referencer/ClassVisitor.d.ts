@@ -3,13 +3,13 @@ import type { Referencer } from './Referencer';
 import { Visitor } from './Visitor';
 export declare class ClassVisitor extends Visitor {
     #private;
-    constructor(referencer: Referencer, node: TSESTree.ClassDeclaration | TSESTree.ClassExpression);
+    constructor(referencer: Referencer);
     static visit(referencer: Referencer, node: TSESTree.ClassDeclaration | TSESTree.ClassExpression): void;
     visit(node: TSESTree.Node | null | undefined): void;
     protected visitClass(node: TSESTree.ClassDeclaration | TSESTree.ClassExpression): void;
     protected visitFunctionParameterTypeAnnotation(node: TSESTree.Parameter): void;
     protected visitMethod(node: TSESTree.MethodDefinition): void;
-    protected visitMethodFunction(node: TSESTree.FunctionExpression, methodNode: TSESTree.MethodDefinition): void;
+    protected visitMethodFunction(node: TSESTree.FunctionExpression): void;
     protected visitPropertyBase(node: TSESTree.AccessorProperty | TSESTree.PropertyDefinition | TSESTree.TSAbstractAccessorProperty | TSESTree.TSAbstractMethodDefinition | TSESTree.TSAbstractPropertyDefinition): void;
     protected visitPropertyDefinition(node: TSESTree.AccessorProperty | TSESTree.PropertyDefinition | TSESTree.TSAbstractAccessorProperty | TSESTree.TSAbstractPropertyDefinition): void;
     protected visitType(node: TSESTree.Node | null | undefined): void;
@@ -25,4 +25,3 @@ export declare class ClassVisitor extends Visitor {
     protected TSAbstractPropertyDefinition(node: TSESTree.TSAbstractPropertyDefinition): void;
     protected TSIndexSignature(node: TSESTree.TSIndexSignature): void;
 }
-//# sourceMappingURL=ClassVisitor.d.ts.map

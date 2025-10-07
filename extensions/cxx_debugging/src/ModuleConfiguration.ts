@@ -12,11 +12,12 @@ import {globMatch} from './GlobMatch.js';
  * is found in LLDB.
  */
 export interface PathSubstitution {
-  readonly from: string; readonly to: string;
+  readonly from: string;
+  readonly to: string;
 }
 
 /**
- * List of {@type PathSubstitution}s.
+ * List of {@link PathSubstitution | PathSubstitutions}.
  */
 export type PathSubstitutions = readonly PathSubstitution[];
 
@@ -28,10 +29,10 @@ export type PathSubstitutions = readonly PathSubstitution[];
  * LLDB frontend in `PathMappingList::RemapPath()` inside `Target/PathMappingList.cpp`
  * (http://cs/github/llvm/llvm-project/lldb/source/Target/PathMappingList.cpp?l=157-185).
  *
- * @param pathSubstitutions possible substitutions to apply to the {@param sourcePath}, applies the first match.
+ * @param pathSubstitutions possible substitutions to apply to the `sourcePath`, applies the first match.
  * @param sourcePath the source path as found in the debugging information.
  * @param baseURL the URL of the WebAssembly module, which is used to resolve relative source paths.
- * @returns an absolute `file:`-URI or a URL relative to the {@param baseURL}.
+ * @returns an absolute `file:`-URI or a URL relative to the `baseURL`.
  */
 export function resolveSourcePathToURL(pathSubstitutions: PathSubstitutions, sourcePath: string, baseURL: URL): URL {
   // Normalize '\' to '/' in sourcePath first.
@@ -74,15 +75,16 @@ export function resolveSourcePathToURL(pathSubstitutions: PathSubstitutions, sou
  * If the name is `undefined`, the configuration is the default configuration,
  * which is chosen if there's no named configuration matching the basename of
  * the WebAssembly module file.
- * The name can be a wildcard pattern, and {@see globMatch} will be used to
+ * The name can be a wildcard pattern, and {@link globMatch} will be used to
  * match the name against the URL of the WebAssembly module file.
  */
 export interface ModuleConfiguration {
-  readonly name?: string; readonly pathSubstitutions: PathSubstitutions;
+  readonly name?: string;
+  readonly pathSubstitutions: PathSubstitutions;
 }
 
 /**
- * List of {@type ModuleConfiguration}s. These lists are intended to have
+ * List of {@link ModuleConfiguration | ModuleConfigurations}. These lists are intended to have
  * a default configuration, whose name field is `undefined`, which is chosen
  * when no matching named configuration is found.
  */

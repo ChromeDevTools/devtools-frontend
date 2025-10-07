@@ -17,7 +17,7 @@ export default iterateJsdoc(({
   iterateAllJsdocs: true,
   meta: {
     docs: {
-      description: 'Requires that each `@property` tag has a `type` value.',
+      description: 'Requires that each `@property` tag has a type value (in curly brackets).',
       url: 'https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-property-type.md#repos-sticky-header',
     },
     type: 'suggestion',

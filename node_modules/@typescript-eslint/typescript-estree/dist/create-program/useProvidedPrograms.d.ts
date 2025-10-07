@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import type { ParseSettings } from '../parseSettings';
 import type { ASTAndDefiniteProgram } from './shared';
-export declare function useProvidedPrograms(programInstances: Iterable<ts.Program>, parseSettings: ParseSettings): ASTAndDefiniteProgram | undefined;
+export declare function useProvidedPrograms(programInstances: Iterable<ts.Program>, parseSettings: ParseSettings): ASTAndDefiniteProgram;
 /**
  * Utility offered by parser to help consumers construct their own program instance.
  *
@@ -9,4 +9,3 @@ export declare function useProvidedPrograms(programInstances: Iterable<ts.Progra
  * @param projectDirectory the project directory to use as the CWD, defaults to `process.cwd()`
  */
 export declare function createProgramFromConfigFile(configFile: string, projectDirectory?: string): ts.Program;
-//# sourceMappingURL=useProvidedPrograms.d.ts.map

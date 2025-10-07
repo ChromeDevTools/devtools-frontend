@@ -4,4 +4,3 @@ import type { PreferOptionalChainMessageIds, PreferOptionalChainOptions } from '
 export declare function checkNullishAndReport(context: RuleContext<PreferOptionalChainMessageIds, [
     PreferOptionalChainOptions
 ]>, parserServices: ParserServicesWithTypeInformation, { requireNullish }: PreferOptionalChainOptions, maybeNullishNodes: TSESTree.Expression[], descriptor: ReportDescriptor<PreferOptionalChainMessageIds>): void;
-//# sourceMappingURL=checkNullishAndReport.d.ts.map

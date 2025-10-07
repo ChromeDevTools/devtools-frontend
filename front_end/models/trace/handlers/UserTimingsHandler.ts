@@ -151,7 +151,7 @@ function getEventTrack(event: Types.Events.SyntheticEventPair|Types.Events.Conso
 }
 
 /**
- * Similar to the default {@see Helpers.Trace.eventTimeComparator}
+ * Similar to the default {@link Helpers.Trace.eventTimeComparator}
  * but with a twist:
  * In case of equal start and end times, put the second event (within a
  * track) first.

@@ -44,6 +44,7 @@ There are a few existing modules similar to Keyv, however Keyv is different beca
   - [.deserialize](#deserialize)
   - [.compression](#compression)
   - [.useKeyPrefix](#usekeyprefix)
+  - [.stats](#stats)
   - [Keyv Instance](#keyv-instance)
 	- [.set(key, value, [ttl])](#setkey-value-ttl)
 	- [.setMany(entries)](#setmanyentries)
@@ -671,6 +672,55 @@ const keyv = new Keyv({ store: keyvRedis, throwOnErrors: true });
 ```
 
 What this does is it only throw on connection errors with the Redis client.
+
+## .stats
+Type: `StatsManager`<br />
+Default: `StatsManager` instance with `enabled: false`
+
+The stats property provides access to statistics tracking for cache operations. When enabled via the `stats` option during initialization, it tracks hits, misses, sets, deletes, and errors.
+
+### Enabling Stats:
+```js
+const keyv = new Keyv({ stats: true });
+console.log(keyv.stats.enabled); // true
+```
+
+### Available Statistics:
+- `hits`: Number of successful cache retrievals
+- `misses`: Number of failed cache retrievals
+- `sets`: Number of set operations
+- `deletes`: Number of delete operations
+- `errors`: Number of errors encountered
+
+### Accessing Stats:
+```js
+const keyv = new Keyv({ stats: true });
+
+await keyv.set('foo', 'bar');
+await keyv.get('foo'); // cache hit
+await keyv.get('nonexistent'); // cache miss
+await keyv.delete('foo');
+
+console.log(keyv.stats.hits);    // 1
+console.log(keyv.stats.misses);  // 1
+console.log(keyv.stats.sets);    // 1
+console.log(keyv.stats.deletes); // 1
+```
+
+### Resetting Stats:
+```js
+keyv.stats.reset();
+console.log(keyv.stats.hits); // 0
+```
+
+### Manual Control:
+You can also manually enable/disable stats tracking at runtime:
+```js
+const keyv = new Keyv({ stats: false });
+keyv.stats.enabled = true; // Enable stats tracking
+// ... perform operations ...
+keyv.stats.enabled = false; // Disable stats tracking
+```
 
 # How to Contribute
 

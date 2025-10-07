@@ -135,7 +135,7 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
  * @param {boolean} [opts.throwOnTypeParsingErrors]
  * @returns {JsdocBlock}
  */
-const commentParserToESTree = (jsdoc, mode, {
+const commentParserToESTree = (jsdoc, mode = 'typescript', {
   spacing = 'compact',
   throwOnTypeParsingErrors = false
 } = {}) => {

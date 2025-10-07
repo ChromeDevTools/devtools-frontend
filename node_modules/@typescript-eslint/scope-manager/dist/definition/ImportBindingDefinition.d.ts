@@ -7,4 +7,3 @@ export declare class ImportBindingDefinition extends DefinitionBase<DefinitionTy
     constructor(name: TSESTree.Identifier, node: TSESTree.TSImportEqualsDeclaration, decl: TSESTree.TSImportEqualsDeclaration);
     constructor(name: TSESTree.Identifier, node: Exclude<ImportBindingDefinition['node'], TSESTree.TSImportEqualsDeclaration>, decl: TSESTree.ImportDeclaration);
 }
-//# sourceMappingURL=ImportBindingDefinition.d.ts.map

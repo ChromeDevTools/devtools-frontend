@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class BlockScope extends ScopeBase<ScopeType.block, TSESTree.BlockStatement, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: BlockScope['upper'], block: BlockScope['block']);
 }
-//# sourceMappingURL=BlockScope.d.ts.map

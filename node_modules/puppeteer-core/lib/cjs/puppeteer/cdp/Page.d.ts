@@ -32,6 +32,10 @@ export declare class CdpPage extends Page {
     #private;
     static _create(client: CdpCDPSession, target: CdpTarget, defaultViewport: Viewport | null): Promise<CdpPage>;
     constructor(client: CdpCDPSession, target: CdpTarget);
+    resize(params: {
+        contentWidth: number;
+        contentHeight: number;
+    }): Promise<void>;
     _client(): CDPSession;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;
@@ -67,7 +71,11 @@ export declare class CdpPage extends Page {
     removeExposedFunction(name: string): Promise<void>;
     authenticate(credentials: Credentials | null): Promise<void>;
     setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
-    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
+    setUserAgent(userAgentOrOptions: string | {
+        userAgent?: string;
+        userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;
+        platform?: string;
+    }, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     metrics(): Promise<Metrics>;
     reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
     createCDPSession(): Promise<CDPSession>;
@@ -123,5 +131,8 @@ export declare class CdpPage extends Page {
      */
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
 }
+/**
+ * @internal
+ */
 export declare function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey: CookiePartitionKey | string | undefined): Protocol.Network.CookiePartitionKey | undefined;
 //# sourceMappingURL=Page.d.ts.map

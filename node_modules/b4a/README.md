@@ -5,7 +5,15 @@ Buffer for Array (B4A) provides a set of functions for bridging the gap between 
 ## Installation
 
 ```sh
-npm install b4a
+npm i b4a
+```
+
+### React Native
+
+When imported from React Native `b4a` will make use of `react-native-b4a` for optimised buffer operations when available. All you need to do is install it:
+
+```sh
+npm i react-native-b4a
 ```
 
 ## API

@@ -23,7 +23,7 @@ import {TimelineGrid} from './TimelineGrid.js';
 /**
  * Set as the `details` value on the fake context menu event we dispatch to
  * trigger a context menu on an event on a keyboard space key press.
- * {@see onContextMenu} for more details and explanation.
+ * {@link FlameChart.onContextMenu} for more details and explanation.
  */
 const KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
 
@@ -2347,7 +2347,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   /**
-   * Draws decorations onto events. {@see FlameChartDecoration}.
+   * Draws decorations onto events. {@link FlameChartDecoration}.
    */
   #drawDecorations(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, indexes: number[]): void {
     const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;

@@ -1,6 +1,6 @@
-import { composeParslet } from './Parslet'
-import { Precedence } from '../Precedence'
-import { assertRootResult } from '../assertTypes'
+import { composeParslet } from './Parslet.js'
+import { Precedence } from '../Precedence.js'
+import { assertRootResult } from '../assertTypes.js'
 
 export const parenthesisParslet = composeParslet({
   name: 'parenthesisParslet',

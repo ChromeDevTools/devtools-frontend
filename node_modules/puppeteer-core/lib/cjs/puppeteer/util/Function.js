@@ -28,32 +28,24 @@ exports.createFunction = createFunction;
  */
 function stringifyFunction(fn) {
     let value = fn.toString();
-    try {
-        new Function(`(${value})`);
+    if (value.match(/^(async )*function(\(|\s)/) ||
+        value.match(/^(async )*function\s*\*\s*/)) {
+        return value;
     }
-    catch (err) {
-        if (err.message.includes(`Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive`)) {
-            // The content security policy does not allow Function eval. Let's
-            // assume the value might be valid as is.
-            return value;
-        }
-        // This means we might have a function shorthand (e.g. `test(){}`). Let's
-        // try prefixing.
-        let prefix = 'function ';
-        if (value.startsWith('async ')) {
-            prefix = `async ${prefix}`;
-            value = value.substring('async '.length);
-        }
-        value = `${prefix}${value}`;
-        try {
-            new Function(`(${value})`);
-        }
-        catch {
-            // We tried hard to serialize, but there's a weird beast here.
-            throw new Error('Passed function cannot be serialized!');
-        }
+    const isArrow = value.startsWith('(') ||
+        value.match(/^async\s*\(/) ||
+        value.match(/^(async)*\s*(?:[$_\p{ID_Start}])(?:[$\u200C\u200D\p{ID_Continue}])*\s*=>/u);
+    if (isArrow) {
+        return value;
     }
-    return value;
+    // This means we might have a function shorthand (e.g. `test(){}`). Let's
+    // try prefixing.
+    let prefix = 'function ';
+    if (value.startsWith('async ')) {
+        prefix = `async ${prefix}`;
+        value = value.substring('async '.length);
+    }
+    return `${prefix}${value}`;
 }
 /**
  * Replaces `PLACEHOLDER`s with the given replacements.

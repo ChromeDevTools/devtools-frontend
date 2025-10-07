@@ -58,6 +58,18 @@ body {
   4. Dimensions
   5. Text
 
+- [Frakto](https://github.com/fraktodev/frakto-css-order)  
+`frakto`  
+*Order from the outermost layout and positioning rules, moving inward through structure, style, and interaction — inspired by the browser’s render tree.*
+  1. Positioning
+	2. Box Model
+	3. Layout
+	4. Typography
+	5. Visual
+	6. Transform
+	7. Interaction
+	8. Miscellaneous
+
 ## Usage
 Following the PostCSS plugin guidelines, this package depends on PostCSS as a peer dependency:  
 `npm install postcss css-declaration-sorter --save-dev`

@@ -19,4 +19,3 @@ export declare abstract class VisitorBase {
     visit(node: TSESTree.Node | null | undefined): void;
 }
 export type { VisitorKeys } from '@typescript-eslint/visitor-keys';
-//# sourceMappingURL=VisitorBase.d.ts.map

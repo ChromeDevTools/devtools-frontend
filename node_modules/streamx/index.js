@@ -1,4 +1,4 @@
-const { EventEmitter } = require('events')
+const { EventEmitter } = require('events-universal')
 const STREAM_DESTROYED = new Error('Stream was destroyed')
 const PREMATURE_CLOSE = new Error('Premature close')
 

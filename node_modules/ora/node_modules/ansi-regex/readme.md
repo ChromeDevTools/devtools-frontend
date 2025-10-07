@@ -46,6 +46,12 @@ Default: `false` *(Matches any ANSI escape codes in a string)*
 
 Match only the first ANSI escape.
 
+## Important
+
+If you run the regex against untrusted user input in a server context, you should [give it a timeout](https://github.com/sindresorhus/super-regex).
+
+**I do not consider [ReDoS](https://blog.yossarian.net/2022/12/28/ReDoS-vulnerabilities-and-misaligned-incentives) a valid vulnerability for this package.**
+
 ## FAQ
 
 ### Why do you test for codes not in the ECMA 48 standard?

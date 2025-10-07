@@ -181,4 +181,3 @@ declare const RuleTester_base: typeof RuleTesterBase;
 export declare class RuleTester extends RuleTester_base {
 }
 export {};
-//# sourceMappingURL=RuleTester.d.ts.map

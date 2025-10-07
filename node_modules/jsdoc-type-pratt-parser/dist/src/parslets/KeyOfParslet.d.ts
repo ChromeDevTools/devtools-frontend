@@ -1,1 +1,1 @@
-export declare const keyOfParslet: import("./Parslet").ParsletFunction;
+export declare const keyOfParslet: import("./Parslet.js").ParsletFunction;

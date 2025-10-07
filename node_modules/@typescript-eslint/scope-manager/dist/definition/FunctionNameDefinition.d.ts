@@ -6,4 +6,3 @@ export declare class FunctionNameDefinition extends DefinitionBase<DefinitionTyp
     readonly isVariableDefinition = true;
     constructor(name: TSESTree.Identifier, node: FunctionNameDefinition['node']);
 }
-//# sourceMappingURL=FunctionNameDefinition.d.ts.map

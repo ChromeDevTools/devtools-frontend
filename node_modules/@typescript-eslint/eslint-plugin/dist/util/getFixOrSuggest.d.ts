@@ -7,4 +7,3 @@ export declare function getFixOrSuggest<MessageId extends string>({ fixOrSuggest
 } | {
     suggest: TSESLint.SuggestionReportDescriptor<MessageId>[];
 } | undefined;
-//# sourceMappingURL=getFixOrSuggest.d.ts.map

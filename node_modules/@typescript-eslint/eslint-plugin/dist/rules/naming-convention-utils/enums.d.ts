@@ -77,4 +77,3 @@ export declare enum TypeModifiers {
     array = 2097152
 }
 export type TypeModifiersString = keyof typeof TypeModifiers;
-//# sourceMappingURL=enums.d.ts.map

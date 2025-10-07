@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export * from './Accessibility.js';
-export * from './AriaQueryHandler.js';
 export * from './Binding.js';
 export * from './Browser.js';
 export * from './BrowserContext.js';
@@ -36,6 +35,7 @@ export * from './Page.js';
 export * from './PredefinedNetworkConditions.js';
 export * from './Target.js';
 export * from './TargetManager.js';
+export * from './TargetManageEvents.js';
 export * from './Tracing.js';
 export * from './utils.js';
 export * from './WebWorker.js';

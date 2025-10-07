@@ -94,7 +94,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
      */
     _rawSend(callbacks, method, params, sessionId, options) {
         if (this.#closed) {
-            return Promise.reject(new Error('Protocol error: Connection closed.'));
+            return Promise.reject(new Errors_js_1.ConnectionClosedError('Connection closed.'));
         }
         return callbacks.create(method, options?.timeout ?? this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({

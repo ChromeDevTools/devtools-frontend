@@ -153,24 +153,23 @@ const getTokenizers = ({
  * @returns {import('.').JsdocBlockWithInline}
  */
 const parseComment = (commentOrNode, indent = '') => {
-  let block;
+  let result;
 
   switch (typeof commentOrNode) {
   case 'string':
     // Preserve JSDoc block start/end indentation.
-    [block] = commentParser(`${indent}${commentOrNode}`, {
+    result = commentParser(`${indent}${commentOrNode}`, {
       // @see https://github.com/yavorskiy/comment-parser/issues/21
       tokenizers: getTokenizers()
     });
     break;
-
   case 'object':
     if (commentOrNode === null) {
       throw new TypeError(`'commentOrNode' is not a string or object.`);
     }
 
     // Preserve JSDoc block start/end indentation.
-    [block] = commentParser(`${indent}/*${commentOrNode.value}*/`, {
+    result = commentParser(`${indent}/*${commentOrNode.value}*/`, {
       // @see https://github.com/yavorskiy/comment-parser/issues/21
       tokenizers: getTokenizers()
     });
@@ -180,6 +179,11 @@ const parseComment = (commentOrNode, indent = '') => {
     throw new TypeError(`'commentOrNode' is not a string or object.`);
   }
 
+  if (!result.length) {
+    throw new Error('There were no results for comment parsing');
+  }
+
+  const [block] = result;
   return parseInlineTags(block);
 };
 

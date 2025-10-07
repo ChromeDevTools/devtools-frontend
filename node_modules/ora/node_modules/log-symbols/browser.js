@@ -1,8 +1,1 @@
-const logSymbols = {
-	info: 'ℹ️',
-	success: '✅',
-	warning: '⚠️',
-	error: '❌️',
-};
-
-export default logSymbols;
+export * as default from './browser-symbols.js';

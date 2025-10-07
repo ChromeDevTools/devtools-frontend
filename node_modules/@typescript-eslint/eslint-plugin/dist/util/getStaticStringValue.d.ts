@@ -9,4 +9,3 @@ import type { TSESTree } from '@typescript-eslint/utils';
  * @returns String value if it can be determined. Otherwise, `null`.
  */
 export declare function getStaticStringValue(node: TSESTree.Node): string | null;
-//# sourceMappingURL=getStaticStringValue.d.ts.map

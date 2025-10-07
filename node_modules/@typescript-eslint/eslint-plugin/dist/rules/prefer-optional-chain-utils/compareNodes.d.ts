@@ -13,4 +13,3 @@ type CompareNodesArgument = TSESTree.Node | null | undefined;
  */
 export declare function compareNodes(nodeA: CompareNodesArgument, nodeB: CompareNodesArgument): NodeComparisonResult;
 export {};
-//# sourceMappingURL=compareNodes.d.ts.map

@@ -99,4 +99,3 @@ type FunctionNode = TSESTree.ArrowFunctionExpression | TSESTree.FunctionDeclarat
  */
 export declare function getFunctionHeadLoc(node: FunctionNode, sourceCode: TSESLint.SourceCode): TSESTree.SourceLocation;
 export {};
-//# sourceMappingURL=getFunctionHeadLoc.d.ts.map

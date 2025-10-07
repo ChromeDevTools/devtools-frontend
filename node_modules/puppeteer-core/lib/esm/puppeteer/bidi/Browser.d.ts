@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ChildProcess } from 'node:child_process';
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type DebugInfo } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
@@ -12,7 +11,7 @@ import type { Connection as CdpConnection } from '../cdp/Connection.js';
 import type { SupportedWebDriverCapabilities } from '../common/ConnectOptions.js';
 import type { Viewport } from '../common/Viewport.js';
 import { BidiBrowserContext } from './BrowserContext.js';
-import type { BidiConnection } from './Connection.js';
+import type { BidiConnection, CdpEvent } from './Connection.js';
 import { BidiBrowserTarget } from './Target.js';
 /**
  * @internal
@@ -34,7 +33,7 @@ export declare class BidiBrowser extends Browser {
     #private;
     readonly protocol = "webDriverBiDi";
     static readonly subscribeModules: [string, ...string[]];
-    static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[];
+    static readonly subscribeCdpEvents: Array<CdpEvent['method']>;
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
     private constructor();
     get cdpSupported(): boolean;

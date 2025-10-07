@@ -9,7 +9,7 @@ export class PipeTransport {
     #pipeWrite;
     #subscriptions = new DisposableStack();
     #isClosed = false;
-    #pendingMessage = '';
+    #pendingMessage = [];
     onclose;
     onmessage;
     constructor(pipeWrite, pipeRead) {
@@ -18,7 +18,7 @@ export class PipeTransport {
         // NodeJS event emitters don't support `*` so we need to typecast
         // As long as we don't use it we should be OK.
         new EventEmitter(pipeRead));
-        pipeReadEmitter.on('data', (buffer) => {
+        pipeReadEmitter.on('data', buffer => {
             return this.#dispatch(buffer);
         });
         pipeReadEmitter.on('close', () => {
@@ -40,30 +40,29 @@ export class PipeTransport {
     }
     #dispatch(buffer) {
         assert(!this.#isClosed, '`PipeTransport` is closed.');
-        let end = buffer.indexOf('\0');
-        if (end === -1) {
-            this.#pendingMessage += buffer.toString();
+        this.#pendingMessage.push(buffer);
+        if (buffer.indexOf('\0') === -1) {
             return;
         }
-        const message = this.#pendingMessage + buffer.toString(undefined, 0, end);
-        setImmediate(() => {
-            if (this.onmessage) {
-                this.onmessage.call(null, message);
-            }
-        });
-        let start = end + 1;
-        end = buffer.indexOf('\0', start);
+        const concatBuffer = Buffer.concat(this.#pendingMessage);
+        let start = 0;
+        let end = concatBuffer.indexOf('\0');
         while (end !== -1) {
-            const message = buffer.toString(undefined, start, end);
+            const message = concatBuffer.toString(undefined, start, end);
             setImmediate(() => {
                 if (this.onmessage) {
                     this.onmessage.call(null, message);
                 }
             });
             start = end + 1;
-            end = buffer.indexOf('\0', start);
+            end = concatBuffer.indexOf('\0', start);
         }
-        this.#pendingMessage = buffer.toString(undefined, start);
+        if (start >= concatBuffer.length) {
+            this.#pendingMessage = [];
+        }
+        else {
+            this.#pendingMessage = [concatBuffer.subarray(start)];
+        }
     }
     close() {
         this.#isClosed = true;

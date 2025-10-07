@@ -361,6 +361,21 @@ export class CdpPage extends Page {
     }
   }
 
+  override async resize(params: {
+    contentWidth: number;
+    contentHeight: number;
+  }): Promise<void> {
+    const {windowId} = await this.#primaryTargetClient.send(
+      'Browser.getWindowForTarget',
+    );
+
+    await this.#primaryTargetClient.send('Browser.setContentsSize', {
+      windowId,
+      width: params.contentWidth,
+      height: params.contentHeight,
+    });
+  }
+
   async #onFileChooser(
     event: Protocol.Page.FileChooserOpenedEvent,
   ): Promise<void> {
@@ -732,13 +747,29 @@ export class CdpPage extends Page {
   }
 
   override async setUserAgent(
-    userAgent: string,
+    userAgentOrOptions:
+      | string
+      | {
+          userAgent?: string;
+          userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;
+          platform?: string;
+        },
     userAgentMetadata?: Protocol.Emulation.UserAgentMetadata,
   ): Promise<void> {
-    return await this.#frameManager.networkManager.setUserAgent(
-      userAgent,
-      userAgentMetadata,
-    );
+    if (typeof userAgentOrOptions === 'string') {
+      return await this.#frameManager.networkManager.setUserAgent(
+        userAgentOrOptions,
+        userAgentMetadata,
+      );
+    } else {
+      const userAgent =
+        userAgentOrOptions.userAgent ?? (await this.browser().userAgent());
+      return await this.#frameManager.networkManager.setUserAgent(
+        userAgent,
+        userAgentOrOptions.userAgentMetadata,
+        userAgentOrOptions.platform,
+      );
+    }
   }
 
   override async metrics(): Promise<Metrics> {
@@ -906,7 +937,7 @@ export class CdpPage extends Page {
     );
     const entry = history.entries[history.currentIndex + delta];
     if (!entry) {
-      return null;
+      throw new Error('History entry to navigate to not found.');
     }
     const result = await Promise.all([
       this.waitForNavigation(options),
@@ -1139,7 +1170,7 @@ export class CdpPage extends Page {
     const connection = this.#primaryTargetClient.connection();
     assert(
       connection,
-      'Protocol error: Connection closed. Most likely the page has been closed.',
+      'Connection closed. Most likely the page has been closed.',
     );
     const runBeforeUnload = !!options.runBeforeUnload;
     if (runBeforeUnload) {
@@ -1228,6 +1259,9 @@ function getIntersectionRect(
   };
 }
 
+/**
+ * @internal
+ */
 export function convertCookiesPartitionKeyFromPuppeteerToCdp(
   partitionKey: CookiePartitionKey | string | undefined,
 ): Protocol.Network.CookiePartitionKey | undefined {

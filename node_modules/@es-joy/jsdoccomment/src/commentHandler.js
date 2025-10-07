@@ -8,11 +8,16 @@ import {
   commentParserToESTree, jsdocVisitorKeys
 } from './commentParserToESTree.js';
 
+/* eslint-disable jsdoc/reject-any-type -- Arbitrary settings */
 /**
- * @param {{[name: string]: any}} settings
+ * @param {{
+ *   mode: import('jsdoc-type-pratt-parser').ParseMode,
+ *   [key: string]: any
+ * }} settings
  * @returns {import('.').CommentHandler}
  */
 const commentHandler = (settings) => {
+  /* eslint-enable jsdoc/reject-any-type -- Arbitrary settings */
   /**
    * @type {import('.').CommentHandler}
    */

@@ -34,7 +34,7 @@ export declare const asyncDisposeSymbol: typeof Symbol.asyncDispose;
 /**
  * @internal
  */
-export declare class DisposableStack {
+declare class DisposableStackPolyfill {
     #private;
     /**
      * Returns a value indicating whether the stack has been disposed.
@@ -100,7 +100,7 @@ export declare class DisposableStack {
      * }
      * ```
      */
-    move(): DisposableStack;
+    move(): DisposableStackPolyfill;
     /**
      * Disposes each resource in the stack in last-in-first-out (LIFO) manner.
      */
@@ -110,7 +110,11 @@ export declare class DisposableStack {
 /**
  * @internal
  */
-export declare class AsyncDisposableStack {
+export declare const DisposableStack: typeof DisposableStackPolyfill;
+/**
+ * @internal
+ */
+declare class AsyncDisposableStackPolyfill {
     #private;
     /**
      * Returns a value indicating whether the stack has been disposed.
@@ -119,7 +123,7 @@ export declare class AsyncDisposableStack {
     /**
      * Alias for `[Symbol.asyncDispose]()`.
      */
-    dispose(): Promise<void>;
+    disposeAsync(): Promise<void>;
     /**
      * Adds a AsyncDisposable resource to the top of stack, returning the resource.
      * Has no effect if provided `null` or `undefined`.
@@ -176,7 +180,7 @@ export declare class AsyncDisposableStack {
      * }
      * ```
      */
-    move(): AsyncDisposableStack;
+    move(): AsyncDisposableStackPolyfill;
     /**
      * Disposes each resource in the stack in last-in-first-out (LIFO) manner.
      */
@@ -185,11 +189,15 @@ export declare class AsyncDisposableStack {
 }
 /**
  * @internal
+ */
+export declare const AsyncDisposableStack: typeof AsyncDisposableStackPolyfill;
+/**
+ * @internal
  * Represents an error that occurs when multiple errors are thrown during
  * the disposal of resources. This class encapsulates the primary error and
  * any suppressed errors that occurred subsequently.
  */
-export declare class SuppressedError extends Error {
+declare class SuppressedErrorPolyfill extends Error {
     #private;
     constructor(error: unknown, suppressed: unknown, message?: string);
     /**
@@ -202,4 +210,9 @@ export declare class SuppressedError extends Error {
      */
     get suppressed(): unknown;
 }
+/**
+ * @internal
+ */
+export declare const SuppressedError: typeof SuppressedErrorPolyfill;
+export {};
 //# sourceMappingURL=disposable.d.ts.map

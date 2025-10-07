@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class ForScope extends ScopeBase<ScopeType.for, TSESTree.ForInStatement | TSESTree.ForOfStatement | TSESTree.ForStatement, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: ForScope['upper'], block: ForScope['block']);
 }
-//# sourceMappingURL=ForScope.d.ts.map

@@ -14,4 +14,3 @@ export declare const findVariable: (initialScope: TSESLint.Scope.Scope, nameOrNo
  * If such scope doesn't exist then it returns the 1st argument `initialScope`.
  */
 export declare const getInnermostScope: (initialScope: TSESLint.Scope.Scope, node: TSESTree.Node) => TSESLint.Scope.Scope;
-//# sourceMappingURL=scopeAnalysis.d.ts.map

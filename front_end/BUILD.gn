@@ -55,7 +55,7 @@ group("web_test_resources") {
 node_action("devtools_json") {
   inputs = []
 
-  script = "scripts/build/generate_devtools_json.js"
+  script = "scripts/build/generate_devtools_json.mjs"
 
   args = [ rebase_path(
           "$target_gen_dir/.well-known/appspecific/com.chrome.devtools.json",

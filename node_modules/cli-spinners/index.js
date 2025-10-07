@@ -1,15 +1,11 @@
-'use strict';
+import spinners from './spinners.json' with {type: 'json'};
 
-const spinners = Object.assign({}, require('./spinners.json')); // eslint-disable-line import/extensions
+export default spinners;
 
 const spinnersList = Object.keys(spinners);
 
-Object.defineProperty(spinners, 'random', {
-	get() {
-		const randomIndex = Math.floor(Math.random() * spinnersList.length);
-		const spinnerName = spinnersList[randomIndex];
-		return spinners[spinnerName];
-	}
-});
-
-module.exports = spinners;
+export function randomSpinner() {
+	const randomIndex = Math.floor(Math.random() * spinnersList.length);
+	const spinnerName = spinnersList[randomIndex];
+	return spinners[spinnerName];
+}

@@ -303,12 +303,24 @@ export default {
         additionalProperties: false,
         properties: {
           allowedPrefixes: {
+            description: `An array of prefixes to allow at the beginning of a comment.
+
+Defaults to \`['@ts-', 'istanbul ', 'c8 ', 'v8 ', 'eslint', 'prettier-']\`.
+
+Supplying your own value overrides the defaults.`,
             items: {
               type: 'string',
             },
             type: 'array',
           },
           contexts: {
+            description: `The contexts array which will be checked for preceding content.
+
+Can either be strings or an object with a \`context\` string and an optional, default \`false\` \`inlineCommentBlock\` boolean.
+
+Defaults to \`ArrowFunctionExpression\`, \`FunctionDeclaration\`,
+\`FunctionExpression\`, \`TSDeclareFunction\`.
+`,
             items: {
               anyOf: [
                 {
@@ -331,6 +343,11 @@ export default {
             type: 'array',
           },
           contextsAfter: {
+            description: `The contexts array which will be checked for content on the same line after.
+
+Can either be strings or an object with a \`context\` string and an optional, default \`false\` \`inlineCommentBlock\` boolean.
+
+Defaults to an empty array.`,
             items: {
               anyOf: [
                 {
@@ -353,6 +370,12 @@ export default {
             type: 'array',
           },
           contextsBeforeAndAfter: {
+            description: `The contexts array which will be checked for content before and on the same
+line after.
+
+Can either be strings or an object with a \`context\` string and an optional, default \`false\` \`inlineCommentBlock\` boolean.
+
+Defaults to \`VariableDeclarator\`, \`TSPropertySignature\`, \`PropertyDefinition\`.`,
             items: {
               anyOf: [
                 {
@@ -375,15 +398,40 @@ export default {
             type: 'array',
           },
           enableFixer: {
+            description: 'Set to `false` to disable fixing.',
             type: 'boolean',
           },
           enforceJsdocLineStyle: {
+            description: `What policy to enforce on the conversion of non-JSDoc comments without
+line breaks. (Non-JSDoc (mulitline) comments with line breaks will always
+be converted to \`multi\` style JSDoc comments.)
+
+- \`multi\` - Convert to multi-line style
+\`\`\`js
+/**
+ * Some text
+ */
+\`\`\`
+- \`single\` - Convert to single-line style
+\`\`\`js
+/** Some text */
+\`\`\`
+
+Defaults to \`multi\`.
+`,
             enum: [
               'multi', 'single',
             ],
             type: 'string',
           },
           lineOrBlockStyle: {
+            description: `What style of comments to which to apply JSDoc conversion.
+
+- \`block\` - Applies to block-style comments (\`/* ... */\`)
+- \`line\` - Applies to line-style comments (\`// ...\`)
+- \`both\` - Applies to both block and line-style comments
+
+Defaults to \`both\`.`,
             enum: [
               'block', 'line', 'both',
             ],

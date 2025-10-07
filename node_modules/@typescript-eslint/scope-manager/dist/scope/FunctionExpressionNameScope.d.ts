@@ -7,4 +7,3 @@ export declare class FunctionExpressionNameScope extends ScopeBase<ScopeType.fun
     readonly functionExpressionScope: true;
     constructor(scopeManager: ScopeManager, upperScope: FunctionExpressionNameScope['upper'], block: FunctionExpressionNameScope['block']);
 }
-//# sourceMappingURL=FunctionExpressionNameScope.d.ts.map

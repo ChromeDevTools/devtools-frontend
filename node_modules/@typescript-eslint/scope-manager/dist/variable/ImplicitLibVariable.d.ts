@@ -25,4 +25,3 @@ export declare class ImplicitLibVariable extends ESLintScopeVariable implements 
     readonly isValueVariable: boolean;
     constructor(scope: Scope, name: string, { eslintImplicitGlobalSetting, isTypeVariable, isValueVariable, writeable, }: ImplicitLibVariableOptions);
 }
-//# sourceMappingURL=ImplicitLibVariable.d.ts.map

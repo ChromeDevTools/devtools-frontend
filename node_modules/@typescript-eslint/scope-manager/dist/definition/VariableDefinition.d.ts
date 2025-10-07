@@ -6,4 +6,3 @@ export declare class VariableDefinition extends DefinitionBase<DefinitionType.Va
     readonly isVariableDefinition = true;
     constructor(name: TSESTree.Identifier, node: VariableDefinition['node'], decl: TSESTree.VariableDeclaration);
 }
-//# sourceMappingURL=VariableDefinition.d.ts.map

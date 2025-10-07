@@ -144,10 +144,7 @@ declare module './generated/ast-spec' {
     interface TSEnumBody {
         parent: TSESTree.TSEnumDeclaration;
     }
-    interface TSEnumMemberComputedName {
-        parent: TSESTree.TSEnumBody;
-    }
-    interface TSEnumMemberNonComputedName {
+    interface TSEnumMember {
         parent: TSESTree.TSEnumBody;
     }
     interface TSIndexSignature {
@@ -188,4 +185,4 @@ declare module './generated/ast-spec' {
     }
 }
 export * as TSESTree from './generated/ast-spec';
-//# sourceMappingURL=ts-estree.d.ts.map
+export type NodeWithParent = Exclude<TSESTree.Node, TSESTree.Program>;

@@ -2,10 +2,13 @@
 
 > Strip [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code) from a string
 
+> [!NOTE]
+> Node.js has this built-in now with [`stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr). The benefit of this package is consistent behavior across Node.js versions and faster improvements. The Node.js version is actually based on this package.
+
 ## Install
 
-```
-$ npm install strip-ansi
+```sh
+npm install strip-ansi
 ```
 
 ## Usage
@@ -20,12 +23,6 @@ stripAnsi('\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007');
 //=> 'Click'
 ```
 
-## strip-ansi for enterprise
-
-Available as part of the Tidelift Subscription.
-
-The maintainers of strip-ansi and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-strip-ansi?utm_source=npm-strip-ansi&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
-
 ## Related
 
 - [strip-ansi-cli](https://github.com/chalk/strip-ansi-cli) - CLI for this module
@@ -38,4 +35,3 @@ The maintainers of strip-ansi and thousands of other packages are working with T
 
 - [Sindre Sorhus](https://github.com/sindresorhus)
 - [Josh Junon](https://github.com/qix-)
-

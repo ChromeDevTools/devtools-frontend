@@ -11,4 +11,3 @@ export declare class ExportVisitor extends Visitor {
     protected ExportSpecifier(node: TSESTree.ExportSpecifier): void;
     protected Identifier(node: TSESTree.Identifier): void;
 }
-//# sourceMappingURL=ExportVisitor.d.ts.map

@@ -34,4 +34,3 @@ export declare function getMemberHeadLoc(sourceCode: Readonly<TSESLint.SourceCod
  * ```
  */
 export declare function getParameterPropertyHeadLoc(sourceCode: Readonly<TSESLint.SourceCode>, node: TSESTree.TSParameterProperty, nodeName: string): TSESTree.SourceLocation;
-//# sourceMappingURL=getMemberHeadLoc.d.ts.map

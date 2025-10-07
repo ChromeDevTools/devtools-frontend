@@ -25,4 +25,3 @@ export declare class PatternVisitor extends VisitorBase {
     protected SpreadElement(node: TSESTree.SpreadElement): void;
     protected TSTypeAnnotation(): void;
 }
-//# sourceMappingURL=PatternVisitor.d.ts.map

@@ -17,7 +17,7 @@ export default iterateJsdoc(({
   iterateAllJsdocs: true,
   meta: {
     docs: {
-      description: 'Requires that all function `@property` tags have names.',
+      description: 'Requires that all `@property` tags have names.',
       url: 'https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-property-name.md#repos-sticky-header',
     },
     type: 'suggestion',

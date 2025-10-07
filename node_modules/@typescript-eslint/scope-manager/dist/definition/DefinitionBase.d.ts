@@ -1,6 +1,6 @@
-import type { TSESTree } from '@typescript-eslint/types';
+import type { NodeWithParent, TSESTree } from '@typescript-eslint/types';
 import type { DefinitionType } from './DefinitionType';
-export declare abstract class DefinitionBase<Type extends DefinitionType, Node extends TSESTree.Node, Parent extends TSESTree.Node | null, Name extends TSESTree.Node> {
+export declare abstract class DefinitionBase<Type extends DefinitionType, Node extends NodeWithParent, Parent extends TSESTree.Node | null, Name extends TSESTree.Node> {
     /**
      * A unique ID for this instance - primarily used to help debugging and testing
      */
@@ -31,4 +31,3 @@ export declare abstract class DefinitionBase<Type extends DefinitionType, Node e
      */
     abstract readonly isVariableDefinition: boolean;
 }
-//# sourceMappingURL=DefinitionBase.d.ts.map

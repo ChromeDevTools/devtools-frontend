@@ -1,1 +1,1 @@
-export declare const intersectionParslet: import("./Parslet").ParsletFunction;
+export declare const intersectionParslet: import("./Parslet.js").ParsletFunction;

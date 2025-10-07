@@ -1,0 +1,32 @@
+name: CI
+
+# Declare default permissions as read only.
+permissions: read-all
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+
+concurrency:
+  group: ci-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: '[Required] Run tests'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 2
+      - name: Install cddlconv
+        run: cargo install cddlconv@0.1.7
+      - name: Install dependencies
+        run: npm ci
+      - name: Build and test
+        run: npm test

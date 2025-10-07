@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class SwitchScope extends ScopeBase<ScopeType.switch, TSESTree.SwitchStatement, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: SwitchScope['upper'], block: SwitchScope['block']);
 }
-//# sourceMappingURL=SwitchScope.d.ts.map

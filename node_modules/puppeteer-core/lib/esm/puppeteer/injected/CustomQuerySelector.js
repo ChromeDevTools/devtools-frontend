@@ -43,5 +43,8 @@ class CustomQuerySelectorRegistry {
         this.#selectors.clear();
     }
 }
+/**
+ * @internal
+ */
 export const customQuerySelectors = new CustomQuerySelectorRegistry();
 //# sourceMappingURL=CustomQuerySelector.js.map

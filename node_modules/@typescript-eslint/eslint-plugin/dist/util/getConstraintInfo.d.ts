@@ -33,4 +33,3 @@ export type ConstraintTypeInfo = ConstraintTypeInfoConstrained | ConstraintTypeI
  *
  */
 export declare function getConstraintInfo(checker: ts.TypeChecker, type: ts.Type): ConstraintTypeInfo;
-//# sourceMappingURL=getConstraintInfo.d.ts.map

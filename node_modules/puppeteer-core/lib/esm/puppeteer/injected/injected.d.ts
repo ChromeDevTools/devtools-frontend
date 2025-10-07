@@ -31,7 +31,7 @@ declare const PuppeteerUtil: Readonly<{
     pierceQuerySelector: (root: Node, selector: string) => Element | null;
     pierceQuerySelectorAll: (element: Node, selector: string) => Element[];
     customQuerySelectors: {
-        "__#211@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
+        "__#207@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
         register(name: string, handler: import("../index.js").CustomQueryHandler): void;
         unregister(name: string): void;
         get(name: string): CustomQuerySelectors.CustomQuerySelector | undefined;
@@ -43,7 +43,7 @@ declare const PuppeteerUtil: Readonly<{
 /**
  * @internal
  */
-type PuppeteerUtil = typeof PuppeteerUtil;
+export type PuppeteerInjectedUtil = typeof PuppeteerUtil;
 /**
  * @internal
  */

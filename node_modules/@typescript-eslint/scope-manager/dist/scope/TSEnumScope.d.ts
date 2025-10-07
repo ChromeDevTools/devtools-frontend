@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class TSEnumScope extends ScopeBase<ScopeType.tsEnum, TSESTree.TSEnumDeclaration, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: TSEnumScope['upper'], block: TSEnumScope['block']);
 }
-//# sourceMappingURL=TSEnumScope.d.ts.map

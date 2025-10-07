@@ -9,4 +9,3 @@ import type { SourceCode } from '@typescript-eslint/utils/ts-eslint';
  * @returns Whether a semicolon is required before the opening parenthesis or bracket.
  */
 export declare function needsPrecedingSemicolon(sourceCode: SourceCode, node: TSESTree.Node): boolean;
-//# sourceMappingURL=needsPrecedingSemiColon.d.ts.map

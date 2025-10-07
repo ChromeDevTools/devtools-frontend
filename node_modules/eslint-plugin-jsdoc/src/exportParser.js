@@ -103,8 +103,6 @@ const getIdentifier = function (node, globals, scope, opts) {
 /** @type {CreateSymbol} */
 let createSymbol; // eslint-disable-line prefer-const
 
-/* eslint-disable complexity -- Temporary */
-
 /**
  * @typedef {{
  *   simpleIdentifier?: boolean
@@ -120,7 +118,6 @@ let createSymbol; // eslint-disable-line prefer-const
  * @returns {CreatedNode|null}
  */
 const getSymbol = function (node, globals, scope, opt) {
-  /* eslint-enable complexity -- Temporary */
   const opts = opt || {};
   /* c8 ignore next */
   switch (node.type) {
@@ -478,8 +475,6 @@ const initVariables = function (node, globals, opts) {
   }
 };
 
-/* eslint-disable complexity -- Temporary */
-
 /**
  * Populates variable maps using AST
  * @param {import('eslint').Rule.Node|import('@typescript-eslint/types').TSESTree.Node} node
@@ -489,7 +484,6 @@ const initVariables = function (node, globals, opts) {
  * @returns {boolean}
  */
 const mapVariables = function (node, globals, opt, isExport) {
-  /* eslint-enable complexity -- Temporary */
   /* c8 ignore next */
   const opts = opt || {};
   /* c8 ignore next */

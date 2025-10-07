@@ -84,4 +84,11 @@ export class UnsupportedOperation extends PuppeteerError {
  */
 export class TargetCloseError extends ProtocolError {
 }
+/**
+ * Thrown if underlying protocol connection has been closed.
+ *
+ * @public
+ */
+export class ConnectionClosedError extends ProtocolError {
+}
 //# sourceMappingURL=Errors.js.map

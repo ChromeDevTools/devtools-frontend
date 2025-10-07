@@ -310,7 +310,7 @@ let isNode: boolean;
 
 /**
  * Represents the states that the timeline panel can be in.
- * If you need to change the panel's view, use the {@see #changeView} method.
+ * If you need to change the panel's view, use the {@link TimelinePanel.#changeView} method.
  * Note that we do not represent the "Loading/Processing" view here. The
  * StatusPane is managed in the code that handles file import/recording, and
  * when it is visible it is rendered on top of the UI so obscures what is behind
@@ -787,8 +787,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   /**
-   * Determine if two view modes are equivalent. Useful because if {@see
-   * #changeView} gets called and the new mode is identical to the current,
+   * Determine if two view modes are equivalent. Useful because if
+   * {@link TimelinePanel.#changeView} gets called and the new mode is identical to the current,
    * we can bail without doing any UI updates.
    */
   #viewModesEquivalent(m1: ViewMode, m2: ViewMode): boolean {
@@ -2087,14 +2087,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   /**
    * Called when we update the active trace that is being shown to the user.
-   * This is called from {@see changeView} when we change the UI to show a
+   * This is called from {@link TimelinePanel.#changeView} when we change the UI to show a
    * trace - either one the user has just recorded/imported, or one they have
    * navigated to via the dropdown.
    *
    * If you need code to execute whenever the active trace changes, this is the method to use.
-   * If you need code to execute ONLY ON NEW TRACES, then use {@see loadingComplete}
+   * If you need code to execute ONLY ON NEW TRACES, then use {@link TimelinePanel.loadingComplete}
    * You should not call this method directly if you want the UI to update; use
-   * {@see changeView} to control what is shown to the user.
+   * {@link TimelinePanel.#changeView} to control what is shown to the user.
    */
   #setModelForActiveTrace(): void {
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {

@@ -5,9 +5,9 @@
  */
 import { CallbackRegistry } from '../common/CallbackRegistry.js';
 import { debug } from '../common/Debug.js';
+import { ConnectionClosedError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
-import { assert } from '../util/assert.js';
 import { BidiCdpSession } from './CDPSession.js';
 const debugProtocolSend = debug('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = debug('puppeteer:webDriverBiDi:RECV ◀');
@@ -47,7 +47,9 @@ export class BidiConnection extends EventEmitter {
         return super.emit(type, event);
     }
     send(method, params, timeout) {
-        assert(!this.#closed, 'Protocol error: Connection closed.');
+        if (this.#closed) {
+            return Promise.reject(new ConnectionClosedError('Connection closed.'));
+        }
         return this.#callbacks.create(method, timeout ?? this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 id,

@@ -20,4 +20,3 @@ interface ParseForESLintResult {
 export declare function parse(code: string | ts.SourceFile, options?: ParserOptions): ParseForESLintResult['ast'];
 export declare function parseForESLint(code: string | ts.SourceFile, parserOptions?: ParserOptions | null): ParseForESLintResult;
 export type { ParserOptions } from '@typescript-eslint/types';
-//# sourceMappingURL=parser.d.ts.map

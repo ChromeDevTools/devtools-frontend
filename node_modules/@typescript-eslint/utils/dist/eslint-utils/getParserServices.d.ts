@@ -20,4 +20,3 @@ export declare function getParserServices<MessageIds extends string, Options ext
  * This may or may not throw if it is not available, depending on if `allowWithoutFullTypeInformation` is `true`
  */
 export declare function getParserServices<MessageIds extends string, Options extends readonly unknown[]>(context: Readonly<TSESLint.RuleContext<MessageIds, Options>>, allowWithoutFullTypeInformation: boolean): ParserServices;
-//# sourceMappingURL=getParserServices.d.ts.map

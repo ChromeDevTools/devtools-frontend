@@ -7,4 +7,3 @@ export declare class WithScope extends ScopeBase<ScopeType.with, TSESTree.WithSt
     constructor(scopeManager: ScopeManager, upperScope: WithScope['upper'], block: WithScope['block']);
     close(scopeManager: ScopeManager): Scope | null;
 }
-//# sourceMappingURL=WithScope.d.ts.map

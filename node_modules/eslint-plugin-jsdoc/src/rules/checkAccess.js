@@ -29,7 +29,7 @@ export default iterateJsdoc(({
 
   if (accessLength > 1 || individualTagLength > 1) {
     report(
-      'At most one access-control tag may be present on a jsdoc block.',
+      'At most one access-control tag may be present on a JSDoc block.',
     );
   }
 }, {

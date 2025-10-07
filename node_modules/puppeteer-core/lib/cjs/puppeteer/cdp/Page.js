@@ -302,6 +302,14 @@ class CdpPage extends Page_js_1.Page {
             }
         }
     }
+    async resize(params) {
+        const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
+        await this.#primaryTargetClient.send('Browser.setContentsSize', {
+            windowId,
+            width: params.contentWidth,
+            height: params.contentHeight,
+        });
+    }
     async #onFileChooser(event) {
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {
@@ -570,8 +578,14 @@ class CdpPage extends Page_js_1.Page {
     async setExtraHTTPHeaders(headers) {
         return await this.#frameManager.networkManager.setExtraHTTPHeaders(headers);
     }
-    async setUserAgent(userAgent, userAgentMetadata) {
-        return await this.#frameManager.networkManager.setUserAgent(userAgent, userAgentMetadata);
+    async setUserAgent(userAgentOrOptions, userAgentMetadata) {
+        if (typeof userAgentOrOptions === 'string') {
+            return await this.#frameManager.networkManager.setUserAgent(userAgentOrOptions, userAgentMetadata);
+        }
+        else {
+            const userAgent = userAgentOrOptions.userAgent ?? (await this.browser().userAgent());
+            return await this.#frameManager.networkManager.setUserAgent(userAgent, userAgentOrOptions.userAgentMetadata, userAgentOrOptions.platform);
+        }
     }
     async metrics() {
         const response = await this.#primaryTargetClient.send('Performance.getMetrics');
@@ -682,7 +696,7 @@ class CdpPage extends Page_js_1.Page {
         const history = await this.#primaryTargetClient.send('Page.getNavigationHistory');
         const entry = history.entries[history.currentIndex + delta];
         if (!entry) {
-            return null;
+            throw new Error('History entry to navigate to not found.');
         }
         const result = await Promise.all([
             this.waitForNavigation(options),
@@ -833,7 +847,7 @@ class CdpPage extends Page_js_1.Page {
         try {
             const _guard = __addDisposableResource(env_3, await this.browserContext().waitForScreenshotOperations(), false);
             const connection = this.#primaryTargetClient.connection();
-            (0, assert_js_1.assert)(connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
+            (0, assert_js_1.assert)(connection, 'Connection closed. Most likely the page has been closed.');
             const runBeforeUnload = !!options.runBeforeUnload;
             if (runBeforeUnload) {
                 await this.#primaryTargetClient.send('Page.close');
@@ -914,6 +928,9 @@ function getIntersectionRect(clip, viewport) {
         height: Math.max(Math.min(clip.y + clip.height, viewport.y + viewport.height) - y, 0),
     };
 }
+/**
+ * @internal
+ */
 function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey) {
     if (partitionKey === undefined) {
         return undefined;

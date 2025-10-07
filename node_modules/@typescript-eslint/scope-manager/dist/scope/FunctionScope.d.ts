@@ -9,4 +9,3 @@ export declare class FunctionScope extends ScopeBase<ScopeType.function, TSESTre
     constructor(scopeManager: ScopeManager, upperScope: FunctionScope['upper'], block: FunctionScope['block'], isMethodDefinition: boolean);
     protected isValidResolution(ref: Reference, variable: Variable): boolean;
 }
-//# sourceMappingURL=FunctionScope.d.ts.map

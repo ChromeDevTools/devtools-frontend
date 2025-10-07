@@ -45,4 +45,3 @@ export declare const PatternMatcher: new (pattern: RegExp, options?: {
     escaped?: boolean;
 }) => PatternMatcher;
 export {};
-//# sourceMappingURL=PatternMatcher.d.ts.map

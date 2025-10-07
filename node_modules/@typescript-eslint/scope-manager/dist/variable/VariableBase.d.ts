@@ -40,4 +40,3 @@ export declare class VariableBase {
     readonly scope: Scope;
     constructor(name: string, scope: Scope);
 }
-//# sourceMappingURL=VariableBase.d.ts.map

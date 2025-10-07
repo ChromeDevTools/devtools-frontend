@@ -8,7 +8,7 @@ import { type CDPSession } from '../api/CDPSession.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
-import type PuppeteerUtil from '../injected/injected.js';
+import type { PuppeteerInjectedUtil } from '../injected/injected.js';
 import { disposeSymbol } from '../util/disposable.js';
 import type { IsolatedWorld } from './IsolatedWorld.js';
 /**
@@ -24,7 +24,7 @@ export declare class ExecutionContext extends EventEmitter<{
     #private;
     constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world: IsolatedWorld);
     get id(): number;
-    get puppeteerUtil(): Promise<JSHandle<PuppeteerUtil>>;
+    get puppeteerUtil(): Promise<JSHandle<PuppeteerInjectedUtil>>;
     /**
      * Evaluates the given function.
      *

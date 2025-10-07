@@ -11,4 +11,3 @@ export declare function clearWatchCaches(): void;
  * @returns The programs corresponding to the supplied tsconfig paths
  */
 export declare function getWatchProgramsForProjects(parseSettings: ParseSettings): ts.Program[];
-//# sourceMappingURL=getWatchProgramsForProjects.d.ts.map

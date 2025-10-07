@@ -61,6 +61,7 @@ exports.QueryHandler = void 0;
 const ElementHandleSymbol_js_1 = require("../api/ElementHandleSymbol.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Function_js_1 = require("../util/Function.js");
+const Errors_js_1 = require("./Errors.js");
 const HandleIterator_js_1 = require("./HandleIterator.js");
 const LazyArg_js_1 = require("./LazyArg.js");
 /**
@@ -210,8 +211,9 @@ class QueryHandler {
                 if (error.name === 'AbortError') {
                     throw error;
                 }
-                error.message = `Waiting for selector \`${selector}\` failed: ${error.message}`;
-                throw error;
+                const waitForSelectorError = new (error instanceof Errors_js_1.TimeoutError ? Errors_js_1.TimeoutError : Error)(`Waiting for selector \`${selector}\` failed`);
+                waitForSelectorError.cause = error;
+                throw waitForSelectorError;
             }
         }
         catch (e_4) {

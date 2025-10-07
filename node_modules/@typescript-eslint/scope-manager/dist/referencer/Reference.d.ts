@@ -1,4 +1,4 @@
-import type { TSESTree } from '@typescript-eslint/types';
+import type { NodeWithParent, TSESTree } from '@typescript-eslint/types';
 import type { Scope } from '../scope';
 import type { Variable } from '../variable';
 export declare enum ReferenceFlag {
@@ -7,7 +7,7 @@ export declare enum ReferenceFlag {
     ReadWrite = 3
 }
 export interface ReferenceImplicitGlobal {
-    node: TSESTree.Node;
+    node: NodeWithParent;
     pattern: TSESTree.BindingName;
     ref?: Reference;
 }
@@ -85,4 +85,3 @@ export declare class Reference {
      */
     isReadWrite(): boolean;
 }
-//# sourceMappingURL=Reference.d.ts.map

@@ -1,0 +1,23 @@
+export default index;
+export type ConfigGroups = "recommended" | "stylistic" | "contents" | "logical" | "requirements";
+export type ConfigVariants = "" | "-typescript" | "-typescript-flavor";
+export type ErrorLevelVariants = "" | "-error";
+/**
+ * @typedef {"recommended" | "stylistic" | "contents" | "logical" | "requirements"} ConfigGroups
+ * @typedef {"" | "-typescript" | "-typescript-flavor"} ConfigVariants
+ * @typedef {"" | "-error"} ErrorLevelVariants
+ * @type {import('eslint').ESLint.Plugin & {
+ *   configs: Record<
+ *       `flat/${ConfigGroups}${ConfigVariants}${ErrorLevelVariants}`,
+ *       import('eslint').Linter.Config
+ *     > &
+ *     Record<
+ *       "examples"|"default-expressions"|"examples-and-default-expressions",
+ *       import('eslint').Linter.Config[]
+ *     > &
+ *     Record<"flat/recommended-mixed", import('eslint').Linter.Config[]>
+ * }}
+ */
+declare const index: import("eslint").ESLint.Plugin & {
+    configs: Record<`flat/${ConfigGroups}${ConfigVariants}${ErrorLevelVariants}`, import("eslint").Linter.Config> & Record<"examples" | "default-expressions" | "examples-and-default-expressions", import("eslint").Linter.Config[]> & Record<"flat/recommended-mixed", import("eslint").Linter.Config[]>;
+};

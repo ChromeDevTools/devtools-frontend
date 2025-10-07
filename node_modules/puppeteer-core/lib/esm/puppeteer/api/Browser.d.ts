@@ -7,7 +7,7 @@
 import type { ChildProcess } from 'node:child_process';
 import type { Protocol } from 'devtools-protocol';
 import type { ProtocolType } from '../common/ConnectOptions.js';
-import type { Cookie, CookieData } from '../common/Cookie.js';
+import type { Cookie, CookieData, DeleteCookiesRequest } from '../common/Cookie.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
@@ -297,7 +297,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * Gets this {@link Browser | browser's} original user agent.
      *
      * {@link Page | Pages} can override the user agent with
-     * {@link Page.setUserAgent}.
+     * {@link Page.(setUserAgent:2) }.
      *
      */
     abstract userAgent(): Promise<string>;
@@ -338,6 +338,17 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * {@link BrowserContext.deleteCookie | browser.defaultBrowserContext().deleteCookie()}.
      */
     deleteCookie(...cookies: Cookie[]): Promise<void>;
+    /**
+     * Deletes cookies matching the provided filters from the default
+     * {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteMatchingCookies |
+     * browser.defaultBrowserContext().deleteMatchingCookies()}.
+     */
+    deleteMatchingCookies(...filters: DeleteCookiesRequest[]): Promise<void>;
     /**
      * Installs an extension and returns the ID. In Chrome, this is only
      * available if the browser was created using `pipe: true` and the

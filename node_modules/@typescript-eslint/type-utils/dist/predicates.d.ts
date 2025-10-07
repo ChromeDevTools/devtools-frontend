@@ -35,4 +35,3 @@ export declare function isTypeUnknownArrayType(type: ts.Type, checker: ts.TypeCh
 export declare function typeIsOrHasBaseType(type: ts.Type, parentType: ts.Type): boolean;
 export declare function isTypeBigIntLiteralType(type: ts.Type): type is ts.BigIntLiteralType;
 export declare function isTypeTemplateLiteralType(type: ts.Type): type is ts.TemplateLiteralType;
-//# sourceMappingURL=predicates.d.ts.map

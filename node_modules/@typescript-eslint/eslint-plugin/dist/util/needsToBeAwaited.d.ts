@@ -5,4 +5,3 @@ export declare enum Awaitable {
     May = 2
 }
 export declare function needsToBeAwaited(checker: ts.TypeChecker, node: ts.Node, type: ts.Type): Awaitable;
-//# sourceMappingURL=needsToBeAwaited.d.ts.map

@@ -29,4 +29,3 @@ export declare class TypeVisitor extends Visitor {
     protected TSTypeAnnotation(node: TSESTree.TSTypeAnnotation): void;
     protected TSTypeQuery(node: TSESTree.TSTypeQuery): void;
 }
-//# sourceMappingURL=TypeVisitor.d.ts.map

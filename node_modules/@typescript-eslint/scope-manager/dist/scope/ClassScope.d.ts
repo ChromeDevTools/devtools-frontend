@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class ClassScope extends ScopeBase<ScopeType.class, TSESTree.ClassDeclaration | TSESTree.ClassExpression, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: ClassScope['upper'], block: ClassScope['block']);
 }
-//# sourceMappingURL=ClassScope.d.ts.map

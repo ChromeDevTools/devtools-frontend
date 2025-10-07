@@ -6,4 +6,3 @@ import { ScopeType } from './ScopeType';
 export declare class ConditionalTypeScope extends ScopeBase<ScopeType.conditionalType, TSESTree.TSConditionalType, Scope> {
     constructor(scopeManager: ScopeManager, upperScope: ConditionalTypeScope['upper'], block: ConditionalTypeScope['block']);
 }
-//# sourceMappingURL=ConditionalTypeScope.d.ts.map

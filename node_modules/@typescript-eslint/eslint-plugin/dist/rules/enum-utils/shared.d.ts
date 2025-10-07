@@ -34,4 +34,3 @@ export declare function getEnumTypes(typeChecker: ts.TypeChecker, type: ts.Type)
  * ```
  */
 export declare function getEnumKeyForLiteral(enumLiterals: ts.LiteralType[], literal: unknown): string | null;
-//# sourceMappingURL=shared.d.ts.map

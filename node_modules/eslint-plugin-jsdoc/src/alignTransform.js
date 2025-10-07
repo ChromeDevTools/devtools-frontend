@@ -308,7 +308,7 @@ const alignTransform = ({
     }
 
     const postHyphenSpacing = customSpacings?.postHyphen ?? 1;
-    const hyphenSpacing = /^\s*-\s+/u;
+    const hyphenSpacing = /^\s*-\s+/v;
     tokens.description = tokens.description.replace(
       hyphenSpacing, '-' + ''.padStart(postHyphenSpacing, ' '),
     );

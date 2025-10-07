@@ -68,34 +68,18 @@ export interface Settings {
   endianness: Endianness;
 }
 
-export class MemoryRequestEvent extends Event {
-  static readonly eventName = 'memoryrequest';
-  data: {start: number, end: number, address: number};
-
-  constructor(start: number, end: number, address: number) {
-    super(MemoryRequestEvent.eventName);
-    this.data = {start, end, address};
-  }
+export const enum Events {
+  MEMORY_REQUEST = 'MemoryRequest',
+  ADDRESS_CHANGED = 'AddressChanged',
+  SETTINGS_CHANGED = 'SettingsChanged',
+  DELETE_MEMORY_HIGHLIGHT = 'DeleteMemoryHighlight',
 }
 
-export class AddressChangedEvent extends Event {
-  static readonly eventName = 'addresschanged';
-  data: number;
-
-  constructor(address: number) {
-    super(AddressChangedEvent.eventName);
-    this.data = address;
-  }
-}
-
-export class SettingsChangedEvent extends Event {
-  static readonly eventName = 'settingschanged';
-  data: Settings;
-
-  constructor(settings: Settings) {
-    super(SettingsChangedEvent.eventName);
-    this.data = settings;
-  }
+export interface EventTypes {
+  [Events.MEMORY_REQUEST]: {start: number, end: number, address: number};
+  [Events.ADDRESS_CHANGED]: number;
+  [Events.SETTINGS_CHANGED]: Settings;
+  [Events.DELETE_MEMORY_HIGHLIGHT]: HighlightInfo;
 }
 
 class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
@@ -138,6 +122,7 @@ export interface ViewInput {
   onNavigatePage: (e: PageNavigationEvent) => void;
   onNavigateHistory: (e: HistoryNavigationEvent) => boolean;
   onJumpToAddress: (e: JumpToPointerAddressEvent|JumpToHighlightedMemoryEvent) => void;
+  onDeleteMemoryHighlight: (e: DeleteMemoryHighlightEvent) => void;
   onByteSelected: (e: ByteSelectedEvent) => void;
   onResize: (e: ResizeEvent) => void;
   onValueTypeToggled: (e: ValueTypeToggledEvent) => void;
@@ -180,7 +165,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
         <devtools-linear-memory-highlight-chip-list
         .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight}}
-        @jumptohighlightedmemory=${input.onJumpToAddress}>
+        @jumptohighlightedmemory=${input.onJumpToAddress}
+        @deletememoryhighlight=${input.onDeleteMemoryHighlight}>
         </devtools-linear-memory-highlight-chip-list>
       <devtools-linear-memory-inspector-viewer
         .data=${
@@ -263,7 +249,8 @@ function getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas: HighlightIn
 
 export type View = typeof DEFAULT_VIEW;
 
-export class LinearMemoryInspector extends UI.Widget.Widget {
+export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
+    UI.Widget.Widget) {
   readonly #history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
 
   #memory = new Uint8Array();
@@ -338,7 +325,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
     const {start, end} = getPageRangeForAddress(this.#address, this.#numBytesPerPage, this.#outerMemoryLength);
 
     if (start < this.#memoryOffset || end > this.#memoryOffset + this.#memory.length) {
-      this.contentElement.dispatchEvent(new MemoryRequestEvent(start, end, this.#address));
+      this.dispatchEventToListeners(Events.MEMORY_REQUEST, {start, end, address: this.#address});
       return;
     }
 
@@ -377,6 +364,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
       onNavigatePage: this.#navigatePage.bind(this),
       onNavigateHistory: this.#navigateHistory.bind(this),
       onJumpToAddress: this.#onJumpToAddress.bind(this),
+      onDeleteMemoryHighlight: this.#onDeleteMemoryHighlight.bind(this),
       onByteSelected: this.#onByteSelected.bind(this),
       onResize: this.#resize.bind(this),
       onValueTypeToggled: this.#onValueTypeToggled.bind(this),
@@ -396,9 +384,14 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
     this.#jumpToAddress(addressInRange);
   }
 
+  #onDeleteMemoryHighlight(e: DeleteMemoryHighlightEvent): void {
+    e.stopPropagation();
+    this.dispatchEventToListeners(Events.DELETE_MEMORY_HIGHLIGHT, e.data);
+  }
+
   #onRefreshRequest(): void {
     const {start, end} = getPageRangeForAddress(this.#address, this.#numBytesPerPage, this.#outerMemoryLength);
-    this.contentElement.dispatchEvent(new MemoryRequestEvent(start, end, this.#address));
+    this.dispatchEventToListeners(Events.MEMORY_REQUEST, {start, end, address: this.#address});
   }
 
   #onByteSelected(e: ByteSelectedEvent): void {
@@ -413,7 +406,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
 
   #onEndiannessChanged(e: EndiannessChangedEvent): void {
     this.#endianness = e.data;
-    this.contentElement.dispatchEvent(new SettingsChangedEvent(this.#createSettings()));
+    this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();
   }
 
@@ -445,7 +438,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
     } else {
       this.#valueTypes.delete(type);
     }
-    this.contentElement.dispatchEvent(new SettingsChangedEvent(this.#createSettings()));
+    this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();
   }
 
@@ -453,7 +446,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
     e.stopImmediatePropagation();
     const {type, mode} = e.data;
     this.#valueTypeModes.set(type, mode);
-    this.contentElement.dispatchEvent(new SettingsChangedEvent(this.#createSettings()));
+    this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();
   }
 
@@ -490,16 +483,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
     const historyEntry = new AddressHistoryEntry(address, () => this.#jumpToAddress(address));
     this.#history.push(historyEntry);
     this.#address = address;
-    this.contentElement.dispatchEvent(new AddressChangedEvent(this.#address));
+    this.dispatchEventToListeners(Events.ADDRESS_CHANGED, this.#address);
     void this.requestUpdate();
-  }
-}
-
-declare global {
-  interface HTMLElementEventMap {
-    memoryrequest: MemoryRequestEvent;
-    addresschanged: AddressChangedEvent;
-    settingschanged: SettingsChangedEvent;
-    deletememoryhighlight: DeleteMemoryHighlightEvent;
   }
 }

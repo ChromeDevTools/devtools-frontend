@@ -174,17 +174,11 @@ describeWithLocale('LinearMemoryInspector', () => {
   });
 
   it('triggers MemoryRequestEvent on refresh', async () => {
-    const eventPromise =
-        new Promise<LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent>(resolve => {
-          component.contentElement.addEventListener(
-              LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent.eventName, (event: Event) => {
-                resolve(event as LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent);
-              }, {once: true});
-        });
+    const memoryRequestPromise =
+        component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST);
 
     view.input.onRefreshRequest();
-    const event = await eventPromise;
-    const {start, end, address} = event.data;
+    const {start, end, address} = await memoryRequestPromise;
 
     assert.strictEqual(address, view.input.address);
     assert.isAbove(end, start);
@@ -192,84 +186,57 @@ describeWithLocale('LinearMemoryInspector', () => {
   });
 
   it('triggers event on address change when byte is selected', async () => {
-    const eventPromise =
-        new Promise<LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent>(resolve => {
-          component.contentElement.addEventListener(
-              LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName, (event: Event) => {
-                resolve(event as LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent);
-              }, {once: true});
-        });
+    const addressPromise = component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED);
 
     const numBytesPerPage = view.input.memorySlice.length;
     const pageNumber = view.input.address / numBytesPerPage;
     const addressOfFirstByte = pageNumber * numBytesPerPage + 1;
     view.input.onByteSelected(
         new LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent(addressOfFirstByte));
-    const event = await eventPromise;
-    assert.strictEqual(event.data, addressOfFirstByte);
+    const address = await addressPromise;
+    assert.strictEqual(address, addressOfFirstByte);
   });
 
   it('triggers event on address change when data is set', async () => {
-    const eventPromise =
-        new Promise<LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent>(resolve => {
-          component.contentElement.addEventListener(
-              LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName, (event: Event) => {
-                resolve(event as LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent);
-              }, {once: true});
-        });
+    const addressPromise = component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED);
     component.address = 10;
-    const event = await eventPromise;
-    assert.strictEqual(event.data, 10);
+    const address = await addressPromise;
+    assert.strictEqual(address, 10);
   });
 
   it('triggers event on settings changed when value type is changed', async () => {
-    const eventPromise =
-        new Promise<LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent>(resolve => {
-          component.contentElement.addEventListener(
-              LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent.eventName, (event: Event) => {
-                resolve(event as LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent);
-              }, {once: true});
-        });
+    const settingsPromise =
+        component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED);
 
     const valueType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16;
     view.input.onValueTypeToggled(
         new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.ValueTypeToggledEvent(valueType, false));
-    const event = await eventPromise;
-    assert.isTrue(event.data.valueTypes.size > 1);
-    assert.isFalse(event.data.valueTypes.has(valueType));
+    const {valueTypes} = await settingsPromise;
+    assert.isTrue(valueTypes.size > 1);
+    assert.isFalse(valueTypes.has(valueType));
   });
 
   it('triggers event on settings changed when value type mode is changed', async () => {
-    const eventPromise =
-        new Promise<LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent>(resolve => {
-          component.contentElement.addEventListener(
-              LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent.eventName, (event: Event) => {
-                resolve(event as LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent);
-              }, {once: true});
-        });
+    const settingsPromise =
+        component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED);
     const valueType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16;
     const valueTypeMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL;
     view.input.onValueTypeModeChanged(
         new LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueTypeModeChangedEvent(
             valueType, valueTypeMode));
-    const event = await eventPromise;
-    assert.isTrue(event.data.valueTypes.has(valueType));
-    assert.strictEqual(event.data.modes.get(valueType), valueTypeMode);
+    const {valueTypes, modes} = await settingsPromise;
+    assert.isTrue(valueTypes.has(valueType));
+    assert.strictEqual(modes.get(valueType), valueTypeMode);
   });
 
   it('triggers event on settings changed when endianness is changed', async () => {
-    const eventPromise =
-        new Promise<LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent>(resolve => {
-          component.contentElement.addEventListener(
-              LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent.eventName, (event: Event) => {
-                resolve(event as LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent);
-              }, {once: true});
-        });
+    const settingsPromise =
+        component.once(LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED);
     const endianness = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.BIG;
     view.input.onEndiannessChanged(
         new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianness));
-    const event = await eventPromise;
-    assert.strictEqual(event.data.endianness, endianness);
+    const event = await settingsPromise;
+    assert.strictEqual(event.endianness, endianness);
   });
 
   it('formats a hexadecimal number', () => {

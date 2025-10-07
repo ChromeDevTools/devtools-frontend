@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
+import type * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as LinearMemoryInspectorComponents from '../../../../panels/linear_memory_inspector/components/components.js';
 import * as UI from '../../legacy.js';
@@ -22,13 +23,11 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
 
   constructor() {
     super();
-    this.#inspector.contentElement.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent.eventName,
-        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent) =>
-            this.#memoryRequested(event));
-    this.#inspector.contentElement.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName,
-        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent) => {
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST, this.#memoryRequested, this);
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED,
+        (event: Common.EventTarget.EventTargetEvent<number>) => {
           this.#address = event.data;
         });
     this.#inspector.show(this.contentElement);
@@ -60,7 +59,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.#inspector.hideValueInspector = true;
   }
 
-  #memoryRequested(event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent): void {
+  #memoryRequested(event: Common.EventTarget.EventTargetEvent<{start: number, end: number, address: number}>): void {
     // TODO(szuend): The following lines are copied from `LinearMemoryInspectorController`. We can't reuse them
     // as depending on a module in `panels/` from a component is a layering violation.
 

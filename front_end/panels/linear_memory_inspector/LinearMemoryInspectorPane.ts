@@ -145,24 +145,16 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.firstTimeOpen = true;
 
     this.#inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
-    this.#inspector.contentElement.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent.eventName,
-        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent) =>
-            this.#memoryRequested(event));
-    this.#inspector.contentElement.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName,
-        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent) =>
-            this.updateAddress(event.data));
-    this.#inspector.contentElement.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent.eventName,
-        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent) => {
-          // Stop event from bubbling up, since no element further up needs the event.
-          event.stopPropagation();
-          this.saveSettings(event.data);
-        });
-    this.#inspector.contentElement.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent.eventName,
-        (event: LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent) => {
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST, this.#memoryRequested, this);
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED,
+        event => this.updateAddress(event.data));
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED,
+        event => this.saveSettings(event.data));
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.DELETE_MEMORY_HIGHLIGHT, event => {
           LinearMemoryInspectorController.instance().removeHighlight(this.#tabId, event.data);
           this.refreshData();
         });
@@ -214,7 +206,7 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
         });
   }
 
-  #memoryRequested(event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent): void {
+  #memoryRequested(event: Common.EventTarget.EventTargetEvent<{start: number, end: number, address: number}>): void {
     const {start, end, address} = event.data;
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');

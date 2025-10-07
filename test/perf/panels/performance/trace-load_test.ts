@@ -9,19 +9,13 @@ import {GEN_DIR} from '../../../conductor/paths.js';
 import {
   navigateToPerformanceTab,
 } from '../../../e2e/helpers/performance-helpers.js';
-import {
-  getBrowserAndPages,
-  reloadDevTools,
-  waitFor,
-  waitForFunction,
-} from '../../../shared/helper.js';
-import {mean, percentile} from '../../helpers/perf-helper.js';
-import {addBenchmarkResult, type Benchmark} from '../../report/report.js';
+import type {DevToolsPage} from '../../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../../e2e_non_hosted/shared/target-helper.js';
+import {measurements} from '../../report/report.js';
 
-async function timeFixture(fixture: string): Promise<number> {
-  const {frontend} = getBrowserAndPages();
-  await navigateToPerformanceTab();
-  const panelElement = await waitFor('.widget.panel.timeline');
+async function timeFixture(fixture: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<number> {
+  await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+  const panelElement = await devToolsPage.waitFor('.widget.panel.timeline');
   await panelElement.evaluate(el => {
     // @ts-expect-error page context.
     window.perfDuration = 0;
@@ -31,12 +25,12 @@ async function timeFixture(fixture: string): Promise<number> {
       window.perfDuration = ev.duration;
     }, {once: true});
   });
-  const uploadProfileHandle = await waitFor('input[type=file]');
+  const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
   await uploadProfileHandle.uploadFile(path.join(GEN_DIR, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`));
   // We use wait for function to avoid long running evaluation calls to
   // avoid protocol-level timeouts.
-  return await waitForFunction(async () => {
-    const result = await frontend.evaluate(() => {
+  return await devToolsPage.waitForFunction(async () => {
+    const result = await devToolsPage.evaluate(() => {
       // @ts-expect-error page context.
       return window.perfDuration;
     });
@@ -48,98 +42,34 @@ async function timeFixture(fixture: string): Promise<number> {
 }
 
 describe('Performance panel trace load performance', () => {
-  const allTestValues: Array<{name: string, values: number[]}> = [];
   // Skipped because this throws range errors
-  describe.skip('[crbug.com/433466849] Large CPU profile load benchmark', () => {
-    beforeEach(async () => {
-      // Reload devtools to get a fresh version of the panel on each
-      // run and prevent a skew due to caching, etc.
-      await reloadDevTools();
-    });
+  describe.skip('[crbug.com/433466849] Large CPU profile load benchmark', function() {
     const RUNS = 10;
-    const testValues = {
-      name: 'LargeCPULoad',
-      values: [] as number[],
-    };
+    this.timeout(40_000);
+
     for (let run = 1; run <= RUNS; run++) {
-      it('run large cpu profile benchmark', async function() {
-        this.timeout(40_000);
-        const duration = await timeFixture('large-profile.cpuprofile');
+      it('run large cpu profile benchmark', async ({devToolsPage, inspectedPage}) => {
+        await devToolsPage.reload();
+        const duration = await timeFixture('large-profile.cpuprofile', devToolsPage, inspectedPage);
         // Ensure only 2 decimal places.
         const timeTaken = Number(duration.toFixed(2));
-        testValues.values.push(timeTaken);
+        measurements.LargeCPULoad.push(timeTaken);
       });
     }
-    after(() => {
-      allTestValues.push(testValues);
-    });
   });
 
-  describe('Large DOM trace load benchmark', () => {
-    beforeEach(async () => {
-      // Reload devtools to get a fresh version of the panel on each
-      // run and prevent a skew due to caching, etc.
-      await reloadDevTools();
-    });
+  describe('Large DOM trace load benchmark', function() {
     const RUNS = 10;
-    const testValues = {
-      name: 'LargeDOMTraceLoad',
-      values: [] as number[],
-    };
+    this.timeout(8_000);
+
     for (let run = 1; run <= RUNS; run++) {
-      it('run large dom trace load benchmark', async function() {
-        this.timeout(8_000);
-        const duration = await timeFixture('dom-size-long.json');
+      it('run large dom trace load benchmark', async ({devToolsPage, inspectedPage}) => {
+        await devToolsPage.reload();
+        const duration = await timeFixture('dom-size-long.json', devToolsPage, inspectedPage);
         // Ensure only 2 decimal places.
         const timeTaken = Number(duration.toFixed(2));
-        testValues.values.push(timeTaken);
+        measurements.LargeDOMTraceLoad.push(timeTaken);
       });
-    }
-    after(() => {
-      allTestValues.push(testValues);
-    });
-  });
-
-  after(async () => {
-    // Calculate statistics for each benchmark.
-    for (const testValues of allTestValues) {
-      const values = testValues.values;
-      const meanMeasure = Number(mean(values).toFixed(2));
-      const percentile50 = Number(percentile(values, 0.5).toFixed(2));
-      const percentile90 = Number(percentile(values, 0.9).toFixed(2));
-      const percentile99 = Number(percentile(values, 0.99).toFixed(2));
-
-      const benchmark: Benchmark = {
-        key: {test: testValues.name, units: 'ms'},
-        measurements: {
-          stats: [
-            {
-              value: 'mean',
-              measurement: meanMeasure,
-            },
-            {
-              value: 'percentile50',
-              measurement: percentile50,
-            },
-            {
-              value: 'percentile90',
-              measurement: percentile90,
-            },
-            {
-              value: 'percentile99',
-              measurement: percentile99,
-            },
-          ],
-        },
-      };
-      addBenchmarkResult(benchmark);
-      /* eslint-disable no-console */
-      console.log(`Benchmark name: ${testValues.name}`);
-      console.log(`Mean time: ${meanMeasure}ms`);
-      console.log(`50th percentile time: ${percentile50}ms`);
-      console.log(`90th percentile time: ${percentile90}ms`);
-      console.log(`99th percentile time: ${percentile99}ms`);
-      /* eslint-enable no-console */
     }
   });
 });

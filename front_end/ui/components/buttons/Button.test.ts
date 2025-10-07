@@ -210,6 +210,13 @@ describe('Button', () => {
     assert.isAbove(buttonHeight, 0);
   });
 
+  it('sets the accessible label on the internal button', async () => {
+    const button = renderButton({variant: Buttons.Button.Variant.PRIMARY, iconName, accessibleLabel: 'test-label'}, '');
+    const innerButton = button.shadowRoot?.querySelector('button');
+    assert.isOk(innerButton);
+    assert.strictEqual(innerButton.getAttribute('aria-label'), 'test-label');
+  });
+
   describe('in forms', () => {
     function renderForm(data: Buttons.Button.ButtonData = {
       variant: Buttons.Button.Variant.PRIMARY,

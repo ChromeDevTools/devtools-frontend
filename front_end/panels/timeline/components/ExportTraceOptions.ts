@@ -235,7 +235,7 @@ export class ExportTraceOptions extends HTMLElement {
           ${checkboxesWithInfoDialog.has(checkboxId) ? html`
             <devtools-button
               aria-details=${`export-trace-tooltip-${checkboxId}`}
-              aria-label=${this.#accessibleLabelForInfoCheckbox(checkboxId)}
+              .accessibleLabel=${this.#accessibleLabelForInfoCheckbox(checkboxId)}
               class="pen-icon"
               .iconName=${'info'}
               .variant=${Buttons.Button.Variant.ICON}

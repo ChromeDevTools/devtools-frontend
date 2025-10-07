@@ -14,7 +14,6 @@ group("perf") {
 
 node_ts_library("tests") {
   deps = [
-    "../e2e_non_hosted/conductor:implementation",
     "application",
     "helpers",
     "panels/performance",

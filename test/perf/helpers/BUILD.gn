@@ -4,7 +4,6 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("helpers") {
+node_ts_library("helpers") {
   sources = [ "perf-helper.ts" ]
-  deps = [ "../../e2e_non_hosted/conductor:implementation" ]
 }

@@ -43,7 +43,7 @@ export class MockProtocolBackend {
     setMockConnectionResponseHandler('Debugger.getScriptSource', this.#getScriptSourceHandler.bind(this));
     setMockConnectionResponseHandler('Runtime.getProperties', this.#getPropertiesHandler.bind(this));
     setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', this.#setBreakpointByUrlHandler.bind(this));
-    setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({storageKey: 'test-key'}));
+    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({storageKey: 'test-key'}));
     setMockConnectionResponseHandler('Debugger.removeBreakpoint', this.#removeBreakpointHandler.bind(this));
     setMockConnectionResponseHandler('Debugger.resume', () => ({}));
     setMockConnectionResponseHandler('Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID'}));

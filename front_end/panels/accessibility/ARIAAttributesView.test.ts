@@ -15,7 +15,7 @@ describeWithMockConnection('ARIAAttributesView', () => {
 
   beforeEach(() => {
     setMockConnectionResponseHandler('Debugger.enable', () => ({}));
-    setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({}));
+    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
     stubNoopSettings();
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;

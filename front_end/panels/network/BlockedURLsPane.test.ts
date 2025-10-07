@@ -16,7 +16,7 @@ const {urlString} = Platform.DevToolsPath;
 describeWithMockConnection('BlockedURLsPane', () => {
   beforeEach(() => {
     setMockConnectionResponseHandler('Debugger.enable', () => ({}));
-    setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({}));
+    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',

@@ -736,6 +736,8 @@ export function capitalizedAction(action: Protocol.Preload.SpeculationAction): C
       return i18n.i18n.lockedString('Prefetch');
     case Protocol.Preload.SpeculationAction.Prerender:
       return i18n.i18n.lockedString('Prerender');
+    case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+      return i18n.i18n.lockedString('PrerenderUntilScript');
   }
 }
 

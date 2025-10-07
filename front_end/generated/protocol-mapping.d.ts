@@ -1231,7 +1231,7 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Set permission settings for given requesting and embedding origins.
+     * Set permission settings for given embedding and embedded origins.
      */
     'Browser.setPermission': {
       paramsType: [Protocol.Browser.SetPermissionRequest];

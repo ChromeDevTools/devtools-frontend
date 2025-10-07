@@ -626,6 +626,8 @@ class PreloadingAttemptRegistry {
           return 0;
         case Protocol.Preload.SpeculationAction.Prerender:
           return 1;
+        case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+          return 2;
       }
     }
 
@@ -736,6 +738,7 @@ class PreloadingAttemptRegistry {
           };
           break;
         case Protocol.Preload.SpeculationAction.Prerender:
+        case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
           attempt = {
             action: Protocol.Preload.SpeculationAction.Prerender,
             key,

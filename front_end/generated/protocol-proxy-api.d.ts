@@ -591,7 +591,7 @@ declare namespace ProtocolProxyApi {
 
   export interface BrowserApi {
     /**
-     * Set permission settings for given requesting and embedding origins.
+     * Set permission settings for given embedding and embedded origins.
      */
     invoke_setPermission(params: Protocol.Browser.SetPermissionRequest): Promise<Protocol.ProtocolResponseWithError>;
 

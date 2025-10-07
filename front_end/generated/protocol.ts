@@ -2289,15 +2289,15 @@ export namespace Browser {
      */
     setting: PermissionSetting;
     /**
-     * Requesting origin the permission applies to, all origins if not specified.
+     * Embedding origin the permission applies to, all origins if not specified.
      */
     origin?: string;
     /**
-     * Embedding origin the permission applies to. It is ignored unless the requesting origin is
-     * present and valid. If the requesting origin is provided but the embedding origin isn't, the
-     * requesting origin is used as the embedding origin.
+     * Embedded origin the permission applies to. It is ignored unless the embedding origin is
+     * present and valid. If the embedding origin is provided but the embedded origin isn't, the
+     * embedding origin is used as the embedded origin.
      */
-    embeddingOrigin?: string;
+    embeddedOrigin?: string;
     /**
      * Context to override. When omitted, default browser context is used.
      */
@@ -11012,8 +11012,8 @@ export namespace Network {
   export interface NetworkConditions {
     /**
      * Only matching requests will be affected by these conditions. Patterns use the URLPattern constructor string
-     * syntax (https://urlpattern.spec.whatwg.org/). If the pattern is empty, all requests are matched (including p2p
-     * connections).
+     * syntax (https://urlpattern.spec.whatwg.org/) and must be absolute. If the pattern is empty, all requests are
+     * matched (including p2p connections).
      */
     urlPattern: string;
     /**
@@ -11608,7 +11608,7 @@ export namespace Network {
   export interface SetBlockedURLsRequest {
     /**
      * URL patterns to block. Patterns use the URLPattern constructor string syntax
-     * (https://urlpattern.spec.whatwg.org/). Example: `*://*:*\/*.css`.
+     * (https://urlpattern.spec.whatwg.org/) and must be absolute. Example: `*://*:*\/*.css`.
      */
     urlPatterns?: string[];
     /**
@@ -16126,6 +16126,7 @@ export namespace Preload {
   export const enum SpeculationAction {
     Prefetch = 'Prefetch',
     Prerender = 'Prerender',
+    PrerenderUntilScript = 'PrerenderUntilScript',
   }
 
   /**

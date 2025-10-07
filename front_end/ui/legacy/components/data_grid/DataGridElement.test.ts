@@ -314,4 +314,110 @@ describeWithEnvironment('DataGrid', () => {
         getAlertAnnouncement(element),
         'Display Name Row  level 2, Column 1: Child Value 1, Column 2: Child Value 2');
   });
+
+  it('dispatches open event on expanding', async () => {
+    const openCallback = sinon.stub();
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+            </tr>
+            <tr @open=${openCallback as () => void}>
+              <td>Parent Value 1</td>
+              <td>
+                <table>
+                  <tr>
+                    <td>Child Value 1</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+
+    // Navigate to parent row.
+    sendKeydown(element, 'ArrowDown');
+    // Expand parent row.
+    sendKeydown(element, 'Enter');
+
+    sinon.assert.calledOnce(openCallback);
+  });
+
+  it('can set initial sort order from template', async () => {
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1" sort="descending">Column 1</th>
+            </tr>
+            <tr><td>Value B</td></tr>
+            <tr><td>Value A</td></tr>
+            <tr><td>Value C</td></tr>
+          </table>
+        </devtools-data-grid>`);
+    // After initial render, rows should be sorted descending by column-1.
+    // So C, B, A.
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value C');
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value B');
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value A');
+  });
+
+  it('can be styled with a style tag', async () => {
+    const element = await renderDataGrid(html`
+        <devtools-data-grid .template=${html`
+          <table>
+            <style>
+              .test-class {
+                color: red;
+              }
+            </style>
+            <tr><th id="column-1">Column</th></tr>
+            <tr><td class="test-class">Value</td></tr>
+          </table>`}>
+        </devtools-data-grid>`);
+
+    const cell = element.shadowRoot?.querySelector('.test-class');
+    assert.instanceOf(cell, HTMLTableCellElement);
+    const cellStyle = window.getComputedStyle(cell);
+    assert.strictEqual(cellStyle.color, 'rgb(255, 0, 0)');
+  });
+
+  it('resorts when a node is updated', async () => {
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1" sortable sort="ascending">Column 1</th>
+            </tr>
+            <tr><td data-value="1">Value 1</td></tr>
+            <tr><td data-value="3">Value 3</td></tr>
+          </table>
+        </devtools-data-grid>`);
+
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 1');
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 3');
+
+    // Update the first row's value to something that should make it go last.
+    const rowToUpdate = element.querySelector('tr:nth-child(2)');  // this is the first data row
+    assert.instanceOf(rowToUpdate, HTMLTableRowElement);
+    const cellToUpdate = rowToUpdate.querySelector('td');
+    assert.instanceOf(cellToUpdate, HTMLTableCellElement);
+    cellToUpdate.setAttribute('data-value', '5');
+    cellToUpdate.textContent = 'Value 5';
+
+    // wait for mutation observer to pick it up and re-render
+    await RenderCoordinator.done({waitForWork: true});
+
+    // After re-sort, order is Value 3, Value 5. Selection was on "Value 3".
+    // It remains on it, which is now the first row.
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 3');
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 5');
+  });
 });

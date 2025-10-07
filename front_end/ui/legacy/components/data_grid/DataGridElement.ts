@@ -5,10 +5,17 @@
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import * as UI from '../../../../ui/legacy/legacy.js';
+import * as UI from '../../legacy.js';
 
 import dataGridStyles from './dataGrid.css.js';
-import {Align, type ColumnDescriptor, DataType, Events as DataGridEvents} from './DataGrid.js';
+import {
+  Align,
+  type ColumnDescriptor,
+  DataType,
+  Events as DataGridEvents,
+  Order,
+  type ResizeMethod
+} from './DataGrid.js';
 import {SortableDataGrid, SortableDataGridNode} from './SortableDataGrid.js';
 
 const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least one column.
@@ -36,12 +43,14 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  * Under the hood it uses SortableDataGrid, which extends ViewportDataGrid so only
  * visible rows are layed out and sorting is provided out of the box.
  *
- * @property filters
- * @attribute striped
+ * @property filters Set of text filters to be applied to the data grid.
+ * @attribute inline If true, the data grid will render inline instead of taking a full container height.
+ * @attribute resize Column resize method, one of 'nearest' (default), 'first' or 'last'.
+ * @attribute striped If true, the data grid will have striped rows.
  * @attribute displayName
  */
 class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
-  static readonly observedAttributes = ['striped', 'name', 'inline'];
+  static readonly observedAttributes = ['striped', 'name', 'inline', 'resize'];
 
   #dataGrid = SortableDataGrid.create([DUMMY_COLUMN_ID], [], '') as SortableDataGrid<DataGridElementNode>;
   #resizeObserver = new ResizeObserver(() => {
@@ -69,6 +78,9 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         e => (e.data as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('select')));
     this.#dataGrid.addEventListener(
         DataGridEvents.DESELECTED_NODE, () => this.dispatchEvent(new CustomEvent('deselect')));
+    this.#dataGrid.addEventListener(
+        DataGridEvents.OPENED_NODE,
+        e => (e.data as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('open')));
     this.#dataGrid.addEventListener(DataGridEvents.SORTING_CHANGED, () => this.dispatchEvent(new CustomEvent('sort', {
       detail: {columnId: this.#dataGrid.sortColumnId(), ascending: this.#dataGrid.isSortOrderAscending()}
     })));
@@ -111,6 +123,9 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       case 'inline':
         this.#dataGrid.renderInline();
         break;
+      case 'resize':
+        this.#dataGrid.setResizeMethod(newValue as ResizeMethod);
+        break;
     }
   }
 
@@ -136,6 +151,14 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
 
   get displayName(): string|null {
     return this.getAttribute('name');
+  }
+
+  set resizeMethod(resizeMethod: ResizeMethod) {
+    this.setAttribute('resize', resizeMethod);
+  }
+
+  get resizeMethod(): ResizeMethod {
+    return this.getAttribute('resize') as ResizeMethod;
   }
 
   set filters(filters: TextUtils.TextUtils.ParsedFilter[]) {
@@ -178,11 +201,15 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       if (editable) {
         hasEditableColumn = true;
       }
+      const sort = column.getAttribute('sort') === 'descending' ? Order.Descending :
+          column.getAttribute('sort') === 'ascending'           ? Order.Ascending :
+                                                                  undefined;
       const columnDescriptor = {
         id,
         title: title as Platform.UIString.LocalizedString,
         titleDOMFragment,
         sortable,
+        sort,
         fixedWidth,
         width,
         align,
@@ -235,6 +262,18 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         .filter(node => node.querySelector('td') && !hasBooleanAttribute(node, 'placeholder'));
   }
 
+  #getStyleElements(nodes: NodeList): HTMLElement[] {
+    return [...nodes].flatMap(node => {
+      if (node instanceof HTMLStyleElement) {
+        return [node];
+      }
+      if (node instanceof HTMLElement) {
+        return [...node.querySelectorAll<HTMLStyleElement>('style')];
+      }
+      return [] as HTMLElement[];
+    });
+  }
+
   #findNextExistingNode(element: Element): DataGridElementNode|null {
     for (let e = element.nextElementSibling; e; e = e.nextElementSibling) {
       const nextNode = DataGridElementNode.get(e);
@@ -270,6 +309,9 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         node.setHighlighted(true);
       }
     }
+    for (const element of this.#getStyleElements(nodes)) {
+      this.#shadowRoot.appendChild(element.cloneNode(true));
+    }
   }
 
   override removeNodes(nodes: NodeList): void {
@@ -304,6 +346,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         dataGridNode.refresh();
       }
     }
+    this.#dataGrid.dispatchEventToListeners(DataGridEvents.SORTING_CHANGED);
   }
 
   #updateCreationNode(): void {

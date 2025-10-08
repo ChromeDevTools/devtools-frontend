@@ -1300,5 +1300,66 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const toolbar = this.contentElement.createChild('devtools-toolbar');
+    toolbar.wrappable = true;
+    toolbar.appendSeparator();
+    const combo = new UI.Toolbar.ToolbarComboBox(this.onSelect.bind(this), 'aria-label', undefined, 'combo-box');
+    combo.createOption('Option 1', '1', 'option-1');
+    const option2 = document.createElement('option');
+    option2.value = '2';
+    option2.textContent = 'Option 2';
+    combo.addOption(option2);
+    toolbar.appendToolbarItem(combo);
+    toolbar.appendSpacer();
+    const button = new UI.Toolbar.ToolbarButton('Click me', 'largeicon-add');
+    button.setEnabled(false);
+    toolbar.appendToolbarItem(button);
+    const otherButton = new UI.Toolbar.ToolbarButton('Other button', 'largeicon-delete');
+    otherButton.setEnabled(this.isEnabled);
+    toolbar.appendToolbarItem(otherButton);
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(false));
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-toolbar wrappable>
+        <div class="toolbar-divider"></div>
+        <select title="aria-label" aria-label="aria-label"
+            jslog=\${VisualLogging.dropDown('combo-box').track({change: true})}
+            @change=\${this.onSelect.bind(this)}>
+          <option value="1" jslog=\${VisualLogging.item('option-1').track({click: true})}>Option 1</option>
+          <option value="2">Option 2</option>
+        </select>
+        <div class="toolbar-spacer"></div>
+        <devtools-button title="Click me" .variant=\${Buttons.Button.Variant.TOOLBAR}
+            .iconName=\${'largeicon-add'}></devtools-button>
+        <devtools-button title="Other button" ?disabled=\${this.isEnabled}
+            .variant=\${Buttons.Button.Variant.TOOLBAR} .iconName=\${'largeicon-delete'}></devtools-button>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-spacer"></div>
+      </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

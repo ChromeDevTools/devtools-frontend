@@ -7,7 +7,14 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {getEnclosingProperty, isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} from './ast.ts';
+import {
+  getEnclosingProperty,
+  isIdentifier,
+  isIdentifierChain,
+  isLiteral,
+  isMemberExpression,
+  type RuleCreator
+} from './ast.ts';
 import {ClassMember} from './class-member.ts';
 import {DomFragment} from './dom-fragment.ts';
 
@@ -30,8 +37,50 @@ export const toolbar: RuleCreator = {
             return null;
         }
       },
-      methodCall(property, firstArg, _secondArg, domFragment) {
+      methodCall(property, firstArg, secondArg, domFragment, call) {
         if (isIdentifier(property, 'appendToolbarItem')) {
+          domFragment.appendChild(firstArg, sourceCode);
+          return true;
+        }
+        if (isIdentifier(property, 'appendSeparator')) {
+          const separator = domFragment.appendChild(call, sourceCode);
+          separator.tagName = 'div';
+          separator.classList.push('toolbar-divider');
+          return true;
+        }
+        if (isIdentifier(property, 'appendSpacer')) {
+          const spacer = domFragment.appendChild(call, sourceCode);
+          spacer.tagName = 'div';
+          spacer.classList.push('toolbar-spacer');
+          return true;
+        }
+        if (isIdentifier(property, 'setEnabled')) {
+          domFragment.booleanAttributes.push({
+            key: 'disabled',
+            value: firstArg,
+          });
+          return true;
+        }
+        if (isIdentifier(property, 'createOption')) {
+          const optionFragment = domFragment.appendChild(call, sourceCode);
+          optionFragment.tagName = 'option';
+          optionFragment.textContent = firstArg;
+          if (secondArg && !isIdentifier(secondArg, 'undefined')) {
+            optionFragment.attributes.push({
+              key: 'value',
+              value: secondArg,
+            });
+          }
+          const jslogContext = call.arguments[2] ?? secondArg;
+          if (jslogContext) {
+            optionFragment.attributes.push({
+              key: 'jslog',
+              value: `\${VisualLogging.item(` + sourceCode.getText(jslogContext) + `).track({click: true})}`,
+            });
+          }
+          return true;
+        }
+        if (isIdentifier(property, 'addOption')) {
           domFragment.appendChild(firstArg, sourceCode);
           return true;
         }
@@ -222,6 +271,26 @@ export const toolbar: RuleCreator = {
             });
           }
         }
+        if (isIdentifier(toolbarItem, 'ToolbarSeparator')) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'div';
+          const spacer = node.arguments[0];
+          if (spacer && isLiteral(spacer, true)) {
+            domFragment.classList.push('toolbar-spacer');
+          } else {
+            domFragment.classList.push('toolbar-divider');
+          }
+        }
+      },
+      propertyAssignment(property, propertyValue, domFragment) {
+        if (domFragment.tagName === 'devtools-toolbar' && isIdentifier(property, 'wrappable')) {
+          domFragment.booleanAttributes.push({
+            key: 'wrappable',
+            value: propertyValue,
+          });
+          return true;
+        }
+        return false;
       },
       CallExpression(node) {
         const isGetAction = (node: CallExpression) => isMemberExpression(

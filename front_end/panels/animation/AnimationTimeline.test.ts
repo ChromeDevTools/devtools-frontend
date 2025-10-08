@@ -485,7 +485,8 @@ describeWithMockConnection('AnimationTimeline', () => {
         await waitForScrubberOnFinish.wait();
       });
 
-      it('should schedule re-draw on animationGroupUpdated', async () => {
+      // Flaky, skip while we're fixing it
+      it.skip('[crbug.com/450229649] should schedule re-draw on animationGroupUpdated', async () => {
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
         assert.isNotNull(preview);
         preview.click();

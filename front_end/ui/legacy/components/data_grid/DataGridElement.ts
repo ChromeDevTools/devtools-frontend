@@ -312,6 +312,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     for (const element of this.#getStyleElements(nodes)) {
       this.#shadowRoot.appendChild(element.cloneNode(true));
     }
+    this.#dataGrid.dispatchEventToListeners(DataGridEvents.SORTING_CHANGED);
   }
 
   override removeNodes(nodes: NodeList): void {
@@ -346,7 +347,6 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
         dataGridNode.refresh();
       }
     }
-    this.#dataGrid.dispatchEventToListeners(DataGridEvents.SORTING_CHANGED);
   }
 
   #updateCreationNode(): void {

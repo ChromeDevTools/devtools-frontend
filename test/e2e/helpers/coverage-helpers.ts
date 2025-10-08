@@ -8,8 +8,8 @@ import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
-const START_INSTRUMENTING_BUTTON = 'devtools-button[aria-label="Start instrumenting coverage and reload page"]';
-const STOP_INSTRUMENTING_BUTTON = 'devtools-button[aria-label="Stop instrumenting coverage and show results"]';
+const START_INSTRUMENTING_BUTTON = 'button[title="Start instrumenting coverage and reload page"]';
+const STOP_INSTRUMENTING_BUTTON = 'button[title="Stop instrumenting coverage and show results"]';
 
 export async function waitForTheCoveragePanelToLoad(frontend?: DevToolsPage) {
   frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
@@ -38,17 +38,37 @@ export async function stopInstrumentingCoverage(frontend?: DevToolsPage) {
 
 export async function clearCoverageContent(frontend?: DevToolsPage) {
   frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
-  await frontend.click('devtools-button[aria-label="Clear coverage"]');
+  await frontend.click('button[title="Clear coverage"]');
   await frontend.waitFor('.coverage-results .empty-state');
 }
 
 export async function getCoverageData(expectedCount: number, frontend?: DevToolsPage) {
   frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
-  const rows = await frontend.waitForMany(
-      '.data-grid-data-grid-node', expectedCount, await frontend.waitFor('.coverage-results'));
-  return await Promise.all(rows.map(r => r.evaluate(r => ({
+  return await frontend.waitForFunction(async () => {
+    const rows = await frontend.waitForMany(
+        '.data-grid-data-grid-node', expectedCount, await frontend.waitFor('.coverage-results'));
+    const data =
+        (await Promise.all(rows.map(r => r.evaluate(r => ({
                                                       url: r.querySelector('.url-column')?.textContent,
                                                       total: r.querySelector('.size-column')?.textContent,
                                                       unused: r.querySelector('.unused-size-column span')?.textContent,
-                                                    }))));
+                                                    })))))
+            .filter(r => r.url && !r.url.startsWith('pptr:evaluate;'));
+    return data.length === expectedCount ? data : undefined;
+  });
+}
+
+export async function waitForCoverageData(
+    expectedData: Array<{url: string, total: string, unused: string}>, frontend?: DevToolsPage) {
+  frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
+  return await frontend.waitForFunction(async () => {
+    const data = await getCoverageData(expectedData.length, frontend);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].url !== expectedData[i].url || data[i].total !== expectedData[i].total ||
+          data[i].unused !== expectedData[i].unused) {
+        return false;
+      }
+    }
+    return true;
+  });
 }

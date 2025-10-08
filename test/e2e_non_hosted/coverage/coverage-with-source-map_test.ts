@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
-  getCoverageData,
   startInstrumentingCoverage,
+  waitForCoverageData,
   waitForTheCoveragePanelToLoad,
 } from '../../e2e/helpers/coverage-helpers.js';
 import {
@@ -78,7 +76,7 @@ describe('Coverage Panel', function() {
         url: `${URL_PREFIX}/src/animal.ts`,
       },
     ];
-    assert.deepEqual(await getCoverageData(5, devToolsPage), expected);
+    await waitForCoverageData(expected, devToolsPage);
   });
 
   it('Can update and sort the coverage information for sources', async ({devToolsPage, inspectedPage}) => {
@@ -117,6 +115,6 @@ describe('Coverage Panel', function() {
       },
     ];
     await devToolsPage.waitForElementWithTextContent(`${URL_PREFIX}/src/users.tsJS (per function)1202823.3%`);
-    assert.deepEqual(await getCoverageData(5, devToolsPage), expected);
+    await waitForCoverageData(expected, devToolsPage);
   });
 });

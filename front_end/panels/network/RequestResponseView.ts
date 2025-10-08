@@ -56,7 +56,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
                       i18nString(UIStrings.failedToLoadResponseData), (input.contentData as {error: string}).error,
                       element))}></devtools-widget>`;
     // clang-format on
-  } else if (input.request.statusCode === 204) {
+  } else if (input.request.statusCode === 204 || input.request.failed) {
     // clang-format off
     widget = html`<devtools-widget
                      .widgetConfig=${widgetConfig(element => new UI.EmptyWidget.EmptyWidget(

@@ -280,7 +280,12 @@ export class PerformanceInsightFormatter {
                                                        '- No potential root causes identified';
 
     const startTime = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(shift.ts - baseTime));
-    return `### Layout shift ${index + 1}:
+
+    const impactedNodeNames =
+        shift.rawSourceEvent.args.data?.impacted_nodes?.map(n => n.debug_name).filter(name => name !== undefined) ?? [];
+    const impactedNodeText =
+        impactedNodeNames.length ? `\n- Impacted elements:\n  - ${impactedNodeNames.join('\n  - ')}\n` : '';
+    return `### Layout shift ${index + 1}:${impactedNodeText}
 - Start time: ${millis(startTime)}
 - Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
 ${rootCauseText}`;

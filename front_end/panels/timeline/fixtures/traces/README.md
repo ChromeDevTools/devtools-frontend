@@ -359,3 +359,7 @@ A trace with lots of interactions generated from https://chromedevtools.github.i
 ### layout-shift-with-animation-culprit
 
 A trace that has a layout shift with a root cause that is a non-composited animation. Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/layout-shift-animations.
+
+### cls-with-iframes
+
+A trace of https://astro-news-1026410574114.us-central1.run.app/ used to test CLS + iframes and what our AI output looks like.

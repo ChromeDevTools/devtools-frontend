@@ -143,6 +143,18 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       snapshotTester.assert(this, output);
     });
 
+    it('includes iframe root causes', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'cls-with-iframes.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('CLSCulprits', parsedTrace.insights, firstNav);
+      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+
+      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
     it('serializes correctly when there are no layout shifts', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
       assert.isOk(parsedTrace.insights);

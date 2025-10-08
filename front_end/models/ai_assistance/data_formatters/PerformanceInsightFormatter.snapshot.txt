@@ -346,6 +346,51 @@ Layout shifts in this cluster:
 - https://web.dev/articles/optimize-cls
 === end content
 
+Title: PerformanceInsightFormatter CLS includes iframe root causes
+Content:
+## Insight Title: Layout shift culprits
+
+## Insight Summary:
+Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:
+- Good: 0.1 or less
+- Needs improvement: more than 0.1 and less than or equal to 0.25
+- Bad: over 0.25
+
+## Detailed analysis:
+The worst layout shift cluster was the cluster that started at 2,712 ms and ended at 3,913 ms, with a duration of 1,200 ms.
+The score for this cluster is 0.0832.
+
+Layout shifts in this cluster:
+### Layout shift 1:
+- Impacted elements:
+  - DIV class='max-w-6xl mx-auto bg-white shadow-lg min-h-screen relative z-[99999]'
+  - BUTTON class='text-gray-700 hover:text-red-600 w-6 h-6 flex items-center justify-center'
+  - #text
+
+- Start time: 2,712 ms
+- Score: 0.0832
+- Potential root causes:
+  - An iframe (id: D12A05FC36C4D90C7826DDD3E9D7035B, url: https://astro-news-1026410574114.us-central1.run.app/ads/fireplace-ad-top.html was injected into the page)
+- An iframe (id: 8CDF5BC2F8AD1DCF04A38398E95671FC, url: https://astro-news-1026410574114.us-central1.run.app/ads/fireplace-ad-right.html was injected into the page)
+- An iframe (id: 022F4D6C4B361B315A1A7C18B98AA9C4, url: https://astro-news-1026410574114.us-central1.run.app/ads/fireplace-ad-left.html was injected into the page)
+### Layout shift 2:
+- Impacted elements:
+  - #text
+  - A class='button'
+
+- Start time: 2,913 ms
+- Score: 0.0000
+- Potential root causes:
+  - A font that was loaded over the network: https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2 (eventKey: s-11464, ts: 153867214727).
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/performance/insights/cls-culprit
+- https://web.dev/articles/cls
+- https://web.dev/articles/optimize-cls
+=== end content
+
 Title: PerformanceInsightFormatter CLS serializes correctly when there are no layout shifts
 Content:
 ## Insight Title: Layout shift culprits
@@ -383,50 +428,110 @@ The score for this cluster is 0.0140.
 
 Layout shifts in this cluster:
 ### Layout shift 1:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 60 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 2:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 76 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 3:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 93 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 4:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 110 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 5:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 126 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 6:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 143 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 7:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 160 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 8:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 176 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 9:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 193 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 10:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 210 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 11:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 226 ms
 - Score: 0.0012
 - No potential root causes identified
 ### Layout shift 12:
+- Impacted elements:
+  - P
+  - P
+  - P
+
 - Start time: 243 ms
 - Score: 0.0012
 - Potential root causes:

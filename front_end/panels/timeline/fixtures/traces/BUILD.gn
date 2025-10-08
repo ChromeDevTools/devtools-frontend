@@ -23,6 +23,7 @@ copy_to_gen("traces") {
     "cls-multiple-frames.json.gz",
     "cls-no-nav.json.gz",
     "cls-single-frame.json.gz",
+    "cls-with-iframes.json.gz",
     "collapsible-tracks.json.gz",
     "crux.json.gz",
     "dom-size-long.json.gz",

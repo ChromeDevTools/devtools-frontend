@@ -127,4 +127,26 @@ describeWithEnvironment('RequestResponseView', () => {
 
     component.detach();
   });
+
+  it('shows no response data if the request failed', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/module.wasm`, urlString``,
+        null, null, null);
+    request.setContentDataProvider(
+        () => Promise.resolve(new TextUtils.ContentData.ContentData(
+            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
+            true, 'application/wasm')));
+    request.mimeType = 'application/wasm';
+    request.finished = true;
+    request.failed = true;
+
+    const component = new Network.RequestResponseView.RequestResponseView(request);
+    assert.deepEqual(component.getMimeTypeForDisplay(), 'application/wasm');
+    renderElementIntoDOM(component);
+
+    await component.updateComplete;
+    assert.strictEqual(
+        component.contentElement.querySelector<HTMLElement>('devtools-widget')?.innerText,
+        'Nothing to preview\nThis request has no response data available');
+  });
 });

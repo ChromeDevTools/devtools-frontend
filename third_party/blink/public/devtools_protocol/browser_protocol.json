@@ -17272,7 +17272,7 @@
                 },
                 {
                     "name": "emulateNetworkConditionsByRule",
-                    "description": "Activates emulation of network conditions for individual requests using URL match patterns.",
+                    "description": "Activates emulation of network conditions for individual requests using URL match patterns. Unlike the deprecated\nNetwork.emulateNetworkConditions this method does not affect `navigator` state. Use Network.overrideNetworkState to\nexplicitly modify `navigator` behavior.",
                     "experimental": true,
                     "parameters": [
                         {

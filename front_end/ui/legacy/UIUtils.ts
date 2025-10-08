@@ -2135,6 +2135,7 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
   const action = ActionRegistry.instance().getAction(actionName);
 
   let setEnabled: (enabled: boolean) => void;
+  let toggled: () => void;
   function actionEnabledChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
     setEnabled(event.data);
   }
@@ -2142,6 +2143,7 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
   return Directives.ref((e: Element|undefined) => {
     if (!e || !(e instanceof Buttons.Button.Button)) {
       action.removeEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
+      action.removeEventListener(ActionRegistration.Events.TOGGLED, toggled);
       return;
     }
 
@@ -2151,10 +2153,34 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
 
     action.addEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
 
+    const toggleable = action.toggleable();
+    if (toggleable) {
+      toggled = () => {
+        e.toggled = action.toggled();
+        if (action.title()) {
+          e.title = action.title();
+          Tooltip.installWithActionBinding(e, action.title(), action.id());
+        }
+      };
+      action.addEventListener(ActionRegistration.Events.TOGGLED, toggled);
+    }
     const title = action.title();
-    const iconName = action.icon();
+    const iconName = action.icon() ?? '';
     const jslogContext = action.id();
-    if (iconName) {
+    const toggledIconName = action.toggledIcon() ?? iconName;
+    const toggleType = action.toggleWithRedColor() ? Buttons.Button.ToggleType.RED : Buttons.Button.ToggleType.PRIMARY;
+    if (toggleable) {
+      e.data = {
+        jslogContext,
+        title,
+        variant: Buttons.Button.Variant.ICON_TOGGLE,
+        iconName,
+        toggledIconName,
+        toggleType,
+        toggled: action.toggled(),
+      };
+      toggled();
+    } else if (iconName) {
       e.data = {iconName, jslogContext, title, variant: Buttons.Button.Variant.ICON};
     } else {
       e.data = {jslogContext, title, variant: Buttons.Button.Variant.TEXT};

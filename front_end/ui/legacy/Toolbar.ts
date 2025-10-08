@@ -94,7 +94,7 @@ export class Toolbar extends HTMLElement {
         if (element instanceof Buttons.Button.Button) {
           item = new ToolbarButton('', undefined, undefined, undefined, element);
         } else if (element instanceof ToolbarInputElement) {
-          item = element.item;
+          item = element.item as ToolbarItem;
         } else if (element instanceof HTMLSelectElement) {
           item = new ToolbarComboBox(null, element.title, undefined, undefined, element);
         } else {
@@ -833,11 +833,12 @@ export class ToolbarFilter extends ToolbarInput {
 }
 
 export class ToolbarInputElement extends HTMLElement {
-  static observedAttributes = ['value'];
+  static observedAttributes = ['value', 'disabled'];
 
-  item!: ToolbarInput;
+  item?: ToolbarInput;
   datalist: HTMLDataListElement|null = null;
   value: string|undefined = undefined;
+  #disabled = false;
 
   connectedCallback(): void {
     if (this.item) {
@@ -866,6 +867,9 @@ export class ToolbarInputElement extends HTMLElement {
     if (this.value) {
       this.item.setValue(this.value);
     }
+    if (this.#disabled) {
+      this.item.setEnabled(false);
+    }
     this.item.addEventListener(ToolbarInput.Event.TEXT_CHANGED, event => {
       this.dispatchEvent(new CustomEvent('change', {detail: event.data}));
     });
@@ -875,7 +879,7 @@ export class ToolbarInputElement extends HTMLElement {
   }
 
   override focus(): void {
-    this.item.focus();
+    this.item?.focus();
   }
 
   async #onAutocomplete(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
@@ -894,7 +898,24 @@ export class ToolbarInputElement extends HTMLElement {
       } else {
         this.value = newValue;
       }
+    } else if (name === 'disabled') {
+      this.#disabled = typeof newValue === 'string';
+      if (this.item) {
+        this.item.setEnabled(!this.#disabled);
+      }
     }
+  }
+
+  set disabled(disabled: boolean) {
+    if (disabled) {
+      this.setAttribute('disabled', '');
+    } else {
+      this.removeAttribute('disabled');
+    }
+  }
+
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
   }
 }
 customElements.define('devtools-toolbar-input', ToolbarInputElement);

@@ -370,7 +370,7 @@ export class Button extends HTMLElement {
       html`
         <style>${buttonStyles}</style>
         <button title=${ifDefined(this.#props.title)}
-                .disabled=${this.#props.disabled}
+                ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}
                 aria-label=${ifDefined(this.#props.accessibleLabel)}

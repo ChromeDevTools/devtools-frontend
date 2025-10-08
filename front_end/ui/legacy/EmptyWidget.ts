@@ -26,6 +26,7 @@ interface EmptyWidgetInput {
   header: string;
   text: string;
   link?: Platform.DevToolsPath.UrlString|undefined|null;
+  extraElements?: Element[];
 }
 
 interface EmptyWidgetOutput {
@@ -47,6 +48,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         ${input.link ? XLink.create(
             input.link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more') : ''}
       </div>
+      ${input.extraElements}
     </div>`, target);
   // clang-format on
 };
@@ -56,6 +58,8 @@ export class EmptyWidget extends VBox {
   #text: string;
   #link: Platform.DevToolsPath.UrlString|undefined|null;
   #view: View;
+  #firstUpdate = true;
+  #extraElements: Element[] = [];
 
   constructor(headerOrElement: string|HTMLElement, text = '', element?: HTMLElement, view = DEFAULT_VIEW) {
     const header = typeof headerOrElement === 'string' ? headerOrElement : '';
@@ -86,8 +90,14 @@ export class EmptyWidget extends VBox {
   }
 
   override performUpdate(): void {
+    if (this.#firstUpdate) {
+      this.#extraElements = [...this.element.children];
+      this.#firstUpdate = false;
+    }
     const output = {contentElement: undefined};
-    this.#view({header: this.#header, text: this.#text, link: this.#link}, output, this.element);
+    this.#view(
+        {header: this.#header, text: this.#text, link: this.#link, extraElements: this.#extraElements}, output,
+        this.element);
     if (output.contentElement) {
       this.contentElement = output.contentElement;
     }

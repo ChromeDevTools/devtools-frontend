@@ -56,6 +56,7 @@ describe('Custom devices', () => {
     await devToolsPage.tabForward();  // Focus folder.
     await devToolsPage.pressKey('Enter');
 
+    await devToolsPage.tabForward();  // Focus info icon
     await devToolsPage.tabForward();  // Focus help button
     await devToolsPage.tabForward();  // Focus brand browser.
     await devToolsPage.typeText('Test browser');
@@ -155,7 +156,7 @@ describe('Custom devices', () => {
     await devToolsPage.waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
     // Skip over to the version field.
-    for (let i = 0; i < 19; ++i) {
+    for (let i = 0; i < 20; ++i) {
       if (i === 7) {
         await devToolsPage.pressKey('ArrowRight');
       }

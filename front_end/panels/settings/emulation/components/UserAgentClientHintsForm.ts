@@ -868,14 +868,14 @@ export class UserAgentClientHintsForm extends HTMLElement {
             <devtools-icon name=triangle-down></devtools-icon>
             ${i18nString(UIStrings.title)}
           </div>
-          <devtools-icon class=info-icon name=info title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
+          <devtools-icon tabindex=${this.#isFormDisabled ? '-1' : '0'} class=info-icon name=info aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)} title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
           <x-link
            tabindex=${this.#isFormDisabled ? '-1' : '0'}
            href="https://web.dev/user-agent-client-hints/"
            target="_blank"
            class="link"
            @keypress=${this.#handleLinkPress}
-           aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)}
+           aria-label=${i18nString(UIStrings.learnMore)}
            jslog=${VisualLogging.link('learn-more').track({click: true})}
           >
             ${i18nString(UIStrings.learnMore)}

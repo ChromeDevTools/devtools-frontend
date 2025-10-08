@@ -230,6 +230,7 @@ describe('The Network Tab', () => {
     await devToolsPage.typeText('Test User Agent String');
     await devToolsPage.tabForward();       // focus help button
     await devToolsPage.pressKey('Space');  // open client hints section
+    await devToolsPage.tabForward();       // focus info icon
     await devToolsPage.tabForward();       // focus help link
 
     // UA brands

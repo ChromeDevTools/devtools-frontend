@@ -874,4 +874,75 @@ describeWithMockConnection('PreloadingModel', () => {
       },
     ]);
   });
+
+  it('adds and deletes a preloading attempt for prerender-until-script', async () => {
+    const target = createTarget();
+    const model = target.model(SDK.PreloadingModel.PreloadingModel);
+    assert.exists(model);
+
+    assert.deepEqual(model.getAllRuleSets(), []);
+
+    const loaderId = getMainFrame(target).loaderId;
+
+    dispatchEvent(target, 'Preload.ruleSetUpdated', {
+      ruleSet: {
+        id: 'ruleSetId:1',
+        loaderId,
+        sourceText: `
+{
+  "prerender_until_script":[
+    {
+      "source": "list",
+      "urls": ["/page.html"]
+    }
+  ]
+}
+`,
+      },
+    });
+    dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId,
+      preloadingAttemptSources: [
+        {
+          key: {
+            loaderId,
+            action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
+            url: 'https://example.com/page.html',
+          },
+          ruleSetIds: ['ruleSetId:1'],
+          nodeIds: [1],
+        },
+      ],
+    });
+    dispatchEvent(target, 'Preload.prerenderStatusUpdated', {
+      key: {
+        loaderId,
+        action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
+        url: 'https://example.com/page.html',
+      },
+      pipelineId: 'pipelineId:1',
+      status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
+    });
+
+    assert.deepEqual(model.getRepresentativePreloadingAttempts(null), [
+      {
+        id: `${loaderId}:PrerenderUntilScript:https://example.com/page.html:undefined`,
+        value: {
+          action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
+          key: {
+            loaderId,
+            action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
+            url: urlString`https://example.com/page.html`,
+          },
+          pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
+          status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
+          prerenderStatus: null,
+          disallowedMojoInterface: null,
+          mismatchedHeaders: null,
+          ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+        },
+      },
+    ]);
+  });
 });

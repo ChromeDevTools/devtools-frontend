@@ -300,15 +300,33 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   onPrerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
     const loaderId = event.key.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
-    const attempt: PrerenderAttemptInternal = {
-      action: Protocol.Preload.SpeculationAction.Prerender,
-      key: event.key,
-      pipelineId: event.pipelineId,
-      status: convertPreloadingStatus(event.status),
-      prerenderStatus: event.prerenderStatus || null,
-      disallowedMojoInterface: event.disallowedMojoInterface || null,
-      mismatchedHeaders: event.mismatchedHeaders || null,
-    };
+    let attempt: PrerenderAttemptInternal|PrerenderUntilScriptAttemptInternal;
+    switch (event.key.action) {
+      case Protocol.Preload.SpeculationAction.Prerender:
+        attempt = {
+          action: event.key.action,
+          key: event.key,
+          pipelineId: event.pipelineId,
+          status: convertPreloadingStatus(event.status),
+          prerenderStatus: event.prerenderStatus || null,
+          disallowedMojoInterface: event.disallowedMojoInterface || null,
+          mismatchedHeaders: event.mismatchedHeaders || null,
+        };
+        break;
+      case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+        attempt = {
+          action: event.key.action,
+          key: event.key,
+          pipelineId: event.pipelineId,
+          status: convertPreloadingStatus(event.status),
+          prerenderStatus: event.prerenderStatus || null,
+          disallowedMojoInterface: event.disallowedMojoInterface || null,
+          mismatchedHeaders: event.mismatchedHeaders || null,
+        };
+        break;
+      default:
+        throw new Error(`unreachable: event.key.action: ${event.key.action}`);
+    }
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
     this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
@@ -458,7 +476,7 @@ function convertPreloadingStatus(status: Protocol.Preload.PreloadingStatus): Pre
 
 export type PreloadingAttemptId = string;
 
-export type PreloadingAttempt = PrefetchAttempt|PrerenderAttempt;
+export type PreloadingAttempt = PrefetchAttempt|PrerenderAttempt|PrerenderUntilScriptAttempt;
 
 export interface PrefetchAttempt {
   action: Protocol.Preload.SpeculationAction.Prefetch;
@@ -483,7 +501,20 @@ export interface PrerenderAttempt {
   nodeIds: Protocol.DOM.BackendNodeId[];
 }
 
-export type PreloadingAttemptInternal = PrefetchAttemptInternal|PrerenderAttemptInternal;
+export interface PrerenderUntilScriptAttempt {
+  action: Protocol.Preload.SpeculationAction.PrerenderUntilScript;
+  key: Protocol.Preload.PreloadingAttemptKey;
+  pipelineId: Protocol.Preload.PreloadPipelineId|null;
+  status: PreloadingStatus;
+  prerenderStatus: Protocol.Preload.PrerenderFinalStatus|null;
+  disallowedMojoInterface: string|null;
+  mismatchedHeaders: Protocol.Preload.PrerenderMismatchedHeaders[]|null;
+  ruleSetIds: Protocol.Preload.RuleSetId[];
+  nodeIds: Protocol.DOM.BackendNodeId[];
+}
+
+export type PreloadingAttemptInternal =
+    PrefetchAttemptInternal|PrerenderAttemptInternal|PrerenderUntilScriptAttemptInternal;
 
 export interface PrefetchAttemptInternal {
   action: Protocol.Preload.SpeculationAction.Prefetch;
@@ -504,6 +535,16 @@ export interface PrerenderAttemptInternal {
   mismatchedHeaders: Protocol.Preload.PrerenderMismatchedHeaders[]|null;
 }
 
+export interface PrerenderUntilScriptAttemptInternal {
+  action: Protocol.Preload.SpeculationAction.PrerenderUntilScript;
+  key: Protocol.Preload.PreloadingAttemptKey;
+  pipelineId: Protocol.Preload.PreloadPipelineId|null;
+  status: PreloadingStatus;
+  prerenderStatus: Protocol.Preload.PrerenderFinalStatus|null;
+  disallowedMojoInterface: string|null;
+  mismatchedHeaders: Protocol.Preload.PrerenderMismatchedHeaders[]|null;
+}
+
 function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): PreloadingAttemptId {
   let action;
   switch (key.action) {
@@ -512,6 +553,9 @@ function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): Pr
       break;
     case Protocol.Preload.SpeculationAction.Prerender:
       action = 'Prerender';
+      break;
+    case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+      action = 'PrerenderUntilScript';
       break;
   }
 
@@ -551,7 +595,7 @@ export class PreloadPipeline {
   }
 
   getOriginallyTriggered(): PreloadingAttempt {
-    const attempt = this.getPrerender() || this.getPrefetch();
+    const attempt = this.getPrerender() || this.getPrerenderUntilScript() || this.getPrefetch();
     assertNotNullOrUndefined(attempt);
     return attempt;
   }
@@ -564,7 +608,11 @@ export class PreloadPipeline {
     return this.inner.get(Protocol.Preload.SpeculationAction.Prerender) || null;
   }
 
-  // Returns attempts in the order: prefetch < prerender.
+  getPrerenderUntilScript(): PreloadingAttempt|null {
+    return this.inner.get(Protocol.Preload.SpeculationAction.PrerenderUntilScript) || null;
+  }
+
+  // Returns attempts in the order: prefetch < prerender_until_script < prerender.
   // Currently unused.
   getAttempts(): PreloadingAttempt[] {
     const ret = [];
@@ -577,6 +625,11 @@ export class PreloadPipeline {
     const prerender = this.getPrerender();
     if (prerender !== null) {
       ret.push(prerender);
+    }
+
+    const prerenderUntilScript = this.getPrerenderUntilScript();
+    if (prerenderUntilScript !== null) {
+      ret.push(prerenderUntilScript);
     }
 
     if (ret.length === 0) {
@@ -615,7 +668,9 @@ class PreloadingAttemptRegistry {
   //
   // In some cases, browsers automatically triggers preloads. For example, Chrome triggers prefetch
   // ahead of prerender to prevent multiple fetches in case that the prerender failed due to, e.g.
-  // use of forbidden mojo APIs. Such prefetch and prerender sit in the same preload pipeline.
+  // use of forbidden mojo APIs. Also, a prerender-until-script attempt triggers prefetch as well,
+  // and can upgrade to prerender. Such prefetch, prerender-until-script, and prerender sit in the
+  // same preload pipeline.
   //
   // We regard them as not representative and only show the representative ones to represent
   // pipelines.
@@ -624,9 +679,9 @@ class PreloadingAttemptRegistry {
       switch (action) {
         case Protocol.Preload.SpeculationAction.Prefetch:
           return 0;
-        case Protocol.Preload.SpeculationAction.Prerender:
-          return 1;
         case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+          return 1;
+        case Protocol.Preload.SpeculationAction.Prerender:
           return 2;
       }
     }
@@ -738,9 +793,19 @@ class PreloadingAttemptRegistry {
           };
           break;
         case Protocol.Preload.SpeculationAction.Prerender:
-        case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
           attempt = {
             action: Protocol.Preload.SpeculationAction.Prerender,
+            key,
+            pipelineId: null,
+            status: PreloadingStatus.NOT_TRIGGERED,
+            prerenderStatus: null,
+            disallowedMojoInterface: null,
+            mismatchedHeaders: null,
+          };
+          break;
+        case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+          attempt = {
+            action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
             key,
             pipelineId: null,
             status: PreloadingStatus.NOT_TRIGGERED,

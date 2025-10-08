@@ -183,30 +183,40 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format on
   }
 
+  #isPrerenderLike(speculationAction: Protocol.Preload.SpeculationAction): boolean {
+    return [
+      Protocol.Preload.SpeculationAction.Prerender, Protocol.Preload.SpeculationAction.PrerenderUntilScript
+    ].includes(speculationAction);
+  }
+
+  #isPrerenderAttempt(attempt: SDK.PreloadingModel.PreloadingAttempt):
+      attempt is SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt {
+    return this.#isPrerenderLike(attempt.action);
+  }
+
   #speculativeLoadingStatusForThisPageSections(): Lit.LitTemplate {
     const pageURL = Common.ParsedURL.ParsedURL.urlWithoutHash(this.#data.pageURL);
     const forThisPage = this.#data.previousAttempts.filter(
         attempt => Common.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL);
     const prefetch =
         forThisPage.filter(attempt => attempt.key.action === Protocol.Preload.SpeculationAction.Prefetch)[0];
-    const prerender =
-        forThisPage.filter(attempt => attempt.key.action === Protocol.Preload.SpeculationAction.Prerender)[0];
+    const prerenderLike = forThisPage.filter(attempt => this.#isPrerenderLike(attempt.action))[0];
 
     let kind = UsedKind.NO_PRELOADS;
     // Prerender -> prefetch downgrade case
     //
     // This code does not handle the case SpecRules designate these preloads rather than prerenderer automatically downgrade prerendering.
     // TODO(https://crbug.com/1410709): Improve this logic once automatic downgrade implemented.
-    if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE &&
+    if (prerenderLike?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE &&
         prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED;
     } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.PREFETCH_USED;
-    } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
+    } else if (prerenderLike?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.PRERENDER_USED;
     } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
       kind = UsedKind.PREFETCH_FAILED;
-    } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
+    } else if (prerenderLike?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
       kind = UsedKind.PRERENDER_FAILED;
     } else {
       kind = UsedKind.NO_PRELOADS;
@@ -246,8 +256,9 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       assertNotNullOrUndefined(prefetch);
       maybeFailureReasonMessage = prefetchFailureReason(prefetch as SDK.PreloadingModel.PrefetchAttempt);
     } else if (kind === UsedKind.PRERENDER_FAILED || kind === UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED) {
-      assertNotNullOrUndefined(prerender);
-      maybeFailureReasonMessage = prerenderFailureReason(prerender as SDK.PreloadingModel.PrerenderAttempt);
+      assertNotNullOrUndefined(prerenderLike);
+      maybeFailureReasonMessage = prerenderFailureReason(
+          prerenderLike as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
     }
 
     let maybeFailureReason: Lit.LitTemplate = Lit.nothing;
@@ -323,8 +334,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
   #maybeMismatchedHTTPHeadersSections(): Lit.LitTemplate {
     const attempt = this.#data.previousAttempts.find(
-        attempt =>
-            attempt.action === Protocol.Preload.SpeculationAction.Prerender && attempt.mismatchedHeaders !== null);
+        attempt => this.#isPrerenderAttempt(attempt) && attempt.mismatchedHeaders !== null);
     if (attempt === undefined) {
       return Lit.nothing;
     }
@@ -342,7 +352,9 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <devtools-report-section-header>${i18nString(UIStrings.mismatchedHeadersDetail)}</devtools-report-section-header>
       <devtools-report-section>
         <devtools-resources-preloading-mismatched-headers-grid
-          .data=${attempt as SDK.PreloadingModel.PrerenderAttempt}></devtools-resources-preloading-mismatched-headers-grid>
+          .data=${
+              attempt as SDK.PreloadingModel.PrerenderAttempt |
+              SDK.PreloadingModel.PrerenderUntilScriptAttempt}></devtools-resources-preloading-mismatched-headers-grid>
       </devtools-report-section>
     `;
     // clang-format on

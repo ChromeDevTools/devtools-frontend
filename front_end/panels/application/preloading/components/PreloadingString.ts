@@ -535,7 +535,8 @@ export function prefetchFailureReason({prefetchStatus}: SDK.PreloadingModel.Pref
 }
 
 /** Detailed failure reason for PrerenderFinalStatus. **/
-export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAttempt): string|null {
+export function prerenderFailureReason(
+    attempt: SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt): string|null {
   // If you face an error on rolling CDP changes, see
   // https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk
   switch (attempt.prerenderStatus) {
@@ -730,14 +731,13 @@ export function ruleSetTagOrLocationShort(
 }
 
 export function capitalizedAction(action: Protocol.Preload.SpeculationAction): Common.UIString.LocalizedString {
-  // Use "prefetch"/"prerender" as is in SpeculationRules.
   switch (action) {
     case Protocol.Preload.SpeculationAction.Prefetch:
       return i18n.i18n.lockedString('Prefetch');
     case Protocol.Preload.SpeculationAction.Prerender:
       return i18n.i18n.lockedString('Prerender');
     case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
-      return i18n.i18n.lockedString('PrerenderUntilScript');
+      return i18n.i18n.lockedString('Prerender until script');
   }
 }
 
@@ -778,8 +778,10 @@ export function composedStatus(attempt: SDK.PreloadingModel.PreloadingAttempt): 
       const detail = prefetchFailureReason(attempt) ?? i18n.i18n.lockedString('Internal error');
       return short + ' - ' + detail;
     }
-    case Protocol.Preload.SpeculationAction.Prerender: {
-      const detail = prerenderFailureReason(attempt);
+    case Protocol.Preload.SpeculationAction.Prerender:
+    case Protocol.Preload.SpeculationAction.PrerenderUntilScript: {
+      const detail = prerenderFailureReason(
+          attempt as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
       assertNotNullOrUndefined(detail);
       return short + ' - ' + detail;
     }

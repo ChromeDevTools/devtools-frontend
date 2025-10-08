@@ -748,4 +748,49 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
   });
+
+  it('renderes prerender-until-script used', async () => {
+    const data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData = {
+      pageURL: urlString`https://example.com/prerendered.html`,
+      previousAttempts: [
+        {
+          action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
+          key: {
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.PrerenderUntilScript,
+            url: urlString`https://example.com/prerendered.html`,
+          },
+          pipelineId: 'pipelineId:2' as Protocol.Preload.PreloadPipelineId,
+          status: SDK.PreloadingModel.PreloadingStatus.SUCCESS,
+          prerenderStatus: null,
+          disallowedMojoInterface: null,
+          mismatchedHeaders: null,
+          ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+        },
+      ],
+      currentAttempts: [],
+    };
+
+    const component = await renderUsedPreloadingView(data);
+    assert.isNotNull(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
+    const sections = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
+
+    assert.lengthOf(headers, 2);
+    assert.lengthOf(sections, 3);
+
+    assert.include(headers[0]?.textContent, 'Speculative loading status');
+    assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Success');
+    assert.include(sections[0]?.textContent, 'This page was successfully prerendered.');
+
+    assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
+    const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
+    assert.lengthOf(badges, 1);
+    assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
+
+    assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
+  });
 });

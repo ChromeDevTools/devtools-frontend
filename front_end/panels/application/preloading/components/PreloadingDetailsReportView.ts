@@ -258,6 +258,12 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     // clang-format on
   }
 
+  #isPrerenderLike(speculationAction: Protocol.Preload.SpeculationAction): boolean {
+    return [
+      Protocol.Preload.SpeculationAction.Prerender, Protocol.Preload.SpeculationAction.PrerenderUntilScript
+    ].includes(speculationAction);
+  }
+
   #action(isFallbackToPrefetch: boolean): Lit.LitTemplate {
     assertNotNullOrUndefined(this.#data);
     const attempt = this.#data.pipeline.getOriginallyTriggered();
@@ -271,7 +277,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
 
     let maybeInspectButton: Lit.LitTemplate = Lit.nothing;
     (() => {
-      if (attempt.action !== Protocol.Preload.SpeculationAction.Prerender) {
+      if (!this.#isPrerenderLike(attempt.action)) {
         return;
       }
 
@@ -359,8 +365,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
   #targetHint(): Lit.LitTemplate {
     assertNotNullOrUndefined(this.#data);
     const attempt = this.#data.pipeline.getOriginallyTriggered();
-    const hasTargetHint =
-        attempt.action === Protocol.Preload.SpeculationAction.Prerender && attempt.key.targetHint !== undefined;
+    const hasTargetHint = this.#isPrerenderLike(attempt.action) && attempt.key.targetHint !== undefined;
     if (!hasTargetHint) {
       return Lit.nothing;
     }
@@ -377,11 +382,12 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     assertNotNullOrUndefined(this.#data);
     const attempt = this.#data.pipeline.getOriginallyTriggered();
 
-    if (attempt.action !== Protocol.Preload.SpeculationAction.Prerender) {
+    if (!this.#isPrerenderLike(attempt.action)) {
       return Lit.nothing;
     }
 
-    const failureReason = prerenderFailureReason(attempt);
+    const failureReason = prerenderFailureReason(
+        attempt as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
     if (failureReason === null) {
       return Lit.nothing;
     }

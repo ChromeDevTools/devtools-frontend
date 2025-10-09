@@ -109,7 +109,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                         n: group.messageCount
                       })}
                   ${group.messageCount === 0 ? nothing : html`
-                  <ul role="group" ?hidden=${group.filter !== input.selectedFilter}>
+                  <ul role="group" hidden>
                     ${group.urlGroups.values().map(urlGroup => html`
                       <li
                         ${Directives.ref(element => element && nodeFilterMap.set(element, group.filter))}

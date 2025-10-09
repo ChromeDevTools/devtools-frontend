@@ -588,8 +588,18 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private isAiCodeCompletionEnabled(): boolean {
-    return Boolean(
-        Root.Runtime.hostConfig.aidaAvailability?.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
+    if (!devtoolsLocale.locale.startsWith('en-')) {
+      return false;
+    }
+    if (aidaAvailability?.blockedByGeo) {
+      return false;
+    }
+    if (aidaAvailability?.blockedByAge) {
+      return false;
+    }
+    return Boolean(aidaAvailability?.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 
   private editorSetForTest(): void {

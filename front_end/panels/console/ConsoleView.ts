@@ -1698,6 +1698,17 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private isAiCodeCompletionEnabled(): boolean {
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
+    if (!devtoolsLocale.locale.startsWith('en-')) {
+      return false;
+    }
+    if (aidaAvailability?.blockedByGeo) {
+      return false;
+    }
+    if (aidaAvailability?.blockedByAge) {
+      return false;
+    }
     return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 }

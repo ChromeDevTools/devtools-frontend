@@ -420,7 +420,7 @@ Content:
     "url": "https://www.paulirish.com/javascripts/firebase-performance-standalone.js",
     "hasSourceURL": false,
     "sourceURL": "",
-    "sourceMapURL": "firebase-performance-standalone.js.map",
+    "sourceMapURL": "data:application/json;charset=utf-8,%7B%22version%22%3A3%2C%22file%22%3A%22firebase-performance-standalone.js%22%2C%22sources%22%3A%5B%22..%2F..%2Fnode_modules%2Ftslib%2Ftslib.es6.js%22%2C%22..%2Futil…",
     "pid": 97964,
     "sourceText": "!function(e,t){\"obje…",
     "length": 48248,

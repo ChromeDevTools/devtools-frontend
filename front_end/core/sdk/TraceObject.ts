@@ -14,13 +14,14 @@ import type {SourceMapV3} from './SourceMap.js';
 export class TraceObject {
   readonly traceEvents: Protocol.Tracing.DataCollectedEvent['value'];
   readonly metadata: {sourceMaps?: Array<{sourceMapUrl: string, sourceMap: SourceMapV3, url: string}>};
-  constructor(payload: Protocol.Tracing.DataCollectedEvent['value']|TraceObject, meta: Object = {}) {
-    // Handle the typical traceEvent array juggling here.
-    const events = Array.isArray(payload) ? payload : payload.traceEvents;
-    const metadata = meta ?? (!Array.isArray(payload) && payload.metadata) ?? {};
-
-    this.traceEvents = events;
-    this.metadata = metadata;
+  constructor(payload: Protocol.Tracing.DataCollectedEvent['value']|TraceObject, meta?: Object) {
+    if (Array.isArray(payload)) {
+      this.traceEvents = payload;
+      this.metadata = meta ?? {};
+    } else {
+      this.traceEvents = payload.traceEvents;
+      this.metadata = payload.metadata;
+    }
   }
 }
 

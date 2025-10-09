@@ -282,6 +282,9 @@ describeWithEnvironment('RehydratingConnection emittance', () => {
       if (typeof m === 'object' && m.params?.sourceText) {
         m.params.sourceText = m.params.sourceText.slice(0, 20) + '…';
       }
+      if (typeof m === 'object' && m.params?.sourceMapURL && m.params.sourceMapURL.length > 200) {
+        m.params.sourceMapURL = m.params.sourceMapURL.slice(0, 200) + '…';
+      }
       // @ts-expect-error
       if (typeof m === 'object' && m.result?.scriptSource) {
         // @ts-expect-error

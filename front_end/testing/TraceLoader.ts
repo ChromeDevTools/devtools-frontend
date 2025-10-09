@@ -308,10 +308,17 @@ async function wrapInTimeout<T>(
   const timeoutId = setTimeout(() => {
     let testTitle = '(unknown test)';
     if (mochaContext) {
-      if (isMochaContext(mochaContext)) {
-        testTitle = mochaContext.currentTest?.fullTitle() ?? testTitle;
-      } else {
-        testTitle = mochaContext.fullTitle();
+      try {
+        if (isMochaContext(mochaContext)) {
+          testTitle = mochaContext.currentTest?.fullTitle() ?? testTitle;
+        } else {
+          // For unknown reasons, we cannot trust the Mocha.Suite types in TS.
+          // They may be out of sync with the karma-mocha plugin.
+          // But, `suite.test.title` is present.
+          testTitle = (mochaContext as unknown as {test: {title: string}}).test.title;
+        }
+      } catch (e) {
+        console.error('Determining Mocha test context for trace timeout failed', e);
       }
     }
     console.error(`TraceLoader: [${stepName}]: took longer than ${timeoutMs}ms in test "${testTitle}"`);

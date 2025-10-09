@@ -464,7 +464,8 @@ export class CoverageView extends UI.Widget.VBox {
             .map(
                 (entry: CoverageListItem) =>
                     ({...entry, sources: entry.sources.filter((entry: CoverageListItem) => this.isVisible(entry))}));
-    this.listView.update(entries, this.textFilterRegExp);
+    this.listView.coverageInfo = entries;
+    this.listView.highlightRegExp = this.textFilterRegExp;
   }
 
   private toCoverageListItem(info: URLCoverageInfo): CoverageListItem {

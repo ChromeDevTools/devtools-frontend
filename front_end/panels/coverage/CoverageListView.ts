@@ -177,23 +177,35 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class CoverageListView extends UI.Widget.VBox {
-  private highlightRegExp: RegExp|null;
+  #highlightRegExp: RegExp|null;
   #coverageInfo: CoverageListItem[] = [];
   #selectedUrl: Platform.DevToolsPath.UrlString|null = null;
   #maxSize = 0;
   #view: View;
 
-  constructor(view = DEFAULT_VIEW) {
-    super({useShadowDom: true, delegatesFocus: true});
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, delegatesFocus: true});
     this.#view = view;
-    this.highlightRegExp = null;
+    this.#highlightRegExp = null;
   }
 
-  update(coverageInfo: CoverageListItem[], highlightRegExp: RegExp|null): void {
-    this.highlightRegExp = highlightRegExp;
-    this.#maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size), 0);
-    this.#coverageInfo = coverageInfo;
+  set highlightRegExp(highlightRegExp: RegExp|null) {
+    this.#highlightRegExp = highlightRegExp;
     this.requestUpdate();
+  }
+
+  get highlightRegExp(): RegExp|null {
+    return this.#highlightRegExp;
+  }
+
+  set coverageInfo(coverageInfo: CoverageListItem[]) {
+    this.#coverageInfo = coverageInfo;
+    this.#maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size), 0);
+    this.requestUpdate();
+  }
+
+  get coverageInfo(): CoverageListItem[] {
+    return this.#coverageInfo;
   }
 
   override performUpdate(): void {
@@ -202,7 +214,7 @@ export class CoverageListView extends UI.Widget.VBox {
       selectedUrl: this.#selectedUrl,
       maxSize: this.#maxSize,
       onOpen: this.selectByUrl.bind(this),
-      highlightRegExp: this.highlightRegExp,
+      highlightRegExp: this.#highlightRegExp,
     };
     this.#view(input, {}, this.contentElement);
   }

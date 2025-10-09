@@ -5,6 +5,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -46,16 +47,20 @@ export class ScreencastApp implements Common.App.App,
 
   presentUI(document: Document): void {
     this.rootView = new UI.RootView.RootView();
+    const hideInspector = Root.Runtime.Runtime.queryParam('inspector') === 'false';
 
-    this.rootSplitWidget =
-        new UI.SplitWidget.SplitWidget(false, true, 'inspector-view.screencast-split-view-state', 300, 300);
-    this.rootSplitWidget.setVertical(true);
-    this.rootSplitWidget.setSecondIsSidebar(true);
-    this.rootSplitWidget.show(this.rootView.element);
-    this.rootSplitWidget.hideMain();
+    if (!hideInspector) {
+      this.rootSplitWidget =
+          new UI.SplitWidget.SplitWidget(false, true, 'inspector-view.screencast-split-view-state', 300, 300);
+      this.rootSplitWidget.setVertical(true);
+      this.rootSplitWidget.setSecondIsSidebar(true);
+      this.rootSplitWidget.show(this.rootView.element);
+      this.rootSplitWidget.hideMain();
 
-    this.rootSplitWidget.setSidebarWidget(UI.InspectorView.InspectorView.instance());
-    UI.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
+      this.rootSplitWidget.setSidebarWidget(UI.InspectorView.InspectorView.instance());
+      UI.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
+    }
+
     this.rootView.attachToDocument(document);
     this.rootView.focus();
   }
@@ -69,6 +74,8 @@ export class ScreencastApp implements Common.App.App,
     this.screencastView = new ScreencastView(screenCaptureModel);
     if (this.rootSplitWidget) {
       this.rootSplitWidget.setMainWidget(this.screencastView);
+    } else if (this.rootView?.element) {
+      this.screencastView.show(this.rootView.element);
     }
     this.screencastView.initialize();
     this.onScreencastEnabledChanged();

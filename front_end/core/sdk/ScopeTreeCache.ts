@@ -8,19 +8,23 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type {Script} from './Script.js';
 
 type ScopeTreeNode = Formatter.FormatterWorkerPool.ScopeTreeNode;
+type Text = TextUtils.Text.Text;
 
 /** If a script failed to parse, we stash null in order to prevent unnecessary re-parsing */
-const scopeTrees = new WeakMap<Script, Promise<ScopeTreeNode|null>>();
+const scopeTrees = new WeakMap<Script, Promise<{scopeTree: ScopeTreeNode, text: Text}|null>>();
 
 /**
  * Computes and caches the scope tree for `script`.
  *
  * We use {@link Script} as a key to uniquely identify scripts.
  * {@link Script} boils down to "target" + "script ID". This
- * duplicates work in case of identitical script running on multiple targets
+ * duplicates work in case of identical script running on multiple targets
  * (e.g. workers).
+ *
+ * We also return a {@link TextUtils.Text.Text} instance. The scope tree uses offsets
+ * and the text allows conversion from/to line/column numbers.
  */
-export function scopeTreeForScript(script: Script): Promise<ScopeTreeNode|null> {
+export function scopeTreeForScript(script: Script): Promise<{scopeTree: ScopeTreeNode, text: Text}|null> {
   let promise = scopeTrees.get(script);
   if (promise === undefined) {
     promise = script.requestContentData().then(content => {
@@ -31,6 +35,7 @@ export function scopeTreeForScript(script: Script): Promise<ScopeTreeNode|null> 
       const sourceType = script.isModule ? 'module' : 'script';
       return Formatter.FormatterWorkerPool.formatterWorkerPool()
           .javaScriptScopeTree(content.text, sourceType)
+          .then(scopeTree => scopeTree ? ({scopeTree, text: content.textObj}) : null)
           .catch(() => null);
     });
     scopeTrees.set(script, promise);

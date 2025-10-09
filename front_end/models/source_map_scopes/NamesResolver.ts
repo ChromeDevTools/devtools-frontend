@@ -48,16 +48,7 @@ scopeTree:
     return null;
   }
 
-  const text = await getTextFor(script);
-  if (!text) {
-    return null;
-  }
-
-  const scopeTree = await SDK.ScopeTreeCache.scopeTreeForScript(script);
-  if (!scopeTree) {
-    return null;
-  }
-  return {scopeTree, text};
+  return await SDK.ScopeTreeCache.scopeTreeForScript(script);
 };
 
 /**

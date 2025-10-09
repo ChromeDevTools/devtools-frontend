@@ -2154,7 +2154,14 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
     action.addEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
 
     const toggleable = action.toggleable();
-    if (toggleable) {
+    const title = action.title();
+    const iconName = action.icon() ?? '';
+    const jslogContext = action.id();
+    const toggledIconName = action.toggledIcon() ?? iconName;
+    const toggleType = action.toggleWithRedColor() ? Buttons.Button.ToggleType.RED : Buttons.Button.ToggleType.PRIMARY;
+    if (e.childNodes.length) {
+      e.jslogContext = jslogContext;
+    } else if (toggleable) {
       toggled = () => {
         e.toggled = action.toggled();
         if (action.title()) {
@@ -2163,13 +2170,6 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
         }
       };
       action.addEventListener(ActionRegistration.Events.TOGGLED, toggled);
-    }
-    const title = action.title();
-    const iconName = action.icon() ?? '';
-    const jslogContext = action.id();
-    const toggledIconName = action.toggledIcon() ?? iconName;
-    const toggleType = action.toggleWithRedColor() ? Buttons.Button.ToggleType.RED : Buttons.Button.ToggleType.PRIMARY;
-    if (toggleable) {
       e.data = {
         jslogContext,
         title,

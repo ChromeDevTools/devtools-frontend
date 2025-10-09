@@ -213,7 +213,9 @@ export class CoverageListView extends UI.Widget.VBox {
       items: this.#coverageInfo,
       selectedUrl: this.#selectedUrl,
       maxSize: this.#maxSize,
-      onOpen: this.selectByUrl.bind(this),
+      onOpen: (url: Platform.DevToolsPath.UrlString) => {
+        this.selectedUrl = url;
+      },
       highlightRegExp: this.#highlightRegExp,
     };
     this.#view(input, {}, this.contentElement);
@@ -225,7 +227,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  selectByUrl(url: Platform.DevToolsPath.UrlString): void {
+  set selectedUrl(url: Platform.DevToolsPath.UrlString|null) {
     const info = this.#coverageInfo.find(info => info.url === url);
     if (!info) {
       return;
@@ -234,12 +236,16 @@ export class CoverageListView extends UI.Widget.VBox {
       this.#selectedUrl = url as Platform.DevToolsPath.UrlString;
       this.requestUpdate();
     }
-    const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+    const sourceCode = url ? Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) : null;
     if (!sourceCode) {
       return;
     }
 
     void Common.Revealer.reveal(sourceCode);
+  }
+
+  get selectedUrl(): Platform.DevToolsPath.UrlString|null {
+    return this.#selectedUrl;
   }
 }
 

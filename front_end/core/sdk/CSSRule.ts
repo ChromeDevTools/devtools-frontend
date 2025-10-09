@@ -26,15 +26,18 @@ export class CSSRule {
   readonly origin: Protocol.CSS.StyleSheetOrigin;
   readonly style: CSSStyleDeclaration;
   readonly header: CSSStyleSheetHeader|null;
+  readonly treeScope: Protocol.DOM.BackendNodeId|undefined;
 
   constructor(cssModel: CSSModel, payload: {
     style: Protocol.CSS.CSSStyle,
     origin: Protocol.CSS.StyleSheetOrigin,
+    originTreeScopeNodeId: Protocol.DOM.BackendNodeId|undefined,
     header: CSSStyleSheetHeader|null,
   }) {
     this.header = payload.header;
     this.cssModelInternal = cssModel;
     this.origin = payload.origin;
+    this.treeScope = payload.originTreeScopeNodeId;
     this.style = new CSSStyleDeclaration(this.cssModelInternal, this, payload.style, Type.Regular);
   }
 
@@ -112,7 +115,12 @@ export class CSSStyleRule extends CSSRule {
   startingStyles: CSSStartingStyle[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
-    super(cssModel, {origin: payload.origin, style: payload.style, header: styleSheetHeaderForRule(cssModel, payload)});
+    super(cssModel, {
+      origin: payload.origin,
+      style: payload.style,
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: payload.originTreeScopeNodeId
+    });
     this.reinitializeSelectors(payload.selectorList);
     this.nestingSelectors = payload.nestingSelectors;
     this.media = payload.media ? CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
@@ -224,7 +232,12 @@ export class CSSStyleRule extends CSSRule {
 export class CSSPropertyRule extends CSSRule {
   #name: CSSValue;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSPropertyRule) {
-    super(cssModel, {origin: payload.origin, style: payload.style, header: styleSheetHeaderForRule(cssModel, payload)});
+    super(cssModel, {
+      origin: payload.origin,
+      style: payload.style,
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: undefined,
+    });
     this.#name = new CSSValue(payload.propertyName);
   }
 
@@ -258,7 +271,12 @@ export class CSSPropertyRule extends CSSRule {
 export class CSSFontPaletteValuesRule extends CSSRule {
   readonly #paletteName: CSSValue;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSFontPaletteValuesRule) {
-    super(cssModel, {origin: payload.origin, style: payload.style, header: styleSheetHeaderForRule(cssModel, payload)});
+    super(cssModel, {
+      origin: payload.origin,
+      style: payload.style,
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: undefined
+    });
     this.#paletteName = new CSSValue(payload.fontPaletteName);
   }
 
@@ -289,7 +307,12 @@ export class CSSKeyframeRule extends CSSRule {
   #keyText!: CSSValue;
   #parentRuleName: string;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframeRule, parentRuleName: string) {
-    super(cssModel, {origin: payload.origin, style: payload.style, header: styleSheetHeaderForRule(cssModel, payload)});
+    super(cssModel, {
+      origin: payload.origin,
+      style: payload.style,
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: undefined
+    });
     this.reinitializeKey(payload.keyText);
     this.#parentRuleName = parentRuleName;
   }
@@ -340,7 +363,12 @@ export class CSSPositionTryRule extends CSSRule {
   readonly #name: CSSValue;
   readonly #active: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSPositionTryRule) {
-    super(cssModel, {origin: payload.origin, style: payload.style, header: styleSheetHeaderForRule(cssModel, payload)});
+    super(cssModel, {
+      origin: payload.origin,
+      style: payload.style,
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: undefined
+    });
     this.#name = new CSSValue(payload.name);
     this.#active = payload.active;
   }
@@ -372,7 +400,8 @@ export class CSSFunctionRule extends CSSRule {
     super(cssModel, {
       origin: payload.origin,
       style: {cssProperties: [], shorthandEntries: []},
-      header: styleSheetHeaderForRule(cssModel, payload)
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: undefined
     });
     this.#name = new CSSValue(payload.name);
     this.#parameters = payload.parameters.map(({name}) => name);

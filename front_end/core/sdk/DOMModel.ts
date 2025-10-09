@@ -480,6 +480,10 @@ export class DOMNode {
     return this.#isInShadowTree;
   }
 
+  getTreeRoot(): DOMNode {
+    return this.isShadowRoot() ? this : (this.ancestorShadowRoot() ?? this.ownerDocument ?? this);
+  }
+
   ancestorShadowHost(): DOMNode|null {
     const ancestorShadowRoot = this.ancestorShadowRoot();
     return ancestorShadowRoot ? ancestorShadowRoot.parentNode : null;

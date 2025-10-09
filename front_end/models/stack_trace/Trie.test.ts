@@ -129,3 +129,22 @@ describe('Trie', () => {
     });
   });
 });
+
+describe('isBuiltinFrame', () => {
+  it('returns "true" for builtin frames', () => {
+    assert.isTrue(StackTraceImpl.Trie.isBuiltinFrame({
+      lineNumber: -1,
+      columnNumber: -1,
+      functionName: 'Array.map',
+    }));
+  });
+
+  it('returns "false" for non-builtin frames', () => {
+    assert.isFalse(StackTraceImpl.Trie.isBuiltinFrame({
+      lineNumber: 0,
+      columnNumber: 42,
+      functionName: 'fn',
+      url: 'http://example.com/index.js',
+    }));
+  });
+});

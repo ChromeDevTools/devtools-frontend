@@ -4,15 +4,13 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   * @description Tooltip text describing that a color was clipped after conversion to match the target gamut
-   * @example {rgb(255 255 255)} PH1
+   * @description Menu warning that some color will be clipped after conversion to match the target gamut
    */
-  colorClippedTooltipText: 'This color was clipped to match the format\'s gamut. The actual result was {PH1}',
+  colorShiftWarning: '⚠️ Conversion to a narrow gamut will cause color shifts',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/FormatPickerContextMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -56,9 +54,12 @@ export class FormatPickerContextMenu {
       Common.Color.Format.XYZ_D65,
     ];
     const menu = new UI.ContextMenu.ContextMenu(e, {onSoftMenuClosed: () => resolve()});
+    const disclamerSection = menu.section('disclaimer');
     const legacySection = menu.section('legacy');
     const wideSection = menu.section('wide');
     const colorFunctionSection = menu.section('color-function').appendSubMenuItem('color()', false, 'color').section();
+
+    disclamerSection.appendItem(i18nString(UIStrings.colorShiftWarning), () => {}, {disabled: true});
 
     if (!(this.#color instanceof Common.Color.Nickname)) {
       const nickname = this.#color.asLegacyColor().nickname();
@@ -102,27 +103,13 @@ export class FormatPickerContextMenu {
         return;
       }
     }
-    const label = newColor.asString();
+    const label = newColor.isGamutClipped() ? newColor.asString() + ' ⚠️' : newColor.asString();
     if (!label) {
       return;
     }
-    let icon = undefined;
-    if (newColor.isGamutClipped()) {
-      icon = new IconButton.Icon.Icon();
-      icon.name = 'warning';
-      icon.classList.add('medium');
-      icon.style.marginLeft = '1px';
-      icon.style.marginTop = '-1px';
-      icon.style.minWidth = '16px';
-      icon.style.minHeight = '16px';
-    }
-    const tooltip =
-        icon ? i18nString(UIStrings.colorClippedTooltipText, {PH1: newColor.getAsRawString() ?? 'none'}) : undefined;
 
     const handler = (): void => onSelect(newColor);
 
-    section.appendItem(
-        label, handler,
-        {additionalElement: icon, tooltip, jslogContext: newColor.isGamutClipped() ? 'color' : 'clipped-color'});
+    section.appendItem(label, handler, {jslogContext: newColor.isGamutClipped() ? 'color' : 'clipped-color'});
   }
 }

@@ -81,6 +81,11 @@ export function resetLocaleDataForTest(): void {
   i18nInstance.resetLocaleDataForTest();
 }
 
+export function registerLocaleDataForTest(
+    locale: Intl.UnicodeBCP47LocaleIdentifier, messages: I18n.I18n.LocalizedMessages): void {
+  i18nInstance.registerLocaleData(locale, messages);
+}
+
 /**
  * Returns an anonymous function that wraps a call to retrieve a localized string.
  * This is introduced so that localized strings can be declared in environments where

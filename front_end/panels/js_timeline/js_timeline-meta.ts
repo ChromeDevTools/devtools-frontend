@@ -63,7 +63,7 @@ UI.ViewManager.registerViewExtension({
   isPreviewFeature: true,
   async loadView() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.TimelinePanel.instance({forceNew: null, isNode: true});
+    return Timeline.TimelinePanel.TimelinePanel.instance({forceNew: null});
   },
 });
 

@@ -331,7 +331,7 @@ describeWithMockConnection('ConversationHandler', () => {
       const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
       const traceModel = Trace.TraceModel.Model.createWithAllHandlers();
       await traceModel.parse(events);
-      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});
+      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, traceModel});
 
       const generator = await conversationHandler.handleExternalRequest({
         prompt: 'Please help me debug this problem',

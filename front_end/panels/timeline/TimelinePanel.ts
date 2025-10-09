@@ -306,7 +306,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let timelinePanelInstance: TimelinePanel|undefined;
-let isNode: boolean;
 
 /**
  * Represents the states that the timeline panel can be in.
@@ -350,6 +349,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #viewMode: ViewMode = {mode: 'LANDING_PAGE'};
   readonly #dimThirdPartiesSetting: Common.Settings.Setting<boolean>|null = null;
   #thirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null = null;
+  #isNode = Root.Runtime.Runtime.isNode();
 
   #onAnnotationModifiedEventBound = this.#onAnnotationModifiedEvent.bind(this);
 
@@ -462,7 +462,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
     this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
 
-    this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, isNode);
+    this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, this.#isNode);
 
     this.traceLoadStart = null;
 
@@ -477,7 +477,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.captureSelectorStatsSetting.setTitle(i18nString(UIStrings.enableSelectorStats));
 
     this.showScreenshotsSetting =
-        Common.Settings.Settings.instance().createSetting('timeline-show-screenshots', isNode ? false : true);
+        Common.Settings.Settings.instance().createSetting('timeline-show-screenshots', !this.#isNode);
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
 
@@ -503,7 +503,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.panelToolbar.wrappable = true;
     this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
     this.panelRightToolbar.role = 'presentation';
-    if (!isNode && this.canRecord()) {
+    if (!this.#isNode && this.canRecord()) {
       this.createSettingsPane();
       this.updateShowSettingsToolbarButton();
     }
@@ -698,11 +698,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   static instance(opts: {
     forceNew: boolean|null,
-    isNode: boolean,
     traceModel?: Trace.TraceModel.Model,
-  }|undefined = {forceNew: null, isNode: false}): TimelinePanel {
-    const {forceNew, isNode: isNodeMode} = opts;
-    isNode = isNodeMode;
+  }|undefined = {forceNew: null}): TimelinePanel {
+    const {forceNew} = opts;
 
     if (!timelinePanelInstance || forceNew) {
       timelinePanelInstance = new TimelinePanel(opts.traceModel);
@@ -1085,7 +1083,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private populateToolbar(): void {
     const canRecord = this.canRecord();
 
-    if (canRecord || isNode) {
+    if (canRecord || this.#isNode) {
       this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
     }
     if (canRecord) {
@@ -1118,7 +1116,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (canRecord) {
       this.panelToolbar.appendSeparator();
 
-      if (!isNode) {
+      if (!this.#isNode) {
         this.homeButton = new UI.Toolbar.ToolbarButton(
             i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
         this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
@@ -1135,7 +1133,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // View
     this.panelToolbar.appendSeparator();
-    if (!isNode) {
+    if (!this.#isNode) {
       this.showScreenshotsToolbarCheckbox =
           this.createSettingCheckbox(this.showScreenshotsSetting, i18nString(UIStrings.captureScreenshots));
       this.panelToolbar.appendToolbarItem(this.showScreenshotsToolbarCheckbox);
@@ -1163,14 +1161,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     // Isolate selector
-    if (isNode) {
+    if (this.#isNode) {
       const isolateSelector = new IsolateSelector();
       this.panelToolbar.appendSeparator();
       this.panelToolbar.appendToolbarItem(isolateSelector);
     }
 
     // Settings
-    if (!isNode && canRecord) {
+    if (!this.#isNode && canRecord) {
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
@@ -1728,7 +1726,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private updateSettingsPaneVisibility(): void {
-    if (isNode || !this.canRecord()) {
+    if (this.#isNode || !this.canRecord()) {
       return;
     }
     if (this.showSettingsPaneSetting.get()) {
@@ -1926,7 +1924,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.setState(State.START_PENDING);
     this.showRecordingStarted();
 
-    if (isNode) {
+    if (this.#isNode) {
       await this.#startCPUProfilingRecording();
     } else {
       await this.#startTraceRecording();
@@ -2033,7 +2031,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
-    this.recordReloadAction.setEnabled(isNode ? false : this.state === State.IDLE);
+    this.recordReloadAction.setEnabled(this.#isNode ? false : this.state === State.IDLE);
     this.homeButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
   }
 
@@ -2428,7 +2426,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     const liveMetrics = new TimelineComponents.LiveMetricsView.LiveMetricsView();
-    liveMetrics.isNode = isNode;
     this.landingPage = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, liveMetrics);
     this.landingPage.element.classList.add('timeline-landing-page', 'fill');
     this.landingPage.contentElement.classList.add('fill');

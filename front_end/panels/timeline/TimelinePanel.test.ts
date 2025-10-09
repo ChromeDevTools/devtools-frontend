@@ -50,7 +50,7 @@ describeWithEnvironment('TimelinePanel', function() {
     });
     Timeline.ModificationsManager.ModificationsManager.reset();
     traceModel = Trace.TraceModel.Model.createWithAllHandlers();
-    timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});
+    timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, traceModel});
     renderElementIntoDOM(timeline);
   });
 

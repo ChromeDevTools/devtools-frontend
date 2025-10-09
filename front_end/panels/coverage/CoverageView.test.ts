@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
@@ -96,6 +96,7 @@ describeWithMockConnection('CoverageView', () => {
 
   it('dispatches a record/reload action when the button is clicked', () => {
     const view = Coverage.CoverageView.CoverageView.instance();
+    renderElementIntoDOM(view);
     assert.isTrue(isShowingLandingPage(view));
 
     const button = view.contentElement.querySelector('.empty-state devtools-button');
@@ -106,7 +107,7 @@ describeWithMockConnection('CoverageView', () => {
     const reloadSpy =
         sinon.spy(UI.ActionRegistry.ActionRegistry.instance().getAction('coverage.start-with-reload'), 'execute');
 
-    dispatchClickEvent(button);
+    (button as HTMLElement).onclick?.(new PointerEvent('click'));
     assert.isTrue(toggleSpy.calledOnce || reloadSpy.calledOnce);
   });
 

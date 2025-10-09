@@ -1,7 +1,7 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../ui/legacy/legacy.js';
@@ -15,7 +15,14 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
+import {
+  Directives,
+  html,
+  i18nTemplate as unboundI18nTemplate,
+  nothing,
+  render,
+  type TemplateResult
+} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CoverageDecorationManager} from './CoverageDecorationManager.js';
@@ -126,9 +133,11 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nTemplate = unboundI18nTemplate.bind(undefined, str_);
 const {ref} = Directives;
 const {bindToAction} = UI.UIUtils;
 const {bindToSetting} = UI.SettingsUI;
+const {widgetConfig} = UI.Widget;
 
 let coverageViewInstance: CoverageView|undefined;
 
@@ -150,9 +159,9 @@ export class CoverageView extends UI.Widget.VBox {
   private showContentScriptsSetting: Common.Settings.Setting<boolean>;
   private contentScriptsCheckbox!: UI.UIUtils.CheckboxLabel;
   private coverageResultsElement!: HTMLElement;
-  private readonly landingPage: UI.Widget.VBox;
-  private readonly bfcacheReloadPromptPage: UI.Widget.VBox;
-  private readonly activationReloadPromptPage: UI.Widget.VBox;
+  private readonly landingPage: TemplateResult;
+  private readonly bfcacheReloadPromptPage: TemplateResult;
+  private readonly activationReloadPromptPage: TemplateResult;
   private listView: CoverageListView;
   private statusMessageElement!: HTMLElement;
 
@@ -263,7 +272,11 @@ export class CoverageView extends UI.Widget.VBox {
         this.buildReloadPromptPage(i18nString(UIStrings.activationNoCapture), 'prerender-page');
     this.listView = new CoverageListView();
 
-    this.landingPage.show(this.coverageResultsElement);
+    this.#showResults(this.landingPage);
+  }
+
+  #showResults(results: TemplateResult): void {
+    render(html`${results}`, this.coverageResultsElement);
   }
 
   static instance(): CoverageView {
@@ -277,42 +290,48 @@ export class CoverageView extends UI.Widget.VBox {
     coverageViewInstance = undefined;
   }
 
-  private buildLandingPage(): UI.Widget.VBox {
-    const widget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noCoverageData), '');
-    widget.link = 'https://developer.chrome.com/docs/devtools/coverage' as Platform.DevToolsPath.UrlString;
+  private buildLandingPage(): TemplateResult {
     if (this.startWithReloadButton) {
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction('coverage.start-with-reload');
-      if (action) {
-        widget.text = i18nString(UIStrings.clickTheReloadButtonSToReloadAnd, {PH1: i18nString(UIStrings.reloadPage)});
-        const button = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.reloadPage), () => action.execute(),
-            {jslogContext: action.id(), variant: Buttons.Button.Variant.TONAL});
-        widget.contentElement.append(button);
-      }
-    } else {
-      widget.text = i18nString(UIStrings.clickTheRecordButtonSToStart, {PH1: i18nString(UIStrings.startRecording)});
-      const button = UI.UIUtils.createTextButton(
-          i18nString(UIStrings.startRecording), () => this.toggleRecordAction.execute(),
-          {jslogContext: this.toggleRecordAction.id(), variant: Buttons.Button.Variant.TONAL});
-      widget.contentElement.append(button);
+      // clang-format off
+      return html`
+        <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget,{
+            header: i18nString(UIStrings.noCoverageData),
+            link: 'https://developer.chrome.com/docs/devtools/coverage' as Platform.DevToolsPath.UrlString,
+            text: i18nString(UIStrings.clickTheReloadButtonSToReloadAnd, {PH1: i18nString(UIStrings.reloadPage)}),
+            })}>
+          <devtools-button ${bindToAction('coverage.start-with-reload')}
+                            .variant=${Buttons.Button.Variant.TONAL} .iconName=${undefined}>
+            ${i18nString(UIStrings.reloadPage)}
+          </devtools-button>
+        </devtools-widget>`;
+      // clang-format on
     }
-    return widget;
+    // clang-format off
+    return html`
+      <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget,{
+          header: i18nString(UIStrings.noCoverageData),
+          link: 'https://developer.chrome.com/docs/devtools/coverage' as Platform.DevToolsPath.UrlString,
+          text: i18nString(UIStrings.clickTheRecordButtonSToStart, {PH1: i18nString(UIStrings.startRecording)}),
+          })}>
+        <devtools-button ${bindToAction('coverage.toggle-recording')}
+                         .variant=${Buttons.Button.Variant.TONAL} .iconName=${undefined}>
+          ${i18nString(UIStrings.startRecording)}
+        </devtools-button>
+      </devtools-widget>`;
+    // clang-format on
   }
 
-  private buildReloadPromptPage(message: Common.UIString.LocalizedString, className: string): UI.Widget.VBox {
-    const widget = new UI.Widget.VBox();
-    const reasonDiv = document.createElement('div');
-    reasonDiv.classList.add('message');
-    reasonDiv.textContent = message;
-    widget.contentElement.appendChild(reasonDiv);
-    this.inlineReloadButton =
-        UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButton('inspector-main.reload'));
-    const messageElement =
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.reloadPrompt, {PH1: this.inlineReloadButton});
-    messageElement.classList.add('message');
-    widget.contentElement.appendChild(messageElement);
-    widget.element.classList.add(className);
-    return widget;
+  private buildReloadPromptPage(message: Common.UIString.LocalizedString, className: string): TemplateResult {
+    // clang-format off
+    return html`
+      <div class="widget vbox ${className}">
+        <div class="message">${message}</div>
+        <span class="message">
+          ${i18nTemplate(UIStrings.reloadPrompt, {PH1: html`
+            <devtools-button class="inline-button" ${bindToAction('inspector-main.reload')}></devtools-button>`})}
+        </span>
+      </div>`;
+    // clang-format on
   }
 
   clear(): void {
@@ -329,7 +348,7 @@ export class CoverageView extends UI.Widget.VBox {
     }
     this.listView.reset();
     this.listView.detach();
-    this.landingPage.show(this.coverageResultsElement);
+    this.#showResults(this.landingPage);
     this.statusMessageElement.textContent = '';
     this.filterInput.disabled = true;
     this.filterByTypeComboBox.disabled = true;
@@ -420,10 +439,8 @@ export class CoverageView extends UI.Widget.VBox {
     this.filterInput.disabled = false;
     this.filterByTypeComboBox.disabled = false;
     this.contentScriptsCheckbox.disabled = false;
-    if (this.landingPage.isShowing()) {
-      this.landingPage.detach();
-    }
-    this.listView.show(this.coverageResultsElement);
+    this.#showResults(widgetTemplate(this.listView));
+    this.setDefaultFocusedElement(this.listView.element);
     if (hadFocus && !reloadButtonFocused) {
       this.listView.focus();
     }
@@ -471,6 +488,7 @@ export class CoverageView extends UI.Widget.VBox {
         this.onPrimaryPageChanged, this);
     if (this.hasFocus()) {
       this.listView.focus();
+      this.setDefaultFocusedElement(this.listView.element);
     }
     // Stopping the model triggers one last poll to get the final data.
     if (this.model) {
@@ -516,21 +534,13 @@ export class CoverageView extends UI.Widget.VBox {
           Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
     }
 
-    if (this.bfcacheReloadPromptPage.isShowing()) {
-      this.bfcacheReloadPromptPage.detach();
-      this.listView.show(this.coverageResultsElement);
-    }
-    if (this.activationReloadPromptPage.isShowing()) {
-      this.activationReloadPromptPage.detach();
-      this.listView.show(this.coverageResultsElement);
-    }
-    if (frame.backForwardCacheDetails.restoredFromCache) {
-      this.listView.detach();
-      this.bfcacheReloadPromptPage.show(this.coverageResultsElement);
-    }
     if (event.data.type === SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION) {
-      this.listView.detach();
-      this.activationReloadPromptPage.show(this.coverageResultsElement);
+      this.#showResults(this.activationReloadPromptPage);
+    } else if (frame.backForwardCacheDetails.restoredFromCache) {
+      this.#showResults(this.bfcacheReloadPromptPage);
+    } else {
+      this.#showResults(widgetTemplate(this.listView));
+      this.setDefaultFocusedElement(this.listView.element);
     }
 
     this.model.reset();
@@ -660,6 +670,10 @@ export class CoverageView extends UI.Widget.VBox {
     super.willHide();
     UI.Context.Context.instance().setFlavor(CoverageView, null);
   }
+}
+
+function widgetTemplate(widget: UI.Widget.Widget): TemplateResult {
+  return html`<devtools-widget .widgetConfig=${widgetConfig(UI.Widget.VBox)}>${widget.element}</devtools-widget>`;
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

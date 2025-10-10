@@ -26,7 +26,7 @@ const attributeFCP = (metric) => {
     };
     if (metric.entries.length) {
         const navigationEntry = getNavigationEntry();
-        const fcpEntry = metric.entries[metric.entries.length - 1];
+        const fcpEntry = metric.entries.at(-1);
         if (navigationEntry) {
             const activationStart = navigationEntry.activationStart || 0;
             const ttfb = Math.max(0, navigationEntry.responseStart - activationStart);
@@ -39,7 +39,7 @@ const attributeFCP = (metric) => {
             };
         }
     }
-    // Use Object.assign to set property to keep tsc happy.
+    // Use `Object.assign()` to ensure the original metric object is returned.
     const metricWithAttribution = Object.assign(metric, { attribution });
     return metricWithAttribution;
 };
@@ -49,7 +49,7 @@ const attributeFCP = (metric) => {
  * relevant `paint` performance entry used to determine the value. The reported
  * value is a `DOMHighResTimeStamp`.
  */
-export const onFCP = (onReport, opts) => {
+export const onFCP = (onReport, opts = {}) => {
     unattributedOnFCP((metric) => {
         const metricWithAttribution = attributeFCP(metric);
         onReport(metricWithAttribution);

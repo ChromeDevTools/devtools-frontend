@@ -1,4 +1,4 @@
-import { CLSMetricWithAttribution, ReportOpts } from '../types.js';
+import { CLSMetricWithAttribution, AttributionReportOpts } from '../types.js';
 /**
  * Calculates the [CLS](https://web.dev/articles/cls) value for the current page and
  * calls the `callback` function once the value is ready to be reported, along
@@ -20,4 +20,4 @@ import { CLSMetricWithAttribution, ReportOpts } from '../types.js';
  * hidden. As a result, the `callback` function might be called multiple times
  * during the same page load._
  */
-export declare const onCLS: (onReport: (metric: CLSMetricWithAttribution) => void, opts?: ReportOpts) => void;
+export declare const onCLS: (onReport: (metric: CLSMetricWithAttribution) => void, opts?: AttributionReportOpts) => void;

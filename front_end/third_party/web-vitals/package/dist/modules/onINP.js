@@ -16,25 +16,31 @@
 import { onBFCacheRestore } from './lib/bfcache.js';
 import { bindReporter } from './lib/bindReporter.js';
 import { initMetric } from './lib/initMetric.js';
-import { DEFAULT_DURATION_THRESHOLD, processInteractionEntry, estimateP98LongestInteraction, resetInteractions, } from './lib/interactions.js';
+import { initUnique } from './lib/initUnique.js';
+import { InteractionManager } from './lib/InteractionManager.js';
 import { observe } from './lib/observe.js';
-import { onHidden } from './lib/onHidden.js';
 import { initInteractionCountPolyfill } from './lib/polyfills/interactionCountPolyfill.js';
 import { whenActivated } from './lib/whenActivated.js';
-import { whenIdle } from './lib/whenIdle.js';
+import { getVisibilityWatcher } from './lib/getVisibilityWatcher.js';
+import { whenIdleOrHidden } from './lib/whenIdleOrHidden.js';
 /** Thresholds for INP. See https://web.dev/articles/inp#what_is_a_good_inp_score */
 export const INPThresholds = [200, 500];
+// The default `durationThreshold` used across this library for observing
+// `event` entries via PerformanceObserver.
+const DEFAULT_DURATION_THRESHOLD = 40;
 /**
  * Calculates the [INP](https://web.dev/articles/inp) value for the current
  * page and calls the `callback` function once the value is ready, along with
  * the `event` performance entries reported for that interaction. The reported
  * value is a `DOMHighResTimeStamp`.
  *
- * A custom `durationThreshold` configuration option can optionally be passed to
- * control what `event-timing` entries are considered for INP reporting. The
- * default threshold is `40`, which means INP scores of less than 40 are
- * reported as 0. Note that this will not affect your 75th percentile INP value
- * unless that value is also less than 40 (well below the recommended
+ * A custom `durationThreshold` configuration option can optionally be passed
+ * to control what `event-timing` entries are considered for INP reporting. The
+ * default threshold is `40`, which means INP scores of less than 40 will not
+ * be reported. To avoid reporting no interactions in these cases, the library
+ * will fall back to the input delay of the first interaction. Note that this
+ * will not affect your 75th percentile INP value unless that value is also
+ * less than 40 (well below the recommended
  * [good](https://web.dev/articles/inp#what_is_a_good_inp_score) threshold).
  *
  * If the `reportAllChanges` configuration option is set to `true`, the
@@ -51,19 +57,19 @@ export const INPThresholds = [200, 500];
  * hidden. As a result, the `callback` function might be called multiple times
  * during the same page load._
  */
-export const onINP = (onReport, opts) => {
+export const onINP = (onReport, opts = {}) => {
     // Return if the browser doesn't support all APIs needed to measure INP.
-    if (!('PerformanceEventTiming' in self &&
+    if (!(globalThis.PerformanceEventTiming &&
         'interactionId' in PerformanceEventTiming.prototype)) {
         return;
     }
-    // Set defaults
-    opts = opts || {};
+    const visibilityWatcher = getVisibilityWatcher();
     whenActivated(() => {
         // TODO(philipwalton): remove once the polyfill is no longer needed.
         initInteractionCountPolyfill();
         let metric = initMetric('INP');
         let report;
+        const interactionManager = initUnique(opts, InteractionManager);
         const handleEntries = (entries) => {
             // Queue the `handleEntries()` callback in the next idle task.
             // This is needed to increase the chances that all event entries that
@@ -71,11 +77,13 @@ export const onINP = (onReport, opts) => {
             // have been dispatched. Note: there is currently an experiment
             // running in Chrome (EventTimingKeypressAndCompositionInteractionId)
             // 123+ that if rolled out fully may make this no longer necessary.
-            whenIdle(() => {
-                entries.forEach(processInteractionEntry);
-                const inp = estimateP98LongestInteraction();
-                if (inp && inp.latency !== metric.value) {
-                    metric.value = inp.latency;
+            whenIdleOrHidden(() => {
+                for (const entry of entries) {
+                    interactionManager._processEntry(entry);
+                }
+                const inp = interactionManager._estimateP98LongestInteraction();
+                if (inp && inp._latency !== metric.value) {
+                    metric.value = inp._latency;
                     metric.entries = inp.entries;
                     report();
                 }
@@ -95,14 +103,14 @@ export const onINP = (onReport, opts) => {
             // Also observe entries of type `first-input`. This is useful in cases
             // where the first interaction is less than the `durationThreshold`.
             po.observe({ type: 'first-input', buffered: true });
-            onHidden(() => {
+            visibilityWatcher.onHidden(() => {
                 handleEntries(po.takeRecords());
                 report(true);
             });
             // Only report after a bfcache restore if the `PerformanceObserver`
             // successfully registered.
             onBFCacheRestore(() => {
-                resetInteractions();
+                interactionManager._resetInteractions();
                 metric = initMetric('INP');
                 report = bindReporter(onReport, metric, INPThresholds, opts.reportAllChanges);
             });

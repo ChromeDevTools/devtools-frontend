@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { 
+const instanceMap = new WeakMap();
 /**
- * @deprecated Use `onINP()` instead.
+ * A function that accepts and identity object and a class object and returns
+ * either a new instance of that class or an existing instance, if the
+ * identity object was previously used.
  */
-onFID, FIDThresholds, } from './onFID.js';
+export function initUnique(identityObj, ClassObj) {
+    if (!instanceMap.get(identityObj)) {
+        instanceMap.set(identityObj, new ClassObj());
+    }
+    return instanceMap.get(identityObj);
+}

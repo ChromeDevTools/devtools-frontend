@@ -49,7 +49,7 @@ const attributeTTFB = (metric) => {
             navigationEntry: navigationEntry,
         };
     }
-    // Use Object.assign to set property to keep tsc happy.
+    // Use `Object.assign()` to ensure the original metric object is returned.
     const metricWithAttribution = Object.assign(metric, { attribution });
     return metricWithAttribution;
 };
@@ -68,7 +68,7 @@ const attributeTTFB = (metric) => {
  * includes time spent on DNS lookup, connection negotiation, network latency,
  * and server processing time.
  */
-export const onTTFB = (onReport, opts) => {
+export const onTTFB = (onReport, opts = {}) => {
     unattributedOnTTFB((metric) => {
         const metricWithAttribution = attributeTTFB(metric);
         onReport(metricWithAttribution);

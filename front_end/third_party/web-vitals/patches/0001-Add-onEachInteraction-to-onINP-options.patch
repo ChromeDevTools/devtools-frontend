@@ -1,0 +1,75 @@
+From 491debaabfe255b3c046c79db34defee146e5eec Mon Sep 17 00:00:00 2001
+From: Connor Clark <cjamcl@gmail.com>
+Date: Fri, 10 Oct 2025 09:46:44 -0700
+Subject: [PATCH] Add onEachInteraction to onINP options
+
+This adds an "onEachInteraction" option to onINP, which exposes to us
+each interaction. It also calls attributeINP on each value given to the
+callback.
+
+---
+ src/attribution/onINP.ts | 35 ++++++++++++++++++++++++++++++++++-
+ src/types/inp.ts         |  1 +
+ 2 files changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/src/attribution/onINP.ts b/src/attribution/onINP.ts
+index 479a00f..d295263 100644
+--- a/src/attribution/onINP.ts
++++ b/src/attribution/onINP.ts
+@@ -240,7 +240,40 @@ export const onINP = (
+     cleanupPending = false;
+   };
+ 
+-  interactionManager._onBeforeProcessingEntry = groupEntriesByRenderTime;
++  async function handleOnEachInteractionCallback(
++    entry: PerformanceEventTiming,
++  ) {
++    if (!opts.onEachInteraction) {
++      return;
++    }
++
++    // Wait a microtask so this "pre" processing callback actually
++    // becomes a "post" processing callback.
++    void (await Promise.resolve());
++    if (!entry.interactionId) {
++      return;
++    }
++
++    const interaction = attributeINP({
++      entries: [entry],
++      // The only value we really need for `attributeINP` is `entries`
++      // Everything else is included to fill out the type.
++      name: 'INP',
++      rating: 'good',
++      value: entry.duration,
++      delta: entry.duration,
++      navigationType: 'navigate',
++      id: 'N/A',
++    });
++    opts.onEachInteraction(interaction);
++  }
++
++  interactionManager._onBeforeProcessingEntry = (
++    entry: PerformanceEventTiming,
++  ) => {
++    void handleOnEachInteractionCallback(entry);
++    groupEntriesByRenderTime(entry);
++  };
+   interactionManager._onAfterProcessingINPCandidate = saveInteractionTarget;
+ 
+   const getIntersectingLoAFs = (
+diff --git a/src/types/inp.ts b/src/types/inp.ts
+index 7dfa9bb..f87a2c5 100644
+--- a/src/types/inp.ts
++++ b/src/types/inp.ts
+@@ -27,6 +27,7 @@ export interface INPReportOpts extends ReportOpts {
+ 
+ export interface INPAttributionReportOpts extends AttributionReportOpts {
+   durationThreshold?: number;
++  onEachInteraction?: (interaction: INPMetricWithAttribution) => void;
+ }
+ 
+ /**
+-- 
+2.51.0.760.g7b8bcc2412-goog
+

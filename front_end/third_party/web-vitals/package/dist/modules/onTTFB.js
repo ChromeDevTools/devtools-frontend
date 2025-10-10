@@ -34,7 +34,7 @@ const whenReady = (callback) => {
     }
     else {
         // Queue a task so the callback runs after `loadEventEnd`.
-        setTimeout(callback, 0);
+        setTimeout(callback);
     }
 };
 /**
@@ -52,9 +52,7 @@ const whenReady = (callback) => {
  * includes time spent on DNS lookup, connection negotiation, network latency,
  * and server processing time.
  */
-export const onTTFB = (onReport, opts) => {
-    // Set defaults
-    opts = opts || {};
+export const onTTFB = (onReport, opts = {}) => {
     let metric = initMetric('TTFB');
     let report = bindReporter(onReport, metric, TTFBThresholds, opts.reportAllChanges);
     whenReady(() => {

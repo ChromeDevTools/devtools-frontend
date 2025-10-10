@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LCPEntryManager } from './lib/LCPEntryManager.js';
 import { onBFCacheRestore } from './lib/bfcache.js';
 import { bindReporter } from './lib/bindReporter.js';
 import { doubleRAF } from './lib/doubleRAF.js';
 import { getActivationStart } from './lib/getActivationStart.js';
 import { getVisibilityWatcher } from './lib/getVisibilityWatcher.js';
 import { initMetric } from './lib/initMetric.js';
+import { initUnique } from './lib/initUnique.js';
 import { observe } from './lib/observe.js';
-import { onHidden } from './lib/onHidden.js';
 import { runOnce } from './lib/runOnce.js';
 import { whenActivated } from './lib/whenActivated.js';
-import { whenIdle } from './lib/whenIdle.js';
+import { whenIdleOrHidden } from './lib/whenIdleOrHidden.js';
 /** Thresholds for LCP. See https://web.dev/articles/lcp#what_is_a_good_lcp_score */
 export const LCPThresholds = [2500, 4000];
-const reportedMetricIDs = {};
 /**
  * Calculates the [LCP](https://web.dev/articles/lcp) value for the current page and
  * calls the `callback` function once the value is ready (along with the
@@ -38,20 +38,20 @@ const reportedMetricIDs = {};
  * performance entry is dispatched, or once the final value of the metric has
  * been determined.
  */
-export const onLCP = (onReport, opts) => {
-    // Set defaults
-    opts = opts || {};
+export const onLCP = (onReport, opts = {}) => {
     whenActivated(() => {
         const visibilityWatcher = getVisibilityWatcher();
         let metric = initMetric('LCP');
         let report;
+        const lcpEntryManager = initUnique(opts, LCPEntryManager);
         const handleEntries = (entries) => {
             // If reportAllChanges is set then call this function for each entry,
             // otherwise only consider the last one.
             if (!opts.reportAllChanges) {
                 entries = entries.slice(-1);
             }
-            entries.forEach((entry) => {
+            for (const entry of entries) {
+                lcpEntryManager._processEntry(entry);
                 // Only report if the page wasn't hidden prior to LCP.
                 if (entry.startTime < visibilityWatcher.firstHiddenTime) {
                     // The startTime attribute returns the value of the renderTime if it is
@@ -64,32 +64,40 @@ export const onLCP = (onReport, opts) => {
                     metric.entries = [entry];
                     report();
                 }
-            });
+            }
         };
         const po = observe('largest-contentful-paint', handleEntries);
         if (po) {
             report = bindReporter(onReport, metric, LCPThresholds, opts.reportAllChanges);
+            // Ensure this logic only runs once, since it can be triggered from
+            // any of three different event listeners below.
             const stopListening = runOnce(() => {
-                if (!reportedMetricIDs[metric.id]) {
-                    handleEntries(po.takeRecords());
-                    po.disconnect();
-                    reportedMetricIDs[metric.id] = true;
-                    report(true);
-                }
+                handleEntries(po.takeRecords());
+                po.disconnect();
+                report(true);
             });
-            // Stop listening after input. Note: while scrolling is an input that
-            // stops LCP observation, it's unreliable since it can be programmatically
-            // generated. See: https://github.com/GoogleChrome/web-vitals/issues/75
-            ['keydown', 'click'].forEach((type) => {
-                // Wrap in a setTimeout so the callback is run in a separate task
-                // to avoid extending the keyboard/click handler to reduce INP impact
-                // https://github.com/GoogleChrome/web-vitals/issues/383
-                addEventListener(type, () => whenIdle(stopListening), {
-                    once: true,
+            // Need a separate wrapper to ensure the `runOnce` function above is
+            // common for all three functions
+            const stopListeningWrapper = (event) => {
+                if (event.isTrusted) {
+                    // Wrap the listener in an idle callback so it's run in a separate
+                    // task to reduce potential INP impact.
+                    // https://github.com/GoogleChrome/web-vitals/issues/383
+                    whenIdleOrHidden(stopListening);
+                    removeEventListener(event.type, stopListeningWrapper, {
+                        capture: true,
+                    });
+                }
+            };
+            // Stop listening after input or visibilitychange.
+            // Note: while scrolling is an input that stops LCP observation, it's
+            // unreliable since it can be programmatically generated.
+            // See: https://github.com/GoogleChrome/web-vitals/issues/75
+            for (const type of ['keydown', 'click', 'visibilitychange']) {
+                addEventListener(type, stopListeningWrapper, {
                     capture: true,
                 });
-            });
-            onHidden(stopListening);
+            }
             // Only report after a bfcache restore if the `PerformanceObserver`
             // successfully registered.
             onBFCacheRestore((event) => {
@@ -97,7 +105,6 @@ export const onLCP = (onReport, opts) => {
                 report = bindReporter(onReport, metric, LCPThresholds, opts.reportAllChanges);
                 doubleRAF(() => {
                     metric.value = performance.now() - event.timeStamp;
-                    reportedMetricIDs[metric.id] = true;
                     report(true);
                 });
             });

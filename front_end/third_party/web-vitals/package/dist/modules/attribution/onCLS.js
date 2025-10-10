@@ -13,37 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LayoutShiftManager } from '../lib/LayoutShiftManager.js';
 import { getLoadState } from '../lib/getLoadState.js';
 import { getSelector } from '../lib/getSelector.js';
+import { initUnique } from '../lib/initUnique.js';
 import { onCLS as unattributedOnCLS } from '../onCLS.js';
 const getLargestLayoutShiftEntry = (entries) => {
-    return entries.reduce((a, b) => (a && a.value > b.value ? a : b));
+    return entries.reduce((a, b) => (a.value > b.value ? a : b));
 };
 const getLargestLayoutShiftSource = (sources) => {
-    return sources.find((s) => s.node && s.node.nodeType === 1) || sources[0];
-};
-const attributeCLS = (metric) => {
-    // Use an empty object if no other attribution has been set.
-    let attribution = {};
-    if (metric.entries.length) {
-        const largestEntry = getLargestLayoutShiftEntry(metric.entries);
-        if (largestEntry && largestEntry.sources && largestEntry.sources.length) {
-            const largestSource = getLargestLayoutShiftSource(largestEntry.sources);
-            if (largestSource) {
-                attribution = {
-                    largestShiftTarget: getSelector(largestSource.node),
-                    largestShiftTime: largestEntry.startTime,
-                    largestShiftValue: largestEntry.value,
-                    largestShiftSource: largestSource,
-                    largestShiftEntry: largestEntry,
-                    loadState: getLoadState(largestEntry.startTime),
-                };
-            }
-        }
-    }
-    // Use Object.assign to set property to keep tsc happy.
-    const metricWithAttribution = Object.assign(metric, { attribution });
-    return metricWithAttribution;
+    return sources.find((s) => s.node?.nodeType === 1) || sources[0];
 };
 /**
  * Calculates the [CLS](https://web.dev/articles/cls) value for the current page and
@@ -66,7 +45,47 @@ const attributeCLS = (metric) => {
  * hidden. As a result, the `callback` function might be called multiple times
  * during the same page load._
  */
-export const onCLS = (onReport, opts) => {
+export const onCLS = (onReport, opts = {}) => {
+    // Clone the opts object to ensure it's unique, so we can initialize a
+    // single instance of the `LayoutShiftManager` class that's shared only with
+    // this function invocation and the `unattributedOnCLS()` invocation below
+    // (which is passed the same `opts` object).
+    opts = Object.assign({}, opts);
+    const layoutShiftManager = initUnique(opts, LayoutShiftManager);
+    const layoutShiftTargetMap = new WeakMap();
+    layoutShiftManager._onAfterProcessingUnexpectedShift = (entry) => {
+        if (entry?.sources?.length) {
+            const largestSource = getLargestLayoutShiftSource(entry.sources);
+            const node = largestSource?.node;
+            if (node) {
+                const customTarget = opts.generateTarget?.(node) ?? getSelector(node);
+                layoutShiftTargetMap.set(largestSource, customTarget);
+            }
+        }
+    };
+    const attributeCLS = (metric) => {
+        // Use an empty object if no other attribution has been set.
+        let attribution = {};
+        if (metric.entries.length) {
+            const largestEntry = getLargestLayoutShiftEntry(metric.entries);
+            if (largestEntry?.sources?.length) {
+                const largestSource = getLargestLayoutShiftSource(largestEntry.sources);
+                if (largestSource) {
+                    attribution = {
+                        largestShiftTarget: layoutShiftTargetMap.get(largestSource),
+                        largestShiftTime: largestEntry.startTime,
+                        largestShiftValue: largestEntry.value,
+                        largestShiftSource: largestSource,
+                        largestShiftEntry: largestEntry,
+                        loadState: getLoadState(largestEntry.startTime),
+                    };
+                }
+            }
+        }
+        // Use `Object.assign()` to ensure the original metric object is returned.
+        const metricWithAttribution = Object.assign(metric, { attribution });
+        return metricWithAttribution;
+    };
     unattributedOnCLS((metric) => {
         const metricWithAttribution = attributeCLS(metric);
         onReport(metricWithAttribution);

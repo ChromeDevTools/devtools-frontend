@@ -5,12 +5,13 @@
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/node.gni")
 
+web_vitals_injected_sources = [
+  "OnEachLayoutShift.ts",
+  "web-vitals-injected.ts",
+]
+
 devtools_module("web-vitals-injected") {
-  sources = [
-    "OnEachInteraction.ts",
-    "OnEachLayoutShift.ts",
-    "web-vitals-injected.ts",
-  ]
+  sources = web_vitals_injected_sources
 
   deps = [
     "../../../third_party/web-vitals:bundle",
@@ -30,9 +31,9 @@ node_action("bundled_library") {
   _output_file_location = target_gen_dir + "/web-vitals-injected.generated.js"
 
   inputs = [
-    _bundled_entrypoint,
-    "rollup.config.mjs",
-  ]
+             _bundled_entrypoint,
+             "rollup.config.mjs",
+           ] + web_vitals_injected_sources
 
   deps = [ ":web-vitals-injected" ]
 

@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export {
-  /**
-   * @deprecated Use `onINP()` instead.
-   */
-  onFID,
-} from './onFID.js';
-
-export {FIDThresholds} from '../onFID.js';
-
-export * from '../types.js';
+export class LCPEntryManager {
+    _onBeforeProcessingEntry;
+    _processEntry(entry) {
+        this._onBeforeProcessingEntry?.(entry);
+    }
+}

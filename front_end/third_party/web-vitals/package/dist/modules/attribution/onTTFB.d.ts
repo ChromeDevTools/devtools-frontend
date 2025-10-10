@@ -1,4 +1,4 @@
-import { TTFBMetricWithAttribution, ReportOpts } from '../types.js';
+import { TTFBMetricWithAttribution, AttributionReportOpts } from '../types.js';
 /**
  * Calculates the [TTFB](https://web.dev/articles/ttfb) value for the
  * current page and calls the `callback` function once the page has loaded,
@@ -14,4 +14,4 @@ import { TTFBMetricWithAttribution, ReportOpts } from '../types.js';
  * includes time spent on DNS lookup, connection negotiation, network latency,
  * and server processing time.
  */
-export declare const onTTFB: (onReport: (metric: TTFBMetricWithAttribution) => void, opts?: ReportOpts) => void;
+export declare const onTTFB: (onReport: (metric: TTFBMetricWithAttribution) => void, opts?: AttributionReportOpts) => void;

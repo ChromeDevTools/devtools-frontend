@@ -17,7 +17,7 @@ import { getBFCacheRestoreTime } from './bfcache.js';
 import { generateUniqueID } from './generateUniqueID.js';
 import { getActivationStart } from './getActivationStart.js';
 import { getNavigationEntry } from './getNavigationEntry.js';
-export const initMetric = (name, value) => {
+export const initMetric = (name, value = -1) => {
     const navEntry = getNavigationEntry();
     let navigationType = 'navigate';
     if (getBFCacheRestoreTime() >= 0) {
@@ -38,7 +38,7 @@ export const initMetric = (name, value) => {
     const entries = [];
     return {
         name,
-        value: typeof value === 'undefined' ? -1 : value,
+        value,
         rating: 'good', // If needed, will be updated when reported. `const` to keep the type from widening to `string`.
         delta: 0,
         entries,

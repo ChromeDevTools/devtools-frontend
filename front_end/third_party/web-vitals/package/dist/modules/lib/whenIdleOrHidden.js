@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { onHidden } from './onHidden.js';
 import { runOnce } from './runOnce.js';
 /**
  * Runs the passed callback during the next idle period, or immediately
  * if the browser's visibility state is (or becomes) hidden.
  */
-export const whenIdle = (cb) => {
-    const rIC = self.requestIdleCallback || self.setTimeout;
-    let handle = -1;
-    cb = runOnce(cb);
+export const whenIdleOrHidden = (cb) => {
+    const rIC = globalThis.requestIdleCallback || setTimeout;
     // If the document is hidden, run the callback immediately, otherwise
     // race an idle callback with the next `visibilitychange` event.
     if (document.visibilityState === 'hidden') {
         cb();
     }
     else {
-        handle = rIC(cb);
-        onHidden(cb);
+        cb = runOnce(cb);
+        addEventListener('visibilitychange', cb, { once: true, capture: true });
+        rIC(() => {
+            cb();
+            // Remove the above event listener since no longer required.
+            // See: https://github.com/GoogleChrome/web-vitals/issues/622
+            removeEventListener('visibilitychange', cb, { capture: true });
+        });
     }
-    return handle;
 };

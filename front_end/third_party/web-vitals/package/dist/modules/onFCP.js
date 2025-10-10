@@ -29,15 +29,13 @@ export const FCPThresholds = [1800, 3000];
  * relevant `paint` performance entry used to determine the value. The reported
  * value is a `DOMHighResTimeStamp`.
  */
-export const onFCP = (onReport, opts) => {
-    // Set defaults
-    opts = opts || {};
+export const onFCP = (onReport, opts = {}) => {
     whenActivated(() => {
         const visibilityWatcher = getVisibilityWatcher();
         let metric = initMetric('FCP');
         let report;
         const handleEntries = (entries) => {
-            entries.forEach((entry) => {
+            for (const entry of entries) {
                 if (entry.name === 'first-contentful-paint') {
                     po.disconnect();
                     // Only report if the page wasn't hidden prior to the first paint.
@@ -51,7 +49,7 @@ export const onFCP = (onReport, opts) => {
                         report(true);
                     }
                 }
-            });
+            }
         };
         const po = observe('paint', handleEntries);
         if (po) {

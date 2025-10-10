@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 import { onBFCacheRestore } from './lib/bfcache.js';
-import { initMetric } from './lib/initMetric.js';
-import { observe } from './lib/observe.js';
 import { bindReporter } from './lib/bindReporter.js';
 import { doubleRAF } from './lib/doubleRAF.js';
-import { onHidden } from './lib/onHidden.js';
+import { initMetric } from './lib/initMetric.js';
+import { initUnique } from './lib/initUnique.js';
+import { LayoutShiftManager } from './lib/LayoutShiftManager.js';
+import { observe } from './lib/observe.js';
 import { runOnce } from './lib/runOnce.js';
 import { onFCP } from './onFCP.js';
+import { getVisibilityWatcher } from './lib/getVisibilityWatcher.js';
 /** Thresholds for CLS. See https://web.dev/articles/cls#what_is_a_good_cls_score */
 export const CLSThresholds = [0.1, 0.25];
 /**
@@ -44,57 +46,37 @@ export const CLSThresholds = [0.1, 0.25];
  * hidden. As a result, the `callback` function might be called multiple times
  * during the same page load._
  */
-export const onCLS = (onReport, opts) => {
-    // Set defaults
-    opts = opts || {};
+export const onCLS = (onReport, opts = {}) => {
+    const visibilityWatcher = getVisibilityWatcher();
     // Start monitoring FCP so we can only report CLS if FCP is also reported.
     // Note: this is done to match the current behavior of CrUX.
     onFCP(runOnce(() => {
         let metric = initMetric('CLS', 0);
         let report;
-        let sessionValue = 0;
-        let sessionEntries = [];
+        const layoutShiftManager = initUnique(opts, LayoutShiftManager);
         const handleEntries = (entries) => {
-            entries.forEach((entry) => {
-                // Only count layout shifts without recent user input.
-                if (!entry.hadRecentInput) {
-                    const firstSessionEntry = sessionEntries[0];
-                    const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
-                    // If the entry occurred less than 1 second after the previous entry
-                    // and less than 5 seconds after the first entry in the session,
-                    // include the entry in the current session. Otherwise, start a new
-                    // session.
-                    if (sessionValue &&
-                        entry.startTime - lastSessionEntry.startTime < 1000 &&
-                        entry.startTime - firstSessionEntry.startTime < 5000) {
-                        sessionValue += entry.value;
-                        sessionEntries.push(entry);
-                    }
-                    else {
-                        sessionValue = entry.value;
-                        sessionEntries = [entry];
-                    }
-                }
-            });
+            for (const entry of entries) {
+                layoutShiftManager._processEntry(entry);
+            }
             // If the current session value is larger than the current CLS value,
             // update CLS and the entries contributing to it.
-            if (sessionValue > metric.value) {
-                metric.value = sessionValue;
-                metric.entries = sessionEntries;
+            if (layoutShiftManager._sessionValue > metric.value) {
+                metric.value = layoutShiftManager._sessionValue;
+                metric.entries = layoutShiftManager._sessionEntries;
                 report();
             }
         };
         const po = observe('layout-shift', handleEntries);
         if (po) {
             report = bindReporter(onReport, metric, CLSThresholds, opts.reportAllChanges);
-            onHidden(() => {
+            visibilityWatcher.onHidden(() => {
                 handleEntries(po.takeRecords());
                 report(true);
             });
             // Only report after a bfcache restore if the `PerformanceObserver`
             // successfully registered.
             onBFCacheRestore(() => {
-                sessionValue = 0;
+                layoutShiftManager._sessionValue = 0;
                 metric = initMetric('CLS', 0);
                 report = bindReporter(onReport, metric, CLSThresholds, opts.reportAllChanges);
                 doubleRAF(() => report());
@@ -102,7 +84,7 @@ export const onCLS = (onReport, opts) => {
             // Queue a task to report (if nothing else triggers a report first).
             // This allows CLS to be reported as soon as FCP fires when
             // `reportAllChanges` is true.
-            setTimeout(report, 0);
+            setTimeout(report);
         }
     }));
 };

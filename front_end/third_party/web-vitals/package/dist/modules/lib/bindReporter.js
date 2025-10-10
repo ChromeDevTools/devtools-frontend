@@ -28,7 +28,7 @@ export const bindReporter = (callback, metric, thresholds, reportAllChanges) => 
     return (forceReport) => {
         if (metric.value >= 0) {
             if (forceReport || reportAllChanges) {
-                delta = metric.value - (prevValue || 0);
+                delta = metric.value - (prevValue ?? 0);
                 // Report the metric if there's a non-zero delta or if no previous
                 // value exists (which can happen in the case of the document becoming
                 // hidden when the metric value is 0).

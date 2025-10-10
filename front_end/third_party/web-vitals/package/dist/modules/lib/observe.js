@@ -21,7 +21,7 @@
  * This function also feature-detects entry support and wraps the logic in a
  * try/catch to avoid errors in unsupporting browsers.
  */
-export const observe = (type, callback, opts) => {
+export const observe = (type, callback, opts = {}) => {
     try {
         if (PerformanceObserver.supportedEntryTypes.includes(type)) {
             const po = new PerformanceObserver((list) => {
@@ -32,14 +32,11 @@ export const observe = (type, callback, opts) => {
                     callback(list.getEntries());
                 });
             });
-            po.observe(Object.assign({
-                type,
-                buffered: true,
-            }, opts || {}));
+            po.observe({ type, buffered: true, ...opts });
             return po;
         }
     }
-    catch (e) {
+    catch {
         // Do nothing.
     }
     return;

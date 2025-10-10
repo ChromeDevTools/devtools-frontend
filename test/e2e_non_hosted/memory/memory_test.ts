@@ -533,6 +533,14 @@ describe('The Memory Panel', function() {
     await setFilterDropdown('Objects retained by DevTools Console', devToolsPage);
     await getCategoryRow('ObjectRetainedByConsole', undefined, devToolsPage);
     assert.isNotOk(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false, devToolsPage));
+    await setFilterDropdown('Objects retained by Event Handlers', devToolsPage);
+    await getCategoryRow('ObjectRetainedByEventHandler', undefined, devToolsPage);
+    assert.isNotOk(await getCategoryRow('ObjectRetainedByConsole', false, devToolsPage));
+    assert.isNotOk(await getCategoryRow('ObjectRetainedByDetachedDom', false, devToolsPage));
+    const functionCategoryRow = await getCategoryRow('Function', undefined, devToolsPage);
+    await focusTableRow(functionCategoryRow, devToolsPage);
+    await expandFocusedRow(devToolsPage);
+    await focusTableRowWithName('handleEventForTest()', devToolsPage);
   });
 
   it('Groups HTML elements by tag name', async ({devToolsPage, inspectedPage}) => {

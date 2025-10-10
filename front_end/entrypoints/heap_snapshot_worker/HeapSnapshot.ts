@@ -1403,6 +1403,71 @@ export abstract class HeapSnapshot {
         }
         return getBit;
       }
+      case 'objectsRetainedByEventHandlers': {
+        // This filter is based on the assumption that event handler functions are contained
+        // (directly or indirectly) by V8EventListener nodes. In particular, the callback_object_
+        // field of V8EventListener points to either the function used as the event handler,
+        // or to a framework-specific wrapper object that in turn contains the actual handler.
+        //
+        // The filter works in two steps:
+        // 1. Identify all event handler functions and mark them in a bitmap.
+        // 2. Traverse the graph, avoiding paths that pass through any of the event handlers
+        const node = this.createNode(0);
+        const nodeFieldCount = this.nodeFieldCount;
+
+        // First, identify which nodes are event handlers
+        const eventHandlerBitmap = Platform.TypedArrayUtilities.createBitVector(this.nodeCount);
+
+        // Iterate all nodes looking for V8EventListener objects
+        for (let i = 0; i < this.nodeCount; ++i) {
+          node.nodeIndex = i * nodeFieldCount;
+
+          // Check if this node is a V8EventListener
+          if (node.rawName() === 'V8EventListener') {
+            // Get the callback_object_ (edge "1")
+            const callbackNode = this.getEdgeTarget(node, '1');
+            if (!callbackNode) {
+              continue;
+            }
+
+            const callbackOrdinal = callbackNode.nodeIndex / nodeFieldCount;
+
+            // Check if callback has a "code" edge (direct function handler)
+            if (this.getEdgeTarget(callbackNode, 'code')) {
+              eventHandlerBitmap.setBit(callbackOrdinal);
+              continue;
+            }
+
+            // Check if any child has a "code" edge (framework wrapper)
+            let foundChildWithCode = false;
+            for (let childEdgeIt = callbackNode.edges(); childEdgeIt.hasNext(); childEdgeIt.next()) {
+              const childNode = childEdgeIt.item().node();
+              if (this.getEdgeTarget(childNode, 'code')) {
+                eventHandlerBitmap.setBit(childNode.nodeIndex / nodeFieldCount);
+                foundChildWithCode = true;
+                break;
+              }
+            }
+
+            // Fallback to marking the callback node itself
+            if (!foundChildWithCode) {
+              eventHandlerBitmap.setBit(callbackOrdinal);
+            }
+          }
+        }
+
+        // Traverse the graph, avoiding paths that pass through event handlers
+        traverse((currentNode: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
+          const targetNode = edge.node();
+          const targetOrdinal = targetNode.nodeIndex / nodeFieldCount;
+          // Return false (don't traverse) if the target node is an event handler
+          return !eventHandlerBitmap.getBit(targetOrdinal);
+        });
+
+        markUnreachableNodes();
+
+        return (node: HeapSnapshotNode) => !getBit(node);
+      }
     }
     throw new Error('Invalid filter name');
   }
@@ -2392,6 +2457,22 @@ export abstract class HeapSnapshot {
   private addString(string: string): number {
     this.strings.push(string);
     return this.strings.length - 1;
+  }
+
+  /**
+   * Gets the target node of an edge with the specified name.
+   * @param node The source node to search from
+   * @param edgeName The name of the edge to find
+   * @returns The target node if found, null otherwise
+   */
+  private getEdgeTarget(node: HeapSnapshotNode, edgeName: string): HeapSnapshotNode|null {
+    for (let edgeIt = node.edges(); edgeIt.hasNext(); edgeIt.next()) {
+      const edge = edgeIt.item();
+      if (edge.name() === edgeName) {
+        return edge.node();
+      }
+    }
+    return null;
   }
 
   /**

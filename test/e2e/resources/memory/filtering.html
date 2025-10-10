@@ -8,6 +8,7 @@
   class ObjectRetainedByDetachedDom {}
   class ObjectRetainedByConsole {}
   class ObjectRetainedByBothDetachedDomAndConsole {}
+  class ObjectRetainedByEventHandler {}
   const detached = document.createElement('div');
   detached.x = new ObjectRetainedByDetachedDom();
   detached.y = new ObjectRetainedByBothDetachedDomAndConsole();
@@ -18,4 +19,13 @@
   const duplicatedStringInstance2 = JSON.stringify(obj);
   obj.nonDuplicatedKey = true;
   const nonDuplicatedStringInstance = JSON.stringify(obj);
+  const button = document.createElement('button');
+  (() => {
+    const eventHandlerObject = new ObjectRetainedByEventHandler();
+    button.addEventListener('click', function handleEventForTest() {
+      void eventHandlerObject;
+    });
+  })();
+  document.body.appendChild(button);
+  button.click();
 </script>

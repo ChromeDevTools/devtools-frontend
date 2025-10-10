@@ -9,6 +9,8 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
+import {scopeTreeForScript} from './ScopeTreeCache.js';
+import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
@@ -131,9 +133,12 @@ export class SourceMap {
   readonly #sourceInfos: SourceInfo[] = [];
   readonly #sourceInfoByURL = new Map<Platform.DevToolsPath.UrlString, SourceInfo>();
 
+  readonly #script?: Script;
   #scopesInfo: SourceMapScopesInfo|null = null;
 
   readonly #debugId?: DebugId;
+
+  scopesFallbackPromiseForTest?: Promise<unknown>;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -141,8 +146,9 @@ export class SourceMap {
    */
   constructor(
       compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
-      payload: SourceMapV3) {
+      payload: SourceMapV3, script?: Script) {
     this.#json = payload;
+    this.#script = script;
     this.#compiledURL = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
     this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
@@ -163,7 +169,7 @@ export class SourceMap {
   }
 
   augmentWithScopes(scriptUrl: Platform.DevToolsPath.UrlString, ranges: NamedFunctionRange[]): void {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     if (this.#json && this.#json.version > 3) {
       throw new Error('Only support augmenting source maps up to version 3.');
     }
@@ -212,12 +218,12 @@ export class SourceMap {
   }
 
   hasScopeInfo(): boolean {
-    this.#ensureMappingsProcessed();
-    return this.#scopesInfo !== null;
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo !== null && !this.#scopesInfo.isEmpty();
   }
 
   findEntry(lineNumber: number, columnNumber: number, inlineFrameIndex?: number): SourceMapEntry|null {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     if (inlineFrameIndex && this.#scopesInfo !== null) {
       // For inlineFrameIndex != 0 we use the callsite info for the corresponding inlining site.
       // Note that the callsite for "inlineFrameIndex" is actually in the previous frame.
@@ -372,20 +378,40 @@ export class SourceMap {
   }
 
   mappings(): SourceMapEntry[] {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     return this.#mappings ?? [];
   }
 
+  /**
+   * If the source map does not contain scope information by itself (e.g. "scopes proposal"
+   * or "pasta" scopes), then we'll use this getter to calculate basic function name information from
+   * the AST and mappings.
+   */
+  async #buildScopesFallback(): Promise<SourceMapScopesInfo|null> {
+    const scopeTreeAndText = this.#script ? await scopeTreeForScript(this.#script) : null;
+    if (!scopeTreeAndText) {
+      return null;
+    }
+
+    const {scopeTree, text} = scopeTreeAndText;
+    return SourceMapScopesInfo.createFromAst(this, scopeTree, text);
+  }
+
   private reversedMappings(sourceURL: Platform.DevToolsPath.UrlString): number[] {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     return this.#sourceInfoByURL.get(sourceURL)?.reverseMappings ?? [];
   }
 
-  #ensureMappingsProcessed(): void {
+  #ensureSourceMapProcessed(): void {
     if (this.#mappings === null) {
       this.#mappings = [];
       try {
         this.eachSection(this.parseMap.bind(this));
+        if (!this.hasScopeInfo()) {
+          this.scopesFallbackPromiseForTest = this.#buildScopesFallback().then(info => {
+            this.#scopesInfo = info;
+          });
+        }
       } catch (e) {
         console.error('Failed to parse source map', e);
         this.#mappings = [];
@@ -728,7 +754,7 @@ export class SourceMap {
   }
 
   expandCallFrame(frame: CallFrame): CallFrame[] {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     if (this.#scopesInfo === null) {
       return [frame];
     }
@@ -737,7 +763,7 @@ export class SourceMap {
   }
 
   resolveScopeChain(frame: CallFrame): ScopeChainEntry[]|null {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     if (this.#scopesInfo === null) {
       return null;
     }
@@ -746,7 +772,7 @@ export class SourceMap {
   }
 
   findOriginalFunctionName(position: ScopesCodec.Position): string|null {
-    this.#ensureMappingsProcessed();
+    this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }
 }

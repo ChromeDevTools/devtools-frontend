@@ -11,17 +11,24 @@ import {type DebugId, parseSourceMap, SourceMap, type SourceMapV3} from './Sourc
 import {SourceMapCache} from './SourceMapCache.js';
 import {type Target, Type} from './Target.js';
 
+export type SourceMapFactory<T> =
+    (compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
+     payload: SourceMapV3, client: T) => SourceMap;
+
 export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   readonly #target: Target;
+  readonly #factory: SourceMapFactory<T>;
   #isEnabled = true;
   readonly #clientData = new Map<T, ClientData>();
   readonly #sourceMaps = new Map<SourceMap, T>();
   #attachingClient: T|null = null;
 
-  constructor(target: Target) {
+  constructor(target: Target, factory?: SourceMapFactory<T>) {
     super();
 
     this.#target = target;
+    this.#factory =
+        factory ?? ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload));
   }
 
   setEnabled(isEnabled: boolean): void {
@@ -109,7 +116,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
               loadSourceMap(sourceMapURL, client.debugId(), initiator)
                   .then(
                       payload => {
-                        const sourceMap = new SourceMap(sourceURL, sourceMapURL, payload);
+                        const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
                         if (this.#clientData.get(client) === clientData) {
                           clientData.sourceMap = sourceMap;
                           this.#sourceMaps.set(sourceMap, client);
@@ -166,6 +173,10 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     } else {
       this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
     }
+  }
+
+  waitForSourceMapsProcessedForTest(): Promise<unknown> {
+    return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.scopesFallbackPromiseForTest));
   }
 }
 

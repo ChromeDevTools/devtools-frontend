@@ -8,7 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
-import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import {encodeSourceMap, waitForAllSourceMapsProcessed} from '../../testing/SourceMapEncoder.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -33,6 +33,10 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       ignoreListManager,
     });
     backend = new MockProtocolBackend();
+  });
+
+  afterEach(async () => {
+    await waitForAllSourceMapsProcessed();
   });
 
   const waitForUISourceCodeAdded =

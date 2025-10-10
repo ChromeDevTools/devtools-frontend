@@ -95,6 +95,10 @@ export class SourceMapScopesInfo {
     return Boolean(this.#originalScopes[sourceIdx]);
   }
 
+  isEmpty(): boolean {
+    return !this.#originalScopes.length && !this.#generatedRanges.length;
+  }
+
   addOriginalScopesAtIndex(sourceIdx: number, scope: ScopesCodec.OriginalScope): void {
     if (!this.#originalScopes[sourceIdx]) {
       this.#originalScopes[sourceIdx] = scope;

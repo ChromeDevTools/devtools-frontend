@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
@@ -1346,5 +1347,31 @@ describeWithEnvironment('SourceMap', () => {
     });
 
     assert.doesNotThrow(() => sourceMap.mappings());
+  });
+
+  it('builds scopes fallback when the source map does not have any scope information', async () => {
+    const scopeTreeStub = sinon.stub(Formatter.FormatterWorkerPool.formatterWorkerPool(), 'javaScriptScopeTree')
+                              .returns(Promise.resolve({start: 0, end: 10, variables: [], kind: 1, children: []}));
+    const script = sinon.createStubInstance(SDK.Script.Script, {
+      requestContentData: Promise.resolve(
+          new TextUtils.ContentData.ContentData('function f() { console.log("hello"); }', false, 'text/javascript'))
+    });
+    const sourceMap = new SDK.SourceMap.SourceMap(
+        compiledUrl, sourceMapJsonUrl, {
+          version: 3,
+          mappings: 'ACAA',  // [0, 1, 0, 0]
+          sources: [],
+          names: [],
+        },
+        script);
+
+    sinon.assert.notCalled(scopeTreeStub);
+
+    // Trigger processing.
+    assert.isNotNull(sourceMap.findEntry(0, 0));
+    await new Promise(r => setTimeout(r, 0));  // Wait one event loop tick.
+
+    assert.isTrue(sourceMap.hasScopeInfo());
+    sinon.assert.calledOnceWithExactly(scopeTreeStub, 'function f() { console.log("hello"); }', 'script');
   });
 });

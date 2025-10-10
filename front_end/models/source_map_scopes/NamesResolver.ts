@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../bindings/bindings.js';
@@ -370,7 +371,9 @@ export const resolveScopeChain =
     return scopeChain;
   }
 
-  scopeChain = callFrame.script.sourceMap()?.resolveScopeChain(callFrame);
+  scopeChain = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES) ?
+      callFrame.script.sourceMap()?.resolveScopeChain(callFrame) :
+      null;
   if (scopeChain) {
     return scopeChain;
   }

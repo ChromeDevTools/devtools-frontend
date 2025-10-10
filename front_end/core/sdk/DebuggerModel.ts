@@ -16,6 +16,7 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Script} from './Script.js';
 import {SDKModel} from './SDKModel.js';
+import {SourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target, Type} from './Target.js';
 
@@ -169,7 +170,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.agent = target.debuggerAgent();
     this.#runtimeModel = (target.model(RuntimeModel) as RuntimeModel);
 
-    this.#sourceMapManager = new SourceMapManager(target);
+    this.#sourceMapManager = new SourceMapManager(
+        target,
+        (compiledURL, sourceMappingURL, payload, script) =>
+            new SourceMap(compiledURL, sourceMappingURL, payload, script));
 
     Common.Settings.Settings.instance()
         .moduleSetting('pause-on-exception-enabled')

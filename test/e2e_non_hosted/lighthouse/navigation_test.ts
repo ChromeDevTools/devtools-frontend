@@ -80,7 +80,7 @@ describe('Navigation', function() {
       // 1 refresh after auditing to reset state
       assert.strictEqual(numNavigations, 5);
 
-      assert.strictEqual(lhr.lighthouseVersion, '12.8.2');
+      assert.strictEqual(lhr.lighthouseVersion, '13.0.0');
       assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
       assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');
@@ -106,7 +106,7 @@ describe('Navigation', function() {
       });
 
       const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, ['max-potential-fid']);
-      assert.lengthOf(auditResults, 176);
+      assert.lengthOf(auditResults, 151);
       assert.deepEqual(erroredAudits, []);
       assert.deepEqual(failedAudits.map(audit => audit.id), [
         'document-title',
@@ -132,7 +132,6 @@ describe('Navigation', function() {
 
       await navigateToLighthouseTab(undefined, devToolsPage, inspectedPage);
 
-      // TODO: currently the "LighthouseReportRenderer.linkifyNodeDetails" doesn't run for swappable sections.
       await reportEl.$eval('.lh-button-insight-toggle', el => (el as HTMLElement).click());
 
       // Test element link behavior
@@ -198,7 +197,6 @@ describe('Navigation', function() {
 
       // [crbug.com/1347220] DevTools throttling can force resources to load slow enough for these audits to fail sometimes.
       const flakyAudits = [
-        'server-response-time',
         'render-blocking-resources',
         'render-blocking-insight',
         'document-latency-insight',
@@ -206,11 +204,12 @@ describe('Navigation', function() {
       ];
 
       const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, flakyAudits);
-      assert.lengthOf(auditResults, 176);
+      assert.lengthOf(auditResults, 151);
       assert.deepEqual(erroredAudits, []);
       assert.deepEqual(failedAudits.map(audit => audit.id), [
         'document-title',
         'html-has-lang',
+        'landmark-one-main',
         'meta-description',
         'network-dependency-tree-insight',
       ]);
@@ -234,8 +233,7 @@ describe('with changed settings', function() {
     consoleLog.push(e.text());
   };
 
-  // Flaky Lighthouse report
-  it.skip('[crbug.com/445332283] successfully returns a Lighthouse report', async ({devToolsPage, inspectedPage}) => {
+  it('successfully returns a Lighthouse report', async ({devToolsPage, inspectedPage}) => {
     devToolsPage.page.on('console', consoleListener);
     try {
       expectErrors();

@@ -4,9 +4,6 @@ declare var Q: {
         _lighthouseChannel: string;
         _componentCache: Map<any, any>;
         rootEl: any;
-        _swappableSections: WeakMap<object, any>;
-        _onSwap: () => void;
-        _onSwapHook: () => void;
         createElement(e: any, t: any): any;
         createElementNS(e: any, t: any, n: any): any;
         createSVGElement(e: any, t: any): any;
@@ -27,8 +24,6 @@ declare var Q: {
         findAll(e: any, t: any): any[];
         fireEventOn(e: any, t: any, n: any): void;
         saveFile(e: any, t: any): void;
-        registerSwappableSections(e: any, t: any): void;
-        swapSectionIfPossible(e: any): void;
     };
 };
 declare var te: {
@@ -88,7 +83,6 @@ declare var ne: {
             highlightEl: any;
             _updateStickyHeader(): void;
         };
-        _tablesHandledFor3p: WeakSet<object>;
         onMediaQueryChange(e: any): void;
         initFeatures(e: any): void;
         json: any;
@@ -106,15 +100,15 @@ declare var ne: {
         _saveFile(e: any): void;
     };
 };
-declare namespace Lt {
-    export { Ct as registerLocaleData };
-    export { At as hasLocale };
+declare namespace At {
+    export { St as registerLocaleData };
+    export { Ct as hasLocale };
 }
-declare function Et(o: any, e?: {}): HTMLElement;
-declare function St(o: any, e: any): {
+declare function kt(r: any, e?: {}): HTMLElement;
+declare function Et(r: any, e: any): {
     lhr: any;
     missingIcuMessageIds: any[];
 };
-declare function Ct(o: any, e: any): void;
-declare function At(o: any): boolean;
-export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, Lt as format, Et as renderReport, St as swapLocale };
+declare function St(r: any, e: any): void;
+declare function Ct(r: any): boolean;
+export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, At as format, kt as renderReport, Et as swapLocale };

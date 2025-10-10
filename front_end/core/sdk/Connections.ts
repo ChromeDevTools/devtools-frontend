@@ -272,9 +272,10 @@ export async function initMainConnection(
 
 function createMainConnection(onConnectionLost: (message: Platform.UIString.LocalizedString) => void):
     ProtocolClient.InspectorBackend.Connection {
-  if (Root.Runtime.getPathName().includes('rehydrated_devtools_app')) {
+  if (Root.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnection(onConnectionLost);
   }
+
   const wsParam = Root.Runtime.Runtime.queryParam('ws');
   const wssParam = Root.Runtime.Runtime.queryParam('wss');
   if (wsParam || wssParam) {

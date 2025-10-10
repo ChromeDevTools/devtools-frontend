@@ -28,8 +28,8 @@ This option loads the DevTools frontend in a browser tab in Chrome, but requires
 
 1.  Head to `devtools-frontend/test/unittests/fixtures/traces` and run `npx statikk --cors`. [This is a tool built by @paulirish to serve local files on a server](https://github.com/paulirish/statikk).
 2.  Build and run the Chrome for Testing binary from devtools-frontend.
-3.  Visit `devtools://devtools/bundled/devtools_app.html` and let it load (you only need to do this the first time you load up the Chrome for Testing binary).
-4.  Update the URL by appending `?loadTimelineFromURL=http://localhost:1234/name-of-trace-file.json`. **Swap the port to the one `statikk` is using on your machine**.
+3.  Visit `devtools://devtools/bundled/trace_app.html` and let it load (you only need to do this the first time you load up the Chrome for Testing binary).
+4.  Update the URL by appending `?traceURL=http://localhost:1234/name-of-trace-file.json`. **Swap the port to the one `statikk` is using on your machine**.
 5.  When you make changes and rebuild DevTools, simply refresh the URL! **Make sure you disable network caching in your DevTools on DevTools instance.**
 
 Each one has its pros and cons, but typically **this option is preferred** for quick iteration because you don't have to manually record or import a trace every time you reload.

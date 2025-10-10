@@ -65,7 +65,7 @@ devtools_entrypoint("bundle") {
     "../js_app:*",
     "../ndb_app:*",
     "../node_app:*",
-    "../rehydrated_devtools_app:*",
+    "../trace_app:*",
     "../worker_app:*",
   ]
 
@@ -88,8 +88,8 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [
-    "../rehydrated_devtools_app:*",
     "../shell/*",
+    "../trace_app:*",
   ]
 }
 

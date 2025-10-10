@@ -10,6 +10,7 @@ let runtimePlatform = '';
 
 let runtimeInstance: Runtime|undefined;
 let isNode: boolean|undefined;
+let isTraceAppEntry: boolean|undefined;
 
 /**
  * Returns the base URL (similar to `<base>`).
@@ -84,6 +85,17 @@ export class Runtime {
       isNode = isNodeEntry(getPathName());
     }
     return isNode;
+  }
+
+  /**
+   * Returns true if viewing the slimmed-down devtools meant for just viewing a
+   * performance trace, e.g. devtools://devtools/bundled/trace_app.html?traceURL=http://...
+   */
+  static isTraceApp(): boolean {
+    if (isTraceAppEntry === undefined) {
+      isTraceAppEntry = getPathName().includes('trace_app');
+    }
+    return isTraceAppEntry;
   }
 
   static setPlatform(platform: string): void {

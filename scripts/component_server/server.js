@@ -471,7 +471,7 @@ function createTracesIndexFile(traceFilenames) {
       }
       const filename = e.target.textContent;
       const traceUrl = `${origin}/t/${filename}`;
-      const devtoolsLoadingTraceUrl = `devtools://devtools/bundled/devtools_app.html?loadTimelineFromURL=${traceUrl}`;
+      const devtoolsLoadingTraceUrl = `devtools://devtools/bundled/trace_app.html?traceURL=${traceUrl}`;
 
       try {
         await navigator.clipboard.writeText(devtoolsLoadingTraceUrl);

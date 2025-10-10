@@ -28,6 +28,7 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 
 import * as EnhancedTraces from './EnhancedTracesParser.js';
 import type {
@@ -69,14 +70,38 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   trace: TraceObject|null = null;
   sessions = new Map<number, RehydratingSessionBase>();
   #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
-  #rehydratingWindow: Window&typeof globalThis;
+  #rehydratingWindow = window;
   #onReceiveHostWindowPayloadBound = this.onReceiveHostWindowPayload.bind(this);
 
   constructor(onConnectionLost: (message: Platform.UIString.LocalizedString) => void) {
-    // If we're invoking this class, we're in the rehydrating pop-up window. Rename window for clarity.
     this.#onConnectionLost = onConnectionLost;
-    this.#rehydratingWindow = window;
-    this.#setupMessagePassing();
+    if (!this.#maybeHandleLoadingFromUrl()) {
+      this.#setupMessagePassing();
+    }
+  }
+
+  /** Returns true if found a trace URL. */
+  #maybeHandleLoadingFromUrl(): boolean {
+    let traceUrl = Root.Runtime.Runtime.queryParam('traceURL');
+
+    if (!traceUrl) {
+      // For compatibility, handle the older loadTimelineFromURL.
+      const timelineUrl = Root.Runtime.Runtime.queryParam('loadTimelineFromURL');
+      if (timelineUrl) {
+        // It was double-URI encoded for some reason.
+        traceUrl = decodeURIComponent(timelineUrl);
+      }
+    }
+
+    if (traceUrl) {
+      void fetch(traceUrl).then(r => r.arrayBuffer()).then(b => Common.Gzip.arrayBufferToString(b)).then(traceJson => {
+        const trace = new TraceObject(JSON.parse(traceJson));
+        void this.startHydration(trace);
+      });
+      return true;
+    }
+
+    return false;
   }
 
   #setupMessagePassing(): void {

@@ -571,14 +571,6 @@ export class MainImpl {
     await UI.InspectorView.InspectorView.instance().createToolbars();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
-    const value = Root.Runtime.Runtime.queryParam('loadTimelineFromURL');
-    if (value !== null) {
-      // Only import Timeline if needed. If this was a static import, every load of devtools
-      // would request and evaluate the Timeline panel dep tree, slowing down the UI's load.
-      const Timeline = await import('../../panels/timeline/timeline.js');
-      Timeline.TimelinePanel.LoadTimelineHandler.instance().handleQueryParam(value);
-    }
-
     // Initialize elements for the live announcer functionality for a11y.
     UI.ARIAUtils.LiveAnnouncer.initializeAnnouncerElements();
     UI.DockController.DockController.instance().announceDockLocation();

@@ -5,7 +5,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("entrypoint") {
-  entrypoint = "rehydrated_devtools_app.ts"
+  entrypoint = "trace_app.ts"
 
   deps = [
     "../../Images:optimize_images",

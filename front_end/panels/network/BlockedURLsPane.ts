@@ -1,6 +1,7 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
@@ -12,9 +13,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import blockedURLsPaneStyles from './blockedURLsPane.css.js';
+
+const {ref} = Directives;
 
 const UIStrings = {
   /**
@@ -70,44 +74,80 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const NETWORK_REQUEST_BLOCKING_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/network-request-blocking' as Platform.DevToolsPath.UrlString;
 
+const {bindToAction} = UI.UIUtils;
+
+interface ViewInput {
+  list: UI.ListWidget.ListWidget<SDK.NetworkManager.BlockedPattern>;
+  enabled: boolean;
+  toggleEnabled: () => void;
+  addPattern: () => void;
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  render(
+      // clang-format off
+    html`
+    <style>${blockedURLsPaneStyles}</style>
+    <devtools-toolbar jslog=${VisualLogging.toolbar()}>
+      <devtools-checkbox
+        ?checked=${input.enabled}
+        @click=${input.toggleEnabled}
+        .jslogContext=${'network.enable-request-blocking'}>
+        ${i18nString(UIStrings.enableNetworkRequestBlocking)}
+      </devtools-checkbox>
+      <div class="toolbar-divider"></div>
+      <devtools-button ${bindToAction('network.add-network-request-blocking-pattern')}></devtools-button>
+      <devtools-button ${bindToAction('network.remove-all-network-request-blocking-patterns')}></devtools-button>
+    </devtools-toolbar>
+    <div class=empty-state ${ref(e => input.list.setEmptyPlaceholder(e ?? null))}>
+      <span class=empty-state-header>${i18nString(UIStrings.noNetworkRequestsBlocked)}</span>
+      <div class=empty-state-description>
+        <span>${i18nString(UIStrings.addPatternToBlock, {PH1: i18nString(UIStrings.addPattern)})}</span>
+        <x-link
+          href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
+          tabindex=0
+          class=devtools-link
+          jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('learn-more')}>
+            ${i18nString(UIStrings.learnMore)}
+        </x-link>
+      </div>
+      <devtools-button
+        @click=${input.addPattern}
+        class=add-button
+        .jslogContext=${'network.add-network-request-blocking-pattern'}
+        aria-label=${i18nString(UIStrings.addNetworkRequestBlockingPattern)}
+        .variant=${Buttons.Button.Variant.TONAL}>
+          ${i18nString(UIStrings.addPattern)}
+      </devtools-button>
+    </div>
+    <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.Widget.VBox)}>${input.list.element}</devtools-widget>
+    `,
+      // clang-format on
+      target);
+};
+
 export class BlockedURLsPane extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.BlockedPattern> {
   private manager: SDK.NetworkManager.MultitargetNetworkManager;
-  private readonly toolbar: UI.Toolbar.Toolbar;
-  private readonly enabledCheckbox: UI.Toolbar.ToolbarCheckbox;
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.BlockedPattern>;
   private editor: UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern>|null;
   private blockedCountForUrl: Map<string, number>;
+  #view: View;
 
-  constructor() {
-    super({
+  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+    super(target, {
       jslog: `${VisualLogging.panel('network.blocked-urls').track({resize: true})}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(blockedURLsPaneStyles);
+    this.#view = view;
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, this.update, this);
 
-    this.toolbar = this.contentElement.createChild('devtools-toolbar');
-    this.enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
-        i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this.toggleEnabled.bind(this),
-        'network.enable-request-blocking');
-    this.toolbar.appendToolbarItem(this.enabledCheckbox);
-    this.toolbar.appendSeparator();
-    this.toolbar.appendToolbarItem(
-        UI.Toolbar.Toolbar.createActionButton('network.add-network-request-blocking-pattern'));
-    this.toolbar.appendToolbarItem(
-        UI.Toolbar.Toolbar.createActionButton('network.remove-all-network-request-blocking-patterns'));
-    this.toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.registerRequiredCSS(blockedURLsPaneStyles);
     this.list.element.classList.add('blocked-urls');
-
-    this.list.setEmptyPlaceholder(this.createEmptyPlaceholder());
-    this.list.show(this.contentElement);
 
     this.editor = null;
 
@@ -120,25 +160,17 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.onNetworkLogReset, this);
   }
 
-  private createEmptyPlaceholder(): Element {
-    const placeholder = this.contentElement.createChild('div', 'empty-state');
-    placeholder.createChild('span', 'empty-state-header').textContent = i18nString(UIStrings.noNetworkRequestsBlocked);
+  override performUpdate(): void {
+    const enabled = this.manager.blockingEnabled();
+    this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.blockedPatterns().length));
 
-    const description = placeholder.createChild('div', 'empty-state-description');
-    description.createChild('span').textContent =
-        i18nString(UIStrings.addPatternToBlock, {PH1: i18nString(UIStrings.addPattern)});
-    const link = UI.XLink.XLink.create(
-        NETWORK_REQUEST_BLOCKING_EXPLANATION_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
-    description.appendChild(link);
-
-    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addPattern.bind(this), {
-      className: 'add-button',
-      jslogContext: 'network.add-network-request-blocking-pattern',
-      variant: Buttons.Button.Variant.TONAL,
-    });
-    UI.ARIAUtils.setLabel(addButton, i18nString(UIStrings.addNetworkRequestBlockingPattern));
-    placeholder.appendChild(addButton);
-    return placeholder;
+    const input: ViewInput = {
+      addPattern: this.addPattern.bind(this),
+      toggleEnabled: this.toggleEnabled.bind(this),
+      enabled,
+      list: this.list,
+    };
+    this.#view(input, {}, this.contentElement);
   }
 
   addPattern(): void {
@@ -154,25 +186,28 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const count = this.blockedRequestsCount(pattern.url);
     const element = document.createElement('div');
     element.classList.add('blocked-url');
-    const checkbox = element.createChild('input', 'blocked-url-checkbox');
-    checkbox.type = 'checkbox';
-    checkbox.checked = pattern.enabled;
-    checkbox.disabled = !editable;
-    checkbox.setAttribute('jslog', `${VisualLogging.toggle().track({change: true})}`);
-    element.createChild('div', 'blocked-url-label').textContent = pattern.url;
-    element.createChild('div', 'blocked-url-count').textContent = i18nString(UIStrings.dBlocked, {PH1: count});
-    if (editable) {
-      element.addEventListener('click', event => this.togglePattern(pattern, event));
-      checkbox.addEventListener('click', event => this.togglePattern(pattern, event));
-    }
+    const toggle = (e: Event): void => {
+      if (editable) {
+        e.consume(true);
+        const patterns = this.manager.blockedPatterns();
+        patterns.splice(patterns.indexOf(pattern), 1, {enabled: !pattern.enabled, url: pattern.url});
+        this.manager.setBlockedPatterns(patterns);
+      }
+    };
+    render(
+        // clang-format off
+        html`
+    <input class=blocked-url-checkbox
+      @click=${toggle}
+      type=checkbox
+      ?checked=${pattern.enabled}
+      ?disabled=${!editable}
+      .jslog=${VisualLogging.toggle().track({ change: true })}>
+    <div @click=${toggle} class=blocked-url-label>${pattern.url}</div>
+    <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
+      // clang-format off
+        element);
     return element;
-  }
-
-  private togglePattern(pattern: SDK.NetworkManager.BlockedPattern, event: Event): void {
-    event.consume(true);
-    const patterns = this.manager.blockedPatterns();
-    patterns.splice(patterns.indexOf(pattern), 1, {enabled: !pattern.enabled, url: pattern.url});
-    this.manager.setBlockedPatterns(patterns);
   }
 
   private toggleEnabled(): void {
@@ -239,13 +274,11 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   update(): void {
     const enabled = this.manager.blockingEnabled();
-    this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.blockedPatterns().length));
-
-    this.enabledCheckbox.setChecked(enabled);
     this.list.clear();
     for (const pattern of this.manager.blockedPatterns()) {
       this.list.appendItem(pattern, enabled);
     }
+    this.requestUpdate();
   }
 
   private blockedRequestsCount(url: string): number {

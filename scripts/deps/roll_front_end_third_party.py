@@ -112,6 +112,7 @@ def main():
     parser.add_argument('package_name')
     parser.add_argument('output_dir')
     parser.add_argument('library_dir')
+    parser.add_argument('version', default='latest')
 
     args = parser.parse_args()
 
@@ -125,7 +126,7 @@ def main():
     old_package_json = json.load(open(f'{package_path}/package.json'))
     package_json = json.load(
         urllib.request.urlopen(
-            f'https://registry.npmjs.org/{package_name}/latest'))
+            f'https://registry.npmjs.org/{package_name}/{args.version}'))
 
     # Version check
     version = parse_version(package_json['version'])

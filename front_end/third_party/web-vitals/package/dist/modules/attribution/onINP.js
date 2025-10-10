@@ -60,6 +60,7 @@ const handleLoAFEntries = (entries) => {
 // Get a reference to the interaction target element in case it's removed
 // from the DOM later.
 const saveInteractionTarget = (entry) => {
+    // cdt-modification
     // TODO(b/376777343): Remove this modification when web-vitals.js doesn't retain DOM nodes anymore
     // Although it is useful for DevTools to retain nodes for diagnostic purposes, it is not preferable
     // to retaining Nodes in memory when the user does not expect them to.

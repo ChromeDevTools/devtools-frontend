@@ -4,8 +4,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-# Roll the latest version of the package from NPM
-vpython3 scripts/deps/roll_front_end_third_party.py web-vitals web-vitals dist
+# Roll the specified version of the package from NPM
+vpython3 scripts/deps/roll_front_end_third_party.py web-vitals web-vitals dist 4.2.4
 
 # We need this one helper function to be exported, so modify the source .ts and then rebuild
 sed -i -e 's/^const attributeINP/export const attributeINP/g' $SCRIPT_DIR/package/src/attribution/onINP.ts

@@ -99,6 +99,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.unselectPresets();
     // Check if bezier matches a preset
     for (const category of this.presetCategories) {

@@ -39,11 +39,13 @@ export function legacyWrapper<T extends Platform.Constructor.Constructor<UI.Widg
     }
 
     override wasShown(): void {
+      super.wasShown();
       this.#component.wasShown();
       void this.#component.render();
     }
 
     override willHide(): void {
+      super.willHide();
       this.#component.willHide();
     }
 

@@ -1390,6 +1390,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   override willHide(): void {
+    super.willHide();
     this.columnsInternal.willHide();
   }
 

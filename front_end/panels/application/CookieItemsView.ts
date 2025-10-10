@@ -232,6 +232,7 @@ export class CookieItemsView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.refreshItems();
   }
 

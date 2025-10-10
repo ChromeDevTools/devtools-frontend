@@ -106,6 +106,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#eventListeners = [
       Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addEventListener(
           Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, this.requestUpdate.bind(this)),
@@ -117,6 +118,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     Common.EventTarget.removeEventListeners(this.#eventListeners);
     this.#eventListeners = [];
   }

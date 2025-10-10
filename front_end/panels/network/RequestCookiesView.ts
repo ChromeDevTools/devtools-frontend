@@ -317,6 +317,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
   }
 
   override willHide(): void {
+    super.willHide();
     this.request.removeEventListener(
         SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshRequestCookiesView, this);
     this.request.removeEventListener(

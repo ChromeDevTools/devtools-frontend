@@ -767,6 +767,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   override willHide(): void {
+    super.willHide();
     this.hidePromptSuggestBox();
   }
 

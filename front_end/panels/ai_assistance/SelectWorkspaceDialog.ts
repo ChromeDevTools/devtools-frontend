@@ -183,11 +183,13 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
   }
 
   override willHide(): void {
+    super.willHide();
     this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
   }

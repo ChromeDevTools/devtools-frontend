@@ -480,6 +480,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   override wasShown(): void {
+    super.wasShown();
     void this.ensureContentLoaded();
     this.wasShownOrLoaded();
   }

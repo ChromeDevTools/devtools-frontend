@@ -442,11 +442,13 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.measureHandles();
     this.toolbar.restore();
   }
 
   override willHide(): void {
+    super.willHide();
     this.model.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
   }
 

@@ -34,6 +34,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.refreshData();
   }
 
@@ -99,6 +100,7 @@ export class StreamingContentHexView extends LinearMemoryInspectorView {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#updateMemoryFromContentData();
     this.#streamingContentData.addEventListener(
         TextUtils.StreamingContentData.Events.CHUNK_ADDED, this.#updateMemoryFromContentData, this);

@@ -441,6 +441,7 @@ export class ContainerWidget extends VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     void this.materialize().then(() => {
       const widget = widgetForView.get(this.view);
       if (widget) {

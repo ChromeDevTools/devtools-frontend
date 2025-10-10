@@ -122,6 +122,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   }
 
   override willHide(): void {
+    super.willHide();
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(

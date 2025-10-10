@@ -117,6 +117,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     this.request.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
   }
 

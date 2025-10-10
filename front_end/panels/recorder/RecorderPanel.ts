@@ -36,12 +36,14 @@ export class RecorderPanel extends UI.Panel.Panel {
   }
 
   override wasShown(): void {
+    super.wasShown();
     UI.Context.Context.instance().setFlavor(RecorderPanel, this);
     // Focus controller so shortcuts become active
     this.#controller.focus();
   }
 
   override willHide(): void {
+    super.willHide();
     UI.Context.Context.instance().setFlavor(RecorderPanel, null);
   }
 

@@ -325,6 +325,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   }
 
   override willHide(): void {
+    super.willHide();
     this.currentSearchResultIndex = -1;
   }
 

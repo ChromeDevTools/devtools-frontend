@@ -212,6 +212,7 @@ export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
   }
 
   override wasShown(): void {
+    super.wasShown();
     if (this.nameFilter) {
       this.nameFilter.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onNameFilterChanged, this);
       this.updateVisibleNodes(true);
@@ -228,6 +229,7 @@ export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
   }
 
   override willHide(): void {
+    super.willHide();
     if (this.nameFilter) {
       this.nameFilter.removeEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onNameFilterChanged, this);
     }

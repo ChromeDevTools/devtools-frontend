@@ -720,6 +720,7 @@ export class BreakpointsView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.requestUpdate();
   }
 

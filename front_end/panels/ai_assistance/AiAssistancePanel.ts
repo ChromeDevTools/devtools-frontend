@@ -727,6 +727,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   override willHide(): void {
+    super.willHide();
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);

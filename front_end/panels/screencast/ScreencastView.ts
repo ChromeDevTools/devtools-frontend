@@ -175,6 +175,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   override willHide(): void {
+    super.willHide();
     this.stopCasting();
   }
 

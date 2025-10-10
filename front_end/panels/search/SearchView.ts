@@ -542,6 +542,7 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     this.#stopSearch();
   }
 

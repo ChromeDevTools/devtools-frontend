@@ -229,6 +229,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   }
 
   override willHide(): void {
+    super.willHide();
     if (this.provider) {
       this.provider.detach();
     }

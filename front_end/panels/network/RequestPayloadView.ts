@@ -145,6 +145,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     this.request.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshFormData, this);
   }
 

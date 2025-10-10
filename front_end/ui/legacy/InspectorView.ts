@@ -362,6 +362,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#resizeObserver.observe(this.element);
     this.#observedResize();
     this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
@@ -371,6 +372,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   override willHide(): void {
+    super.willHide();
     this.#resizeObserver.unobserve(this.element);
     this.element.ownerDocument.removeEventListener('keydown', this.keyDownBound, false);
     DockController.instance().removeEventListener(

@@ -215,6 +215,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   }
 
   override willHide(): void {
+    super.willHide();
     for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel, {scoped: true})) {
       this.removeEventListeners(model);
     }

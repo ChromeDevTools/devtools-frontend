@@ -141,6 +141,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   override wasShown(): void {
+    super.wasShown();
     void this.updateContentIfNeeded();
   }
 

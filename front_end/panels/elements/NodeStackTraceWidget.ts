@@ -58,6 +58,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   override willHide(): void {
+    super.willHide();
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
   }
 

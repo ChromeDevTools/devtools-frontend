@@ -601,6 +601,7 @@ export class TimelineTreeView extends
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection, this);
   }

@@ -268,6 +268,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   }
 
   override willHide(): void {
+    super.willHide();
     this.#request.removeEventListener(
         SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
     this.#request.removeEventListener(

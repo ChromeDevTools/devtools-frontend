@@ -76,6 +76,7 @@ export class ExtensionView extends UI.Widget.Widget {
   }
 
   override willHide(): void {
+    super.willHide();
     if (typeof this.#frameIndex === 'number') {
       this.#server.notifyViewHidden(this.#id);
     }
@@ -104,10 +105,12 @@ export class ExtensionNotifierView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.server.notifyViewShown(this.id);
   }
 
   override willHide(): void {
+    super.willHide();
     this.server.notifyViewHidden(this.id);
   }
 }

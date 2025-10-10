@@ -53,6 +53,7 @@ export class RequestPreviewView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     void this.doShowPreview();
   }
 

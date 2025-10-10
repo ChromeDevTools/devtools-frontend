@@ -42,6 +42,7 @@ export class TargetCrashedScreen extends VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     this.hideCallback.call(null);
   }
 }

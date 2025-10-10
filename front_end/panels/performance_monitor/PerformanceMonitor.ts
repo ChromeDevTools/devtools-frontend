@@ -157,6 +157,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   override wasShown(): void {
+    super.wasShown();
     if (!this.model) {
       return;
     }
@@ -176,6 +177,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   override willHide(): void {
+    super.willHide();
     if (!this.model) {
       return;
     }

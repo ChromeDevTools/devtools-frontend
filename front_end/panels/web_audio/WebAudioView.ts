@@ -202,6 +202,7 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
   }
 
   override willHide(): void {
+    super.willHide();
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this.removeEventListeners(model);
     }

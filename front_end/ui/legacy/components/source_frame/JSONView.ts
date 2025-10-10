@@ -134,6 +134,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.initialize();
   }
 

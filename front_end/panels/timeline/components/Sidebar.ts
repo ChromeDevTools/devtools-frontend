@@ -93,6 +93,7 @@ export class SidebarWidget extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#tabbedPane.show(this.element);
     this.#updateAnnotationsCountBadge();
 
@@ -114,6 +115,7 @@ export class SidebarWidget extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     const currentlyActiveInsight = this.#insightsView.getActiveInsight();
     this.#insightToRestoreOnOpen = currentlyActiveInsight;
 

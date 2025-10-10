@@ -140,6 +140,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
   }
 
   override willHide(): void {
+    super.willHide();
     this.#workspaceDiff?.removeEventListener(
         WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.#onDiffModifiedStatusChanged, this);
   }

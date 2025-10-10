@@ -648,11 +648,13 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#forceUpdateLayout();
     ZoomManager.instance().addEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.onZoomChanged, this);
   }
 
   override willHide(): void {
+    super.willHide();
     ZoomManager.instance().removeEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.onZoomChanged, this);
   }
 

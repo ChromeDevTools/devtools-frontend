@@ -183,6 +183,7 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.refreshData();
   }
 

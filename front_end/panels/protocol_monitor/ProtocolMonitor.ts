@@ -530,6 +530,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
   }
 
   override wasShown(): void {
+    super.wasShown();
     if (this.started) {
       return;
     }

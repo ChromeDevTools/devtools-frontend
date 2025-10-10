@@ -188,6 +188,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   }
 
   override willHide(): void {
+    super.willHide();
     this.setPreselectedBreadcrumb(null);
   }
 

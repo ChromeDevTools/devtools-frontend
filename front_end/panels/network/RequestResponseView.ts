@@ -94,6 +94,7 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.requestUpdate();
   }
 

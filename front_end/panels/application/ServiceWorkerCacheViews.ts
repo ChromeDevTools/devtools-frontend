@@ -184,12 +184,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.model.addEventListener(
         SDK.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED, this.cacheContentUpdated, this);
     void this.updateData(true);
   }
 
   override willHide(): void {
+    super.willHide();
     this.model.removeEventListener(
         SDK.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED, this.cacheContentUpdated, this);
   }

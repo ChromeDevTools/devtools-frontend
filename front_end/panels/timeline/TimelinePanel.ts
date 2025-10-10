@@ -749,6 +749,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   override willHide(): void {
+    super.willHide();
     UI.Context.Context.instance().setFlavor(TimelinePanel, null);
     this.#historyManager.cancelIfShowing();
 

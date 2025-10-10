@@ -330,6 +330,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   override willHide(): void {
+    super.willHide();
     UI.Context.Context.instance().setFlavor(ComputedStyleWidget, null);
   }
 

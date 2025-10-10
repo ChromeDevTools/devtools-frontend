@@ -178,6 +178,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     ++this.currentPollId;
     this.setting.removeChangeListener(this.settingChanged, this);
   }

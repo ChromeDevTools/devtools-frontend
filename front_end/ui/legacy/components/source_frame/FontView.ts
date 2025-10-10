@@ -128,6 +128,7 @@ export class FontView extends UI.View.SimpleView {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.createContentIfNeeded();
 
     this.updateFontPreviewSize();

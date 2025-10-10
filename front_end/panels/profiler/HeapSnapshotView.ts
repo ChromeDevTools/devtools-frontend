@@ -624,6 +624,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   }
 
   override willHide(): void {
+    super.willHide();
     this.currentSearchResultIndex = -1;
     this.popoverHelper.hidePopover();
   }

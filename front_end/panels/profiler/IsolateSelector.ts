@@ -102,6 +102,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
   }
 
   override willHide(): void {
+    super.willHide();
     SDK.IsolateManager.IsolateManager.instance().removeEventListener(
         SDK.IsolateManager.Events.MEMORY_CHANGED, this.heapStatsChanged, this);
   }

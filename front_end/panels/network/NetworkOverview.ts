@@ -98,6 +98,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.onResize();
   }
 

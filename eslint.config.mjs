@@ -646,7 +646,12 @@ export default defineConfig([
       'rulesdir/check-css-import': 'error',
       'rulesdir/enforce-optional-properties-last': 'error',
       'rulesdir/check-enumerated-histograms': 'error',
-      'rulesdir/check-was-shown-methods': 'error',
+      'rulesdir/require-super-calls-in-overridden-methods': [
+        'error',
+        {
+          methodNames: ['wasShown', 'willHide'],
+        },
+      ],
       'rulesdir/static-custom-event-names': 'error',
       'rulesdir/lit-no-attribute-quotes': 'error',
       'rulesdir/lit-template-result-or-nothing': 'error',

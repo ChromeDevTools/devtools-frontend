@@ -449,6 +449,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   override willHide(): void {
+    super.willHide();
     this.popoverHelper?.hidePopover();
   }
 

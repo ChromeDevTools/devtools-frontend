@@ -281,6 +281,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     this.isShown = false;
     if (this.ticking) {
       this.stop();
@@ -288,6 +289,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.isShown = true;
     if (this.#canTick && !this.ticking) {
       this.start();

@@ -363,6 +363,7 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
   };
 
   override willHide(): void {
+    super.willHide();
     this.#suggestionsResizeObserver.disconnect();
   }
 

@@ -82,6 +82,7 @@ export class GlobalAiButton extends UI.Widget.Widget {
   }
 
   override willHide(): void {
+    super.willHide();
     this.#removeHoverEventListeners();
 
     if (this.#returnToDefaultStateTimeout) {

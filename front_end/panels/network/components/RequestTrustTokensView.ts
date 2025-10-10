@@ -112,11 +112,13 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#request.addEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
     void this.render();
   }
 
   override willHide(): void {
+    super.willHide();
     this.#request.removeEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
   }
 

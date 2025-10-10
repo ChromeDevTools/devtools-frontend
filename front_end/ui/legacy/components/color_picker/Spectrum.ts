@@ -1366,6 +1366,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.hueAlphaWidth = this.hueElement.offsetWidth;
     this.slideHelperWidth = this.hueSlider.offsetWidth / 2;
     this.dragWidth = this.colorElement.offsetWidth;
@@ -1388,6 +1389,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   override willHide(): void {
+    super.willHide();
     void this.toggleColorPicker(false);
     if (this.contrastDetails && this.contrastDetailsBackgroundColorPickerToggledBound) {
       this.contrastDetails.removeEventListener(

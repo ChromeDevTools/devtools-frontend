@@ -325,6 +325,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     this.lastEditedColumnId = null;
   }
 

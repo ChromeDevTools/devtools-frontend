@@ -374,6 +374,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   override willHide(): void {
+    super.willHide();
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.AnimationModel.AnimationModel, {scoped: true})) {
       this.removeEventListeners(animationModel);

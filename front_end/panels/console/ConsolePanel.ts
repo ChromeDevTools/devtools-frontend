@@ -106,6 +106,7 @@ export class WrapperView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     if (!ConsolePanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
@@ -115,6 +116,7 @@ export class WrapperView extends UI.Widget.VBox {
   }
 
   override willHide(): void {
+    super.willHide();
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     ConsolePanel.updateContextFlavor();
   }

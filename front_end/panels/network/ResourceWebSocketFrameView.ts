@@ -120,6 +120,7 @@ export class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkReq
   }
 
   override willHide(): void {
+    super.willHide();
     this.request.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.onWebSocketFrameAdded, this);
   }
 

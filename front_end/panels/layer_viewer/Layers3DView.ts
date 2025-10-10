@@ -193,10 +193,12 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 
   override willHide(): void {
+    super.willHide();
     this.textureManager.suspend();
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.textureManager.resume();
     if (!this.needsUpdate) {
       return;

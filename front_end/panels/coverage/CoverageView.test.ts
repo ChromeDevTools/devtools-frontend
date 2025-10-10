@@ -20,7 +20,7 @@ const isShowingLandingPage = (view: Coverage.CoverageView.CoverageView) => {
 };
 
 const isShowingResults = (view: Coverage.CoverageView.CoverageView) => {
-  return Boolean(view.contentElement.querySelector('.coverage-results .vbox.flex-auto'));
+  return Boolean(view.contentElement.querySelector('.coverage-results .results'));
 };
 
 const isShowingPrerenderPage = (view: Coverage.CoverageView.CoverageView) => {
@@ -94,9 +94,10 @@ describeWithMockConnection('CoverageView', () => {
     ]);
   });
 
-  it('dispatches a record/reload action when the button is clicked', () => {
+  it('dispatches a record/reload action when the button is clicked', async () => {
     const view = Coverage.CoverageView.CoverageView.instance();
     renderElementIntoDOM(view);
+    await view.updateComplete;
     assert.isTrue(isShowingLandingPage(view));
 
     const button = view.contentElement.querySelector('.empty-state devtools-button');
@@ -130,6 +131,7 @@ describeWithMockConnection('CoverageView', () => {
     sinon.assert.calledOnce(startSpy);
 
     navigate(getMainFrame(target), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
+    await view.updateComplete;
 
     assert.isFalse(isShowingLandingPage(view));
     assert.isFalse(isShowingResults(view));
@@ -139,6 +141,7 @@ describeWithMockConnection('CoverageView', () => {
     sinon.assert.notCalled(stopSpy);
 
     navigate(getMainFrame(target));
+    await view.updateComplete;
     assert.isFalse(isShowingLandingPage(view));
     assert.isTrue(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));
@@ -156,6 +159,7 @@ describeWithMockConnection('CoverageView', () => {
   it('can handle prerender activations', async () => {
     const {startSpy, stopSpy} = setupTargetAndModels();
     const view = Coverage.CoverageView.CoverageView.instance();
+    await view.updateComplete;
     renderElementIntoDOM(view);
     assert.isTrue(isShowingLandingPage(view));
     assert.isFalse(isShowingResults(view));
@@ -185,6 +189,7 @@ describeWithMockConnection('CoverageView', () => {
     sinon.assert.notCalled(stopSpy2);
 
     navigate(getMainFrame(target2), {url: 'http://www.example.com/page'});
+    await view.updateComplete;
     assert.isFalse(isShowingLandingPage(view));
     assert.isTrue(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));

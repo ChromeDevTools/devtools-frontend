@@ -70,7 +70,3 @@
   border-color: transparent;
   background-color: var(--sys-color-state-hover-on-subtle);
 }
-
-[hidden] {
-  display: none;
-}

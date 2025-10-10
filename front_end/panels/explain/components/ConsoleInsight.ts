@@ -17,7 +17,7 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
+import * as Console from '../../console/console.js';
 
 import styles from './consoleInsight.css.js';
 import listStyles from './consoleInsightSourcesList.css.js';
@@ -163,18 +163,18 @@ export class CloseEvent extends Event {
   }
 }
 
-type PublicPromptBuilder = Pick<PromptBuilder, 'buildPrompt'|'getSearchQuery'>;
+type PublicPromptBuilder = Pick<Console.PromptBuilder.PromptBuilder, 'buildPrompt'|'getSearchQuery'>;
 type PublicAidaClient = Pick<Host.AidaClient.AidaClient, 'doConversation'|'registerClientEvent'>;
 
-function localizeType(sourceType: SourceType): string {
+function localizeType(sourceType: Console.PromptBuilder.SourceType): string {
   switch (sourceType) {
-    case SourceType.MESSAGE:
+    case Console.PromptBuilder.SourceType.MESSAGE:
       return i18nString(UIStrings.consoleMessage);
-    case SourceType.STACKTRACE:
+    case Console.PromptBuilder.SourceType.STACKTRACE:
       return i18nString(UIStrings.stackTrace);
-    case SourceType.NETWORK_REQUEST:
+    case Console.PromptBuilder.SourceType.NETWORK_REQUEST:
       return i18nString(UIStrings.networkRequest);
-    case SourceType.RELATED_CODE:
+    case Console.PromptBuilder.SourceType.RELATED_CODE:
       return i18nString(UIStrings.relatedCode);
   }
 }
@@ -205,7 +205,7 @@ type StateData = {
   type: State.INSIGHT,
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
   validMarkdown: boolean,
-  sources: Source[],
+  sources: Console.PromptBuilder.Source[],
   isPageReloadRecommended: boolean,
   completed: boolean,
   directCitationUrls: string[],
@@ -215,7 +215,7 @@ type StateData = {
   error: string,
 }|{
   type: State.CONSENT_REMINDER,
-  sources: Source[],
+  sources: Console.PromptBuilder.Source[],
   isPageReloadRecommended: boolean,
 }|{
   type: State.SETTING_IS_NOT_TRUE,
@@ -631,7 +631,9 @@ export class ConsoleInsight extends HTMLElement {
 
   async *
       #getInsight(): AsyncGenerator<
-          {sources: Source[], isPageReloadRecommended: boolean}&Host.AidaClient.DoConversationResponse, void, void> {
+          {sources: Console.PromptBuilder.Source[], isPageReloadRecommended: boolean}&
+          Host.AidaClient.DoConversationResponse,
+          void, void> {
     const {prompt, sources, isPageReloadRecommended} = await this.#promptBuilder.buildPrompt();
     try {
       for await (const response of this.#aidaClient.doConversation(
@@ -1142,7 +1144,7 @@ export class ConsoleInsight extends HTMLElement {
 
 class ConsoleInsightSourcesList extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #sources: Source[] = [];
+  #sources: Console.PromptBuilder.Source[] = [];
   #isPageReloadRecommended = false;
 
   #render(): void {
@@ -1167,7 +1169,7 @@ class ConsoleInsightSourcesList extends HTMLElement {
     // clang-format on
   }
 
-  set sources(values: Source[]) {
+  set sources(values: Console.PromptBuilder.Source[]) {
     this.#sources = values;
     this.#render();
   }

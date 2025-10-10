@@ -18,7 +18,6 @@ generate_css("css_files") {
 devtools_module("explain") {
   sources = [
     "ActionDelegate.ts",
-    "PromptBuilder.ts",
     "components/ConsoleInsight.ts",
   ]
 
@@ -28,13 +27,9 @@ devtools_module("explain") {
     "../../core/host:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../models/logs:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
-    "../../ui/components/spinners:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/legacy/components/source_frame:bundle",
-    "../ai_assistance:bundle",
     "../console:bundle",
     "../sources:bundle",
   ]
@@ -50,6 +45,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
     "../../ui/components/docs/console_insight/*",
+    "./components/*",
   ]
 
   visibility += devtools_panels_visibility
@@ -68,19 +64,4 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [ "../../entrypoints/*" ]
-}
-
-ts_library("unittests") {
-  testonly = true
-
-  sources = [
-    "PromptBuilder.test.ts",
-    "components/ConsoleInsight.test.ts",
-  ]
-
-  deps = [
-    ":bundle",
-    "../../core/common:bundle",
-    "../../testing",
-  ]
 }

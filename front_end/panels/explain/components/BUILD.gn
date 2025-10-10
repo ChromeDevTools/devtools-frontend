@@ -1,0 +1,23 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/typescript/typescript.gni")
+import("../../visibility.gni")
+
+# With only a single test file, the 'unittests' target had to me moved from the
+# parent folder's BUILD.gn into a separate file. Otherwise esbuild would put
+# the output test file in 'panels/explain/' instead of
+# 'panels/explain/components'.
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ConsoleInsight.test.ts" ]
+
+  deps = [
+    "../:bundle",
+    "../../../core/common:bundle",
+    "../../../testing",
+  ]
+}

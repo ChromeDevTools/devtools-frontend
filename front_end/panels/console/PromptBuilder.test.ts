@@ -17,30 +17,30 @@ import {createTarget, describeWithLocale} from '../../testing/EnvironmentHelpers
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 
-import * as Explain from './explain.js';
+import * as Console from './console.js';
 
 const {urlString} = Platform.DevToolsPath;
 
 describeWithLocale('PromptBuilder', () => {
   describe('allowHeader', () => {
     it('disallows cookie headers', () => {
-      assert.isNotOk(Explain.allowHeader({name: 'Cookie', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'cookiE', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'cookie', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'set-cookie', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'Set-cOokie', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'Cookie', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'cookiE', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'cookie', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'set-cookie', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'Set-cOokie', value: ''}));
     });
 
     it('disallows authorization headers', () => {
-      assert.isNotOk(Explain.allowHeader({name: 'AuthoRization', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'authorization', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'AuthoRization', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'authorization', value: ''}));
     });
 
     it('disallows custom headers', () => {
-      assert.isNotOk(Explain.allowHeader({name: 'X-smth', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'X-', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'x-smth', value: ''}));
-      assert.isNotOk(Explain.allowHeader({name: 'x-', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'X-smth', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'X-', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'x-smth', value: ''}));
+      assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'x-', value: ''}));
     });
   });
 
@@ -64,7 +64,7 @@ describeWithLocale('PromptBuilder', () => {
 
   describe('format formatNetworkRequest', () => {
     it('formats a network request', () => {
-      assert.strictEqual(Explain.formatNetworkRequest(NETWORK_REQUEST), `Request: https://example.com
+      assert.strictEqual(Console.PromptBuilder.formatNetworkRequest(NETWORK_REQUEST), `Request: https://example.com
 
 Request headers:
 Origin: https://example.com
@@ -79,7 +79,7 @@ Response status: 404 Not found`);
   describe('formatRelatedCode', () => {
     it('formats a single line code', () => {
       assert.strictEqual(
-          Explain.formatRelatedCode(
+          Console.PromptBuilder.formatRelatedCode(
               {
                 text: '12345678901234567890',
                 columnNumber: 10,
@@ -88,7 +88,7 @@ Response status: 404 Not found`);
               /* maxLength=*/ 5),
           '89012');
       assert.strictEqual(
-          Explain.formatRelatedCode(
+          Console.PromptBuilder.formatRelatedCode(
               {
                 text: '12345678901234567890',
                 columnNumber: 10,
@@ -97,7 +97,7 @@ Response status: 404 Not found`);
               /* maxLength=*/ 6),
           '890123');
       assert.strictEqual(
-          Explain.formatRelatedCode(
+          Console.PromptBuilder.formatRelatedCode(
               {
                 text: '12345678901234567890',
                 columnNumber: 10,
@@ -109,7 +109,7 @@ Response status: 404 Not found`);
 
     it('formats a multiline code', () => {
       assert.strictEqual(
-          Explain.formatRelatedCode(
+          Console.PromptBuilder.formatRelatedCode(
               {
                 text: '123\n456\n789\n123\n456\n789\n',
                 columnNumber: 1,
@@ -118,7 +118,7 @@ Response status: 404 Not found`);
               /* maxLength=*/ 5),
           '456');
       assert.strictEqual(
-          Explain.formatRelatedCode(
+          Console.PromptBuilder.formatRelatedCode(
               {
                 text: '123\n456\n789\n123\n456\n789\n',
                 columnNumber: 1,
@@ -127,7 +127,7 @@ Response status: 404 Not found`);
               /* maxLength=*/ 10),
           '456\n789\n123');
       assert.strictEqual(
-          Explain.formatRelatedCode(
+          Console.PromptBuilder.formatRelatedCode(
               {
                 text: '123\n456\n789\n123\n456\n789\n',
                 columnNumber: 1,
@@ -172,38 +172,38 @@ function bigger() {
 export const y = "";
 `;
       assert.strictEqual(
-          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 233),
+          Console.PromptBuilder.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 233),
           '  // x\n  if (true) {\n    // y\n\n    // zzzzzz\n  }\n\n  let y = x + 2;\n\n  if (false) {\n    // a\n\n    f1();\n    if (x == x) {\n      // z\n    }\n  }',
       );
       assert.strictEqual(
-          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 232),
+          Console.PromptBuilder.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 232),
           '  // x\n  if (true) {\n    // y\n\n    // zzzzzz\n  }\n\n  let y = x + 2;',
       );
       assert.strictEqual(
-          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 600),
+          Console.PromptBuilder.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 600),
           text.trim(),
       );
       assert.strictEqual(
-          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 50),
+          Console.PromptBuilder.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 50),
           '  // x\n  if (true) {\n    // y\n\n    // zzzzzz\n  }',
       );
       assert.strictEqual(
-          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 40),
+          Console.PromptBuilder.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 40),
           '  // x',
       );
       assert.strictEqual(
-          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 18}, /* maxLength=*/ 50),
+          Console.PromptBuilder.formatRelatedCode({text, columnNumber: 4, lineNumber: 18}, /* maxLength=*/ 50),
           '  let y = x + 2;',
       );
     });
   });
 
   it('Extracts expected whitespace from beginnings of lines', () => {
-    assert.strictEqual(Explain.lineWhitespace(' a'), ' ');
-    assert.strictEqual(Explain.lineWhitespace('a'), '');
-    assert.isNull(Explain.lineWhitespace(' '));
-    assert.isNull(Explain.lineWhitespace(''));
-    assert.strictEqual(Explain.lineWhitespace('\t\ta'), '\t\t');
+    assert.strictEqual(Console.PromptBuilder.lineWhitespace(' a'), ' ');
+    assert.strictEqual(Console.PromptBuilder.lineWhitespace('a'), '');
+    assert.isNull(Console.PromptBuilder.lineWhitespace(' '));
+    assert.isNull(Console.PromptBuilder.lineWhitespace(''));
+    assert.strictEqual(Console.PromptBuilder.lineWhitespace('\t\ta'), '\t\t');
   });
 
   describeWithMockConnection('buildPrompt', () => {
@@ -239,7 +239,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -276,7 +276,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -321,7 +321,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -388,7 +388,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -418,7 +418,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -453,7 +453,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -504,7 +504,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {prompt, sources, isPageReloadRecommended} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
         PROMPT_PREFIX,
@@ -539,10 +539,10 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const {sources, isPageReloadRecommended} = await promptBuilder.buildPrompt();
       assert.isTrue(isPageReloadRecommended, 'PromptBuilder did not recommend reloading the page');
-      assert.isNotTrue(sources.some(source => source.type === Explain.SourceType.NETWORK_REQUEST));
+      assert.isNotTrue(sources.some(source => source.type === Console.PromptBuilder.SourceType.NETWORK_REQUEST));
     });
 
   });
@@ -564,7 +564,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const query = await promptBuilder.getSearchQuery();
       assert.strictEqual(query, 'kaboom!');
     });
@@ -579,7 +579,7 @@ export const y = "";
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
+      const promptBuilder = new Console.PromptBuilder.PromptBuilder(message);
       const query = await promptBuilder.getSearchQuery();
       assert.strictEqual(query, 'Got an error: Error: fail');
     });

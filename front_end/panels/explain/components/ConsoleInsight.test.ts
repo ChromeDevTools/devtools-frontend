@@ -13,6 +13,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import * as Console from '../../console/console.js';
 import * as Explain from '../explain.js';
 
 describeWithEnvironment('ConsoleInsight', () => {
@@ -50,7 +51,7 @@ describeWithEnvironment('ConsoleInsight', () => {
           prompt: '',
           sources: [
             {
-              type: Explain.SourceType.MESSAGE,
+              type: Console.PromptBuilder.SourceType.MESSAGE,
               value: 'error message',
             },
           ],
@@ -621,11 +622,11 @@ after
             isPageReloadRecommended: false,
             sources: [
               {
-                type: Explain.SourceType.MESSAGE,
+                type: Console.PromptBuilder.SourceType.MESSAGE,
                 value: 'Something went wrong\n\nSomething went wrong',
               },
               {
-                type: Explain.SourceType.NETWORK_REQUEST,
+                type: Console.PromptBuilder.SourceType.NETWORK_REQUEST,
                 value: `Request: https://example.com/data.html
 
 Request headers:
@@ -730,19 +731,19 @@ document.querySelector('test').style = 'black';
             isPageReloadRecommended: false,
             sources: [
               {
-                type: Explain.SourceType.MESSAGE,
+                type: Console.PromptBuilder.SourceType.MESSAGE,
                 value: 'Something went wrong\n\nSomething went wrong',
               },
               {
-                type: Explain.SourceType.STACKTRACE,
+                type: Console.PromptBuilder.SourceType.STACKTRACE,
                 value: 'Stacktrace line1\nStacketrace line2',
               },
               {
-                type: Explain.SourceType.RELATED_CODE,
+                type: Console.PromptBuilder.SourceType.RELATED_CODE,
                 value: 'RelatedCode',
               },
               {
-                type: Explain.SourceType.NETWORK_REQUEST,
+                type: Console.PromptBuilder.SourceType.NETWORK_REQUEST,
                 value: `Request: https://example.com/data.html
 
 Request headers:
@@ -820,19 +821,19 @@ Images: ![https://example.com](https://example.com)
             isPageReloadRecommended: false,
             sources: [
               {
-                type: Explain.SourceType.MESSAGE,
+                type: Console.PromptBuilder.SourceType.MESSAGE,
                 value: 'Something went wrong\n\nSomething went wrong',
               },
               {
-                type: Explain.SourceType.STACKTRACE,
+                type: Console.PromptBuilder.SourceType.STACKTRACE,
                 value: 'Stacktrace line1\nStacketrace line2',
               },
               {
-                type: Explain.SourceType.RELATED_CODE,
+                type: Console.PromptBuilder.SourceType.RELATED_CODE,
                 value: 'RelatedCode',
               },
               {
-                type: Explain.SourceType.NETWORK_REQUEST,
+                type: Console.PromptBuilder.SourceType.NETWORK_REQUEST,
                 value: `Request: https://example.com/data.html
 
 Request headers:

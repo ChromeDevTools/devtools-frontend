@@ -9,7 +9,8 @@ import * as Formatter from '../../models/formatter/formatter.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
-import type * as Console from '../console/console.js';
+
+import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 const MAX_MESSAGE_SIZE = 1000;
 const MAX_STACK_TRACE_SIZE = 1000;
@@ -28,9 +29,9 @@ export interface Source {
 }
 
 export class PromptBuilder {
-  #consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage;
+  #consoleMessage: ConsoleViewMessage;
 
-  constructor(consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage) {
+  constructor(consoleMessage: ConsoleViewMessage) {
     this.#consoleMessage = consoleMessage;
   }
 
@@ -277,7 +278,7 @@ ${AiAssistanceModel.NetworkRequestFormatter.formatHeaders('Response headers:', r
 Response status: ${request.statusCode} ${request.statusText}`;
 }
 
-export function formatConsoleMessage(message: Console.ConsoleViewMessage.ConsoleViewMessage): string {
+export function formatConsoleMessage(message: ConsoleViewMessage): string {
   return message.toMessageTextString().substr(0, MAX_MESSAGE_SIZE);
 }
 
@@ -285,7 +286,7 @@ export function formatConsoleMessage(message: Console.ConsoleViewMessage.Console
  * This formats the stacktrace from the console message which might or might not
  * match the content of stacktrace(s) in the console message arguments.
  */
-export function formatStackTrace(message: Console.ConsoleViewMessage.ConsoleViewMessage): string {
+export function formatStackTrace(message: ConsoleViewMessage): string {
   const previewContainer = message.contentElement().querySelector('.stack-preview-container');
 
   if (!previewContainer) {

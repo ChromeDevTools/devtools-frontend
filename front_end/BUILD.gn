@@ -179,7 +179,7 @@ group("unittests") {
     "panels/elements:unittests",
     "panels/emulation:unittests",
     "panels/event_listeners:unittests",
-    "panels/explain:unittests",
+    "panels/explain/components:unittests",
     "panels/issues:unittests",
     "panels/layer_viewer:unittests",
     "panels/layers:unittests",

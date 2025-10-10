@@ -31,6 +31,7 @@ devtools_module("console") {
     "ConsoleViewMessage.ts",
     "ConsoleViewport.ts",
     "ErrorStackParser.ts",
+    "PromptBuilder.ts",
   ]
 
   deps = [
@@ -41,6 +42,7 @@ devtools_module("console") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/ai_assistance:bundle",
     "../../models/ai_code_completion:bundle",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
@@ -108,6 +110,7 @@ ts_library("unittests") {
     "ConsoleViewMessage.test.ts",
     "ConsoleViewport.test.ts",
     "ErrorStackParser.test.ts",
+    "PromptBuilder.test.ts",
   ]
 
   deps = [

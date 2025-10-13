@@ -220,6 +220,9 @@ def generate_ci_configs(configurations, builders):
             acls.readers,
             acl.entry(
                 roles = acl.BUILDBUCKET_TRIGGERER,
+                groups = [
+                    "mdb/chrome-devtools-active-sheriffs",
+                ],
                 users = [
                     CI_ACCOUNT,
                     "luci-scheduler@appspot.gserviceaccount.com",

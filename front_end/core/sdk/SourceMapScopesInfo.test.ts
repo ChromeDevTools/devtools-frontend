@@ -831,4 +831,62 @@ describe('SourceMapScopesInfo', () => {
       assert.isTrue(scopeInfo.isOutlinedFrame(0, 25));
     });
   });
+
+  describe('hasInlinedFrames', () => {
+    it('returns false for a function scope', () => {
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo = new SourceMapScopesInfo(
+          sourceMap,
+          new ScopeInfoBuilder()
+              .startRange(0, 0)
+              .startRange(0, 10, {isStackFrame: true})
+              .endRange(0, 20)
+              .endRange(0, 30)
+              .build());
+
+      assert.isFalse(scopeInfo.hasInlinedFrames(0, 15));
+    });
+
+    it('returns true for an inlined range', () => {
+      // 'bar' gets inlined into 'foo'.
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo = new SourceMapScopesInfo(
+          sourceMap,
+          new ScopeInfoBuilder()
+              .startScope(0, 0, {isStackFrame: true, key: 'fn-foo', name: 'foo'})
+              .endScope(9, 0)
+              .startScope(10, 0, {isStackFrame: true, key: 'fn-bar', name: 'bar'})
+              .endScope(19, 0)
+              .startRange(0, 0, {isStackFrame: true, scopeKey: 'fn-foo'})
+              .startRange(0, 10, {scopeKey: 'fn-bar', callSite: {sourceIndex: 0, line: 5, column: 2}})
+              .endRange(0, 20)
+              .endRange(0, 30)
+              .build());
+
+      assert.isTrue(scopeInfo.hasInlinedFrames(0, 15));
+    });
+
+    it('returns true for an inlined function with a block scope', () => {
+      // 'bar' with a block scope gets inlined into 'foo'.
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo = new SourceMapScopesInfo(
+          sourceMap,
+          new ScopeInfoBuilder()
+              .startScope(0, 0, {isStackFrame: true, key: 'fn-foo', name: 'foo'})
+              .endScope(9, 0)
+              .startScope(10, 0, {isStackFrame: true, key: 'fn-bar', name: 'bar'})
+              .startScope(15, 10, {key: 'block-bar'})
+              .endScope(18, 4)
+              .endScope(19, 0)
+              .startRange(0, 0, {isStackFrame: true, scopeKey: 'fn-foo'})
+              .startRange(0, 10, {scopeKey: 'fn-bar', callSite: {sourceIndex: 0, line: 5, column: 2}})
+              .startRange(0, 15, {scopeKey: 'block-bar'})
+              .endRange(0, 19)
+              .endRange(0, 20)
+              .endRange(0, 30)
+              .build());
+
+      assert.isTrue(scopeInfo.hasInlinedFrames(0, 18));
+    });
+  });
 });

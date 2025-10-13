@@ -527,6 +527,10 @@ interface AiPromptApi {
   enabled: boolean;
 }
 
+export interface DevToolsEnableDurableMessages {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -574,6 +578,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsFlexibleLayout: DevToolsFlexibleLayout,
   devToolsStartingStyleDebugging: DevToolsStartingStyleDebugging,
   devToolsAiPromptApi: AiPromptApi,
+  devToolsEnableDurableMessages: DevToolsEnableDurableMessages,
 }>;
 
 /**

@@ -165,6 +165,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
 
     void this.#networkAgent.invoke_enable({
       maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH,
+      enableDurableMessages: Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled,
+      maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH,
       reportDirectSocketTraffic: true,
     });
     void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
@@ -520,6 +522,7 @@ export const Fast4GConditions: Conditions = {
 };
 
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
+const MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH = 250 * 1024 * 1024;  // bytes
 
 export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
   readonly #fetchAgent: ProtocolProxyApi.FetchApi;

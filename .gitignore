@@ -52,6 +52,8 @@ test/perf/.generated
 /.vscode/tasks.json
 /.vscode/launch.json
 
+/.gemini/settings.json
+
 # Linters caches
 .eslintcache
 .stylelintcache

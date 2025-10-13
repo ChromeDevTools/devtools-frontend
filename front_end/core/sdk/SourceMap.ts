@@ -779,6 +779,16 @@ export class SourceMap {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }
+
+  isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;
+  }
+
+  hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
+  }
 }
 
 const VLQ_BASE_SHIFT = 5;

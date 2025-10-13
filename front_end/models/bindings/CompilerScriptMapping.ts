@@ -5,7 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
+// eslint-disable-next-line rulesdir/es-modules-import
+import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -43,12 +44,14 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   readonly #sourceMapToProject = new Map<SDK.SourceMap.SourceMap, ContentProviderBasedProject>();
   readonly #uiSourceCodeToSourceMaps =
       new Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, SDK.SourceMap.SourceMap>();
+  readonly #debuggerModel: SDK.DebuggerModel.DebuggerModel;
 
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this.#sourceMapManager = debuggerModel.sourceMapManager();
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#debuggerModel = debuggerModel;
 
     this.#stubProject = new ContentProviderBasedProject(
         workspace, 'jsSourceMaps:stub:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Service, '',
@@ -266,9 +269,56 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   }
 
   translateRawFramesStep(
-      _rawFrames: StackTraceImpl.Trie.RawFrame[],
-      _translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): boolean {
-    // TODO(crbug.com/433162438): Implement source map stack trace translation.
+      rawFrames: StackTraceImpl.Trie.RawFrame[],
+      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): boolean {
+    const frame = rawFrames[0];
+    if (StackTraceImpl.Trie.isBuiltinFrame(frame)) {
+      return false;
+    }
+
+    const sourceMapWithScopeInfoForFrame =
+        (rawFrame: StackTraceImpl.Trie.RawFrame): {sourceMap: SDK.SourceMap.SourceMap, script: SDK.Script.Script}|
+        null => {
+          const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
+          if (!script || this.#stubUISourceCodes.has(script)) {
+            // Use fallback while source map is being loaded.
+            return null;
+          }
+
+          const sourceMap = script.sourceMap();
+          return sourceMap?.hasScopeInfo() ? {sourceMap, script} : null;
+        };
+
+    const sourceMapAndScript = sourceMapWithScopeInfoForFrame(frame);
+    if (!sourceMapAndScript) {
+      return false;
+    }
+    const {sourceMap, script} = sourceMapAndScript;
+    const {lineNumber, columnNumber} = script.relativeLocationToRawLocation(frame);
+
+    if (!sourceMap.hasInlinedFrames(lineNumber, columnNumber) && !sourceMap.isOutlinedFrame(lineNumber, columnNumber)) {
+      // No outlining or inlining: Get the original function name and map the call-site.
+      const mapping = sourceMap.findEntry(lineNumber, columnNumber);
+      if (!mapping?.sourceURL) {
+        return false;
+      }
+
+      const originalName = sourceMap.findOriginalFunctionName({line: lineNumber, column: columnNumber});
+      rawFrames.shift();
+      const project = this.#sourceMapToProject.get(sourceMap);
+      const uiSourceCode = project?.uiSourceCodeForURL(mapping.sourceURL);
+      translatedFrames.push([{
+        line: mapping.sourceLineNumber,
+        column: mapping.sourceColumnNumber,
+        name: originalName ?? undefined,
+        uiSourceCode: uiSourceCode ?? undefined,
+        url: uiSourceCode ? undefined : mapping.sourceURL
+      }]);
+      return true;
+    }
+
+    // TODO(crbug.com/433162438): Expand inlined frames.
+    // TODO(crbug.com/433162438): Consolidate outlined frames.
     return false;
   }
 

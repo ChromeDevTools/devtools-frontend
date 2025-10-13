@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import {encodeSourceMap, waitForAllSourceMapsProcessed} from '../../testing/SourceMapEncoder.js';
+import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -550,5 +552,103 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     assert.notStrictEqual(metadata?.contentSize, sourceContent.length);
     const sourceUTF8 = new TextEncoder().encode(sourceContent);
     assert.strictEqual(metadata?.contentSize, sourceUTF8.length);
+  });
+
+  describe('translateRawFramesStep', () => {
+    it('returns false for builtin frames', () => {
+      const target = createTarget();
+      const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
+          target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
+
+      assert.isFalse(compilerScriptMapping.translateRawFramesStep(
+          [{lineNumber: -1, columnNumber: -1, functionName: 'Array.map'}], []));
+    });
+
+    it('translates a single frame using "proposal scopes" information', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
+
+      const target = createTarget();
+      const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
+          target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
+      const sourceMap = encodeSourceMap([
+        '0:0 => index.ts:0:0',
+        '0:21 => index.ts:2:11',
+      ]);
+      ScopesCodec.encode(
+          new ScopesCodec.ScopeInfoBuilder()
+              .startScope(1, 0, {isStackFrame: true, name: 'foo', key: 'fn'})
+              .endScope(3, 1)
+              .startRange(0, 10, {isStackFrame: true, scopeKey: 'fn'})
+              .endRange(0, 23)
+              .build(),
+          sourceMap as ScopesCodec.SourceMapJson);
+
+      const uiSourceCodePromise = waitForUISourceCodeAdded('http://example.com/index.ts', target);
+      const script =
+          await backend.addScript(target, {url: 'http://example.com/index.js', content: 'function f(){debugger;}'}, {
+            url: 'http://example.com/index.js.map',
+            content: sourceMap,
+          });
+
+      const translatedFrames:
+          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
+      assert.isTrue(compilerScriptMapping.translateRawFramesStep(
+          [{
+            scriptId: script.scriptId,
+            url: script.sourceURL,
+            lineNumber: 0,
+            columnNumber: 21,
+            functionName: 'f',
+          }],
+          translatedFrames));
+      assert.deepEqual(translatedFrames, [[{
+                         line: 2,
+                         column: 11,
+                         name: 'foo',
+                         uiSourceCode: await uiSourceCodePromise,
+                         url: undefined,
+                       }]]);
+
+      Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
+    });
+
+    it('translates a single frame using "fallback" scope information (created from AST and mappigns)', async () => {
+      const target = createTarget();
+      const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
+          target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
+      const sourceMap = encodeSourceMap([
+        '0:0 => index.ts:0:0',
+        '0:10 => index.ts:1:10@foo',
+        '0:21 => index.ts:2:11',
+      ]);
+
+      const uiSourceCodePromise = waitForUISourceCodeAdded('http://example.com/index.ts', target);
+      const script =
+          await backend.addScript(target, {url: 'http://example.com/index.js', content: 'function f(){debugger;}'}, {
+            url: 'http://example.com/index.js.map',
+            content: sourceMap,
+          });
+      script.sourceMap()?.hasScopeInfo();  // Trigger source map processing.
+      await script.sourceMap()?.scopesFallbackPromiseForTest;
+
+      const translatedFrames:
+          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
+      assert.isTrue(compilerScriptMapping.translateRawFramesStep(
+          [{
+            scriptId: script.scriptId,
+            url: script.sourceURL,
+            lineNumber: 0,
+            columnNumber: 21,
+            functionName: 'f',
+          }],
+          translatedFrames));
+      assert.deepEqual(translatedFrames, [[{
+                         line: 2,
+                         column: 11,
+                         name: 'foo',
+                         uiSourceCode: await uiSourceCodePromise,
+                         url: undefined,
+                       }]]);
+    });
   });
 });

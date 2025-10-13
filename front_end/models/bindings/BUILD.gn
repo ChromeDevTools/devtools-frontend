@@ -105,7 +105,10 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../testing",
+    "../../third_party/source-map-scopes-codec:bundle",
     "../persistence:bundle",
     "../stack_trace:impl",
     "../text_utils:bundle",

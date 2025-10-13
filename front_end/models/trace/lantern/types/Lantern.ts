@@ -50,7 +50,7 @@ export interface Trace {
 }
 export type ResourcePriority = ('VeryLow'|'Low'|'Medium'|'High'|'VeryHigh');
 export type ResourceType = keyof typeof NetworkRequestTypes;
-type InitiatorType = ('parser'|'script'|'preload'|'SignedExchange'|'preflight'|'other');
+type InitiatorType = ('parser'|'script'|'preload'|'SignedExchange'|'preflight'|'FedCM'|'other');
 export type ResourceTiming = Protocol.Network.ResourceTiming;
 export interface CallStack {
   callFrames: Array<{

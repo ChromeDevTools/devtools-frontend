@@ -15864,6 +15864,7 @@
                                 "preload",
                                 "SignedExchange",
                                 "preflight",
+                                "FedCM",
                                 "other"
                             ]
                         },
@@ -16592,6 +16593,23 @@
                             "name": "packetReordering",
                             "description": "WebRTC packetReordering feature.",
                             "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "BlockPattern",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "urlPattern",
+                            "description": "URL pattern to match. Patterns use the URLPattern constructor string syntax\n(https://urlpattern.spec.whatwg.org/) and must be absolute. Example: `*://*:*/*.css`.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "block",
+                            "description": "Whether or not to block the pattern. If false, a matching request will not be blocked even if it matches a later\n`BlockPattern`.",
                             "type": "boolean"
                         }
                     ]
@@ -17574,11 +17592,11 @@
                     "parameters": [
                         {
                             "name": "urlPatterns",
-                            "description": "URL patterns to block. Patterns use the URLPattern constructor string syntax\n(https://urlpattern.spec.whatwg.org/) and must be absolute. Example: `*://*:*/*.css`.",
+                            "description": "Patterns to match in the order in which they are given. These patterns\nalso take precedence over any wildcard patterns defined in `urls`.",
                             "optional": true,
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "$ref": "BlockPattern"
                             }
                         },
                         {

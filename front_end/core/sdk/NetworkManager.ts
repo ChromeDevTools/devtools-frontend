@@ -1553,6 +1553,125 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 }
 
+interface RequestConditionsSetting {
+  url: string;
+  enabled: boolean;
+}
+
+export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<RequestCondition.EventTypes> {
+  #url: string;
+  #enabled: boolean;
+
+  constructor(setting: RequestConditionsSetting) {
+    super();
+    this.#url = setting.url;
+    this.#enabled = setting.enabled;
+  }
+
+  get url(): string {
+    return this.#url;
+  }
+
+  set url(url: string) {
+    this.#url = url;
+    this.dispatchEventToListeners(RequestCondition.Events.REQUEST_CONDITION_CHANGED);
+  }
+
+  get enabled(): boolean {
+    return this.#enabled;
+  }
+
+  set enabled(enabled: boolean) {
+    this.#enabled = enabled;
+    this.dispatchEventToListeners(RequestCondition.Events.REQUEST_CONDITION_CHANGED);
+  }
+
+  toSetting(): RequestConditionsSetting {
+    const {url, enabled} = this;
+    return {url, enabled};
+  }
+}
+
+export namespace RequestCondition {
+  export const enum Events {
+    REQUEST_CONDITION_CHANGED = 'request-condition-changed',
+  }
+  export interface EventTypes {
+    [Events.REQUEST_CONDITION_CHANGED]: void;
+  }
+}
+
+export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<RequestConditions.EventTypes> {
+  readonly #setting =
+      Common.Settings.Settings.instance().createSetting<RequestConditionsSetting[]>('network-blocked-patterns', []);
+  readonly #conditions: RequestCondition[];
+
+  constructor() {
+    super();
+    this.#conditions = this.#setting.get().map(condition => new RequestCondition(condition));
+    for (const condition of this.#conditions) {
+      condition.addEventListener(RequestCondition.Events.REQUEST_CONDITION_CHANGED, this.#conditionsChanged, this);
+    }
+  }
+
+  get count(): number {
+    return this.#conditions.length;
+  }
+
+  has(url: string): boolean {
+    return Boolean(this.#conditions.find(condition => condition.url === url));
+  }
+
+  add(...conditions: RequestCondition[]): void {
+    this.#conditions.push(...conditions);
+    this.#conditionsChanged();
+  }
+
+  delete(condition: RequestCondition): void {
+    const index = this.#conditions.indexOf(condition);
+    if (index < 0) {
+      return;
+    }
+    condition.removeEventListener(RequestCondition.Events.REQUEST_CONDITION_CHANGED, this.#conditionsChanged, this);
+    this.#conditions.splice(index);
+    this.#conditionsChanged();
+  }
+
+  clear(): void {
+    this.#conditions.splice(0);
+    this.#conditionsChanged();
+    for (const condition of this.#conditions) {
+      condition.removeEventListener(RequestCondition.Events.REQUEST_CONDITION_CHANGED, this.#conditionsChanged, this);
+    }
+  }
+
+  #conditionsChanged(): void {
+    this.#setting.set(this.#conditions.map(condition => condition.toSetting()));
+    this.dispatchEventToListeners(RequestConditions.Events.REQUEST_CONDITIONS_CHANGED);
+  }
+
+  get conditions(): IteratorObject<RequestCondition> {
+    return this.#conditions.values();
+  }
+
+  * blockedURLPatterns(): Generator<string> {
+    for (const condition of this.#conditions) {
+      if (condition.enabled) {
+        yield condition.url;
+      }
+    }
+  }
+}
+
+export namespace RequestConditions {
+  export const enum Events {
+    REQUEST_CONDITIONS_CHANGED = 'request-conditions-changed',
+  }
+  export interface EventTypes {
+    [Events.REQUEST_CONDITIONS_CHANGED]: void;
+  }
+}
+
 let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;
 
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes>
@@ -1567,14 +1686,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   #updatingInterceptionPatternsPromise: Promise<void>|null = null;
   readonly #blockingEnabledSetting =
       Common.Settings.Settings.instance().moduleSetting<boolean>('request-blocking-enabled');
-  readonly #blockedPatternsSetting =
-      Common.Settings.Settings.instance().createSetting<BlockedPattern[]>('network-blocked-patterns', []);
-  #effectiveBlockedURLs: string[] = [];
+  readonly #requestConditions = new RequestConditions();
   readonly #urlsForRequestInterceptor:
       Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern> =
       new Platform.MapUtilities.Multimap();
   #extraHeaders?: Protocol.Network.Headers;
   #customUserAgent?: string;
+  #isBlocking = false;
 
   constructor() {
     super();
@@ -1585,7 +1703,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       this.dispatchEventToListeners(MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED);
     };
     this.#blockingEnabledSetting.addChangeListener(blockedPatternChanged);
-    this.#blockedPatternsSetting.addChangeListener(blockedPatternChanged);
+    this.#requestConditions.addEventListener(
+        RequestConditions.Events.REQUEST_CONDITIONS_CHANGED, blockedPatternChanged);
     this.updateBlockedPatterns();
 
     TargetManager.instance().observeModels(NetworkManager, this);
@@ -1653,8 +1772,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       void networkAgent.invoke_setUserAgentOverride(
           {userAgent: this.currentUserAgent(), userAgentMetadata: this.#userAgentMetadataOverride || undefined});
     }
-    if (this.#effectiveBlockedURLs.length) {
-      void networkAgent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
+    const blockedURLs = this.#requestConditions.blockedURLPatterns().toArray();
+    if (blockedURLs.length) {
+      void networkAgent.invoke_setBlockedURLs({urls: blockedURLs});
     }
     if (this.isIntercepting()) {
       void fetchAgent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()});
@@ -1795,9 +1915,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  // TODO(allada) Move all request blocking into interception and let view manage blocking.
-  blockedPatterns(): BlockedPattern[] {
-    return this.#blockedPatternsSetting.get().slice();
+  get requestConditions(): RequestConditions {
+    return this.#requestConditions;
   }
 
   blockingEnabled(): boolean {
@@ -1805,11 +1924,16 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   isBlocking(): boolean {
-    return Boolean(this.#effectiveBlockedURLs.length);
+    return this.#isBlocking && this.blockingEnabled();
   }
 
-  setBlockedPatterns(patterns: BlockedPattern[]): void {
-    this.#blockedPatternsSetting.set(patterns);
+  /**
+   * @deprecated Kept for layout tests
+   * TODO(pfaffe) remove
+   */
+  setBlockedPatterns(patterns: Array<{url: string, enabled: boolean}>): void {
+    this.requestConditions.clear();
+    this.requestConditions.add(...patterns.map(pattern => new RequestCondition(pattern)));
   }
 
   setBlockingEnabled(enabled: boolean): void {
@@ -1820,21 +1944,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private updateBlockedPatterns(): void {
-    const urls = [];
-    if (this.#blockingEnabledSetting.get()) {
-      for (const pattern of this.#blockedPatternsSetting.get()) {
-        if (pattern.enabled) {
-          urls.push(pattern.url);
-        }
-      }
-    }
-
-    if (!urls.length && !this.#effectiveBlockedURLs.length) {
-      return;
-    }
-    this.#effectiveBlockedURLs = urls;
+    const urls = this.#requestConditions.blockedURLPatterns().toArray();
+    this.#isBlocking = urls.length > 0;
     for (const agent of this.#networkAgents) {
-      void agent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
+      void agent.invoke_setBlockedURLs({urls});
     }
   }
 
@@ -2316,11 +2429,6 @@ export interface Conditions {
    * @see https://docs.google.com/document/d/10lfVdS1iDWCRKQXPfbxEn4Or99D64mvNlugP1AQuFlE/edit for historical context.
    */
   targetLatency?: number;
-}
-
-export interface BlockedPattern {
-  url: string;
-  enabled: boolean;
 }
 
 export interface Message {

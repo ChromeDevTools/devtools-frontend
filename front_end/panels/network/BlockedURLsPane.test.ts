@@ -23,6 +23,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
     ]);
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).setBlockingEnabled(true);
   });
 
   it('shows a placeholder', async () => {
@@ -64,9 +65,9 @@ describeWithMockConnection('BlockedURLsPane', () => {
       const target = createTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-      sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'blockedPatterns').returns([
-        {url: '*', enabled: true}
-      ]);
+
+      SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.add(
+          new SDK.NetworkManager.RequestCondition({url: '*', enabled: true}));
       const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
       renderElementIntoDOM(blockedURLsPane);
       await blockedURLsPane.updateComplete;

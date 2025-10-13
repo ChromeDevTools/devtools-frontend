@@ -1848,23 +1848,24 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (request) {
       const maxBlockedURLLength = 20;
       const manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-      let patterns = manager.blockedPatterns();
 
       function addBlockedURL(url: string): void {
-        patterns.push({enabled: true, url: url as Platform.DevToolsPath.UrlString});
-        manager.setBlockedPatterns(patterns);
+        manager.requestConditions.add(
+            new SDK.NetworkManager.RequestCondition({enabled: true, url: url as Platform.DevToolsPath.UrlString}));
         manager.setBlockingEnabled(true);
         void UI.ViewManager.ViewManager.instance().showView('network.blocked-urls');
       }
 
       function removeBlockedURL(url: string): void {
-        patterns = patterns.filter(pattern => pattern.url !== url);
-        manager.setBlockedPatterns(patterns);
+        const entry = manager.requestConditions.conditions.find(condition => condition.url === url);
+        if (entry) {
+          manager.requestConditions.delete(entry);
+        }
         void UI.ViewManager.ViewManager.instance().showView('network.blocked-urls');
       }
 
       const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-      if (urlWithoutScheme && !patterns.find(pattern => pattern.url === urlWithoutScheme)) {
+      if (urlWithoutScheme && !manager.requestConditions.has(urlWithoutScheme)) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.blockRequestUrl), addBlockedURL.bind(null, urlWithoutScheme),
             {jslogContext: 'block-request-url'});
@@ -1876,7 +1877,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
 
       const domain = request.parsedURL.domain();
-      if (domain && !patterns.find(pattern => pattern.url === domain)) {
+      if (domain && !manager.requestConditions.has(domain)) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.blockRequestDomain), addBlockedURL.bind(null, domain),
             {jslogContext: 'block-request-domain'});

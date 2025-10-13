@@ -1077,8 +1077,6 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     multitargetNetworkManager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, () => eventCounter++);
     const blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('request-blocking-enabled');
-    const blockedPatternsSetting: Common.Settings.Setting<SDK.NetworkManager.BlockedPattern[]> =
-        Common.Settings.Settings.instance().createSetting('network-blocked-patterns', []);
 
     // Change blocking setting via Common.Settings.Settings.
     assert.isFalse(multitargetNetworkManager.isBlocking());
@@ -1087,11 +1085,12 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     assert.strictEqual(eventCounter, 1);
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.blockingEnabled());
-    blockedPatternsSetting.set([{url: 'example.com', enabled: true}]);
+    multitargetNetworkManager.requestConditions.add(
+        new SDK.NetworkManager.RequestCondition({url: 'example.com', enabled: true}));
     assert.strictEqual(eventCounter, 2);
     assert.isTrue(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.blockingEnabled());
-    blockedPatternsSetting.set([]);
+    multitargetNetworkManager.requestConditions.clear();
     assert.strictEqual(eventCounter, 3);
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.blockingEnabled());
@@ -1107,11 +1106,12 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     assert.strictEqual(eventCounter, 5);
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.blockingEnabled());
-    multitargetNetworkManager.setBlockedPatterns([{url: 'example.com', enabled: true}]);
+    multitargetNetworkManager.requestConditions.add(
+        new SDK.NetworkManager.RequestCondition({url: 'example.com', enabled: true}));
     assert.strictEqual(eventCounter, 6);
     assert.isTrue(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.blockingEnabled());
-    multitargetNetworkManager.setBlockedPatterns([]);
+    multitargetNetworkManager.requestConditions.clear();
     assert.strictEqual(eventCounter, 7);
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.blockingEnabled());

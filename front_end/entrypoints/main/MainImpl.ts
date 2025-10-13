@@ -510,7 +510,7 @@ export class MainImpl {
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();
 
-    void AiAssistanceModel.BuiltInAi.instance();
+    void AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
 
     new PauseListener();
 
@@ -1066,15 +1066,16 @@ type ExternalRequestInput = {
 export async function handleExternalRequest(input: ExternalRequestInput):
     Promise<{response: string, devToolsLogs: object[]}> {
   const generator = await handleExternalRequestGenerator(input);
-  let result: IteratorResult<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse>;
+  let result: IteratorResult<
+      AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>;
   do {
     result = await generator.next();
   } while (!result.done);
   const response = result.value;
-  if (response.type === AiAssistanceModel.ExternalRequestResponseType.ERROR) {
+  if (response.type === AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR) {
     throw new Error(response.message);
   }
-  if (response.type === AiAssistanceModel.ExternalRequestResponseType.ANSWER) {
+  if (response.type === AiAssistanceModel.AiAgent.ExternalRequestResponseType.ANSWER) {
     return {
       response: response.message,
       devToolsLogs: response.devToolsLogs,
@@ -1086,8 +1087,8 @@ export async function handleExternalRequest(input: ExternalRequestInput):
 // @ts-expect-error
 globalThis.handleExternalRequest = handleExternalRequest;
 
-export async function handleExternalRequestGenerator(input: ExternalRequestInput):
-    Promise<AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse>> {
+export async function handleExternalRequestGenerator(input: ExternalRequestInput): Promise<AsyncGenerator<
+    AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>> {
   switch (input.kind) {
     case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
       const TimelinePanel = await import('../../panels/timeline/timeline.js');
@@ -1099,32 +1100,32 @@ export async function handleExternalRequestGenerator(input: ExternalRequestInput
     }
     case 'NETWORK_DEBUGGER': {
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-      const conversationHandler = await AiAssistanceModel.ConversationHandler.instance();
+      const conversationHandler = await AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
       return await conversationHandler.handleExternalRequest({
-        conversationType: AiAssistanceModel.ConversationType.NETWORK,
+        conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK,
         prompt: input.args.prompt,
         requestUrl: input.args.requestUrl,
       });
     }
     case 'LIVE_STYLE_DEBUGGER': {
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-      const conversationHandler = AiAssistanceModel.ConversationHandler.instance();
+      const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
       return await conversationHandler.handleExternalRequest({
-        conversationType: AiAssistanceModel.ConversationType.STYLING,
+        conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
         prompt: input.args.prompt,
         selector: input.args.selector,
       });
     }
   }
   // eslint-disable-next-line require-yield
-  return (async function*
-          (): AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-            return {
-              type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-              // @ts-expect-error
-              message: `Debugging with an agent of type '${input.kind}' is not implemented yet.`,
-            };
-          })();
+  return (async function*(): AsyncGenerator<
+          AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse> {
+    return {
+      type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,
+      // @ts-expect-error
+      message: `Debugging with an agent of type '${input.kind}' is not implemented yet.`,
+    };
+  })();
 }
 
 // @ts-expect-error

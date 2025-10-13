@@ -1447,7 +1447,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   shouldShowTeaser(): boolean {
-    if (!this.shouldShowInsights() || !AiAssistanceModel.BuiltInAi.cachedIsAvailable()) {
+    if (!this.shouldShowInsights() || !AiAssistanceModel.BuiltInAi.BuiltInAi.cachedIsAvailable()) {
       return false;
     }
     const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();

@@ -252,7 +252,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent);
     if (perfAIEntryPointEnabled && this.parsedTrace) {
-      const callTree = AIAssistance.AICallTree.fromEvent(entry, this.parsedTrace);
+      const callTree = AIAssistance.AICallTree.AICallTree.fromEvent(entry, this.parsedTrace);
       if (callTree) {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
 

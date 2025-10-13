@@ -45,7 +45,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
   let viewManagerIsViewVisibleStub: sinon.SinonStub<[viewId: string], boolean>;
   beforeEach(() => {
     viewManagerIsViewVisibleStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'isViewVisible');
-    AiAssistanceModel.ConversationHandler.removeInstance();
+    AiAssistanceModel.ConversationHandler.ConversationHandler.removeInstance();
     registerNoopActions([
       'elements.toggle-element-search', 'timeline.record-reload', 'timeline.toggle-recording', 'timeline.show-history',
       'components.collect-garbage'
@@ -54,7 +54,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);
     UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-    UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, null);
+    UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, null);
     UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
 
     const mockStore = new MockStore();
@@ -266,33 +266,34 @@ describeWithMockConnection('AI Assistance Panel', () => {
           const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
             nodeType: Node.ELEMENT_NODE,
           });
-          sinon.stub(AiAssistanceModel.NodeContext.prototype, 'getSuggestions')
+          sinon.stub(AiAssistanceModel.StylingAgent.NodeContext.prototype, 'getSuggestions')
               .returns(Promise.resolve([{title: 'test suggestion'}]));
-          return new AiAssistanceModel.NodeContext(node);
+          return new AiAssistanceModel.StylingAgent.NodeContext(node);
         },
         action: 'freestyler.elements-floating-button',
       },
       {
         flavor: SDK.NetworkRequest.NetworkRequest,
         createContext: () => {
-          return new AiAssistanceModel.RequestContext(
+          return new AiAssistanceModel.NetworkAgent.RequestContext(
               sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest),
               sinon.createStubInstance(NetworkTimeCalculator.NetworkTransferDurationCalculator));
         },
         action: 'drjones.network-floating-button'
       },
       {
-        flavor: AiAssistanceModel.AgentFocus,
+        flavor: AiAssistanceModel.AIContext.AgentFocus,
         createContext: () => {
           const parsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
-          return AiAssistanceModel.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+          return AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
         },
         action: 'drjones.performance-panel-context'
       },
       {
         flavor: Workspace.UISourceCode.UISourceCode,
         createContext: () => {
-          return new AiAssistanceModel.FileContext(sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
+          return new AiAssistanceModel.FileAgent.FileContext(
+              sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
         },
         action: 'drjones.sources-panel-context',
       }
@@ -358,13 +359,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       // Firstly, start a conversation and set a context
       const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
-      const context = AiAssistanceModel.PerformanceTraceContext.fromParsedTrace(fakeParsedTrace);
-      UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, context.getItem());
+      const context = AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(fakeParsedTrace);
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, context.getItem());
       panel.handleAction('drjones.performance-panel-context');
       await view.nextInput;
 
       // Now clear the context and check we cleared out the text
-      UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, null);
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, null);
       sinon.assert.callCount(chatView.clearTextInput, 1);
     });
   });
@@ -539,7 +540,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onNewChatClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.STYLING);
+      assert.deepEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING);
     });
 
     it('should select the performance insights agent if it is enabled and the user has expanded an insight',
@@ -582,7 +583,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
          view.input.onNewChatClick();
 
          assert.deepEqual((await view.nextInput).messages, []);
-         assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
+         assert.deepEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
        });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
@@ -619,7 +620,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onNewChatClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
+      assert.deepEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
     });
 
     it('should switch agents and restore history', async () => {
@@ -634,7 +635,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       panel.handleAction('freestyler.elements-floating-button');
       const imageInput = {inlineData: {data: 'imageinputbytes', mimeType: 'image/jpeg'}};
       (await view.nextInput)
-          .onTextSubmit('User question to Freestyler?', imageInput, AiAssistanceModel.MultimodalInputType.SCREENSHOT);
+          .onTextSubmit(
+              'User question to Freestyler?', imageInput, AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT);
       assert.deepEqual((await view.nextInput).messages, [
         {
           entity: AiAssistancePanel.ChatMessageEntity.USER,
@@ -787,7 +789,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           rpcId: undefined,
           suggestions: undefined,
           steps: [],
-          error: AiAssistanceModel.ErrorType.ABORT,
+          error: AiAssistanceModel.AiAgent.ErrorType.ABORT,
         },
         {
           entity: AiAssistancePanel.ChatMessageEntity.USER,
@@ -810,7 +812,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
           enabled: true,
         },
       });
-      const addHistoryItemStub = sinon.stub(AiAssistanceModel.Conversation.prototype, 'addHistoryItem');
+      const addHistoryItemStub =
+          sinon.stub(AiAssistanceModel.AiHistoryStorage.Conversation.prototype, 'addHistoryItem');
       viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
       const {view} = await createAiAssistancePanel({
         aidaClient: mockAidaClient(
@@ -831,7 +834,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           enabled: true,
         },
       });
-      const aiHistoryStorage = AiAssistanceModel.AiHistoryStorage.instance({forceNew: true});
+      const aiHistoryStorage = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
       const deleteHistoryEntrySpy = sinon.spy(aiHistoryStorage, 'deleteHistoryEntry');
       const {panel, view} = await createAiAssistancePanel(
           {
@@ -875,7 +878,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isDefined(findMenuItemWithLabel(contextMenu.defaultSection(), 'test'));
       contextMenu.discard();
 
-      await AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
+      await AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
 
       const newViewInput = await view.nextInput;
       ({contextMenu} = openHistoryContextMenu(newViewInput, 'test'));
@@ -943,7 +946,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       ]);
       view.input.onDeleteClick();
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.STYLING);
+      assert.deepEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING);
     });
 
     it('should have empty state after clear chat history', async () => {
@@ -1193,28 +1196,28 @@ describeWithMockConnection('AI Assistance Panel', () => {
   describe('auto agent selection for panels', () => {
     const tests: Array<{
       panelName: string,
-      expectedConversationType: AiAssistanceModel.ConversationType,
+      expectedConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
       featureFlagName: string,
     }> =
         [
           {
             panelName: 'elements',
-            expectedConversationType: AiAssistanceModel.ConversationType.STYLING,
+            expectedConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
             featureFlagName: 'devToolsFreestyler',
           },
           {
             panelName: 'network',
-            expectedConversationType: AiAssistanceModel.ConversationType.NETWORK,
+            expectedConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK,
             featureFlagName: 'devToolsAiAssistanceNetworkAgent',
           },
           {
             panelName: 'sources',
-            expectedConversationType: AiAssistanceModel.ConversationType.FILE,
+            expectedConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.FILE,
             featureFlagName: 'devToolsAiAssistanceFileAgent',
           },
           {
             panelName: 'timeline',
-            expectedConversationType: AiAssistanceModel.ConversationType.PERFORMANCE,
+            expectedConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE,
             featureFlagName: 'devToolsAiAssistancePerformanceAgent',
           }
         ];
@@ -1281,7 +1284,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
       const {panel, view} = await createAiAssistancePanel();
 
-      assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.STYLING);
+      assert.strictEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING);
 
       // Simulate ViewManager.moveView() that hides panel, updates locations and other panel visibility, then shows moved view
       panel.willHide();
@@ -1308,7 +1311,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
                new Timeline.TimelinePanel.SelectedInsight({} as unknown as TimelineComponents.Sidebar.ActiveInsight));
            const {view} = await createAiAssistancePanel();
 
-           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
+           assert.strictEqual(
+               view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
          });
 
       it('should select the PERFORMANCE agent when the performance panel is open and insights are enabled but the user has not selected an insight',
@@ -1325,7 +1329,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.SelectedInsight, null);
 
            const {view} = await createAiAssistancePanel();
-           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
+           assert.strictEqual(
+               view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
          });
     });
   });
@@ -1350,7 +1355,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         answer: undefined,
         entity: AiAssistancePanel.ChatMessageEntity.MODEL,
         rpcId: undefined,
-        error: AiAssistanceModel.ErrorType.BLOCK,
+        error: AiAssistanceModel.AiAgent.ErrorType.BLOCK,
         steps: [],
       },
     ]);
@@ -1516,8 +1521,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
            const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as
                Trace.TraceModel.ParsedTrace;
-           const focus = AiAssistanceModel.AgentFocus.fromParsedTrace(fakeParsedTrace);
-           UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, focus);
+           const focus = AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(fakeParsedTrace);
+           UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, focus);
 
            Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
            const {panel, view} =
@@ -1628,7 +1633,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         isLoading: false,
         data: 'imageInput',
         mimeType: 'image/jpeg',
-        inputType: AiAssistanceModel.MultimodalInputType.SCREENSHOT
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT
       });
       expect(captureScreenshotStub.calledOnce);
 
@@ -1657,7 +1662,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         isLoading: false,
         data: btoa('imageInput'),
         mimeType: 'image/jpeg',
-        inputType: AiAssistanceModel.MultimodalInputType.UPLOADED_IMAGE
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE
       });
 
       view.input.onRemoveImageInput?.();
@@ -1678,7 +1683,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       view.input.onTextSubmit(
           'test', {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}},
-          AiAssistanceModel.MultimodalInputType.SCREENSHOT);
+          AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT);
 
       assert.deepEqual((await view.nextInput).messages, [
         {
@@ -1765,14 +1770,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should announce the context title from the agent as status', async () => {
-      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
         yield {
-          type: AiAssistanceModel.ResponseType.CONTEXT,
+          type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
           title: 'context-title',
           details: [{title: 'mock', text: 'mock'}]
         };
       })();
-      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(stubbedResponses);
       const {panel, view} = await createAiAssistancePanel();
 
       panel.handleAction('freestyler.elements-floating-button');
@@ -1785,20 +1790,20 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should announce answer loading when answer starts streaming as status', async () => {
-      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
         yield {
-          type: AiAssistanceModel.ResponseType.ANSWER,
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
           text: 'streaming ans',
           complete: false,
         };
 
         yield {
-          type: AiAssistanceModel.ResponseType.ANSWER,
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
           text: 'streaming answer is not compl',
           complete: false,
         };
       })();
-      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(stubbedResponses);
       const {panel, view} = await createAiAssistancePanel();
 
       panel.handleAction('freestyler.elements-floating-button');
@@ -1812,14 +1817,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should announce answer ready when answer completes streaming', async () => {
-      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
         yield {
-          type: AiAssistanceModel.ResponseType.ANSWER,
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
           text: 'streaming answer is not completed before but now it is complete',
           complete: true,
         };
       })();
-      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(stubbedResponses);
       const {panel, view} = await createAiAssistancePanel();
 
       panel.handleAction('freestyler.elements-floating-button');
@@ -1862,19 +1867,19 @@ describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
 
     it('should show export button if there are history items and disable it when loading', async () => {
       const {promise, resolve} = Promise.withResolvers<void>();
-      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
         yield {
-          type: AiAssistanceModel.ResponseType.THOUGHT,
+          type: AiAssistanceModel.AiAgent.ResponseType.THOUGHT,
           thought: 'first response answer ',
         };
         await promise;
         yield {
-          type: AiAssistanceModel.ResponseType.ANSWER,
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
           text: 'second response answer',
           complete: true,
         };
       })();
-      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(stubbedResponses);
 
       const {panel, view} = await createAiAssistancePanel();
       panel.handleAction('freestyler.elements-floating-button');

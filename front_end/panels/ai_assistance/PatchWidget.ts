@@ -190,7 +190,7 @@ type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
-  changeManager: AiAssistanceModel.ChangeManager|undefined;
+  changeManager: AiAssistanceModel.ChangeManager.ChangeManager|undefined;
   // Whether the user completed first run experience dialog or not.
   #aiPatchingFreCompletedSetting =
       Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
@@ -682,11 +682,11 @@ export class PatchWidget extends UI.Widget.Widget {
     // user already had other modified files, the widget will still transition to the
     // success state (displaying all current workspace modifications).
     const hasChanges = this.#modifiedFiles.length > 0;
-    if (response?.type === AiAssistanceModel.ResponseType.ANSWER && hasChanges) {
+    if (response?.type === AiAssistanceModel.AiAgent.ResponseType.ANSWER && hasChanges) {
       this.#patchSuggestionState = PatchSuggestionState.SUCCESS;
     } else if (
-        response?.type === AiAssistanceModel.ResponseType.ERROR &&
-        response.error === AiAssistanceModel.ErrorType.ABORT) {
+        response?.type === AiAssistanceModel.AiAgent.ResponseType.ERROR &&
+        response.error === AiAssistanceModel.AiAgent.ErrorType.ABORT) {
       // If this is an abort error, we're returning back to the initial state.
       this.#patchSuggestionState = PatchSuggestionState.INITIAL;
     } else {
@@ -749,14 +749,14 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
   }
 
   async #applyPatch(changeSummary: string): Promise<{
-    response: AiAssistanceModel.ResponseData | undefined,
+    response: AiAssistanceModel.AiAgent.ResponseData | undefined,
     processedFiles: string[],
   }> {
     if (!this.#project) {
       throw new Error('Project does not exist');
     }
     this.#applyPatchAbortController = new AbortController();
-    const agent = new AiAssistanceModel.PatchAgent({
+    const agent = new AiAssistanceModel.PatchAgent.PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: false,
       project: this.#project,
@@ -799,7 +799,7 @@ window.aiAssistanceTestPatchPrompt =
     throw new Error('project not found');
   }
   const aidaClient = new Host.AidaClient.AidaClient();
-  const agent = new AiAssistanceModel.PatchAgent({
+  const agent = new AiAssistanceModel.PatchAgent.PatchAgent({
     aidaClient,
     serverSideLoggingEnabled: false,
     project,
@@ -807,7 +807,7 @@ window.aiAssistanceTestPatchPrompt =
   try {
     const assertionFailures = [];
     const {processedFiles, responses} = await agent.applyChanges(changeSummary);
-    if (responses.at(-1)?.type === AiAssistanceModel.ResponseType.ERROR) {
+    if (responses.at(-1)?.type === AiAssistanceModel.AiAgent.ResponseType.ERROR) {
       return {
         error: 'failed to patch',
         debugInfo: {

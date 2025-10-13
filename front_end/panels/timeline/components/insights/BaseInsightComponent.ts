@@ -87,7 +87,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   #selected = false;
   #model: T|null = null;
-  #agentFocus: AIAssistance.AgentFocus|null = null;
+  #agentFocus: AIAssistance.AIContext.AgentFocus|null = null;
   #fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null = null;
 
   get model(): T|null {
@@ -159,7 +159,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  set agentFocus(agentFocus: AIAssistance.AgentFocus) {
+  set agentFocus(agentFocus: AIAssistance.AIContext.AgentFocus) {
     this.#agentFocus = agentFocus;
   }
 
@@ -181,19 +181,19 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    const focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+    const focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
     if (this.#selected) {
       this.dispatchEvent(new SidebarInsight.InsightDeactivated());
 
       // Clear agent (but only if currently focused on an insight).
       if (focus) {
-        UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus.withInsight(null));
+        UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(null));
       }
       return;
     }
 
     if (focus) {
-      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus.withInsight(this.model));
+      UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus.withInsight(this.model));
     }
 
     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
@@ -366,13 +366,13 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+    let focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
     if (focus) {
       focus = focus.withInsight(this.model);
     } else {
       focus = this.#agentFocus;
     }
-    UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
+    UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus);
 
     // Trigger the AI Assistance panel to open.
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);

@@ -1100,16 +1100,16 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       // Find some task in the main thread that we can build an AI Call Tree from
       const task = allThreadEntriesInTrace(parsedTrace).find(event => {
         return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
-            AIAssistance.AICallTree.fromEvent(event, parsedTrace) !== null;
+            AIAssistance.AICallTree.AICallTree.fromEvent(event, parsedTrace) !== null;
       });
 
       assert.isOk(task);
-      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, null);
+      UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, null);
       const selection = Timeline.TimelineSelection.selectionFromEvent(task);
       flameChartView.setSelectionAndReveal(selection);
       await doubleRaf();  // the updating of the AI Call Tree is done in a rAF to not block.
-      const flavor = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-      assert.instanceOf(flavor, AIAssistance.AgentFocus);
+      const flavor = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
+      assert.instanceOf(flavor, AIAssistance.AIContext.AgentFocus);
     });
   });
 

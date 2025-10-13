@@ -18,12 +18,13 @@ async function drainMicroTasks() {
 
 describeWithEnvironment('AISettingsTab', () => {
   let deleteAiAssistanceHistoryStub:
-      sinon.SinonStub<Parameters<typeof AiAssistanceModel.AiHistoryStorage.prototype.deleteAll>>;
+      sinon.SinonStub<Parameters<typeof AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.prototype.deleteAll>>;
   let view: Settings.AISettingsTab.AISettingsTab|undefined;
 
   beforeEach(async () => {
-    deleteAiAssistanceHistoryStub = sinon.stub(AiAssistanceModel.AiHistoryStorage.prototype, 'deleteAll');
-    AiAssistanceModel.AiHistoryStorage.instance({forceNew: true});
+    deleteAiAssistanceHistoryStub =
+        sinon.stub(AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.prototype, 'deleteAll');
+    AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
     updateHostConfig({
       devToolsAiGeneratedTimelineLabels: {
         enabled: true,

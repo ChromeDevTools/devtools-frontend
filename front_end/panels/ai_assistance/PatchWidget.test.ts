@@ -297,7 +297,7 @@ Files:
     it('preselects an automatic workspace folder and allows connecting to it', async () => {
       setupAutomaticFileSystem({hasFileSystem: true});
       const showSelectWorkspaceDialogSpy = sinon.spy(AiAssistance.SelectWorkspaceDialog, 'show');
-      const applyChangesSpy = sinon.spy(AiAssistanceModel.PatchAgent.prototype, 'applyChanges');
+      const applyChangesSpy = sinon.spy(AiAssistanceModel.PatchAgent.PatchAgent.prototype, 'applyChanges');
 
       const {view, widget} = await createPatchWidget();
       widget.changeSummary = 'body { background-color: red; }';
@@ -343,7 +343,7 @@ Files:
         aidaClient: mockAidaClient([[{explanation: 'patch applied'}]]),
       });
       widget.changeSummary = 'body { background-color: red; }';
-      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager.ChangeManager);
       changeManager.stashChanges.returns(Promise.resolve());
       widget.changeManager = changeManager;
       view.input.onApplyToWorkspace();
@@ -353,7 +353,7 @@ Files:
 
     it('on save should stash changes', async () => {
       const {view, widget} = await createPatchWidgetWithDiffView();
-      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager.ChangeManager);
       changeManager.stashChanges.returns(Promise.resolve());
       widget.changeManager = changeManager;
       uiSourceCode.setWorkingCopy('working copy');
@@ -368,7 +368,7 @@ Files:
 
     it('discard should discard the working copy and render the view without patchSuggestion', async () => {
       const {view, widget} = await createPatchWidgetWithDiffView();
-      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager.ChangeManager);
       changeManager.stashChanges.returns(Promise.resolve());
       widget.changeManager = changeManager;
       uiSourceCode.setWorkingCopy('working copy');

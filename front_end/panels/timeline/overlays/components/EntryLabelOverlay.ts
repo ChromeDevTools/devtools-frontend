@@ -183,10 +183,10 @@ export class EntryLabelOverlay extends HTMLElement {
   /**
    * Required to generate a label with AI.
    */
-  #callTree: AiAssistanceModels.AICallTree|null = null;
+  #callTree: AiAssistanceModels.AICallTree.AICallTree|null = null;
   // Creates or gets the setting if it exists.
   #aiAnnotationsEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
-  #agent = new AiAssistanceModels.PerformanceAnnotationsAgent({
+  #agent = new AiAssistanceModels.PerformanceAnnotationsAgent.PerformanceAnnotationsAgent({
     aidaClient: new Host.AidaClient.AidaClient(),
     serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
   });
@@ -246,7 +246,7 @@ export class EntryLabelOverlay extends HTMLElement {
   /**
    * So we can provide a mocked agent in tests. Do not call this method outside of a test!
    */
-  overrideAIAgentForTest(agent: AiAssistanceModels.PerformanceAnnotationsAgent): void {
+  overrideAIAgentForTest(agent: AiAssistanceModels.PerformanceAnnotationsAgent.PerformanceAnnotationsAgent): void {
     this.#agent = agent;
   }
 
@@ -497,7 +497,7 @@ export class EntryLabelOverlay extends HTMLElement {
     selection?.addRange(range);
   }
 
-  set callTree(callTree: AiAssistanceModels.AICallTree|null) {
+  set callTree(callTree: AiAssistanceModels.AICallTree.AICallTree|null) {
     this.#callTree = callTree;
     // If the entry has a calltree, we need to check if we need to show the 'generate label' button.
     this.#setAIButtonRenderState();

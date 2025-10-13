@@ -7,7 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import {mockAidaClient, type MockAidaResponse} from '../../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../../testing/UISourceCodeHelpers.js';
-import {type ActionResponse, FileUpdateAgent, PatchAgent, type ResponseData, ResponseType} from '../ai_assistance.js';
+import {AiAgent, PatchAgent} from '../ai_assistance.js';
 
 /**
  * TODO: the following tests have to be added:
@@ -19,7 +19,7 @@ import {type ActionResponse, FileUpdateAgent, PatchAgent, type ResponseData, Res
 describeWithEnvironment('PatchAgent', () => {
   async function testAgent(
       mock: Array<[MockAidaResponse, ...MockAidaResponse[]]>,
-      fileAgentMock?: Array<[MockAidaResponse, ...MockAidaResponse[]]>): Promise<ResponseData[]> {
+      fileAgentMock?: Array<[MockAidaResponse, ...MockAidaResponse[]]>): Promise<AiAgent.ResponseData[]> {
     const {project, uiSourceCode} = createFileSystemUISourceCode({
       url: Platform.DevToolsPath.urlString`file:///path/to/overrides/example.html`,
       fileSystemPath: Platform.DevToolsPath.urlString`file:///path/to/overrides`,
@@ -29,10 +29,10 @@ describeWithEnvironment('PatchAgent', () => {
 
     uiSourceCode.setWorkingCopy('content working copy');
 
-    const agent = new PatchAgent({
+    const agent = new PatchAgent.PatchAgent({
       aidaClient: mockAidaClient(mock),
       project,
-      fileUpdateAgent: new FileUpdateAgent({
+      fileUpdateAgent: new PatchAgent.FileUpdateAgent({
         aidaClient: mockAidaClient(fileAgentMock),
       })
     });
@@ -49,10 +49,10 @@ describeWithEnvironment('PatchAgent', () => {
       }]
     ]);
 
-    const action = responses.find(response => response.type === ResponseType.ACTION);
+    const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
     assert.exists(action);
     assert.deepEqual(action, {
-      type: 'action' as ActionResponse['type'],
+      type: 'action' as AiAgent.ActionResponse['type'],
       output: '{"files":["example.html"]}',
       canceled: false,
       code: undefined,
@@ -75,10 +75,10 @@ describeWithEnvironment('PatchAgent', () => {
       }]
     ]);
 
-    const action = responses.find(response => response.type === ResponseType.ACTION);
+    const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
     assert.exists(action);
     assert.deepEqual(action, {
-      type: 'action' as ActionResponse['type'],
+      type: 'action' as AiAgent.ActionResponse['type'],
       output: '{"matches":[{"filepath":"example.html","lineNumber":0,"columnNumber":0,"matchLength":7}]}',
       canceled: false,
       code: undefined
@@ -96,11 +96,14 @@ describeWithEnvironment('PatchAgent', () => {
           explanation: 'file updated',
         }]]);
 
-    const action = responses.find(response => response.type === ResponseType.ACTION);
+    const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
     assert.exists(action);
-    assert.deepEqual(
-        action,
-        {type: 'action' as ActionResponse['type'], output: '{"success":true}', code: undefined, canceled: false});
+    assert.deepEqual(action, {
+      type: 'action' as AiAgent.ActionResponse['type'],
+      output: '{"success":true}',
+      code: undefined,
+      canceled: false
+    });
   });
 
   it('builds a request with a user tier', async () => {
@@ -115,10 +118,10 @@ describeWithEnvironment('PatchAgent', () => {
       mimeType: 'text/html',
       content: 'content',
     });
-    const agent = new PatchAgent({
+    const agent = new PatchAgent.PatchAgent({
       aidaClient: mockAidaClient(),
       project,
-      fileUpdateAgent: new FileUpdateAgent({
+      fileUpdateAgent: new PatchAgent.FileUpdateAgent({
         aidaClient: mockAidaClient(),
       })
     });

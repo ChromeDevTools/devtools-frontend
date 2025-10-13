@@ -9,10 +9,8 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-const {AiAgent, ResponseType, ConversationContext, ErrorType} = AiAssistance;
-
-function mockConversationContext(): AiAssistance.ConversationContext<unknown> {
-  return new (class extends ConversationContext<unknown>{
+function mockConversationContext(): AiAssistance.AiAgent.ConversationContext<unknown> {
+  return new (class extends AiAssistance.AiAgent.ConversationContext<unknown>{
     override getOrigin(): string {
       return 'origin';
     }
@@ -27,18 +25,18 @@ function mockConversationContext(): AiAssistance.ConversationContext<unknown> {
   })();
 }
 
-class AiAgentMock extends AiAgent<unknown> {
+class AiAgentMock extends AiAssistance.AiAgent.AiAgent<unknown> {
   override preamble = 'preamble';
 
   // eslint-disable-next-line require-yield
-  override async * handleContextDetails(): AsyncGenerator<AiAssistance.ContextResponse, void, void> {
+  override async * handleContextDetails(): AsyncGenerator<AiAssistance.AiAgent.ContextResponse, void, void> {
     return;
   }
 
   clientFeature: Host.AidaClient.ClientFeature = 0;
   userTier: undefined|string;
 
-  options: AiAssistance.RequestOptions = {
+  options: AiAssistance.AiAgent.RequestOptions = {
     temperature: 1,
     modelId: 'test model',
   };
@@ -171,15 +169,15 @@ describeWithEnvironment('AiAgent', () => {
     });
 
     it('builds a request without preamble', async () => {
-      class AiAgentMockWithoutPreamble extends AiAgent<unknown> {
+      class AiAgentMockWithoutPreamble extends AiAssistance.AiAgent.AiAgent<unknown> {
         override preamble = undefined;
         // eslint-disable-next-line require-yield
-        override async * handleContextDetails(): AsyncGenerator<AiAssistance.ContextResponse, void, void> {
+        override async * handleContextDetails(): AsyncGenerator<AiAssistance.AiAgent.ContextResponse, void, void> {
           return;
         }
         clientFeature: Host.AidaClient.ClientFeature = 0;
         userTier: undefined;
-        options: AiAssistance.RequestOptions = {
+        options: AiAssistance.AiAgent.RequestOptions = {
           temperature: 1,
           modelId: 'test model',
         };
@@ -294,21 +292,21 @@ describeWithEnvironment('AiAgent', () => {
 
         assert.deepEqual(responses, [
           {
-            type: ResponseType.USER_QUERY,
+            type: AiAssistance.AiAgent.ResponseType.USER_QUERY,
             query: 'query',
             imageInput: undefined,
             imageId: undefined,
           },
           {
-            type: ResponseType.QUERYING,
+            type: AiAssistance.AiAgent.ResponseType.QUERYING,
           },
           {
-            type: ResponseType.ANSWER,
+            type: AiAssistance.AiAgent.ResponseType.ANSWER,
             complete: false,
             text: 'Partial ans',
           },
           {
-            type: ResponseType.ANSWER,
+            type: AiAssistance.AiAgent.ResponseType.ANSWER,
             text: 'Partial answer is now completed',
             complete: true,
             rpcId: undefined,
@@ -353,17 +351,17 @@ describeWithEnvironment('AiAgent', () => {
 
       assert.deepEqual(responses, [
         {
-          type: ResponseType.USER_QUERY,
+          type: AiAssistance.AiAgent.ResponseType.USER_QUERY,
           query: 'query',
           imageInput: undefined,
           imageId: undefined,
         },
         {
-          type: ResponseType.QUERYING,
+          type: AiAssistance.AiAgent.ResponseType.QUERYING,
         },
         {
-          type: ResponseType.ERROR,
-          error: ErrorType.UNKNOWN,
+          type: AiAssistance.AiAgent.ResponseType.ERROR,
+          error: AiAssistance.AiAgent.ErrorType.UNKNOWN,
         },
       ]);
     });
@@ -371,7 +369,7 @@ describeWithEnvironment('AiAgent', () => {
 
   describe('ConversationContext', () => {
     function getTestContext(origin: string) {
-      class TestContext extends ConversationContext<undefined> {
+      class TestContext extends AiAssistance.AiAgent.ConversationContext<undefined> {
         override getTitle(): string {
           throw new Error('Method not implemented.');
         }
@@ -424,11 +422,11 @@ describeWithEnvironment('AiAgent', () => {
   });
 
   describe('functions', () => {
-    class AgentWithFunction extends AiAgent<unknown> {
+    class AgentWithFunction extends AiAssistance.AiAgent.AiAgent<unknown> {
       override preamble = 'preamble';
       called = 0;
 
-      constructor(opts: AiAssistance.AgentOptions) {
+      constructor(opts: AiAssistance.AiAgent.AgentOptions) {
         super(opts);
         this.declareFunction('testFn', {
           description: 'test fn description',
@@ -445,13 +443,13 @@ describeWithEnvironment('AiAgent', () => {
       }
 
       // eslint-disable-next-line require-yield
-      override async * handleContextDetails(): AsyncGenerator<AiAssistance.ContextResponse, void, void> {
+      override async * handleContextDetails(): AsyncGenerator<AiAssistance.AiAgent.ContextResponse, void, void> {
         return;
       }
 
       clientFeature: Host.AidaClient.ClientFeature = 0;
       userTier: undefined;
-      options: AiAssistance.RequestOptions = {
+      options: AiAssistance.AiAgent.RequestOptions = {
         temperature: 1,
         modelId: 'test model',
       };

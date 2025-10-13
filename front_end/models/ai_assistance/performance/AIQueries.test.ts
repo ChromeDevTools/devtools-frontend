@@ -14,7 +14,7 @@ describeWithEnvironment('AIQueries', () => {
 
     const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
     const insightSet = getInsightSetOrError(parsedTrace.insights, firstNav);
-    const tasks = AIQueries.longestTasks(firstNav.args.data?.navigationId, insightSet.bounds, parsedTrace);
+    const tasks = AIQueries.AIQueries.longestTasks(firstNav.args.data?.navigationId, insightSet.bounds, parsedTrace);
     assert.isOk(tasks);
 
     const expected = [39, 33, 21];

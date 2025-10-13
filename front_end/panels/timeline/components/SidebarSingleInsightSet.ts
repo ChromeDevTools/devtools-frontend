@@ -434,7 +434,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         return html``;
       }
 
-      const agentFocus = AIAssistance.AgentFocus.fromInsight(this.#data.parsedTrace, model);
+      const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
       // clang-format off
       return html`<div>
         <${componentClass.litTagName}

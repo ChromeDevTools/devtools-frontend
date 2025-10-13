@@ -20,7 +20,8 @@ describe('FreestylerEvaluateAction', () => {
       }
       executionContextStub.callFunctionOn.resolves(mockResult);
       executionContextStub.runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
-      return AiAssistance.EvaluateAction.execute('', [], executionContextStub, {throwOnSideEffect: false});
+      return AiAssistance.EvaluateAction.EvaluateAction.execute(
+          '', [], executionContextStub, {throwOnSideEffect: false});
     }
 
     function mockRemoteObject(overrides: Partial<SDK.RemoteObject.RemoteObject> = {}): SDK.RemoteObject.RemoteObject {
@@ -72,7 +73,7 @@ describe('FreestylerEvaluateAction', () => {
            });
            assert.fail('not reachable');
          } catch (err) {
-           assert.instanceOf(err, AiAssistance.SideEffectError);
+           assert.instanceOf(err, AiAssistance.EvaluateAction.SideEffectError);
            assert.strictEqual(err.message, 'EvalError: Possible side-effect in debug-evaluate');
          }
        });
@@ -81,29 +82,35 @@ describe('FreestylerEvaluateAction', () => {
   describe('serialization', () => {
     it('should serialize primitive values correctly', async () => {
       assert.strictEqual(
-          await AiAssistance.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject('string')), '\'string\'');
-      assert.strictEqual(await AiAssistance.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(999n)), '999n');
-      assert.strictEqual(await AiAssistance.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(true)), 'true');
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject('string')),
+          '\'string\'');
       assert.strictEqual(
-          await AiAssistance.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(undefined)), 'undefined');
-      assert.strictEqual(await AiAssistance.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(42)), '42');
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(999n)), '999n');
       assert.strictEqual(
-          await AiAssistance.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(Symbol('sym'))), 'Symbol(sym)');
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(true)), 'true');
+      assert.strictEqual(
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(undefined)),
+          'undefined');
+      assert.strictEqual(
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(42)), '42');
+      assert.strictEqual(
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(Symbol('sym'))),
+          'Symbol(sym)');
     });
 
     it('runs stringification on the page for objects', async () => {
       const object = new SDK.RemoteObject.LocalJSONObject({});
       const callFunctionStub = sinon.stub(object, 'callFunction');
       callFunctionStub.resolves({object: new SDK.RemoteObject.LocalJSONObject('result')});
-      const result = await AiAssistance.stringifyRemoteObject(object);
+      const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object);
       assert.strictEqual(result, 'result');
-      sinon.assert.calledOnceWithExactly(callFunctionStub, AiAssistance.stringifyObjectOnThePage);
+      sinon.assert.calledOnceWithExactly(callFunctionStub, AiAssistance.EvaluateAction.stringifyObjectOnThePage);
     });
 
     describe('HTMLElement', () => {
       it('should work with plain nodes', async () => {
         const el = document.createElement('div');
-        assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply(el), '"<div></div>"');
+        assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div></div>"');
       });
 
       it('should serialize node with classes', async () => {
@@ -111,53 +118,55 @@ describe('FreestylerEvaluateAction', () => {
         el.classList.add('section');
         el.classList.add('section-main');
         assert.strictEqual(
-            AiAssistance.stringifyObjectOnThePage.apply(el), '"<div class=\\"section section-main\\"></div>"');
+            AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(el),
+            '"<div class=\\"section section-main\\"></div>"');
       });
 
       it('should serialize node with id', async () => {
         const el = document.createElement('div');
         el.id = 'promotion-section';
-        assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply(el), '"<div id=\\"promotion-section\\"></div>"');
+        assert.strictEqual(
+            AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div id=\\"promotion-section\\"></div>"');
       });
       it('should serialize node with class and id', async () => {
         const el = document.createElement('div');
         el.id = 'promotion-section';
         el.classList.add('section');
         assert.strictEqual(
-            AiAssistance.stringifyObjectOnThePage.apply(el),
+            AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(el),
             '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"');
       });
       it('should serialize node with children', async () => {
         const el = document.createElement('div');
         const p = document.createElement('p');
         el.appendChild(p);
-        assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply(el), '"<div>...</div>"');
+        assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div>...</div>"');
       });
     });
 
     it('should serialize arrays correctly', async () => {
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply([]), '[]');
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply([1]), '[1]');
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply([1, 2]), '[1,2]');
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply([{key: 1}]), '[{"key":1}]');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply([]), '[]');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply([1]), '[1]');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply([1, 2]), '[1,2]');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply([{key: 1}]), '[{"key":1}]');
     });
 
     it('should serialize objects correctly', async () => {
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply({key: 'str'}), '{"key":"str"}');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply({key: 'str'}), '{"key":"str"}');
       assert.strictEqual(
-          AiAssistance.stringifyObjectOnThePage.apply({key: 'str', secondKey: 'str2'}),
+          AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply({key: 'str', secondKey: 'str2'}),
           '{"key":"str","secondKey":"str2"}');
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply({key: 1}), '{"key":1}');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply({key: 1}), '{"key":1}');
     });
 
     it('should not continue serializing cycles', async () => {
       const obj: {a: number, itself?: object} = {a: 1};
       obj.itself = obj;
-      assert.strictEqual(AiAssistance.stringifyObjectOnThePage.apply(obj), '{"a":1,"itself":"(cycle)"}');
+      assert.strictEqual(AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(obj), '{"a":1,"itself":"(cycle)"}');
     });
 
     it('should not include number keys for CSSStyleDeclaration', async () => {
-      const result = AiAssistance.stringifyObjectOnThePage.apply(getComputedStyle(document.body));
+      const result = AiAssistance.EvaluateAction.stringifyObjectOnThePage.apply(getComputedStyle(document.body));
       const parsedResult = JSON.parse(result);
       assert.isUndefined(parsedResult[0]);
     });

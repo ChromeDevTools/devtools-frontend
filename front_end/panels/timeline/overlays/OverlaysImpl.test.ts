@@ -607,7 +607,7 @@ describeWithEnvironment('Overlays', () => {
       const generateButton = elementsWrapper.querySelector<HTMLElement>('.ai-label-button');
       assert.isOk(generateButton, 'could not find "Generate label" button');
       assert.isTrue(generateButton.classList.contains('enabled'));
-      const agent = new AiAssistanceModels.PerformanceAnnotationsAgent({
+      const agent = new AiAssistanceModels.PerformanceAnnotationsAgent.PerformanceAnnotationsAgent({
         aidaClient: mockAidaClient([[{
           explanation: 'This is an interesting entry',
           metadata: {

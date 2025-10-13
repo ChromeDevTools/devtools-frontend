@@ -1536,16 +1536,16 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
       const event = selectionIsEvent(selection) ? selection.event : null;
 
-      let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+      let focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
       if (focus) {
         focus = focus.withEvent(event);
       } else if (event) {
-        focus = AIAssistance.AgentFocus.fromEvent(this.#parsedTrace, event);
+        focus = AIAssistance.AIContext.AgentFocus.fromEvent(this.#parsedTrace, event);
       } else {
         focus = null;
       }
 
-      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
+      UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus);
     });
   }
 

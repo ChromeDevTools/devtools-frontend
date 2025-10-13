@@ -7,7 +7,7 @@ import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelper
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import type * as Trace from '../../trace/trace.js';
-import {AgentFocus, PerformanceInsightFormatter} from '../ai_assistance.js';
+import {AIContext, PerformanceInsightFormatter} from '../ai_assistance.js';
 
 describeWithEnvironment('PerformanceInsightFormatter', () => {
   let snapshotTester: SnapshotTester;
@@ -25,8 +25,8 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     // Although our types don't show it, Insights can end up as Errors if there
     // is an issue in the processing stage.
     const errorInsight = new Error() as unknown as Trace.Insights.Types.InsightModel;
-    const focus = AgentFocus.fromParsedTrace(parsedTrace);
-    const formatter = new PerformanceInsightFormatter(focus, errorInsight);
+    const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
+    const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, errorInsight);
     assert.isFalse(formatter.insightIsSupported());
     assert.doesNotThrow(() => formatter.formatInsight());
   });
@@ -37,9 +37,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       assert.isOk(insight.lcpRequest);
       snapshotTester.assert(this, output);
@@ -50,9 +50,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -63,9 +63,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     assert.isOk(parsedTrace.insights);
     const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
-    const focus = AgentFocus.fromParsedTrace(parsedTrace);
+    const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-    const formatter = new PerformanceInsightFormatter(focus, insight);
+    const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
     const output = formatter.formatInsight();
     snapshotTester.assert(this, output);
   });
@@ -76,9 +76,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -88,9 +88,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -102,9 +102,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPDiscovery', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);
@@ -118,9 +118,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DocumentLatency', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
 
       const request = insight.data?.documentRequest;
@@ -136,9 +136,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('CLSCulprits', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -148,9 +148,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('CLSCulprits', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -160,9 +160,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('CLSCulprits', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -173,9 +173,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('CLSCulprits', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -186,9 +186,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const parsedTrace = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
       assert.isOk(parsedTrace.insights);
       const insight = getInsightOrError('INPBreakdown', parsedTrace.insights);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -200,9 +200,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ModernHTTP', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -212,9 +212,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ModernHTTP', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -226,9 +226,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DOMSize', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -238,9 +238,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DOMSize', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -252,9 +252,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DuplicatedJavaScript', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -264,9 +264,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DuplicatedJavaScript', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -278,9 +278,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LegacyJavaScript', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -290,9 +290,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LegacyJavaScript', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -304,9 +304,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('FontDisplay', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -316,9 +316,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('FontDisplay', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -330,9 +330,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ImageDelivery', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -342,9 +342,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ImageDelivery', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -356,9 +356,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ForcedReflow', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -368,9 +368,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ForcedReflow', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -382,9 +382,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('NetworkDependencyTree', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -394,9 +394,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('NetworkDependencyTree', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -408,9 +408,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('SlowCSSSelector', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -420,9 +420,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('SlowCSSSelector', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -434,9 +434,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ThirdParties', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -446,9 +446,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ThirdParties', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -460,9 +460,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('Cache', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -472,9 +472,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('Cache', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -486,9 +486,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('Viewport', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -498,9 +498,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(parsedTrace.insights);
       const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('Viewport', parsedTrace.insights, firstNav);
-      const focus = AgentFocus.fromParsedTrace(parsedTrace);
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
-      const formatter = new PerformanceInsightFormatter(focus, insight);
+      const formatter = new PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });

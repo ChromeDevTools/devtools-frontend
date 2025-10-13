@@ -192,13 +192,14 @@ describeWithEnvironment('TimelinePanel', function() {
     const context = UI.Context.Context.instance();
 
     const mockParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
-    context.setFlavor(AIAssistance.AgentFocus, AIAssistance.AgentFocus.fromParsedTrace(mockParsedTrace));
+    context.setFlavor(
+        AIAssistance.AIContext.AgentFocus, AIAssistance.AIContext.AgentFocus.fromParsedTrace(mockParsedTrace));
 
     const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
     assert.isOk(clearButton);
     dispatchClickEvent(clearButton);
 
-    assert.isNull(context.flavor(AIAssistance.AgentFocus));
+    assert.isNull(context.flavor(AIAssistance.AIContext.AgentFocus));
   });
 
   it('includes the trace metadata when saving to a file', async function() {

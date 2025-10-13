@@ -29,7 +29,7 @@ describe('BuiltInAi', () => {
       create: () => mockLanguageModel,
     };
 
-    const builtInAi = await AiAssistanceModel.BuiltInAi.instance();
+    const builtInAi = await AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
     assert.isDefined(builtInAi);
     const abortController = new AbortController();
     const stream = builtInAi.getConsoleInsight('explain this error', abortController);
@@ -38,6 +38,6 @@ describe('BuiltInAi', () => {
       response += chunk;
     }
     assert.strictEqual(response, 'This is an explanation.');
-    AiAssistanceModel.BuiltInAi.removeInstance();
+    AiAssistanceModel.BuiltInAi.BuiltInAi.removeInstance();
   });
 });

@@ -42,13 +42,13 @@ async function getSelector(
     ...payload,
   });
 
-  const styleRule = AiAssistance.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
+  const styleRule = AiAssistance.ExtensionScope.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
 
   if (!styleRule) {
     return '';
   }
 
-  return AiAssistance.ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
+  return AiAssistance.ExtensionScope.ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
 }
 
 describe('ExtensionScope', () => {
@@ -70,7 +70,7 @@ describe('ExtensionScope', () => {
           return undefined;
         }
       });
-      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my-class-a.my-class-b');
     });
 
@@ -78,13 +78,13 @@ describe('ExtensionScope', () => {
       const node = createNode({
         getAttribute: attribute => {
           if (attribute === 'class') {
-            return `my-class-a my-class-b ${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+            return `my-class-a my-class-b ${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
           }
 
           return undefined;
         }
       });
-      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my-class-a.my-class-b');
     });
 
@@ -92,13 +92,13 @@ describe('ExtensionScope', () => {
       const node = createNode({
         getAttribute: attribute => {
           if (attribute === 'class') {
-            return `my.special-class my-class-b ${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+            return `my.special-class my-class-b ${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
           }
 
           return undefined;
         }
       });
-      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my\\.special-class.my-class-b');
     });
 
@@ -106,13 +106,13 @@ describe('ExtensionScope', () => {
       const node = createNode({
         getAttribute: attribute => {
           if (attribute === 'class') {
-            return `${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+            return `${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
           }
 
           return undefined;
         }
       });
-      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, 'div');
     });
   });
@@ -231,7 +231,7 @@ describe('ExtensionScope', () => {
       // front_end/core/sdk/CSSMatchedStyles.ts:373
       const matchedPayload = [
         ruleMatch('.test', MOCK_STYLE),
-        ruleMatch(`.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`, MOCK_STYLE),
+        ruleMatch(`.${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`, MOCK_STYLE),
       ];
       const selector = await getSelector({matchedPayload});
       assert.strictEqual(selector, '.test');
@@ -243,8 +243,8 @@ describe('ExtensionScope', () => {
       const matchedPayload = [
         ruleMatch(
             {
-              selectors: [{text: `.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`}, {text: '.test'}],
-              text: `.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1, .test`
+              selectors: [{text: `.${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`}, {text: '.test'}],
+              text: `.${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1, .test`
             },
             MOCK_STYLE),
       ];
@@ -266,7 +266,7 @@ describe('ExtensionScope', () => {
             },
             MOCK_STYLE,
             {
-              nestingSelectors: [`.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
+              nestingSelectors: [`.${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
             },
             ),
       ];
@@ -424,7 +424,7 @@ describe('ExtensionScope', () => {
             },
             MOCK_STYLE,
             {
-              nestingSelectors: [`.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
+              nestingSelectors: [`.${AiAssistance.Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
             },
             ),
       ];
@@ -435,12 +435,12 @@ describe('ExtensionScope', () => {
         cssModel,
       });
 
-      return AiAssistance.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles)!;
+      return AiAssistance.ExtensionScope.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles)!;
     }
 
     it('should compute a source location', async () => {
       const styleRule = await setupMockedStyleRules();
-      assert.strictEqual(AiAssistance.ExtensionScope.getSourceLocation(styleRule), 'style.css:1:1');
+      assert.strictEqual(AiAssistance.ExtensionScope.ExtensionScope.getSourceLocation(styleRule), 'style.css:1:1');
     });
   });
 });

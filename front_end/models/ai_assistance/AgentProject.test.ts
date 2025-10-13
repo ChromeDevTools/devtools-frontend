@@ -17,7 +17,7 @@ describeWithEnvironment('AgentProject', () => {
         maxLinesChanged: number,
       }) {
     const {project, uiSourceCode} = createTestFilesystem('file:///path/to/project', files);
-    return {project: new AiAssistanceModel.AgentProject(project, options), uiSourceCode};
+    return {project: new AiAssistanceModel.AgentProject.AgentProject(project, options), uiSourceCode};
   }
 
   it('can list files', async () => {
@@ -140,7 +140,7 @@ diff
 +updated
 \`\`\`\`\``;
 
-        await project.writeFile('index.html', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.html', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.html'), 'updated');
       });
 
@@ -169,7 +169,7 @@ diff
 +LineUpdated:4
 \`\`\`\`\``;
 
-        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.css'), `LineUpdated:1
 Line:2
 Line:3
@@ -195,7 +195,7 @@ diff
 +Line:4
 \`\`\`\`\``;
 
-        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.css'), `Line:1
 Line:4`);
       });
@@ -223,7 +223,7 @@ diff
 +LineUpdated:1.5
 \`\`\`\`\``;
 
-        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.css'), `LineUpdated:1
 LineUpdated:1.5
 Line:2
@@ -255,7 +255,7 @@ diff
  Line:3
 \`\`\`\`\``;
 
-        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.css'), `Line:1
 Line:3
 Line:4
@@ -279,7 +279,7 @@ diff
 -Line:1
 \`\`\`\`\``;
 
-        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.css'), '');
       });
 
@@ -305,7 +305,7 @@ diff
  Line:3
 \`\`\`\`\``;
 
-        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.AgentProject.ReplaceStrategy.UNIFIED_DIFF);
         assert.deepEqual(await project.readFile('index.css'), `Line:3
 Line:4
 Line:5`);

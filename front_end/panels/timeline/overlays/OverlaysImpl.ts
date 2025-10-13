@@ -1478,7 +1478,7 @@ export class Overlays extends EventTarget {
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay(overlay.label, shouldDrawLabelBelowEntry);
         // Generate the AI Call Tree for the AI Auto-Annotation feature.
         const parsedTrace = this.#queries.parsedTrace();
-        const callTree = parsedTrace ? AIAssistance.AICallTree.fromEvent(overlay.entry, parsedTrace) : null;
+        const callTree = parsedTrace ? AIAssistance.AICallTree.AICallTree.fromEvent(overlay.entry, parsedTrace) : null;
         component.callTree = callTree;
 
         component.addEventListener(

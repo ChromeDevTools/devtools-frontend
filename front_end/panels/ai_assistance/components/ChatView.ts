@@ -225,7 +225,7 @@ export interface Step {
   output?: string;
   canceled?: boolean;
   sideEffect?: ConfirmSideEffectDialog;
-  contextDetails?: [AiAssistanceModel.ContextDetail, ...AiAssistanceModel.ContextDetail[]];
+  contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
 }
 
 interface ConfirmSideEffectDialog {
@@ -243,7 +243,7 @@ export type ImageInputData = {
   isLoading: false,
   data: string,
   mimeType: string,
-  inputType: AiAssistanceModel.MultimodalInputType,
+  inputType: AiAssistanceModel.AiAgent.MultimodalInputType,
 };
 
 export interface UserChatMessage {
@@ -256,7 +256,7 @@ export interface ModelChatMessage {
   steps: Step[];
   suggestions?: [string, ...string[]];
   answer?: string;
-  error?: AiAssistanceModel.ErrorType;
+  error?: AiAssistanceModel.AiAgent.ErrorType;
   rpcId?: Host.AidaClient.RpcGlobalId;
 }
 
@@ -271,7 +271,7 @@ export const enum State {
 export interface Props {
   onTextSubmit:
       (text: string, imageInput?: Host.AidaClient.Part,
-       multimodalInputType?: AiAssistanceModel.MultimodalInputType) => void;
+       multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
   onInspectElementClick: () => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
@@ -282,23 +282,23 @@ export interface Props {
   onRemoveImageInput?: () => void;
   onTextInputChange: (input: string) => void;
   onLoadImage?: (file: File) => Promise<void>;
-  changeManager: AiAssistanceModel.ChangeManager;
+  changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
-  selectedContext: AiAssistanceModel.ConversationContext<unknown>|null;
+  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
-  conversationType?: AiAssistanceModel.ConversationType;
+  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
   changeSummary?: string;
   multimodalInputEnabled?: boolean;
   imageInput?: ImageInputData;
   isTextInputDisabled: boolean;
-  emptyStateSuggestions: AiAssistanceModel.ConversationSuggestion[];
+  emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
   inputPlaceholder: Platform.UIString.LocalizedString;
   disclaimerText: Platform.UIString.LocalizedString;
   isTextInputEmpty: boolean;
@@ -834,14 +834,14 @@ function renderError(message: ModelChatMessage): Lit.LitTemplate {
   if (message.error) {
     let errorMessage;
     switch (message.error) {
-      case AiAssistanceModel.ErrorType.UNKNOWN:
-      case AiAssistanceModel.ErrorType.BLOCK:
+      case AiAssistanceModel.AiAgent.ErrorType.UNKNOWN:
+      case AiAssistanceModel.AiAgent.ErrorType.BLOCK:
         errorMessage = UIStringsNotTranslate.systemError;
         break;
-      case AiAssistanceModel.ErrorType.MAX_STEPS:
+      case AiAssistanceModel.AiAgent.ErrorType.MAX_STEPS:
         errorMessage = UIStringsNotTranslate.maxStepsError;
         break;
-      case AiAssistanceModel.ErrorType.ABORT:
+      case AiAssistanceModel.AiAgent.ErrorType.ABORT:
         return html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
             lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;
     }
@@ -952,7 +952,7 @@ function renderChatMessage({
 }
 
 function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitTemplate {
-  if (inlineData.data === AiAssistanceModel.NOT_FOUND_IMAGE_DATA) {
+  if (inlineData.data === AiAssistanceModel.AiHistoryStorage.NOT_FOUND_IMAGE_DATA) {
     // clang-format off
     return html`<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
@@ -970,7 +970,7 @@ function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitT
   // clang-format on
 }
 
-function renderContextIcon(context: AiAssistanceModel.ConversationContext<unknown>|null): Lit.LitTemplate {
+function renderContextIcon(context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null): Lit.LitTemplate {
   if (!context) {
     return Lit.nothing;
   }
@@ -983,7 +983,7 @@ function renderContextIcon(context: AiAssistanceModel.ConversationContext<unknow
   if (item instanceof Workspace.UISourceCode.UISourceCode) {
     return PanelUtils.PanelUtils.getIconForSourceFile(item);
   }
-  if (item instanceof AiAssistanceModel.AgentFocus) {
+  if (item instanceof AiAssistanceModel.AIContext.AgentFocus) {
     return html`<devtools-icon name="performance" title="Performance"></devtools-icon>`;
   }
   if (item instanceof SDK.DOMModel.DOMNode) {
@@ -993,12 +993,12 @@ function renderContextIcon(context: AiAssistanceModel.ConversationContext<unknow
 }
 
 function renderContextTitle(
-    context: AiAssistanceModel.ConversationContext<unknown>, disabled: boolean): Lit.TemplateResult|string {
+    context: AiAssistanceModel.AiAgent.ConversationContext<unknown>, disabled: boolean): Lit.TemplateResult|string {
   const item = context.getItem();
   if (item instanceof SDK.DOMModel.DOMNode) {
     // FIXME: move this to the model code.
-    const hiddenClassList =
-        item.classNames().filter(className => className.startsWith(AiAssistanceModel.AI_ASSISTANCE_CSS_CLASS_NAME));
+    const hiddenClassList = item.classNames().filter(
+        className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME));
     return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ElementsPanel.DOMLinkifier.DOMNodeLink, {
       node: item,
       options: {hiddenClassList, disabled}
@@ -1015,19 +1015,19 @@ function renderSelection({
   onContextClick,
   onInspectElementClick,
 }: {
-  selectedContext: AiAssistanceModel.ConversationContext<unknown>|null,
+  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
   isTextInputDisabled: boolean,
   onContextClick: () => void | Promise<void>,
   onInspectElementClick: () => void,
-  conversationType?: AiAssistanceModel.ConversationType,
+  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
   }
 
   // TODO: currently the picker behavior is SDKNode specific.
-  const hasPickerBehavior = conversationType === AiAssistanceModel.ConversationType.STYLING;
+  const hasPickerBehavior = conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
 
   const resourceClass = Lit.Directives.classMap({
     'not-selected': !selectedContext,
@@ -1106,7 +1106,7 @@ function renderMessages({
   onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
   changeSummary?: string,
-  changeManager?: AiAssistanceModel.ChangeManager,
+  changeManager?: AiAssistanceModel.ChangeManager.ChangeManager,
 }): Lit.TemplateResult {
   function renderPatchWidget(): Lit.LitTemplate {
     if (isLoading) {
@@ -1148,7 +1148,7 @@ function renderMessages({
 
 function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}: {
   isTextInputDisabled: boolean,
-  suggestions: AiAssistanceModel.ConversationSuggestion[],
+  suggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[],
   onSuggestionClick: (suggestion: string) => void,
 }): Lit.TemplateResult {
   // clang-format off
@@ -1184,7 +1184,7 @@ function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}:
 
 function renderReadOnlySection({onNewConversation, conversationType}: {
   onNewConversation: () => void,
-  conversationType?: AiAssistanceModel.ConversationType,
+  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
@@ -1437,7 +1437,7 @@ function renderChatInput({
   isTextInputDisabled: boolean,
   inputPlaceholder: Platform.UIString.LocalizedString,
   state: State,
-  selectedContext: AiAssistanceModel.ConversationContext<unknown>|null,
+  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
   isTextInputEmpty: boolean,
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
@@ -1450,7 +1450,7 @@ function renderChatInput({
   onNewConversation: () => void,
   onTextInputChange: (input: string) => void,
   multimodalInputEnabled?: boolean,
-  conversationType?: AiAssistanceModel.ConversationType,
+  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
   imageInput?: ImageInputData,
   uploadImageInputEnabled?: boolean,
   onTakeScreenshot?: () => void,
@@ -1606,15 +1606,15 @@ function renderMainContents({
   isReadOnly: boolean,
   canShowFeedbackForm: boolean,
   isTextInputDisabled: boolean,
-  suggestions: AiAssistanceModel.ConversationSuggestion[],
+  suggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[],
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownLitRenderer,
-  changeManager: AiAssistanceModel.ChangeManager,
+  changeManager: AiAssistanceModel.ChangeManager.ChangeManager,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
-  conversationType?: AiAssistanceModel.ConversationType,
+  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
   changeSummary?: string,
 }): Lit.LitTemplate {
   if (state === State.CONSENT_VIEW) {

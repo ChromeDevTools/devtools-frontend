@@ -7,14 +7,14 @@ import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import {AgentFocus, AICallTree, PerformanceTraceFormatter} from '../ai_assistance.js';
+import {AICallTree, AIContext, PerformanceTraceFormatter} from '../ai_assistance.js';
 
-async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: string):
-    Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
+async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<
+    {formatter: PerformanceTraceFormatter.PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
   const parsedTrace = await TraceLoader.traceEngine(context, name);
   assert.isOk(parsedTrace.insights);
-  const focus = AgentFocus.fromParsedTrace(parsedTrace);
-  const formatter = new PerformanceTraceFormatter(focus);
+  const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
+  const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(focus);
   return {formatter, parsedTrace};
 }
 
@@ -115,7 +115,7 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
   it('formatCallTree', async function() {
     const {formatter, parsedTrace} = await createFormatter(this, 'long-task-from-worker-thread.json.gz');
     const event = new Trace.EventsSerializer.EventsSerializer().eventForKey('r-62', parsedTrace);
-    const tree = AICallTree.fromEvent(event, parsedTrace);
+    const tree = AICallTree.AICallTree.fromEvent(event, parsedTrace);
     assert.exists(tree);
     const output = formatter.formatCallTree(tree);
     snapshotTester.assert(this, output);

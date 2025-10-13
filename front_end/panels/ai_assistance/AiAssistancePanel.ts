@@ -222,8 +222,9 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
 }
 
 async function getEmptyStateSuggestions(
-    context: AiAssistanceModel.ConversationContext<unknown>|null,
-    conversation?: AiAssistanceModel.Conversation): Promise<AiAssistanceModel.ConversationSuggestion[]> {
+    context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
+    conversation?: AiAssistanceModel.AiHistoryStorage.Conversation):
+    Promise<AiAssistanceModel.AiAgent.ConversationSuggestion[]> {
   if (context) {
     const specialSuggestions = await context.getSuggestions();
 
@@ -237,25 +238,25 @@ async function getEmptyStateSuggestions(
   }
 
   switch (conversation.type) {
-    case AiAssistanceModel.ConversationType.STYLING:
+    case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
       return [
         {title: 'What can you help me with?', jslogContext: 'styling-default'},
         {title: 'Why isn’t this element visible?', jslogContext: 'styling-default'},
         {title: 'How do I center this element?', jslogContext: 'styling-default'},
       ];
-    case AiAssistanceModel.ConversationType.FILE:
+    case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
       return [
         {title: 'What does this script do?', jslogContext: 'file-default'},
         {title: 'Is the script optimized for performance?', jslogContext: 'file-default'},
         {title: 'Does the script handle user input safely?', jslogContext: 'file-default'},
       ];
-    case AiAssistanceModel.ConversationType.NETWORK:
+    case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
       return [
         {title: 'Why is this network request taking so long?', jslogContext: 'network-default'},
         {title: 'Are there any security headers present?', jslogContext: 'network-default'},
         {title: 'Why is the request failing?', jslogContext: 'network-default'},
       ];
-    case AiAssistanceModel.ConversationType.PERFORMANCE: {
+    case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE: {
       return [
         {title: 'What performance issues exist with my page?', jslogContext: 'performance-default'},
       ];
@@ -267,15 +268,15 @@ async function getEmptyStateSuggestions(
 }
 
 function getMarkdownRenderer(
-    context: AiAssistanceModel.ConversationContext<unknown>|null,
-    conversation?: AiAssistanceModel.Conversation): MarkdownRendererWithCodeBlock {
-  if (context instanceof AiAssistanceModel.PerformanceTraceContext) {
+    context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
+    conversation?: AiAssistanceModel.AiHistoryStorage.Conversation): MarkdownRendererWithCodeBlock {
+  if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
     if (!context.external) {
       const focus = context.getItem();
       return new PerformanceAgentMarkdownRenderer(
           focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
     }
-  } else if (conversation?.type === AiAssistanceModel.ConversationType.PERFORMANCE) {
+  } else if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE) {
     // Handle historical conversations (can't linkify anything).
     return new PerformanceAgentMarkdownRenderer();
   }
@@ -400,49 +401,52 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
   // clang-format on
 }
 
-function createNodeContext(node: SDK.DOMModel.DOMNode|null): AiAssistanceModel.NodeContext|null {
+function createNodeContext(node: SDK.DOMModel.DOMNode|null): AiAssistanceModel.StylingAgent.NodeContext|null {
   if (!node) {
     return null;
   }
-  return new AiAssistanceModel.NodeContext(node);
+  return new AiAssistanceModel.StylingAgent.NodeContext(node);
 }
 
-function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAssistanceModel.FileContext|null {
+function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAssistanceModel.FileAgent.FileContext|
+    null {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel.FileContext(file);
+  return new AiAssistanceModel.FileAgent.FileContext(file);
 }
 
-function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null): AiAssistanceModel.RequestContext|null {
+function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null):
+    AiAssistanceModel.NetworkAgent.RequestContext|null {
   if (!request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel.RequestContext(request, calculator);
+  return new AiAssistanceModel.NetworkAgent.RequestContext(request, calculator);
 }
 
-function createPerformanceTraceContext(focus: AiAssistanceModel.AgentFocus|null):
-    AiAssistanceModel.PerformanceTraceContext|null {
+function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentFocus|null):
+    AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel.PerformanceTraceContext(focus);
+  return new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
 }
 
-function agentToConversationType(agent: AiAssistanceModel.AiAgent<unknown>): AiAssistanceModel.ConversationType {
-  if (agent instanceof AiAssistanceModel.StylingAgent) {
-    return AiAssistanceModel.ConversationType.STYLING;
+function agentToConversationType(agent: AiAssistanceModel.AiAgent.AiAgent<unknown>):
+    AiAssistanceModel.AiHistoryStorage.ConversationType {
+  if (agent instanceof AiAssistanceModel.StylingAgent.StylingAgent) {
+    return AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
   }
 
-  if (agent instanceof AiAssistanceModel.NetworkAgent) {
-    return AiAssistanceModel.ConversationType.NETWORK;
+  if (agent instanceof AiAssistanceModel.NetworkAgent.NetworkAgent) {
+    return AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK;
   }
-  if (agent instanceof AiAssistanceModel.FileAgent) {
-    return AiAssistanceModel.ConversationType.FILE;
+  if (agent instanceof AiAssistanceModel.FileAgent.FileAgent) {
+    return AiAssistanceModel.AiHistoryStorage.ConversationType.FILE;
   }
 
-  if (agent instanceof AiAssistanceModel.PerformanceAgent) {
+  if (agent instanceof AiAssistanceModel.PerformanceAgent.PerformanceAgent) {
     return agent.getConversationType();
   }
 
@@ -459,16 +463,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #viewOutput: PanelViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
-  #changeManager = new AiAssistanceModel.ChangeManager();
+  #changeManager = new AiAssistanceModel.ChangeManager.ChangeManager();
   #mutex = new Common.Mutex.Mutex();
 
-  #conversationAgent?: AiAssistanceModel.AiAgent<unknown>;
-  #conversation?: AiAssistanceModel.Conversation;
+  #conversationAgent?: AiAssistanceModel.AiAgent.AiAgent<unknown>;
+  #conversation?: AiAssistanceModel.AiHistoryStorage.Conversation;
 
-  #selectedFile: AiAssistanceModel.FileContext|null = null;
-  #selectedElement: AiAssistanceModel.NodeContext|null = null;
-  #selectedPerformanceTrace: AiAssistanceModel.PerformanceTraceContext|null = null;
-  #selectedRequest: AiAssistanceModel.RequestContext|null = null;
+  #selectedFile: AiAssistanceModel.FileAgent.FileContext|null = null;
+  #selectedElement: AiAssistanceModel.StylingAgent.NodeContext|null = null;
+  #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
+  #selectedRequest: AiAssistanceModel.NetworkAgent.RequestContext|null = null;
 
   // Messages displayed in the `ChatView` component.
   #messages: ChatMessage[] = [];
@@ -483,7 +487,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // there is a case where the context differs from the selectedElement (or other selected context type).
   // Specifically, it allows restoring the previous context when a new selection is cross-origin.
   // See `#onContextSelectionChanged` for details.
-  #selectedContext: AiAssistanceModel.ConversationContext<unknown>|null = null;
+  #selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null = null;
   // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
   #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   // Info of the currently logged in user.
@@ -495,7 +499,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // Used to disable send button when there is not text input.
   #isTextInputEmpty = true;
   #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
-  #conversationHandler: AiAssistanceModel.ConversationHandler;
+  #conversationHandler: AiAssistanceModel.ConversationHandler.ConversationHandler;
   #runAbortController = new AbortController();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
@@ -513,15 +517,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       accountImage: syncInfo.accountImage,
       accountFullName: syncInfo.accountFullName,
     };
-    this.#conversationHandler =
-        AiAssistanceModel.ConversationHandler.instance({aidaClient: this.#aidaClient, aidaAvailability});
+    this.#conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance(
+        {aidaClient: this.#aidaClient, aidaAvailability});
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
       this.#toggleSearchElementAction =
           UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     }
-    AiAssistanceModel.AiHistoryStorage.instance().addEventListener(
-        AiAssistanceModel.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
+    AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
+        AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
   }
 
   #getChatUiState(): ChatViewState {
@@ -609,15 +613,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const isSourcesPanelVisible = viewManager.isViewVisible('sources');
     const isPerformancePanelVisible = viewManager.isViewVisible('timeline');
 
-    let targetConversationType: AiAssistanceModel.ConversationType|undefined = undefined;
+    let targetConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType|undefined = undefined;
     if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
-      targetConversationType = AiAssistanceModel.ConversationType.STYLING;
+      targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
     } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
-      targetConversationType = AiAssistanceModel.ConversationType.NETWORK;
+      targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK;
     } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
-      targetConversationType = AiAssistanceModel.ConversationType.FILE;
+      targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.FILE;
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-      targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
+      targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
     }
 
     if (this.#conversation?.type === targetConversationType) {
@@ -633,8 +637,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #updateConversationState(opts?: {
-    agent?: AiAssistanceModel.AiAgent<unknown>,
-    conversation?: AiAssistanceModel.Conversation,
+    agent?: AiAssistanceModel.AiAgent.AiAgent<unknown>,
+    conversation?: AiAssistanceModel.AiHistoryStorage.Conversation,
   }): void {
     if (this.#conversationAgent !== opts?.agent) {
       // Cancel any previous conversation
@@ -647,7 +651,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // If we get a new agent we need to
       // create a new conversation along side it
       if (opts?.agent) {
-        this.#conversation = new AiAssistanceModel.Conversation(
+        this.#conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(
             agentToConversationType(opts?.agent),
             [],
             opts?.agent.id,
@@ -686,7 +690,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedRequest =
         createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace =
-        createPerformanceTraceContext(UI.Context.Context.instance().flavor(AiAssistanceModel.AgentFocus));
+        createPerformanceTraceContext(UI.Context.Context.instance().flavor(AiAssistanceModel.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
     this.#updateConversationState({agent: this.#conversationAgent});
 
@@ -699,7 +703,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
-        AiAssistanceModel.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+        AiAssistanceModel.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
 
@@ -737,7 +741,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
-        AiAssistanceModel.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+        AiAssistanceModel.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI.ViewManager.ViewManager.instance().removeEventListener(
@@ -807,7 +811,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
         if (Boolean(ev.data)) {
           const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-          this.#selectedRequest = new AiAssistanceModel.RequestContext(ev.data, calculator);
+          this.#selectedRequest = new AiAssistanceModel.NetworkAgent.RequestContext(ev.data, calculator);
         } else {
           this.#selectedRequest = null;
         }
@@ -815,13 +819,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       };
 
   #handlePerformanceTraceFlavorChange =
-      (ev: Common.EventTarget.EventTargetEvent<AiAssistanceModel.AgentFocus>): void => {
+      (ev: Common.EventTarget.EventTargetEvent<AiAssistanceModel.AIContext.AgentFocus>): void => {
         if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
           return;
         }
 
         this.#selectedPerformanceTrace =
-            Boolean(ev.data) ? new AiAssistanceModel.PerformanceTraceContext(ev.data) : null;
+            Boolean(ev.data) ? new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
 
         this.#updateConversationState({agent: this.#conversationAgent});
       };
@@ -835,7 +839,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (this.#selectedFile?.getItem() === newFile) {
           return;
         }
-        this.#selectedFile = new AiAssistanceModel.FileContext(ev.data);
+        this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(ev.data);
         this.#updateConversationState({agent: this.#conversationAgent});
       };
 
@@ -875,7 +879,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           userInfo: this.#userInfo,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,
           multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
-              this.#conversation?.type === AiAssistanceModel.ConversationType.STYLING,
+              this.#conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
           imageInput: this.#imageInput,
           showChatActions: this.#shouldShowChatActions(),
           showActiveConversationActions: Boolean(this.#conversation && !this.#conversation.isEmpty),
@@ -886,7 +890,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           isTextInputEmpty: this.#isTextInputEmpty,
           changeManager: this.#changeManager,
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
-              this.#conversation?.type === AiAssistanceModel.ConversationType.STYLING,
+              this.#conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
           markdownRenderer,
           onNewChatClick: this.#handleNewChatRequest.bind(this),
           populateHistoryMenu: this.#populateHistoryMenu.bind(this),
@@ -900,7 +904,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           },
           onTextSubmit: async (
               text: string, imageInput?: Host.AidaClient.Part,
-              multimodalInputType?: AiAssistanceModel.MultimodalInputType) => {
+              multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
             this.#imageInput = undefined;
             this.#isTextInputEmpty = true;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
@@ -991,16 +995,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     switch (this.#conversation.type) {
-      case AiAssistanceModel.ConversationType.STYLING:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
         return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForStyling) :
                                        lockedString(UIStringsNotTranslate.inputPlaceholderForStylingNoContext);
-      case AiAssistanceModel.ConversationType.FILE:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
         return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForFile) :
                                        lockedString(UIStringsNotTranslate.inputPlaceholderForFileNoContext);
-      case AiAssistanceModel.ConversationType.NETWORK:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
         return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForNetwork) :
                                        lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkNoContext);
-      case AiAssistanceModel.ConversationType.PERFORMANCE: {
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE: {
         const perfPanel = UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#selectedContext ?
@@ -1022,17 +1026,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     switch (this.#conversation.type) {
-      case AiAssistanceModel.ConversationType.STYLING:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForStylingEnterpriseNoLogging);
         }
         return lockedString(UIStringsNotTranslate.inputDisclaimerForStyling);
-      case AiAssistanceModel.ConversationType.FILE:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForFileEnterpriseNoLogging);
         }
         return lockedString(UIStringsNotTranslate.inputDisclaimerForFile);
-      case AiAssistanceModel.ConversationType.NETWORK:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkEnterpriseNoLogging);
         }
@@ -1040,7 +1044,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
       // It is deliberate that both Performance agents use the same disclaimer
       // text and this has been approved by Privacy.
-      case AiAssistanceModel.ConversationType.PERFORMANCE:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE:
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
         }
@@ -1065,15 +1069,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #handleContextClick(): void|Promise<void> {
     const context = this.#selectedContext;
-    if (context instanceof AiAssistanceModel.RequestContext) {
+    if (context instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
       return Common.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel.FileContext) {
+    if (context instanceof AiAssistanceModel.FileAgent.FileContext) {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
@@ -1095,51 +1099,51 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    let targetConversationType: AiAssistanceModel.ConversationType|undefined;
+    let targetConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType|undefined;
     switch (actionId) {
       case 'freestyler.elements-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromElementsPanelFloatingButton);
-        targetConversationType = AiAssistanceModel.ConversationType.STYLING;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
         break;
       }
       case 'freestyler.element-panel-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromElementsPanel);
-        targetConversationType = AiAssistanceModel.ConversationType.STYLING;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
         break;
       }
       case 'drjones.network-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromNetworkPanelFloatingButton);
-        targetConversationType = AiAssistanceModel.ConversationType.NETWORK;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK;
         break;
       }
       case 'drjones.network-panel-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromNetworkPanel);
-        targetConversationType = AiAssistanceModel.ConversationType.NETWORK;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK;
         break;
       }
       case 'drjones.performance-panel-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformancePanelCallTree);
-        targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
         break;
       }
       case 'drjones.performance-insight-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceInsight);
-        targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
         break;
       }
       case 'drjones.performance-panel-full-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceFullButton);
-        targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
         break;
       }
       case 'drjones.sources-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromSourcesPanelFloatingButton);
-        targetConversationType = AiAssistanceModel.ConversationType.FILE;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.FILE;
         break;
       }
       case 'drjones.sources-panel-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromSourcesPanel);
-        targetConversationType = AiAssistanceModel.ConversationType.FILE;
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.FILE;
         break;
       }
     }
@@ -1169,8 +1173,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #populateHistoryMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    const historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(
-        serializedConversation => AiAssistanceModel.Conversation.fromSerializedConversation(serializedConversation));
+    const historicalConversations = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map(
+        serializedConversation =>
+            AiAssistanceModel.AiHistoryStorage.Conversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty) {
         continue;
@@ -1195,7 +1200,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     contextMenu.footerSection().appendItem(
         i18nString(UIStrings.clearChatHistory),
         () => {
-          void AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
+          void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
         },
         {
           disabled: historyEmpty,
@@ -1212,7 +1217,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    void AiAssistanceModel.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
+    void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.chatDeleted));
   }
@@ -1239,7 +1244,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     Workspace.FileManager.FileManager.instance().close(filename);
   }
 
-  async #openHistoricConversation(conversation: AiAssistanceModel.Conversation): Promise<void> {
+  async #openHistoricConversation(conversation: AiAssistanceModel.AiHistoryStorage.Conversation): Promise<void> {
     if (this.#conversation === conversation) {
       return;
     }
@@ -1277,7 +1282,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         isLoading: false,
         data: bytes,
         mimeType: JPEG_MIME_TYPE,
-        inputType: AiAssistanceModel.MultimodalInputType.SCREENSHOT
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT
       };
       this.requestUpdate();
       void this.updateComplete.then(() => {
@@ -1349,7 +1354,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       isLoading: false,
       data: bytes,
       mimeType: file.type,
-      inputType: AiAssistanceModel.MultimodalInputType.UPLOADED_IMAGE
+      inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE
     };
     this.requestUpdate();
     void this.updateComplete.then(() => {
@@ -1379,23 +1384,23 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversationAgent.origin);
   }
 
-  #getConversationContext(conversation?: AiAssistanceModel.Conversation):
-      AiAssistanceModel.ConversationContext<unknown>|null {
+  #getConversationContext(conversation?: AiAssistanceModel.AiHistoryStorage.Conversation):
+      AiAssistanceModel.AiAgent.ConversationContext<unknown>|null {
     if (!conversation) {
       return null;
     }
-    let context: AiAssistanceModel.ConversationContext<unknown>|null;
+    let context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
     switch (conversation.type) {
-      case AiAssistanceModel.ConversationType.STYLING:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
         context = this.#selectedElement;
         break;
-      case AiAssistanceModel.ConversationType.FILE:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
         context = this.#selectedFile;
         break;
-      case AiAssistanceModel.ConversationType.NETWORK:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
         context = this.#selectedRequest;
         break;
-      case AiAssistanceModel.ConversationType.PERFORMANCE:
+      case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE:
         context = this.#selectedPerformanceTrace;
         break;
     }
@@ -1404,7 +1409,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   async #startConversation(
       text: string, imageInput?: Host.AidaClient.Part,
-      multimodalInputType?: AiAssistanceModel.MultimodalInputType): Promise<void> {
+      multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType): Promise<void> {
     if (!this.#conversationAgent) {
       return;
     }
@@ -1444,8 +1449,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #doConversation(
-      items: Iterable<AiAssistanceModel.ResponseData, void, void>|
-      AsyncIterable<AiAssistanceModel.ResponseData, void, void>): Promise<void> {
+      items: Iterable<AiAssistanceModel.AiAgent.ResponseData, void, void>|
+      AsyncIterable<AiAssistanceModel.AiAgent.ResponseData, void, void>): Promise<void> {
     const release = await this.#mutex.acquire();
     try {
       let systemMessage: ModelChatMessage = {
@@ -1469,7 +1474,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       for await (const data of items) {
         step.sideEffect = undefined;
         switch (data.type) {
-          case AiAssistanceModel.ResponseType.USER_QUERY: {
+          case AiAssistanceModel.AiAgent.ResponseType.USER_QUERY: {
             this.#messages.push({
               entity: ChatMessageEntity.USER,
               text: data.query,
@@ -1482,7 +1487,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#messages.push(systemMessage);
             break;
           }
-          case AiAssistanceModel.ResponseType.QUERYING: {
+          case AiAssistanceModel.AiAgent.ResponseType.QUERYING: {
             step = {isLoading: true};
             if (!systemMessage.steps.length) {
               systemMessage.steps.push(step);
@@ -1490,29 +1495,29 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
             break;
           }
-          case AiAssistanceModel.ResponseType.CONTEXT: {
+          case AiAssistanceModel.AiAgent.ResponseType.CONTEXT: {
             step.title = data.title;
             step.contextDetails = data.details;
             step.isLoading = false;
             commitStep();
             break;
           }
-          case AiAssistanceModel.ResponseType.TITLE: {
+          case AiAssistanceModel.AiAgent.ResponseType.TITLE: {
             step.title = data.title;
             commitStep();
             break;
           }
-          case AiAssistanceModel.ResponseType.THOUGHT: {
+          case AiAssistanceModel.AiAgent.ResponseType.THOUGHT: {
             step.isLoading = false;
             step.thought = data.thought;
             commitStep();
             break;
           }
-          case AiAssistanceModel.ResponseType.SUGGESTIONS: {
+          case AiAssistanceModel.AiAgent.ResponseType.SUGGESTIONS: {
             systemMessage.suggestions = data.suggestions;
             break;
           }
-          case AiAssistanceModel.ResponseType.SIDE_EFFECT: {
+          case AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT: {
             step.isLoading = false;
             step.code ??= data.code;
             step.sideEffect = {
@@ -1525,7 +1530,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             commitStep();
             break;
           }
-          case AiAssistanceModel.ResponseType.ACTION: {
+          case AiAssistanceModel.AiAgent.ResponseType.ACTION: {
             step.isLoading = false;
             step.code ??= data.code;
             step.output ??= data.output;
@@ -1533,7 +1538,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             commitStep();
             break;
           }
-          case AiAssistanceModel.ResponseType.ANSWER: {
+          case AiAssistanceModel.AiAgent.ResponseType.ANSWER: {
             systemMessage.suggestions ??= data.suggestions;
             systemMessage.answer = data.text;
             systemMessage.rpcId = data.rpcId;
@@ -1544,20 +1549,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.isLoading = false;
             break;
           }
-          case AiAssistanceModel.ResponseType.ERROR: {
+          case AiAssistanceModel.AiAgent.ResponseType.ERROR: {
             systemMessage.error = data.error;
             systemMessage.rpcId = undefined;
             const lastStep = systemMessage.steps.at(-1);
             if (lastStep) {
               // Mark the last step as cancelled to make the UI feel better.
-              if (data.error === AiAssistanceModel.ErrorType.ABORT) {
+              if (data.error === AiAssistanceModel.AiAgent.ErrorType.ABORT) {
                 lastStep.canceled = true;
                 // If error happens while the step is still loading remove it.
               } else if (lastStep.isLoading) {
                 systemMessage.steps.pop();
               }
             }
-            if (data.error === AiAssistanceModel.ErrorType.BLOCK) {
+            if (data.error === AiAssistanceModel.AiAgent.ErrorType.BLOCK) {
               systemMessage.answer = undefined;
             }
           }
@@ -1571,8 +1576,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           // This handles scrolling to the bottom for live conversations when:
           // * User submits the query & the context step is shown.
           // * There is a side effect dialog  shown.
-          if (data.type === AiAssistanceModel.ResponseType.CONTEXT ||
-              data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
+          if (data.type === AiAssistanceModel.AiAgent.ResponseType.CONTEXT ||
+              data.type === AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT) {
             this.#viewOutput.chatView?.scrollToBottom();
           }
 
@@ -1581,10 +1586,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           // * Answer started streaming
           // * Answer finished streaming
           switch (data.type) {
-            case AiAssistanceModel.ResponseType.CONTEXT:
+            case AiAssistanceModel.AiAgent.ResponseType.CONTEXT:
               UI.ARIAUtils.LiveAnnouncer.status(data.title);
               break;
-            case AiAssistanceModel.ResponseType.ANSWER: {
+            case AiAssistanceModel.AiAgent.ResponseType.ANSWER: {
               if (!data.complete && !announcedAnswerLoading) {
                 announcedAnswerLoading = true;
                 UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.answerLoading));
@@ -1613,7 +1618,8 @@ export function getResponseMarkdown(message: ModelChatMessage): string {
       contentParts.push(`### ${step.title}`);
     }
     if (step.contextDetails) {
-      contentParts.push(AiAssistanceModel.Conversation.generateContextDetailsMarkdown(step.contextDetails));
+      contentParts.push(
+          AiAssistanceModel.AiHistoryStorage.Conversation.generateContextDetailsMarkdown(step.contextDetails));
     }
     if (step.thought) {
       contentParts.push(step.thought);

@@ -4,8 +4,6 @@
 
 import * as Platform from '../platform/platform.js';
 
-const queryParamsObject = new URLSearchParams(location.search);
-
 let runtimePlatform = '';
 
 let runtimeInstance: Runtime|undefined;
@@ -72,12 +70,21 @@ export class Runtime {
     runtimeInstance = undefined;
   }
 
+  static queryParamsObject: URLSearchParams;
+
+  static getSearchParams(): URLSearchParams {
+    if (!Runtime.queryParamsObject) {
+      Runtime.queryParamsObject = new URLSearchParams(location.search);
+    }
+    return Runtime.queryParamsObject;
+  }
+
   static queryParam(name: string): string|null {
-    return queryParamsObject.get(name);
+    return Runtime.getSearchParams().get(name);
   }
 
   static setQueryParamForTesting(name: string, value: string): void {
-    queryParamsObject.set(name, value);
+    Runtime.getSearchParams().set(name, value);
   }
 
   static isNode(): boolean {

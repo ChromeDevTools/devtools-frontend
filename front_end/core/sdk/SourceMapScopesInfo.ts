@@ -108,6 +108,19 @@ export class SourceMapScopesInfo {
   }
 
   /**
+   * @returns true, iff the function surrounding the provided position is marked as "hidden".
+   */
+  isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    for (let i = rangeChain.length - 1; i >= 0; --i) {
+      if (rangeChain[i].isStackFrame) {
+        return rangeChain[i].isHidden;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Given a generated position, returns the original name of the surrounding function as well as
    * all the original function names that got inlined into the surrounding generated function and their
    * respective callsites in the original code (ordered from inner to outer).

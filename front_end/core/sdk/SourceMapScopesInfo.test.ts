@@ -777,4 +777,58 @@ describe('SourceMapScopesInfo', () => {
       assert.isNull(info.findOriginalFunctionName({line: 0, column: 38}));  // Between the two functions
     });
   });
+
+  describe('isOutlinedFrame', () => {
+    it('returns false for a global scope', () => {
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo =
+          new SourceMapScopesInfo(sourceMap, new ScopeInfoBuilder().startRange(0, 0).endRange(0, 20).build());
+
+      assert.isFalse(scopeInfo.isOutlinedFrame(0, 10));
+    });
+
+    it('returns false for a non-hidden function', () => {
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo = new SourceMapScopesInfo(
+          sourceMap,
+          new ScopeInfoBuilder()
+              .startRange(0, 0)
+              .startRange(0, 10, {isStackFrame: true})
+              .endRange(0, 20)
+              .endRange(0, 30)
+              .build());
+
+      assert.isFalse(scopeInfo.isOutlinedFrame(0, 15));
+    });
+
+    it('returns true for a hidden function', () => {
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo = new SourceMapScopesInfo(
+          sourceMap,
+          new ScopeInfoBuilder()
+              .startRange(0, 0)
+              .startRange(0, 10, {isStackFrame: true, isHidden: true})
+              .endRange(0, 20)
+              .endRange(0, 30)
+              .build());
+
+      assert.isTrue(scopeInfo.isOutlinedFrame(0, 15));
+    });
+
+    it('returns true for a block scope in a hidden function', () => {
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const scopeInfo = new SourceMapScopesInfo(
+          sourceMap,
+          new ScopeInfoBuilder()
+              .startRange(0, 0)
+              .startRange(0, 10, {isStackFrame: true, isHidden: true})
+              .startRange(0, 20)
+              .endRange(0, 30)
+              .endRange(0, 40)
+              .endRange(0, 50)
+              .build());
+
+      assert.isTrue(scopeInfo.isOutlinedFrame(0, 25));
+    });
+  });
 });

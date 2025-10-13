@@ -41,6 +41,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -61,6 +62,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Security from '../security/security.js';
 
 import {format, updateStyle} from './ConsoleFormat.js';
+import {ConsoleInsightTeaser} from './ConsoleInsightTeaser.js';
 import consoleViewStyles from './consoleView.css.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import {augmentErrorStackWithScriptIds, parseSourcePositionsFromErrorStack} from './ErrorStackParser.js';
@@ -317,6 +319,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private requestResolver: Logs.RequestResolver.RequestResolver;
   private issueResolver: IssuesManager.IssueResolver.IssueResolver;
   #adjacentUserCommandResult = false;
+  #teaser: ConsoleInsightTeaser|undefined = undefined;
 
   /** Formatting Error#stack is asynchronous. Allow tests to wait for the result */
   #formatErrorStackPromiseForTest = Promise.resolve();
@@ -365,7 +368,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
       this.elementInternal?.classList.toggle('has-insight', false);
       this.elementInternal?.removeChild(insight);
+      this.#teaser?.setInactive(false);
     }, {once: true});
+    this.#teaser?.setInactive(true);
   }
 
   element(): HTMLElement {
@@ -374,6 +379,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   wasShown(): void {
     this.isVisibleInternal = true;
+    if (this.elementInternal) {
+      this.#teaser?.show(this.elementInternal);
+    }
   }
 
   onResize(): void {
@@ -382,6 +390,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   willHide(): void {
     this.isVisibleInternal = false;
     this.cachedHeight = this.element().offsetHeight;
+    this.#teaser?.detach();
   }
 
   isVisible(): boolean {
@@ -1359,6 +1368,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal.removeChildren();
     this.consoleRowWrapper = this.elementInternal.createChild('div');
     this.consoleRowWrapper.classList.add('console-row-wrapper');
+
+    if (this.shouldShowTeaser()) {
+      const uuid = crypto.randomUUID();
+      this.elementInternal.setAttribute('aria-details', `teaser-${uuid}`);
+      this.#teaser = new ConsoleInsightTeaser(uuid, this);
+    }
+
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add('console-group-title');
     }
@@ -1428,6 +1444,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     return this.message.level === Protocol.Log.LogEntryLevel.Error ||
         this.message.level === Protocol.Log.LogEntryLevel.Warning;
+  }
+
+  shouldShowTeaser(): boolean {
+    if (!this.shouldShowInsights() || !AiAssistanceModel.BuiltInAi.cachedIsAvailable()) {
+      return false;
+    }
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    if (!devtoolsLocale.locale.startsWith('en-')) {
+      return false;
+    }
+    return true;
   }
 
   getExplainLabel(): string {

@@ -1,0 +1,55 @@
+/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .teaser-tooltip-container {
+    width: var(--sys-size-31);
+    padding: var(--sys-size-1) var(--sys-size-3) var(--sys-size-3);
+    margin-top: var(--sys-size-2);
+  }
+
+  @keyframes gradient {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  .loader {
+    background-size: 400% 100%;
+    animation: gradient 4s infinite linear;
+    margin-top: var(--sys-size-5);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .loader {
+      background-image: linear-gradient(
+        70deg,
+        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 0%,
+        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 30%,
+        color-mix(in srgb, var(--sys-color-on-surface) 15%, transparent) 50%,
+        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 70%,
+        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 100%
+      );
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .loader {
+      background-image: linear-gradient(
+        70deg,
+        color-mix(in srgb, var(--sys-color-on-surface) 10%, transparent) 0%,
+        color-mix(in srgb, var(--sys-color-on-surface) 10%, transparent) 30%,
+        color-mix(in srgb, var(--sys-color-on-surface) 30%, transparent) 50%,
+        color-mix(in srgb, var(--sys-color-on-surface) 10%, transparent) 70%,
+        color-mix(in srgb, var(--sys-color-on-surface) 10%, transparent) 100%
+      );
+    }
+  }
+
+  h2 {
+    font: var(--sys-typescale-body4-bold);
+    margin: 0 0 var(--sys-size-3);
+  }
+}

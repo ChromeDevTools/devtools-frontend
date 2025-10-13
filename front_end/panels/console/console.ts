@@ -5,6 +5,7 @@
 import './ConsoleContextSelector.js';
 import './ConsoleFilter.js';
 import './ConsoleFormat.js';
+import './ConsoleInsightTeaser.js';
 import './ConsolePinPane.js';
 import './ConsoleSidebar.js';
 import './ConsoleViewport.js';
@@ -17,6 +18,7 @@ import './PromptBuilder.js';
 import * as ConsoleContextSelector from './ConsoleContextSelector.js';
 import * as ConsoleFilter from './ConsoleFilter.js';
 import * as ConsoleFormat from './ConsoleFormat.js';
+import * as ConsoleInsightTeaser from './ConsoleInsightTeaser.js';
 import * as ConsolePanel from './ConsolePanel.js';
 import * as ConsolePinPane from './ConsolePinPane.js';
 import * as ConsolePrompt from './ConsolePrompt.js';
@@ -31,6 +33,7 @@ export {
   ConsoleContextSelector,
   ConsoleFilter,
   ConsoleFormat,
+  ConsoleInsightTeaser,
   ConsolePanel,
   ConsolePinPane,
   ConsolePrompt,

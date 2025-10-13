@@ -1558,6 +1558,81 @@ interface RequestConditionsSetting {
   enabled: boolean;
 }
 
+declare global {
+  // TS typedefs are not up to date
+  interface URLPattern {
+    hash: string;
+    hostname: string;
+    password: string;
+    pathname: string;
+    port: string;
+    protocol: string;
+    search: string;
+    username: string;
+    hasRegExpGroups: boolean;
+    test(url: string): boolean;
+  }
+  /* eslint-disable-next-line @typescript-eslint/naming-convention */
+  var URLPattern: {prototype: URLPattern, new (input: string): URLPattern};
+}
+
+export type URLPatternConstructorString = Platform.Brand.Brand<string, 'URLPatternConstructorString'>;
+
+export const enum RequestURLPatternValidity {
+  VALID = 'valid',
+  FAILED_TO_PARSE = 'failed-to-parse',
+  HAS_REGEXP_GROUPS = 'has-regexp-groups',
+}
+
+export class RequestURLPattern {
+  private constructor(readonly constructorString: URLPatternConstructorString, readonly pattern: URLPattern) {
+    if (pattern.hasRegExpGroups) {
+      throw new Error('RegExp groups are not allowed');
+    }
+  }
+
+  static isValidPattern(pattern: string): RequestURLPatternValidity {
+    try {
+      const urlPattern = new URLPattern(pattern);
+      return urlPattern.hasRegExpGroups ? RequestURLPatternValidity.HAS_REGEXP_GROUPS : RequestURLPatternValidity.VALID;
+    } catch {
+      return RequestURLPatternValidity.FAILED_TO_PARSE;
+    }
+  }
+
+  static create(constructorString: URLPatternConstructorString): RequestURLPattern|null {
+    try {
+      const urlPattern = new URLPattern(constructorString);
+      return urlPattern.hasRegExpGroups ? null : new RequestURLPattern(constructorString, urlPattern);
+    } catch {
+      return null;
+    }
+  }
+
+  static upgradeFromWildcard(pattern: string): RequestURLPattern|null {
+    const tryCreate = (constructorString: string): RequestURLPattern|null => {
+      const result = this.create(constructorString as URLPatternConstructorString);
+      if (result?.pattern.protocol === 'localhost' && result?.pattern.hostname === '') {
+        // localhost:1234 parses as a valid pattern, do the right thing here instead
+        return tryCreate(`*://${constructorString}`);
+      }
+      return result;
+    };
+
+    return tryCreate(pattern)  // try as is
+        ??
+        // Try upgrade paths for patterns created from the network panel, which either blocks the full url (sans
+        // protocol) or just the domain name. In both cases the wildcard patterns had implicit wildcards at the end.
+        // The first case is the full url option, which we detect by the presence of '/'. the second case is the
+        // domain name only option.
+        (pattern.includes('/')  // If the pattern includes a '/' we consider this the full-url case
+             ?
+             tryCreate(`*://${pattern}*`)  // Append a wildcard, since the pathname will be parsed from the pattern.
+             :
+             tryCreate(`*://${pattern}`));  // The pathname is empty, which automatically makes it a wildcard.
+  }
+}
+
 export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<RequestCondition.EventTypes> {
   #url: string;
   #enabled: boolean;

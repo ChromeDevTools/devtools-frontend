@@ -1122,6 +1122,95 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
   });
 });
 
+describe('RequestURLPattern', () => {
+  it('successfully upgrades url block patterns from wildcards', () => {
+    const testPattern = (pattern: string, expectation: Object|undefined): void => {
+      const urlPattern = SDK.NetworkManager.RequestURLPattern.upgradeFromWildcard(pattern);
+      const keys: Array<keyof URLPattern> = [
+        'protocol',
+        'username',
+        'password',
+        'hostname',
+        'port',
+        'pathname',
+        'search',
+        'hash',
+      ];
+      const relevantProperties = urlPattern?.pattern &&
+          Object.assign(
+              {},
+              ...keys.map(
+                  key => key in urlPattern.pattern && urlPattern.pattern[key] !== '*' ?
+                      {[key]: urlPattern.pattern[key]} :
+                      {}));
+      assert.deepEqual(relevantProperties, expectation, pattern);
+    };
+
+    testPattern(
+        'http://example.com/foo/bar',
+        {port: '', protocol: 'http', hostname: 'example.com', pathname: '/foo/bar'},
+    );
+    testPattern(
+        'http://example.com',
+        {port: '', protocol: 'http', hostname: 'example.com'},
+    );
+    testPattern(
+        'http://example.com/',
+        {port: '', protocol: 'http', hostname: 'example.com', pathname: '/'},
+    );
+    testPattern(
+        '*://example.com',
+        {port: '', hostname: 'example.com'},
+    );
+    testPattern(
+        'example.com',
+        {port: '', hostname: 'example.com'},
+    );
+    testPattern(
+        'example.com/foo/bar',
+        {port: '', hostname: 'example.com', pathname: '/foo/bar*'},
+    );
+    testPattern(
+        'http://*.com/foo',
+        {port: '', protocol: 'http', hostname: '*.com', pathname: '/foo'},
+    );
+    testPattern(
+        'http://localhost:*/',
+        {protocol: 'http', hostname: 'localhost', pathname: '/'},
+    );
+    testPattern(
+        'http://localhost:1234',
+        {port: '1234', protocol: 'http', hostname: 'localhost'},
+    );
+    testPattern(
+        'localhost:1234',
+        {port: '1234', hostname: 'localhost'},
+    );
+    testPattern(
+        'http://example.com*',
+        {port: '', protocol: 'http', hostname: 'example.com*'},
+    );
+    testPattern(
+        'e*m',
+        {port: '', hostname: 'e*m'},
+    );
+    testPattern('ht tp://*', undefined);
+    testPattern('http://*/(:id)', undefined);
+  });
+
+  it('correctly reports pattern constructor string validity', () => {
+    assert.strictEqual(
+        SDK.NetworkManager.RequestURLPattern.isValidPattern('ht tp://*'),
+        SDK.NetworkManager.RequestURLPatternValidity.FAILED_TO_PARSE);
+    assert.strictEqual(
+        SDK.NetworkManager.RequestURLPattern.isValidPattern('http://*/(:id)'),
+        SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS);
+    assert.strictEqual(
+        SDK.NetworkManager.RequestURLPattern.isValidPattern('http://*/*'),
+        SDK.NetworkManager.RequestURLPatternValidity.VALID);
+  });
+});
+
 describe('NetworkDispatcher', () => {
   const requestWillBeSentEvent = {requestId: 'mockId', request: {url: 'example.com'}} as
       Protocol.Network.RequestWillBeSentEvent;

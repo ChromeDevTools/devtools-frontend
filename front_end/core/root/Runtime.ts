@@ -516,6 +516,10 @@ interface DevToolsStartingStyleDebugging {
   enabled: boolean;
 }
 
+interface AiPromptApi {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -562,6 +566,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsLiveEdit: LiveEdit,
   devToolsFlexibleLayout: DevToolsFlexibleLayout,
   devToolsStartingStyleDebugging: DevToolsStartingStyleDebugging,
+  devToolsAiPromptApi: AiPromptApi,
 }>;
 
 /**

@@ -26,3 +26,4 @@ export * from './injected.js';
 export * from './performance/AICallTree.js';
 export * from './performance/AIContext.js';
 export * from './performance/AIQueries.js';
+export * from './BuiltInAi.js';

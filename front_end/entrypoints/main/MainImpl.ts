@@ -510,6 +510,8 @@ export class MainImpl {
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();
 
+    void AiAssistanceModel.BuiltInAi.instance();
+
     new PauseListener();
 
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});

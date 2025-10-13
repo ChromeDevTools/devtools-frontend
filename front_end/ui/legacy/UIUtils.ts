@@ -55,11 +55,9 @@ import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
 import confirmDialogStyles from './confirmDialog.css.js';
 import {Dialog} from './Dialog.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
-import inlineButtonStyles from './inlineButton.css.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
-import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {Widget} from './Widget.js';
 
@@ -1755,15 +1753,6 @@ export class ConfirmDialog {
     dialog.hide();
     return result;
   }
-}
-
-export function createInlineButton(toolbarButton: ToolbarButton): Element {
-  const element = document.createElement('span');
-  const shadowRoot = createShadowRootWithCoreStyles(element, {cssFile: inlineButtonStyles});
-  element.classList.add('inline-button');
-  const toolbar = shadowRoot.createChild('devtools-toolbar');
-  toolbar.appendToolbarItem(toolbarButton);
-  return element;
 }
 
 export interface RenderedObject {

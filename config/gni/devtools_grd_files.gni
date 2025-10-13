@@ -2624,7 +2624,6 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/filter.css.js",
   "front_end/ui/legacy/glassPane.css.js",
   "front_end/ui/legacy/infobar.css.js",
-  "front_end/ui/legacy/inlineButton.css.js",
   "front_end/ui/legacy/inspectorCommon.css.js",
   "front_end/ui/legacy/listWidget.css.js",
   "front_end/ui/legacy/popover.css.js",

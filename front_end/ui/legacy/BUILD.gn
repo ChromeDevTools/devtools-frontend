@@ -18,7 +18,6 @@ generate_css("css_files") {
     "filter.css",
     "glassPane.css",
     "infobar.css",
-    "inlineButton.css",
     "inspectorCommon.css",
     "listWidget.css",
     "popover.css",

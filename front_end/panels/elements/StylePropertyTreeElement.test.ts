@@ -981,7 +981,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('renders the easing function swatch', () => {
       const stylePropertyTreeElement = getTreeElement('animation-timing-function', 'ease-out');
       stylePropertyTreeElement.updateTitle();
-      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild, IconButton.Icon.Icon);
+      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild?.firstChild, IconButton.Icon.Icon);
     });
   });
 

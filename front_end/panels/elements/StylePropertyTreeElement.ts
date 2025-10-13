@@ -1136,7 +1136,11 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
     const bezierText = document.createElement('span');
     bezierText.append(...nodes);
     new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText});
-    return [icon, bezierText];
+    const iconAndTextContainer = document.createElement('span');
+    iconAndTextContainer.classList.add('bezier-icon-and-text');
+    iconAndTextContainer.append(icon);
+    iconAndTextContainer.append(bezierText);
+    return [iconAndTextContainer];
   }
 }
 

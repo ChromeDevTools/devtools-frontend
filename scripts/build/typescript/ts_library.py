@@ -214,11 +214,14 @@ def main():
                         help='List of TypeScript declaration files')
     parser.add_argument('--use-esbuild', action='store_true')
     parser.add_argument('--tsconfig-only', action='store_true')
+    parser.add_argument('--es-target', required=False)
+    # Restrict supported features to the ones supported by Node 22.
     parser.set_defaults(test_only=False,
                         no_emit=False,
                         verify_lib_check=False,
                         reset_timestamps=False,
-                        runs_in='browser')
+                        runs_in='browser',
+                        es_target='ES2023')
 
     opts = parser.parse_args()
     with open(BASE_TS_CONFIG_LOCATION) as root_tsconfig:
@@ -286,8 +289,7 @@ def main():
         tsconfig['compilerOptions']['emitDeclarationOnly'] = True
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
-    # Restrict supported features to the ones supported by Node 22.
-    tsconfig['compilerOptions']['target'] = 'ES2023'
+    tsconfig['compilerOptions']['target'] = opts.es_target
     tsconfig['compilerOptions']['lib'] = [
         'ES2023', 'ES2024.Promise', 'ESNext.Iterator', 'ESNext.Collection',
         'ESNext.Array'

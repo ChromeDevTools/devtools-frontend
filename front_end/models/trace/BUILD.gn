@@ -65,6 +65,7 @@ devtools_entrypoint("bundle") {
     "../live-metrics/*",
     "../trace_source_maps_resolver/*",
     "./*",
+    "../../../mcp/*",
   ]
 
   visibility += devtools_models_visibility

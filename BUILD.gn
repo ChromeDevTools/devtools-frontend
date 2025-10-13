@@ -207,3 +207,7 @@ ts_library("frontend_indexer_tsconfig") {
 copy_to_gen("favicon") {
   sources = [ "favicon.ico" ]
 }
+
+group("mcp") {
+  deps = ["./mcp:mcp"]
+}

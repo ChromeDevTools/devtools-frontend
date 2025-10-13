@@ -46,8 +46,6 @@ devtools_module("ai_assistance") {
     "../../panels/utils:bundle",
     "../../services/tracing:bundle",
     "../../third_party/diff:bundle",
-    "../../ui/legacy:bundle",
-    "../../ui/lit:bundle",
     "../bindings:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",
@@ -114,5 +112,6 @@ ts_library("unittests") {
     "../bindings:bundle",
     "../text_utils:bundle",
     "../trace:bundle",
+    "../../ui/legacy:bundle",
   ]
 }

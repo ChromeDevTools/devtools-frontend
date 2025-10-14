@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "aiSettingsTab.css",
+    "editFileSystemView.css",
     "frameworkIgnoreListSettingsTab.css",
     "keybindsSettingsTab.css",
     "settingsScreen.css",
@@ -21,6 +22,7 @@ generate_css("css_files") {
 devtools_module("settings") {
   sources = [
     "AISettingsTab.ts",
+    "EditFileSystemView.ts",
     "FrameworkIgnoreListSettingsTab.ts",
     "KeybindsSettingsTab.ts",
     "SettingsScreen.ts",
@@ -92,6 +94,7 @@ ts_library("unittests") {
 
   sources = [
     "AISettingsTab.test.ts",
+    "EditFileSystemView.test.ts",
     "WorkspaceSettingsTab.test.ts",
   ]
 

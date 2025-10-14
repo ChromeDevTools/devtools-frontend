@@ -8,16 +8,11 @@ import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-generate_css("css_files") {
-  sources = [ "editFileSystemView.css" ]
-}
-
 devtools_module("persistence") {
   sources = [
     "Automapping.ts",
     "AutomaticFileSystemManager.ts",
     "AutomaticFileSystemWorkspaceBinding.ts",
-    "EditFileSystemView.ts",
     "FileSystemWorkspaceBinding.ts",
     "IsolatedFileSystem.ts",
     "IsolatedFileSystemManager.ts",
@@ -51,10 +46,7 @@ devtools_module("persistence") {
 devtools_entrypoint("bundle") {
   entrypoint = "persistence.ts"
 
-  deps = [
-    ":css_files",
-    ":persistence",
-  ]
+  deps = [ ":persistence" ]
 
   visibility = [
     ":*",
@@ -98,7 +90,6 @@ ts_library("unittests") {
   sources = [
     "AutomaticFileSystemManager.test.ts",
     "AutomaticFileSystemWorkspaceBinding.test.ts",
-    "EditFileSystemView.test.ts",
     "NetworkPersistenceManager.test.ts",
     "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",

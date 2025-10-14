@@ -14,6 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {EditFileSystemView} from './EditFileSystemView.js';
 import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
 
 const UIStrings = {
@@ -71,7 +72,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             <div class="mapping-view-container">
               <devtools-widget .widgetConfig=${
                   UI.Widget.widgetConfig(
-                      Persistence.EditFileSystemView.EditFileSystemView,
+                      EditFileSystemView,
                       {fileSystem: fileSystem.fileSystem})}>
               </devtools-widget>
             </div>

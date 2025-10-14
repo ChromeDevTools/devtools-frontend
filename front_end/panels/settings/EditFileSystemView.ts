@@ -6,15 +6,11 @@ import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+import type {PlatformFileSystem} from '../../models/persistence/PlatformFileSystem.js';
 import * as UI from '../../ui/legacy/legacy.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import editFileSystemViewStyles from './editFileSystemView.css.js';
-import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 const {styleMap} = Directives;
 
@@ -36,7 +32,7 @@ const UIStrings = {
    */
   enterAUniquePath: 'Enter a unique path',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('models/persistence/EditFileSystemView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/settings/EditFileSystemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const enum ExcludedFolderStatus {

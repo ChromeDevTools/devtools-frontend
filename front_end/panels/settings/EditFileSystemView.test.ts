@@ -3,13 +3,14 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
-import * as Persistence from './persistence.js';
+import * as Settings from './settings.js';
 
-const {EditFileSystemView, ExcludedFolderStatus, DEFAULT_VIEW} = Persistence.EditFileSystemView;
+const {EditFileSystemView, ExcludedFolderStatus, DEFAULT_VIEW} = Settings.EditFileSystemView;
 const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('EditFileSystemView view', () => {

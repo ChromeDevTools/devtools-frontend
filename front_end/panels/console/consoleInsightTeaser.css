@@ -52,4 +52,20 @@
     font: var(--sys-typescale-body4-bold);
     margin: 0 0 var(--sys-size-3);
   }
+
+  .lightbulb-icon {
+    color: var(--sys-color-on-primary);
+    height: var(--sys-size-7);
+    margin-left: calc(-1 * var(--sys-size-4));
+  }
+
+  .learn-more {
+    padding-top: 7px;
+  }
+
+  .tooltip-footer {
+    padding: var(--sys-size-5) 0 0;
+    display: flex;
+    align-items: center;
+  }
 }

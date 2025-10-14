@@ -6,6 +6,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Console from './console.js';
 
@@ -77,5 +78,18 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isFalse(input.isInactive);
     assert.strictEqual(input.headerText, 'test header');
     assert.strictEqual(input.mainText, 'test explanation');
+  });
+
+  it('executes action on "Tell me more" click if onboarding is completed', async () => {
+    const action = sinon.spy();
+    sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction').returns({
+      execute: action,
+    } as unknown as UI.ActionRegistration.Action);
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    new Console.ConsoleInsightTeaser.ConsoleInsightTeaser(
+        'test-uuid', {} as Console.ConsoleViewMessage.ConsoleViewMessage, undefined, view);
+    const input = await view.nextInput;
+    input.onTellMeMoreClick(new Event('click'));
+    sinon.assert.calledOnce(action);
   });
 });

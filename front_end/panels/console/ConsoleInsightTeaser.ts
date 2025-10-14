@@ -4,13 +4,16 @@
 
 import '../../ui/components/tooltips/tooltips.js';
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
-import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
+import {ConsoleViewMessage} from './ConsoleViewMessage.js';
 import {PromptBuilder} from './PromptBuilder.js';
 
 const {render, html} = Lit;
@@ -24,17 +27,25 @@ const UIStringsNotTranslate = {
    * @description Label for an animation shown while an AI response is being generated
    */
   loading: 'Loading',
+  /**
+   * @description Label for a button which generates a more detailed explanation
+   */
+  tellMeMore: 'Tell me more',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
 
+const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
+
 interface ViewInput {
+  onTellMeMoreClick: (event: Event) => void;
   // If multiple ConsoleInsightTeasers exist, each one needs a unique id. Otherwise showing and
   // hiding of the tooltip, and rendering the loading animation, does not work correctly.
   uuid: string;
   headerText: string;
   mainText: string;
   isInactive: boolean;
+  hasTellMeMoreButton: boolean;
 }
 
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
@@ -76,6 +87,19 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
         ` : html`
           <h2 tabindex="-1">${input.headerText}</h2>
           <div>${input.mainText}</div>
+          <div class="tooltip-footer">
+            ${input.hasTellMeMoreButton ? html`
+              <devtools-button
+                title=${lockedString(UIStringsNotTranslate.tellMeMore)}
+                .jslogContext=${'insights-teaser-tell-me-more'},
+                .variant=${Buttons.Button.Variant.PRIMARY}
+                @click=${input.onTellMeMoreClick}
+              >
+                <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
+                ${lockedString(UIStringsNotTranslate.tellMeMore)}
+              </devtools-button>
+            ` : Lit.nothing}
+          </div>
         `}
       </div>
     </devtools-tooltip>
@@ -93,6 +117,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   #promptBuilder: PromptBuilder;
   #headerText = '';
   #mainText = '';
+  #consoleViewMessage: ConsoleViewMessage;
   #isInactive = false;
   #abortController: null|AbortController = null;
 
@@ -101,7 +126,19 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#view = view ?? DEFAULT_VIEW;
     this.#uuid = uuid;
     this.#promptBuilder = new PromptBuilder(consoleViewMessage);
+    this.#consoleViewMessage = consoleViewMessage;
     this.requestUpdate();
+  }
+
+  #executeConsoleInsightAction(): void {
+    UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_TEASER_ACTION_ID);
+    void action.execute();
+  }
+
+  #onTellMeMoreClick(event: Event): void {
+    event.stopPropagation();
+    this.#executeConsoleInsightAction();
   }
 
   maybeGenerateTeaser(): void {
@@ -175,13 +212,28 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#abortController = null;
   }
 
+  #hasTellMeMoreButton(): boolean {
+    if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
+      return false;
+    }
+    if (Root.Runtime.hostConfig.aidaAvailability?.blockedByAge || Root.Runtime.hostConfig.isOffTheRecord) {
+      return false;
+    }
+    if (!Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+      return false;
+    }
+    return true;
+  }
+
   override performUpdate(): Promise<void>|void {
     this.#view(
         {
+          onTellMeMoreClick: this.#onTellMeMoreClick.bind(this),
           uuid: this.#uuid,
           headerText: this.#headerText,
           mainText: this.#mainText,
           isInactive: this.#isInactive,
+          hasTellMeMoreButton: this.#hasTellMeMoreButton(),
         },
         undefined, this.contentElement);
   }

@@ -63,8 +63,8 @@ describe('SourceMapScopesInfo', () => {
       assert.deepEqual(info.findInlinedFunctions(0, 7), {
         originalFunctionName: 'foo',
         inlinedFunctions: [
-          {name: 'baz', callsite: {sourceIndex: 0, line: 35, column: 0}},
-          {name: 'bar', callsite: {sourceIndex: 0, line: 15, column: 0}},
+          {name: 'baz', callsite: {sourceIndex: 0, line: 35, column: 0, sourceURL: undefined}},
+          {name: 'bar', callsite: {sourceIndex: 0, line: 15, column: 0, sourceURL: undefined}},
         ],
       });
     });

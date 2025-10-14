@@ -6,6 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
+import type * as Platform from '../platform/platform.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import type {SourceMap} from './SourceMap.js';
@@ -160,7 +161,10 @@ export class SourceMapScopesInfo {
 
       if (range.callSite) {
         // Record the name and call-site if the range corresponds to an inlined function.
-        result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callSite});
+        result.inlinedFunctions.push({
+          name: range.originalScope?.name ?? '',
+          callsite: {...range.callSite, sourceURL: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex)}
+        });
       }
       if (range.isStackFrame) {
         // We arrived at an actual generated JS function, don't go further.
@@ -412,7 +416,15 @@ export class SourceMapScopesInfo {
  * The inlined functions are sorted from inner to outer (or top to bottom on the stack).
  */
 export interface InlineInfo {
-  inlinedFunctions: Array<{name: string, callsite: ScopesCodec.OriginalPosition}>;
+  inlinedFunctions: Array<{
+    name: string,
+    callsite: {
+      line: number,
+      column: number,
+      sourceIndex: number,
+      sourceURL?: Platform.DevToolsPath.UrlString,
+    },
+  }>;
   originalFunctionName: string;
 }
 

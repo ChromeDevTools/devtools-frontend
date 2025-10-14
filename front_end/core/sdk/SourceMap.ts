@@ -205,6 +205,10 @@ export class SourceMap {
     return this.#debugId ?? null;
   }
 
+  sourceURLForSourceIndex(index: number): Platform.DevToolsPath.UrlString|undefined {
+    return this.#sourceInfos[index]?.sourceURL;
+  }
+
   sourceURLs(): Platform.DevToolsPath.UrlString[] {
     return [...this.#sourceInfoByURL.keys()];
   }

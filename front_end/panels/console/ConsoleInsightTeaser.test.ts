@@ -8,6 +8,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelCommon from '../common/common.js';
 
 import * as Console from './console.js';
 
@@ -92,6 +93,19 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     const input = await view.nextInput;
     input.onTellMeMoreClick(new Event('click'));
     sinon.assert.calledOnce(action);
+  });
+
+  it('shows FRE dialog on "Tell me more" click', async () => {
+    Common.Settings.settingForTest('console-insights-enabled').set(false);
+    const show = sinon.stub(PanelCommon.FreDialog, 'show');
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    new Console.ConsoleInsightTeaser.ConsoleInsightTeaser(
+        'test-uuid', {} as Console.ConsoleViewMessage.ConsoleViewMessage, undefined, view);
+    const input = await view.nextInput;
+    await input.onTellMeMoreClick(new Event('click'));
+    sinon.assert.calledOnce(show);
+    Common.Settings.settingForTest('console-insights-enabled').set(true);
+    show.restore();
   });
 
   it('executes action on "Tell me more" click if onboarding is completed', async () => {

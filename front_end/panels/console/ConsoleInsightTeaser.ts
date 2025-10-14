@@ -13,6 +13,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelCommon from '../common/common.js';
 
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';
@@ -25,6 +26,28 @@ const UIStringsNotTranslate = {
    * @description Link text in the disclaimer dialog, linking to a settings page containing more information
    */
   learnMore: 'Learn more about AI summaries',
+  /**
+   * @description Description of the console insights feature
+   */
+  freDisclaimerHeader: 'Get explanations for console warnings and errors',
+  /**
+   * @description First item in the first-run experience dialog
+   */
+  freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
+  /**
+   * @description Explainer for which data is being sent by the console insights feature
+   */
+  consoleInsightsSendsData:
+      'To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data may be seen by human reviewers to improve this feature.',
+  /**
+   * @description Explainer for which data is being sent by the console insights feature
+   */
+  consoleInsightsSendsDataNoLogging:
+      'To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+  /**
+   * @description Third item in the first-run experience dialog
+   */
+  freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
   /**
    * @description Tooltip text for the console insights teaser
    */
@@ -50,6 +73,7 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 const DATA_USAGE_URL = 'https://developer.chrome.com/docs/devtools/ai-assistance/get-started#data-use';
 const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
 
@@ -168,6 +192,18 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  #getConsoleInsightsEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
+    try {
+      return Common.Settings.moduleSetting('console-insights-enabled') as Common.Settings.Setting<boolean>;
+    } catch {
+      return;
+    }
+  }
+
+  #getOnboardingCompletedSetting(): Common.Settings.Setting<boolean> {
+    return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', true);
+  }
+
   #executeConsoleInsightAction(): void {
     UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_TEASER_ACTION_ID);
@@ -176,7 +212,54 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
   #onTellMeMoreClick(event: Event): void {
     event.stopPropagation();
-    this.#executeConsoleInsightAction();
+    if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() &&
+        this.#getOnboardingCompletedSetting()?.getIfNotDisabled()) {
+      this.#executeConsoleInsightAction();
+      return;
+    }
+    void this.#showFreDialog();
+  }
+
+  async #showFreDialog(): Promise<void> {
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const result = await PanelCommon.FreDialog.show({
+      header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
+      reminderItems: [
+        {
+          iconName: 'psychiatry',
+          content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight),
+        },
+        {
+          iconName: 'google',
+          content: noLogging ? lockedString(UIStringsNotTranslate.consoleInsightsSendsDataNoLogging) :
+                               lockedString(UIStringsNotTranslate.consoleInsightsSendsData),
+        },
+        {
+          iconName: 'warning',
+          // clang-format off
+          content: html`<x-link
+            href=${CODE_SNIPPET_WARNING_URL}
+            class="link devtools-link"
+            jslog=${VisualLogging.link('explain.teaser.code-snippets-explainer').track({
+              click: true
+            })}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
+          // clang-format on
+        }
+      ],
+      onLearnMoreClick: () => {
+        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+      },
+      ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
+      learnMoreButtonText: lockedString(UIStringsNotTranslate.learnMore),
+    });
+
+    if (result) {
+      this.#getConsoleInsightsEnabledSetting()?.set(true);
+      this.#getOnboardingCompletedSetting()?.set(true);
+      this.#executeConsoleInsightAction();
+    }
   }
 
   maybeGenerateTeaser(): void {

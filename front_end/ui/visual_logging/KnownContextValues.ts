@@ -1510,6 +1510,7 @@ export const knownContextValues = new Set([
   'explain.console-message.context.warning',
   'explain.console-message.hover',
   'explain.console-message.teaser',
+  'explain.teaser.code-snippets-explainer',
   'explain.teaser.dont-show',
   'explain.teaser.learn-more',
   'explanation',

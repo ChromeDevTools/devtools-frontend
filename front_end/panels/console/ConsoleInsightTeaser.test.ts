@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -105,5 +106,21 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     input.onTellMeMoreClick(new Event('click'));
     sinon.assert.calledOnce(action);
     getAction.restore();
+  });
+
+  it('disables teasers on "Dont show" change', async () => {
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    new Console.ConsoleInsightTeaser.ConsoleInsightTeaser(
+        'test-uuid', {} as Console.ConsoleViewMessage.ConsoleViewMessage, undefined, view);
+    const input = await view.nextInput;
+    const event = {
+      target: {
+        checked: true,
+      } as unknown as EventTarget,
+    } as Event;
+    assert.isTrue(Common.Settings.moduleSetting('console-insight-teasers-enabled').get());
+    input.dontShowChanged(event);
+    assert.isFalse(Common.Settings.moduleSetting('console-insight-teasers-enabled').get());
+    Common.Settings.settingForTest('console-insight-teasers-enabled').set(true);
   });
 });

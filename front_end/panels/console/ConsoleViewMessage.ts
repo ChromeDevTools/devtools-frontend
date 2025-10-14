@@ -1344,7 +1344,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   #onMouseEnter(_event: MouseEvent): void {
-    if (this.#teaser) {
+    if (this.#teaser &&
+        Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled()) {
       this.#teaser.maybeGenerateTeaser();
     }
   }
@@ -1459,7 +1460,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   shouldShowTeaser(): boolean {
-    if (!this.shouldShowInsights() || !AiAssistanceModel.BuiltInAi.BuiltInAi.cachedIsAvailable()) {
+    if (!this.shouldShowInsights()) {
+      return false;
+    }
+    if (!Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled() ||
+        !AiAssistanceModel.BuiltInAi.BuiltInAi.cachedIsAvailable()) {
       return false;
     }
     const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();

@@ -330,6 +330,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'global-ai-button-click-count', 0),
     createSettingValue(Common.Settings.SettingCategory.ACCOUNT, 'receive-gdp-badges', false),
     createSettingValue(Common.Settings.SettingCategory.GLOBAL, 'currentDockState', 'right'),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'console-insight-teasers-enabled', true,
+        Common.Settings.SettingType.BOOLEAN),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

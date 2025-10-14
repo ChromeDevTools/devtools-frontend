@@ -4,6 +4,7 @@
 
 import '../../ui/components/tooltips/tooltips.js';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
@@ -41,6 +42,10 @@ const UIStringsNotTranslate = {
    * @description Label for a button which generates a more detailed explanation
    */
   tellMeMore: 'Tell me more',
+  /**
+   * @description Label for a checkbox which turns off the teaser explanation feature
+   */
+  dontShow: 'Don’t show',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -56,6 +61,7 @@ interface ViewInput {
   headerText: string;
   mainText: string;
   isInactive: boolean;
+  dontShowChanged: (e: Event) => void;
   hasTellMeMoreButton: boolean;
 }
 
@@ -126,6 +132,11 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
                 >${lockedString(UIStringsNotTranslate.learnMore)}</x-link>
               </div>
             </devtools-tooltip>
+            <devtools-checkbox
+              @change=${input.dontShowChanged}
+              jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
+              ${lockedString(UIStringsNotTranslate.dontShow)}
+            </devtools-checkbox>
           </div>
         `}
       </div>
@@ -170,7 +181,8 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
   maybeGenerateTeaser(): void {
     this.requestUpdate();
-    if (!this.#isInactive && !this.#isGenerating && !Boolean(this.#mainText)) {
+    if (!this.#isInactive && !this.#isGenerating && !Boolean(this.#mainText) &&
+        Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
       void this.#generateTeaserText();
     }
   }
@@ -239,6 +251,11 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#abortController = null;
   }
 
+  #dontShowChanged(e: Event): void {
+    const showTeasers = !(e.target as HTMLInputElement).checked;
+    Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').set(showTeasers);
+  }
+
   #hasTellMeMoreButton(): boolean {
     if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
       return false;
@@ -259,7 +276,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
           uuid: this.#uuid,
           headerText: this.#headerText,
           mainText: this.#mainText,
-          isInactive: this.#isInactive,
+          isInactive: this.#isInactive ||
+              !Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get(),
+          dontShowChanged: this.#dontShowChanged.bind(this),
           hasTellMeMoreButton: this.#hasTellMeMoreButton(),
         },
         undefined, this.contentElement);

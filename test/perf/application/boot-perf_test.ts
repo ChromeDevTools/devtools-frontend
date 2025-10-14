@@ -8,7 +8,8 @@ import {reloadDevTools} from '../../shared/helper.js';
 import {mean, percentile} from '../helpers/perf-helper.js';
 import {addBenchmarkResult, type Benchmark} from '../report/report.js';
 
-describe('Boot performance', () => {
+// Constantly flakes on Linux and Windows bots.
+describe.skip('[crbug.com/451846268]: Boot performance', () => {
   const RUNS = 10;
   const testValues = {
     name: 'BootPerf',

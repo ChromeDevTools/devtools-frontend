@@ -1343,6 +1343,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this.contentElementInternal;
   }
 
+  #onMouseEnter(_event: MouseEvent): void {
+    if (this.#teaser) {
+      this.#teaser.maybeGenerateTeaser();
+    }
+  }
+
+  #onMouseLeave(): void {
+    this.#teaser?.abortTeaserGeneration();
+  }
+
   toMessageElement(): HTMLElement {
     if (this.elementInternal) {
       return this.elementInternal;
@@ -1350,6 +1360,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal = document.createElement('div');
     this.elementInternal.tabIndex = -1;
     this.elementInternal.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener));
+    this.elementInternal.addEventListener('mouseenter', this.#onMouseEnter.bind(this));
+    this.elementInternal.addEventListener('mouseleave', this.#onMouseLeave.bind(this));
     this.updateMessageElement();
     this.elementInternal.classList.toggle('console-adjacent-user-command-result', this.#adjacentUserCommandResult);
     return this.elementInternal;

@@ -5,11 +5,13 @@
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
+import {PromptBuilder} from './PromptBuilder.js';
 
 const {render, html} = Lit;
 
@@ -29,7 +31,9 @@ const lockedString = i18n.i18n.lockedString;
 interface ViewInput {
   // If multiple ConsoleInsightTeasers exist, each one needs a unique id. Otherwise showing and
   // hiding of the tooltip, and rendering the loading animation, does not work correctly.
-  uuid: String;
+  uuid: string;
+  headerText: string;
+  mainText: string;
   isInactive: boolean;
 }
 
@@ -39,6 +43,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
     return;
   }
 
+  const showPlaceholder = !Boolean(input.mainText);
   // clang-format off
   render(html`
     <style>${consoleInsightTeaserStyles}</style>
@@ -50,23 +55,28 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
       prefer-span-left
     >
       <div class="teaser-tooltip-container">
-        <h2 tabindex="-1">${lockedString(UIStringsNotTranslate.summarizing)}</h2>
-        <div
-          role="presentation"
-          aria-label=${lockedString(UIStringsNotTranslate.loading)}
-          class="loader"
-          style="clip-path: url(${'#clipPath-' + input.uuid});"
-        >
-          <svg width="100%" height="52">
-            <defs>
-            <clipPath id=${'clipPath-' + input.uuid}>
-              <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
-              <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
-              <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
-            </clipPath>
-          </defs>
-          </svg>
-        </div>
+        ${showPlaceholder ? html`
+          <h2 tabindex="-1">${lockedString(UIStringsNotTranslate.summarizing)}</h2>
+          <div
+            role="presentation"
+            aria-label=${lockedString(UIStringsNotTranslate.loading)}
+            class="loader"
+            style="clip-path: url(${'#clipPath-' + input.uuid});"
+          >
+            <svg width="100%" height="52">
+              <defs>
+              <clipPath id=${'clipPath-' + input.uuid}>
+                <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
+                <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
+                <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
+              </clipPath>
+            </defs>
+            </svg>
+          </div>
+        ` : html`
+          <h2 tabindex="-1">${input.headerText}</h2>
+          <div>${input.mainText}</div>
+        `}
       </div>
     </devtools-tooltip>
   `, target);
@@ -77,14 +87,35 @@ export type View = typeof DEFAULT_VIEW;
 
 export class ConsoleInsightTeaser extends UI.Widget.Widget {
   #view: View;
-  #uuid: String;
+  #uuid: string;
+  #isGenerating = false;
+  #builtInAi: AiAssistanceModel.BuiltInAi.BuiltInAi|undefined;
+  #promptBuilder: PromptBuilder;
+  #headerText = '';
+  #mainText = '';
   #isInactive = false;
+  #abortController: null|AbortController = null;
 
-  constructor(uuid: String, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View) {
+  constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View) {
     super(element);
     this.#view = view ?? DEFAULT_VIEW;
     this.#uuid = uuid;
+    this.#promptBuilder = new PromptBuilder(consoleViewMessage);
     this.requestUpdate();
+  }
+
+  maybeGenerateTeaser(): void {
+    this.requestUpdate();
+    if (!this.#isInactive && !this.#isGenerating && !Boolean(this.#mainText)) {
+      void this.#generateTeaserText();
+    }
+  }
+
+  abortTeaserGeneration(): void {
+    if (this.#abortController) {
+      this.#abortController.abort();
+    }
+    this.#isGenerating = false;
   }
 
   setInactive(isInactive: boolean): void {
@@ -95,10 +126,61 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  async #generateTeaserText(): Promise<void> {
+    this.#isGenerating = true;
+    let teaserText = '';
+    try {
+      for await (const chunk of this.#getOnDeviceInsight()) {
+        teaserText += chunk;
+      }
+    } catch (err) {
+      // Ignore `AbortError` errors, which are thrown on mouse leave.
+      if (err.name !== 'AbortError') {
+        console.error(err.name, err.message);
+      }
+      this.#isGenerating = false;
+      return;
+    }
+
+    // TODO(crbug.com/443618746): Add user-facing error message instead of staying in loading state
+    let responseObject = {
+      header: null,
+      explanation: null,
+    };
+    try {
+      responseObject = JSON.parse(teaserText);
+    } catch (err) {
+      console.error(err.name, err.message);
+    }
+    this.#headerText = responseObject.header || '';
+    this.#mainText = responseObject.explanation || '';
+    this.#isGenerating = false;
+    this.requestUpdate();
+  }
+
+  async * #getOnDeviceInsight(): AsyncGenerator<string> {
+    const {prompt} = await this.#promptBuilder.buildPrompt();
+    if (!this.#builtInAi) {
+      this.#builtInAi = await AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+      if (!this.#builtInAi) {
+        this.#isInactive = true;
+        throw new Error('Cannot instantiate BuiltInAi');
+      }
+    }
+    this.#abortController = new AbortController();
+    const stream = this.#builtInAi.getConsoleInsight(prompt, this.#abortController);
+    for await (const chunk of stream) {
+      yield chunk;
+    }
+    this.#abortController = null;
+  }
+
   override performUpdate(): Promise<void>|void {
     this.#view(
         {
           uuid: this.#uuid,
+          headerText: this.#headerText,
+          mainText: this.#mainText,
           isInactive: this.#isInactive,
         },
         undefined, this.contentElement);

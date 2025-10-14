@@ -22,7 +22,7 @@ const RESPONSE_SCHEMA = {
   additionalProperties: false,
 };
 
-interface LanguageModel {
+export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
     responseConstraint: Object,
     signal?: AbortSignal,

@@ -18,7 +18,6 @@ devtools_module("persistence") {
     "IsolatedFileSystemManager.ts",
     "NetworkPersistenceManager.ts",
     "PersistenceImpl.ts",
-    "PersistenceUtils.ts",
     "PlatformFileSystem.ts",
   ]
 
@@ -53,6 +52,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../panels/ai_assistance/*",
     "../../panels/changes/*",
+    "../../panels/common/*",
     "../../panels/network/*",
     "../../panels/recorder/*",
     "../../panels/settings/*",

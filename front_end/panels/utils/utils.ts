@@ -13,6 +13,7 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import type * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import {Directives, html, type TemplateResult} from '../../ui/lit/lit.js';
+import * as PanelCommon from '../common/common.js';
 import * as Snippets from '../snippets/snippets.js';
 
 const {ref, styleMap, ifDefined} = Directives;
@@ -212,7 +213,7 @@ export class PanelUtils {
     }
 
     const title =
-        binding ? Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(uiSourceCode) : undefined;
+        binding ? PanelCommon.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(uiSourceCode) : undefined;
     // clang-format off
     return html`<devtools-file-source-icon
         name=${iconType} title=${ifDefined(title)} .data=${{

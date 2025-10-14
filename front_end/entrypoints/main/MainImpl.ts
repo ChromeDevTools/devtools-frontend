@@ -54,7 +54,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as ProjectSettings from '../../models/project_settings/project_settings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as PanelCommon from '../../panels/common/common.js';
+import * as PanelCommon from '../../panels/common/common.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
@@ -480,11 +480,13 @@ export class MainImpl {
     isolatedFileSystemManager.addPlatformFileSystem(
         'snippet://' as Platform.DevToolsPath.UrlString, new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
 
-    Persistence.Persistence.PersistenceImpl.instance({
+    const persistenceImpl = Persistence.Persistence.PersistenceImpl.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       breakpointManager: Breakpoints.BreakpointManager.BreakpointManager.instance(),
     });
+    const linkDecorator = new PanelCommon.PersistenceUtils.LinkDecorator(persistenceImpl);
+    Components.Linkifier.Linkifier.setLinkDecorator(linkDecorator);
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
         {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
 

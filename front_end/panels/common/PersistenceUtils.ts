@@ -6,16 +6,11 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Persistence from '../../models/persistence/persistence.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';
-
-import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
-import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import {Events, type PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 const UIStrings = {
   /**
@@ -29,16 +24,17 @@ const UIStrings = {
    */
   linkedToS: 'Linked to {PH1}',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceUtils.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/common/PersistenceUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PersistenceUtils {
   static tooltipForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
-    const binding = PersistenceImpl.instance().binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (!binding) {
       return '';
     }
     if (uiSourceCode === binding.network) {
-      return FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
+      return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(
+          binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
       return i18nString(
@@ -48,7 +44,7 @@ export class PersistenceUtils {
   }
 
   static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null {
-    const binding = PersistenceImpl.instance().binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       if (!Common.ParsedURL.schemeIs(binding.fileSystem.url(), 'file:')) {
         return null;
@@ -57,7 +53,8 @@ export class PersistenceUtils {
       icon.name = 'document';
       icon.classList.add('small');
       UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
-      if (NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
+      if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
+          binding.fileSystem.project()) {
         icon.classList.add('dot', 'purple');
       } else {
         icon.classList.add('dot', 'green');
@@ -70,7 +67,8 @@ export class PersistenceUtils {
       return null;
     }
 
-    if (NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
+    if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
+            uiSourceCode)) {
       const icon = new IconButton.Icon.Icon();
       icon.name = 'document';
       icon.classList.add('small');
@@ -88,13 +86,13 @@ export class PersistenceUtils {
 
 export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components.Linkifier.LinkDecorator.EventTypes>
     implements Components.Linkifier.LinkDecorator {
-  constructor(persistence: PersistenceImpl) {
+  constructor(persistence: Persistence.Persistence.PersistenceImpl) {
     super();
-    persistence.addEventListener(Events.BindingCreated, this.bindingChanged, this);
-    persistence.addEventListener(Events.BindingRemoved, this.bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.bindingChanged, this);
   }
 
-  private bindingChanged(event: Common.EventTarget.EventTargetEvent<PersistenceBinding>): void {
+  private bindingChanged(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>): void {
     const binding = event.data;
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED, binding.network);
   }

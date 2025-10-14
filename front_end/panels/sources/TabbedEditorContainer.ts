@@ -16,6 +16,7 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelCommon from '../common/common.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {SourcesView} from './SourcesView.js';
@@ -644,7 +645,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
         /* eslint-enable rulesdir/no-imperative-dom-api */
         this.tabbedPane.setSuffixElement(tabId, suffixElement);
       } else {
-        const icon = Persistence.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
+        const icon = PanelCommon.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
         this.tabbedPane.setTrailingTabIcon(tabId, icon);
       }
     }

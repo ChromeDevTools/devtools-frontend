@@ -28,6 +28,7 @@ devtools_module("common") {
     "BadgeNotification.ts",
     "FreDialog.ts",
     "GdpSignUpDialog.ts",
+    "PersistenceUtils.ts",
   ]
 
   deps = [
@@ -37,8 +38,10 @@ devtools_module("common") {
     "../../core/platform:bundle",
     "../../models/badges:bundle",
     "../../models/geometry:bundle",
+    "../../models/persistence:bundle",
     "../../services/window_bounds:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/components/switch:bundle",

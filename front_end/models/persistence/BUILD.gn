@@ -17,7 +17,6 @@ devtools_module("persistence") {
     "IsolatedFileSystem.ts",
     "IsolatedFileSystemManager.ts",
     "NetworkPersistenceManager.ts",
-    "PersistenceActions.ts",
     "PersistenceImpl.ts",
     "PersistenceUtils.ts",
     "PlatformFileSystem.ts",
@@ -91,7 +90,6 @@ ts_library("unittests") {
     "AutomaticFileSystemManager.test.ts",
     "AutomaticFileSystemWorkspaceBinding.test.ts",
     "NetworkPersistenceManager.test.ts",
-    "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",
     "PlatformFileSystem.test.ts",
   ]

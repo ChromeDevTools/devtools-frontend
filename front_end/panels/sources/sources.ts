@@ -22,6 +22,7 @@ import * as InplaceFormatterEditorAction from './InplaceFormatterEditorAction.js
 import * as NavigatorView from './NavigatorView.js';
 import * as OpenFileQuickOpen from './OpenFileQuickOpen.js';
 import * as OutlineQuickOpen from './OutlineQuickOpen.js';
+import * as PersistenceActions from './PersistenceActions.js';
 import * as Plugin from './Plugin.js';
 import * as ResourceOriginPlugin from './ResourceOriginPlugin.js';
 import * as ScopeChainSidebarPane from './ScopeChainSidebarPane.js';
@@ -57,6 +58,7 @@ export {
   NavigatorView,
   OpenFileQuickOpen,
   OutlineQuickOpen,
+  PersistenceActions,
   Plugin,
   ResourceOriginPlugin,
   ScopeChainSidebarPane,

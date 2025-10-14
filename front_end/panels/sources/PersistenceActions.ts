@@ -7,15 +7,11 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Persistence from '../../models/persistence/persistence.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Bindings from '../bindings/bindings.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as Workspace from '../workspace/workspace.js';
-
-import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import {PersistenceImpl} from './PersistenceImpl.js';
 
 const UIStrings = {
   /**
@@ -59,7 +55,7 @@ const UIStrings = {
    */
   saveWasmFailed: 'Unable to save WASM module to disk. Most likely the module is too large.',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceActions.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/sources/PersistenceActions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ContextMenuProvider implements
@@ -116,9 +112,9 @@ export class ContextMenuProvider implements
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
-    const networkPersistenceManager = NetworkPersistenceManager.instance();
+    const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
 
-    const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
+    const binding = uiSourceCode && Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
 
     if (Common.ParsedURL.schemeIs(fileURL, 'file:')) {
@@ -164,7 +160,7 @@ export class ContextMenuProvider implements
   private async handleOverrideContent(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
       contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<void> {
-    const networkPersistenceManager = NetworkPersistenceManager.instance();
+    const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
     if (isSuccess) {
       await Common.Revealer.reveal(uiSourceCode);

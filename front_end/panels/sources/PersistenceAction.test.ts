@@ -6,15 +6,16 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Persistence from '../../models/persistence/persistence.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Bindings from '../bindings/bindings.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as Workspace from '../workspace/workspace.js';
 
-import * as Persistence from './persistence.js';
+import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -33,7 +34,7 @@ describeWithLocale('ContextMenuProvider', () => {
     const event = new Event('contextmenu');
     sinon.stub(event, 'target').value(document);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const menuProvider = new Persistence.PersistenceActions.ContextMenuProvider();
+    const menuProvider = new Sources.PersistenceActions.ContextMenuProvider();
     const contentData = new TextUtils.ContentData.ContentData('AGFzbQEAAAA=', true, 'image/webp');
     const contentProvider: TextUtils.ContentProvider.ContentProvider = {
       contentURL: () => urlString`https://example.com/sample.webp`,
@@ -62,7 +63,7 @@ describeWithLocale('ContextMenuProvider', () => {
     const event = new Event('contextmenu');
     sinon.stub(event, 'target').value(document);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const menuProvider = new Persistence.PersistenceActions.ContextMenuProvider();
+    const menuProvider = new Sources.PersistenceActions.ContextMenuProvider();
     const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode, {
       contentURL: urlString`https://example.com/sample.wasm`,
       contentType: Common.ResourceType.resourceTypes.Script,

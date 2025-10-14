@@ -9,7 +9,6 @@ import * as FileSystemWorkspaceBinding from './FileSystemWorkspaceBinding.js';
 import * as IsolatedFileSystem from './IsolatedFileSystem.js';
 import * as IsolatedFileSystemManager from './IsolatedFileSystemManager.js';
 import * as NetworkPersistenceManager from './NetworkPersistenceManager.js';
-import * as PersistenceActions from './PersistenceActions.js';
 import * as Persistence from './PersistenceImpl.js';
 import * as PersistenceUtils from './PersistenceUtils.js';
 import * as PlatformFileSystem from './PlatformFileSystem.js';
@@ -23,7 +22,6 @@ export {
   IsolatedFileSystemManager,
   NetworkPersistenceManager,
   Persistence,
-  PersistenceActions,
   PersistenceUtils,
   PlatformFileSystem,
 };

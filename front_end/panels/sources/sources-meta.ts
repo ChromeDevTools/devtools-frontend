@@ -2092,3 +2092,18 @@ QuickOpen.FilteredListWidget.registerProvider({
   titlePrefix: i18nLazyString(UIStrings.open),
   titleSuggestion: i18nLazyString(UIStrings.file),
 });
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [
+      Workspace.UISourceCode.UISourceCode,
+      SDK.Resource.Resource,
+      SDK.NetworkRequest.NetworkRequest,
+    ];
+  },
+  async loadProvider() {
+    const Sources = await loadSourcesModule();
+    return new Sources.PersistenceActions.ContextMenuProvider();
+  },
+  experiment: undefined,
+});

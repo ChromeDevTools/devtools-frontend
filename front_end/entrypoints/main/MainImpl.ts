@@ -120,6 +120,10 @@ const UIStrings = {
    * @description Text describing how to navigate the dock side menu
    */
   dockSideNavigation: 'Use left and right arrow keys to navigate the options',
+  /**
+   * @description Notification shown to the user whenever DevTools receives an external request.
+   */
+  externalRequestReceived: '`DevTools` received an external request',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -540,6 +544,14 @@ export class MainImpl {
         void badgeNotification.present(ev.data);
       });
     }
+
+    const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
+    conversationHandler.addEventListener(
+        AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_REQUEST_RECEIVED,
+        () => Snackbar.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)}));
+    conversationHandler.addEventListener(
+        AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_CONVERSATION_STARTED,
+        event => void VisualLogging.logFunctionCall(`start-conversation-${event.data}`, 'external'));
 
     MainImpl.timeEnd('Main._createAppUI');
 
@@ -1100,7 +1112,7 @@ export async function handleExternalRequestGenerator(input: ExternalRequestInput
     }
     case 'NETWORK_DEBUGGER': {
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-      const conversationHandler = await AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
+      const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
       return await conversationHandler.handleExternalRequest({
         conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK,
         prompt: input.args.prompt,

@@ -21,7 +21,6 @@ import {createTarget, registerNoopActions, updateHostConfig} from '../../testing
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
-import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -116,14 +115,17 @@ describeWithMockConnection('ConversationHandler', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       });
-      const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
+      const requestReceivedSpy = sinon.spy();
+      conversationHandler.addEventListener(
+          AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_REQUEST_RECEIVED,
+          requestReceivedSpy);
       const generator = await conversationHandler.handleExternalRequest({
         prompt: 'Please help me debug this problem',
         conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING
       });
       const response = await generator.next();
       assert.strictEqual(response.value.message, explanation);
-      sinon.assert.calledOnceWithExactly(snackbarShowStub, {message: 'DevTools received an external request'});
+      sinon.assert.calledOnce(requestReceivedSpy);
     });
 
     it('handles styling assistance requests which contain a selector', async () => {
@@ -306,7 +308,10 @@ describeWithMockConnection('ConversationHandler', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       });
-      const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
+      const requestReceivedSpy = sinon.spy();
+      conversationHandler.addEventListener(
+          AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_REQUEST_RECEIVED,
+          requestReceivedSpy);
 
       const request = createNetworkRequest();
       sinon.stub(request, 'requestContentData')
@@ -326,7 +331,7 @@ describeWithMockConnection('ConversationHandler', () => {
       assert.strictEqual(response.value.message, 'Analyzing network data');
       response = await generator.next();
       assert.strictEqual(response.value.message, explanation);
-      sinon.assert.calledOnceWithExactly(snackbarShowStub, {message: 'DevTools received an external request'});
+      sinon.assert.calledOnce(requestReceivedSpy);
     });
 
     it('handles performance requests', async function() {

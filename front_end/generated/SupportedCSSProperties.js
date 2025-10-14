@@ -4375,6 +4375,7 @@ export const generatedProperties = [
    "capitalize",
    "uppercase",
    "lowercase",
+   "full-width",
    "none",
    "math-auto"
   ],
@@ -6803,6 +6804,7 @@ export const generatedPropertyValues = {
    "capitalize",
    "uppercase",
    "lowercase",
+   "full-width",
    "none",
    "math-auto"
   ]

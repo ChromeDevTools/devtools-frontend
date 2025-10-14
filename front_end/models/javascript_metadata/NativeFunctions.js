@@ -8440,6 +8440,14 @@ export const NativeFunctions = [
     signatures: [["packets"]]
   },
   {
+    name: "addRemoteCandidate",
+    signatures: [["candidate"]]
+  },
+  {
+    name: "setRemoteDtlsParameters",
+    signatures: [["params"]]
+  },
+  {
     name: "revoke",
     signatures: [["permission"]]
   },

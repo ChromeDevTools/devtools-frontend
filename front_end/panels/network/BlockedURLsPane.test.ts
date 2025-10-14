@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -100,6 +100,87 @@ describeWithMockConnection('BlockedURLsPane', () => {
       Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
           Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});
       await viewFunction.nextInput;
+    });
+  });
+
+  describe('shows information for upgrading wildcard patterns to URLPatterns', () => {
+    beforeEach(() => {
+      updateHostConfig({devToolsIndividualRequestThrottling: {enabled: true}});
+    });
+
+    it('shows the URLPattern breakdown', () => {
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const index = 0;
+      const item = blockedURLsPane.renderItem(
+          new SDK.NetworkManager.RequestCondition(
+              {urlPattern: 'http://example.com/*bar' as SDK.NetworkManager.URLPatternConstructorString, enabled: true}),
+          /* editable=*/ true, index);
+      assert.notExists(item.querySelector('devtools-icon'));
+      const hovered = item.querySelector(`[aria-details=url-pattern-${index}]`);
+      assert.exists(hovered);
+      assert.strictEqual(hovered.textContent, 'http://example.com/*bar');
+      const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-${index}]`);
+      assert.exists(tooltip);
+      assert.strictEqual(
+          tooltip.textContent,
+          'hash: *hostname: example.compassword: *pathname: /*barport: protocol: httpsearch: *username: *Learn more');
+    });
+
+    it('shows a warning icon when a pattern was upgraded', () => {
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const index = 1;
+      const item = blockedURLsPane.renderItem(
+          new SDK.NetworkManager.RequestCondition({url: 'example.com/*bar', enabled: true}), /* editable=*/ true,
+          index);
+      const hovered = item.querySelector(`[aria-details=url-pattern-${index}]`);
+      assert.exists(hovered);
+      assert.strictEqual(hovered.textContent, '*://example.com/*bar*');
+      assert.exists(item.querySelector('devtools-icon[name=warning-filled]'));
+      const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-warning-${index}]`);
+      assert.exists(tooltip);
+      assert.strictEqual(tooltip.textContent, 'This pattern was upgraded from "example.com/*bar"');
+    });
+
+    it('shows an error icon when a pattern is invalid', () => {
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const index = 3;
+      const item = blockedURLsPane.renderItem(
+          new SDK.NetworkManager.RequestCondition({url: 'ht tp://*', enabled: true}), /* editable=*/ true, index);
+      assert.isTrue(item.querySelector('input')?.disabled);
+      assert.exists(item.querySelector('devtools-icon[name=cross-circle-filled]'));
+      const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-error-${index}]`);
+      assert.exists(tooltip);
+      assert.strictEqual(tooltip.textContent, 'This pattern failed to parse as a URLPatternLearn more');
+    });
+
+    it('shows an error icon when a pattern contains regexp groups', () => {
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const index = 0;
+      const item = blockedURLsPane.renderItem(
+          new SDK.NetworkManager.RequestCondition({url: 'http://*/(\\d+)', enabled: true}), /* editable=*/ true, index);
+      assert.isTrue(item.querySelector('input')?.disabled);
+      assert.exists(item.querySelector('devtools-icon[name=cross-circle-filled]'));
+      const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-error-${index}]`);
+      assert.exists(tooltip);
+      assert.strictEqual(tooltip.textContent, 'RegExp groups are not allowedLearn more');
+    });
+
+    it('shows an error message in the editor when the pattern is invalid or has regexp groups', () => {
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+
+      const regexpPatternEditor =
+          blockedURLsPane.beginEdit(new SDK.NetworkManager.RequestCondition({url: 'http://*/(\\d+)', enabled: true}));
+      regexpPatternEditor.requestValidation();
+      assert.strictEqual(
+          regexpPatternEditor.element.querySelector('.list-widget-input-validation-error')?.textContent,
+          'RegExp groups are not allowed');
+
+      const invalidPatternEditor =
+          blockedURLsPane.beginEdit(new SDK.NetworkManager.RequestCondition({url: 'ht tp://*', enabled: true}));
+      invalidPatternEditor.requestValidation();
+      assert.strictEqual(
+          invalidPatternEditor.element.querySelector('.list-widget-input-validation-error')?.textContent,
+          'This pattern failed to parse as a URLPattern');
     });
   });
 });

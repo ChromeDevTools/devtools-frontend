@@ -1556,10 +1556,13 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 }
 
-interface RequestConditionsSetting {
-  url: string;
-  enabled: boolean;
-}
+type RequestConditionsSetting = {
+  url: string,
+  enabled: boolean,
+}|{
+  urlPattern: URLPatternConstructorString,
+  enabled: boolean,
+};
 
 declare global {
   // TS typedefs are not up to date
@@ -1624,34 +1627,62 @@ export class RequestURLPattern {
 
     return tryCreate(pattern)  // try as is
         ??
-        // Try upgrade paths for patterns created from the network panel, which either blocks the full url (sans
+        // Try to upgrade patterns created from the network panel, which either blocks the full url (sans
         // protocol) or just the domain name. In both cases the wildcard patterns had implicit wildcards at the end.
-        // The first case is the full url option, which we detect by the presence of '/'. the second case is the
-        // domain name only option.
-        (pattern.includes('/')  // If the pattern includes a '/' we consider this the full-url case
-             ?
-             tryCreate(`*://${pattern}*`)  // Append a wildcard, since the pathname will be parsed from the pattern.
-             :
-             tryCreate(`*://${pattern}`));  // The pathname is empty, which automatically makes it a wildcard.
+        // We explicitly add that here, which will match both domain names without path (implicitly setting pathname
+        // to '*') and urls with path (appending * to the pathname).
+        tryCreate(`*://${pattern}*`);
   }
 }
 
 export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<RequestCondition.EventTypes> {
-  #url: string;
+  #pattern: RequestURLPattern|{wildcardURL: string, upgradedPattern?: RequestURLPattern};
   #enabled: boolean;
 
   constructor(setting: RequestConditionsSetting) {
     super();
-    this.#url = setting.url;
+    if ('urlPattern' in setting) {
+      this.#pattern = RequestURLPattern.create(setting.urlPattern) ?? {
+        wildcardURL: setting.urlPattern,
+        upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.urlPattern) ?? undefined,
+      };
+    } else {
+      this.#pattern = {
+        wildcardURL: setting.url,
+        upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.url) ?? undefined
+      };
+    }
     this.#enabled = setting.enabled;
   }
 
-  get url(): string {
-    return this.#url;
+  get constructorString(): string|undefined {
+    return this.#pattern instanceof RequestURLPattern ? this.#pattern.constructorString :
+                                                        this.#pattern.upgradedPattern?.constructorString;
   }
 
-  set url(url: string) {
-    this.#url = url;
+  get wildcardURL(): string|undefined {
+    return 'wildcardURL' in this.#pattern ? this.#pattern.wildcardURL : undefined;
+  }
+
+  get constructorStringOrWildcardURL(): string {
+    return this.#pattern instanceof RequestURLPattern ?
+        this.#pattern.constructorString :
+        (this.#pattern.upgradedPattern?.constructorString ?? this.#pattern.wildcardURL);
+  }
+
+  set pattern(pattern: RequestURLPattern|string) {
+    if (typeof pattern === 'string') {
+      // TODO(pfaffe) Remove once the feature flag is no longer required
+      if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+        throw new Error('Should not use wildcard urls');
+      }
+      this.#pattern = {
+        wildcardURL: pattern,
+        upgradedPattern: RequestURLPattern.upgradeFromWildcard(pattern) ?? undefined
+      };
+    } else {
+      this.#pattern = pattern;
+    }
     this.dispatchEventToListeners(RequestCondition.Events.REQUEST_CONDITION_CHANGED);
   }
 
@@ -1665,8 +1696,13 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
   }
 
   toSetting(): RequestConditionsSetting {
-    const {url, enabled} = this;
-    return {url, enabled};
+    const enabled = this.enabled;
+    return this.#pattern instanceof RequestURLPattern ? {enabled, urlPattern: this.#pattern.constructorString} :
+                                                        {enabled, url: this.#pattern.wildcardURL};
+  }
+
+  get originalOrUpgradedURLPattern(): URLPattern|undefined {
+    return this.#pattern instanceof RequestURLPattern ? this.#pattern.pattern : this.#pattern.upgradedPattern?.pattern;
   }
 }
 
@@ -1674,6 +1710,7 @@ export namespace RequestCondition {
   export const enum Events {
     REQUEST_CONDITION_CHANGED = 'request-condition-changed',
   }
+
   export interface EventTypes {
     [Events.REQUEST_CONDITION_CHANGED]: void;
   }
@@ -1696,8 +1733,15 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     return this.#conditions.length;
   }
 
+  findCondition(pattern: string): RequestCondition|undefined {
+    if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+      return this.#conditions.find(condition => condition.constructorString === pattern);
+    }
+    return this.#conditions.find(condition => condition.wildcardURL === pattern);
+  }
+
   has(url: string): boolean {
-    return Boolean(this.#conditions.find(condition => condition.url === url));
+    return Boolean(this.findCondition(url));
   }
 
   add(...conditions: RequestCondition[]): void {
@@ -1732,12 +1776,22 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     return this.#conditions.values();
   }
 
-  * blockedURLPatterns(): Generator<string> {
-    for (const condition of this.#conditions) {
-      if (condition.enabled) {
-        yield condition.url;
+  applyConditions(...agents: ProtocolProxyApi.NetworkApi[]): boolean {
+    if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+      const urlPatterns = this.#conditions.filter(condition => condition.enabled && condition.constructorString)
+                              .map(condition => ({urlPattern: condition.constructorString as string, block: true}));
+
+      for (const agent of agents) {
+        void agent.invoke_setBlockedURLs({urlPatterns});
       }
+      return urlPatterns.length > 0;
     }
+    const urls = this.#conditions.filter(condition => condition.enabled && condition.wildcardURL)
+                     .map(condition => condition.wildcardURL as string);
+    for (const agent of agents) {
+      void agent.invoke_setBlockedURLs({urls});
+    }
+    return urls.length > 0;
   }
 }
 
@@ -1850,10 +1904,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       void networkAgent.invoke_setUserAgentOverride(
           {userAgent: this.currentUserAgent(), userAgentMetadata: this.#userAgentMetadataOverride || undefined});
     }
-    const blockedURLs = this.#requestConditions.blockedURLPatterns().toArray();
-    if (blockedURLs.length) {
-      void networkAgent.invoke_setBlockedURLs({urls: blockedURLs});
-    }
+    this.#requestConditions.applyConditions(networkAgent);
     if (this.isIntercepting()) {
       void fetchAgent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()});
     }
@@ -2009,7 +2060,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @deprecated Kept for layout tests
    * TODO(pfaffe) remove
    */
-  setBlockedPatterns(patterns: Array<{url: string, enabled: boolean}>): void {
+  private setBlockedPatterns(patterns: Array<{url: string, enabled: boolean}>): void {
     this.requestConditions.clear();
     this.requestConditions.add(...patterns.map(pattern => new RequestCondition(pattern)));
   }
@@ -2022,11 +2073,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private updateBlockedPatterns(): void {
-    const urls = this.#requestConditions.blockedURLPatterns().toArray();
-    this.#isBlocking = urls.length > 0;
-    for (const agent of this.#networkAgents) {
-      void agent.invoke_setBlockedURLs({urls});
-    }
+    this.#isBlocking = this.#requestConditions.applyConditions(...this.#networkAgents);
   }
 
   isIntercepting(): boolean {

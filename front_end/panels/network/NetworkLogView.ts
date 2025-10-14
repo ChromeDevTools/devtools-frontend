@@ -1857,7 +1857,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
 
       function removeBlockedURL(url: string): void {
-        const entry = manager.requestConditions.conditions.find(condition => condition.url === url);
+        const entry = manager.requestConditions.findCondition(url);
         if (entry) {
           manager.requestConditions.delete(entry);
         }

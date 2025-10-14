@@ -527,6 +527,10 @@ interface AiPromptApi {
   enabled: boolean;
 }
 
+interface DevToolsIndividualRequestThrottling {
+  enabled: boolean;
+}
+
 export interface DevToolsEnableDurableMessages {
   enabled: boolean;
 }
@@ -558,6 +562,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsVeLogging: HostConfigVeLogging,
   devToolsWellKnown: HostConfigWellKnown,
   devToolsPrivacyUI: HostConfigPrivacyUI,
+  devToolsIndividualRequestThrottling: DevToolsIndividualRequestThrottling,
   devToolsIpProtectionPanelInDevTools: HostConfigIPProtection,
   /**
    * OffTheRecord here indicates that the user's profile is either incognito,

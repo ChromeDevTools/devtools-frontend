@@ -4049,6 +4049,7 @@ export const knownContextValues = new Set([
   'upload-image',
   'ur',
   'url',
+  'url-pattern',
   'usage',
   'usb',
   'use-code-with-caution',

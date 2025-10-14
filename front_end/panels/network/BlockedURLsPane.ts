@@ -5,15 +5,17 @@
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
+import '../../ui/components/tooltips/tooltips.js';
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import blockedURLsPaneStyles from './blockedURLsPane.css.js';
@@ -52,6 +54,10 @@ const UIStrings = {
    */
   textPatternToBlockMatching: 'Text pattern to block matching requests; use * for wildcard',
   /**
+   * @description Text in Blocked URLs Pane of the Network panel
+   */
+  textPatternToBlockMatchingURLPatterns: 'Text pattern to block matching requests; use URLPattern syntax.',
+  /**
    * @description Error text for empty list widget input in Request Blocking tool
    */
   patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
@@ -59,6 +65,19 @@ const UIStrings = {
    * @description Error text for duplicate list widget input in Request Blocking tool
    */
   patternAlreadyExists: 'Pattern already exists.',
+  /**
+   * @description Tooltip message when a pattern failed to parse as a URLPattern
+   */
+  patternFailedToParse: 'This pattern failed to parse as a URLPattern',
+  /**
+   * @description Tooltip message when a pattern failed to parse as a URLPattern because it contains RegExp groups
+   */
+  patternFailedWithRegExpGroups: 'RegExp groups are not allowed',
+  /**
+   * @description Tooltip message when a pattern was converted to a URLPattern
+   * @example {example.com} PH1
+   */
+  patternWasUpgraded: 'This pattern was upgraded from "{PH1}"',
   /**
    * @description Message to be announced for a when list item is removed from list widget
    */
@@ -73,6 +92,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const NETWORK_REQUEST_BLOCKING_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/network-request-blocking' as Platform.DevToolsPath.UrlString;
+const PATTERN_API_DOCS_URL =
+    'https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API' as Platform.DevToolsPath.UrlString;
 
 const {bindToAction} = UI.UIUtils;
 
@@ -126,12 +147,22 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       target);
 };
 
+function learnMore(): LitTemplate {
+  return html`<x-link
+        href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
+        tabindex=0
+        class=devtools-link
+        jslog=${VisualLogging.link().track({click: true, keydown: 'Enter|Space'}).context('learn-more')}>
+          ${i18nString(UIStrings.learnMore)}
+      </x-link>`;
+}
+
 export class BlockedURLsPane extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.RequestCondition> {
   private manager: SDK.NetworkManager.MultitargetNetworkManager;
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.RequestCondition>;
   private editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>|null;
-  private blockedCountForUrl: Map<string, number>;
+  private blockedCountForUrl: Map<Platform.DevToolsPath.UrlString, number>;
   #view: View;
 
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
@@ -183,8 +214,8 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     this.manager.requestConditions.clear();
   }
 
-  renderItem(condition: SDK.NetworkManager.RequestCondition, editable: boolean): Element {
-    const count = this.blockedRequestsCount(condition.url);
+  renderItem(condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number): Element {
+    const count = this.blockedRequestsCount(condition);
     const element = document.createElement('div');
     element.classList.add('blocked-url');
     const toggle = (e: Event): void => {
@@ -193,8 +224,56 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
         condition.enabled = !condition.enabled;
       }
     };
-    render(
-        // clang-format off
+
+    const {enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL} = condition;
+
+    if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+      render(
+          // clang-format off
+        html`
+    <input class=blocked-url-checkbox
+      @click=${toggle}
+      type=checkbox
+      ?checked=${enabled}
+      ?disabled=${!editable || !originalOrUpgradedURLPattern}
+      .jslog=${VisualLogging.toggle().track({ change: true })}>
+    ${originalOrUpgradedURLPattern ? html`
+      <devtools-tooltip variant=rich jslogcontext=url-pattern id=url-pattern-${index}>
+        <div>hash: ${originalOrUpgradedURLPattern.hash}</div>
+        <div>hostname: ${originalOrUpgradedURLPattern.hostname}</div>
+        <div>password: ${originalOrUpgradedURLPattern.password}</div>
+        <div>pathname: ${originalOrUpgradedURLPattern.pathname}</div>
+        <div>port: ${originalOrUpgradedURLPattern.port}</div>
+        <div>protocol: ${originalOrUpgradedURLPattern.protocol}</div>
+        <div>search: ${originalOrUpgradedURLPattern.search}</div>
+        <div>username: ${originalOrUpgradedURLPattern.username}</div>
+        <hr />
+        ${learnMore()}
+      </devtools-tooltip>` : nothing}
+    ${wildcardURL ? html`
+      <devtools-icon name=warning-filled class="small warning" aria-details=url-pattern-warning-${index}>
+      </devtools-icon>
+      <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-warning-${index}>
+        ${i18nString(UIStrings.patternWasUpgraded, {PH1: wildcardURL})}
+      </devtools-tooltip>
+      `: nothing}
+    ${!originalOrUpgradedURLPattern ? html`
+      <devtools-icon name=cross-circle-filled class=small aria-details=url-pattern-error-${index}>
+      </devtools-icon>
+      <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-error-${index}>
+        ${SDK.NetworkManager.RequestURLPattern.isValidPattern(constructorStringOrWildcardURL) ===
+            SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS
+            ? i18nString(UIStrings.patternFailedWithRegExpGroups)
+            : i18nString(UIStrings.patternFailedToParse)}
+        ${learnMore()}
+      </devtools-tooltip>`: nothing}
+    <div @click=${toggle} class=blocked-url-label aria-details=url-pattern-${index}>${constructorStringOrWildcardURL}</div>
+    <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
+          // clang-format on
+          element);
+    } else {
+      render(
+          // clang-format off
         html`
     <input class=blocked-url-checkbox
       @click=${toggle}
@@ -202,10 +281,11 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
       ?checked=${condition.enabled}
       ?disabled=${!editable}
       .jslog=${VisualLogging.toggle().track({ change: true })}>
-    <div @click=${toggle} class=blocked-url-label>${condition.url}</div>
+    <div @click=${toggle} class=blocked-url-label>${wildcardURL}</div>
     <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
-      // clang-format off
-        element);
+          // clang-format on
+          element);
+    }
     return element;
   }
 
@@ -215,21 +295,29 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   removeItemRequested(condition: SDK.NetworkManager.RequestCondition): void {
-     this.manager.requestConditions.delete(condition);
+    this.manager.requestConditions.delete(condition);
     UI.ARIAUtils.LiveAnnouncer.alert(UIStrings.itemDeleted);
   }
 
   beginEdit(pattern: SDK.NetworkManager.RequestCondition): UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition> {
     this.editor = this.createEditor();
-    this.editor.control('url').value = pattern.url;
+    this.editor.control('url').value = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ?
+        pattern.constructorStringOrWildcardURL :
+        pattern.wildcardURL ?? '';
     return this.editor;
   }
 
   commitEdit(
       item: SDK.NetworkManager.RequestCondition, editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>,
       isNew: boolean): void {
-    item.url =
-     editor.control('url').value as Platform.DevToolsPath.UrlString;
+    const constructorString = editor.control('url').value as SDK.NetworkManager.URLPatternConstructorString;
+    const pattern = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ?
+        SDK.NetworkManager.RequestURLPattern.create(constructorString) :
+        constructorString;
+    if (!pattern) {
+      throw new Error('Failed to parse pattern');
+    }
+    item.pattern = pattern;
     if (isNew) {
       this.manager.requestConditions.add(item);
     }
@@ -243,23 +331,37 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const editor = new UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>();
     const content = editor.contentElement();
     const titles = content.createChild('div', 'blocked-url-edit-row');
-    titles.createChild('div').textContent = i18nString(UIStrings.textPatternToBlockMatching);
+    const label = titles.createChild('div');
+    if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+      label.textContent = i18nString(UIStrings.textPatternToBlockMatchingURLPatterns);
+      label.append(UI.XLink.XLink.create(
+          PATTERN_API_DOCS_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more'));
+    } else {
+      label.textContent = i18nString(UIStrings.textPatternToBlockMatching);
+    }
     const fields = content.createChild('div', 'blocked-url-edit-row');
-    const validator = (_item: SDK.NetworkManager.RequestCondition, _index: number, input: UI.ListWidget.EditorControl): {
-      valid: boolean,
-      errorMessage: Common.UIString.LocalizedString|undefined,
-    } => {
-      let valid = true;
-      let errorMessage;
-      if (!input.value) {
-        errorMessage = i18nString(UIStrings.patternInputCannotBeEmpty);
-        valid = false;
-      } else if (this.manager.requestConditions.has(input.value)) {
-        errorMessage = i18nString(UIStrings.patternAlreadyExists);
-        valid = false;
-      }
-      return {valid, errorMessage};
-    };
+    const validator =
+        (_item: SDK.NetworkManager.RequestCondition, _index: number, input: UI.ListWidget.EditorControl): {
+          valid: boolean,
+          errorMessage: Common.UIString.LocalizedString|undefined,
+        } => {
+          if (!input.value) {
+            return {errorMessage: i18nString(UIStrings.patternInputCannotBeEmpty), valid: false};
+          }
+          if (this.manager.requestConditions.has(input.value)) {
+            return {errorMessage: i18nString(UIStrings.patternAlreadyExists), valid: false};
+          }
+          if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+            const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(input.value);
+            switch (isValid) {
+              case SDK.NetworkManager.RequestURLPatternValidity.FAILED_TO_PARSE:
+                return {errorMessage: i18nString(UIStrings.patternFailedToParse), valid: false};
+              case SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS:
+                return {errorMessage: i18nString(UIStrings.patternFailedWithRegExpGroups), valid: false};
+            }
+          }
+          return {valid: true, errorMessage: undefined};
+        };
     const urlInput = editor.createInput('url', 'text', '', validator);
     fields.createChild('div', 'blocked-url-edit-value').appendChild(urlInput);
     return editor;
@@ -269,19 +371,20 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const enabled = this.manager.blockingEnabled();
     this.list.clear();
     for (const pattern of this.manager.requestConditions.conditions) {
-      this.list.appendItem(pattern, enabled);
+      if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || pattern.wildcardURL) {
+        this.list.appendItem(pattern, enabled);
+      }
     }
     this.requestUpdate();
   }
 
-  private blockedRequestsCount(url: string): number {
-    if (!url) {
-      return 0;
-    }
-
+  private blockedRequestsCount(condition: SDK.NetworkManager.RequestCondition): number {
     let result = 0;
     for (const blockedUrl of this.blockedCountForUrl.keys()) {
-      if (this.matches(url, blockedUrl)) {
+      const match = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ?
+          condition.originalOrUpgradedURLPattern?.test(blockedUrl) :
+          (condition.wildcardURL && this.matches(condition.wildcardURL, blockedUrl));
+      if (match) {
         result += (this.blockedCountForUrl.get(blockedUrl) as number);
       }
     }

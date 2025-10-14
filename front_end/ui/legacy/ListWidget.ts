@@ -118,7 +118,7 @@ export class ListWidget<T> extends VBox {
     if (this.isTable) {
       element.role = 'rowgroup';
     }
-    const content = this.delegate.renderItem(item, editable);
+    const content = this.delegate.renderItem(item, editable, this.items.length - 1);
     if (!content.hasAttribute('jslog')) {
       element.setAttribute('jslog', `${VisualLogging.item()}`);
     }
@@ -297,7 +297,7 @@ export class ListWidget<T> extends VBox {
 }
 
 export interface Delegate<T> {
-  renderItem(item: T, editable: boolean): Element;
+  renderItem(item: T, editable: boolean, index: number): Element;
   removeItemRequested(item: T, index: number): void;
   beginEdit(item: T): Editor<T>;
   commitEdit(item: T, editor: Editor<T>, isNew: boolean): void;

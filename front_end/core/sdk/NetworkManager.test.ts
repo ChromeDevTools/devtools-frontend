@@ -1164,7 +1164,7 @@ describe('RequestURLPattern', () => {
     );
     testPattern(
         'example.com',
-        {port: '', hostname: 'example.com'},
+        {port: '', hostname: 'example.com*'},
     );
     testPattern(
         'example.com/foo/bar',
@@ -1192,7 +1192,7 @@ describe('RequestURLPattern', () => {
     );
     testPattern(
         'e*m',
-        {port: '', hostname: 'e*m'},
+        {port: '', hostname: 'e*m*'},
     );
     testPattern('ht tp://*', undefined);
     testPattern('http://*/(:id)', undefined);

@@ -11,7 +11,9 @@ import {AICallTree, AIContext, PerformanceTraceFormatter} from '../ai_assistance
 
 async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<
     {formatter: PerformanceTraceFormatter.PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
-  const parsedTrace = await TraceLoader.traceEngine(context, name);
+  const parsedTrace = await TraceLoader.traceEngine(context, name, undefined, {
+    withTimelinePanel: false,
+  });
   assert.isOk(parsedTrace.insights);
   const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
   const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(focus);

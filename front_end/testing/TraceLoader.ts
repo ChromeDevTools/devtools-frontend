@@ -6,7 +6,7 @@ import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Trace from '../models/trace/trace.js';
-import * as Timeline from '../panels/timeline/timeline.js';
+import type * as Timeline from '../panels/timeline/timeline.js';
 import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
 
 // We maintain two caches:
@@ -145,10 +145,15 @@ export class TraceLoader {
    */
   static async traceEngine(
       context: Mocha.Context|Mocha.Suite|null, name: string,
-      config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults()):
-      Promise<Trace.TraceModel.ParsedTrace> {
+      config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults(), opts = {
+        withTimelinePanel: true,
+      }): Promise<Trace.TraceModel.ParsedTrace> {
     if (context) {
       TraceLoader.setTestTimeout(context);
+    }
+    let timelineModule: typeof Timeline|undefined;
+    if (opts.withTimelinePanel) {
+      timelineModule = await import('../panels/timeline/timeline.js');
     }
     // Force the TraceBounds to be reset to empty. This ensures that in
     // tests where we are using the new engine data we don't accidentally
@@ -170,8 +175,11 @@ export class TraceLoader {
         }
         Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
         TraceLoader.initTraceBoundsManager(parsedTrace);
-        Timeline.ModificationsManager.ModificationsManager.reset();
-        Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
+        if (timelineModule) {
+          timelineModule.ModificationsManager.ModificationsManager.reset();
+          timelineModule.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
+              fromCache.model, 0);
+        }
       }, 4_000, 'Initializing state for cached trace');
       return parsedTrace;
     }
@@ -190,11 +198,13 @@ export class TraceLoader {
     traceEngineCache.set(name, cacheByName);
 
     TraceLoader.initTraceBoundsManager(parsedTraceFileAndModel.parsedTrace);
-    await wrapInTimeout(context, () => {
-      Timeline.ModificationsManager.ModificationsManager.reset();
-      Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
-          parsedTraceFileAndModel.model, 0);
-    }, 5_000, `Creating modification manager for ${name}`);
+    if (timelineModule) {
+      await wrapInTimeout(context, () => {
+        timelineModule.ModificationsManager.ModificationsManager.reset();
+        timelineModule.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
+            parsedTraceFileAndModel.model, 0);
+      }, 5_000, `Creating modification manager for ${name}`);
+    }
     return parsedTraceFileAndModel.parsedTrace;
   }
 

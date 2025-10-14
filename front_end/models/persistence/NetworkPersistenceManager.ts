@@ -7,9 +7,6 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
-import * as UI from '../../ui/legacy/legacy.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -400,8 +397,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     // No overrides folder, set it up
     if (this.#shouldPromptSaveForOverridesDialog(uiSourceCode)) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSetup);
-      await new Promise<void>(
-          resolve => UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(resolve));
+      await new Promise<void>(resolve => this.dispatchEventToListeners(Events.LOCAL_OVERRIDES_REQUESTED, resolve));
       await IsolatedFileSystemManager.instance().addFileSystem('overrides');
     }
 
@@ -980,12 +976,14 @@ export const enum Events {
   PROJECT_CHANGED = 'ProjectChanged',
   REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED = 'RequestsForHeaderOverridesFileChanged',
   LOCAL_OVERRIDES_PROJECT_UPDATED = 'LocalOverridesProjectUpdated',
+  LOCAL_OVERRIDES_REQUESTED = 'LocalOverridesRequested',
 }
 
 export interface EventTypes {
   [Events.PROJECT_CHANGED]: Workspace.Workspace.Project|null;
   [Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED]: Workspace.UISourceCode.UISourceCode;
   [Events.LOCAL_OVERRIDES_PROJECT_UPDATED]: boolean;
+  [Events.LOCAL_OVERRIDES_REQUESTED]: () => void;
 }
 
 export interface HeaderOverride {

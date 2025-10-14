@@ -582,7 +582,12 @@ export class MainImpl {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this.#revealSourceLine, this);
 
-    await UI.InspectorView.InspectorView.instance().createToolbars();
+    const inspectorView = UI.InspectorView.InspectorView.instance();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+        Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_REQUESTED, event => {
+          inspectorView.displaySelectOverrideFolderInfobar(event.data);
+        });
+    await inspectorView.createToolbars();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
     // Initialize elements for the live announcer functionality for a11y.

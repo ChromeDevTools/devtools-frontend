@@ -92,4 +92,18 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     input.onTellMeMoreClick(new Event('click'));
     sinon.assert.calledOnce(action);
   });
+
+  it('executes action on "Tell me more" click if onboarding is completed', async () => {
+    const action = sinon.spy();
+    const getAction = sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction').returns({
+      execute: action,
+    } as unknown as UI.ActionRegistration.Action);
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    new Console.ConsoleInsightTeaser.ConsoleInsightTeaser(
+        'test-uuid', {} as Console.ConsoleViewMessage.ConsoleViewMessage, undefined, view);
+    const input = await view.nextInput;
+    input.onTellMeMoreClick(new Event('click'));
+    sinon.assert.calledOnce(action);
+    getAction.restore();
+  });
 });

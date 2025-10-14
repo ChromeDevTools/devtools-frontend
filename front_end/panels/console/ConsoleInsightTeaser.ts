@@ -11,6 +11,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';
@@ -19,6 +20,15 @@ import {PromptBuilder} from './PromptBuilder.js';
 const {render, html} = Lit;
 
 const UIStringsNotTranslate = {
+  /**
+   * @description Link text in the disclaimer dialog, linking to a settings page containing more information
+   */
+  learnMore: 'Learn more about AI summaries',
+  /**
+   * @description Tooltip text for the console insights teaser
+   */
+  infoTooltipText:
+      'The text above has been generated with AI on your local device. Clicking the button will send the console message, stack trace, related source code, and the associated network headers to Google to generate a more detailed explanation.',
   /**
    * @description Header text during loading state while an AI summary is being generated
    */
@@ -35,6 +45,7 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+const DATA_USAGE_URL = 'https://developer.chrome.com/docs/devtools/ai-assistance/get-started#data-use';
 const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
 
 interface ViewInput {
@@ -99,6 +110,22 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
                 ${lockedString(UIStringsNotTranslate.tellMeMore)}
               </devtools-button>
             ` : Lit.nothing}
+            <devtools-icon
+              name="info"
+              class="info-icon"
+              aria-details=${'teaser-info-tooltip-' + input.uuid}
+            ></devtools-icon>
+            <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
+              <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
+              <div class="learn-more">
+                <x-link
+                  class="devtools-link"
+                  title=${lockedString(UIStringsNotTranslate.learnMore)}
+                  href=${DATA_USAGE_URL}
+                  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
+                >${lockedString(UIStringsNotTranslate.learnMore)}</x-link>
+              </div>
+            </devtools-tooltip>
           </div>
         `}
       </div>

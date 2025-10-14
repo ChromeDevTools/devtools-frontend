@@ -63,9 +63,17 @@
     padding-top: 7px;
   }
 
+  .info-tooltip-text {
+    max-width: var(--sys-size-26);
+  }
+
   .tooltip-footer {
     padding: var(--sys-size-5) 0 0;
     display: flex;
     align-items: center;
+
+    .info-icon {
+      margin-left: var(--sys-size-4);
+    }
   }
 }

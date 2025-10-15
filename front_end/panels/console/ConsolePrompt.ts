@@ -170,8 +170,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
       if (!this.aiCodeCompletionSetting.get() && !aiCodeCompletionTeaserDismissedSetting.get()) {
         this.teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.detachAiCodeCompletionTeaser.bind(this)});
-        extensions.push(this.placeholderCompartment.of(
-            TextEditor.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)));
+        extensions.push(this.placeholderCompartment.of([]));
       }
       extensions.push(TextEditor.Config.aiAutoCompleteSuggestion);
     }
@@ -580,9 +579,18 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.aidaAvailability = currentAidaAvailability;
       if (this.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
         this.onAiCodeCompletionSettingChanged();
+        if (this.teaser) {
+          this.editor.dispatch({
+            effects: this.placeholderCompartment.reconfigure(
+                [TextEditor.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)])
+          });
+        }
       } else if (this.aiCodeCompletion) {
         this.aiCodeCompletion.remove();
         this.aiCodeCompletion = undefined;
+        if (this.teaser) {
+          this.detachAiCodeCompletionTeaser();
+        }
       }
     }
   }

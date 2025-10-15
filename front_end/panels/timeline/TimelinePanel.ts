@@ -1637,6 +1637,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const url = new URL(window.location.href);
     const pathToEntrypoint = url.pathname.slice(0, url.pathname.lastIndexOf('/'));
     url.pathname = `${pathToEntrypoint}/trace_app.html`;
+    url.search = '';
     pathToLaunch = url.toString();
 
     // Clarifying the window the code is referring to

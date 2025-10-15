@@ -1,4 +1,7 @@
-/*
+/* Copyright 2021 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ *
  * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
  *
@@ -90,17 +93,20 @@
 
 .console-prompt-editor-container {
   min-height: 21px;
+  padding-left: 2px;
+  padding-top: 1px;
 }
 
 .console-message,
 .console-user-command {
   clear: right;
   position: relative;
-  padding: 3px 22px 1px 0;
+  padding: 1px 22px 1px 0;
   margin-left: 24px;
-  min-height: 17px;  /* Sync with ConsoleViewMessage.js */
+  min-height: 18px;
   flex: auto;
   display: flex;
+  align-items: flex-end;
 }
 
 .console-message > * {
@@ -329,7 +335,6 @@
   display: inline-block;
   overflow-wrap: break-word;
   max-width: 100%;
-  vertical-align: top;
   margin-top: -1.5px;
 }
 

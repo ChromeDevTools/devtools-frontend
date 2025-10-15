@@ -372,7 +372,7 @@ describeWithEnvironment('TimelinePanel', function() {
         sinon.assert.calledOnce(closeSpy);
 
         const [fileName, contentData] = saveSpy.getCall(0).args;
-        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json\.gz$/);
+        assert.match(fileName, /Trace-[\d|T]+\.json\.gz$/);
 
         const file = await contentDataToFile(contentData);
         assert.isDefined(file.metadata.enhancedTraceVersion);
@@ -392,7 +392,7 @@ describeWithEnvironment('TimelinePanel', function() {
         sinon.assert.calledOnce(closeSpy);
 
         const [fileName, contentData] = saveSpy.getCall(0).args;
-        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json\.gz$/);
+        assert.match(fileName, /Trace-[\d|T]+\.json\.gz$/);
 
         const file = await contentDataToFile(contentData);
         assert.isDefined(file.metadata.enhancedTraceVersion);
@@ -484,7 +484,7 @@ describeWithEnvironment('TimelinePanel', function() {
         sinon.assert.calledOnce(closeSpy);
 
         const [fileName, contentData] = saveSpy.getCall(0).args;
-        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json$/);
+        assert.match(fileName, /Trace-[\d|T]+\.json$/);
 
         const file = await contentDataToFile(contentData);
         assert.isDefined(file.metadata.enhancedTraceVersion);
@@ -527,7 +527,7 @@ describeWithEnvironment('TimelinePanel', function() {
         sinon.assert.calledOnce(closeSpy);
 
         const [fileName, contentData] = saveSpy.getCall(0).args;
-        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json$/);
+        assert.match(fileName, /Trace-[\d|T]+\.json$/);
 
         const file = await contentDataToFile(contentData);
         assert.isDefined(file.metadata.enhancedTraceVersion);

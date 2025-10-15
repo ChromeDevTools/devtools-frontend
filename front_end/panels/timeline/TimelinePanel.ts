@@ -1468,9 +1468,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     metadata.enhancedTraceVersion =
         includeScriptContent ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
 
-    let fileName = (isCpuProfile ? `CPU-${isoDate}.cpuprofile` :
-                        includeScriptContent ? `EnhancedTrace-${isoDate}.json` :
-                                               `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
+    let fileName =
+        (isCpuProfile ? `CPU-${isoDate}.cpuprofile` : `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
 
     let blobParts: string[] = [];
     if (isCpuProfile) {

@@ -215,6 +215,7 @@ def main():
     parser.add_argument('--use-esbuild', action='store_true')
     parser.add_argument('--tsconfig-only', action='store_true')
     parser.add_argument('--es-target', required=False)
+    parser.add_argument('--es-libs', nargs='*', required=False)
     # Restrict supported features to the ones supported by Node 22.
     parser.set_defaults(test_only=False,
                         no_emit=False,
@@ -290,7 +291,7 @@ def main():
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     tsconfig['compilerOptions']['target'] = opts.es_target
-    tsconfig['compilerOptions']['lib'] = [
+    tsconfig['compilerOptions']['lib'] = (opts.es_libs or []) + [
         'ES2023', 'ES2024.Promise', 'ESNext.Iterator', 'ESNext.Collection',
         'ESNext.Array'
     ] + (opts.is_web_worker and ['webworker', 'webworker.iterable']

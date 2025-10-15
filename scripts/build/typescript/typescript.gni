@@ -84,6 +84,14 @@ template("ts_library") {
         defined(sources) || defined(deps) || defined(invoker.sourceslist),
         "You must either specify an array of 'sources' or 'deps' or a 'sourceslist' for $target_name")
 
+    if (defined(invoker.es_target)) {
+      args += [ "--es-target", invoker.es_target ]
+    }
+
+    if (defined(invoker.es_libs)) {
+      args += [ "--es-libs" ] + invoker.es_libs
+    }
+
     _test_only = defined(invoker.testonly) && invoker.testonly
     _no_emit = defined(invoker.no_emit) && invoker.no_emit
     _tsconfig_only = defined(invoker.tsconfigonly) && invoker.tsconfigonly

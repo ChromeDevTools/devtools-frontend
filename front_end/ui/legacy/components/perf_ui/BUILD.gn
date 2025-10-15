@@ -20,7 +20,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("perf_ui") {
+devtools_ui_module("perf_ui") {
   sources = [
     "BrickBreaker.ts",
     "CanvasHelper.ts",

@@ -15,7 +15,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("search") {
+devtools_ui_module("search") {
   sources = [
     "SearchResultsPane.ts",
     "SearchScope.ts",

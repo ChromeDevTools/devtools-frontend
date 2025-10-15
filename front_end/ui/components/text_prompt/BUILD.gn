@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "textPrompt.css" ]
 }
 
-devtools_module("text_prompt") {
+devtools_ui_module("text_prompt") {
   sources = [ "TextPrompt.ts" ]
   deps = [
     "../../../core/platform:bundle",

@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("./visibility.gni")
 
-devtools_module("lit") {
+devtools_ui_module("lit") {
   sources = [
     "i18n-template.ts",
     "strip-whitespace.ts",

@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "userAgentClientHintsForm.css" ]
 }
 
-devtools_module("components") {
+devtools_ui_module("components") {
   sources = [ "UserAgentClientHintsForm.ts" ]
 
   deps = [

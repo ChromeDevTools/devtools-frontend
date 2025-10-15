@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "webAudio.css" ]
 }
 
-devtools_module("web_audio") {
+devtools_ui_module("web_audio") {
   sources = [
     "WebAudioModel.ts",
     "WebAudioView.ts",

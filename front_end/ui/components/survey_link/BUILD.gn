@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "surveyLink.css" ]
 }
 
-devtools_module("survey_link") {
+devtools_ui_module("survey_link") {
   sources = [ "SurveyLink.ts" ]
   deps = [
     "../../../core/common:bundle",

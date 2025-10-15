@@ -15,7 +15,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("issue_counter") {
+devtools_ui_module("issue_counter") {
   sources = [
     "IssueCounter.ts",
     "IssueLinkIcon.ts",

@@ -17,7 +17,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("object_ui") {
+devtools_ui_module("object_ui") {
   sources = [
     "CustomPreviewComponent.ts",
     "JavaScriptREPL.ts",

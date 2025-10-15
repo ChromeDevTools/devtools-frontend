@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "codeHighlighter.css" ]
 }
 
-devtools_module("code_highlighter") {
+devtools_ui_module("code_highlighter") {
   sources = [ "CodeHighlighter.ts" ]
 
   deps = [ "../../../third_party/codemirror.next:bundle" ]

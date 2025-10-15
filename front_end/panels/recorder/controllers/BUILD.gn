@@ -5,7 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("controllers") {
+devtools_ui_module("controllers") {
   sources = [ "SelectorPicker.ts" ]
 
   deps = [

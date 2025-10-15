@@ -6,7 +6,7 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
-devtools_module("legacy_wrapper") {
+devtools_ui_module("legacy_wrapper") {
   sources = [ "LegacyWrapper.ts" ]
   deps = [
     "../../../ui/legacy:bundle",

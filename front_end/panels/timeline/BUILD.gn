@@ -54,7 +54,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("timeline") {
+devtools_ui_module("timeline") {
   sources = [
     "ActiveFilters.ts",
     "AnimationsTrackAppender.ts",

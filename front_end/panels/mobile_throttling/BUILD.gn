@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "throttlingSettingsTab.css" ]
 }
 
-devtools_module("mobile_throttling") {
+devtools_ui_module("mobile_throttling") {
   sources = [
     "CalibrationController.ts",
     "MobileThrottlingSelector.ts",

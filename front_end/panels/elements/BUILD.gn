@@ -29,7 +29,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("elements") {
+devtools_ui_module("elements") {
   sources = [
     "AccessibilityTreeUtils.ts",
     "AccessibilityTreeView.ts",

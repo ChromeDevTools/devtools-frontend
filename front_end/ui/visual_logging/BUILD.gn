@@ -6,7 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
-devtools_module("visual_logging") {
+devtools_ui_module("visual_logging") {
   sources = [
     "Debugging.ts",
     "DomState.ts",

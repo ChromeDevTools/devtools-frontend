@@ -16,7 +16,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("changes") {
+devtools_ui_module("changes") {
   sources = [
     "ChangesSidebar.ts",
     "ChangesView.ts",

@@ -14,7 +14,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("sensors") {
+devtools_ui_module("sensors") {
   sources = [
     "LocationsSettingsTab.ts",
     "SensorsView.ts",

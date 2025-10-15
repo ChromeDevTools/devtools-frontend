@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "suggestionInput.css" ]
 }
 
-devtools_module("suggestion_input") {
+devtools_ui_module("suggestion_input") {
   sources = [ "SuggestionInput.ts" ]
 
   deps = [

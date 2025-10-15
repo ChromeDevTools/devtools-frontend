@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "recorderController.css" ]
 }
 
-devtools_module("recorder") {
+devtools_ui_module("recorder") {
   sources = [
     "RecorderController.ts",
     "RecorderEvents.ts",

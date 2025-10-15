@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "requestLinkIcon.css" ]
 }
 
-devtools_module("request_link_icon") {
+devtools_ui_module("request_link_icon") {
   sources = [ "RequestLinkIcon.ts" ]
 
   deps = [

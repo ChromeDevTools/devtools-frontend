@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "nodeText.css" ]
 }
 
-devtools_module("node_text") {
+devtools_ui_module("node_text") {
   sources = [ "NodeText.ts" ]
 
   deps = [

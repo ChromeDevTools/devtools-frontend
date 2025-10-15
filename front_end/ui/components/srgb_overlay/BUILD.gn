@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "srgbOverlay.css" ]
 }
 
-devtools_module("srgb_overlay") {
+devtools_ui_module("srgb_overlay") {
   sources = [ "SrgbOverlay.ts" ]
 
   deps = [

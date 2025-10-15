@@ -25,3 +25,27 @@ set_defaults("devtools_module") {
   data = []
   public_deps = []
 }
+
+template("devtools_ui_module") {
+  ts_library(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "deps",
+                             "public_deps",
+                             "sources",
+                             "data",
+                           ])
+
+    es_target = "esnext"
+    es_libs = ["dom", "dom.iterable"]
+
+    reset_timestamps = true
+
+    visibility += [ ":*" ]
+  }
+}
+set_defaults("devtools_ui_module") {
+  visibility = []
+  data = []
+  public_deps = []
+}

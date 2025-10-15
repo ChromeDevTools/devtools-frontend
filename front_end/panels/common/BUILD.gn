@@ -20,7 +20,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("common") {
+devtools_ui_module("common") {
   sources = [
     "AiCodeCompletionDisclaimer.ts",
     "AiCodeCompletionSummaryToolbar.ts",

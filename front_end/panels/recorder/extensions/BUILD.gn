@@ -5,7 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("extensions") {
+devtools_ui_module("extensions") {
   sources = [ "ExtensionManager.ts" ]
 
   deps = [

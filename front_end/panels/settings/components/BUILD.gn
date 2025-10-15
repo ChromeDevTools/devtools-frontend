@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "syncSection.css" ]
 }
 
-devtools_module("components") {
+devtools_ui_module("components") {
   sources = [ "SyncSection.ts" ]
 
   deps = [

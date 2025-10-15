@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "screencastView.css" ]
 }
 
-devtools_module("screencast") {
+devtools_ui_module("screencast") {
   sources = [
     "InputModel.ts",
     "ScreencastApp.ts",

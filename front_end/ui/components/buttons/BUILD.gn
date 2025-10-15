@@ -20,7 +20,7 @@ copy_to_gen("copy_stylesheets_for_server") {
   sources = [ "textButton.css" ]
 }
 
-devtools_module("button") {
+devtools_ui_module("button") {
   sources = [
     "Button.ts",
     "FloatingButton.ts",

@@ -26,7 +26,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("sources") {
+devtools_ui_module("sources") {
   sources = [
     "AddSourceMapURLDialog.ts",
     "AiCodeCompletionPlugin.ts",

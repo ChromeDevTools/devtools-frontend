@@ -17,7 +17,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("media") {
+devtools_ui_module("media") {
   sources = [
     "EventDisplayTable.ts",
     "EventTimelineView.ts",

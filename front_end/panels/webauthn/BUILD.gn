@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "webauthnPane.css" ]
 }
 
-devtools_module("webauthn") {
+devtools_ui_module("webauthn") {
   sources = [ "WebauthnPane.ts" ]
 
   deps = [

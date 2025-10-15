@@ -7,7 +7,7 @@ import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
-devtools_module("ui_utils") {
+devtools_ui_module("ui_utils") {
   sources = [
     "StructuredHeaders.ts",
     "UserAgentMetadata.ts",

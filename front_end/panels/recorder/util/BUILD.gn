@@ -6,7 +6,7 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
-devtools_module("util") {
+devtools_ui_module("util") {
   sources = [ "SharedObject.ts" ]
 
   deps = [ "../../../core/common:bundle" ]

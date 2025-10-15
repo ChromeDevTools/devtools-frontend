@@ -21,7 +21,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("components") {
+devtools_ui_module("components") {
   sources = [
     "ControlButton.ts",
     "CreateRecordingView.ts",

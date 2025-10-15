@@ -16,7 +16,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("emulation") {
+devtools_ui_module("emulation") {
   sources = [
     "AdvancedApp.ts",
     "DeviceModeToolbar.ts",

@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "card.css" ]
 }
 
-devtools_module("card") {
+devtools_ui_module("card") {
   sources = [ "Card.ts" ]
 
   deps = [ "../../../ui/lit:bundle" ]

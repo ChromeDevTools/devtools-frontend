@@ -18,7 +18,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("profiler") {
+devtools_ui_module("profiler") {
   sources = [
     "BottomUpProfileDataGrid.ts",
     "ChildrenProvider.ts",

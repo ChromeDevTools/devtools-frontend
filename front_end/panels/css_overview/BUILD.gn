@@ -18,7 +18,7 @@ generate_css("css_files") {
 
 import("../visibility.gni")
 
-devtools_module("css_overview") {
+devtools_ui_module("css_overview") {
   sources = [
     "CSSOverviewCompletedView.ts",
     "CSSOverviewModel.ts",

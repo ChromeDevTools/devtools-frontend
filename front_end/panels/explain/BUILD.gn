@@ -15,7 +15,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("explain") {
+devtools_ui_module("explain") {
   sources = [
     "ActionDelegate.ts",
     "components/ConsoleInsight.ts",

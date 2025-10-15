@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "adorner.css" ]
 }
 
-devtools_module("adorners") {
+devtools_ui_module("adorners") {
   sources = [ "Adorner.ts" ]
 
   deps = [

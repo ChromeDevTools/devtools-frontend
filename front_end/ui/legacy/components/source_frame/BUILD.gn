@@ -19,7 +19,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("source_frame") {
+devtools_ui_module("source_frame") {
   sources = [
     "BinaryResourceViewFactory.ts",
     "FontView.ts",

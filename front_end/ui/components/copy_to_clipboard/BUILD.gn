@@ -8,7 +8,7 @@ import("../../../../scripts/build/ninja/generate_css.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("copy_to_clipboard") {
+devtools_ui_module("copy_to_clipboard") {
   sources = [ "copyToClipboard.ts" ]
 
   deps = [

@@ -6,7 +6,7 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
-devtools_module("theme_support") {
+devtools_ui_module("theme_support") {
   sources = [ "ThemeSupport.ts" ]
 
   deps = [

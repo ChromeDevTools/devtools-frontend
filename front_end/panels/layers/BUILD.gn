@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("layers") {
+devtools_ui_module("layers") {
   sources = [
     "LayerPaintProfilerView.ts",
     "LayerTreeModel.ts",

@@ -16,7 +16,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("icon_button") {
+devtools_ui_module("icon_button") {
   sources = [
     "FileSourceIcon.ts",
     "Icon.ts",

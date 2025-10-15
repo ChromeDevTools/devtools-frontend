@@ -8,7 +8,7 @@ import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("linear_memory_inspector") {
+devtools_ui_module("linear_memory_inspector") {
   sources = [
     "LinearMemoryInspectorController.ts",
     "LinearMemoryInspectorPane.ts",

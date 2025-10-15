@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "tooltip.css" ]
 }
 
-devtools_module("tooltip") {
+devtools_ui_module("tooltip") {
   sources = [ "Tooltip.ts" ]
 
   deps = [

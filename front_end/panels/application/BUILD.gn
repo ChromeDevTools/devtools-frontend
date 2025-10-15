@@ -28,7 +28,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("application") {
+devtools_ui_module("application") {
   sources = [
     "AppManifestView.ts",
     "ApplicationPanelSidebar.ts",

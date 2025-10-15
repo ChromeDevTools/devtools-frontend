@@ -7,7 +7,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("text_editor") {
+devtools_ui_module("text_editor") {
   sources = [
     "AiCodeCompletionTeaserPlaceholder.ts",
     "AutocompleteHistory.ts",

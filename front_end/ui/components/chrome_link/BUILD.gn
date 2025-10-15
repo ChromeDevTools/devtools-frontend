@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "chromeLink.css" ]
 }
 
-devtools_module("chrome_link") {
+devtools_ui_module("chrome_link") {
   sources = [ "ChromeLink.ts" ]
 
   deps = [

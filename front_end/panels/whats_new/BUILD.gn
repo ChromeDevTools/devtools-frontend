@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "releaseNoteView.css" ]
 }
 
-devtools_module("whats_new") {
+devtools_ui_module("whats_new") {
   sources = [
     "ReleaseNoteText.ts",
     "ReleaseNoteView.ts",

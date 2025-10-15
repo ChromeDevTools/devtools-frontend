@@ -16,7 +16,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("accessibility") {
+devtools_ui_module("accessibility") {
   sources = [
     "ARIAAttributesView.ts",
     "ARIAMetadata.ts",

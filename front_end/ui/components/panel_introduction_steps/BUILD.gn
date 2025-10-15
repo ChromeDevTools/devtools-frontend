@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "panelIntroductionSteps.css" ]
 }
 
-devtools_module("panel_introduction_steps") {
+devtools_ui_module("panel_introduction_steps") {
   sources = [ "PanelIntroductionSteps.ts" ]
   deps = [
     "../../../core/host:bundle",

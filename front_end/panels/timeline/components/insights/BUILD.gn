@@ -16,7 +16,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("insights") {
+devtools_ui_module("insights") {
   sources = [
     "BaseInsightComponent.ts",
     "CLSCulprits.ts",

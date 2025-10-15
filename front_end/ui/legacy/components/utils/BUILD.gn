@@ -15,7 +15,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("utils") {
+devtools_ui_module("utils") {
   sources = [
     "ImagePreview.ts",
     "JSPresentationUtils.ts",

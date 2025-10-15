@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "autofillView.css" ]
 }
 
-devtools_module("autofill") {
+devtools_ui_module("autofill") {
   sources = [ "AutofillView.ts" ]
 
   deps = [

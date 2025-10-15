@@ -8,7 +8,7 @@ import("../../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("helpers") {
+devtools_ui_module("helpers") {
   sources = [
     "component-server-setup.ts",
     "directives.ts",

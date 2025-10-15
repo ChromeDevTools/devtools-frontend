@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "eventListenersView.css" ]
 }
 
-devtools_module("event_listeners") {
+devtools_ui_module("event_listeners") {
   sources = [
     "EventListenersUtils.ts",
     "EventListenersView.ts",

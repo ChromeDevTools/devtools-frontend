@@ -16,7 +16,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("lighthouse") {
+devtools_ui_module("lighthouse") {
   sources = [
     "LighthouseController.ts",
     "LighthousePanel.ts",

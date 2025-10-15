@@ -45,7 +45,7 @@ copy_to_gen("copy_stylesheets_for_server") {
   sources = [ "inspectorCommon.css" ]
 }
 
-devtools_module("ui") {
+devtools_ui_module("ui") {
   sources = [
     "ARIAUtils.ts",
     "ActionRegistration.ts",

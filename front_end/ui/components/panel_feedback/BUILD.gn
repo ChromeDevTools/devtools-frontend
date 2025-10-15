@@ -15,7 +15,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("panel_feedback") {
+devtools_ui_module("panel_feedback") {
   sources = [
     "FeedbackButton.ts",
     "PanelFeedback.ts",

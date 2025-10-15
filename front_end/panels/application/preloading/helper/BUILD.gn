@@ -6,7 +6,7 @@ import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../visibility.gni")
 
-devtools_module("helper") {
+devtools_ui_module("helper") {
   sources = [ "PreloadingForward.ts" ]
 
   deps = [ "../../../../core/sdk:bundle" ]

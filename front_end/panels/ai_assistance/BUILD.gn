@@ -18,7 +18,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("ai_assistance") {
+devtools_ui_module("ai_assistance") {
   sources = [
     "AiAssistancePanel.ts",
     "PatchWidget.ts",

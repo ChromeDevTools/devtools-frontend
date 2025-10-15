@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "treeOutline.css" ]
 }
 
-devtools_module("tree_outline") {
+devtools_ui_module("tree_outline") {
   sources = [
     "TreeOutline.ts",
     "TreeOutlineUtils.ts",

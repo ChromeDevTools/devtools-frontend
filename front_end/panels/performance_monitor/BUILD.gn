@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "performanceMonitor.css" ]
 }
 
-devtools_module("performance_monitor") {
+devtools_ui_module("performance_monitor") {
   sources = [ "PerformanceMonitor.ts" ]
 
   deps = [

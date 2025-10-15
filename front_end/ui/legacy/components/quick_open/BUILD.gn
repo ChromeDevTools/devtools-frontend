@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "filteredListWidget.css" ]
 }
 
-devtools_module("quick_open") {
+devtools_ui_module("quick_open") {
   sources = [
     "CommandMenu.ts",
     "FilteredListWidget.ts",

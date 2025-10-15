@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "dataGrid.css" ]
 }
 
-devtools_module("data_grid") {
+devtools_ui_module("data_grid") {
   sources = [
     "DataGrid.ts",
     "DataGridElement.ts",

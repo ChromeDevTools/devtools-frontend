@@ -20,7 +20,7 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("security") {
+devtools_ui_module("security") {
   sources = [
     "CookieControlsTreeElement.ts",
     "CookieControlsView.ts",

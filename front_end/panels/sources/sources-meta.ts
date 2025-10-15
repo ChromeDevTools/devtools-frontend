@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -528,6 +529,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.snippets),
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  condition: () => !Root.Runtime.Runtime.isTraceApp(),
   async loadView() {
     const Sources = await loadSourcesModule();
     return new Sources.SourcesNavigator.SnippetsNavigatorView();

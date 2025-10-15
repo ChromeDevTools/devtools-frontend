@@ -209,5 +209,5 @@ copy_to_gen("favicon") {
 }
 
 group("mcp") {
-  deps = ["./mcp:mcp"]
+  deps = ["./mcp"]
 }

@@ -14,12 +14,6 @@ template("devtools_module") {
                              "data",
                            ])
 
-    # To make sure that this target can be depended upon by other TypeScript targets,
-    # we have to name it the `target_name`. However, we can't name this `ts_library` the
-    # `target_name`, as the buildgraph requires the `copy_gen__to_resources` to happen *after*
-    # `ts_library` is finished.
-    typescript_config_name = invoker.target_name
-
     reset_timestamps = true
 
     visibility += [ ":*" ]

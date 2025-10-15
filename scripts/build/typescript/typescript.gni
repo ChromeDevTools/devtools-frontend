@@ -74,16 +74,10 @@ template("ts_library") {
       inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
     }
 
-    _typescript_config_name = target_name
-
-    if (defined(invoker.typescript_config_name)) {
-      _typescript_config_name = invoker.typescript_config_name
-    }
-
     args = [
       "--tsconfig_output_location",
       rebase_path(target_gen_dir, root_build_dir) +
-          "/$_typescript_config_name-tsconfig.json",
+          "/$target_name-tsconfig.json",
     ]
 
     assert(
@@ -183,7 +177,7 @@ template("ts_library") {
       }
     }
 
-    output_files = [ "$target_gen_dir/$_typescript_config_name-tsconfig.json" ]
+    output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
 
     if (defined(sources)) {
       args += [ "--sources" ] + rebase_path(sources, root_build_dir)

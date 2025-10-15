@@ -221,7 +221,7 @@
   --console-color-white: #fff;
 
   &.console-selected {
-    background-color: var(--sys-color-tonal-container);
+    background-color: var(--sys-color-state-focus-highlight);
   }
 }
 

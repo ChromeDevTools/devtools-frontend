@@ -11,6 +11,9 @@ export class WorkerWrapper {
     this.#workerPromise = new Promise((fulfill, reject) => {
       this.#rejectWorkerPromise = reject;
       const worker = new Worker(workerLocation, {type: 'module'});
+      worker.onerror = event => {
+        console.error(`Failed to load worker for ${workerLocation.href}:`, event);
+      };
       worker.onmessage = (event: MessageEvent<unknown>) => {
         console.assert(event.data === 'workerReady');
         worker.onmessage = null;

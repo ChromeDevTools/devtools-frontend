@@ -28,4 +28,8 @@ export class Tracker {
   recordingIsFresh(data: Trace.TraceModel.ParsedTrace): boolean {
     return this.#freshRecordings.has(data);
   }
+
+  recordingIsFreshOrEnhanced(data: Trace.TraceModel.ParsedTrace): boolean {
+    return this.#freshRecordings.has(data) || data.metadata.enhancedTraceVersion !== undefined;
+  }
 }

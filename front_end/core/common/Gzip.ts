@@ -49,16 +49,18 @@ export async function compress(str: string): Promise<ArrayBuffer> {
 }
 
 /** Private coder/decoder **/
-function gzipCodec(buffer: Uint8Array<ArrayBufferLike>|ArrayBuffer, codecStream: CompressionStream|DecompressionStream):
-    Promise<ArrayBuffer> {
-  const {readable, writable} = new TransformStream();
+async function gzipCodec(
+    buffer: Uint8Array<ArrayBufferLike>|ArrayBuffer,
+    codecStream: CompressionStream|DecompressionStream): Promise<ArrayBuffer> {
+  const readable = new ReadableStream({
+    start(controller) {
+      controller.enqueue(buffer);
+      controller.close();
+    }
+  });
   const codecReadable = readable.pipeThrough(codecStream);
-
-  const writer = writable.getWriter();
-  void writer.write(buffer);
-  void writer.close();
   // A response is a convenient way to get an ArrayBuffer from a ReadableStream.
-  return new Response(codecReadable).arrayBuffer();
+  return await new Response(codecReadable).arrayBuffer();
 }
 
 export function decompressStream(stream: ReadableStream): ReadableStream {

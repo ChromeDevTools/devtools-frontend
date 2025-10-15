@@ -55,7 +55,6 @@ export class AiCodeCompletionPlugin extends Plugin {
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
-    void this.#onAidaAvailabilityChange();
     const showTeaser = !this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get();
     if (showTeaser) {
       this.#teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.#detachAiCodeCompletionTeaser.bind(this)});
@@ -84,9 +83,7 @@ export class AiCodeCompletionPlugin extends Plugin {
     this.#editor.addEventListener('keydown', this.#boundEditorKeyDown);
     this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     this.#onAiCodeCompletionSettingChanged();
-    if (editor.state.doc.length === 0) {
-      this.#addTeaserPluginToCompartmentImmediate(editor.editor);
-    }
+    void this.#onAidaAvailabilityChange();
   }
 
   override editorExtension(): CodeMirror.Extension {
@@ -281,8 +278,16 @@ export class AiCodeCompletionPlugin extends Plugin {
       this.#aidaAvailability = currentAidaAvailability;
       if (this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
         this.#onAiCodeCompletionSettingChanged();
+        if (this.#editor?.state.doc.length === 0) {
+          this.#addTeaserPluginToCompartmentImmediate(this.#editor?.editor);
+        }
       } else if (this.#aiCodeCompletion) {
         this.#cleanupAiCodeCompletion();
+        if (this.#teaser) {
+          this.#editor?.dispatch({
+            effects: this.#teaserCompartment.reconfigure([]),
+          });
+        }
       }
     }
   }

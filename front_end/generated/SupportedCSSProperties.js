@@ -3761,6 +3761,13 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "row-rule-break",
+   "column-rule-break"
+  ],
+  "name": "rule-break"
+ },
+ {
+  "longhands": [
    "column-rule-color",
    "row-rule-color"
   ],

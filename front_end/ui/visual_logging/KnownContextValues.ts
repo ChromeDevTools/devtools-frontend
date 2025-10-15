@@ -3163,6 +3163,7 @@ export const knownContextValues = new Set([
   'ruby-overhang',
   'ruby-position',
   'rule',
+  'rule-break',
   'rule-color',
   'rule-set',
   'rule-set-details',

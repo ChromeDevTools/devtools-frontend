@@ -154,7 +154,7 @@ export class AiCodeCompletionPlugin extends Plugin {
           if (this.#aiCodeCompletion && this.#editor && TextEditor.Config.hasActiveAiSuggestion(this.#editor.state)) {
             const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.#editor.editor);
             if (accepted) {
-              if (suggestion?.rpcGlobalId && suggestion?.sampleId) {
+              if (suggestion?.rpcGlobalId) {
                 this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
               }
               this.#onAiCodeCompletionSuggestionAccepted();

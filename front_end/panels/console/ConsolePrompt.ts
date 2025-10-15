@@ -396,7 +396,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           if (accepted) {
             this.dispatchEventToListeners(
                 Events.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED, {citations: this.aiCodeCompletionCitations});
-            if (suggestion?.rpcGlobalId && suggestion?.sampleId) {
+            if (suggestion?.rpcGlobalId) {
               this.aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
             }
           }

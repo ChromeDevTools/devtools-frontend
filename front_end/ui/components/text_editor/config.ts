@@ -488,10 +488,10 @@ export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestio
 interface ActiveSuggestion {
   text: string;
   from: number;
-  sampleId: number;
+  sampleId?: number;
   rpcGlobalId?: Host.AidaClient.RpcGlobalId;
   startTime: number;
-  onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number) => void;
+  onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void;
   clearCachedRequest: () => void;
 }
 
@@ -679,7 +679,7 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
           }
           const latency = performance.now() - activeSuggestion.startTime;
           // only register impression for the first time AI generated suggestion is shown to the user.
-          activeSuggestion.onImpression(activeSuggestion.rpcGlobalId, activeSuggestion.sampleId, latency);
+          activeSuggestion.onImpression(activeSuggestion.rpcGlobalId, latency, activeSuggestion.sampleId);
           this.#lastLoggedSuggestion = activeSuggestion;
         }
       },

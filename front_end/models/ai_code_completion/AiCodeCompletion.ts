@@ -257,10 +257,10 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   async #generateSampleForRequest(request: Host.AidaClient.CompletionRequest, cursor: number): Promise<{
     suggestionText: string,
-    sampleId: number,
     fromCache: boolean,
     citations: Host.AidaClient.Citation[],
     rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+    sampleId?: number,
   }|null> {
     const {response, fromCache} = await this.#completeCodeCached(request);
     debugLog('At cursor position', cursor, {request, response, fromCache});
@@ -417,7 +417,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.#aidaRequestCache = {request, response};
   }
 
-  #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number): void {
+  #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number): void {
     const seconds = Math.floor(latency / 1_000);
     const remainingMs = latency % 1_000;
     const nanos = Math.floor(remainingMs * 1_000_000);
@@ -443,7 +443,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionSuggestionDisplayed);
   }
 
-  registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number): void {
+  registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId?: number): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
       disable_user_content_logging: true,

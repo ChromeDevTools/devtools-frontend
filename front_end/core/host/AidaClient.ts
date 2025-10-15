@@ -279,7 +279,7 @@ export interface DoConversationClientEvent {
 
 export interface UserImpression {
   sample: {
-    sample_id: number,
+    sample_id?: number,
   };
   latency: {
     duration: {
@@ -291,7 +291,7 @@ export interface UserImpression {
 
 export interface UserAcceptance {
   sample: {
-    sample_id: number,
+    sample_id?: number,
   };
 }
 
@@ -366,7 +366,7 @@ export interface CompletionResponse {
 export interface GenerationSample {
   generationString: string;
   score: number;
-  sampleId: number;
+  sampleId?: number;
   attributionMetadata?: AttributionMetadata;
 }
 

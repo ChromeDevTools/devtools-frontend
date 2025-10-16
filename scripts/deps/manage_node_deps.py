@@ -172,6 +172,18 @@ def addChromiumReadme():
     return False
 
 
+def fixChaiExports():
+    file_path = path.join(devtools_paths.node_modules_path(), 'chai',
+                          'package.json')
+    with open(file_path, 'r+') as pkg_json:
+        content = pkg_json.read()
+        pkg_json.seek(0)
+        # Buggy export in the current chai version. Can be removed once the chai version is fixed.
+        content = content.replace('"./": "./"', '"./*": "./*.js"')
+        pkg_json.write(content)
+        pkg_json.truncate()
+
+
 def run_npm_command():
     for (name, version) in DEPS.items():
         if (version.find('^') == 0):
@@ -201,6 +213,8 @@ def run_npm_command():
 
     if addChromiumReadme():
         return True
+
+    fixChaiExports()
 
     return ensure_licenses()
 

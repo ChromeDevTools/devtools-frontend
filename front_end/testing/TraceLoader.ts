@@ -288,6 +288,16 @@ export class TraceLoader {
 }
 
 export async function fetchFileAsText(url: URL): Promise<string> {
+  if (typeof window === 'undefined') {
+    // @ts-expect-error no node types here.
+    const fs = await import('node:fs/promises');
+    // @ts-expect-error no node types here.
+    const {fileURLToPath} = await import('node:url');
+    const path = fileURLToPath(url);
+    const buffer = await fs.readFile(path);
+    const contents = await Common.Gzip.arrayBufferToString(buffer);
+    return contents;
+  }
   const response = await fetch(url);
   if (response.status !== 200) {
     throw new Error(`Unable to load ${url}`);

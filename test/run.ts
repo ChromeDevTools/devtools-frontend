@@ -45,6 +45,9 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                       default: false,
                       desc: 'watch changes to files and run tests automatically on file change (only for unit tests)'
                     })
+                    .options(
+                        'node-unit-tests',
+                        {type: 'boolean', default: false, desc: 'whether to run unit tests in node (experimental)'})
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
@@ -178,6 +181,20 @@ class MochaTests extends Tests {
     );
   }
 }
+class MochaFrontendTests extends Tests {
+  override run(tests: PathPair[]) {
+    return super.run(
+        tests,
+        [
+          MOCHA_BIN_PATH,
+          '--config',
+          path.join(this.suite.buildPath, '..', 'test', 'unit', 'mocharc.js'),
+        ],
+        /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
+                                          // that by passing the tests as dashed args instead.
+    );
+  }
+}
 
 class NonHostedMochaTests extends Tests {
   override run(tests: PathPair[]) {
@@ -267,7 +284,8 @@ class KarmaTests extends Tests {
 function main() {
   const tests: string[] = typeof options['tests'] === 'string' ? [options['tests']] : options['tests'];
   const testKinds = [
-    new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
+    new (options['node-unit-tests'] ? MochaFrontendTests : KarmaTests)(
+        path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
     new NonHostedMochaTests(path.join(GEN_DIR, 'test/e2e_non_hosted')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),

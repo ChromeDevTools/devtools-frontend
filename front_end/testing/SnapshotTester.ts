@@ -215,7 +215,7 @@ class NodeSnapshotTester extends BaseSnapshotTester {
     // @ts-expect-error no node types here.
     const path = await import('node:path');
     // @ts-expect-error no ESM types here.
-    const SOURCE_ROOT = path.join(import.meta.dirname, '..', '..');
+    const SOURCE_ROOT = path.join(import.meta.dirname, '..', '..', '..', '..', '..');
     return path.join(SOURCE_ROOT, snapshotPath);
   }
 }

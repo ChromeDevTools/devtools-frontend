@@ -5,6 +5,12 @@
 import("../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("karma") {
-  sources = [ "karma.conf.ts" ]
-  deps = [ "../shared" ]
+  sources = [
+    "karma.conf.ts",
+    "mocharc.ts",
+  ]
+  deps = [
+    "../conductor:implementation",
+    "../shared",
+  ]
 }

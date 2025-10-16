@@ -927,7 +927,6 @@ UI.Toolbar.registerToolbarItem({
 });
 
 UI.Toolbar.registerToolbarItem({
-  condition: () => !Root.Runtime.Runtime.isTraceApp(),
   async loadItem() {
     const Main = await loadMainModule();
     return Main.MainImpl.SettingsButtonProvider.instance();

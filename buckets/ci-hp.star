@@ -28,6 +28,13 @@ bucket(
             ],
             groups = ["mdb/chrome-devtools-active-sheriffs"],
         ),
+        acl.entry(
+            roles = acl.SCHEDULER_OWNER,
+            users = [
+                "liviurau@google.com",
+            ],
+            groups = ["mdb/chrome-devtools-active-sheriffs"],
+        ),
     ],
     led_service_accounts = [AUTOROLLER_ACCOUNT],
 )

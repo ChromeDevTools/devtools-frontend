@@ -81,8 +81,13 @@ export class Model extends EventTarget {
    * });
    * void this.traceModel.parse(events);
    **/
-  async parse(traceEvents: readonly Types.Events.Event[], config?: Types.Configuration.ParseOptions): Promise<void> {
-    const metadata = config?.metadata || {};
+  async parse(traceEvents: readonly Types.Events.Event[], config: Types.Configuration.ParseOptions = {}):
+      Promise<void> {
+    if (config.showAllEvents === undefined) {
+      config.showAllEvents = this.#config.showAllEvents;
+    }
+
+    const metadata = config.metadata || {};
     // During parsing, periodically update any listeners on each processors'
     // progress (if they have any updates).
     const onTraceUpdate = (event: Event): void => {
@@ -98,7 +103,7 @@ export class Model extends EventTarget {
     try {
       // Wait for all outstanding promises before finishing the async execution,
       // but perform all tasks in parallel.
-      await this.#processor.parse(traceEvents, config ?? {});
+      await this.#processor.parse(traceEvents, config);
       if (!this.#processor.data) {
         throw new Error('processor did not parse trace');
       }

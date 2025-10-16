@@ -6,6 +6,10 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import type {FinalizeOptions} from './types.js';
+
+let config: {showAllEvents: boolean};
+
 // We track the renderer processes we see in each frame on the way through the trace.
 let rendererProcessesByFrameId: FrameProcessData = new Map();
 
@@ -349,7 +353,9 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 }
 
-export async function finalize(): Promise<void> {
+export async function finalize(options?: FinalizeOptions): Promise<void> {
+  config = {showAllEvents: Boolean(options?.showAllEvents)};
+
   // We try to set the minimum time by finding the event with the smallest
   // timestamp. However, if we also got a timestamp from the
   // TracingStartedInBrowser event, we should always use that.
@@ -431,6 +437,7 @@ export async function finalize(): Promise<void> {
 }
 
 export interface MetaHandlerData {
+  config: {showAllEvents: boolean};
   traceIsGeneric: boolean;
   traceBounds: Types.Timing.TraceWindowMicro;
   browserProcessId: Types.Events.ProcessID;
@@ -494,6 +501,7 @@ export type FrameProcessData =
 
 export function data(): MetaHandlerData {
   return {
+    config,
     traceBounds,
     browserProcessId,
     browserThreadId,

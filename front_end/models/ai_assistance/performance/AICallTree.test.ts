@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
@@ -21,10 +20,6 @@ describeWithEnvironment('AICallTree', () => {
 
   after(async () => {
     await snapshotTester.finish();
-  });
-
-  beforeEach(() => {
-    Root.Runtime.experiments.disableForTest('timeline-show-all-events');
   });
 
   it('will not build a tree from non-main-thread events', async function() {
@@ -234,8 +229,9 @@ describeWithEnvironment('AICallTree', () => {
   });
 
   it('can serialize a tree from an event that is not shown unless "show all events" is enabled', async function() {
-    Root.Runtime.experiments.enableForTest('timeline-show-all-events');
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const config = Trace.Types.Configuration.defaults();
+    config.showAllEvents = true;
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', config);
     // find a "v8.run" function that would not normally be shown
     const event = allThreadEntriesInTrace(parsedTrace).find(entry => {
       return entry.name === 'v8.run' && entry.ts === 122411196071;

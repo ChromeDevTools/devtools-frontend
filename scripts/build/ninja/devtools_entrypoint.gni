@@ -28,8 +28,6 @@ template("devtools_entrypoint") {
 
   _devtools_entrypoint_deps = []
 
-  _is_web_worker = defined(invoker.is_web_worker) && invoker.is_web_worker
-
   # If we don't bundle, the entrypoint is kept as-is. This means we only
   # need to compile with TypeScript/esbuild, which means it will fetch all
   # of its files as separate network requests.
@@ -37,12 +35,9 @@ template("devtools_entrypoint") {
     _ts_library_target_name = _entrypoint_target_name + "-typescript"
 
     ts_library(_ts_library_target_name) {
+      forward_variables_from(invoker, ["deps", "es_target", "es_libs", "inputs"])
+
       sources = [ invoker.entrypoint ]
-
-      inputs = invoker.inputs
-      deps = invoker.deps
-
-      is_web_worker = _is_web_worker
     }
 
     _devtools_entrypoint_deps += [ ":$_ts_library_target_name" ]
@@ -109,16 +104,14 @@ template("devtools_entrypoint") {
     }
 
     ts_library(_prebundle_target_name) {
+      forward_variables_from(invoker, ["deps", "es_target", "es_libs", "inputs"])
+
       sources = [ _copy_output_file_name ]
 
       rootdir = target_gen_dir
 
-      inputs = invoker.inputs
-      deps = invoker.deps
-
       public_deps = [ ":$_copy_target_name" ]
 
-      is_web_worker = _is_web_worker
     }
 
     bundle(_bundle_target_name) {

@@ -205,7 +205,6 @@ def main():
     parser.add_argument('--test-only', action='store_true')
     parser.add_argument('--no-emit', action='store_true')
     parser.add_argument('--verify-lib-check', action='store_true')
-    parser.add_argument('--is_web_worker', action='store_true')
     parser.add_argument('--runs-in', required=False)
     parser.add_argument('--reset_timestamps', action='store_true')
     parser.add_argument('--additional-type-definitions',
@@ -291,11 +290,10 @@ def main():
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     tsconfig['compilerOptions']['target'] = opts.es_target
-    tsconfig['compilerOptions']['lib'] = (opts.es_libs or []) + [
+    tsconfig['compilerOptions']['lib'] = (opts.es_libs or ['dom', 'dom.iterable']) + [
         'ES2023', 'ES2024.Promise', 'ESNext.Iterator', 'ESNext.Collection',
         'ESNext.Array'
-    ] + (opts.is_web_worker and ['webworker', 'webworker.iterable']
-         or ['dom', 'dom.iterable'])
+    ]
 
     if maybe_update_tsconfig_file(tsconfig_output_location, tsconfig) == 1:
         return 1

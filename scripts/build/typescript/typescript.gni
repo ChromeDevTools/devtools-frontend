@@ -56,6 +56,9 @@ template("ts_library") {
                              "inputs",
                              "data_deps",
                            ])
+    if (!defined(inputs)) {
+      inputs = []
+    }
 
     inputs += [
       "//third_party/node/node.py",
@@ -171,10 +174,6 @@ template("ts_library") {
       args += [ "--reset_timestamps" ]
     }
 
-    if (defined(invoker.is_web_worker) && invoker.is_web_worker) {
-      args += [ "--is_web_worker" ]
-    }
-
     if (devtools_skip_typecheck) {
       args += [ "--use-esbuild" ]
       _esbuild = devtools_location_prepend + "third_party/esbuild/esbuild"
@@ -257,7 +256,6 @@ set_defaults("ts_library") {
   # Build output should be private and directories should export all relevant
   # components in a group
   visibility = [ "*" ]
-  inputs = []
 }
 
 template("node_ts_library") {

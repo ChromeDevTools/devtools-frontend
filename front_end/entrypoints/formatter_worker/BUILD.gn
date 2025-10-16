@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_worker.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
@@ -61,7 +62,7 @@ devtools_entrypoint("formatter_actions") {
 devtools_entrypoint("worker_entrypoint") {
   entrypoint = "formatter_worker-entrypoint.ts"
 
-  is_web_worker = true
+  forward_variables_from(devtools_worker_config, "*")
 
   deps = [
     ":bundle",

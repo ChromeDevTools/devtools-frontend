@@ -1,0 +1,10 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Shared config for all DevTools workers.
+# Apply with `forward_variables_from` to ts_library/devtools_module/devtools_entrypoint.
+devtools_worker_config = {
+  es_target = "esnext"
+  es_libs = ["webworker", "webworker.iterable"]
+}

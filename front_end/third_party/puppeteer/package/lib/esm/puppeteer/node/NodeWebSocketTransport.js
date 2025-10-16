@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import NodeWebSocket from 'ws';
-import { packageVersion } from '../generated/version.js';
+import { packageVersion } from '../util/version.js';
 /**
  * @internal
  */

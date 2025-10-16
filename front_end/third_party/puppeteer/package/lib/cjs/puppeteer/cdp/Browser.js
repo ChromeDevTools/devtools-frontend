@@ -16,8 +16,8 @@ const TargetManager_js_1 = require("./TargetManager.js");
  */
 class CdpBrowser extends Browser_js_1.Browser {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, handleDevToolsAsPage);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -36,7 +36,8 @@ class CdpBrowser extends Browser_js_1.Browser {
     #contexts = new Map();
     #networkEnabled = true;
     #targetManager;
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
+    #handleDevToolsAsPage = false;
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
         super();
         this.#networkEnabled = networkEnabled;
         this.#defaultViewport = defaultViewport;
@@ -48,6 +49,7 @@ class CdpBrowser extends Browser_js_1.Browser {
                 (() => {
                     return true;
                 });
+        this.#handleDevToolsAsPage = handleDevToolsAsPage;
         this.#setIsPageTargetCallback(isPageTargetCallback);
         this.#targetManager = new TargetManager_js_1.TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
         this.#defaultContext = new BrowserContext_js_1.CdpBrowserContext(this.#connection, this);
@@ -88,7 +90,10 @@ class CdpBrowser extends Browser_js_1.Browser {
                 ((target) => {
                     return (target.type() === 'page' ||
                         target.type() === 'background_page' ||
-                        target.type() === 'webview');
+                        target.type() === 'webview' ||
+                        (this.#handleDevToolsAsPage &&
+                            target.type() === 'other' &&
+                            target.url().startsWith('devtools://')));
                 });
     }
     _getIsPageTargetCallback() {

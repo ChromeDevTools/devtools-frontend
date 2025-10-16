@@ -132,7 +132,6 @@
     "package/lib/esm/puppeteer/common/util.js",
     "package/lib/esm/puppeteer/environment.js",
     "package/lib/esm/puppeteer/generated/injected.js",
-    "package/lib/esm/puppeteer/generated/version.js",
     "package/lib/esm/puppeteer/index-browser.js",
     "package/lib/esm/puppeteer/index.js",
     "package/lib/esm/puppeteer/injected/ARIAQuerySelector.js",
@@ -170,6 +169,7 @@
     "package/lib/esm/puppeteer/util/encoding.js",
     "package/lib/esm/puppeteer/util/incremental-id-generator.js",
     "package/lib/esm/puppeteer/util/util.js",
+    "package/lib/esm/puppeteer/util/version.js",
     "package/lib/esm/third_party/mitt/mitt.js",
     "package/lib/esm/third_party/parsel-js/parsel-js.js",
     "package/lib/esm/third_party/rxjs/rxjs.js"

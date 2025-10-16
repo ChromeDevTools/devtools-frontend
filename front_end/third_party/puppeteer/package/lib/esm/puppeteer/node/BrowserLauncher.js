@@ -36,7 +36,7 @@ export class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
+        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -118,16 +118,23 @@ export class BrowserLauncher {
                     });
                 }
                 else {
-                    browser = await CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled);
+                    browser = await CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled, handleDevToolsAsPage);
                 }
             }
         }
         catch (error) {
             void browserCloseCallback();
-            if (browserProcess.getRecentLogs().some(line => {
-                return line.includes('Failed to create a ProcessSingleton for your profile directory');
-            })) {
+            const logs = browserProcess.getRecentLogs().join('\n');
+            if (logs.includes('Failed to create a ProcessSingleton for your profile directory') ||
+                // On Windows we will not get logs due to the singleton process
+                // handover. See
+                // https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/process_singleton_win.cc;l=46;drc=fc7952f0422b5073515a205a04ec9c3a1ae81658
+                (process.platform === 'win32' &&
+                    existsSync(join(launchArgs.userDataDir, 'lockfile')))) {
                 throw new Error(`The browser is already running for ${launchArgs.userDataDir}. Use a different \`userDataDir\` or stop the running browser first.`);
+            }
+            if (logs.includes('Missing X server') && options.headless === false) {
+                throw new Error(`Missing X server to start the headful browser. Either set headless to true or use xvfb-run to run your Puppeteer script.`);
             }
             if (error instanceof BrowsersTimeoutError) {
                 throw new TimeoutError(error.message);

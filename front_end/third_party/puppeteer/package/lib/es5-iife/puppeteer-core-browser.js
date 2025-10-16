@@ -2963,11 +2963,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   };
 
   /**
-   * @internal
-   */
-  const packageVersion = '24.23.0';
-
-  /**
    * @license
    * Copyright 2020 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
@@ -3045,6 +3040,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return result;
   }
+
+  /**
+   * @license
+   * Copyright 2025 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  // If moved update release-please config
+  // x-release-please-start-version
+  const packageVersion = '24.25.0';
+  // x-release-please-end
 
   /**
    * @license
@@ -12779,6 +12784,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _name = /*#__PURE__*/new WeakMap();
   var _role = /*#__PURE__*/new WeakMap();
   var _ignored = /*#__PURE__*/new WeakMap();
+  var _cachedHasFocusableChild = /*#__PURE__*/new WeakMap();
   var _realm2 = /*#__PURE__*/new WeakMap();
   var _AXNode_brand = /*#__PURE__*/new WeakSet();
   class AXNode {
@@ -12794,6 +12800,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _name, void 0);
       _classPrivateFieldInitSpec(this, _role, void 0);
       _classPrivateFieldInitSpec(this, _ignored, void 0);
+      _classPrivateFieldInitSpec(this, _cachedHasFocusableChild, void 0);
       _classPrivateFieldInitSpec(this, _realm2, void 0);
       this.payload = payload;
       _classPrivateFieldSet(_name, this, this.payload.name ? this.payload.name.value : '');
@@ -12851,6 +12858,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         case 'separator':
         case 'progressbar':
           return true;
+      }
+      if (_assertClassBrand(_AXNode_brand, this, _hasFocusableChild).call(this)) {
+        return false;
       }
       if (_classPrivateFieldGet(_role, this) === 'heading' && _classPrivateFieldGet(_name, this)) {
         return true;
@@ -13029,6 +13039,18 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   function _isTextOnlyObject() {
     const role = _classPrivateFieldGet(_role, this);
     return role === 'LineBreak' || role === 'text' || role === 'InlineTextBox' || role === 'StaticText';
+  }
+  function _hasFocusableChild() {
+    if (_classPrivateFieldGet(_cachedHasFocusableChild, this) === undefined) {
+      _classPrivateFieldSet(_cachedHasFocusableChild, this, false);
+      for (const child of this.children) {
+        if (_classPrivateFieldGet(_focusable, child) || _assertClassBrand(_AXNode_brand, child, _hasFocusableChild).call(child)) {
+          _classPrivateFieldSet(_cachedHasFocusableChild, this, true);
+          break;
+        }
+      }
+    }
+    return _classPrivateFieldGet(_cachedHasFocusableChild, this);
   }
   var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
@@ -22394,6 +22416,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _contexts = /*#__PURE__*/new WeakMap();
   var _networkEnabled2 = /*#__PURE__*/new WeakMap();
   var _targetManager3 = /*#__PURE__*/new WeakMap();
+  var _handleDevToolsAsPage = /*#__PURE__*/new WeakMap();
   var _emitDisconnected = /*#__PURE__*/new WeakMap();
   var _CdpBrowser_brand = /*#__PURE__*/new WeakSet();
   var _createTarget = /*#__PURE__*/new WeakMap();
@@ -22402,8 +22425,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _onTargetChanged = /*#__PURE__*/new WeakMap();
   var _onTargetDiscovered = /*#__PURE__*/new WeakMap();
   class CdpBrowser extends Browser {
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
-      const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
+      const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, handleDevToolsAsPage);
       if (acceptInsecureCerts) {
         await connection.send('Security.setIgnoreCertificateErrors', {
           ignore: true
@@ -22412,7 +22435,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       await browser._attach(downloadBehavior);
       return browser;
     }
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, _isPageTargetCallback2, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, _isPageTargetCallback2, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
       super();
       _classPrivateMethodInitSpec(this, _CdpBrowser_brand);
       _defineProperty(this, "protocol", 'cdp');
@@ -22426,6 +22449,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _contexts, new Map());
       _classPrivateFieldInitSpec(this, _networkEnabled2, true);
       _classPrivateFieldInitSpec(this, _targetManager3, void 0);
+      _classPrivateFieldInitSpec(this, _handleDevToolsAsPage, false);
       _classPrivateFieldInitSpec(this, _emitDisconnected, () => {
         this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
       });
@@ -22483,6 +22507,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_targetFilterCallback2, this, targetFilterCallback || (() => {
         return true;
       }));
+      _classPrivateFieldSet(_handleDevToolsAsPage, this, handleDevToolsAsPage);
       _assertClassBrand(_CdpBrowser_brand, this, _setIsPageTargetCallback).call(this, _isPageTargetCallback2);
       _classPrivateFieldSet(_targetManager3, this, new TargetManager(connection, _classPrivateFieldGet(_createTarget, this), _classPrivateFieldGet(_targetFilterCallback2, this), waitForInitiallyDiscoveredTargets));
       _classPrivateFieldSet(_defaultContext, this, new CdpBrowserContext(_classPrivateFieldGet(_connection4, this), this));
@@ -22651,7 +22676,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   function _setIsPageTargetCallback(isPageTargetCallback) {
     _classPrivateFieldSet(_isPageTargetCallback, this, isPageTargetCallback || (target => {
-      return target.type() === 'page' || target.type() === 'background_page' || target.type() === 'webview';
+      return target.type() === 'page' || target.type() === 'background_page' || target.type() === 'webview' || _classPrivateFieldGet(_handleDevToolsAsPage, this) && target.type() === 'other' && target.url().startsWith('devtools://');
     }));
   }
   function _getVersion() {
@@ -22666,7 +22691,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       targetFilter,
       _isPageTarget: isPageTarget,
       slowMo = 0,
-      protocolTimeout
+      protocolTimeout,
+      handleDevToolsAsPage
     } = options;
     const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout);
     const {
@@ -22674,7 +22700,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
       return connection.send('Browser.close').catch(debugError);
-    }, targetFilter, isPageTarget, undefined, networkEnabled);
+    }, targetFilter, isPageTarget, undefined, networkEnabled, handleDevToolsAsPage);
     return browser;
   }
   const tabTargetInfo = {
@@ -24746,9 +24772,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '141.0.7390.54',
-    'chrome-headless-shell': '141.0.7390.54',
-    firefox: 'stable_143.0.3'
+    chrome: '141.0.7390.78',
+    'chrome-headless-shell': '141.0.7390.78',
+    firefox: 'stable_144.0'
   });
 
   /**

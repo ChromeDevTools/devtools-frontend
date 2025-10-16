@@ -810,7 +810,7 @@ export default defineConfig([
   },
   {
     name: 'Front-end component docs',
-    files: ['front_end/ui/components/docs/**/*.ts'],
+    files: ['front_end/ui/components/docs/**/*.ts', '**/*.docs.ts'],
     rules: {
       // This makes the component doc examples very verbose and doesn't add
       // anything, so we leave return types to the developer within the

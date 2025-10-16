@@ -55,6 +55,7 @@ template("ts_library") {
                              "public_deps",
                              "inputs",
                              "data_deps",
+                             "metadata",
                            ])
     if (!defined(inputs)) {
       inputs = []
@@ -88,7 +89,10 @@ template("ts_library") {
         "You must either specify an array of 'sources' or 'deps' or a 'sourceslist' for $target_name")
 
     if (defined(invoker.es_target)) {
-      args += [ "--es-target", invoker.es_target ]
+      args += [
+        "--es-target",
+        invoker.es_target,
+      ]
     }
 
     if (defined(invoker.es_libs)) {
@@ -237,14 +241,20 @@ template("ts_library") {
       ts_files = rebase_path(sources, root_build_dir)
     }
 
-    metadata = {
-      typescript_files = ts_files
-      tests = filter_include(output_files,
-                             [
-                               "*.test.js",
-                               "*_test.js",
-                             ])
+    if (!defined(metadata)) {
+      metadata = {
+      }
     }
+
+    assert(!defined(metadata.typescript_files))
+    assert(!defined(metadata.tests))
+
+    metadata.typescript_files = ts_files
+    metadata.tests = filter_include(output_files,
+                                    [
+                                      "*.test.js",
+                                      "*_test.js",
+                                    ])
 
     if (!devtools_bundle) {
       metadata.grd_files = _javascript_implementation_files

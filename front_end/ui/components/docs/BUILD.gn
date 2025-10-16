@@ -23,7 +23,6 @@ group("docs") {
     "./elements_breadcrumbs",
     "./expandable_list",
     "./icon_button",
-    "./icon_component",
     "./input",
     "./issue_counter",
     "./issue_link_icon",

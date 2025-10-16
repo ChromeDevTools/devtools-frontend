@@ -1,0 +1,27 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../typescript/typescript.gni")
+
+template("component_doc") {
+  _ts_target = target_name + "_ts"
+
+  ts_library(_ts_target) {
+    testonly = true
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "deps",
+                           ])
+  }
+
+  group(target_name) {
+    deps = [ ":$_ts_target" ]
+
+    _ts_library_outputs = get_target_outputs(":$_ts_target")
+    metadata = {
+      doc_sources = filter_include(_ts_library_outputs, [ "*.js" ])
+    }
+  }
+}

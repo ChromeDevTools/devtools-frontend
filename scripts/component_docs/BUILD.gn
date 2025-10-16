@@ -1,0 +1,46 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../build/ninja/copy.gni")
+import("../build/ninja/node.gni")
+
+copy_to_gen("copy_styles") {
+  sources = [ "component_docs.css" ]
+}
+
+group("docs") {
+  deps = [ "../../front_end/ui/components/icon_button:docs" ]
+}
+
+generated_file("component_docs_sources") {
+  data_keys = [ "doc_sources" ]
+  deps = [ ":docs" ]
+  output_conversion = "json"
+  outputs = [ "$target_gen_dir/component_docs_sources.json" ]
+  rebase = target_gen_dir
+}
+
+node_action("component_docs") {
+  script = "scripts/component_docs/generate_docs.mjs"
+  deps = [
+    ":component_docs_sources",
+    ":copy_styles",
+  ]
+
+  metadata_file = "$target_gen_dir/component_docs_sources.json"
+
+  outputs = [
+    "$root_gen_dir/index.html",
+    "$target_gen_dir/index-loader.js",
+  ]
+  visibility = [ "../../:*" ]
+  args = [
+    "--html-output-file",
+    rebase_path("$root_gen_dir/index.html", root_build_dir),
+    "--js-output-file",
+    rebase_path("$target_gen_dir/index-loader.js", root_build_dir),
+    "--sources-file",
+    rebase_path(metadata_file, root_build_dir),
+  ]
+}

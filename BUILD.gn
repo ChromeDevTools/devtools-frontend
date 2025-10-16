@@ -30,7 +30,10 @@ group("devtools_all_files") {
                 "test",
               ]
   deps = [ ":frontend_indexer_tsconfig" ]
-  public_deps = [ "front_end/ui/components/docs" ]
+  public_deps = [
+    "front_end/ui/components/docs",
+    "scripts/component_docs",
+  ]
 }
 
 group("devtools_frontend_resources") {
@@ -209,5 +212,5 @@ copy_to_gen("favicon") {
 }
 
 group("mcp") {
-  deps = ["./mcp"]
+  deps = [ "./mcp" ]
 }

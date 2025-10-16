@@ -25,7 +25,11 @@ const UIStringsNotTranslate = {
   /**
    * @description Link text in the disclaimer dialog, linking to a settings page containing more information
    */
-  learnMore: 'Learn more about AI summaries',
+  learnMore: 'Learn more',
+  /**
+   * @description Link text in the Console Insights Teaser info tooltip, linking to an explainer on how data is being used in this feature
+   */
+  learnMoreAboutAiSummaries: 'Learn more about AI summaries',
   /**
    * @description Description of the console insights feature
    */
@@ -150,10 +154,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
               <div class="learn-more">
                 <x-link
                   class="devtools-link"
-                  title=${lockedString(UIStringsNotTranslate.learnMore)}
+                  title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
                   href=${DATA_USAGE_URL}
                   jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
-                >${lockedString(UIStringsNotTranslate.learnMore)}</x-link>
+                >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
               </div>
             </devtools-tooltip>
             <devtools-checkbox

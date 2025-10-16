@@ -24,7 +24,9 @@ bucket(
             users = [
                 AUTOROLLER_ACCOUNT,
                 "luci-scheduler@appspot.gserviceaccount.com",
+                "liviurau@google.com",
             ],
+            groups = ["mdb/chrome-devtools-active-sheriffs"],
         ),
     ],
     led_service_accounts = [AUTOROLLER_ACCOUNT],

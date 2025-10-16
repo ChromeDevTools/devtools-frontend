@@ -73,6 +73,10 @@ const UIStringsNotTranslate = {
    * @description Label for a checkbox which turns off the teaser explanation feature
    */
   dontShow: 'Don’t show',
+  /**
+   * @description Aria-label for an infor-button triggering a tooltip with more info about data usage
+   */
+  learnDataUsage: 'Learn more about how your data is used',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -144,11 +148,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
                 ${lockedString(UIStringsNotTranslate.tellMeMore)}
               </devtools-button>
             ` : Lit.nothing}
-            <devtools-icon
-              name="info"
-              class="info-icon"
+            <devtools-button
+              .iconName=${'info'}
+              .variant=${Buttons.Button.Variant.ICON}
               aria-details=${'teaser-info-tooltip-' + input.uuid}
-            ></devtools-icon>
+              aria-label=${lockedString(UIStringsNotTranslate.learnDataUsage)}
+            ></devtools-button>
             <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
               <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
               <div class="learn-more">
@@ -161,6 +166,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
               </div>
             </devtools-tooltip>
             <devtools-checkbox
+              aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
               @change=${input.dontShowChanged}
               jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
               ${lockedString(UIStringsNotTranslate.dontShow)}

@@ -1343,14 +1343,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this.contentElementInternal;
   }
 
-  #onMouseEnter(_event: MouseEvent): void {
+  #startTeaserGeneration(): void {
     if (this.#teaser &&
         Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled()) {
       this.#teaser.maybeGenerateTeaser();
     }
   }
 
-  #onMouseLeave(): void {
+  #abortTeaserGeneration(): void {
     this.#teaser?.abortTeaserGeneration();
   }
 
@@ -1361,8 +1361,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal = document.createElement('div');
     this.elementInternal.tabIndex = -1;
     this.elementInternal.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener));
-    this.elementInternal.addEventListener('mouseenter', this.#onMouseEnter.bind(this));
-    this.elementInternal.addEventListener('mouseleave', this.#onMouseLeave.bind(this));
+    this.elementInternal.addEventListener('mouseenter', this.#startTeaserGeneration.bind(this));
+    this.elementInternal.addEventListener('focusin', this.#startTeaserGeneration.bind(this));
+    this.elementInternal.addEventListener('mouseleave', this.#abortTeaserGeneration.bind(this));
+    this.elementInternal.addEventListener('focusout', this.#abortTeaserGeneration.bind(this));
     this.updateMessageElement();
     this.elementInternal.classList.toggle('console-adjacent-user-command-result', this.#adjacentUserCommandResult);
     return this.elementInternal;

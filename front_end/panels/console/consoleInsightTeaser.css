@@ -72,10 +72,6 @@
     display: flex;
     align-items: center;
 
-    .info-icon {
-      margin-left: var(--sys-size-4);
-    }
-
     devtools-checkbox {
       margin-left: auto;
     }

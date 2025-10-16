@@ -40,7 +40,6 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Request Network.loadNetworkResource failed. {"code":-32602,"message":"Unsupported URL scheme"}',
   'Fetch API cannot load chrome-error://chromewebdata/neterror.rollup.js.map. URL scheme "chrome-error" is not supported.',
   'Request Storage.getAffectedUrlsForThirdPartyCookieMetadata failed.',
-  'Cannot find registered action with ID \'sources.add-folder-to-workspace\'',
   'Hash of blocked script',
 ];
 

@@ -1280,18 +1280,17 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.createNewSnippet),
 });
 
-if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
-  UI.ActionRegistration.registerActionExtension({
-    category: UI.ActionRegistration.ActionCategory.SOURCES,
-    actionId: 'sources.add-folder-to-workspace',
-    async loadActionDelegate() {
-      const Sources = await loadSourcesModule();
-      return new Sources.SourcesNavigator.ActionDelegate();
-    },
-    iconClass: UI.ActionRegistration.IconClass.PLUS,
-    title: i18nLazyString(UIStrings.addFolderToWorkspace),
-  });
-}
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  actionId: 'sources.add-folder-to-workspace',
+  condition: () => !Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode(),
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return new Sources.SourcesNavigator.ActionDelegate();
+  },
+  iconClass: UI.ActionRegistration.IconClass.PLUS,
+  title: i18nLazyString(UIStrings.addFolderToWorkspace),
+});
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DEBUGGER,

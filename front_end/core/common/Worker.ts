@@ -5,9 +5,11 @@
 export class WorkerWrapper {
   readonly #workerPromise: Promise<Worker>;
   #disposed?: boolean;
+  #rejectWorkerPromise?: (error: Error) => void;
 
   private constructor(workerLocation: URL) {
-    this.#workerPromise = new Promise(fulfill => {
+    this.#workerPromise = new Promise((fulfill, reject) => {
+      this.#rejectWorkerPromise = reject;
       const worker = new Worker(workerLocation, {type: 'module'});
       worker.onmessage = (event: MessageEvent<unknown>) => {
         console.assert(event.data === 'workerReady');
@@ -34,7 +36,10 @@ export class WorkerWrapper {
     void this.#workerPromise.then(worker => worker.terminate());
   }
 
-  terminate(): void {
+  terminate(immediately = false): void {
+    if (immediately) {
+      this.#rejectWorkerPromise?.(new Error('Worker terminated'));
+    }
     this.dispose();
   }
 

@@ -7,7 +7,7 @@ import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterA
 
 export {DefinitionKind, ScopeKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
 
-let formatterWorkerPoolInstance: FormatterWorkerPool;
+let formatterWorkerPoolInstance: FormatterWorkerPool|undefined;
 
 export class FormatterWorkerPool {
   private taskQueue: Task[];
@@ -24,6 +24,22 @@ export class FormatterWorkerPool {
     }
 
     return formatterWorkerPoolInstance;
+  }
+
+  dispose(): void {
+    for (const task of this.taskQueue) {
+      console.error('rejecting task');
+      task.errorCallback(new Event('Worker terminated'));
+    }
+    for (const [worker, task] of this.workerTasks.entries()) {
+      task?.errorCallback(new Event('Worker terminated'));
+      worker.terminate(/* immediately=*/ true);
+    }
+  }
+
+  static removeInstance(): void {
+    formatterWorkerPoolInstance?.dispose();
+    formatterWorkerPoolInstance = undefined;
   }
 
   private createWorker(): Common.Worker.WorkerWrapper {

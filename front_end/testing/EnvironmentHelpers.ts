@@ -13,6 +13,7 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as Formatter from '../models/formatter/formatter.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
@@ -384,6 +385,7 @@ export async function deinitializeGlobalVars() {
   IssuesManager.IssuesManager.IssuesManager.removeInstance();
   Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
   ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.removeInstance();
+  Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
 
   Common.Settings.resetSettings();
 

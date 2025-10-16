@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-template("devtools_module") {
+template("devtools_base_module") {
   ts_library(target_name) {
     forward_variables_from(invoker,
                            [
@@ -12,6 +12,8 @@ template("devtools_module") {
                              "public_deps",
                              "sources",
                              "data",
+                             "es_target",
+                             "es_libs",
                            ])
 
     reset_timestamps = true
@@ -20,32 +22,32 @@ template("devtools_module") {
   }
 }
 
-set_defaults("devtools_module") {
-  visibility = []
-  data = []
-  public_deps = []
+template("devtools_module") {
+  devtools_base_module(target_name) {
+    forward_variables_from(invoker, "*")
+  }
 }
 
 template("devtools_ui_module") {
-  ts_library(target_name) {
-    forward_variables_from(invoker,
-                           [
-                             "deps",
-                             "public_deps",
-                             "sources",
-                             "data",
-                           ])
+  devtools_base_module(target_name) {
+    forward_variables_from(invoker, "*")
 
     es_target = "esnext"
-    es_libs = ["dom", "dom.iterable"]
-
-    reset_timestamps = true
-
-    visibility += [ ":*" ]
+    es_libs = [
+      "dom",
+      "dom.iterable",
+    ]
   }
 }
-set_defaults("devtools_ui_module") {
-  visibility = []
-  data = []
-  public_deps = []
+
+foreach(module,
+        [
+          "devtools_module",
+          "devtools_ui_module",
+        ]) {
+  set_defaults(module) {
+    visibility = []
+    data = []
+    public_deps = []
+  }
 }

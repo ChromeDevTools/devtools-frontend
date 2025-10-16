@@ -6,15 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 template("devtools_base_module") {
   ts_library(target_name) {
-    forward_variables_from(invoker,
-                           [
-                             "deps",
-                             "public_deps",
-                             "sources",
-                             "data",
-                             "es_target",
-                             "es_libs",
-                           ])
+    forward_variables_from(invoker, "*", ["visibility"])
 
     reset_timestamps = true
 

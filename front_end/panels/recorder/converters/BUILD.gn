@@ -40,7 +40,7 @@ devtools_entrypoint("bundle") {
   ]
 }
 
-ts_library("unittests") {
+devtools_ui_module("unittests") {
   testonly = true
 
   sources = [

@@ -46,7 +46,7 @@ devtools_entrypoint("bundle") {
   visibility += default_components_visibility
 }
 
-ts_library("unittests") {
+devtools_ui_module("unittests") {
   testonly = true
 
   sources = [ "Button.test.ts" ]

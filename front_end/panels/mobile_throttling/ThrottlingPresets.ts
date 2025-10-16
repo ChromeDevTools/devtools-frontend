@@ -167,7 +167,7 @@ export interface Conditions {
 
 export interface NetworkThrottlingConditionsGroup {
   title: string;
-  items: SDK.NetworkManager.Conditions[];
+  items: SDK.NetworkManager.ThrottlingConditions[];
 }
 
 export interface MobileThrottlingConditionsGroup {

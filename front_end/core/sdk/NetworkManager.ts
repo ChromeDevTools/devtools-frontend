@@ -68,6 +68,10 @@ const UIStrings = {
    */
   fast4G: 'Fast 4G',
   /**
+   * @description Text in Network Manager representing the "Blocking" throttling preset
+   */
+  block: 'Block',
+  /**
    * @description Text in Network Manager
    * @example {https://example.com} PH1
    */
@@ -458,6 +462,12 @@ export interface EventTypes {
  * @see https://docs.google.com/document/d/10lfVdS1iDWCRKQXPfbxEn4Or99D64mvNlugP1AQuFlE/edit for historical context.
  * @see https://crbug.com/342406608#comment10 for context around the addition of 4G presets in June 2024.
  */
+
+export const BlockingConditions: ThrottlingConditions = {
+  key: PredefinedThrottlingConditionKey.BLOCKING,
+  block: true,
+  title: i18nLazyString(UIStrings.block),
+};
 
 export const NoThrottlingConditions: Conditions = {
   key: PredefinedThrottlingConditionKey.NO_THROTTLING,
@@ -2466,7 +2476,15 @@ class ExtraInfoBuilder {
 
 SDKModel.register(NetworkManager, {capabilities: Capability.NETWORK, autostart: true});
 
-export function networkConditionsEqual(first: Conditions, second: Conditions): boolean {
+export function networkConditionsEqual(first: ThrottlingConditions, second: ThrottlingConditions): boolean {
+  if ('block' in first || 'block' in second) {
+    if ('block' in first && 'block' in second) {
+      const firstTitle = (typeof first.title === 'function' ? first.title() : first.title);
+      const secondTitle = (typeof second.title === 'function' ? second.title() : second.title);
+      return firstTitle === secondTitle && first.block === second.block;
+    }
+    return false;
+  }
   // Caution: titles might be different function instances, which produce
   // the same value.
   // We prefer to use the i18nTitleKey to prevent against locale changes or
@@ -2493,6 +2511,7 @@ export function networkConditionsEqual(first: Conditions, second: Conditions): b
  * please talk to jacktfranklin@ first.
  */
 export const enum PredefinedThrottlingConditionKey {
+  BLOCKING = 'BLOCKING',
   NO_THROTTLING = 'NO_THROTTLING',
   OFFLINE = 'OFFLINE',
   SPEED_3G = 'SPEED_3G',
@@ -2525,6 +2544,11 @@ export function getPredefinedCondition(key: ThrottlingConditionKey): Conditions|
   return THROTTLING_CONDITIONS_LOOKUP.get(key) ?? null;
 }
 
+export type ThrottlingConditions = Conditions|{
+  readonly key: ThrottlingConditionKey,
+  block: true,
+  title: string | (() => string),
+};
 export interface Conditions {
   readonly key: ThrottlingConditionKey;
   download: number;

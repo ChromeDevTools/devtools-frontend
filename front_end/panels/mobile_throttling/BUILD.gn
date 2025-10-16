@@ -75,6 +75,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "NetworkThrottlingSelector.test.ts",
     "ThrottlingManager.test.ts",
     "ThrottlingSettingsTab.test.ts",
   ]

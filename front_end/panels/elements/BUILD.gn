@@ -97,7 +97,6 @@ devtools_ui_module("elements") {
     "../../ui/components/adorners:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",
-    "../../ui/components/copy_to_clipboard:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/text_editor:bundle",

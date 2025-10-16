@@ -126,7 +126,6 @@ devtools_ui_module("timeline") {
     "../../services/tracing:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",  # trace event highlighting
-    "../../ui/components/copy_to_clipboard:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/linkifier:bundle",
     "../../ui/components/menus:bundle",

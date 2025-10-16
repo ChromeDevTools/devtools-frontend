@@ -10,7 +10,6 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import type * as Diff from '../../third_party/diff/diff.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as CopyToClipboard from '../../ui/components/copy_to_clipboard/copy_to_clipboard.js';
 import type * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -168,7 +167,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
       return;
     }
 
-    CopyToClipboard.copyTextToClipboard(content.text, i18nString(UIStrings.copied));
+    UI.UIUtils.copyTextToClipboard(content.text, i18nString(UIStrings.copied));
     this.#copiedFiles[fileUrl] = true;
     this.requestUpdate();
     setTimeout(() => {

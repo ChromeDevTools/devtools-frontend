@@ -2336,3 +2336,15 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     return targetElement;
   }
 }
+
+/**
+ * @param text Text to copy to clipboard
+ * @param alert Message to send for a11y only required if there
+ * were other UI changes that visually indicated this copy happened.
+ */
+export function copyTextToClipboard(text: string, alert?: string): void {
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
+  if (alert) {
+    ARIAUtils.LiveAnnouncer.alert(alert);
+  }
+}

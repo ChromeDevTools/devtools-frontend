@@ -41,7 +41,6 @@ import * as Badges from '../../models/badges/badges.js';
 import * as Elements from '../../models/elements/elements.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
-import * as CopyToClipboard from '../../ui/components/copy_to_clipboard/copy_to_clipboard.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
@@ -736,7 +735,7 @@ export class ElementsTreeOutline extends
     }
     void node.getOuterHTML(includeShadowRoots).then(outerHTML => {
       if (outerHTML !== null) {
-        CopyToClipboard.copyTextToClipboard(outerHTML);
+        UI.UIUtils.copyTextToClipboard(outerHTML);
       }
     });
     this.setClipboardData({node, isCut});

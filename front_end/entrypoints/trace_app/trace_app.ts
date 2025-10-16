@@ -18,6 +18,7 @@ import '../../panels/sources/sources-meta.js';
 // sdk/emulation depends on panels/sensors: crbug.com/1376652
 import '../../panels/sensors/sensors-meta.js';
 import '../../panels/timeline/timeline-meta.js';
+import '../../panels/ai_assistance/ai_assistance-meta.js';
 import '../../ui/legacy/components/perf_ui/perf_ui-meta.js';
 import '../../ui/legacy/components/quick_open/quick_open-meta.js';
 import '../../ui/legacy/components/source_frame/source_frame-meta.js';

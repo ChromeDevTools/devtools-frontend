@@ -96,6 +96,7 @@ ts_library("unittests") {
     "data_formatters/NetworkRequestFormatter.test.ts",
     "data_formatters/PerformanceInsightFormatter.test.ts",
     "data_formatters/PerformanceTraceFormatter.test.ts",
+    "data_formatters/PerformanceTraceFormatterBounds.test.ts",
     "data_formatters/UnitFormatters.test.ts",
     "performance/AICallTree.test.ts",
     "performance/AIQueries.test.ts",
@@ -109,9 +110,9 @@ ts_library("unittests") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../testing",
+    "../../ui/legacy:bundle",
     "../bindings:bundle",
     "../text_utils:bundle",
     "../trace:bundle",
-    "../../ui/legacy:bundle",
   ]
 }

@@ -9,13 +9,9 @@ copy_to_gen("copy_styles") {
   sources = [ "component_docs.css" ]
 }
 
-group("docs") {
-  deps = [ "../../front_end/ui/components/icon_button:docs" ]
-}
-
 generated_file("component_docs_sources") {
   data_keys = [ "doc_sources" ]
-  deps = [ ":docs" ]
+  deps = [ "../../front_end:docs" ]
   output_conversion = "json"
   outputs = [ "$target_gen_dir/component_docs_sources.json" ]
   rebase = target_gen_dir

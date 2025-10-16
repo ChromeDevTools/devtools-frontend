@@ -278,3 +278,12 @@ generated_file("test_inputs") {
 
   deps = [ ":unittests" ]
 }
+
+group("docs") {
+  deps = [
+    ":color_tokens",
+    "ui/components/buttons:copy_stylesheets_for_server",
+    "ui/components/icon_button:docs",
+    "ui/legacy:copy_stylesheets_for_server",
+  ]
+}

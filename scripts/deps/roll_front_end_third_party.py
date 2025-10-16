@@ -112,7 +112,7 @@ def main():
     parser.add_argument('package_name')
     parser.add_argument('output_dir')
     parser.add_argument('library_dir')
-    parser.add_argument('version', default='latest')
+    parser.add_argument('version', default='latest', nargs='?')
 
     args = parser.parse_args()
 

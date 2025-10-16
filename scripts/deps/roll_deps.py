@@ -261,7 +261,8 @@ if __name__ == '__main__':
     generate_signatures(OPTIONS)
     generate_protocol_resources(OPTIONS)
     if files_changed(OPTIONS):
-        run_git_cl_format(OPTIONS)
+        # EsLint needs before git cl format
         run_eslint(OPTIONS)
+        run_git_cl_format(OPTIONS)
         update_deps_revision(OPTIONS)
         update_readme_revision(OPTIONS)

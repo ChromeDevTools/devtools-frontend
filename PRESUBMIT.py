@@ -267,7 +267,10 @@ def CheckDevToolsLint(input_api, output_api):
         input_api, lint_config_files, default_linted_directories,
         ['.css', '.mjs', '.js', '.ts'])
     if should_bail_out:
-        return []
+        # Run the formatter on all non-js like files
+        results = []
+        results.extend(_CheckFormat(input_api, output_api))
+        return results
 
     # If there are more than 50 files to check, don't bother and check
     # everything, so as to not run into command line length limits on Windows.
@@ -503,7 +506,6 @@ must be lower-case alphanumeric.
             ],
         )
     ]
-
 
 
 # Canned check wrappers below.

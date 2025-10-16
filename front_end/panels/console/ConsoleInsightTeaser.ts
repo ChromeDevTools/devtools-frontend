@@ -116,7 +116,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
     >
       <div class="teaser-tooltip-container">
         ${showPlaceholder ? html`
-          <h2 tabindex="-1">${lockedString(UIStringsNotTranslate.summarizing)}</h2>
+          <h2>${lockedString(UIStringsNotTranslate.summarizing)}</h2>
           <div
             role="presentation"
             aria-label=${lockedString(UIStringsNotTranslate.loading)}
@@ -134,7 +134,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
             </svg>
           </div>
         ` : html`
-          <h2 tabindex="-1">${input.headerText}</h2>
+          <h2>${input.headerText}</h2>
           <div>${input.mainText}</div>
           <div class="tooltip-footer">
             ${input.hasTellMeMoreButton ? html`

@@ -380,7 +380,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   wasShown(): void {
     this.isVisibleInternal = true;
     if (this.elementInternal) {
-      this.#teaser?.show(this.elementInternal);
+      this.#teaser?.show(this.elementInternal, this.consoleRowWrapper);
     }
   }
 

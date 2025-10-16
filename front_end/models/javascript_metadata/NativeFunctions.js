@@ -687,7 +687,7 @@ export const NativeFunctions = [
   {
     name: "toJSON",
     signatures: [["?key"]],
-    receivers: ["Date"]
+    receivers: ["Date","CSPViolationReportBody","ReportBody","CoopAccessViolationReportBody","DeprecationReportBody","DocumentPolicyViolationReportBody","IntegrityViolationReportBody","InterventionReportBody","PermissionsPolicyViolationReportBody","TestReportBody"]
   },
   {
     name: "parse",

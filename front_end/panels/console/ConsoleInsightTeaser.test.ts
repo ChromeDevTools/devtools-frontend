@@ -164,4 +164,30 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isTrue(input.isSlowGeneration);
     clock.restore();
   });
+
+  it('can show error state', async () => {
+    const consoleViewMessage = setupBuiltInAi(async function*() {
+      yield 'Not a JSON, causes error';
+    });
+
+    // A console error is emitted when the response cannot be parsed correctly.
+    // We don't need that noise in the test output.
+    sinon.stub(console, 'error');
+
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    const teaser =
+        new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
+    let input = await view.nextInput;
+    assert.isFalse(input.isInactive);
+    assert.isEmpty(input.mainText);
+    assert.isEmpty(input.headerText);
+    assert.isFalse(input.isError);
+    await teaser.maybeGenerateTeaser();
+
+    input = await view.nextInput;
+    assert.isFalse(input.isInactive);
+    assert.isEmpty(input.mainText);
+    assert.isEmpty(input.headerText);
+    assert.isTrue(input.isError);
+  });
 });

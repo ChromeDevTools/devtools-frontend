@@ -81,6 +81,10 @@ const UIStringsNotTranslate = {
    * @description Aria-label for an infor-button triggering a tooltip with more info about data usage
    */
   learnDataUsage: 'Learn more about how your data is used',
+  /**
+   * @description Header text if there was an error during AI summary generation
+   */
+  summaryNotAvailable: 'Summary not available',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -101,6 +105,7 @@ interface ViewInput {
   dontShowChanged: (e: Event) => void;
   hasTellMeMoreButton: boolean;
   isSlowGeneration: boolean;
+  isError: boolean;
 }
 
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
@@ -110,6 +115,51 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   }
 
   const showPlaceholder = !Boolean(input.mainText);
+  const renderFooter = (): Lit.LitTemplate => {
+    // clang-format off
+    return html`
+      <div class="tooltip-footer">
+        ${input.hasTellMeMoreButton ? html`
+          <devtools-button
+            title=${lockedString(UIStringsNotTranslate.tellMeMore)}
+            .jslogContext=${'insights-teaser-tell-me-more'},
+            .variant=${Buttons.Button.Variant.PRIMARY}
+            @click=${input.onTellMeMoreClick}
+          >
+            <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
+            ${lockedString(UIStringsNotTranslate.tellMeMore)}
+          </devtools-button>
+        ` : Lit.nothing}
+        ${showPlaceholder ? Lit.nothing : html`
+          <devtools-button
+            .iconName=${'info'}
+            .variant=${Buttons.Button.Variant.ICON}
+            aria-details=${'teaser-info-tooltip-' + input.uuid}
+            aria-label=${lockedString(UIStringsNotTranslate.learnDataUsage)}
+          ></devtools-button>
+          <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
+            <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
+            <div class="learn-more">
+              <x-link
+                class="devtools-link"
+                title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
+                href=${DATA_USAGE_URL}
+                jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
+              >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
+            </div>
+          </devtools-tooltip>
+        `}
+        <devtools-checkbox
+          aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
+          @change=${input.dontShowChanged}
+          jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
+          ${lockedString(UIStringsNotTranslate.dontShow)}
+        </devtools-checkbox>
+      </div>
+    `;
+    // clang-format on
+  };
+
   // clang-format off
   render(html`
     <style>${consoleInsightTeaserStyles}</style>
@@ -121,69 +171,36 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
       prefer-span-left
     >
       <div class="teaser-tooltip-container">
-        ${showPlaceholder ? html`
-          <h2>${input.isSlowGeneration ?
-            lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
-            lockedString(UIStringsNotTranslate.summarizing)
-          }</h2>
-          <div
-            role="presentation"
-            aria-label=${lockedString(UIStringsNotTranslate.loading)}
-            class="loader"
-            style="clip-path: url(${'#clipPath-' + input.uuid});"
-          >
-            <svg width="100%" height="52">
-              <defs>
-              <clipPath id=${'clipPath-' + input.uuid}>
-                <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
-                <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
-                <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
-              </clipPath>
-            </defs>
-            </svg>
-          </div>
-        ` : html`
-          <h2>${input.headerText}</h2>
-          <div>${input.mainText}</div>
-        `}
-        ${input.isSlowGeneration || !showPlaceholder? html`
-          <div class="tooltip-footer">
-            ${input.hasTellMeMoreButton ? html`
-              <devtools-button
-                title=${lockedString(UIStringsNotTranslate.tellMeMore)}
-                .jslogContext=${'insights-teaser-tell-me-more'},
-                .variant=${Buttons.Button.Variant.PRIMARY}
-                @click=${input.onTellMeMoreClick}
-              >
-                <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
-                ${lockedString(UIStringsNotTranslate.tellMeMore)}
-              </devtools-button>
-            ` : Lit.nothing}
-            <devtools-button
-              .iconName=${'info'}
-              .variant=${Buttons.Button.Variant.ICON}
-              aria-details=${'teaser-info-tooltip-' + input.uuid}
-              aria-label=${lockedString(UIStringsNotTranslate.learnDataUsage)}
-            ></devtools-button>
-            <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
-              <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
-              <div class="learn-more">
-                <x-link
-                  class="devtools-link"
-                  title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
-                  href=${DATA_USAGE_URL}
-                  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
-                >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
-              </div>
-            </devtools-tooltip>
-            <devtools-checkbox
-              aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
-              @change=${input.dontShowChanged}
-              jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
-              ${lockedString(UIStringsNotTranslate.dontShow)}
-            </devtools-checkbox>
-          </div>
-        ` : Lit.nothing}
+        ${input.isError ? html`
+          <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
+        ` :
+          showPlaceholder ? html`
+            <h2>${input.isSlowGeneration ?
+              lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
+              lockedString(UIStringsNotTranslate.summarizing)
+            }</h2>
+            <div
+              role="presentation"
+              aria-label=${lockedString(UIStringsNotTranslate.loading)}
+              class="loader"
+              style="clip-path: url(${'#clipPath-' + input.uuid});"
+            >
+              <svg width="100%" height="52">
+                <defs>
+                <clipPath id=${'clipPath-' + input.uuid}>
+                  <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
+                  <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
+                  <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
+                </clipPath>
+              </defs>
+              </svg>
+            </div>
+          ` : html`
+            <h2>${input.headerText}</h2>
+            <div>${input.mainText}</div>
+          `
+        }
+        ${input.isError || input.isSlowGeneration || !showPlaceholder ? renderFooter() : Lit.nothing}
       </div>
     </devtools-tooltip>
   `, target);
@@ -205,6 +222,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   #abortController: null|AbortController = null;
   #isSlow = false;
   #timeoutId: ReturnType<typeof setTimeout>|null = null;
+  #isError = false;
 
   constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View) {
     super(element);
@@ -328,12 +346,16 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       // Ignore `AbortError` errors, which are thrown on mouse leave.
       if (err.name !== 'AbortError') {
         console.error(err.name, err.message);
+        this.#isError = true;
       }
       this.#isGenerating = false;
+      clearTimeout(this.#timeoutId);
+      this.requestUpdate();
       return;
     }
 
     clearTimeout(this.#timeoutId);
+    this.#isGenerating = false;
     let responseObject = {
       header: null,
       explanation: null,
@@ -342,10 +364,15 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       responseObject = JSON.parse(teaserText);
     } catch (err) {
       console.error(err.name, err.message);
+      this.#isError = true;
+      this.requestUpdate();
+      return;
     }
     this.#headerText = responseObject.header || '';
     this.#mainText = responseObject.explanation || '';
-    this.#isGenerating = false;
+    if (!this.#headerText || !this.#mainText) {
+      this.#isError = true;
+    }
     this.requestUpdate();
   }
 
@@ -396,6 +423,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
           dontShowChanged: this.#dontShowChanged.bind(this),
           hasTellMeMoreButton: this.#hasTellMeMoreButton(),
           isSlowGeneration: this.#isSlow,
+          isError: this.#isError,
         },
         undefined, this.contentElement);
   }

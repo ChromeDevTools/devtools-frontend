@@ -47,7 +47,7 @@ async function blockCss(devToolsPage: DevToolsPage) {
   await devToolsPage.evaluate(`(async () => {
         const SDK = await import('./core/sdk/sdk.js');
         const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-        networkManager.setBlockingEnabled(true);
+        networkManager.requestConditions.conditionsEnabled = true;
         networkManager.requestConditions.add(new SDK.NetworkManager.RequestCondition({enabled: true, url: '*.css'}));
       })()`);
 }

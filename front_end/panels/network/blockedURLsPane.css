@@ -74,3 +74,8 @@
   text-align: inherit;
   height: 22px;
 }
+
+.conditions-selector {
+  max-width: 120px;
+  margin: var(--sys-size-3);
+}

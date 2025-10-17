@@ -17,6 +17,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import blockedURLsPaneStyles from './blockedURLsPane.css.js';
 
@@ -192,7 +193,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   override performUpdate(): void {
-    const enabled = this.manager.blockingEnabled();
+    const enabled = this.manager.requestConditions.conditionsEnabled;
     this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.requestConditions.count));
 
     const input: ViewInput = {
@@ -205,7 +206,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   addPattern(): void {
-    this.manager.setBlockingEnabled(true);
+    this.manager.requestConditions.conditionsEnabled = true;
     this.list.addNewItem(
         0, new SDK.NetworkManager.RequestCondition({url: Platform.DevToolsPath.EmptyUrlString, enabled: true}));
   }
@@ -224,6 +225,11 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
         condition.enabled = !condition.enabled;
       }
     };
+    const onConditionsChanged = (conditions: SDK.NetworkManager.ThrottlingConditions): void => {
+      if (editable) {
+        condition.conditions = conditions;
+      }
+    };
 
     const {enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL} = condition;
 
@@ -237,6 +243,17 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
       ?checked=${enabled}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       .jslog=${VisualLogging.toggle().track({ change: true })}>
+    <devtools-widget
+      class=conditions-selector
+      ?disabled=${!editable}
+      .widgetConfig=${UI.Widget.widgetConfig(
+        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+          variant:
+            MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
+          jslogContext: 'request-conditions',
+          onConditionsChanged,
+          currentConditions: condition.conditions,
+        })}></devtools-widget>
     ${originalOrUpgradedURLPattern ? html`
       <devtools-tooltip variant=rich jslogcontext=url-pattern id=url-pattern-${index}>
         <div>hash: ${originalOrUpgradedURLPattern.hash}</div>
@@ -267,7 +284,12 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
             : i18nString(UIStrings.patternFailedToParse)}
         ${learnMore()}
       </devtools-tooltip>`: nothing}
-    <div @click=${toggle} class=blocked-url-label aria-details=url-pattern-${index}>${constructorStringOrWildcardURL}</div>
+    <div
+      @click=${toggle}
+      class=blocked-url-label
+      aria-details=url-pattern-${index}>
+        ${constructorStringOrWildcardURL}
+    </div>
     <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
           // clang-format on
           element);
@@ -290,7 +312,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   private toggleEnabled(): void {
-    this.manager.setBlockingEnabled(!this.manager.blockingEnabled());
+    this.manager.requestConditions.conditionsEnabled = !this.manager.requestConditions.conditionsEnabled;
     this.update();
   }
 
@@ -368,7 +390,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   update(): void {
-    const enabled = this.manager.blockingEnabled();
+    const enabled = this.manager.requestConditions.conditionsEnabled;
     this.list.clear();
     for (const pattern of this.manager.requestConditions.conditions) {
       if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || pattern.wildcardURL) {

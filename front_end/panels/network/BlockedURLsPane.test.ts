@@ -23,7 +23,8 @@ describeWithMockConnection('BlockedURLsPane', () => {
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
     ]);
-    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).setBlockingEnabled(true);
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions.conditionsEnabled =
+        (true);
   });
 
   it('shows a placeholder', async () => {
@@ -112,8 +113,11 @@ describeWithMockConnection('BlockedURLsPane', () => {
       const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
       const index = 0;
       const item = blockedURLsPane.renderItem(
-          new SDK.NetworkManager.RequestCondition(
-              {urlPattern: 'http://example.com/*bar' as SDK.NetworkManager.URLPatternConstructorString, enabled: true}),
+          new SDK.NetworkManager.RequestCondition({
+            urlPattern: 'http://example.com/*bar' as SDK.NetworkManager.URLPatternConstructorString,
+            enabled: true,
+            conditions: 'NO_THROTTLING' as SDK.NetworkManager.ThrottlingConditionKey,
+          }),
           /* editable=*/ true, index);
       assert.notExists(item.querySelector('devtools-icon'));
       const hovered = item.querySelector(`[aria-details=url-pattern-${index}]`);

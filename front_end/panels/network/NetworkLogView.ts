@@ -1852,7 +1852,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       function addBlockedURL(url: string): void {
         manager.requestConditions.add(
             new SDK.NetworkManager.RequestCondition({enabled: true, url: url as Platform.DevToolsPath.UrlString}));
-        manager.setBlockingEnabled(true);
+        manager.requestConditions.conditionsEnabled = true;
         void UI.ViewManager.ViewManager.instance().showView('network.blocked-urls');
       }
 

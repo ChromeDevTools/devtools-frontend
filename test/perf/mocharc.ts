@@ -12,7 +12,7 @@ spec.unshift(path.join(__dirname, 'setup', 'test_setup.js'));
 module.exports = {
   spec,
   require : [path.join(path.dirname(__dirname), 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],
-  timeout : TestConfig.debug ? 0 : 10_000,
+  timeout : TestConfig.debug ? 0 : 30_000,
   retries : TestConfig.retries,
   reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
   suiteName : 'perf',

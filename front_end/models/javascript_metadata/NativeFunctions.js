@@ -6041,7 +6041,13 @@ export const NativeFunctions = [
   },
   {
     name: "waitUntil",
-    signatures: [["f"]]
+    signatures: [["f"]],
+    receivers: ["ExtendableEvent"]
+  },
+  {
+    name: "waitUntil",
+    signatures: [["promise"]],
+    receivers: ["ViewTransition"]
   },
   {
     name: "respondWith",

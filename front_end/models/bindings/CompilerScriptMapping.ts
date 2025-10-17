@@ -296,28 +296,30 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     const {sourceMap, script} = sourceMapAndScript;
     const {lineNumber, columnNumber} = script.relativeLocationToRawLocation(frame);
 
-    if (!sourceMap.hasInlinedFrames(lineNumber, columnNumber) && !sourceMap.isOutlinedFrame(lineNumber, columnNumber)) {
-      // No outlining or inlining: Get the original function name and map the call-site.
-      const mapping = sourceMap.findEntry(lineNumber, columnNumber);
-      if (!mapping?.sourceURL) {
+    if (!sourceMap.isOutlinedFrame(lineNumber, columnNumber)) {
+      const frames = sourceMap.translateCallSite(lineNumber, columnNumber);
+      if (!frames.length) {
         return false;
       }
 
-      const originalName = sourceMap.findOriginalFunctionName({line: lineNumber, column: columnNumber});
       rawFrames.shift();
+      const result: typeof translatedFrames[0] = [];
+      translatedFrames.push(result);
+
       const project = this.#sourceMapToProject.get(sourceMap);
-      const uiSourceCode = project?.uiSourceCodeForURL(mapping.sourceURL);
-      translatedFrames.push([{
-        line: mapping.sourceLineNumber,
-        column: mapping.sourceColumnNumber,
-        name: originalName ?? undefined,
-        uiSourceCode: uiSourceCode ?? undefined,
-        url: uiSourceCode ? undefined : mapping.sourceURL
-      }]);
+      for (const frame of frames) {
+        // Switch out url for UISourceCode where we have it.
+        const uiSourceCode = frame.url ? project?.uiSourceCodeForURL(frame.url) : undefined;
+        result.push({
+          ...frame,
+          url: uiSourceCode ? undefined : frame.url,
+          uiSourceCode: uiSourceCode ?? undefined,
+        });
+      }
+
       return true;
     }
 
-    // TODO(crbug.com/433162438): Expand inlined frames.
     // TODO(crbug.com/433162438): Consolidate outlined frames.
     return false;
   }

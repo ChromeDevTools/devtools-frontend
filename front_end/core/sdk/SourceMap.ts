@@ -12,7 +12,7 @@ import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
-import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
+import {SourceMapScopesInfo, type TranslatedFrame} from './SourceMapScopesInfo.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -788,6 +788,11 @@ export class SourceMap {
   hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
+  }
+
+  translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[] {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo?.translateCallSite(generatedLine, generatedColumn) ?? [];
   }
 }
 

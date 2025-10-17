@@ -516,6 +516,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.workspace),
   order: 3,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  condition: () => !Root.Runtime.Runtime.isTraceApp(),
   async loadView() {
     const Sources = await loadSourcesModule();
     return new Sources.SourcesNavigator.FilesNavigatorView();

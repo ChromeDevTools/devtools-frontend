@@ -1688,6 +1688,7 @@ export const knownContextValues = new Set([
   'freestyler.feedback',
   'freestyler.help',
   'freestyler.history',
+  'freestyler.history-item',
   'freestyler.main-menu',
   'freestyler.new-chat',
   'freestyler.send-feedback',

@@ -1187,7 +1187,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
         void this.#openHistoricConversation(conversation);
-      }, {checked: (this.#conversation === conversation)});
+      }, {checked: (this.#conversation === conversation), jslogContext: 'freestyler.history-item'});
     }
 
     const historyEmpty = contextMenu.defaultSection().items.length === 0;

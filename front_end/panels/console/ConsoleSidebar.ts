@@ -52,7 +52,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html, nothing, Directives} = Lit;
 
-const enum GroupName {
+export const enum GroupName {
   CONSOLE_API = 'user message',
   ALL = 'message',
   ERROR = 'error',
@@ -112,7 +112,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                   <ul role="group" hidden>
                     ${group.urlGroups.values().map(urlGroup => html`
                       <li
-                        ${Directives.ref(element => element && nodeFilterMap.set(element, group.filter))}
+                        ${Directives.ref(element => element && nodeFilterMap.set(element, urlGroup.filter))}
                         role="treeitem"
                         ?selected=${urlGroup.filter === input.selectedFilter}
                         title=${urlGroup.url ?? ''}>
@@ -126,7 +126,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       target);
 };
 
-class ConsoleFilterGroup {
+export class ConsoleFilterGroup {
   readonly urlGroups = new Map<string|null, {filter: ConsoleFilter, url: string|null, count: number}>();
   messageCount = 0;
   readonly name: GroupName;

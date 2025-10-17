@@ -3748,6 +3748,8 @@ export const knownContextValues = new Set([
   'third-party-tree',
   'third-property',
   'this-origin',
+  'throttle-request-domain',
+  'throttle-request-url',
   'throttling-conditions',
   'throttling.calibrate',
   'throttling.calibrate-cancel',

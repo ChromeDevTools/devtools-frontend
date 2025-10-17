@@ -1651,25 +1651,38 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
   #enabled: boolean;
   #conditions: ThrottlingConditions;
 
-  constructor(setting: RequestConditionsSetting) {
-    super();
+  static createFromSetting(setting: RequestConditionsSetting): RequestCondition {
     if ('urlPattern' in setting) {
-      this.#pattern = RequestURLPattern.create(setting.urlPattern) ?? {
+      const pattern = RequestURLPattern.create(setting.urlPattern) ?? {
         wildcardURL: setting.urlPattern,
         upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.urlPattern) ?? undefined,
       };
 
-      this.#conditions = getPredefinedOrBlockingCondition(setting.conditions) ??
+      const conditions = getPredefinedOrBlockingCondition(setting.conditions) ??
           customUserNetworkConditionsSetting().get().find(condition => condition.key === setting.conditions) ??
           NoThrottlingConditions;
-    } else {
-      this.#pattern = {
-        wildcardURL: setting.url,
-        upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.url) ?? undefined
-      };
-      this.#conditions = BlockingConditions;
+
+      return new this(pattern, setting.enabled, conditions);
     }
-    this.#enabled = setting.enabled;
+
+    const pattern = {
+      wildcardURL: setting.url,
+      upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.url) ?? undefined
+    };
+    return new this(pattern, setting.enabled, BlockingConditions);
+  }
+
+  static create(pattern: RequestURLPattern, conditions: ThrottlingConditions): RequestCondition {
+    return new this(pattern, /* enabled=*/ true, conditions);
+  }
+
+  private constructor(
+      pattern: RequestURLPattern|{wildcardURL: string, upgradedPattern?: RequestURLPattern}, enabled: boolean,
+      conditions: ThrottlingConditions) {
+    super();
+    this.#pattern = pattern;
+    this.#enabled = enabled;
+    this.#conditions = conditions;
   }
 
   get constructorString(): string|undefined {
@@ -1758,7 +1771,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     super();
     for (const condition of this.#setting.get()) {
       try {
-        this.#conditions.push(new RequestCondition(condition));
+        this.#conditions.push(RequestCondition.createFromSetting(condition));
       } catch (e) {
         console.error('Error loading throttling settings: ', e);
       }
@@ -1810,7 +1823,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
       return;
     }
     condition.removeEventListener(RequestCondition.Events.REQUEST_CONDITION_CHANGED, this.#conditionsChanged, this);
-    this.#conditions.splice(index);
+    this.#conditions.splice(index, 1);
     this.#conditionsChanged();
   }
 
@@ -2175,7 +2188,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    */
   private setBlockedPatterns(patterns: Array<{url: string, enabled: boolean}>): void {
     this.requestConditions.clear();
-    this.requestConditions.add(...patterns.map(pattern => new RequestCondition(pattern)));
+    this.requestConditions.add(...patterns.map(pattern => RequestCondition.createFromSetting(pattern)));
   }
 
   private updateBlockedPatterns(): void {

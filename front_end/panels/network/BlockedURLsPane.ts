@@ -208,7 +208,9 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   addPattern(): void {
     this.manager.requestConditions.conditionsEnabled = true;
     this.list.addNewItem(
-        0, new SDK.NetworkManager.RequestCondition({url: Platform.DevToolsPath.EmptyUrlString, enabled: true}));
+        0,
+        SDK.NetworkManager.RequestCondition.createFromSetting(
+            {url: Platform.DevToolsPath.EmptyUrlString, enabled: true}));
   }
 
   removeAllPatterns(): void {

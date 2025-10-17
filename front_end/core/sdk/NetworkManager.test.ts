@@ -1086,7 +1086,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.requestConditions.conditionsEnabled);
     multitargetNetworkManager.requestConditions.add(
-        new SDK.NetworkManager.RequestCondition({url: 'example.com', enabled: true}));
+        SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com', enabled: true}));
     assert.strictEqual(eventCounter, 2);
     assert.isTrue(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.requestConditions.conditionsEnabled);
@@ -1107,7 +1107,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.requestConditions.conditionsEnabled);
     multitargetNetworkManager.requestConditions.add(
-        new SDK.NetworkManager.RequestCondition({url: 'example.com', enabled: true}));
+        SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com', enabled: true}));
     assert.strictEqual(eventCounter, 6);
     assert.isTrue(multitargetNetworkManager.isBlocking());
     assert.isTrue(multitargetNetworkManager.requestConditions.conditionsEnabled);
@@ -1119,6 +1119,17 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     assert.strictEqual(eventCounter, 8);
     assert.isFalse(multitargetNetworkManager.isBlocking());
     assert.isFalse(multitargetNetworkManager.requestConditions.conditionsEnabled);
+  });
+
+  it('blocking settings allow deleting an item in the middle of the list', () => {
+    const conditions = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions;
+    const condition1 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url1', enabled: true});
+    const condition2 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url2', enabled: true});
+    const condition3 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url3', enabled: true});
+    conditions.add(condition1, condition2, condition3);
+    assert.deepEqual(conditions.conditions.toArray(), [condition1, condition2, condition3]);
+    conditions.delete(condition2);
+    assert.deepEqual(conditions.conditions.toArray(), [condition1, condition3]);
   });
 
   it('calls the deprecated emulateNetworkConditions if individual request throttling is disabled', () => {
@@ -1301,7 +1312,7 @@ describeWithEnvironment('RequestConditions', () => {
   it('stores settings correctly', () => {
     const setting = getSetting([]);
     const conditions = new SDK.NetworkManager.RequestConditions();
-    const patternCondition = new SDK.NetworkManager.RequestCondition({
+    const patternCondition = SDK.NetworkManager.RequestCondition.createFromSetting({
       enabled: true,
       urlPattern: '*://example.com' as SDK.NetworkManager.URLPatternConstructorString,
       conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.NO_THROTTLING,
@@ -1309,7 +1320,7 @@ describeWithEnvironment('RequestConditions', () => {
     assert.strictEqual(patternCondition.conditions, SDK.NetworkManager.NoThrottlingConditions);
     conditions.add(patternCondition);
 
-    const wildcardCondition = new SDK.NetworkManager.RequestCondition({
+    const wildcardCondition = SDK.NetworkManager.RequestCondition.createFromSetting({
       enabled: true,
       url: 'foo',
     });
@@ -1327,7 +1338,7 @@ describeWithEnvironment('RequestConditions', () => {
   it('upgrades url to url pattern', () => {
     const setting = getSetting([]);
     const conditions = new SDK.NetworkManager.RequestConditions();
-    const condition = new SDK.NetworkManager.RequestCondition({
+    const condition = SDK.NetworkManager.RequestCondition.createFromSetting({
       enabled: true,
       url: 'foo',
     });
@@ -1357,8 +1368,8 @@ describeWithEnvironment('RequestConditions', () => {
       const {agent, setBlockedURLs} = stubAgent();
       const conditions = new SDK.NetworkManager.RequestConditions();
       conditions.conditionsEnabled = true;
-      conditions.add(new SDK.NetworkManager.RequestCondition({url: 'foo', enabled: true}));
-      conditions.add(new SDK.NetworkManager.RequestCondition({url: 'bar', enabled: false}));
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'foo', enabled: true}));
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'bar', enabled: false}));
       conditions.applyConditions(false, null, agent);
 
       sinon.assert.calledOnceWithExactly(setBlockedURLs, {urls: ['foo']});
@@ -1369,34 +1380,34 @@ describeWithEnvironment('RequestConditions', () => {
       const {agent, setBlockedURLs, emulateNetworkConditions, emulateNetworkConditionsByRule} = stubAgent();
       const conditions = new SDK.NetworkManager.RequestConditions();
       conditions.conditionsEnabled = true;
-      conditions.add(new SDK.NetworkManager.RequestCondition({url: 'foo', enabled: true}));
-      conditions.add(new SDK.NetworkManager.RequestCondition({url: 'bar', enabled: false}));
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'foo', enabled: true}));
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'bar', enabled: false}));
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://nothrottle:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: true,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.NO_THROTTLING
       }));
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://block:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: true,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.BLOCKING
       }));
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://throttle:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: true,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.SPEED_3G
       }));
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://disabled_nothrottle:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: false,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.NO_THROTTLING
       }));
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://disabled_block:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: false,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.BLOCKING
       }));
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://disabled_throttle:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: false,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.SPEED_3G
@@ -1472,9 +1483,9 @@ describeWithEnvironment('RequestConditions', () => {
       const conditions = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions;
       const {setBlockedURLs, emulateNetworkConditions, emulateNetworkConditionsByRule} = stubAgent();
       conditions.conditionsEnabled = true;
-      conditions.add(new SDK.NetworkManager.RequestCondition({url: 'foo', enabled: true}));
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'foo', enabled: true}));
 
-      conditions.add(new SDK.NetworkManager.RequestCondition({
+      conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://throttle:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: true,
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.SPEED_3G

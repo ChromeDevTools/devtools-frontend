@@ -5,9 +5,10 @@
 import * as Formatter from '../../entrypoints/formatter_worker/formatter_worker.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import {stringifyFrame} from '../../testing/StackTraceHelpers.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Platform from '../platform/platform.js';
 
@@ -277,6 +278,203 @@ describe('SourceMapScopesInfo', () => {
         assert.strictEqual(expandedFrames[1].inlineFrameIndex, 1);
         assert.strictEqual(expandedFrames[2].functionName, '');
         assert.strictEqual(expandedFrames[2].inlineFrameIndex, 2);
+      }
+    });
+  });
+
+  describeWithEnvironment('translateCallSite', () => {
+    it('throws for an outlined frame', () => {
+      const builder = new ScopeInfoBuilder().startRange(0, 0, {isStackFrame: true, isHidden: true}).endRange(0, 10);
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+
+      assert.throws(() => info.translateCallSite(0, 5));
+    });
+
+    it('does nothing for frames that don\'t contain inlined code', () => {
+      //
+      //    orig. code                         gen. code
+      //             10        20                       10        20        30
+      //    012345678901234567890              0123456789012345678901234567890
+      //
+      // 0: function inner() {                 function n(){print('hello')}
+      // 1:   print('hello');                  function m(){if(true){n()}}
+      // 2: }                                  m();
+      // 3:
+      // 4: function outer() {
+      // 5:   if (true) {
+      // 6:     inner();
+      // 7:   }
+      // 8: }
+      // 9:
+      // 10: outer();
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`, encodeSourceMap([
+                                                      '0:18 => index.ts:1:7',
+                                                      '1:23 => index.ts:6:9',
+                                                      '2:1 => index.ts:10:5',
+                                                    ]));
+
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', key: 'inner', name: 'inner', isStackFrame: true})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', key: 'outer', name: 'outer', isStackFrame: true})
+          .startScope(5, 12, {kind: 'block', key: 'block'})
+          .endScope(7, 3)
+          .endScope(8, 1)
+          .endScope(11, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'inner', isStackFrame: true})
+          .endRange(0, 28)
+          .startRange(1, 10, {scopeKey: 'outer', isStackFrame: true})
+          .startRange(1, 21, {scopeKey: 'block'})
+          .endRange(1, 26)
+          .endRange(1, 27)
+          .endRange(3, 0);
+
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      {
+        const translatedFrames = info.translateCallSite(0, 18);  // Pause on 'print'.
+
+        assert.lengthOf(translatedFrames, 1);
+        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at inner (index.ts:1:7)');
+      }
+
+      {
+        const translatedFrames = info.translateCallSite(1, 23);  // Pause on 'n()'.
+
+        assert.lengthOf(translatedFrames, 1);
+        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at outer (index.ts:6:9)');
+      }
+
+      {
+        const translatedFrames = info.translateCallSite(2, 1);  // Pause on 'm()'.
+
+        assert.lengthOf(translatedFrames, 1);
+        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
+      }
+    });
+
+    it('returns two frames for a function inlined into another', () => {
+      //
+      //    orig. code                         gen. code
+      //             10        20                       10        20        30        40
+      //    012345678901234567890              01234567890123456789012345678901234567890
+      //
+      // 0: function inner() {                 function m(){if(true){print('hello')}}
+      // 1:   print('hello');                  m();
+      // 2: }
+      // 3:
+      // 4: function outer() {
+      // 5:   if (true) {
+      // 6:     inner();
+      // 7:   }
+      // 8: }
+      // 9:
+      // 10: outer();
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`, encodeSourceMap([
+                                                      '0:14 => index.ts:5:5',
+                                                      '0:26 => index.ts:1:7',
+                                                      '1:1 => index.ts:10:5',
+                                                    ]));
+
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
+          .startScope(5, 12, {kind: 'block', key: 'block'})
+          .endScope(7, 3)
+          .endScope(8, 1)
+          .endScope(11, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'outer', isStackFrame: true})
+          .startRange(0, 21, {scopeKey: 'block'})
+          .startRange(0, 22, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 6, column: 8}})
+          .endRange(0, 36)
+          .endRange(0, 37)
+          .endRange(0, 38)
+          .endRange(2, 0);
+
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      {
+        const translatedFrames = info.translateCallSite(0, 26);  // Pause on 'print'.
+
+        assert.lengthOf(translatedFrames, 2);
+        assert.deepEqual(translatedFrames.map(stringifyFrame), ['at inner (index.ts:1:7)', 'at outer (index.ts:6:8)']);
+      }
+
+      {
+        const translatedFrames = info.translateCallSite(0, 14);  // Pause on 'if'.
+
+        assert.lengthOf(translatedFrames, 1);
+        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at outer (index.ts:5:5)');
+      }
+
+      {
+        const translatedFrames = info.translateCallSite(1, 1);  // Pause on 'm'.
+
+        assert.lengthOf(translatedFrames, 1);
+        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
+      }
+    });
+
+    it('returns three frames for two functions inlined into the global scope', () => {
+      //
+      //    orig. code                         gen. code
+      //             10        20                       10        20
+      //    012345678901234567890              012345678901234567890
+      //
+      // 0: function inner() {                 print('hello')
+      // 1:   print('hello');
+      // 2: }
+      // 3:
+      // 4: function outer() {
+      // 5:   if (true) {
+      // 6:     inner();
+      // 7:   }
+      // 8: }
+      // 9:
+      // 10: outer();
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`, encodeSourceMap([
+                                                      '0:5 => index.ts:1:7',
+                                                    ]));
+
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
+          .startScope(5, 12, {kind: 'block', key: 'block'})
+          .endScope(7, 3)
+          .endScope(8, 1)
+          .endScope(11, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 10, column: 5}})
+          .startRange(0, 0, {scopeKey: 'block'})
+          .startRange(0, 0, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 6, column: 9}})
+          .endRange(0, 14)
+          .endRange(0, 14)
+          .endRange(0, 14)
+          .endRange(1, 0);
+
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      {
+        const translatedFrames = info.translateCallSite(0, 5);  // Pause on 'print'.
+
+        assert.deepEqual(translatedFrames.map(stringifyFrame), [
+          'at inner (index.ts:1:7)',
+          'at outer (index.ts:6:9)',
+          'at <anonymous> (index.ts:10:5)',
+        ]);
       }
     });
   });

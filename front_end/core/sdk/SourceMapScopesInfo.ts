@@ -113,6 +113,10 @@ export class SourceMapScopesInfo {
    */
   isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean {
     const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    return this.#isOutlinedFrame(rangeChain);
+  }
+
+  #isOutlinedFrame(rangeChain: ScopesCodec.GeneratedRange[]): boolean {
     for (let i = rangeChain.length - 1; i >= 0; --i) {
       if (rangeChain[i].isStackFrame) {
         return rangeChain[i].isHidden;
@@ -372,13 +376,7 @@ export class SourceMapScopesInfo {
               .at(-1);
     }
 
-    // Walk the original scope chain outwards until we find a function.
-    for (let originalScope = originalInnerMostScope; originalScope; originalScope = originalScope.parent) {
-      if (originalScope.isStackFrame) {
-        return originalScope.name ?? '';
-      }
-    }
-    return null;
+    return this.#findFunctionNameInOriginalScopeChain(originalInnerMostScope) ?? null;
   }
 
   /**
@@ -404,6 +402,74 @@ export class SourceMapScopesInfo {
 
     return result;
   }
+
+  #findFunctionNameInOriginalScopeChain(innerOriginalScope: ScopesCodec.OriginalScope|undefined): string|null {
+    for (let originalScope = innerOriginalScope; originalScope; originalScope = originalScope.parent) {
+      if (originalScope.isStackFrame) {
+        return originalScope.name ?? '';
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns one or more original stack frames for this single "raw frame" or call-site.
+   *
+   * @returns An empty array if no mapping at the call-site was found, or the resulting frames
+   * in top-to-bottom order in case of inlining.
+   * @throws If this range is marked "hidden". Outlining needs to be handled externally as
+   * outlined function segments in stack traces can span across bundles.
+   */
+  translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[] {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    if (this.#isOutlinedFrame(rangeChain)) {
+      throw new Error('SourceMapScopesInfo is unable to translate an outlined function by itself');
+    }
+
+    const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
+    if (mapping?.sourceIndex === undefined) {
+      return [];
+    }
+
+    // The top-most frame is translated the same even if we have inlined functions.
+    const result: TranslatedFrame[] = [{
+      line: mapping.sourceLineNumber,
+      column: mapping.sourceColumnNumber,
+      name: this.findOriginalFunctionName({line: generatedLine, column: generatedColumn}) ?? undefined,
+      url: mapping.sourceURL,
+    }];
+
+    // Walk the range chain inside out until we find a generated function and for each inlined function add a frame.
+    for (let i = rangeChain.length - 1; i >= 0 && !rangeChain[i].isStackFrame; --i) {
+      const range = rangeChain[i];
+      if (!range.callSite) {
+        continue;
+      }
+
+      const originalScopeChain = this.#findOriginalScopeChain(range.callSite);
+      result.push({
+        line: range.callSite.line,
+        column: range.callSite.column,
+        name: this.#findFunctionNameInOriginalScopeChain(originalScopeChain.at(-1)) ?? undefined,
+        url: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex),
+      });
+    }
+
+    return result;
+  }
+}
+
+/**
+ * Represents a stack frame in original terms. It closely aligns with StackTrace.StackTrace.Frame,
+ * but since we can't import that type here we mirror it here somewhat.
+ *
+ * Equivalent to Pick<StackTrace.StackTrace.Frame, 'line'|'column'|'name'|'url'>.
+ */
+export interface TranslatedFrame {
+  line: number;
+  column: number;
+  name?: string;
+  url?: Platform.DevToolsPath.UrlString;
 }
 
 /**

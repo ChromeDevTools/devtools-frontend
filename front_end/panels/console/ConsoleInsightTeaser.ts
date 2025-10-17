@@ -62,6 +62,10 @@ const UIStringsNotTranslate = {
    */
   summarizing: 'Summarizing…',
   /**
+   * @description Header text during longer lasting loading state while an AI summary is being generated
+   */
+  summarizingTakesABitLonger: 'Summarizing takes a bit longer…',
+  /**
    * @description Label for an animation shown while an AI response is being generated
    */
   loading: 'Loading',
@@ -84,6 +88,7 @@ const lockedString = i18n.i18n.lockedString;
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 const DATA_USAGE_URL = 'https://developer.chrome.com/docs/devtools/ai-assistance/get-started#data-use';
 const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
+const SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
 
 interface ViewInput {
   onTellMeMoreClick: (event: Event) => void;
@@ -95,6 +100,7 @@ interface ViewInput {
   isInactive: boolean;
   dontShowChanged: (e: Event) => void;
   hasTellMeMoreButton: boolean;
+  isSlowGeneration: boolean;
 }
 
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
@@ -116,7 +122,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
     >
       <div class="teaser-tooltip-container">
         ${showPlaceholder ? html`
-          <h2>${lockedString(UIStringsNotTranslate.summarizing)}</h2>
+          <h2>${input.isSlowGeneration ?
+            lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
+            lockedString(UIStringsNotTranslate.summarizing)
+          }</h2>
           <div
             role="presentation"
             aria-label=${lockedString(UIStringsNotTranslate.loading)}
@@ -136,6 +145,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
         ` : html`
           <h2>${input.headerText}</h2>
           <div>${input.mainText}</div>
+        `}
+        ${input.isSlowGeneration || !showPlaceholder? html`
           <div class="tooltip-footer">
             ${input.hasTellMeMoreButton ? html`
               <devtools-button
@@ -172,7 +183,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
               ${lockedString(UIStringsNotTranslate.dontShow)}
             </devtools-checkbox>
           </div>
-        `}
+        ` : Lit.nothing}
       </div>
     </devtools-tooltip>
   `, target);
@@ -192,6 +203,8 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   #consoleViewMessage: ConsoleViewMessage;
   #isInactive = false;
   #abortController: null|AbortController = null;
+  #isSlow = false;
+  #timeoutId: ReturnType<typeof setTimeout>|null = null;
 
   constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View) {
     super(element);
@@ -285,6 +298,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       this.#abortController.abort();
     }
     this.#isGenerating = false;
+    if (this.#timeoutId) {
+      clearTimeout(this.#timeoutId);
+    }
   }
 
   setInactive(isInactive: boolean): void {
@@ -295,8 +311,14 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  #setSlow(): void {
+    this.#isSlow = true;
+    this.requestUpdate();
+  }
+
   async #generateTeaserText(): Promise<void> {
     this.#isGenerating = true;
+    this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
     let teaserText = '';
     try {
       for await (const chunk of this.#getOnDeviceInsight()) {
@@ -311,7 +333,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       return;
     }
 
-    // TODO(crbug.com/443618746): Add user-facing error message instead of staying in loading state
+    clearTimeout(this.#timeoutId);
     let responseObject = {
       header: null,
       explanation: null,
@@ -373,6 +395,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
               !Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get(),
           dontShowChanged: this.#dontShowChanged.bind(this),
           hasTellMeMoreButton: this.#hasTellMeMoreButton(),
+          isSlowGeneration: this.#isSlow,
         },
         undefined, this.contentElement);
   }

@@ -36,24 +36,17 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isEmpty(input.headerText);
   });
 
-  it('renders the generated response', async () => {
+  const setupBuiltInAi = (generateResponse: () => AsyncGenerator): Console.ConsoleViewMessage.ConsoleViewMessage => {
     updateHostConfig({
       devToolsAiPromptApi: {
         enabled: true,
       },
     });
 
-    async function* promptStreaming() {
-      yield JSON.stringify({
-        header: 'test header',
-        explanation: 'test explanation',
-      });
-    }
-
     const mockLanguageModel = {
       destroy: () => {},
       clone: () => mockLanguageModel,
-      promptStreaming,
+      promptStreaming: generateResponse,
     };
     // @ts-expect-error
     window.LanguageModel = {
@@ -61,8 +54,7 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
       create: () => mockLanguageModel,
     };
 
-    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
-    const consoleViewMessage = {
+    return {
       consoleMessage: () => {
         return {
           runtimeModel: () => null,
@@ -72,7 +64,16 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
       toMessageTextString: () => 'message text string',
       contentElement: () => document.createElement('div') as HTMLElement,
     } as Console.ConsoleViewMessage.ConsoleViewMessage;
+  };
 
+  it('renders the generated response', async () => {
+    const consoleViewMessage = setupBuiltInAi(async function*() {
+      yield JSON.stringify({
+        header: 'test header',
+        explanation: 'test explanation',
+      });
+    });
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
     const teaser =
         new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
     await teaser.maybeGenerateTeaser();
@@ -136,5 +137,31 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     input.dontShowChanged(event);
     assert.isFalse(Common.Settings.moduleSetting('console-insight-teasers-enabled').get());
     Common.Settings.settingForTest('console-insight-teasers-enabled').set(true);
+  });
+
+  it('updates its view if teaser generation is slow', async () => {
+    const consoleViewMessage = setupBuiltInAi(async function*() {
+      await new Promise(() => {});
+      yield 'unreached';
+    });
+
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    const teaser =
+        new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
+    let input = await view.nextInput;
+    assert.isFalse(input.isInactive);
+    assert.isEmpty(input.mainText);
+    assert.isEmpty(input.headerText);
+    assert.isFalse(input.isSlowGeneration);
+    await teaser.maybeGenerateTeaser();
+
+    clock.runAll();
+    input = await view.nextInput;
+    assert.isFalse(input.isInactive);
+    assert.isEmpty(input.mainText);
+    assert.isEmpty(input.headerText);
+    assert.isTrue(input.isSlowGeneration);
+    clock.restore();
   });
 });

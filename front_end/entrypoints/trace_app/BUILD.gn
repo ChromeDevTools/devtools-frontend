@@ -14,6 +14,7 @@ devtools_entrypoint("entrypoint") {
     "../../entrypoints/main:meta",
     "../../models/logs:meta",
     "../../models/persistence:meta",
+    "../../panels/ai_assistance:meta",
     "../../panels/browser_debugger:meta",
     "../../panels/developer_resources:meta",
     "../../panels/mobile_throttling:meta",

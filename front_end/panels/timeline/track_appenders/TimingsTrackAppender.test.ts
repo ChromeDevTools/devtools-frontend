@@ -51,12 +51,9 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
   describe('appendTrackAtLevel', () => {
     it('marks all levels used by the track with the `TrackAppender` type', () => {
-      // 7 levels should be taken:
-      //   * 1 performance.marks.
-      //   * 3 used by performance.measures.
-      //   * 1 used by console timestamps.
-      //   * 1 used by console.time calls.
-      const levelCount = 6;
+      // 4 levels should be taken. performance.marks/measures and console time/timestamps are plotted densely.
+      // The spans (measures) take up 3 rows and there are some instant events down on the 4th.
+      const levelCount = 4;
       assert.strictEqual(entryTypeByLevel.length, levelCount);
       const allEntriesAreTrackAppender =
           entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER);

@@ -80,17 +80,19 @@ export class TimingsTrackAppender implements TrackAppender {
         timeStamp =>
             !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInConsoleTimeStamp(timeStamp).devtoolsObj);
     const consoleTimings = this.#parsedTrace.data.UserTimings.consoleTimings;
-    if (extensionMarkersAreEmpty && performanceMarks.length === 0 && performanceMeasures.length === 0 &&
-        timestampEvents.length === 0 && consoleTimings.length === 0) {
+
+    // The order below is deliberate. Visually its easier to process marks when they decorate the bottom of their associated measure.
+    // Therefore, we want COMPLETE events (measures) to be before INSTANT events (marks), (when they share a timestamp).
+    const allTimings = [...performanceMeasures, ...consoleTimings, ...timestampEvents, ...performanceMarks].sort(
+        (a, b) => a.ts - b.ts);
+
+    if (extensionMarkersAreEmpty && allTimings.length === 0) {
       return trackStartLevel;
     }
-    // TODO(paulirish): these 5 sets of events should be merged and sorted by start time. This would allow for a denser packing.
+
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
-    let newLevel = this.#appendExtensionsAtLevel(trackStartLevel);
-    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMarks, newLevel, this);
-    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMeasures, newLevel, this);
-    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(timestampEvents, newLevel, this);
-    return this.#compatibilityBuilder.appendEventsAtLevel(consoleTimings, newLevel, this);
+    const newLevel = this.#appendExtensionsAtLevel(trackStartLevel);
+    return this.#compatibilityBuilder.appendEventsAtLevel(allTimings, newLevel, this);
   }
 
   /**

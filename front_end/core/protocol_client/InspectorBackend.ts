@@ -367,9 +367,8 @@ export class SessionRouter {
     const sessionId = messageObject.sessionId || '';
     const session = this.#sessions.get(sessionId);
     if (!session) {
-      if (!suppressUnknownMessageErrors) {
-        InspectorBackend.reportProtocolError('Protocol Error: the message with wrong session id', messageObject);
-      }
+      // In the DevTools MCP case, we may share the transport with puppeteer so we silently
+      // ignore unknown sessions.
       return;
     }
 

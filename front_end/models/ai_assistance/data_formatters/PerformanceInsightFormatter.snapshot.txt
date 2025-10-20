@@ -1009,7 +1009,7 @@ The following is the top function call that caused forced reflow(s):
 
 Total reflow time: 26 ms
 
-Stack trace (including total time):
+Call frames that trigger reflow (including total time):
 
  - 56 ms in sidemenuitemintoview @ https://www.w3schools.com/lib/w3schools_footer.js?update=20240910:383:11
  - 5 ms in ko @ https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202411070102/pubads_impl.js?cb=31088843:32:197203

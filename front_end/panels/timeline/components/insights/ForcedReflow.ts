@@ -41,7 +41,7 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
   }
 
   #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame|null): Lit.LitTemplate {
-    const style = 'display: flex; gap: 4px; padding: 4px 0; overflow: hidden; white-space: nowrap';
+    const style = 'display: flex; gap: 4px; overflow: hidden; white-space: nowrap';
     if (!callFrame) {
       return html`<div style=${style}>${i18nString(UIStrings.unattributed)}</div>`;
     }
@@ -105,7 +105,7 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
         <devtools-performance-table
           .data=${{
             insight: this,
-            headers: [i18nString(UIStrings.relatedStackTrace)],
+            headers: [i18nString(UIStrings.reflowCallFrames)],
             rows,
         } as TableData}>
         </devtools-performance-table>

@@ -21,7 +21,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeavyAdIssue extends Issue {
   #issueDetails: Protocol.Audits.HeavyAdIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.HeavyAdIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.HeavyAdIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const umaCode = [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, issueDetails.reason].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.HeavyAdIssue, umaCode}, issuesModel);
     this.#issueDetails = issueDetails;
@@ -60,8 +60,8 @@ export class HeavyAdIssue extends Issue {
     }
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      HeavyAdIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null, inspectorIssue: Protocol.Audits.InspectorIssue): HeavyAdIssue[] {
     const heavyAdIssueDetails = inspectorIssue.details.heavyAdIssueDetails;
     if (!heavyAdIssueDetails) {
       console.warn('Heavy Ad issue without details received.');

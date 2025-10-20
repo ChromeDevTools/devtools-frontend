@@ -11,7 +11,7 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 export class PropertyRuleIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.PropertyRuleIssueDetails;
   readonly #primaryKey: string;
-  constructor(issueDetails: Protocol.Audits.PropertyRuleIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.PropertyRuleIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const code = JSON.stringify(issueDetails);
     super(code, issuesModel);
     this.#primaryKey = code;
@@ -66,8 +66,9 @@ export class PropertyRuleIssue extends Issue {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issueModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      PropertyRuleIssue[] {
+  static fromInspectorIssue(
+      issueModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): PropertyRuleIssue[] {
     const propertyRuleIssueDetails = inspectorIssue.details.propertyRuleIssueDetails;
     if (!propertyRuleIssueDetails) {
       console.warn('Property rule issue without details received');

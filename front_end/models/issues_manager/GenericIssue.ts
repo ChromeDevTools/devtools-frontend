@@ -47,7 +47,7 @@ export class GenericIssue extends Issue {
   #issueDetails: Protocol.Audits.GenericIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.GenericIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      issueDetails: Protocol.Audits.GenericIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId?: Protocol.Audits.IssueId) {
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.GenericIssue,
@@ -90,8 +90,8 @@ export class GenericIssue extends Issue {
     return issueTypes.get(this.#issueDetails.errorType) || IssueKind.IMPROVEMENT;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      GenericIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null, inspectorIssue: Protocol.Audits.InspectorIssue): GenericIssue[] {
     const genericDetails = inspectorIssue.details.genericIssueDetails;
     if (!genericDetails) {
       console.warn('Generic issue without details received.');

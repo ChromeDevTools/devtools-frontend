@@ -21,7 +21,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class QuirksModeIssue extends Issue {
   #issueDetails: Protocol.Audits.QuirksModeIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.QuirksModeIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.QuirksModeIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const mode = issueDetails.isLimitedQuirksMode ? 'LimitedQuirksMode' : 'QuirksMode';
     const umaCode = [Protocol.Audits.InspectorIssueCode.QuirksModeIssue, mode].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.QuirksModeIssue, umaCode}, issuesModel);
@@ -56,8 +56,9 @@ export class QuirksModeIssue extends Issue {
     return IssueKind.IMPROVEMENT;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      QuirksModeIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): QuirksModeIssue[] {
     const quirksModeIssueDetails = inspectorIssue.details.quirksModeIssueDetails;
     if (!quirksModeIssueDetails) {
       console.warn('Quirks Mode issue without details received.');

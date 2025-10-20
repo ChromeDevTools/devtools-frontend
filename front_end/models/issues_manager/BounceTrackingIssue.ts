@@ -21,7 +21,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BounceTrackingIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.BounceTrackingIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.BounceTrackingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.BounceTrackingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(Protocol.Audits.InspectorIssueCode.BounceTrackingIssue, issuesModel);
     this.#issueDetails = issueDetails;
   }
@@ -61,8 +61,9 @@ export class BounceTrackingIssue extends Issue {
     return [];
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      BounceTrackingIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): BounceTrackingIssue[] {
     const details = inspectorIssue.details.bounceTrackingIssueDetails;
     if (!details) {
       console.warn('Bounce tracking issue without details received.');

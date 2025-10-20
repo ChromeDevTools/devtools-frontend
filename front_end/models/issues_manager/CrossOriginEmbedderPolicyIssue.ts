@@ -45,7 +45,8 @@ export function isCrossOriginEmbedderPolicyIssue(reason: Protocol.Audits.Blocked
 export class CrossOriginEmbedderPolicyIssue extends Issue {
   #issueDetails: Protocol.Audits.BlockedByResponseIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.BlockedByResponseIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.BlockedByResponseIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
     this.#issueDetails = issueDetails;
   }

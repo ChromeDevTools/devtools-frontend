@@ -26,7 +26,7 @@ export class FederatedAuthRequestIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.FederatedAuthRequestIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.FederatedAuthRequestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+      issueDetails: Protocol.Audits.FederatedAuthRequestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
         {
           code: Protocol.Audits.InspectorIssueCode.FederatedAuthRequestIssue,
@@ -63,8 +63,9 @@ export class FederatedAuthRequestIssue extends Issue {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      FederatedAuthRequestIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): FederatedAuthRequestIssue[] {
     const details = inspectorIssue.details.federatedAuthRequestIssueDetails;
     if (!details) {
       console.warn('Federated auth request issue without details received.');

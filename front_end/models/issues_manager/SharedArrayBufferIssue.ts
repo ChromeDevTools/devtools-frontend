@@ -22,7 +22,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SharedArrayBufferIssue extends Issue {
   #issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const umaCode = [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issueDetails.type].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, umaCode}, issuesModel);
     this.#issueDetails = issueDetails;
@@ -57,8 +58,9 @@ export class SharedArrayBufferIssue extends Issue {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      SharedArrayBufferIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): SharedArrayBufferIssue[] {
     const sabIssueDetails = inspectorIssue.details.sharedArrayBufferIssueDetails;
     if (!sabIssueDetails) {
       console.warn('SAB transfer issue without details received.');

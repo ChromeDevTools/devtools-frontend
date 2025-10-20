@@ -72,7 +72,7 @@ export class CookieIssue extends Issue {
   #issueDetails: Protocol.Audits.CookieIssueDetails;
 
   constructor(
-      code: string, issueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      code: string, issueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId: Protocol.Audits.IssueId|undefined) {
     super(code, issuesModel, issueId);
     this.#issueDetails = issueDetails;
@@ -96,7 +96,7 @@ export class CookieIssue extends Issue {
    * Returns an array of issues from a given CookieIssueDetails.
    */
   static createIssuesFromCookieIssueDetails(
-      cookieIssueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      cookieIssueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId: Protocol.Audits.IssueId|undefined): CookieIssue[] {
     const issues: CookieIssue[] = [];
 
@@ -294,8 +294,8 @@ export class CookieIssue extends Issue {
     return;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      CookieIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null, inspectorIssue: Protocol.Audits.InspectorIssue): CookieIssue[] {
     const cookieIssueDetails = inspectorIssue.details.cookieIssueDetails;
     if (!cookieIssueDetails) {
       console.warn('Cookie issue without details received.');

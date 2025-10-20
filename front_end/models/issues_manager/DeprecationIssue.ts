@@ -36,7 +36,7 @@ const i18nLazyDeprecationString = i18n.i18n.getLazilyComputedLocalizedString.bin
 export class DeprecationIssue extends Issue {
   #issueDetails: Protocol.Audits.DeprecationIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.DeprecationIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.DeprecationIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.DeprecationIssue,
       issueDetails.type,
@@ -101,8 +101,9 @@ export class DeprecationIssue extends Issue {
     return IssueKind.BREAKING_CHANGE;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      DeprecationIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): DeprecationIssue[] {
     const details = inspectorIssue.details.deprecationIssueDetails;
     if (!details) {
       console.warn('Deprecation issue without details received.');

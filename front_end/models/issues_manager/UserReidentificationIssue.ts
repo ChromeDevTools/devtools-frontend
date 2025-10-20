@@ -16,7 +16,7 @@ export class UserReidentificationIssue extends Issue {
   #issueDetails: Protocol.Audits.UserReidentificationIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.UserReidentificationIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+      issueDetails: Protocol.Audits.UserReidentificationIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super('UserReidentificationIssue', issuesModel);
     this.#issueDetails = issueDetails;
   }
@@ -46,8 +46,9 @@ export class UserReidentificationIssue extends Issue {
     return IssueKind.IMPROVEMENT;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      UserReidentificationIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): UserReidentificationIssue[] {
     const userReidentificationIssueDetails = inspectorIssue.details.userReidentificationIssueDetails;
     if (!userReidentificationIssueDetails) {
       console.warn('User Reidentification issue without details received.');

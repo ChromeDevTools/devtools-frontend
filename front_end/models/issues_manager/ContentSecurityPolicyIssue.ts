@@ -42,7 +42,7 @@ export class ContentSecurityPolicyIssue extends Issue {
   #issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId?: Protocol.Audits.IssueId) {
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
@@ -89,8 +89,9 @@ export class ContentSecurityPolicyIssue extends Issue {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      ContentSecurityPolicyIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): ContentSecurityPolicyIssue[] {
     const cspDetails = inspectorIssue.details.contentSecurityPolicyIssueDetails;
     if (!cspDetails) {
       console.warn('Content security policy issue without details received.');

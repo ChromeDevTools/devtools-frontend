@@ -26,7 +26,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PartitioningBlobURLIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.PartitioningBlobURLIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.PartitioningBlobURLIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.PartitioningBlobURLIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(Protocol.Audits.InspectorIssueCode.PartitioningBlobURLIssue, issuesModel);
     this.#issueDetails = issueDetails;
   }
@@ -67,8 +68,9 @@ export class PartitioningBlobURLIssue extends Issue {
     return JSON.stringify(this.#issueDetails);
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      PartitioningBlobURLIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): PartitioningBlobURLIssue[] {
     const details = inspectorIssue.details.partitioningBlobURLIssueDetails;
     if (!details) {
       console.warn('Partitioning BlobURL issue without details received.');

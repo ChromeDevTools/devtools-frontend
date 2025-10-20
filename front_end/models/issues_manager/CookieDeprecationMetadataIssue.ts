@@ -23,7 +23,8 @@ export class CookieDeprecationMetadataIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+      issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails,
+      issuesModel: SDK.IssuesModel.IssuesModel|null) {
     // Set a distinct code for ReadCookie and SetCookie issues, so they are grouped separately.
     const issueCode = Protocol.Audits.InspectorIssueCode.CookieDeprecationMetadataIssue + '_' + issueDetails.operation;
     super(issueCode, issuesModel);
@@ -70,8 +71,9 @@ export class CookieDeprecationMetadataIssue extends Issue {
     return JSON.stringify(this.#issueDetails);
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      CookieDeprecationMetadataIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): CookieDeprecationMetadataIssue[] {
     const details = inspectorIssue.details.cookieDeprecationMetadataIssueDetails;
     if (!details) {
       console.warn('Cookie deprecation metadata issue without details received.');

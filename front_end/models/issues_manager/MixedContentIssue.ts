@@ -21,7 +21,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MixedContentIssue extends Issue {
   #issueDetails: Protocol.Audits.MixedContentIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.MixedContentIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.MixedContentIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(Protocol.Audits.InspectorIssueCode.MixedContentIssue, issuesModel);
     this.#issueDetails = issueDetails;
   }
@@ -64,8 +64,9 @@ export class MixedContentIssue extends Issue {
     }
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      MixedContentIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): MixedContentIssue[] {
     const mixedContentDetails = inspectorIssue.details.mixedContentIssueDetails;
     if (!mixedContentDetails) {
       console.warn('Mixed content issue without details received.');

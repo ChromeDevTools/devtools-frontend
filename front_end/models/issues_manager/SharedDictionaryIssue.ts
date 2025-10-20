@@ -111,7 +111,8 @@ function getIssueCode(details: Protocol.Audits.SharedDictionaryIssueDetails): Is
 export class SharedDictionaryIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.SharedDictionaryIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.SharedDictionaryIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.SharedDictionaryIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
         {
           code: getIssueCode(issueDetails),
@@ -155,8 +156,9 @@ export class SharedDictionaryIssue extends Issue {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      SharedDictionaryIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): SharedDictionaryIssue[] {
     const details = inspectorIssue.details.sharedDictionaryIssueDetails;
     if (!details) {
       console.warn('Shared Dictionary issue without details received.');

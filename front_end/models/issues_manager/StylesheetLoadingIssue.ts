@@ -15,7 +15,8 @@ export const lateImportStylesheetLoadingCode = [
 
 export class StylesheetLoadingIssue extends Issue {
   #issueDetails: Protocol.Audits.StylesheetLoadingIssueDetails;
-  constructor(issueDetails: Protocol.Audits.StylesheetLoadingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.StylesheetLoadingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const code =
         `${Protocol.Audits.InspectorIssueCode.StylesheetLoadingIssue}::${issueDetails.styleSheetLoadingIssueReason}`;
     super(code, issuesModel);
@@ -67,8 +68,9 @@ export class StylesheetLoadingIssue extends Issue {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issueModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      StylesheetLoadingIssue[] {
+  static fromInspectorIssue(
+      issueModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): StylesheetLoadingIssue[] {
     const stylesheetLoadingDetails = inspectorIssue.details.stylesheetLoadingIssueDetails;
     if (!stylesheetLoadingDetails) {
       console.warn('Stylesheet loading issue without details received');

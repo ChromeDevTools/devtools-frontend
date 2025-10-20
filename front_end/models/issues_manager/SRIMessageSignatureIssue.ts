@@ -44,7 +44,8 @@ function generateGroupingIssueCode(details: Protocol.Audits.SRIMessageSignatureI
 export class SRIMessageSignatureIssue extends Issue<string> {
   readonly #issueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
         {
           code: generateGroupingIssueCode(issueDetails),
@@ -102,8 +103,9 @@ export class SRIMessageSignatureIssue extends Issue<string> {
     return this.details().request ? [this.details().request] : [];
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      SRIMessageSignatureIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): SRIMessageSignatureIssue[] {
     const details = inspectorIssue.details.sriMessageSignatureIssueDetails;
     if (!details) {
       console.warn('SRI Message Signature issue without details received.');

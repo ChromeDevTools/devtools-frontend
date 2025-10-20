@@ -29,7 +29,8 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 export class UnencodedDigestIssue extends Issue<string> {
   readonly #issueDetails: Protocol.Audits.UnencodedDigestIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.UnencodedDigestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.UnencodedDigestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
         {
           code: `${Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue}::${issueDetails.error}`,
@@ -76,8 +77,9 @@ export class UnencodedDigestIssue extends Issue<string> {
     return this.details().request ? [this.details().request] : [];
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      UnencodedDigestIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): UnencodedDigestIssue[] {
     const details = inspectorIssue.details.unencodedDigestIssueDetails;
     if (!details) {
       console.warn('Unencoded-Digest issue without details received.');

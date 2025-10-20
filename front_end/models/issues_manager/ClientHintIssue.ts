@@ -25,7 +25,7 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 export class ClientHintIssue extends Issue {
   private issueDetails: Protocol.Audits.ClientHintIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.ClientHintIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.ClientHintIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
         {
           code: Protocol.Audits.InspectorIssueCode.ClientHintIssue,
@@ -63,8 +63,9 @@ export class ClientHintIssue extends Issue {
     return IssueKind.BREAKING_CHANGE;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      ClientHintIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): ClientHintIssue[] {
     const details = inspectorIssue.details.clientHintIssueDetails;
     if (!details) {
       console.warn('Client Hint issue without details received.');

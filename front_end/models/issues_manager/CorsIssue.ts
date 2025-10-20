@@ -119,7 +119,7 @@ export class CorsIssue extends Issue<IssueCode> {
   #issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId: Protocol.Audits.IssueId|undefined) {
     super(getIssueCode(issueDetails), issuesModel, issueId);
     this.#issueDetails = issueDetails;
@@ -284,8 +284,8 @@ export class CorsIssue extends Issue<IssueCode> {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      CorsIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null, inspectorIssue: Protocol.Audits.InspectorIssue): CorsIssue[] {
     const corsIssueDetails = inspectorIssue.details.corsIssueDetails;
     if (!corsIssueDetails) {
       console.warn('Cors issue without details received.');

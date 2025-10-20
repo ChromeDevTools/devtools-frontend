@@ -16,7 +16,7 @@ export class ElementAccessibilityIssue extends Issue {
   private issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId?: Protocol.Audits.IssueId) {
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
@@ -64,8 +64,9 @@ export class ElementAccessibilityIssue extends Issue {
              Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant);
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      ElementAccessibilityIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): ElementAccessibilityIssue[] {
     const elementAccessibilityIssueDetails = inspectorIssue.details.elementAccessibilityIssueDetails;
     if (!elementAccessibilityIssueDetails) {
       console.warn('Element Accessibility issue without details received.');

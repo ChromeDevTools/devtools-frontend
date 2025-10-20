@@ -93,7 +93,7 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
   issueDetails: Readonly<Protocol.Audits.AttributionReportingIssueDetails>;
 
   constructor(
-      issueDetails: Protocol.Audits.AttributionReportingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+      issueDetails: Protocol.Audits.AttributionReportingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(getIssueCode(issueDetails), issuesModel);
     this.issueDetails = issueDetails;
   }
@@ -236,8 +236,9 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
     return IssueKind.PAGE_ERROR;
   }
 
-  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      AttributionReportingIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel|null,
+      inspectorIssue: Protocol.Audits.InspectorIssue): AttributionReportingIssue[] {
     const {attributionReportingIssueDetails} = inspectorIssue.details;
     if (!attributionReportingIssueDetails) {
       console.warn('Attribution Reporting issue without details received.');

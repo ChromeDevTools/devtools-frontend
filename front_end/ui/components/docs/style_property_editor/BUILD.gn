@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "flex.ts",
     "grid.ts",
+    "masonry.ts",
   ]
 
   deps = [
@@ -24,6 +25,7 @@ copy_to_gen("style_property_editor") {
   sources = [
     "flex.html",
     "grid.html",
+    "masonry.html",
   ]
 
   deps = [ ":ts" ]

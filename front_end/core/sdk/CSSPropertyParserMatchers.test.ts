@@ -673,27 +673,39 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     assert.notExists(match, text);
   });
 
-  it('match flex and grid values', () => {
+  it('match flex, grid, and masonry values', () => {
     const good = [
       'flex',
       'grid',
+      'masonry',
       'inline-flex',
       'inline-grid',
+      'inline-masonry',
       'block flex',
       'block grid',
+      'block masonry',
       'inline   flex',
       'inline grid',
+      'inline masonry',
       'inline grid !important',
       'grid /* comment */',
     ];
     const bad = ['flex block', 'grid inline', 'block', 'inline'];
     for (const value of good) {
-      const {match, text} = matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridMatcher());
+      const {match, text} =
+          matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridMasonryMatcher());
       assert.exists(match, text);
-      assert.strictEqual(match.text.includes('flex'), match.isFlex);
+      if (match.text.includes('flex')) {
+        assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.FLEX);
+      } else if (match.text.includes('grid')) {
+        assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.GRID);
+      } else if (match.text.includes('masonry')) {
+        assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.MASONRY);
+      }
     }
     for (const value of bad) {
-      const {match, text} = matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridMatcher());
+      const {match, text} =
+          matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridMasonryMatcher());
       assert.notExists(match, text);
     }
   });

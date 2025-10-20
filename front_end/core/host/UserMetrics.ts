@@ -1195,7 +1195,8 @@ export const enum SwatchType {
   LENGTH = 8,
   POSITION_TRY_LINK = 10,
   ATTR_LINK = 11,
-  MAX_VALUE = 12,
+  MASONRY = 12,
+  MAX_VALUE = 13,
 }
 
 export const enum BadgeType {

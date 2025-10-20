@@ -195,6 +195,7 @@ grd_files_bundled_sources = [
   "front_end/Images/justify-content-space-between.svg",
   "front_end/Images/justify-content-space-evenly.svg",
   "front_end/Images/justify-content-start.svg",
+  "front_end/Images/justify-content-stretch.svg",
   "front_end/Images/justify-items-center.svg",
   "front_end/Images/justify-items-end.svg",
   "front_end/Images/justify-items-start.svg",

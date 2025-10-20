@@ -354,6 +354,7 @@ const gridContainerIcons = new Map([
   ['justify-content: start', gridJustifyContentIcon('justify-content-start')],
   ['justify-content: right', gridJustifyContentIcon('justify-content-end')],
   ['justify-content: left', gridJustifyContentIcon('justify-content-start')],
+  ['justify-content: stretch', gridJustifyContentIcon('justify-content-stretch')],
   ['align-items: stretch', gridAlignItemsIcon('align-items-stretch')],
   ['align-items: end', gridAlignItemsIcon('align-items-end')],
   ['align-items: start', gridAlignItemsIcon('align-items-start')],

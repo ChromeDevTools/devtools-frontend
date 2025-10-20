@@ -197,6 +197,7 @@ devtools_svg_sources = [
   "justify-content-space-between.svg",
   "justify-content-space-evenly.svg",
   "justify-content-start.svg",
+  "justify-content-stretch.svg",
   "justify-items-center.svg",
   "justify-items-end.svg",
   "justify-items-start.svg",

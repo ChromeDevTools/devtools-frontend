@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 export async function clickStylePropertyEditorButton(
-    title: string, editorElement: 'devtools-grid-editor'|'devtools-flexbox-editor',
+    title: string, editorElement: 'devtools-grid-editor'|'devtools-flexbox-editor'|'devtools-masonry-editor',
     devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const gridEditorButtons = await devToolsPage.$$(`[title="${title}"]`);
   assert.lengthOf(gridEditorButtons, 1);

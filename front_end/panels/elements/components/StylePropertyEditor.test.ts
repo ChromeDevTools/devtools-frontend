@@ -185,4 +185,84 @@ describeWithLocale('StylePropertyEditor', () => {
       assert.deepEqual(event.data, {name: 'justify-items', value: 'center'});
     });
   });
+
+  describe('MasonryEditor', () => {
+    it('renders the editor', async () => {
+      const component = new ElementsComponents.StylePropertyEditor.MasonryEditor();
+      renderElementIntoDOM(component);
+      component.data = {
+        authoredProperties: new Map([
+          ['align-content', 'end'],
+          ['justify-content', 'start'],
+          ['align-items', 'start'],
+          ['justify-items', 'center'],
+        ]),
+        computedProperties: new Map(),
+      };
+      assertValues(component, [
+        'align-content: end',
+        'justify-content: start',
+        'align-items: start',
+        'justify-items: center',
+      ]);
+      component.data = {
+        authoredProperties: new Map(),
+        computedProperties: new Map([
+          ['align-content', 'start'],
+          ['justify-content', 'end'],
+          ['align-items', 'start'],
+          ['justify-items', 'center'],
+        ]),
+      };
+      assertValues(component, [
+        'align-content: start',
+        'justify-content: end',
+        'align-items: start',
+        'justify-items: center',
+      ]);
+      component.data = {
+        authoredProperties: new Map(),
+        computedProperties: new Map(),
+      };
+      assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items:']);
+    });
+
+    it('allows selecting a property value', async () => {
+      const component = new ElementsComponents.StylePropertyEditor.MasonryEditor();
+      renderElementIntoDOM(component);
+      component.data = {
+        authoredProperties: new Map(),
+        computedProperties: new Map([
+          ['justify-items', 'end'],
+        ]),
+      };
+      assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items: end']);
+      const eventPromise =
+          getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
+      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(3)');
+      assert.instanceOf(justifyItemsButton, HTMLButtonElement);
+      justifyItemsButton.click();
+      const event = await eventPromise;
+      assert.deepEqual(event.data, {name: 'justify-items', value: 'end'});
+    });
+
+    it('allows deselecting a property value', async () => {
+      const component = new ElementsComponents.StylePropertyEditor.MasonryEditor();
+      renderElementIntoDOM(component);
+      component.data = {
+        authoredProperties: new Map([
+          ['align-items', 'start'],
+        ]),
+        computedProperties: new Map(),
+      };
+      assertValues(component, ['align-content:', 'justify-content:', 'align-items: start', 'justify-items:']);
+      const eventPromise = getEventPromise<ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent>(
+          component, 'propertydeselected');
+      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(3) .buttons .button:nth-child(2)');
+      assert.instanceOf(justifyItemsButton, HTMLButtonElement);
+      justifyItemsButton.click();
+      const event = await eventPromise;
+      assert.deepEqual(event.data, {name: 'align-items', value: 'start'});
+    });
+  });
 });

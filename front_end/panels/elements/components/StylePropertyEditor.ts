@@ -187,6 +187,23 @@ declare global {
   }
 }
 
+export class MasonryEditor extends StylePropertyEditor {
+  readonly jslogContext = 'cssMasonryEditor';
+  protected override readonly editableProperties: EditableProperty[] = MasonryEditableProperties;
+
+  protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
+    return findGridContainerIcon(query, computedProperties);
+  }
+}
+
+customElements.define('devtools-masonry-editor', MasonryEditor);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-masonry-editor': MasonryEditor;
+  }
+}
+
 export const FlexboxEditableProperties = [
   {
     propertyName: 'flex-direction',
@@ -243,6 +260,8 @@ export const GridEditableProperties = [
     propertyName: 'align-content',
     propertyValues: [
       'center',
+      'start',
+      'end',
       'space-between',
       'space-around',
       'space-evenly',
@@ -258,6 +277,7 @@ export const GridEditableProperties = [
       'space-between',
       'space-around',
       'space-evenly',
+      'stretch',
     ],
   },
   {
@@ -268,6 +288,51 @@ export const GridEditableProperties = [
       'end',
       'stretch',
       'baseline',
+    ],
+  },
+  {
+    propertyName: 'justify-items',
+    propertyValues: [
+      'center',
+      'start',
+      'end',
+      'stretch',
+    ],
+  },
+];
+
+export const MasonryEditableProperties = [
+  {
+    propertyName: 'align-content',
+    propertyValues: [
+      'center',
+      'start',
+      'end',
+      'space-between',
+      'space-around',
+      'space-evenly',
+      'stretch',
+    ],
+  },
+  {
+    propertyName: 'justify-content',
+    propertyValues: [
+      'center',
+      'start',
+      'end',
+      'space-between',
+      'space-around',
+      'space-evenly',
+      'stretch',
+    ],
+  },
+  {
+    propertyName: 'align-items',
+    propertyValues: [
+      'center',
+      'start',
+      'end',
+      'stretch',
     ],
   },
   {

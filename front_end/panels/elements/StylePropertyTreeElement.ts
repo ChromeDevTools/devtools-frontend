@@ -56,6 +56,7 @@ const {html, nothing, render, Directives: {classMap}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
+const MasonryEditor = ElementsComponents.StylePropertyEditor.MasonryEditor;
 
 const UIStrings = {
   /**
@@ -107,6 +108,10 @@ const UIStrings = {
    * @description Title of the button that opens the CSS Grid editor in the Styles panel.
    */
   gridEditorButton: 'Open `grid` editor',
+  /**
+   * @description Title of the button that opens the CSS Masonry editor in the Styles panel.
+   */
+  masonryEditorButton: 'Open `masonry` editor',
   /**
    * @description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
    */
@@ -196,7 +201,7 @@ export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatch
   }
 }
 // clang-format off
-export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FlexGridMatch) {
+export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch) {
   // clang-format on
   readonly #treeElement: StylePropertyTreeElement|null;
   readonly #stylesPane: StylesSidebarPane;
@@ -206,23 +211,56 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     this.#stylesPane = stylesPane;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.FlexGridMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch, context: RenderingContext): Node[] {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable()) {
       return children;
     }
     const key =
         `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
+
+    function getEditorClass(layoutType: SDK.CSSPropertyParserMatchers.LayoutType): typeof FlexboxEditor|
+        typeof GridEditor|typeof MasonryEditor {
+      switch (layoutType) {
+        case SDK.CSSPropertyParserMatchers.LayoutType.FLEX:
+          return FlexboxEditor;
+        case SDK.CSSPropertyParserMatchers.LayoutType.GRID:
+          return GridEditor;
+        case SDK.CSSPropertyParserMatchers.LayoutType.MASONRY:
+          return MasonryEditor;
+      }
+    }
+
+    function getButtonTitle(layoutType: SDK.CSSPropertyParserMatchers.LayoutType): string {
+      switch (layoutType) {
+        case SDK.CSSPropertyParserMatchers.LayoutType.FLEX:
+          return i18nString(UIStrings.flexboxEditorButton);
+        case SDK.CSSPropertyParserMatchers.LayoutType.GRID:
+          return i18nString(UIStrings.gridEditorButton);
+        case SDK.CSSPropertyParserMatchers.LayoutType.MASONRY:
+          return i18nString(UIStrings.masonryEditorButton);
+      }
+    }
+
+    function getSwatchType(layoutType: SDK.CSSPropertyParserMatchers.LayoutType): Host.UserMetrics.SwatchType {
+      switch (layoutType) {
+        case SDK.CSSPropertyParserMatchers.LayoutType.FLEX:
+          return Host.UserMetrics.SwatchType.FLEX;
+        case SDK.CSSPropertyParserMatchers.LayoutType.GRID:
+          return Host.UserMetrics.SwatchType.GRID;
+        case SDK.CSSPropertyParserMatchers.LayoutType.MASONRY:
+          return Host.UserMetrics.SwatchType.MASONRY;
+      }
+    }
+
     const button = StyleEditorWidget.createTriggerButton(
-        this.#stylesPane, this.#treeElement.section(), match.isFlex ? FlexboxEditor : GridEditor,
-        match.isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
+        this.#stylesPane, this.#treeElement.section(), getEditorClass(match.layoutType),
+        getButtonTitle(match.layoutType), key);
     button.tabIndex = -1;
-    button.setAttribute(
-        'jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(match.isFlex ? 'flex' : 'grid')}`);
+    button.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(match.layoutType)}`);
     this.#treeElement.section().nextEditorTriggerButtonIdx++;
     button.addEventListener('click', () => {
-      Host.userMetrics.swatchActivated(
-          match.isFlex ? Host.UserMetrics.SwatchType.FLEX : Host.UserMetrics.SwatchType.GRID);
+      Host.userMetrics.swatchActivated(getSwatchType(match.layoutType));
     });
     const helper = this.#stylesPane.swatchPopoverHelper();
     if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {

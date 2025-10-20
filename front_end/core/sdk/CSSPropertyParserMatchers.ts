@@ -1072,21 +1072,28 @@ export class CustomFunctionMatcher extends matcherBase(CustomFunctionMatch) {
   }
 }
 
-export class FlexGridMatch implements Match {
-  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly isFlex: boolean) {
+export const enum LayoutType {
+  FLEX = 'flex',
+  GRID = 'grid',
+  MASONRY = 'masonry'
+}
+
+export class FlexGridMasonryMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly layoutType: LayoutType) {
   }
 }
 
 // clang-format off
-export class FlexGridMatcher extends matcherBase(FlexGridMatch) {
+export class FlexGridMasonryMatcher extends matcherBase(FlexGridMasonryMatch) {
   // clang-format on
   static readonly FLEX = ['flex', 'inline-flex', 'block flex', 'inline flex'];
   static readonly GRID = ['grid', 'inline-grid', 'block grid', 'inline grid'];
+  static readonly MASONRY = ['masonry', 'inline-masonry', 'block masonry', 'inline masonry'];
   override accepts(propertyName: string): boolean {
     return propertyName === 'display';
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridMatch|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridMasonryMatch|null {
     if (node.name !== 'Declaration') {
       return null;
     }
@@ -1098,11 +1105,14 @@ export class FlexGridMatcher extends matcherBase(FlexGridMatch) {
                        .map(node => matching.getComputedText(node).trim())
                        .filter(value => value);
     const text = values.join(' ');
-    if (FlexGridMatcher.FLEX.includes(text)) {
-      return new FlexGridMatch(matching.ast.text(node), node, true);
+    if (FlexGridMasonryMatcher.FLEX.includes(text)) {
+      return new FlexGridMasonryMatch(matching.ast.text(node), node, LayoutType.FLEX);
     }
-    if (FlexGridMatcher.GRID.includes(text)) {
-      return new FlexGridMatch(matching.ast.text(node), node, false);
+    if (FlexGridMasonryMatcher.GRID.includes(text)) {
+      return new FlexGridMasonryMatch(matching.ast.text(node), node, LayoutType.GRID);
+    }
+    if (FlexGridMasonryMatcher.MASONRY.includes(text)) {
+      return new FlexGridMasonryMatch(matching.ast.text(node), node, LayoutType.MASONRY);
     }
     return null;
   }

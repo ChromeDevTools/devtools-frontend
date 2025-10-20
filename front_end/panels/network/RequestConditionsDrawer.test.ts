@@ -15,95 +15,120 @@ import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
 
+for (const individualThrottlingEnabled of [false, true]) {
+  describeWithMockConnection(
+      `RequestConditionsDrawer${individualThrottlingEnabled ? ' with individual request throttling enabled' : ''}`,
+      () => {
+        beforeEach(() => {
+          updateHostConfig({devToolsIndividualRequestThrottling: {enabled: individualThrottlingEnabled}});
+          setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+          setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
+          registerNoopActions([
+            'network.add-network-request-blocking-pattern',
+            'network.remove-all-network-request-blocking-patterns',
+          ]);
+          SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions.conditionsEnabled =
+              (true);
+        });
+
+        it('shows a placeholder', async () => {
+          const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+          renderElementIntoDOM(requestConditionsDrawer);
+          await requestConditionsDrawer.updateComplete;
+          const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
+          const placeholder = blockedElement?.shadowRoot?.querySelector('.empty-state');
+          assert.exists(placeholder);
+          assert.deepEqual(
+              placeholder.querySelector('.empty-state-header')?.textContent,
+              individualThrottlingEnabled ? 'No request throttling or blocking patterns' :
+                                            'No blocked network requests');
+          assert.deepEqual(
+              placeholder.querySelector('.empty-state-description > span')?.textContent,
+              'Add a pattern by clicking on the \"Add pattern\" button.');
+
+          if (individualThrottlingEnabled) {
+            await assertScreenshot('request_conditions/throttling_placeholder.png');
+          } else {
+            await assertScreenshot('request_conditions/placeholder.png');
+          }
+        });
+
+        it('Add pattern button triggers showing the editor view', async () => {
+          const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+          renderElementIntoDOM(requestConditionsDrawer);
+          await requestConditionsDrawer.updateComplete;
+          const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
+          const list = blockedElement?.shadowRoot?.querySelector('.list');
+          const placeholder = list?.querySelector('.empty-state');
+
+          const button = placeholder?.querySelector('devtools-button');
+          assert.exists(button);
+
+          assert.isNull(list?.querySelector('.editor-content'));
+          dispatchClickEvent(button);
+          await requestConditionsDrawer.updateComplete;
+          assert.exists(list?.querySelector('.editor-content'));
+
+          if (individualThrottlingEnabled) {
+            await assertScreenshot('request_conditions/throttling_editor.png');
+          } else {
+            await assertScreenshot('request_conditions/editor.png');
+          }
+        });
+
+        describe('update', () => {
+          const updatesOnRequestFinishedEvent = (inScope: boolean) => async () => {
+            const target = createTarget();
+            SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
+            const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+
+            SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.add(
+                SDK.NetworkManager.RequestCondition.createFromSetting({url: '*', enabled: true}));
+            const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+            renderElementIntoDOM(requestConditionsDrawer);
+            await requestConditionsDrawer.updateComplete;
+            assert.exists(networkManager);
+            const updateStub = sinon.spy(requestConditionsDrawer, 'requestUpdate');
+
+            const request = new SDK.NetworkRequest.NetworkRequest(
+                '', undefined, urlString`http://example.com`, urlString`http://example.com`, null, null, null);
+            request.setBlockedReason(Protocol.Network.BlockedReason.Inspector);
+
+            networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+            assert.strictEqual(updateStub.calledOnce, inScope);
+            if (inScope) {
+              await requestConditionsDrawer.updateComplete;
+              if (individualThrottlingEnabled) {
+                await assertScreenshot(`request_conditions/throttling_blocked-matched.png`);
+              } else {
+                await assertScreenshot(`request_conditions/blocked-matched.png`);
+              }
+            } else if (individualThrottlingEnabled) {
+              await assertScreenshot(`request_conditions/throttling_blocked-not-matched.png`);
+            } else {
+              await assertScreenshot(`request_conditions/blocked-not-matched.png`);
+            }
+          };
+
+          it('is called upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
+          it('is called upon RequestFinished event (when target is out of scope)',
+             updatesOnRequestFinishedEvent(false));
+
+          it('is called upon Reset event', async () => {
+            const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.RequestConditionsDrawer);
+            new Network.RequestConditionsDrawer.RequestConditionsDrawer(undefined, viewFunction);
+            await viewFunction.nextInput;
+
+            Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
+                Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});
+            await viewFunction.nextInput;
+          });
+        });
+      });
+}
+
 describeWithMockConnection('RequestConditionsDrawer', () => {
-  beforeEach(() => {
-    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
-    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
-    registerNoopActions([
-      'network.add-network-request-blocking-pattern',
-      'network.remove-all-network-request-blocking-patterns',
-    ]);
-    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions.conditionsEnabled =
-        (true);
-  });
-
-  it('shows a placeholder', async () => {
-    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
-    renderElementIntoDOM(requestConditionsDrawer);
-    await requestConditionsDrawer.updateComplete;
-    const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
-    const placeholder = blockedElement?.shadowRoot?.querySelector('.empty-state');
-    assert.exists(placeholder);
-    assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'No blocked network requests');
-    assert.deepEqual(
-        placeholder.querySelector('.empty-state-description > span')?.textContent,
-        'Add a pattern by clicking on the \"Add pattern\" button.');
-
-    await assertScreenshot('request_conditions/placeholder.png');
-  });
-
-  it('Add pattern button triggers showing the editor view', async () => {
-    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
-    renderElementIntoDOM(requestConditionsDrawer);
-    await requestConditionsDrawer.updateComplete;
-    const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
-    const list = blockedElement?.shadowRoot?.querySelector('.list');
-    const placeholder = list?.querySelector('.empty-state');
-
-    const button = placeholder?.querySelector('devtools-button');
-    assert.exists(button);
-
-    assert.isNull(list?.querySelector('.editor-content'));
-    dispatchClickEvent(button);
-    await requestConditionsDrawer.updateComplete;
-    assert.exists(list?.querySelector('.editor-content'));
-
-    await assertScreenshot('request_conditions/editor.png');
-  });
-
-  describe('update', () => {
-    const updatesOnRequestFinishedEvent = (inScope: boolean) => async () => {
-      const target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-
-      SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.add(
-          SDK.NetworkManager.RequestCondition.createFromSetting({url: '*', enabled: true}));
-      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
-      renderElementIntoDOM(requestConditionsDrawer);
-      await requestConditionsDrawer.updateComplete;
-      assert.exists(networkManager);
-      const updateStub = sinon.spy(requestConditionsDrawer, 'requestUpdate');
-
-      const request = new SDK.NetworkRequest.NetworkRequest(
-          '', undefined, urlString`http://example.com`, urlString`http://example.com`, null, null, null);
-      request.setBlockedReason(Protocol.Network.BlockedReason.Inspector);
-
-      networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
-
-      assert.strictEqual(updateStub.calledOnce, inScope);
-      if (inScope) {
-        await requestConditionsDrawer.updateComplete;
-        await assertScreenshot(`request_conditions/blocked-matched.png`);
-      } else {
-        await assertScreenshot(`request_conditions/blocked-not-matched.png`);
-      }
-    };
-
-    it('is called upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
-    it('is called upon RequestFinished event (when target is out of scope)', updatesOnRequestFinishedEvent(false));
-
-    it('is called upon Reset event', async () => {
-      const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.RequestConditionsDrawer);
-      new Network.RequestConditionsDrawer.RequestConditionsDrawer(undefined, viewFunction);
-      await viewFunction.nextInput;
-
-      Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
-          Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});
-      await viewFunction.nextInput;
-    });
-  });
-
   describe('shows information for upgrading wildcard patterns to URLPatterns', () => {
     beforeEach(() => {
       updateHostConfig({devToolsIndividualRequestThrottling: {enabled: true}});
@@ -149,8 +174,8 @@ describeWithMockConnection('RequestConditionsDrawer', () => {
       const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       const index = 3;
       const item = requestConditionsDrawer.renderItem(
-          SDK.NetworkManager.RequestCondition.createFromSetting({url: 'ht tp://*', enabled: true}), /* editable=*/ true,
-          index);
+          SDK.NetworkManager.RequestCondition.createFromSetting({url: 'ht tp://*', enabled: true}),
+          /* editable=*/ true, index);
       assert.isTrue(item.querySelector('input')?.disabled);
       assert.exists(item.querySelector('devtools-icon[name=cross-circle-filled]'));
       const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-error-${index}]`);

@@ -26,15 +26,10 @@ import {createContentProviderUISourceCodes, createFileSystemUISourceCode} from '
 import {createViewFunctionStub} from './ViewFunctionHelpers.js';
 
 function createMockAidaClient(doConversation: Host.AidaClient.AidaClient['doConversation']):
-    Host.AidaClient.AidaClient {
-  const doConversationStub = sinon.stub();
-  const registerClientEventStub = sinon.stub();
-  const completeCodeStub = sinon.stub();
-  return {
-    doConversation: doConversationStub.callsFake(doConversation),
-    registerClientEvent: registerClientEventStub,
-    completeCode: completeCodeStub,
-  };
+    sinon.SinonStubbedInstance<Host.AidaClient.AidaClient> {
+  const aidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient);
+  aidaClient.doConversation.callsFake(doConversation);
+  return aidaClient;
 }
 
 export const MockAidaAbortError = {
@@ -56,7 +51,7 @@ export type MockAidaResponse = Omit<Host.AidaClient.DoConversationResponse, 'com
  * The last chunk sets completed flag to true;
  */
 export function mockAidaClient(data: Array<[MockAidaResponse, ...MockAidaResponse[]]> = []):
-    Host.AidaClient.AidaClient {
+    sinon.SinonStubbedInstance<Host.AidaClient.AidaClient> {
   let callId = 0;
   async function* provideAnswer(_: Host.AidaClient.DoConversationRequest, options?: {signal?: AbortSignal}) {
     if (!data[callId]) {

@@ -248,7 +248,7 @@ describeWithMockConnection('ConversationHandler', () => {
       });
       const {panel, view} = await createAiAssistancePanel({aidaClient});
 
-      panel.handleAction('drjones.network-floating-button');
+      void panel.handleAction('drjones.network-floating-button');
       (await view.nextInput).onTextSubmit('User question to DrJones?');
       assert.deepEqual((await view.nextInput).messages, [
         {

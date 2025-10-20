@@ -1091,7 +1091,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // Node picker is using linkifier.
   }
 
-  handleAction(actionId: string, opts?: Record<string, unknown>): void {
+  #canExecuteQuery(): boolean {
+    const isBrandedBuild = Boolean(Root.Runtime.hostConfig.aidaAvailability?.enabled);
+    const isBlockedByAge = Boolean(Root.Runtime.hostConfig.aidaAvailability?.blockedByAge);
+    const isAidaAvailable = Boolean(this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    const isUserOptedIn = Boolean(this.#aiAssistanceEnabledSetting?.getIfNotDisabled());
+
+    return isBrandedBuild && isAidaAvailable && isUserOptedIn && !isBlockedByAge;
+  }
+
+  async handleAction(actionId: string, opts?: Record<string, unknown>): Promise<void> {
     if (this.#isLoading && !opts?.['prompt']) {
       // If running some queries already, and this action doesn't contain a predefined prompt, focus the input with the abort
       // button and do nothing.
@@ -1160,13 +1169,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#updateConversationState({agent});
     const predefinedPrompt = opts?.['prompt'];
     if (predefinedPrompt && typeof predefinedPrompt === 'string') {
+      if (!this.#canExecuteQuery()) {
+        return;
+      }
+
       this.#imageInput = undefined;
       this.#isTextInputEmpty = true;
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
       if (this.#blockedByCrossOrigin) {
         this.#handleNewChatRequest();
       }
-      void this.#startConversation(predefinedPrompt);
+      await this.#startConversation(predefinedPrompt);
     } else {
       this.#viewOutput.chatView?.focusTextInput();
     }
@@ -1671,7 +1684,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           }
 
           const widget = (await view.widget()) as AiAssistancePanel;
-          widget.handleAction(actionId, opts);
+          void widget.handleAction(actionId, opts);
         })();
         return true;
       }

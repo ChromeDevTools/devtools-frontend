@@ -360,9 +360,11 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       this.requestUpdate();
       return;
     }
-    this.#headerText = responseObject.header || '';
-    this.#mainText = responseObject.explanation || '';
-    if (!this.#headerText || !this.#mainText) {
+    if (responseObject.header && typeof responseObject.header === 'string' && responseObject.explanation &&
+        typeof responseObject.explanation === 'string') {
+      this.#headerText = responseObject.header;
+      this.#mainText = responseObject.explanation;
+    } else {
       this.#isError = true;
     }
     this.requestUpdate();

@@ -190,4 +190,29 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isEmpty(input.headerText);
     assert.isTrue(input.isError);
   });
+
+  it('shows error state for incorrect JSON', async () => {
+    const consoleViewMessage = setupBuiltInAi(async function*() {
+      yield JSON.stringify({
+        header: 'test header',
+        answer: 'test explanation',
+      });
+    });
+
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    const teaser =
+        new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
+    let input = await view.nextInput;
+    assert.isFalse(input.isInactive);
+    assert.isEmpty(input.mainText);
+    assert.isEmpty(input.headerText);
+    assert.isFalse(input.isError);
+    await teaser.maybeGenerateTeaser();
+
+    input = await view.nextInput;
+    assert.isFalse(input.isInactive);
+    assert.isEmpty(input.mainText);
+    assert.isEmpty(input.headerText);
+    assert.isTrue(input.isError);
+  });
 });

@@ -501,12 +501,12 @@ export class TargetBase {
     this.needsNodeJSPatching = needsNodeJSPatching;
     this.sessionId = sessionId;
 
-    if ((!parentTarget && connection) || (!parentTarget && sessionId) || (connection && sessionId)) {
-      throw new Error('Either connection or sessionId (but not both) must be supplied for a child target');
+    if (parentTarget && !sessionId) {
+      throw new Error('Specifying a parent target requires a session ID');
     }
 
     let router: SessionRouter;
-    if (sessionId && parentTarget && parentTarget.#router) {
+    if (parentTarget && parentTarget.#router) {
       router = parentTarget.#router;
     } else if (connection) {
       router = new SessionRouter(connection);

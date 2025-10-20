@@ -41,7 +41,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     const runPromise = inspectorMain.run();
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     SDK.TargetManager.TargetManager.instance().createTarget(
-        'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.FRAME, rootTarget, undefined);
+        'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.FRAME, rootTarget, 'session ID');
     await runPromise;
   };
 
@@ -195,7 +195,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
       assert.isFalse(finished);
       const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
       SDK.TargetManager.TargetManager.instance().createTarget(
-          'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.FRAME, rootTarget, undefined);
+          'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.FRAME, rootTarget, 'session ID');
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.isTrue(finished);
     });

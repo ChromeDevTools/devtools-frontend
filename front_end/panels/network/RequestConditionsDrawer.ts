@@ -19,7 +19,7 @@ import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import blockedURLsPaneStyles from './blockedURLsPane.css.js';
+import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
 
 const {ref} = Directives;
 
@@ -29,6 +29,10 @@ const UIStrings = {
    */
   enableNetworkRequestBlocking: 'Enable network request blocking',
   /**
+   * @description Text to enable blocking of network requests
+   */
+  enableBlockingAndThrottling: 'Enable blocking and throttling',
+  /**
    * @description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
    */
   addPattern: 'Add pattern',
@@ -37,14 +41,22 @@ const UIStrings = {
    */
   addNetworkRequestBlockingPattern: 'Add network request blocking pattern',
   /**
+   * @description Accessible label for the button to add request blocking patterns in the network request blocking tool
+   */
+  addPatternLabel: 'Add network request throttling or blocking pattern',
+  /**
    * @description Text that shows in the network request blocking panel if no pattern has yet been added.
    */
   noNetworkRequestsBlocked: 'No blocked network requests',
   /**
+   * @description Text that shows in the network request blocking panel if no pattern has yet been added.
+   */
+  noPattern: 'No request throttling or blocking patterns',
+  /**
    * @description Text that shows  in the network request blocking panel if no pattern has yet been added.
    * @example {Add pattern} PH1
    */
-  addPatternToBlock: 'Add a pattern to block network requests by clicking on the "{PH1}" button.',
+  addPatternToBlock: 'Add a pattern by clicking on the "{PH1}" button.',
   /**
    * @description Text in Blocked URLs Pane of the Network panel
    * @example {4} PH1
@@ -57,7 +69,7 @@ const UIStrings = {
   /**
    * @description Text in Blocked URLs Pane of the Network panel
    */
-  textPatternToBlockMatchingURLPatterns: 'Text pattern to block matching requests; use URLPattern syntax.',
+  textEditPattern: 'Text pattern to block or throttle matching requests; use URLPattern syntax.',
   /**
    * @description Error text for empty list widget input in Request Blocking tool
    */
@@ -88,7 +100,7 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/network/BlockedURLsPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/RequestConditionsDrawer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const NETWORK_REQUEST_BLOCKING_EXPLANATION_URL =
@@ -106,23 +118,27 @@ interface ViewInput {
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
+  const individualThrottlingEnabled = Boolean(Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled);
   render(
       // clang-format off
     html`
-    <style>${blockedURLsPaneStyles}</style>
+    <style>${RequestConditionsDrawer}</style>
     <devtools-toolbar jslog=${VisualLogging.toolbar()}>
       <devtools-checkbox
         ?checked=${input.enabled}
         @click=${input.toggleEnabled}
         .jslogContext=${'network.enable-request-blocking'}>
-        ${i18nString(UIStrings.enableNetworkRequestBlocking)}
+        ${individualThrottlingEnabled ? i18nString(UIStrings.enableBlockingAndThrottling)
+                                      : i18nString(UIStrings.enableNetworkRequestBlocking)}
       </devtools-checkbox>
       <div class="toolbar-divider"></div>
       <devtools-button ${bindToAction('network.add-network-request-blocking-pattern')}></devtools-button>
       <devtools-button ${bindToAction('network.remove-all-network-request-blocking-patterns')}></devtools-button>
     </devtools-toolbar>
     <div class=empty-state ${ref(e => input.list.setEmptyPlaceholder(e ?? null))}>
-      <span class=empty-state-header>${i18nString(UIStrings.noNetworkRequestsBlocked)}</span>
+      <span class=empty-state-header>${individualThrottlingEnabled
+                                       ? i18nString(UIStrings.noPattern)
+                                       : i18nString(UIStrings.noNetworkRequestsBlocked)}</span>
       <div class=empty-state-description>
         <span>${i18nString(UIStrings.addPatternToBlock, {PH1: i18nString(UIStrings.addPattern)})}</span>
         <x-link
@@ -137,7 +153,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         @click=${input.addPattern}
         class=add-button
         .jslogContext=${'network.add-network-request-blocking-pattern'}
-        aria-label=${i18nString(UIStrings.addNetworkRequestBlockingPattern)}
+        aria-label=${individualThrottlingEnabled ? i18nString(UIStrings.addPatternLabel)
+                                                 : i18nString(UIStrings.addNetworkRequestBlockingPattern)}
         .variant=${Buttons.Button.Variant.TONAL}>
           ${i18nString(UIStrings.addPattern)}
       </devtools-button>
@@ -158,7 +175,7 @@ function learnMore(): LitTemplate {
       </x-link>`;
 }
 
-export class BlockedURLsPane extends UI.Widget.VBox implements
+export class RequestConditionsDrawer extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.RequestCondition> {
   private manager: SDK.NetworkManager.MultitargetNetworkManager;
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.RequestCondition>;
@@ -178,7 +195,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
         SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, this.update, this);
 
     this.list = new UI.ListWidget.ListWidget(this);
-    this.list.registerRequiredCSS(blockedURLsPaneStyles);
+    this.list.registerRequiredCSS(requestConditionsDrawerStyles);
     this.list.element.classList.add('blocked-urls');
 
     this.editor = null;
@@ -357,7 +374,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const titles = content.createChild('div', 'blocked-url-edit-row');
     const label = titles.createChild('div');
     if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
-      label.textContent = i18nString(UIStrings.textPatternToBlockMatchingURLPatterns);
+      label.textContent = i18nString(UIStrings.textEditPattern);
       label.append(UI.XLink.XLink.create(
           PATTERN_API_DOCS_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more'));
     } else {
@@ -446,30 +463,30 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     }
   }
   override wasShown(): void {
-    UI.Context.Context.instance().setFlavor(BlockedURLsPane, this);
+    UI.Context.Context.instance().setFlavor(RequestConditionsDrawer, this);
     super.wasShown();
   }
 
   override willHide(): void {
     super.willHide();
-    UI.Context.Context.instance().setFlavor(BlockedURLsPane, null);
+    UI.Context.Context.instance().setFlavor(RequestConditionsDrawer, null);
   }
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
-    const blockedURLsPane = context.flavor(BlockedURLsPane);
-    if (blockedURLsPane === null) {
+    const drawer = context.flavor(RequestConditionsDrawer);
+    if (drawer === null) {
       return false;
     }
     switch (actionId) {
       case 'network.add-network-request-blocking-pattern': {
-        blockedURLsPane.addPattern();
+        drawer.addPattern();
         return true;
       }
 
       case 'network.remove-all-network-request-blocking-patterns': {
-        blockedURLsPane.removeAllPatterns();
+        drawer.removeAllPatterns();
         return true;
       }
     }

@@ -15,7 +15,7 @@ import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('BlockedURLsPane', () => {
+describeWithMockConnection('RequestConditionsDrawer', () => {
   beforeEach(() => {
     setMockConnectionResponseHandler('Debugger.enable', () => ({}));
     setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
@@ -28,25 +28,25 @@ describeWithMockConnection('BlockedURLsPane', () => {
   });
 
   it('shows a placeholder', async () => {
-    const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
-    renderElementIntoDOM(blockedURLsPane);
-    await blockedURLsPane.updateComplete;
-    const blockedElement = blockedURLsPane.contentElement.querySelector('.blocked-urls');
+    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+    renderElementIntoDOM(requestConditionsDrawer);
+    await requestConditionsDrawer.updateComplete;
+    const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
     const placeholder = blockedElement?.shadowRoot?.querySelector('.empty-state');
     assert.exists(placeholder);
     assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'No blocked network requests');
     assert.deepEqual(
         placeholder.querySelector('.empty-state-description > span')?.textContent,
-        'Add a pattern to block network requests by clicking on the \"Add pattern\" button.');
+        'Add a pattern by clicking on the \"Add pattern\" button.');
 
     await assertScreenshot('request_conditions/placeholder.png');
   });
 
   it('Add pattern button triggers showing the editor view', async () => {
-    const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
-    renderElementIntoDOM(blockedURLsPane);
-    await blockedURLsPane.updateComplete;
-    const blockedElement = blockedURLsPane.contentElement.querySelector('.blocked-urls');
+    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+    renderElementIntoDOM(requestConditionsDrawer);
+    await requestConditionsDrawer.updateComplete;
+    const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
     const list = blockedElement?.shadowRoot?.querySelector('.list');
     const placeholder = list?.querySelector('.empty-state');
 
@@ -55,7 +55,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
 
     assert.isNull(list?.querySelector('.editor-content'));
     dispatchClickEvent(button);
-    await blockedURLsPane.updateComplete;
+    await requestConditionsDrawer.updateComplete;
     assert.exists(list?.querySelector('.editor-content'));
 
     await assertScreenshot('request_conditions/editor.png');
@@ -69,11 +69,11 @@ describeWithMockConnection('BlockedURLsPane', () => {
 
       SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.add(
           SDK.NetworkManager.RequestCondition.createFromSetting({url: '*', enabled: true}));
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
-      renderElementIntoDOM(blockedURLsPane);
-      await blockedURLsPane.updateComplete;
+      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      renderElementIntoDOM(requestConditionsDrawer);
+      await requestConditionsDrawer.updateComplete;
       assert.exists(networkManager);
-      const updateStub = sinon.spy(blockedURLsPane, 'requestUpdate');
+      const updateStub = sinon.spy(requestConditionsDrawer, 'requestUpdate');
 
       const request = new SDK.NetworkRequest.NetworkRequest(
           '', undefined, urlString`http://example.com`, urlString`http://example.com`, null, null, null);
@@ -83,7 +83,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
 
       assert.strictEqual(updateStub.calledOnce, inScope);
       if (inScope) {
-        await blockedURLsPane.updateComplete;
+        await requestConditionsDrawer.updateComplete;
         await assertScreenshot(`request_conditions/blocked-matched.png`);
       } else {
         await assertScreenshot(`request_conditions/blocked-not-matched.png`);
@@ -94,8 +94,8 @@ describeWithMockConnection('BlockedURLsPane', () => {
     it('is called upon RequestFinished event (when target is out of scope)', updatesOnRequestFinishedEvent(false));
 
     it('is called upon Reset event', async () => {
-      const viewFunction = createViewFunctionStub(Network.BlockedURLsPane.BlockedURLsPane);
-      new Network.BlockedURLsPane.BlockedURLsPane(undefined, viewFunction);
+      const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.RequestConditionsDrawer);
+      new Network.RequestConditionsDrawer.RequestConditionsDrawer(undefined, viewFunction);
       await viewFunction.nextInput;
 
       Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
@@ -110,9 +110,9 @@ describeWithMockConnection('BlockedURLsPane', () => {
     });
 
     it('shows the URLPattern breakdown', () => {
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       const index = 0;
-      const item = blockedURLsPane.renderItem(
+      const item = requestConditionsDrawer.renderItem(
           SDK.NetworkManager.RequestCondition.createFromSetting({
             urlPattern: 'http://example.com/*bar' as SDK.NetworkManager.URLPatternConstructorString,
             enabled: true,
@@ -131,9 +131,9 @@ describeWithMockConnection('BlockedURLsPane', () => {
     });
 
     it('shows a warning icon when a pattern was upgraded', () => {
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       const index = 1;
-      const item = blockedURLsPane.renderItem(
+      const item = requestConditionsDrawer.renderItem(
           SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com/*bar', enabled: true}),
           /* editable=*/ true, index);
       const hovered = item.querySelector(`[aria-details=url-pattern-${index}]`);
@@ -146,9 +146,9 @@ describeWithMockConnection('BlockedURLsPane', () => {
     });
 
     it('shows an error icon when a pattern is invalid', () => {
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       const index = 3;
-      const item = blockedURLsPane.renderItem(
+      const item = requestConditionsDrawer.renderItem(
           SDK.NetworkManager.RequestCondition.createFromSetting({url: 'ht tp://*', enabled: true}), /* editable=*/ true,
           index);
       assert.isTrue(item.querySelector('input')?.disabled);
@@ -159,9 +159,9 @@ describeWithMockConnection('BlockedURLsPane', () => {
     });
 
     it('shows an error icon when a pattern contains regexp groups', () => {
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       const index = 0;
-      const item = blockedURLsPane.renderItem(
+      const item = requestConditionsDrawer.renderItem(
           SDK.NetworkManager.RequestCondition.createFromSetting({url: 'http://*/(\\d+)', enabled: true}),
           /* editable=*/ true, index);
       assert.isTrue(item.querySelector('input')?.disabled);
@@ -172,16 +172,16 @@ describeWithMockConnection('BlockedURLsPane', () => {
     });
 
     it('shows an error message in the editor when the pattern is invalid or has regexp groups', () => {
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
 
-      const regexpPatternEditor = blockedURLsPane.beginEdit(
+      const regexpPatternEditor = requestConditionsDrawer.beginEdit(
           SDK.NetworkManager.RequestCondition.createFromSetting({url: 'http://*/(\\d+)', enabled: true}));
       regexpPatternEditor.requestValidation();
       assert.strictEqual(
           regexpPatternEditor.element.querySelector('.list-widget-input-validation-error')?.textContent,
           'RegExp groups are not allowed');
 
-      const invalidPatternEditor = blockedURLsPane.beginEdit(
+      const invalidPatternEditor = requestConditionsDrawer.beginEdit(
           SDK.NetworkManager.RequestCondition.createFromSetting({url: 'ht tp://*', enabled: true}));
       invalidPatternEditor.requestValidation();
       assert.strictEqual(

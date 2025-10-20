@@ -28,9 +28,17 @@ const UIStrings = {
    */
   showNetworkRequestBlocking: 'Show Network request blocking',
   /**
+   * @description Command for showing the 'Network request blocking' tool
+   */
+  showRequestConditions: 'Show Request conditions',
+  /**
    * @description Title of the 'Network request blocking' tool in the bottom drawer
    */
   networkRequestBlocking: 'Network request blocking',
+  /**
+   * @description Title of the 'Request conditions' tool in the bottom drawer
+   */
+  networkRequestConditions: 'Request conditions',
   /**
    * @description Command for showing the 'Network conditions' tool
    */
@@ -124,6 +132,14 @@ const UIStrings = {
    */
   removeAllNetworkRequestBlockingPatterns: 'Remove all network request blocking patterns',
   /**
+   * @description Title of an action in the Network request blocking panel to add a new URL pattern to the blocklist.
+   */
+  addNetworkRequestBlockingOrThrottlingPattern: 'Add network request blocking or throttling pattern',
+  /**
+   * @description Title of an action in the Network request blocking panel to clear all URL patterns.
+   */
+  removeAllNetworkRequestBlockingOrThrottlingPatterns: 'Remove all network request blocking or throttling patterns',
+  /**
    * @description Title of an action in the Network panel (and title of a setting in the Network category)
    *              that enables options in the UI to copy or export HAR (not translatable) with sensitive data.
    */
@@ -142,6 +158,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let loadedNetworkModule: (typeof Network|undefined);
 
 const isNode = Root.Runtime.Runtime.isNode();
@@ -173,16 +190,20 @@ UI.ViewManager.registerViewExtension({
   },
 });
 
+const individualThrottlingEnabled = (): boolean =>
+    Boolean(Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled);
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.blocked-urls',
-  commandPrompt: i18nLazyString(UIStrings.showNetworkRequestBlocking),
-  title: i18nLazyString(UIStrings.networkRequestBlocking),
+  commandPrompt: () => individualThrottlingEnabled() ? i18nString(UIStrings.showRequestConditions) :
+                                                       i18nString(UIStrings.showNetworkRequestBlocking),
+  title: () => individualThrottlingEnabled() ? i18nString(UIStrings.networkRequestConditions) :
+                                               i18nString(UIStrings.networkRequestBlocking),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 60,
   async loadView() {
     const Network = await loadNetworkModule();
-    return new Network.BlockedURLsPane.BlockedURLsPane();
+    return new Network.RequestConditionsDrawer.RequestConditionsDrawer();
   },
 });
 
@@ -329,28 +350,31 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.add-network-request-blocking-pattern',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nLazyString(UIStrings.addNetworkRequestBlockingPattern),
+  title: () => individualThrottlingEnabled() ? i18nString(UIStrings.addNetworkRequestBlockingOrThrottlingPattern) :
+                                               i18nString(UIStrings.addNetworkRequestBlockingPattern),
   iconClass: UI.ActionRegistration.IconClass.PLUS,
   contextTypes() {
-    return maybeRetrieveContextTypes(Network => [Network.BlockedURLsPane.BlockedURLsPane]);
+    return maybeRetrieveContextTypes(Network => [Network.RequestConditionsDrawer.RequestConditionsDrawer]);
   },
   async loadActionDelegate() {
     const Network = await loadNetworkModule();
-    return new Network.BlockedURLsPane.ActionDelegate();
+    return new Network.RequestConditionsDrawer.ActionDelegate();
   },
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.remove-all-network-request-blocking-patterns',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nLazyString(UIStrings.removeAllNetworkRequestBlockingPatterns),
+  title: () => individualThrottlingEnabled() ?
+      i18nString(UIStrings.removeAllNetworkRequestBlockingOrThrottlingPatterns) :
+      i18nString(UIStrings.removeAllNetworkRequestBlockingPatterns),
   iconClass: UI.ActionRegistration.IconClass.CLEAR,
   contextTypes() {
-    return maybeRetrieveContextTypes(Network => [Network.BlockedURLsPane.BlockedURLsPane]);
+    return maybeRetrieveContextTypes(Network => [Network.RequestConditionsDrawer.RequestConditionsDrawer]);
   },
   async loadActionDelegate() {
     const Network = await loadNetworkModule();
-    return new Network.BlockedURLsPane.ActionDelegate();
+    return new Network.RequestConditionsDrawer.ActionDelegate();
   },
 });
 

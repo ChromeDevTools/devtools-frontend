@@ -33,29 +33,37 @@ async function setupRequestBlocking(
     devToolsPage: DevToolsPage,
     {patterns, enabled, useURLPatterns}: {patterns: string[], enabled: boolean, useURLPatterns: boolean}):
     Promise<void> {
-  await openPanelViaMoreTools('Network request blocking', devToolsPage);
+  await openPanelViaMoreTools(useURLPatterns ? 'Request conditions' : 'Network request blocking', devToolsPage);
   for (const pattern of patterns) {
-    await devToolsPage.click('aria/Add network request blocking pattern');
+    await devToolsPage.click(
+        useURLPatterns ? 'aria/Add network request blocking or throttling pattern' :
+                         'aria/Add network request blocking pattern');
     await devToolsPage.click('.blocked-url-edit-value > input');
     await devToolsPage.typeText(useURLPatterns ? `:*/*${pattern}` : pattern);
     await devToolsPage.click('aria/Add');
   }
 
   const networkRequestBlockingCheckbox =
-      await (await devToolsPage.waitForAria('Enable network request blocking')).toElement('input');
+      await (await devToolsPage.waitForAria(
+                 useURLPatterns ? 'Enable blocking and throttling' : 'Enable network request blocking'))
+          .toElement('input');
   await setCheckBox(networkRequestBlockingCheckbox, enabled);
 }
 
-async function disableRequestBlocking(devToolsPage: DevToolsPage): Promise<void> {
-  await openPanelViaMoreTools('Network request blocking', devToolsPage);
-  await devToolsPage.click('aria/Remove all network request blocking patterns');
+async function disableRequestBlocking(devToolsPage: DevToolsPage, useURLPatterns: boolean): Promise<void> {
+  await openPanelViaMoreTools(useURLPatterns ? 'Request conditions' : 'Network request blocking', devToolsPage);
+  await devToolsPage.click(
+      useURLPatterns ? 'aria/Remove all network request blocking or throttling patterns' :
+                       'aria/Remove all network request blocking patterns');
   const networkRequestBlockingCheckbox =
-      await (await devToolsPage.waitForAria('Enable network request blocking')).toElement('input');
+      await (await devToolsPage.waitForAria(
+                 useURLPatterns ? 'Enable blocking and throttling' : 'Enable network request blocking'))
+          .toElement('input');
   await setCheckBox(networkRequestBlockingCheckbox, false);
 }
 
-for (const useURLPatterns of [false, true]) {
-  describe(`The Network request blocking panel${useURLPatterns ? ' with URLPatterns' : ''}`, function() {
+for (const useURLPatterns of [true]) {
+  describe(`The ${useURLPatterns ? 'Request conditions drawer' : 'Network request blocking panel'}`, function() {
     if (this.timeout() > 0) {
       this.timeout(20000);
     }
@@ -106,7 +114,7 @@ for (const useURLPatterns of [false, true]) {
       await firstListItem.click();
       assert.isTrue(await checkboxIsChecked(firstCheckbox));
 
-      await disableRequestBlocking(devToolsPage);
+      await disableRequestBlocking(devToolsPage, useURLPatterns);
     });
 
     it('allows scrolling the pattern list when blocking is disabled', async ({devToolsPage}) => {
@@ -121,7 +129,7 @@ for (const useURLPatterns of [false, true]) {
       await lastListItem.scrollIntoView();
       await devToolsPage.waitForFunction(() => isVisible(lastListItem, list));
 
-      await disableRequestBlocking(devToolsPage);
+      await disableRequestBlocking(devToolsPage, useURLPatterns);
     });
 
     it('displays blocked reason for CSP blocked requests', async ({devToolsPage, inspectedPage}) => {
@@ -136,7 +144,7 @@ for (const useURLPatterns of [false, true]) {
       const status = await devToolsPage.waitFor('.network-log-grid tbody .status-column');
       assert.strictEqual(await status.evaluate(node => node.textContent), '(blocked:csp)');
 
-      await disableRequestBlocking(devToolsPage);
+      await disableRequestBlocking(devToolsPage, useURLPatterns);
     });
 
     async function testBlockedURL(
@@ -156,7 +164,7 @@ for (const useURLPatterns of [false, true]) {
       const status = await devToolsPage.waitFor('.network-log-grid tbody .status-column');
       assert.strictEqual(await status.evaluate(node => node.textContent), expectedStatus);
 
-      await disableRequestBlocking(devToolsPage);
+      await disableRequestBlocking(devToolsPage, useURLPatterns);
     }
 
     it('displays blocked reason for DevTools blocked requests matching with stars inside the pattern',

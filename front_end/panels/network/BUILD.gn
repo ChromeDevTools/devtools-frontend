@@ -11,7 +11,6 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "binaryResourceView.css",
-    "blockedURLsPane.css",
     "eventSourceMessagesView.css",
     "networkConfigView.css",
     "networkLogView.css",
@@ -19,6 +18,7 @@ generate_css("css_files") {
     "networkPanel.css",
     "networkTimingTable.css",
     "networkWaterfallColumn.css",
+    "requestConditionsDrawer.css",
     "requestCookiesView.css",
     "requestHTMLView.css",
     "requestHeadersTree.css",
@@ -35,7 +35,6 @@ generate_css("css_files") {
 devtools_ui_module("network") {
   sources = [
     "BinaryResourceView.ts",
-    "BlockedURLsPane.ts",
     "EventSourceMessagesView.ts",
     "NetworkConfigView.ts",
     "NetworkDataGridNode.ts",
@@ -48,6 +47,7 @@ devtools_ui_module("network") {
     "NetworkPanel.ts",
     "NetworkSearchScope.ts",
     "NetworkWaterfallColumn.ts",
+    "RequestConditionsDrawer.ts",
     "RequestCookiesView.ts",
     "RequestHTMLView.ts",
     "RequestInitiatorView.ts",
@@ -146,7 +146,6 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
-    "BlockedURLsPane.test.ts",
     "NetworkConfigView.test.ts",
     "NetworkDataGridNode.test.ts",
     "NetworkItemView.test.ts",
@@ -154,6 +153,7 @@ devtools_ui_module("unittests") {
     "NetworkOverview.test.ts",
     "NetworkPanel.test.ts",
     "NetworkSearchScope.test.ts",
+    "RequestConditionsDrawer.test.ts",
     "RequestCookiesView.test.ts",
     "RequestHTMLView.test.ts",
     "RequestPayloadView.test.ts",

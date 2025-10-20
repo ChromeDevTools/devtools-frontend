@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
@@ -77,6 +78,15 @@ export class InspectorBackend {
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
   readonly typeMap = new Map<QualifiedName, CommandParameter[]>();
   readonly enumMap = new Map<QualifiedName, Record<string, string>>();
+
+  constructor() {
+    // Create the global here because registering commands will involve putting
+    // items onto the global.
+    // @ts-expect-error Global namespace instantiation
+    globalThis.Protocol ||= {};
+
+    InspectorBackendCommands.registerCommands(this);
+  }
 
   private getOrCreateEventParameterNamesForDomain(domain: ProtocolDomainName): EventParameterNames {
     let map = this.#eventParameterNamesForDomain.get(domain);

@@ -26,7 +26,7 @@ while (!fs.existsSync(path.join(pathToOutTargetDir, 'args.gn'))) {
   pathToOutTargetDir = path.resolve(pathToOutTargetDir, '..');
   if (pathToOutTargetDir === fileSystemRootDirectory) {
     console.error(
-        'Could not find the build root directory. You must run the hosted server from within the build root directory containing the args.gn file for it to work. The hosted mode server only works on the built output from DevTools, not from the source input.');
+        'Could not find the build root directory. You must run the hosted server from within the build root directory containing the args.gn file for it to work (node gen/scripts/hosted_mode/server.js). The hosted mode server only works on the built output from DevTools, not from the source input.');
     process.exit(1);
   }
 }
@@ -117,7 +117,8 @@ async function requestHandler(request, response) {
 
   let encoding = 'utf8';
   if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg') ||
-      absoluteFilePath.endsWith('.avif') || absoluteFilePath.endsWith('.dwp') || absoluteFilePath.endsWith('.dwo')) {
+      absoluteFilePath.endsWith('.avif') || absoluteFilePath.endsWith('.dwp') || absoluteFilePath.endsWith('.dwo') ||
+      absoluteFilePath.endsWith('.gz')) {
     encoding = 'binary';
   }
 
@@ -155,6 +156,9 @@ async function requestHandler(request, response) {
     }
     if (path.endsWith('.avif')) {
       return 'image/avif';
+    }
+    if (path.endsWith('.gz')) {
+      return 'application/gzip';
     }
     return null;
   }
@@ -194,6 +198,11 @@ async function requestHandler(request, response) {
       }
       headers.set('Vary', 'Origin');
     }
+
+    if (request.url.endsWith('.gz')) {
+      headers.set('Content-Encoding', 'gzip');
+    }
+
     headers.forEach((value, header) => {
       response.setHeader(header, value);
     });

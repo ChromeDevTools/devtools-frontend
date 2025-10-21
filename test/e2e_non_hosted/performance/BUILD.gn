@@ -14,6 +14,7 @@ ts_e2e_library("performance") {
     "settings-throttle-change_test.ts",
     "timeline-js-line-level-profile-no-url-end-to-end_test.ts",
     "timeline/treeview_test.ts",
+    "trace-app_test.ts",
     "wasm/performance_profiling_test.ts",
   ]
   deps = [

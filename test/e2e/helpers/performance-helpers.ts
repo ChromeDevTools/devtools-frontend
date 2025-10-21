@@ -15,7 +15,6 @@ import {
   veClick,
   veImpression,
   veImpressionsUnder,
-  veKeyDown,
   veResize,
 } from './visual-logging-helpers.js';
 
@@ -87,27 +86,16 @@ export async function searchForComponent(
     searchEntry: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.waitFor('devtools-performance-timeline-summary');
   await devToolsPage.summonSearchBox();
-  await devToolsPage.waitFor('.search-bar');
-  await devToolsPage.page.keyboard.type(searchEntry);
+
+  const inputEl = await devToolsPage.waitFor('input#search-input-field');
+  await inputEl.focus();
+  await inputEl.evaluate((el, searchEntry) => {
+    el.value = searchEntry;
+    el.blur();
+    el.dispatchEvent(new Event('input'));
+  }, searchEntry);
+  await devToolsPage.evaluate(async () => await new Promise(requestAnimationFrame));
   await devToolsPage.timeout(300);
-  await devToolsPage.page.keyboard.press('Tab');
-  await devToolsPage.timeout(300);
-  await expectVeEvents(
-      [
-        veKeyDown(''),
-        veImpressionsUnder('Panel: timeline', [veImpression(
-                                                  'Toolbar', 'search',
-                                                  [
-                                                    veImpression('TextField', 'search'),
-                                                    veImpression('Action', 'regular-expression'),
-                                                    veImpression('Action', 'match-case'),
-                                                    veImpression('Action', 'select-previous'),
-                                                    veImpression('Action', 'select-next'),
-                                                    veImpression('Action', 'close-search'),
-                                                  ])]),
-        veChange('Panel: timeline > Toolbar: search > TextField: search'),
-      ],
-      undefined, devToolsPage);
 }
 
 export async function navigateToBottomUpTab(

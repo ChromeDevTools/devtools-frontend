@@ -173,7 +173,15 @@ export class ErrorExpectation {
 
   check(consoleMessage: puppeteer.ConsoleMessage|Error) {
     const text = consoleMessage instanceof Error ? consoleMessage.message : consoleMessage.text();
-    const match = (this.#msg instanceof RegExp) ? Boolean(text.match(this.#msg)) : text.includes(this.#msg);
+    let match = (this.#msg instanceof RegExp) ? Boolean(text.match(this.#msg)) : text.includes(this.#msg);
+    // When console.assert(condition) fails (no second arg), the only message is
+    // "console.assert". Check the stack trace for those cases. Don't do this
+    // generally as checking the stack trace should be discouraged.
+    if (!match && text === 'console.assert') {
+      const stack = consoleMessage instanceof Error ? consoleMessage.stack ?? '' :
+                                                      consoleMessage.stackTrace().map(l => l.url ?? '').join('\n');
+      match = (this.#msg instanceof RegExp) ? Boolean(stack.match(this.#msg)) : stack.includes(this.#msg);
+    }
     if (match) {
       this.#caught = consoleMessage;
     }

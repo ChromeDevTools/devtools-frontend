@@ -135,7 +135,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
             .iconName=${'info'}
             .variant=${Buttons.Button.Variant.ICON}
             aria-details=${'teaser-info-tooltip-' + input.uuid}
-            aria-label=${lockedString(UIStringsNotTranslate.learnDataUsage)}
+            .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
           ></devtools-button>
           <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
             <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>

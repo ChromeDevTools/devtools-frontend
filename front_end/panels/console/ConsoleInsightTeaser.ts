@@ -115,51 +115,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   }
 
   const showPlaceholder = !Boolean(input.mainText);
-  const renderFooter = (): Lit.LitTemplate => {
-    // clang-format off
-    return html`
-      <div class="tooltip-footer">
-        ${input.hasTellMeMoreButton ? html`
-          <devtools-button
-            title=${lockedString(UIStringsNotTranslate.tellMeMore)}
-            .jslogContext=${'insights-teaser-tell-me-more'},
-            .variant=${Buttons.Button.Variant.PRIMARY}
-            @click=${input.onTellMeMoreClick}
-          >
-            <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
-            ${lockedString(UIStringsNotTranslate.tellMeMore)}
-          </devtools-button>
-        ` : Lit.nothing}
-        ${showPlaceholder ? Lit.nothing : html`
-          <devtools-button
-            .iconName=${'info'}
-            .variant=${Buttons.Button.Variant.ICON}
-            aria-details=${'teaser-info-tooltip-' + input.uuid}
-            .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
-          ></devtools-button>
-          <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
-            <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
-            <div class="learn-more">
-              <x-link
-                class="devtools-link"
-                title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
-                href=${DATA_USAGE_URL}
-                jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
-              >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
-            </div>
-          </devtools-tooltip>
-        `}
-        <devtools-checkbox
-          aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
-          @change=${input.dontShowChanged}
-          jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
-          ${lockedString(UIStringsNotTranslate.dontShow)}
-        </devtools-checkbox>
-      </div>
-    `;
-    // clang-format on
-  };
-
   // clang-format off
   render(html`
     <style>${consoleInsightTeaserStyles}</style>
@@ -185,7 +140,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
               class="loader"
               style="clip-path: url(${'#clipPath-' + input.uuid});"
             >
-              <svg width="100%" height="52">
+              <svg width="100%" height="58">
                 <defs>
                 <clipPath id=${'clipPath-' + input.uuid}>
                   <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
@@ -197,10 +152,47 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
             </div>
           ` : html`
             <h2>${input.headerText}</h2>
-            <div>${input.mainText}</div>
+            <div class="main-text">${input.mainText}</div>
           `
         }
-        ${input.isError || input.isSlowGeneration || !showPlaceholder ? renderFooter() : Lit.nothing}
+        <div class="tooltip-footer">
+          ${input.hasTellMeMoreButton ? html`
+            <devtools-button
+              title=${lockedString(UIStringsNotTranslate.tellMeMore)}
+              .jslogContext=${'insights-teaser-tell-me-more'},
+              .variant=${Buttons.Button.Variant.PRIMARY}
+              @click=${input.onTellMeMoreClick}
+            >
+              <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
+              ${lockedString(UIStringsNotTranslate.tellMeMore)}
+            </devtools-button>
+          ` : Lit.nothing}
+          ${showPlaceholder ? Lit.nothing : html`
+            <devtools-button
+              .iconName=${'info'}
+              .variant=${Buttons.Button.Variant.ICON}
+              aria-details=${'teaser-info-tooltip-' + input.uuid}
+              .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
+            ></devtools-button>
+            <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
+              <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
+              <div class="learn-more">
+                <x-link
+                  class="devtools-link"
+                  title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
+                  href=${DATA_USAGE_URL}
+                  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
+                >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
+              </div>
+            </devtools-tooltip>
+          `}
+          <devtools-checkbox
+            aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
+            @change=${input.dontShowChanged}
+            jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
+            ${lockedString(UIStringsNotTranslate.dontShow)}
+          </devtools-checkbox>
+        </div>
       </div>
     </devtools-tooltip>
   `, target);

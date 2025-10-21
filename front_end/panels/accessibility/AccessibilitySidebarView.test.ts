@@ -39,15 +39,14 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
     requestPartialAXTree.resolves();
     const node = new SDK.DOMModel.DOMNode(domModel);
 
-    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance(
-        {forceNew: true, throttlingTimeout: 0});
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
     renderElementIntoDOM(view);
     view.setNode(node);
-    await new Promise<void>(resolve => setTimeout(resolve, 0));
+    await view.updateComplete;
 
     requestPartialAXTree.resetHistory();
     domModel.dispatchEventToListeners(event, {node});
-    await new Promise<void>(resolve => setTimeout(resolve, 0));
+    await view.updateComplete;
     assert.strictEqual(requestPartialAXTree.called, inScope);
   };
 

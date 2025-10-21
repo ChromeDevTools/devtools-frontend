@@ -15,7 +15,7 @@ import {SourceOrderPane} from './SourceOrderView.js';
 
 let accessibilitySidebarViewInstance: AccessibilitySidebarView;
 
-export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget {
+export class AccessibilitySidebarView extends UI.Widget.VBox {
   #node: SDK.DOMModel.DOMNode|null;
   #axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   private skipNextPullNode: boolean;
@@ -24,8 +24,8 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   private readonly ariaSubPane: ARIAAttributesPane;
   private readonly axNodeSubPane: AXNodeSubPane;
   private readonly sourceOrderSubPane: SourceOrderPane;
-  private constructor(throttlingTimeout?: number) {
-    super(false /* useShadowDom */, throttlingTimeout);
+  private constructor() {
+    super();
     this.element.classList.add('accessibility-sidebar-view');
     this.#node = null;
     this.#axNode = null;
@@ -44,12 +44,9 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.pullNode();
   }
 
-  static instance(opts?: {
-    forceNew: boolean,
-    throttlingTimeout: number,
-  }): AccessibilitySidebarView {
+  static instance(opts?: {forceNew: boolean}): AccessibilitySidebarView {
     if (!accessibilitySidebarViewInstance || opts?.forceNew) {
-      accessibilitySidebarViewInstance = new AccessibilitySidebarView(opts?.throttlingTimeout);
+      accessibilitySidebarViewInstance = new AccessibilitySidebarView();
     }
     return accessibilitySidebarViewInstance;
   }
@@ -65,7 +62,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   setNode(node: SDK.DOMModel.DOMNode|null, fromAXTree?: boolean): void {
     this.skipNextPullNode = Boolean(fromAXTree);
     this.#node = node;
-    this.update();
+    this.requestUpdate();
   }
 
   accessibilityNodeCallback(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
@@ -85,7 +82,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.breadcrumbsSubPane.setAXNode(axNode);
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     const node = this.node();
     this.axNodeSubPane.setNode(node);
     this.ariaSubPane.setNode(node);
@@ -109,7 +106,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     super.wasShown();
 
     // Pull down the latest date for this node.
-    void this.doUpdate();
+    void this.performUpdate();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this, {scoped: true});
@@ -152,6 +149,6 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     if (this.node() !== node) {
       return;
     }
-    this.update();
+    this.requestUpdate();
   }
 }

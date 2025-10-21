@@ -103,7 +103,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 const getShowAllPropertiesSetting = (): Common.Settings.Setting<boolean> =>
     Common.Settings.Settings.instance().createSetting('show-all-properties', /* defaultValue */ false);
 
-export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
+export class PropertiesWidget extends UI.Widget.VBox {
   private node: SDK.DOMModel.DOMNode|null;
   private readonly showAllPropertiesSetting: Common.Settings.Setting<boolean>;
   private filterRegex: RegExp|null = null;
@@ -112,8 +112,8 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   readonly #view: View;
   #displayNoMatchingPropertyMessage = false;
 
-  constructor(throttlingTimeout?: number, view: View = DEFAULT_VIEW) {
-    super(true /* isWebComponent */, throttlingTimeout);
+  constructor(view: View = DEFAULT_VIEW) {
+    super({useShadowDom: true});
     this.registerRequiredCSS(propertiesWidgetStyles);
 
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
@@ -138,7 +138,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
     });
 
-    void this.doUpdate();
+    void this.performUpdate();
   }
 
   private onFilterChanged(event: CustomEvent<string>): void {
@@ -150,7 +150,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     const previousDisplay = this.#displayNoMatchingPropertyMessage;
     this.internalFilterProperties();
     if (previousDisplay !== this.#displayNoMatchingPropertyMessage) {
-      this.update();
+      this.requestUpdate();
     }
   }
 
@@ -169,10 +169,10 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   private setNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
     this.node = event.data;
-    this.update();
+    this.requestUpdate();
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     if (this.lastRequestedNode) {
       this.lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
       delete this.lastRequestedNode;
@@ -218,6 +218,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     if (this.node !== node) {
       return;
     }
-    this.update();
+    this.requestUpdate();
   }
 }

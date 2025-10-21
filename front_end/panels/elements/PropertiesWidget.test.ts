@@ -48,15 +48,15 @@ describeWithMockConnection('PropertiesWidget', () => {
     } as unknown as SDK.RemoteObject.RemoteObject);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-    view = new Elements.PropertiesWidget.PropertiesWidget(0);
+    view = new Elements.PropertiesWidget.PropertiesWidget();
     renderElementIntoDOM(view);
-    await new Promise<void>(resolve => setTimeout(resolve, 0));
+    await view.updateComplete;
 
     const populateWithProperties =
         sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement, 'populateWithProperties');
     model.dispatchEventToListeners(
         event, ...[node] as unknown as Common.EventTarget.EventPayloadToRestParameters<SDK.DOMModel.EventTypes, T>);
-    await new Promise<void>(resolve => setTimeout(resolve, 0));
+    await view.updateComplete;
     assert.strictEqual(populateWithProperties.called, inScope);
   };
 

@@ -86,7 +86,6 @@ devtools_ui_module("ui") {
     "TabbedPane.ts",
     "TargetCrashedScreen.ts",
     "TextPrompt.ts",
-    "ThrottledWidget.ts",
     "Toolbar.ts",
     "Tooltip.ts",
     "Treeoutline.ts",

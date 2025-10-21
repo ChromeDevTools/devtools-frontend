@@ -42,7 +42,6 @@ import * as SuggestBox from './SuggestBox.js';
 import * as TabbedPane from './TabbedPane.js';
 import * as TargetCrashedScreen from './TargetCrashedScreen.js';
 import * as TextPrompt from './TextPrompt.js';
-import * as ThrottledWidget from './ThrottledWidget.js';
 import * as Toolbar from './Toolbar.js';
 import * as Tooltip from './Tooltip.js';
 import * as TreeOutline from './Treeoutline.js';
@@ -95,7 +94,6 @@ export {
   TabbedPane,
   TargetCrashedScreen,
   TextPrompt,
-  ThrottledWidget,
   Toolbar,
   Tooltip,
   TreeOutline,

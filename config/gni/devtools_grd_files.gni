@@ -2502,7 +2502,6 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/TabbedPane.js",
   "front_end/ui/legacy/TargetCrashedScreen.js",
   "front_end/ui/legacy/TextPrompt.js",
-  "front_end/ui/legacy/ThrottledWidget.js",
   "front_end/ui/legacy/Toolbar.js",
   "front_end/ui/legacy/Tooltip.js",
   "front_end/ui/legacy/Treeoutline.js",

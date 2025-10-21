@@ -9,7 +9,6 @@ import '../../../ui/components/buttons/buttons.js';
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Root from '../../../core/root/root.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -155,15 +154,10 @@ export class ExportTraceOptions extends HTMLElement {
   }
 
   updateContentVisibility(options: {annotationsExist: boolean}): void {
-    const showIncludeScriptContentCheckbox =
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES);
-    const showIncludeSourceMapCheckbox =
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES);
-
     const newState = Object.assign({}, this.#state, {
       displayAnnotationsCheckbox: options.annotationsExist,
-      displayScriptContentCheckbox: showIncludeScriptContentCheckbox,
-      displaySourceMapsCheckbox: showIncludeSourceMapCheckbox
+      displayScriptContentCheckbox: true,
+      displaySourceMapsCheckbox: true
     });
 
     this.state = newState;

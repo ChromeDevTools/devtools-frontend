@@ -363,10 +363,12 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
     if (!isInWrapper) {
       panel.#sourcesView.leftToolbar().appendToolbarItem(panel.toggleNavigatorSidebarButton);
-      if (panel.splitWidget.isVertical()) {
-        panel.#sourcesView.rightToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
-      } else {
-        panel.#sourcesView.bottomToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
+      if (!Root.Runtime.Runtime.isTraceApp()) {
+        if (panel.splitWidget.isVertical()) {
+          panel.#sourcesView.rightToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
+        } else {
+          panel.#sourcesView.bottomToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
+        }
       }
     }
   }
@@ -1212,15 +1214,14 @@ export class SourcesPanel extends UI.Panel.Panel implements
       this.sidebarPaneView.detach();
     }
 
-    if (Root.Runtime.Runtime.isTraceApp()) {
-      this.splitWidget.hideSidebar();
-      return;
-    }
-
     this.splitWidget.setVertical(!vertically);
     this.splitWidget.element.classList.toggle('sources-split-view-vertical', vertically);
 
     SourcesPanel.updateResizerAndSidebarButtons(this);
+
+    if (Root.Runtime.Runtime.isTraceApp()) {
+      return;
+    }
 
     // Create vertical box with stack.
     const vbox = new UI.Widget.VBox();

@@ -328,7 +328,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.reportSelector.prepend(optionElement);
     this.refreshToolbarUI();
     this.renderReport(lighthouseResult);
-    this.newButton.element.focus();
+    (this.auditResultsElement.querySelector('.lh-topbar__url') as HTMLElement | null)?.focus();
   }
 
   private handleDrop(dataTransfer: DataTransfer): void {

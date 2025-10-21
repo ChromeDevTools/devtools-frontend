@@ -255,7 +255,7 @@ type ComputedStyleData = {
   name: string,
 };
 
-export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
+export class ComputedStyleWidget extends UI.Widget.VBox {
   private computedStyleModel: ComputedStyleModel;
   private readonly showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
   private readonly groupComputedStylesSetting: Common.Settings.Setting<boolean>;
@@ -269,22 +269,22 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   #treeData?: TreeOutline.TreeOutline.TreeOutlineData<ComputedStyleData>;
 
   constructor(computedStyleModel: ComputedStyleModel) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(computedStyleSidebarPaneStyles);
 
     this.contentElement.classList.add('styles-sidebar-computed-style-widget');
 
     this.computedStyleModel = computedStyleModel;
-    this.computedStyleModel.addEventListener(Events.CSS_MODEL_CHANGED, this.update, this);
-    this.computedStyleModel.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.update, this);
+    this.computedStyleModel.addEventListener(Events.CSS_MODEL_CHANGED, this.requestUpdate, this);
+    this.computedStyleModel.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.requestUpdate, this);
 
     this.showInheritedComputedStylePropertiesSetting =
         Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
-    this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.update.bind(this));
+    this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
 
     this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
     this.groupComputedStylesSetting.addChangeListener(() => {
-      this.update();
+      this.requestUpdate();
     });
 
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
@@ -334,7 +334,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     UI.Context.Context.instance().setFlavor(ComputedStyleWidget, null);
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     const [nodeStyles, matchedStyles] =
         await Promise.all([this.computedStyleModel.fetchComputedStyle(), this.fetchMatchedCascade()]);
     if (!nodeStyles || !matchedStyles) {

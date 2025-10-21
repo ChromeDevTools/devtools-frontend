@@ -77,21 +77,21 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
+export class PlatformFontsWidget extends UI.Widget.VBox {
   private readonly sharedModel: ComputedStyleModel;
   readonly #view: View;
 
   constructor(sharedModel: ComputedStyleModel, view: View = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(platformFontsWidgetStyles);
 
     this.sharedModel = sharedModel;
-    this.sharedModel.addEventListener(ComputedStyleModelEvents.CSS_MODEL_CHANGED, this.update, this);
-    this.sharedModel.addEventListener(ComputedStyleModelEvents.COMPUTED_STYLE_CHANGED, this.update, this);
+    this.sharedModel.addEventListener(ComputedStyleModelEvents.CSS_MODEL_CHANGED, this.requestUpdate, this);
+    this.sharedModel.addEventListener(ComputedStyleModelEvents.COMPUTED_STYLE_CHANGED, this.requestUpdate, this);
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     const cssModel = this.sharedModel.cssModel();
     const node = this.sharedModel.node();
     if (!node || !cssModel) {

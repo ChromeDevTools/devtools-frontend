@@ -2478,7 +2478,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
     this.targetInfo = targetInfo;
     if (this.view) {
       this.view.setTargetInfo(targetInfo);
-      this.view.update();
+      this.view.requestUpdate();
     }
   }
 
@@ -2487,7 +2487,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
     this.isWindowClosed = true;
     if (this.view) {
       this.view.setIsWindowClosed(true);
-      this.view.update();
+      this.view.requestUpdate();
     }
   }
 
@@ -2496,7 +2496,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
     if (!this.view) {
       this.view = new OpenedWindowDetailsView(this.targetInfo, this.isWindowClosed);
     } else {
-      this.view.update();
+      this.view.requestUpdate();
     }
     this.showView(this.view);
     Host.userMetrics.panelShown('frame-window');
@@ -2525,7 +2525,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
     if (!this.view) {
       this.view = new WorkerDetailsView(this.targetInfo);
     } else {
-      this.view.update();
+      this.view.requestUpdate();
     }
     this.showView(this.view);
     Host.userMetrics.panelShown('frame-worker');

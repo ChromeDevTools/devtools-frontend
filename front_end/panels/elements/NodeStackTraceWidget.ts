@@ -42,27 +42,27 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
+export class NodeStackTraceWidget extends UI.Widget.VBox {
   readonly #linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
   readonly #view: View;
 
   constructor(view = DEFAULT_VIEW) {
-    super(true /* isWebComponent */);
+    super({useShadowDom: true});
     this.#view = view;
   }
 
   override wasShown(): void {
     super.wasShown();
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
-    this.update();
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
-    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.requestUpdate, this);
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     const stackTrace = await node?.creationStackTrace() ?? undefined;

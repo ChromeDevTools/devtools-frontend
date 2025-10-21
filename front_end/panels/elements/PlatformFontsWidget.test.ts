@@ -32,7 +32,7 @@ describeWithMockConnection('PlatformFontsWidget', () => {
     sharedModel.cssModel = () => cssModel;
     sharedModel.node = () => node;
     const platformFontsWidget = new Elements.PlatformFontsWidget.PlatformFontsWidget(sharedModel);
-    await platformFontsWidget.doUpdate();
+    await platformFontsWidget.performUpdate();
     const fontStatsItems = platformFontsWidget.contentElement.querySelectorAll('.font-stats-item');
     const firstFontContent = fontStatsItems[0].textContent;
     const secondFontContent = fontStatsItems[1].textContent;

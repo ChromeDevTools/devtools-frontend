@@ -94,7 +94,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/WatchExpressionsSidebar
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let watchExpressionsSidebarPaneInstance: WatchExpressionsSidebarPane;
 
-export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWidget implements
+export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements
     UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider,
     UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement|UISourceCodeFrame> {
   private watchExpressions: WatchExpression[];
@@ -106,7 +106,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
   private readonly linkifier: Components.Linkifier.Linkifier;
   private constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(watchExpressionsSidebarPaneStyles, objectValueStyles);
 
     // TODO(szuend): Replace with a Set once the web test
@@ -125,7 +125,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.refreshButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.refreshWatchExpressions), 'refresh', undefined, 'refresh-watch-expressions');
     this.refreshButton.setSize(Buttons.Button.Size.SMALL);
-    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.update, this);
+    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.requestUpdate, this);
 
     this.contentElement.classList.add('watch-expressions');
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.watch')}`);
@@ -138,10 +138,10 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
 
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.requestUpdate, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.requestUpdate, this);
     this.linkifier = new Components.Linkifier.Linkifier();
-    this.update();
+    this.requestUpdate();
   }
 
   static instance(): WatchExpressionsSidebarPane {
@@ -182,7 +182,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.createWatchExpression(null).startEditing();
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     this.linkifier.reset();
     this.contentElement.removeChildren();
     this.treeOutline.removeChildren();
@@ -265,14 +265,14 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   private deleteAllButtonClicked(): void {
     this.watchExpressions = [];
     this.saveExpressions();
-    this.update();
+    this.requestUpdate();
   }
 
   private async focusAndAddExpressionToWatch(expression: string): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('sources.watch');
     this.createWatchExpression(expression);
     this.saveExpressions();
-    this.update();
+    this.requestUpdate();
   }
 
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {

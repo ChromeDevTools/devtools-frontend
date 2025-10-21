@@ -397,7 +397,7 @@ export interface EventTypes {
   [Events.WINDOW_CHANGED]: void;
 }
 
-export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {
+export class PaintProfilerCommandLogView extends UI.Widget.VBox {
   private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private log: SDK.PaintProfiler.PaintProfilerLogItem[];
   private readonly treeItemCache: Map<SDK.PaintProfiler.PaintProfilerLogItem, LogTreeElement>;
@@ -435,10 +435,10 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
 
   updateWindow(selectionWindow: {left: number, right: number}|null): void {
     this.selectionWindow = selectionWindow;
-    this.update();
+    this.requestUpdate();
   }
 
-  override doUpdate(): Promise<void> {
+  override performUpdate(): Promise<void> {
     if (!this.selectionWindow || !this.log.length) {
       this.treeOutline.removeChildren();
       return Promise.resolve();

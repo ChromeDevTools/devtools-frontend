@@ -32,7 +32,7 @@ describeWithEnvironment('DeveloperResourcesView', () => {
     });
 
     assert.isNull(await developerResourcesView.selectedItem());
-    developerResourcesView.update();
+    developerResourcesView.requestUpdate();
 
     await developerResourcesView.select(resource2);
     assert.deepEqual(await developerResourcesView.selectedItem(), resource2);

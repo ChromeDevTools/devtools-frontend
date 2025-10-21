@@ -117,22 +117,22 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
+export class DeveloperResourcesView extends UI.Widget.VBox {
   readonly #loader: SDK.PageResourceLoader.PageResourceLoader;
   readonly #view: View;
   #selectedItem: SDK.PageResourceLoader.PageResource|null = null;
   #filters: TextUtils.TextUtils.ParsedFilter[] = [];
 
   constructor(view: View = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     this.#view = view;
 
     this.#loader = SDK.PageResourceLoader.PageResourceLoader.instance();
-    this.#loader.addEventListener(SDK.PageResourceLoader.Events.UPDATE, this.update, this);
-    this.update();
+    this.#loader.addEventListener(SDK.PageResourceLoader.Events.UPDATE, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     const {loading, resources} = this.#loader.getScopedNumberOfResources();
     const input = {
       onFilterChanged: (e: CustomEvent<string>) => {
@@ -152,13 +152,13 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async select(resource: SDK.PageResourceLoader.PageResource): Promise<void> {
-    await this.lastUpdatePromise;
+    await this.updateComplete;
     this.#selectedItem = resource;
-    this.update();
+    this.requestUpdate();
   }
 
   async selectedItem(): Promise<SDK.PageResourceLoader.PageResource|null> {
-    await this.lastUpdatePromise;
+    await this.updateComplete;
     return this.#selectedItem;
   }
 
@@ -171,6 +171,6 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     } else {
       this.#filters = [];
     }
-    this.update();
+    this.requestUpdate();
   }
 }

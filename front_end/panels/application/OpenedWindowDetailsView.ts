@@ -136,7 +136,7 @@ async function maybeCreateLinkToElementsPanel(
   return linkElement;
 }
 
-export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget {
+export class OpenedWindowDetailsView extends UI.Widget.VBox {
   private targetInfo: Protocol.Target.TargetInfo;
   private isWindowClosed: boolean;
   private readonly reportView: UI.ReportView.ReportView;
@@ -169,10 +169,10 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this.securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), false);
     this.hasDOMAccessValue = this.securitySection.appendField(i18nString(UIStrings.accessToOpener));
     UI.Tooltip.Tooltip.install(this.hasDOMAccessValue, i18nString(UIStrings.showsWhetherTheOpenedWindowIs));
-    this.update();
+    this.requestUpdate();
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     this.reportView.setTitle(this.buildTitle());
     this.#urlFieldValue.textContent = this.targetInfo.url;
     this.#urlFieldValue.title = this.targetInfo.url;
@@ -208,7 +208,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
   }
 }
 
-export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
+export class WorkerDetailsView extends UI.Widget.VBox {
   private readonly targetInfo: Protocol.Target.TargetInfo;
   private readonly reportView: UI.ReportView.ReportView;
   private readonly documentSection: UI.ReportView.Section;
@@ -239,7 +239,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.isolationSection = this.reportView.appendSection(i18nString(UIStrings.securityIsolation));
     this.coepPolicy = this.isolationSection.appendField(i18nString(UIStrings.crossoriginEmbedderPolicy));
-    this.update();
+    this.requestUpdate();
   }
 
   workerTypeToString(type: string): Common.UIString.LocalizedString {
@@ -295,7 +295,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     await this.updateCoopCoepStatus();
   }
 }

@@ -147,7 +147,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.TargetManager.Observer}
  */
-export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
+export class StorageView extends UI.Widget.VBox {
   private pieColors: Map<Protocol.Storage.StorageType, string>;
   private reportView: UI.ReportView.ReportView;
   private target: SDK.Target.Target|null;
@@ -164,9 +164,10 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private quotaOverrideEditor: HTMLInputElement;
   private quotaOverrideErrorMessage: HTMLElement;
   private clearButton: Buttons.Button.Button;
+  private readonly throttler = new Common.Throttler.Throttler(1000);
 
   constructor() {
-    super(true, 1000);
+    super({useShadowDom: true});
     this.registerRequiredCSS(storageViewStyles);
 
     this.contentElement.classList.add('clear-storage-container');
@@ -342,7 +343,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       this.quotaOverrideCheckbox.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
     }
-    void this.doUpdate();
+    void this.performUpdate();
   }
 
   private updateStorageKey(mainStorageKey: string): void {
@@ -356,7 +357,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       this.quotaOverrideCheckbox.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
     }
-    void this.doUpdate();
+    void this.performUpdate();
   }
 
   private async applyQuotaOverrideFromInputField(): Promise<void> {
@@ -490,7 +491,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     if (!this.securityOrigin || !this.target) {
       this.quotaRow.textContent = '';
       this.populatePieChart(0, []);
@@ -542,7 +543,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       this.populatePieChart(response.usage, slices);
     }
 
-    this.update();
+    void this.throttler.schedule(this.requestUpdate.bind(this));
   }
 
   private populatePieChart(total: number, slices: PerfUI.PieChart.Slice[]): void {

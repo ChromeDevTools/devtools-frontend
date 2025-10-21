@@ -474,6 +474,40 @@ describeWithEnvironment('TraceTree', () => {
       assert.strictEqual(second.id, 'thirdParty2');
       assert.lengthOf(second.events, 3);
     });
+
+    // TODO: Gemini noticed that "setHasChildren" may not be called correctly ... I think
+    // it's right, but fixing it has proven difficult. So here's a test case for a later day.
+    it.skip('[crbug.com/454088373] correctly identifies which nodes have children in a nested structure', () => {
+      // This builds the following simple tree:
+      // |----Parent Task----|
+      //   |--Child Task--|
+
+      const parentEvent = makeCompleteEvent('Parent Task', 0, 100_000);
+      const childEvent = makeCompleteEvent('Child Task', 20_000, 50_000);
+
+      const events = [parentEvent, childEvent];
+      const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
+
+      const rootChildren = root.children();
+
+      // One node for the parent, and one for the child.
+      assert.strictEqual(rootChildren.size, 2);
+
+      const parentNode = rootChildren.get('Parent Task') as Trace.Extras.TraceTree.BottomUpNode;
+      const childNode = rootChildren.get('Child Task') as Trace.Extras.TraceTree.BottomUpNode;
+
+      // Ensure we found the nodes before testing them.
+      assert.exists(parentNode, 'Parent node was not found');
+      assert.exists(childNode, 'Child node was not found');
+
+      assert.isTrue(parentNode.hasChildren(), 'Parent node should have children');
+      assert.isFalse(childNode.hasChildren(), 'Child node should not have children');
+    });
   });
 
   describe('eventStackFrame', () => {

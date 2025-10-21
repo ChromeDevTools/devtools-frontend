@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/menus/menus.js';
@@ -179,7 +179,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
     }
 
     // clang-format off
-    /* eslint-disable rulesdir/no-deprecated-component-usages */
+    /* eslint-disable @devtools/no-deprecated-component-usages */
     const output = html`
       <style>${networkThrottlingSelectorStyles}</style>
       <devtools-select-menu
@@ -230,7 +230,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
       </devtools-select-menu>
       ${recommendedInfoEl}
     `;
-    /* eslint-enable rulesdir/no-deprecated-component-usages */
+    /* eslint-enable @devtools/no-deprecated-component-usages */
     // clang-format on
     Lit.render(output, this.#shadow, {host: this});
   };

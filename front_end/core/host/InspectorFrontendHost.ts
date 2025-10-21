@@ -212,7 +212,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       }
     }
 
-    /* eslint-disable-next-line rulesdir/no-imperative-dom-api */
+    /* eslint-disable-next-line @devtools/no-imperative-dom-api */
     const link = document.createElement('a');
     link.download = fileName;
     let blob;

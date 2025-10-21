@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -49,7 +49,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';

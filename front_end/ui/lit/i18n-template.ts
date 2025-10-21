@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // This files is import lit directly
-/* eslint-disable rulesdir/lit-template-result-or-nothing */
+/* eslint-disable @devtools/lit-template-result-or-nothing */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as I18n from '../../third_party/i18n/i18n.js';

@@ -6,7 +6,7 @@ import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
 // @ts-expect-error tsc doesn't like import assertions.
-// eslint-disable-next-line  rulesdir/es-modules-import
+// eslint-disable-next-line  @devtools/es-modules-import
 import EnUsLocaleData from '../core/i18n/locales/en-US.json' with {type : 'json'};
 import type * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
@@ -423,7 +423,7 @@ describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) =
 describeWithEnvironment.skip = function(title: string, fn: (this: Mocha.Suite) => void, _opts: {reset: boolean} = {
   reset: true,
 }) {
-  // eslint-disable-next-line rulesdir/check-test-definitions
+  // eslint-disable-next-line @devtools/check-test-definitions
   return describe.skip(title, function() {
     fn.call(this);
   });
@@ -467,7 +467,7 @@ describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => voi
   });
 };
 describeWithLocale.skip = function(title: string, fn: (this: Mocha.Suite) => void) {
-  // eslint-disable-next-line rulesdir/check-test-definitions
+  // eslint-disable-next-line @devtools/check-test-definitions
   return describe.skip(title, function() {
     fn.call(this);
   });

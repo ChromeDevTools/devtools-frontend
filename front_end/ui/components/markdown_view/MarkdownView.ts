@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import './CodeBlock.js';
 import './MarkdownImage.js';
@@ -244,16 +244,14 @@ export class MarkdownLitRenderer {
         return html`<devtools-markdown-link
         class=${this.customClassMapForToken('link')}
         .data=${{
-        key:
-          token.href, title: token.text,
+          key: token.href, title: token.text,
         }
         }></devtools-markdown-link>`;
       case 'image':
         return html`<devtools-markdown-image
         class=${this.customClassMapForToken('image')}
         .data=${{
-        key:
-          token.href, title: token.text,
+          key: token.href, title: token.text,
         }
         }></devtools-markdown-image>`;
       case 'heading':

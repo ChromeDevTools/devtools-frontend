@@ -10,7 +10,7 @@ import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHe
 
 import * as StackTrace from './stack_trace.js';
 // TODO(crbug.com/444191656): Expose a `testing` bundle.
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 describeWithMockConnection('StackTraceModel', () => {

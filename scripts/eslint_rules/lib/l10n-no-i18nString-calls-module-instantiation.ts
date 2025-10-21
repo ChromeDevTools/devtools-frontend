@@ -22,7 +22,7 @@ function isI18nStringCall(callExpression: CallExpression): boolean {
 }
 
 export default createRule({
-  name: 'l10n-no-i18nstring-calls-module-instantiation',
+  name: 'l10n-no-i18nString-calls-module-instantiation',
   meta: {
     type: 'problem',
     docs: {

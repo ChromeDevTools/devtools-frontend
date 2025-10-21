@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import '../../../../ui/components/icon_button/icon_button.js';
 
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';

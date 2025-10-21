@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/node_text/node_text.js';
@@ -296,7 +296,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
                 crumb: true,
                 selected: crumb.selected,
               };
-              // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+              // eslint-disable-next-line @devtools/no-a-tags-in-lit
               return html`
                 <li class=${Lit.Directives.classMap(crumbClasses)}
                   data-node-id=${crumb.node.id}

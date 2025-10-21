@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2011 Google Inc.  All rights reserved.
@@ -54,7 +54,7 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';

@@ -1,7 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../../ui/legacy/components/data_grid/data_grid.js';
 import '../../../../ui/components/icon_button/icon_button.js';
@@ -56,7 +56,6 @@ export interface PreloadingGridRow {
 
 /** Grid component to show prerendering attempts. **/
 export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: PreloadingGridData|null = null;
 

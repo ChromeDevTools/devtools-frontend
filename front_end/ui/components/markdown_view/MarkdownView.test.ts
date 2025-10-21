@@ -4,10 +4,10 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Deprecation from '../../../generated/Deprecation.js';
-/* eslint-disable rulesdir/es-modules-import */
+/* eslint-disable @devtools/es-modules-import */
 // @ts-expect-error
 import ISSUE_DESCRIPTIONS from '../../../models/issues_manager/description_list.json' with {type : 'json'};
-/* eslint-enable rulesdir/es-modules-import */
+/* eslint-enable @devtools/es-modules-import */
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -378,7 +378,7 @@ console.log('test')
   });
 });
 
-// eslint-disable-next-line rulesdir/l10n-filename-matches
+// eslint-disable-next-line @devtools/l10n-filename-matches
 const strDeprecation = i18n.i18n.registerUIStrings('generated/Deprecation.ts', Deprecation.UIStrings);
 const i18nDeprecationString = i18n.i18n.getLocalizedString.bind(undefined, strDeprecation);
 

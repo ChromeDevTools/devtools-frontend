@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2013 Google Inc. All rights reserved.
@@ -46,10 +46,10 @@ import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/tra
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import codeHighlighterStyles from '../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -70,7 +70,7 @@ const UIStrings = {
    * @description Text that only contain a placeholder
    * @example {100ms (at 200ms)} PH1
    */
-  emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n-no-locked-or-placeholder-only-phrase
+  emptyPlaceholder: '{PH1}',  // eslint-disable-line @devtools/l10n-no-locked-or-placeholder-only-phrase
   /**
    * @description Text for timestamps of items
    */

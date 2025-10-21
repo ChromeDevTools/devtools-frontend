@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../lit/lit.js';
@@ -80,7 +80,7 @@ export class Linkifier extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     await RenderCoordinator.write(() => {
       // clang-format off
-      // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+      // eslint-disable-next-line @devtools/no-a-tags-in-lit
       Lit.render(html`
         <style>${linkifierImplStyles}</style>
         <a class="link" href=${this.#url} @click=${this.#onLinkActivation} title=${Lit.Directives.ifDefined(this.#title) as string}>

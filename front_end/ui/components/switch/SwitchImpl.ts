@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import {html, nothing, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
@@ -70,7 +70,7 @@ export class Switch extends HTMLElement {
 
   #render(): void {
     const jslog = this.#jslogContext && VisualLogging.toggle(this.#jslogContext).track({change: true});
-    /* eslint-disable rulesdir/inject-checkbox-styles */
+    /* eslint-disable @devtools/inject-checkbox-styles */
     // clang-format off
     render(html`
     <style>${switchStyles}</style>
@@ -85,7 +85,7 @@ export class Switch extends HTMLElement {
     </label>
     `, this.#shadow, {host: this});
     // clang-format on
-    /* eslint-enable rulesdir/inject-checkbox-styles */
+    /* eslint-enable @devtools/inject-checkbox-styles */
   }
 }
 

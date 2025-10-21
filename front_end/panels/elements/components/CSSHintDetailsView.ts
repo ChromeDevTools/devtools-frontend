@@ -1,7 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/legacy/legacy.js';
 
@@ -26,18 +26,18 @@ interface Hint {
 }
 
 export class CSSHintDetailsView extends HTMLElement {
-    readonly #shadow = this.attachShadow({mode: 'open'});
-    readonly #authoringHint: Hint;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #authoringHint: Hint;
 
-    constructor(authoringHint: Hint) {
-        super();
-        this.#authoringHint = authoringHint;
-        this.#render();
-    }
+  constructor(authoringHint: Hint) {
+    super();
+    this.#authoringHint = authoringHint;
+    this.#render();
+  }
 
-    #render(): void {
-      const link = this.#authoringHint.getLearnMoreLink();
-      // clang-format off
+  #render(): void {
+    const link = this.#authoringHint.getLearnMoreLink();
+    // clang-format off
       render(html`
         <style>${cssHintDetailsViewStyles}</style>
         <div class="hint-popup-wrapper">
@@ -60,8 +60,8 @@ export class CSSHintDetailsView extends HTMLElement {
       `, this.#shadow, {
         host: this,
       });
-      // clang-format on
-    }
+    // clang-format on
+  }
 }
 
 customElements.define('devtools-css-hint-details-view', CSSHintDetailsView);

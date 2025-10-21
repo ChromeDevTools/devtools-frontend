@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../legacy/legacy.js'; // Required for <x-link>.
 
@@ -22,7 +22,6 @@ export interface MarkdownLinkData {
  * This makes sure that all links are accounted for and no bad links are introduced to devtools via markdown.
  */
 export class MarkdownLink extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #linkText = '';
   #linkUrl = '';

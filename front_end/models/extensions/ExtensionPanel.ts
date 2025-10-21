@@ -1,17 +1,17 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 // TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+// eslint-disable-next-line @devtools/no-imports-in-directory
 import '../../ui/legacy/legacy.js';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
 // TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+// eslint-disable-next-line @devtools/no-imports-in-directory
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ExtensionAPI from './ExtensionAPI.js';

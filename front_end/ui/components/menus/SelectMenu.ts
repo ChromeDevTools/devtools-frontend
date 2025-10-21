@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -210,7 +210,7 @@ export class SelectMenu extends HTMLElement {
     const buttonLabel = this.#getButtonText();
     if (!this.sideButton) {
       // clang-format off
-      /* eslint-disable rulesdir/no-deprecated-component-usages */
+      /* eslint-disable @devtools/no-deprecated-component-usages */
       return html`
           <devtools-select-menu-button
             @selectmenubuttontrigger=${this.#showMenu}
@@ -221,12 +221,12 @@ export class SelectMenu extends HTMLElement {
               ${buttonLabel}
             </devtools-select-menu-button>
         `;
-      /* eslint-enable rulesdir/no-deprecated-component-usages */
+      /* eslint-enable @devtools/no-deprecated-component-usages */
       // clang-format on
     }
 
     // clang-format off
-    /* eslint-disable rulesdir/no-deprecated-component-usages */
+    /* eslint-disable @devtools/no-deprecated-component-usages */
     return html`
       <button id="side-button" @click=${this.#sideButtonClicked} ?disabled=${this.disabled}>
         ${buttonLabel}
@@ -241,7 +241,7 @@ export class SelectMenu extends HTMLElement {
         .disabled=${this.disabled}>
       </devtools-select-menu-button>
     `;
-    /* eslint-enable rulesdir/no-deprecated-component-usages */
+    /* eslint-enable @devtools/no-deprecated-component-usages */
     // clang-format on
   }
 

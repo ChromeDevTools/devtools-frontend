@@ -35,7 +35,7 @@ before(async function() {
   // Some latin characters to trigger the latin font file to be loaded.
   // Additional non-latin characters can be included if needed.
   div.innerText = 'abc';
-  // eslint-disable-next-line rulesdir/no-document-body-mutation
+  // eslint-disable-next-line @devtools/no-document-body-mutation
   document.body.append(div);
   await document.fonts.ready;
   div.remove();

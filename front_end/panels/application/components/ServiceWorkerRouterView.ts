@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';

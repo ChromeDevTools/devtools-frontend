@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -1173,7 +1173,7 @@ export class NetworkRequestNode extends NetworkNode {
       }
 
       const iconElement = PanelUtils.getIconForNetworkRequest(this.requestInternal);
-      // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
       render(iconElement, cell);
 
       // render Ask AI button

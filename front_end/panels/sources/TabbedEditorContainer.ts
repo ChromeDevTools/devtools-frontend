@@ -1,7 +1,7 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -612,7 +612,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.unableToLoadThisContent));
         this.tabbedPane.setTrailingTabIcon(tabId, icon);
       } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
-        /* eslint-disable rulesdir/no-imperative-dom-api --
+        /* eslint-disable @devtools/no-imperative-dom-api --
          * This is a temporary solution using the <devtools-tooltip>
          * and we will use a toast instead once available.
          **/
@@ -642,7 +642,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
               str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {PH1: link}));
         }
         suffixElement.append(icon, tooltip);
-        /* eslint-enable rulesdir/no-imperative-dom-api */
+        /* eslint-enable @devtools/no-imperative-dom-api */
         this.tabbedPane.setSuffixElement(tabId, suffixElement);
       } else {
         const icon = PanelCommon.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);

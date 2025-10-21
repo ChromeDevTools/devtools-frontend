@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/node_text/node_text.js';
@@ -76,7 +76,7 @@ export class QueryContainer extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+    // eslint-disable-next-line @devtools/no-a-tags-in-lit
     render(html`
       <style>${queryContainerStyles}</style>
       →

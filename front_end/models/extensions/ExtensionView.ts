@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 // TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+// eslint-disable-next-line @devtools/no-imports-in-directory
 import * as UI from '../../ui/legacy/legacy.js';
 // TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+// eslint-disable-next-line @devtools/no-imports-in-directory
 import * as Lit from '../../ui/lit/lit.js';
 
 import type {ExtensionServer} from './ExtensionServer.js';

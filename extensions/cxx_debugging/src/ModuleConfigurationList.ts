@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no-underscored-properties,  @typescript-eslint/naming-convention,  @typescript-eslint/no-unused-vars */
+/* eslint-disable @devtools/no-underscored-properties,  @typescript-eslint/naming-convention,  @typescript-eslint/no-unused-vars */
 
 import {html, nothing, render} from 'lit-html';
 

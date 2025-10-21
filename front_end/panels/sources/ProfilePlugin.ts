@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -144,7 +144,8 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
         !map ? [] : [this.field.init(state => markersFromProfileData(map, state, type)), this.gutter, theme]);
   }
 
-  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void {
+  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
+      void {
     const installed = Boolean(editor.state.field(this.field, false));
     const map = this.getLineMap();
     if (!map) {

@@ -1,7 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 
@@ -72,7 +72,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
     this.#render();
   }
 
-  // eslint-disable-next-line rulesdir/set-data-type-reference
+  // eslint-disable-next-line @devtools/set-data-type-reference
   set data(data: Protocol.Storage.InterestGroupAccessedEvent[]) {
     this.#datastores = data;
     this.#render();

@@ -8,7 +8,7 @@ const {html} = Lit;
 export function init(): void {
   const container = document.createElement('ul');
   // clang-format off
-  // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+  // eslint-disable-next-line @devtools/no-a-tags-in-lit
   Lit.render(html`
 
   <style>

@@ -206,7 +206,7 @@ export const updateStyle = (currentStyle: Map<string, {value: string, priority: 
   const URL_REGEX = /url\([\'\"]?([^\)]*)/g;
 
   currentStyle.clear();
-  /* eslint-disable-next-line rulesdir/no-imperative-dom-api --
+  /* eslint-disable-next-line @devtools/no-imperative-dom-api --
    * We're not mutating the DOM here, but just need a temporary
    * `<span>` to parse `styleToAdd` into a `CSSStyleDeclaration`.
    **/

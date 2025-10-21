@@ -953,7 +953,7 @@ export class ContextMenu extends SubMenu {
   ];
 }
 
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 /**
  * @property jslogContext - Reflects the `"jslogContext"` attribute.
  * @property populateMenuCall - Callback function to populate the menu.
@@ -1107,7 +1107,7 @@ export class MenuButton extends HTMLElement {
   }
 }
 customElements.define('devtools-menu-button', MenuButton);
-/* eslint-enable rulesdir/no-lit-render-outside-of-view */
+/* eslint-enable @devtools/no-lit-render-outside-of-view */
 
 export interface Provider<T> {
   /**

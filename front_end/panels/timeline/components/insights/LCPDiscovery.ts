@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import './Checklist.js';
 
@@ -17,7 +17,7 @@ const {UIStrings, i18nString, getImageData} = Trace.Insights.Models.LCPDiscovery
 
 const {html} = Lit;
 
-// eslint-disable-next-line rulesdir/l10n-filename-matches
+// eslint-disable-next-line @devtools/l10n-filename-matches
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {

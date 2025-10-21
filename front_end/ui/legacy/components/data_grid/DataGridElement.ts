@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';

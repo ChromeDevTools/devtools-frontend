@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -820,7 +820,7 @@ export class TreeElement {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
     render(icons, this.leadingIconsElement);
   }
 

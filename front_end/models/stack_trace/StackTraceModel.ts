@@ -5,7 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
 import {AsyncFragmentImpl, FragmentImpl, FrameImpl, StackTraceImpl} from './StackTraceImpl.js';
 import {type FrameNode, type RawFrame, Trie} from './Trie.js';

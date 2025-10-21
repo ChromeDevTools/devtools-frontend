@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as PanelCommon from '../../../panels/common/common.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';

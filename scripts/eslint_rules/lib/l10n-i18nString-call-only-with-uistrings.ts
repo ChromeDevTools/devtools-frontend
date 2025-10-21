@@ -27,7 +27,7 @@ function isArgumentValid(argument: Argument|undefined): boolean {
 }
 
 export default createRule({
-  name: 'l10n-i18nstring-call-only-with-uistrings',
+  name: 'l10n-i18nString-call-only-with-uistrings',
   meta: {
     type: 'problem',
     docs: {

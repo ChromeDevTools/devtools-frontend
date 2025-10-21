@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -1094,7 +1094,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const instruction =
         this.recording ? UIStrings.performARequestOrHitSToRecordThe : UIStrings.recordToDisplayNetworkActivity;
     const buttonText = this.recording ? i18nString(UIStrings.reloadPage) : i18nString(UIStrings.startRecording);
-    // eslint-disable-next-line rulesdir/l10n-i18nString-call-only-with-uistrings
+    // eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings
     const description = i18nString(instruction, {
       PH1: buttonText,
       PH2: shortcutTitle,

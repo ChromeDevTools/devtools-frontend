@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -105,8 +105,8 @@ function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|
   return button;
 }
 
-async function maybeCreateLinkToElementsPanel(opener: Protocol.Page.FrameId|SDK.ResourceTreeModel.ResourceTreeFrame|
-                                              undefined): Promise<Element|null> {
+async function maybeCreateLinkToElementsPanel(
+    opener: Protocol.Page.FrameId|SDK.ResourceTreeModel.ResourceTreeFrame|undefined): Promise<Element|null> {
   let openerFrame: SDK.ResourceTreeModel.ResourceTreeFrame|(SDK.ResourceTreeModel.ResourceTreeFrame | null)|null = null;
   if (opener instanceof SDK.ResourceTreeModel.ResourceTreeFrame) {
     openerFrame = opener;

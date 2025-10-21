@@ -4,7 +4,7 @@
 
 // Unsure why this lint is failing, given `lantern/metrics/SpeedIndex.test.ts` does the same
 // and is fine. Maybe `*.test.*` files are excluded from this rule?
-// eslint-disable-next-line rulesdir/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import * as TraceLoader from '../../../../testing/TraceLoader.js';
 import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';

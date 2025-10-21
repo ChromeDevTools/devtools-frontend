@@ -41,7 +41,7 @@ describe('Metrics: Lantern FCP', function() {
 
   it('should handle negative request networkEndTime', async () => {
     const data = await getComputationDataFromFixture(this, {trace});
-    // eslint-disable-next-line rulesdir/prefer-assert-strict-equal
+    // eslint-disable-next-line @devtools/prefer-assert-strict-equal
     assert(data.graph.type === 'network');
     data.graph.request.networkEndTime = -1;
     const result = FirstContentfulPaint.compute(data);

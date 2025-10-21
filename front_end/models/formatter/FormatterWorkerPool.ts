@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es-modules-import
+import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line @devtools/es-modules-import
 
 export {DefinitionKind, ScopeKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
 

@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Lit from '../../../lit/lit.js';
 
@@ -18,7 +18,6 @@ export interface CSSAngleSwatchData {
 }
 
 export class CSSAngleSwatch extends HTMLElement {
-
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = {
     value: 0,

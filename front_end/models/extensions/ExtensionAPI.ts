@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es-modules-import
+import type * as PublicAPI from '../../../extension-api/ExtensionAPI.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as HAR from '../har/har.js';
 

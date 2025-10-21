@@ -4,7 +4,7 @@
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../core/common/common.js';
@@ -17,7 +17,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 // TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
+// eslint-disable-next-line @devtools/no-imports-in-directory
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Bindings from '../bindings/bindings.js';

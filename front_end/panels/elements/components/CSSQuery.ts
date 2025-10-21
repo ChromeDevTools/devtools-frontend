@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -20,7 +20,6 @@ export interface CSSQueryData {
 }
 
 export class CSSQuery extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #queryPrefix = '';
   #queryName?: string;

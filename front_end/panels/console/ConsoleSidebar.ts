@@ -103,7 +103,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                   <style>${consoleSidebarStyles}</style>
                   <devtools-icon name=${GROUP_ICONS[group.name].icon}></devtools-icon>
                   ${
-                      /* eslint-disable-next-line rulesdir/l10n-i18nString-call-only-with-uistrings */
+                      /* eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings */
                       i18nString(GROUP_ICONS[group.name].label, {
 
                         n: group.messageCount

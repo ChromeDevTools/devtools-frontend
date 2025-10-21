@@ -1,7 +1,7 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-/* eslint-disable rulesdir/es-modules-import */
+/* eslint-disable @devtools/es-modules-import */
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';

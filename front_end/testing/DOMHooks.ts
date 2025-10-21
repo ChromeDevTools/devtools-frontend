@@ -98,6 +98,6 @@ export const setupTestDOM = async () => {
   const newContainer = document.createElement('div');
   newContainer.id = TEST_CONTAINER_ID;
 
-  // eslint-disable-next-line rulesdir/no-document-body-mutation
+  // eslint-disable-next-line @devtools/no-document-body-mutation
   document.body.appendChild(newContainer);
 };

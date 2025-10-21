@@ -489,6 +489,11 @@ export class Tooltip extends HTMLElement {
       return;
     }
 
+    const childTooltip = this.querySelector('devtools-tooltip') as Tooltip | null;
+    if (childTooltip?.open) {
+      return;
+    }
+
     this.#openedViaHotkey = false;
     this.toggle();
     event.consume(true);

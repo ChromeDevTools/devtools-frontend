@@ -119,6 +119,63 @@ describe('Tooltip', () => {
     assert.isFalse(tooltip.open);
   });
 
+  it('should only close the innermost tooltip on escape', async () => {
+    const container = document.createElement('div');
+    // clang-format off
+    Lit.render(html`
+      <button aria-details="outer-tooltip-id">Outer Button</button>
+      <devtools-tooltip
+        id="outer-tooltip-id"
+        variant="rich"
+        hover-delay=${0}
+      >
+        <button aria-details="inner-tooltip-id">Inner Button</button>
+        <devtools-tooltip
+          id="inner-tooltip-id"
+          variant="rich"
+          hover-delay=${0}
+        >
+          <p>Inner Tooltip Content</p>
+        </devtools-tooltip>
+      </devtools-tooltip>
+    `, container);
+    // clang-format on
+    renderElementIntoDOM(container, {allowMultipleChildren: true});
+
+    const outerTooltip = container.querySelector('devtools-tooltip');
+    assert.exists(outerTooltip);
+
+    const outerButton = container.querySelector('button');
+    const outerOpened = waitForToggle(outerTooltip, 'open');
+    outerButton?.dispatchEvent(new MouseEvent('mouseenter'));
+
+    await outerOpened;
+    assert.isTrue(outerTooltip.open);
+
+    const innerTooltip = outerTooltip.querySelector('devtools-tooltip');
+    assert.exists(innerTooltip);
+
+    const innerButton = outerTooltip.querySelector('button');
+    const innerOpened = waitForToggle(innerTooltip, 'open');
+    innerButton?.dispatchEvent(new MouseEvent('mouseenter'));
+
+    await innerOpened;
+    assert.isTrue(innerTooltip.open);
+
+    const outerClosed = waitForToggle(outerTooltip, 'closed');
+    const innerClosed = waitForToggle(innerTooltip, 'closed');
+
+    document.body.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+    await innerClosed;
+    assert.isTrue(outerTooltip.open);
+    assert.isFalse(innerTooltip.open);
+
+    document.body.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+    await outerClosed;
+    assert.isFalse(outerTooltip.open);
+    assert.isFalse(innerTooltip.open);
+  });
+
   it('should be activated if focused', async () => {
     const container = renderTooltip();
     const tooltip = container.querySelector('devtools-tooltip');

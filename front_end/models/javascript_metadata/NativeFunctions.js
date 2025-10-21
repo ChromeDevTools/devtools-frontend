@@ -8243,7 +8243,7 @@ export const NativeFunctions = [
   },
   {
     name: "softmax",
-    signatures: [["input","?options"],["input","axis","?options"]]
+    signatures: [["input","axis","?options"]]
   },
   {
     name: "softplus",

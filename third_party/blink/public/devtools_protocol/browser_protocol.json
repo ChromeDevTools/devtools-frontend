@@ -13804,6 +13804,11 @@
                 {
                     "name": "targetReloadedAfterCrash",
                     "description": "Fired when debugging target has reloaded after crash"
+                },
+                {
+                    "name": "workerScriptLoaded",
+                    "description": "Fired on worker targets when main worker script and any imported scripts have been evaluated.",
+                    "experimental": true
                 }
             ]
         },

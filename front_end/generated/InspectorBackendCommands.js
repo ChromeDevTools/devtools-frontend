@@ -696,6 +696,7 @@ inspectorBackend.registerType("Input.DragData", [{"name": "items", "type": "arra
 inspectorBackend.registerEvent("Inspector.detached", ["reason"]);
 inspectorBackend.registerEvent("Inspector.targetCrashed", []);
 inspectorBackend.registerEvent("Inspector.targetReloadedAfterCrash", []);
+inspectorBackend.registerEvent("Inspector.workerScriptLoaded", []);
 inspectorBackend.registerCommand("Inspector.disable", [], [], "Disables inspector domain notifications.");
 inspectorBackend.registerCommand("Inspector.enable", [], [], "Enables inspector domain notifications.");
 

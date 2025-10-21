@@ -2248,6 +2248,11 @@ declare namespace ProtocolProxyApi {
      */
     targetReloadedAfterCrash(): void;
 
+    /**
+     * Fired on worker targets when main worker script and any imported scripts have been evaluated.
+     */
+    workerScriptLoaded(): void;
+
   }
 
   export interface LayerTreeApi {

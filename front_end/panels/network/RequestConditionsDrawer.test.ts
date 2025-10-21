@@ -129,11 +129,12 @@ for (const individualThrottlingEnabled of [false, true]) {
 }
 
 describeWithMockConnection('RequestConditionsDrawer', () => {
-  describe('shows information for upgrading wildcard patterns to URLPatterns', () => {
-    beforeEach(() => {
-      updateHostConfig({devToolsIndividualRequestThrottling: {enabled: true}});
-    });
+  beforeEach(() => {
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    updateHostConfig({devToolsIndividualRequestThrottling: {enabled: true}});
+  });
 
+  describe('shows information for upgrading wildcard patterns to URLPatterns', () => {
     it('shows the URLPattern breakdown', () => {
       const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       const index = 0;
@@ -213,5 +214,27 @@ describeWithMockConnection('RequestConditionsDrawer', () => {
           invalidPatternEditor.element.querySelector('.list-widget-input-validation-error')?.textContent,
           'This pattern failed to parse as a URLPattern');
     });
+  });
+
+  it('can reorder the conditions', async () => {
+    const increasePriority =
+        sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions, 'increasePriority');
+    const decreasePriority =
+        sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions, 'decreasePriority');
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.conditionsEnabled = true;
+
+    const requestConditionsDrawer =
+        new Network.RequestConditionsDrawer.RequestConditionsDrawer(undefined, sinon.stub());
+    const condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com/*bar', enabled: true});
+    const item = requestConditionsDrawer.renderItem(condition, /* editable=*/ true, 0);
+
+    const [decreaseButton, increaseButton] = item.querySelectorAll('devtools-button');
+
+    increaseButton.click();
+    sinon.assert.calledOnceWithExactly(increasePriority, condition);
+    sinon.assert.notCalled(decreasePriority);
+    decreaseButton.click();
+    sinon.assert.calledOnceWithExactly(increasePriority, condition);
+    sinon.assert.calledOnceWithExactly(decreasePriority, condition);
   });
 });

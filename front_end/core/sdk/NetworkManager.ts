@@ -1817,6 +1817,26 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     this.#conditionsChanged();
   }
 
+  decreasePriority(condition: RequestCondition): void {
+    const index = this.#conditions.indexOf(condition);
+    if (index < 0 || index >= this.#conditions.length - 1) {
+      return;
+    }
+
+    Platform.ArrayUtilities.swap(this.#conditions, index, index + 1);
+    this.dispatchEventToListeners(RequestConditions.Events.REQUEST_CONDITIONS_CHANGED);
+  }
+
+  increasePriority(condition: RequestCondition): void {
+    const index = this.#conditions.indexOf(condition);
+    if (index <= 0) {
+      return;
+    }
+
+    Platform.ArrayUtilities.swap(this.#conditions, index - 1, index);
+    this.dispatchEventToListeners(RequestConditions.Events.REQUEST_CONDITIONS_CHANGED);
+  }
+
   delete(condition: RequestCondition): void {
     const index = this.#conditions.indexOf(condition);
     if (index < 0) {

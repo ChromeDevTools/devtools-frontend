@@ -1185,6 +1185,31 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
 
     sinon.assert.notCalled(emulateNetworkConditions);
   });
+
+  it('can reorder the conditions', () => {
+    const requestConditions = new SDK.NetworkManager.RequestConditions();
+    const condition1 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url1', enabled: true});
+    const condition2 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url2', enabled: true});
+    const condition3 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url3', enabled: true});
+    requestConditions.add(condition1, condition2, condition3);
+
+    const changedEventStub = sinon.stub<[]>();
+    requestConditions.addEventListener(
+        SDK.NetworkManager.RequestConditions.Events.REQUEST_CONDITIONS_CHANGED, changedEventStub);
+
+    // Can't move the first condition up and the last condition down
+    requestConditions.increasePriority(condition1);
+    requestConditions.decreasePriority(condition3);
+    sinon.assert.notCalled(changedEventStub);
+
+    requestConditions.increasePriority(condition2);
+    sinon.assert.calledOnce(changedEventStub);
+    assert.deepEqual(requestConditions.conditions.toArray(), [condition2, condition1, condition3]);
+
+    requestConditions.decreasePriority(condition1);
+    sinon.assert.calledTwice(changedEventStub);
+    assert.deepEqual(requestConditions.conditions.toArray(), [condition2, condition3, condition1]);
+  });
 });
 
 describe('RequestURLPattern', () => {

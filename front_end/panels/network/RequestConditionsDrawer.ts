@@ -99,6 +99,14 @@ const UIStrings = {
    * @description Message to be announced for a when list item is removed from list widget
    */
   learnMore: 'Learn more',
+  /**
+   * @description Aria label on a button moving an entry up
+   */
+  increasePriority: 'Increase priority',
+  /**
+   * @description Aria label on a button moving an entry down
+   */
+  decreasePriority: 'Decrease priority',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestConditionsDrawer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -253,6 +261,18 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     const {enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL} = condition;
 
     if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+      const moveUp = (e: Event): void => {
+        if (this.manager.requestConditions.conditionsEnabled) {
+          e.consume(true);
+          this.manager.requestConditions.increasePriority(condition);
+        }
+      };
+      const moveDown = (e: Event): void => {
+        if (this.manager.requestConditions.conditionsEnabled) {
+          e.consume(true);
+          this.manager.requestConditions.decreasePriority(condition);
+        }
+      };
       render(
           // clang-format off
         html`
@@ -262,17 +282,19 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       ?checked=${enabled}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       .jslog=${VisualLogging.toggle().track({ change: true })}>
-    <devtools-widget
-      class=conditions-selector
-      ?disabled=${!editable}
-      .widgetConfig=${UI.Widget.widgetConfig(
-        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
-          variant:
-            MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
-          jslogContext: 'request-conditions',
-          onConditionsChanged,
-          currentConditions: condition.conditions,
-        })}></devtools-widget>
+    <devtools-button
+      .iconName=${'arrow-down'}
+      .variant=${Buttons.Button.Variant.ICON}
+      .title=${i18nString(UIStrings.increasePriority)}
+      .jslogContext=${'increase-priority'}
+      @click=${moveDown}></devtools-button>
+    <devtools-button
+      .iconName=${'arrow-up'}
+      .variant=${Buttons.Button.Variant.ICON}
+      .title=${i18nString(UIStrings.decreasePriority)}
+      .jslogContext=${'decrease-priority'}
+      @click=${moveUp}>
+    </devtools-button>
     ${originalOrUpgradedURLPattern ? html`
       <devtools-tooltip variant=rich jslogcontext=url-pattern id=url-pattern-${index}>
         <div>hash: ${originalOrUpgradedURLPattern.hash}</div>
@@ -309,6 +331,17 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       aria-details=url-pattern-${index}>
         ${constructorStringOrWildcardURL}
     </div>
+   <devtools-widget
+      class=conditions-selector
+      ?disabled=${!editable}
+      .widgetConfig=${UI.Widget.widgetConfig(
+        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+          variant:
+            MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
+          jslogContext: 'request-conditions',
+          onConditionsChanged,
+          currentConditions: condition.conditions,
+        })}></devtools-widget>
     <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
           // clang-format on
           element);

@@ -191,14 +191,13 @@ export const test = {
    * Set to get notified about any messages sent over protocol.
    */
   onMessageSent: null as
-          ((message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
-            target: TargetBase|null) => void) |
+          ((message: {domain: string, method: string, params: Object, id: number, sessionId?: string}) => void) |
       null,
 
   /**
    * Set to get notified about any messages received over protocol.
    */
-  onMessageReceived: null as ((message: Object, target: TargetBase|null) => void) | null,
+  onMessageReceived: null as ((message: Object) => void) | null,
 };
 
 const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
@@ -257,14 +256,6 @@ export class SessionRouter {
     this.#sessions.delete(sessionId);
   }
 
-  private getTargetBySessionId(sessionId: string): TargetBase|null {
-    const session = this.#sessions.get(sessionId ? sessionId : '');
-    if (!session) {
-      return null;
-    }
-    return session.target;
-  }
-
   private nextMessageId(): number {
     return this.#lastMessageId++;
   }
@@ -293,9 +284,7 @@ export class SessionRouter {
 
     if (test.onMessageSent) {
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
-      test.onMessageSent(
-          {domain, method, params: (paramsObject as Object), id: messageId, sessionId},
-          this.getTargetBySessionId(sessionId));
+      test.onMessageSent({domain, method, params: (paramsObject as Object), id: messageId, sessionId});
     }
 
     ++this.#pendingResponsesCount;
@@ -324,7 +313,7 @@ export class SessionRouter {
 
     if (test.onMessageReceived) {
       const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
-      test.onMessageReceived(messageObjectCopy, this.getTargetBySessionId(messageObjectCopy.sessionId));
+      test.onMessageReceived(messageObjectCopy);
     }
 
     const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as Message;

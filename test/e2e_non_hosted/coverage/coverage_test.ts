@@ -21,7 +21,11 @@ import {
 
 const COVERAGE_TAB_ID = '#tab-coverage';
 
-describe('The Coverage Panel', () => {
+describe('The Coverage Panel', function() {
+  // Increase timeout, as this test requires coverage data to load first
+  // and is potentially the culprit for timeouts.
+  this.timeout(20000);
+
   it('Loads correctly', async ({devToolsPage}) => {
     await waitForTheCoveragePanelToLoad(devToolsPage);
   });

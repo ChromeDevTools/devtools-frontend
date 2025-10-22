@@ -131,16 +131,12 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
+    # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy,
+    # as the UI module should only be used to actually build user interfaces,
+    # and the business logic should never depend on the UI module.
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
-    "../../models/ai_assistance:*",
-    "../../models/autofill_manager:*",
-    "../../models/emulation:*",
-    "../../models/extensions:*",
-    "../../models/har:unittests",
-    "../../models/persistence:*",
     "../../panels/*",
-    "../../services/window_bounds/*",
     "../../testing/*",
     "../components/data_grid:*",
     "../components/docs/combo_box/*",
@@ -164,6 +160,15 @@ devtools_entrypoint("bundle") {
     # Required for correct button styling in the Computed tab
     # (http://crbug.com/435601104).
     "../components/tree_outline:*",
+
+    # TODO(crbug.com/442509324): front_end/models must not import from
+    # front_end/ui/legacy
+    "../../models/ai_assistance:unittests",
+    "../../models/autofill_manager",
+    "../../models/extensions",
+    "../../models/har:unittests",
+    "../../models/persistence:*",
+    "../../services/window_bounds/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

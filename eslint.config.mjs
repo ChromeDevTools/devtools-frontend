@@ -842,50 +842,6 @@ export default defineConfig([
               ),
               allowTypeImports: true,
             },
-            {
-              bannedPath: join(
-                import.meta.dirname,
-                'front_end',
-                'ui',
-                'legacy',
-                'legacy.js',
-              ),
-              allowTypeImports: false,
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    name: 'No UI in models',
-    files: ['front_end/models/**/*.ts'],
-    ignores: ['front_end/models/**/*.test.ts'],
-    rules: {
-      '@devtools/no-imports-in-directory': [
-        'error',
-        {
-          bannedImportPaths: [
-            {
-              bannedPath: join(
-                import.meta.dirname,
-                'front_end',
-                'ui',
-                'legacy',
-                'legacy.js',
-              ),
-              allowTypeImports: false,
-            },
-            {
-              bannedPath: join(
-                import.meta.dirname,
-                'front_end',
-                'ui',
-                'lit',
-                'lit.js',
-              ),
-              allowTypeImports: false,
-            },
           ],
         },
       ],

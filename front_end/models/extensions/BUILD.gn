@@ -34,9 +34,11 @@ devtools_module("extensions") {
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+
+    # TODO(crbug.com/442509324): Remove UI dependencies.
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
-    "../../ui/legacy/theme_support:bundle",
+    "../../ui/lit:bundle",
   ]
 }
 

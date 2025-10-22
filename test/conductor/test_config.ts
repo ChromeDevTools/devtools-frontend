@@ -131,8 +131,8 @@ export const TestConfig: Config = {
   shardBias: options['shard-bias'],
 };
 
-export function loadTests(testDirectory: string) {
-  const tests = fs.readFileSync(path.join(testDirectory, 'tests.txt'))
+export function loadTests(testDirectory: string, filename = 'tests.txt') {
+  const tests = fs.readFileSync(path.join(testDirectory, filename))
                     .toString()
                     .split('\n')
                     .map(t => t.trim())

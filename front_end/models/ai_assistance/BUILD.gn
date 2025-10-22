@@ -69,6 +69,7 @@ devtools_entrypoint("bundle") {
     "../../panels/settings/*",
     "../../panels/timeline/*",
     "../ai_code_completion",
+    "./data_formatters:*",
   ]
 
   visibility += devtools_models_visibility
@@ -92,12 +93,6 @@ ts_library("unittests") {
     "agents/PerformanceAgent.test.ts",
     "agents/PerformanceAnnotationsAgent.test.ts",
     "agents/StylingAgent.test.ts",
-    "data_formatters/FileFormatter.test.ts",
-    "data_formatters/NetworkRequestFormatter.test.ts",
-    "data_formatters/PerformanceInsightFormatter.test.ts",
-    "data_formatters/PerformanceTraceFormatter.test.ts",
-    "data_formatters/PerformanceTraceFormatterBounds.test.ts",
-    "data_formatters/UnitFormatters.test.ts",
     "performance/AICallTree.test.ts",
     "performance/AIQueries.test.ts",
   ]
@@ -114,5 +109,10 @@ ts_library("unittests") {
     "../bindings:bundle",
     "../text_utils:bundle",
     "../trace:bundle",
+    "./data_formatters:unittests",
   ]
+}
+
+group("foundation_unittests") {
+  deps = [ "./data_formatters:foundation_unittests" ]
 }

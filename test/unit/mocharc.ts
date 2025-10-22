@@ -4,6 +4,7 @@
 
 import path from 'node:path';
 
+import {GEN_DIR} from '../../test/conductor/paths.js';
 import {loadTests, TestConfig} from '../conductor/test_config.js';
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
   // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
   allowUncaught : true,
   require : ['source-map-support/register', 'chai/register-assert'],
-  spec : loadTests(path.join(__dirname, '..', '..', 'front_end')),
+  spec : loadTests(path.join(GEN_DIR, 'front_end'), 'foundation_tests.txt'),
   timeout : TestConfig.debug ? 0 : 10_000,
   reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
   retries : TestConfig.retries,

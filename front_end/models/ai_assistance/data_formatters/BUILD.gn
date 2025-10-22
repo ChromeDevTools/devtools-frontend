@@ -1,0 +1,42 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/typescript/typescript.gni")
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "FileFormatter.test.ts",
+    "NetworkRequestFormatter.test.ts",
+    "PerformanceInsightFormatter.test.ts",
+    "PerformanceTraceFormatter.test.ts",
+    "UnitFormatters.test.ts",
+  ]
+
+  deps = [
+    "../:bundle",
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
+    "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated:protocol",
+    "../../../testing",
+    "../../bindings:bundle",
+    "../../text_utils:bundle",
+    "../../trace:bundle",
+  ]
+}
+
+ts_library("foundation_unittests") {
+  testonly = true
+
+  sources = [ "PerformanceTraceFormatterBounds.test.ts" ]
+
+  deps = [
+    "..:bundle",
+    "../../../testing",
+    "../../trace:bundle",
+  ]
+}

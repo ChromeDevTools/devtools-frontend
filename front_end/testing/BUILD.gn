@@ -27,19 +27,15 @@ ts_library("testing") {
     "MockIssuesManager.ts",
     "MockIssuesModel.ts",
     "MockNetworkLog.ts",
-    "MockScopeChain.test.ts",
     "MockScopeChain.ts",
     "MockSettingStorage.ts",
-    "MutationHelpers.test.ts",
     "MutationHelpers.ts",
     "NetworkHelpers.ts",
     "OverridesHelpers.ts",
     "PersistenceHelpers.ts",
     "PropertyParser.ts",
     "ResourceTreeHelpers.ts",
-    "SnapshotTester.test.ts",
     "SnapshotTester.ts",
-    "SourceMapEncoder.test.ts",
     "SourceMapEncoder.ts",
     "SourceMapHelpers.ts",
     "StackTraceHelpers.ts",
@@ -89,4 +85,17 @@ ts_library("testing") {
     "../ui/lit:bundle",
     "../ui/visual_logging:testing",
   ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "MockScopeChain.test.ts",
+    "MutationHelpers.test.ts",
+    "SnapshotTester.test.ts",
+    "SourceMapEncoder.test.ts",
+  ]
+
+  deps = [ ":testing" ]
 }

@@ -110,6 +110,7 @@ copy_to_gen_with_grd("embedder-scripts") {
 
 group("unittests") {
   deps = [
+    ":foundation_unittests",
     "Images:optimize_images",
     "core/common:unittests",
     "core/dom_extension:unittests",
@@ -224,7 +225,7 @@ group("unittests") {
     "panels/whats_new:unittests",
     "services/trace_bounds:unittests",
     "services/tracing:unittests",
-    "testing",
+    "testing:unittests",
     "third_party/chromium/client-variations:unittests",
     "third_party/i18n:unittests",
     "ui/components/adorners:unittests",
@@ -269,6 +270,18 @@ group("unittests") {
     "ui/lit:unittests",
     "ui/visual_logging:unittests",
   ]
+}
+
+group("foundation_unittests") {
+  deps = [ "models/ai_assistance:foundation_unittests" ]
+}
+
+generated_file("foundation_test_inputs") {
+  outputs = [ "$target_gen_dir/foundation_tests.txt" ]
+  data_keys = [ "tests" ]
+  rebase = target_gen_dir
+
+  deps = [ ":foundation_unittests" ]
 }
 
 generated_file("test_inputs") {

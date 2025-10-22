@@ -58,14 +58,14 @@ SDKTestRunner.PageMock = class {
     this.enabledDomains.clear();
     SDK.TargetManager.TargetManager.instance().clearAllTargetsForTest();
 
-    const oldFactory = ProtocolClient.InspectorBackend.Connection.getFactory();
-    ProtocolClient.InspectorBackend.Connection.setFactory(() => {
+    const oldFactory = ProtocolClient.ConnectionTransport.ConnectionTransport.getFactory();
+    ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(() => {
       this.connection = new MockPageConnection(this);
       return this.connection;
     });
     const target =
         SDK.TargetManager.TargetManager.instance().createTarget(nextId('mock-target-'), targetName, this.type, null);
-    ProtocolClient.InspectorBackend.Connection.setFactory(oldFactory);
+    ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(oldFactory);
 
     this.target = target;
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);

@@ -19,7 +19,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Connections.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class MainConnection implements ProtocolClient.InspectorBackend.Connection {
+export class MainConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   onMessage: ((arg0: Object|string) => void)|null = null;
   #onDisconnect: ((arg0: string) => void)|null = null;
   #messageBuffer = '';
@@ -81,7 +81,7 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 }
 
-export class WebSocketConnection implements ProtocolClient.InspectorBackend.Connection {
+export class WebSocketConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   #socket: WebSocket|null;
   onMessage: ((arg0: Object|string) => void)|null = null;
   #onDisconnect: ((arg0: string) => void)|null = null;
@@ -176,7 +176,7 @@ export class WebSocketConnection implements ProtocolClient.InspectorBackend.Conn
   }
 }
 
-export class StubConnection implements ProtocolClient.InspectorBackend.Connection {
+export class StubConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   onMessage: ((arg0: Object|string) => void)|null = null;
   #onDisconnect: ((arg0: string) => void)|null = null;
 
@@ -213,17 +213,17 @@ export class StubConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 }
 
-export interface ParallelConnectionInterface extends ProtocolClient.InspectorBackend.Connection {
+export interface ParallelConnectionInterface extends ProtocolClient.ConnectionTransport.ConnectionTransport {
   getSessionId: () => string;
   getOnDisconnect: () => ((arg0: string) => void) | null;
 }
 
 export class ParallelConnection implements ParallelConnectionInterface {
-  readonly #connection: ProtocolClient.InspectorBackend.Connection;
+  readonly #connection: ProtocolClient.ConnectionTransport.ConnectionTransport;
   #sessionId: string;
   onMessage: ((arg0: Object) => void)|null = null;
   #onDisconnect: ((arg0: string) => void)|null = null;
-  constructor(connection: ProtocolClient.InspectorBackend.Connection, sessionId: string) {
+  constructor(connection: ProtocolClient.ConnectionTransport.ConnectionTransport, sessionId: string) {
     this.#connection = connection;
     this.#sessionId = sessionId;
   }
@@ -265,13 +265,13 @@ export class ParallelConnection implements ParallelConnectionInterface {
 export async function initMainConnection(
     createRootTarget: () => Promise<void>,
     onConnectionLost: (message: Platform.UIString.LocalizedString) => void): Promise<void> {
-  ProtocolClient.InspectorBackend.Connection.setFactory(createMainConnection.bind(null, onConnectionLost));
+  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(createMainConnection.bind(null, onConnectionLost));
   await createRootTarget();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 
 function createMainConnection(onConnectionLost: (message: Platform.UIString.LocalizedString) => void):
-    ProtocolClient.InspectorBackend.Connection {
+    ProtocolClient.ConnectionTransport.ConnectionTransport {
   if (Root.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnection(onConnectionLost);
   }

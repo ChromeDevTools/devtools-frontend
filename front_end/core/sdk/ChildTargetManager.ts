@@ -36,7 +36,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   readonly #targetInfos = new Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo>();
   readonly #childTargetsBySessionId = new Map<Protocol.Target.SessionID, Target>();
   readonly #childTargetsById = new Map<Protocol.Target.TargetID|'main', Target>();
-  readonly #parallelConnections = new Map<string, ProtocolClient.InspectorBackend.Connection>();
+  readonly #parallelConnections = new Map<string, ProtocolClient.ConnectionTransport.ConnectionTransport>();
   #parentTargetId: Protocol.Target.TargetID|null = null;
 
   constructor(parentTarget: Target) {
@@ -261,7 +261,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   async createParallelConnection(onMessage: (arg0: Object|string) => void):
-      Promise<{connection: ProtocolClient.InspectorBackend.Connection, sessionId: string}> {
+      Promise<{connection: ProtocolClient.ConnectionTransport.ConnectionTransport, sessionId: string}> {
     // The main Target id is actually just `main`, instead of the real targetId.
     // Get the real id (requires an async operation) so that it can be used synchronously later.
     const targetId = await this.getParentTargetId();
@@ -274,7 +274,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
 
   private async createParallelConnectionAndSessionForTarget(target: Target, targetId: Protocol.Target.TargetID):
       Promise<{
-        connection: ProtocolClient.InspectorBackend.Connection,
+        connection: ProtocolClient.ConnectionTransport.ConnectionTransport,
         sessionId: string,
       }> {
     const targetAgent = target.targetAgent();

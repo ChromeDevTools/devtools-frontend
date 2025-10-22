@@ -46,7 +46,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
   };
 
   beforeEach(() => {
-    sinon.stub(ProtocolClient.InspectorBackend.Connection, 'setFactory');
+    sinon.stub(ProtocolClient.ConnectionTransport.ConnectionTransport, 'setFactory');
   });
 
   describe('comparingBrowserSettingWithCookieControlSetting', () => {

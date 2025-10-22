@@ -35,7 +35,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
     sinon.stub(childTargetManager, 'getParentTargetId').resolves(primaryTarget.targetInfo()?.targetId);
     if (rootTarget === primaryTarget) {
       createParallelConnection = sinon.stub(childTargetManager, 'createParallelConnection').resolves({
-        connection: {disconnect: () => {}} as ProtocolClient.InspectorBackend.Connection,
+        connection: {disconnect: () => {}} as ProtocolClient.ConnectionTransport.ConnectionTransport,
         sessionId: 'foo',
       });
     } else {
@@ -43,7 +43,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
       assert.exists(rootChildTargetManager);
       sinon.stub(rootChildTargetManager, 'getParentTargetId').resolves(rootTarget.targetInfo()?.targetId);
       createParallelConnection = sinon.stub(rootChildTargetManager, 'createParallelConnection').resolves({
-        connection: {disconnect: () => {}} as ProtocolClient.InspectorBackend.Connection,
+        connection: {disconnect: () => {}} as ProtocolClient.ConnectionTransport.ConnectionTransport,
         sessionId: 'foo',
       });
     }

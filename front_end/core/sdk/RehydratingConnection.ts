@@ -63,7 +63,7 @@ export const enum RehydratingConnectionState {
   REHYDRATED = 3,
 }
 
-export class RehydratingConnection implements ProtocolClient.InspectorBackend.Connection {
+export class RehydratingConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   rehydratingConnectionState: RehydratingConnectionState = RehydratingConnectionState.UNINITIALIZED;
   onDisconnect: ((arg0: string) => void)|null = null;
   onMessage: ((arg0: Object) => void)|null = null;

@@ -60,7 +60,7 @@ export interface LighthouseRun {
 export class ProtocolService {
   private mainSessionId?: string;
   private rootTargetId?: string;
-  private parallelConnection?: ProtocolClient.InspectorBackend.Connection;
+  private parallelConnection?: ProtocolClient.ConnectionTransport.ConnectionTransport;
   private lighthouseWorkerPromise?: Promise<Worker>;
   private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
   private removeDialogHandler?: () => void;

@@ -209,7 +209,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   createTarget(
       id: Protocol.Target.TargetID|'main', name: string, type: TargetType, parentTarget: Target|null,
-      sessionId?: string, waitForDebuggerInPage?: boolean, connection?: ProtocolClient.InspectorBackend.Connection,
+      sessionId?: string, waitForDebuggerInPage?: boolean,
+      connection?: ProtocolClient.ConnectionTransport.ConnectionTransport,
       targetInfo?: Protocol.Target.TargetInfo): Target {
     const target = new Target(
         this, id, name, type, parentTarget, sessionId || '', this.#isSuspended, connection || null, targetInfo);

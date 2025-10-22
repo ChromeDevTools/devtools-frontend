@@ -39,7 +39,8 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   constructor(
       targetManager: TargetManager, id: Protocol.Target.TargetID|'main', name: string, type: Type,
       parentTarget: Target|null, sessionId: string, suspended: boolean,
-      connection: ProtocolClient.InspectorBackend.Connection|null, targetInfo?: Protocol.Target.TargetInfo) {
+      connection: ProtocolClient.ConnectionTransport.ConnectionTransport|null,
+      targetInfo?: Protocol.Target.TargetInfo) {
     const needsNodeJSPatching = type === Type.NODE;
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this.#targetManager = targetManager;

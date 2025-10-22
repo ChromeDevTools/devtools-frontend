@@ -146,7 +146,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
   }
 }
 
-export class NodeConnection implements ProtocolClient.InspectorBackend.Connection {
+export class NodeConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   readonly #targetAgent: ProtocolProxyApi.TargetApi;
   readonly #sessionId: Protocol.Target.SessionID;
   onMessage: ((arg0: Object|string) => void)|null;

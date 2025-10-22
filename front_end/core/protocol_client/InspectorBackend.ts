@@ -7,6 +7,7 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
 
+import {ConnectionTransport} from './ConnectionTransport.js';
 import {NodeURL} from './NodeURL.js';
 
 export const DevToolsStubErrorCode = -32015;
@@ -160,35 +161,6 @@ export class InspectorBackend {
   }
 }
 
-let connectionFactory: () => Connection;
-
-export class Connection {
-  declare onMessage: ((arg0: Object) => void)|null;
-
-  // on message from browser
-  setOnMessage(_onMessage: (arg0: Object|string) => void): void {
-  }
-
-  setOnDisconnect(_onDisconnect: (arg0: string) => void): void {
-  }
-
-  // send raw CDP message to browser
-  sendRawMessage(_message: string): void {
-  }
-
-  disconnect(): Promise<void> {
-    throw new Error('not implemented');
-  }
-
-  static setFactory(factory: () => Connection): void {
-    connectionFactory = factory;
-  }
-
-  static getFactory(): () => Connection {
-    return connectionFactory;
-  }
-}
-
 type SendRawMessageCallback = (...args: unknown[]) => void;
 
 export const test = {
@@ -232,18 +204,18 @@ export const test = {
 const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
 
 export class SessionRouter {
-  readonly #connection: Connection;
+  readonly #connection: ConnectionTransport;
   #lastMessageId = 1;
   #pendingResponsesCount = 0;
   readonly #pendingLongPollingMessageIds = new Set<number>();
   readonly #sessions = new Map<string, {
     target: TargetBase,
     callbacks: Map<number, CallbackWithDebugInfo>,
-    proxyConnection: Connection|undefined|null,
+    proxyConnection: ConnectionTransport|undefined|null,
   }>();
   #pendingScripts: Array<() => void> = [];
 
-  constructor(connection: Connection) {
+  constructor(connection: ConnectionTransport) {
     this.#connection = connection;
 
     test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
@@ -259,7 +231,7 @@ export class SessionRouter {
     });
   }
 
-  registerSession(target: TargetBase, sessionId: string, proxyConnection?: Connection|null): void {
+  registerSession(target: TargetBase, sessionId: string, proxyConnection?: ConnectionTransport|null): void {
     // Only the Audits panel uses proxy connections. If it is ever possible to have multiple active at the
     // same time, it should be tested thoroughly.
     if (proxyConnection) {
@@ -297,7 +269,7 @@ export class SessionRouter {
     return this.#lastMessageId++;
   }
 
-  connection(): Connection {
+  connection(): ConnectionTransport {
     return this.#connection;
   }
 
@@ -497,7 +469,8 @@ export class TargetBase {
   #dispatchers: DispatcherMap = new Map();
 
   constructor(
-      needsNodeJSPatching: boolean, parentTarget: TargetBase|null, sessionId: string, connection: Connection|null) {
+      needsNodeJSPatching: boolean, parentTarget: TargetBase|null, sessionId: string,
+      connection: ConnectionTransport|null) {
     this.needsNodeJSPatching = needsNodeJSPatching;
     this.sessionId = sessionId;
 
@@ -511,7 +484,7 @@ export class TargetBase {
     } else if (connection) {
       router = new SessionRouter(connection);
     } else {
-      router = new SessionRouter(connectionFactory());
+      router = new SessionRouter(ConnectionTransport.getFactory()());
     }
 
     this.#router = router;

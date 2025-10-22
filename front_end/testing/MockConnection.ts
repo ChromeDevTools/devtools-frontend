@@ -89,10 +89,10 @@ async function enable({reset = true} = {}) {
   await initializeGlobalVars({reset});
   setMockResourceTree(true);
 
-  ProtocolClient.InspectorBackend.Connection.setFactory(() => new MockConnection());
+  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(() => new MockConnection());
 }
 
-class MockConnection extends ProtocolClient.InspectorBackend.Connection {
+class MockConnection extends ProtocolClient.ConnectionTransport.ConnectionTransport {
   messageCallback?: MessageCallback;
   override setOnMessage(callback: MessageCallback) {
     this.messageCallback = callback;
@@ -129,6 +129,14 @@ class MockConnection extends ProtocolClient.InspectorBackend.Connection {
       });
     })();
   }
+
+  override setOnDisconnect(): void {
+    // Do nothing
+  }
+
+  override async disconnect(): Promise<void> {
+    // Do nothing
+  }
 }
 
 async function disable() {
@@ -141,7 +149,7 @@ async function disable() {
   await raf();
   await deinitializeGlobalVars();
   // @ts-expect-error Setting back to undefined as a hard reset.
-  ProtocolClient.InspectorBackend.Connection.setFactory(undefined);
+  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(undefined);
 }
 
 export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {

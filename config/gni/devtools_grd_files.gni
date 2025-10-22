@@ -894,6 +894,7 @@ grd_files_unbundled_sources = [
   "front_end/core/platform/TypescriptUtilities.js",
   "front_end/core/platform/UIString.js",
   "front_end/core/platform/UserVisibleError.js",
+  "front_end/core/protocol_client/ConnectionTransport.js",
   "front_end/core/protocol_client/InspectorBackend.js",
   "front_end/core/protocol_client/NodeURL.js",
   "front_end/core/root/Runtime.js",

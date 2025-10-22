@@ -425,21 +425,26 @@ async function main() {
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
   }
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
-  if (globalUserArgs.eval) {
-    const convertedOutput = convertRawOutputToEval({
-      inputFromAutoRun: output as RawOutput,
-      label: globalUserArgs.label,
-    });
-    const evalOutputPath = outputPath.replace('.json', '.eval.json');
-    fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
+
+  if (output.metadata.length === 0 && output.examples.length === 0) {
+    console.info('\n[Warn]: No results to export.');
+  } else {
+    fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+    if (globalUserArgs.eval) {
+      const convertedOutput = convertRawOutputToEval({
+        inputFromAutoRun: output as RawOutput,
+        label: globalUserArgs.label,
+      });
+      const evalOutputPath = outputPath.replace('.json', '.eval.json');
+      fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
+      console.info(
+          `\n[Info]: Exported eval output to ${evalOutputPath}`,
+      );
+    }
     console.info(
-        `\n[Info]: Exported eval output to ${evalOutputPath}`,
+        `\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`,
     );
   }
-  console.info(
-      `\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`,
-  );
   logger.destroy();
 }
 

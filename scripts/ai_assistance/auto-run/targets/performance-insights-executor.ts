@@ -78,7 +78,7 @@ export class PerformanceInsightsExecutor implements TargetExecutor {
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
     const allResults: IndividualPromptRequestResponse[] = [];
-    const inputSelector = 'aria/Ask a question about the selected performance insight';
+    const inputSelector = 'aria/Ask a question about the selected performance trace';
 
     for (const query of preparationResult.queries) {
       commonLog(`[PerfInsightsExecutor] Executing query: "${query}" for example: ${exampleId}`);

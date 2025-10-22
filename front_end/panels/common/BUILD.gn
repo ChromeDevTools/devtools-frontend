@@ -47,6 +47,7 @@ devtools_ui_module("common") {
     "../../ui/components/switch:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]

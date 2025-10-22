@@ -38,7 +38,6 @@ devtools_entrypoint("bundle") {
     # TODO(crbug.com/442509324): front_end/models must not import from
     # front_end/ui/lit
     "../../models/extensions",
-    "../../models/persistence",
   ]
 
   visibility += devtools_lit_visibility

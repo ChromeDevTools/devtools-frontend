@@ -185,7 +185,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   override getTitle(): string {
     const focus = this.#focus;
 
-    let url = focus.insightSet?.url;
+    let url = focus.primaryInsightSet?.url;
     if (!url) {
       url = new URL(focus.parsedTrace.data.Meta.mainFrameURL);
     }
@@ -226,10 +226,11 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     const suggestions: ConversationSuggestions =
         [{title: 'What performance issues exist with my page?', jslogContext: 'performance-default'}];
 
-    if (focus.insightSet) {
-      const lcp = focus.insightSet ? Trace.Insights.Common.getLCP(focus.insightSet) : null;
-      const cls = focus.insightSet ? Trace.Insights.Common.getCLS(focus.insightSet) : null;
-      const inp = focus.insightSet ? Trace.Insights.Common.getINP(focus.insightSet) : null;
+    const insightSet = focus.primaryInsightSet;
+    if (insightSet) {
+      const lcp = insightSet ? Trace.Insights.Common.getLCP(insightSet) : null;
+      const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
+      const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
 
       const ModelHandlers = Trace.Handlers.ModelHandlers;
       const GOOD = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD;
@@ -246,7 +247,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
 
       // Add up to 3 suggestions from the top failing insights.
       const top3FailingInsightSuggestions =
-          Object.values(focus.insightSet.model)
+          Object.values(insightSet.model)
               .filter(model => model.state !== 'pass')
               .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
               .filter(suggestion => !!suggestion)
@@ -625,7 +626,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
   #declareFunctions(context: PerformanceTraceContext): void {
     const focus = context.getItem();
-    const {parsedTrace, insightSet} = focus;
+    const {parsedTrace} = focus;
+    const insightSet = focus.primaryInsightSet;
 
     this.declareFunction<{insightName: string}, {details: string}>('getInsightDetails', {
       description:

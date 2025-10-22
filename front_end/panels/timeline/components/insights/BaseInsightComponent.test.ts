@@ -347,7 +347,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
 
     it('sets the context when the user clicks the button', async () => {
       // @ts-expect-error: don't need real data.
-      const focus = new AIAssistance.AIContext.AgentFocus({});
+      const focus = new AIAssistance.AIContext.AgentFocus({parsedTrace: {insights: new Map()}});
       updateHostConfig({
         aidaAvailability: {
           enabled: true,
@@ -387,7 +387,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         frameId: '123',
       } as const;
       // @ts-expect-error: don't need real data.
-      const focus = new AIAssistance.AIContext.AgentFocus({parsedTrace: true, insight: mockInsight});
+      const focus = new AIAssistance.AIContext.AgentFocus({parsedTrace: {insights: new Map()}, insight: mockInsight});
       UI.Context.Context.instance().setFlavor(AIAssistance.AIContext.AgentFocus, focus);
       const component = await renderComponent({insightHasAISupport: true});
       component.agentFocus = focus;
@@ -398,7 +398,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       dispatchClickEvent(header);
       const newFocus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
       assert.isNull(newFocus?.insight);
-      assert.isTrue(newFocus?.parsedTrace);
+      assert.isOk(newFocus?.parsedTrace);
     });
 
     it('does not render the "Ask AI" button when the perf agent is not enabled', async () => {

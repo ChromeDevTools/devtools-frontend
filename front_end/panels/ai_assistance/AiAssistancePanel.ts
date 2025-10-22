@@ -1135,16 +1135,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
         break;
       }
-      case 'drjones.performance-insight-context': {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceInsight);
-        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
-        break;
-      }
-      case 'drjones.performance-panel-full-context': {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceFullButton);
-        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
-        break;
-      }
       case 'drjones.sources-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromSourcesPanelFloatingButton);
         targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.FILE;
@@ -1658,9 +1648,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'freestyler.main-menu':
       case 'drjones.network-floating-button':
       case 'drjones.network-panel-context':
-      case 'drjones.performance-panel-full-context':
       case 'drjones.performance-panel-context':
-      case 'drjones.performance-insight-context':
       case 'drjones.sources-floating-button':
       case 'drjones.sources-panel-context': {
         void (async () => {

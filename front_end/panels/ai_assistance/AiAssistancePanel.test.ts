@@ -548,7 +548,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
          updateHostConfig({
            devToolsAiAssistancePerformanceAgent: {
              enabled: true,
-             insightsEnabled: true,
            },
          });
          const {panel, view} = await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
@@ -585,43 +584,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
          assert.deepEqual((await view.nextInput).messages, []);
          assert.deepEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
        });
-
-    it('should select the Dr Jones performance agent if insights are not enabled', async () => {
-      updateHostConfig({
-        devToolsAiAssistancePerformanceAgent: {
-          enabled: true,
-          insightsEnabled: false,
-        },
-      });
-      const {panel, view} = await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
-
-      void panel.handleAction('freestyler.elements-floating-button');
-      (await view.nextInput).onTextSubmit('test');
-      await view.nextInput;
-
-      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');
-      UI.Context.Context.instance().setFlavor(
-          Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
-
-      assert.deepEqual(view.input.messages, [
-        {
-          entity: AiAssistancePanel.ChatMessageEntity.USER,
-          text: 'test',
-          imageInput: undefined,
-        },
-        {
-          answer: 'test',
-          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
-          rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
-        },
-      ]);
-      view.input.onNewChatClick();
-
-      assert.deepEqual((await view.nextInput).messages, []);
-      assert.deepEqual(view.input.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
-    });
 
     it('should switch agents and restore history', async () => {
       updateHostConfig({
@@ -1352,7 +1314,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
            updateHostConfig({
              devToolsAiAssistancePerformanceAgent: {
                enabled: true,
-               insightsEnabled: true,
              },
            });
            viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');
@@ -1372,7 +1333,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
            updateHostConfig({
              devToolsAiAssistancePerformanceAgent: {
                enabled: true,
-               insightsEnabled: true,
              },
            });
            viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');

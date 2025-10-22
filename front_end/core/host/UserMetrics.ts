@@ -506,8 +506,6 @@ export enum Action {
   AiAssistanceSideEffectConfirmed = 179,
   AiAssistanceSideEffectRejected = 180,
   AiAssistanceError = 181,
-  AiAssistanceOpenedFromPerformanceInsight = 182,
-  AiAssistanceOpenedFromPerformanceFullButton = 183,
   AiCodeCompletionResponseServedFromCache = 184,
   AiCodeCompletionRequestTriggered = 185,
   AiCodeCompletionSuggestionDisplayed = 186,

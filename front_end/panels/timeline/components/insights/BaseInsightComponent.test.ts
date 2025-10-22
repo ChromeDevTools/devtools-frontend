@@ -282,7 +282,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
         },
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
-          insightsEnabled: true,
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
@@ -295,7 +294,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
       updateHostConfig({
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
-          insightsEnabled: true,
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
@@ -311,7 +309,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
         },
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
-          insightsEnabled: true,
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
@@ -325,7 +322,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
       updateHostConfig({
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
-          insightsEnabled: true,
         },
         aidaAvailability: {
           enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.DISABLE,
@@ -341,7 +337,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
       updateHostConfig({
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
-          insightsEnabled: true,
         }
       });
       const component = await renderComponent({insightHasAISupport: false});
@@ -359,7 +354,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
         },
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
-          insightsEnabled: true,
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
@@ -368,12 +362,12 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
       sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
-          .withArgs(sinon.match(/drjones\.performance-insight-context/))
+          .withArgs(sinon.match(/drjones\.performance-panel-context/))
           .returns(true);
 
       const FAKE_ACTION = sinon.createStubInstance(UI.ActionRegistration.Action);
       sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction')
-          .withArgs(sinon.match(/drjones\.performance-insight-context/))
+          .withArgs(sinon.match(/drjones\.performance-panel-context/))
           .returns(FAKE_ACTION);
 
       dispatchClickEvent(button);
@@ -415,19 +409,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent(
           {insightHasAISupport: true});  // The Insight supports it, but the feature is not enabled
-      assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
-      assert.isNull(button);
-    });
-
-    it('does not render the "Ask AI" button when the perf agent is enabled but the insights ai is not', async () => {
-      updateHostConfig({
-        devToolsAiAssistancePerformanceAgent: {
-          enabled: true,
-          insightsEnabled: false,
-        }
-      });
-      const component = await renderComponent({insightHasAISupport: true});
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);

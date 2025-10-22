@@ -83,7 +83,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   // This flag tracks if the Insights AI feature is enabled within Chrome for
   // the active user.
-  #insightsAskAiEnabled = false;
+  #askAiEnabled = false;
 
   #selected = false;
   #model: T|null = null;
@@ -122,8 +122,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     this.dataset.insightName = this.internalName;
 
     const {devToolsAiAssistancePerformanceAgent} = Root.Runtime.hostConfig;
-    this.#insightsAskAiEnabled =
-        Boolean(devToolsAiAssistancePerformanceAgent?.enabled && devToolsAiAssistancePerformanceAgent?.insightsEnabled);
+    this.#askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
   }
 
   set selected(selected: boolean) {
@@ -361,7 +360,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     }
 
     // matches the one in ai_assistance-meta.ts
-    const actionId = 'drjones.performance-insight-context';
+    const actionId = 'drjones.performance-panel-context';
     if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(actionId)) {
       return;
     }
@@ -382,7 +381,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   #canShowAskAI(): boolean {
     const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
             Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
-        this.#insightsAskAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
+        this.#askAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
 
     return aiAvailable && this.hasAskAiSupport();
   }

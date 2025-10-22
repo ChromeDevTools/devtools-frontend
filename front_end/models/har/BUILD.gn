@@ -48,8 +48,10 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../testing",
-    "../../ui/legacy:bundle",
+    "../text_utils:bundle",
   ]
 }

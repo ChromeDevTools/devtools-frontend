@@ -4,7 +4,8 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as HAR from '../har/har.js';
+
+import * as HAR from './har.js';
 
 const exampleLog = new HAR.HARFormat.HARLog({
   version: '1.2',

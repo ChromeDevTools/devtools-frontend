@@ -109,7 +109,7 @@ export class RehydratingConnection implements ProtocolClient.ConnectionTransport
     if (this.#rehydratingWindow.opener) {
       this.#rehydratingWindow.opener.postMessage({type: 'REHYDRATING_WINDOW_READY'});
     } else if (this.#rehydratingWindow !== window.top) {
-      this.#rehydratingWindow.parent.postMessage({type: 'REHYDRATING_IFRAME_READY'});
+      this.#rehydratingWindow.parent.postMessage({type: 'REHYDRATING_IFRAME_READY'}, '*');
     } else {
       this.#onConnectionLost(i18nString(UIStrings.noHostWindow));
     }

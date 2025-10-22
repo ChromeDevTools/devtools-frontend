@@ -855,13 +855,11 @@ export class TargetBase {
  * of the invoke_enable, etc. methods that the front-end uses.
  */
 class AgentPrototype {
-  replyArgs: Record<string, string[]>;
   description = '';
   metadata: Record<string, {parameters: CommandParameter[], description: string, replyArgs: string[]}>;
   readonly domain: string;
   target!: TargetBase;
   constructor(domain: string) {
-    this.replyArgs = {};
     this.domain = domain;
     this.metadata = {};
   }
@@ -869,11 +867,6 @@ class AgentPrototype {
   registerCommand(
       methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[], description: string): void {
     const domainAndMethod = qualifyName(this.domain, methodName);
-    function sendMessagePromise(this: AgentPrototype, ...args: unknown[]): Promise<unknown> {
-      return AgentPrototype.prototype.sendMessageToBackendPromise.call(this, domainAndMethod, parameters, args);
-    }
-    // @ts-expect-error Method code generation
-    this[methodName] = sendMessagePromise;
     this.metadata[domainAndMethod] = {parameters, description, replyArgs};
 
     function invoke(this: AgentPrototype, request: Object|undefined = {}): Promise<Protocol.ProtocolResponseWithError> {
@@ -882,88 +875,6 @@ class AgentPrototype {
 
     // @ts-expect-error Method code generation
     this['invoke_' + methodName] = invoke;
-    this.replyArgs[domainAndMethod] = replyArgs;
-  }
-
-  private prepareParameters(
-      method: string, parameters: CommandParameter[], args: unknown[], errorCallback: (arg0: string) => void): Object
-      |null {
-    const params: Record<string, unknown> = {};
-    let hasParams = false;
-
-    for (const param of parameters) {
-      const paramName = param.name;
-      const typeName = param.type;
-      const optionalFlag = param.optional;
-
-      if (!args.length && !optionalFlag) {
-        errorCallback(
-            `Protocol Error: Invalid number of arguments for method '${method}' call. ` +
-            `It must have the following arguments ${JSON.stringify(parameters)}'.`);
-        return null;
-      }
-
-      const value = args.shift();
-      if (optionalFlag && typeof value === 'undefined') {
-        continue;
-      }
-      const expectedJSType = typeName === 'array' ? 'object' : typeName;
-      if (typeof value !== expectedJSType) {
-        errorCallback(
-            `Protocol Error: Invalid type of argument '${paramName}' for method '${method}' call. ` +
-            `It must be '${typeName}' but it is '${typeof value}'.`);
-        return null;
-      }
-
-      params[paramName] = value;
-      hasParams = true;
-    }
-
-    if (args.length) {
-      errorCallback(`Protocol Error: Extra ${args.length} arguments in a call to method '${method}'.`);
-      return null;
-    }
-
-    return hasParams ? params : null;
-  }
-
-  private sendMessageToBackendPromise(method: QualifiedName, parameters: CommandParameter[], args: unknown[]):
-      Promise<unknown> {
-    let errorMessage;
-    function onError(message: string): void {
-      console.error(message);
-      errorMessage = message;
-    }
-    const params = this.prepareParameters(method, parameters, args, onError);
-    if (errorMessage) {
-      return Promise.resolve(null);
-    }
-
-    return new Promise(resolve => {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const callback: Callback = (error: MessageError|null, result: any|null): void => {
-        if (error) {
-          if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== GenericErrorCode &&
-              error.code !== ConnectionClosedErrorCode) {
-            console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
-          }
-
-          resolve(null);
-          return;
-        }
-
-        const args = this.replyArgs[method];
-        resolve(result && args.length ? result[args[0]] : undefined);
-      };
-
-      const router = this.target.router();
-      if (!router) {
-        SessionRouter.dispatchConnectionError(callback, method);
-      } else {
-        router.sendMessage(this.target.sessionId, this.domain, method, params, callback);
-      }
-    });
   }
 
   private invoke(method: QualifiedName, request: Object|null): Promise<Protocol.ProtocolResponseWithError> {

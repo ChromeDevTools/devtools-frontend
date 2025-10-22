@@ -711,8 +711,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (icon) {
       clickableElement.appendChild(icon);
     }
-    // Intercept focus to avoid highlight on click.
-    clickableElement.tabIndex = -1;
+    if (stackTrace) {
+      // Intercept focus to avoid highlight on click.
+      clickableElement.tabIndex = -1;
+    }
     clickableElement.appendChild(messageElement);
     const stackTraceElement = contentElement.createChild('div');
     const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent(

@@ -220,7 +220,7 @@
   --console-color-lightcyan: #5ff;
   --console-color-white: #fff;
 
-  &.console-selected {
+  &:focus {
     background-color: var(--sys-color-state-focus-highlight);
   }
 }

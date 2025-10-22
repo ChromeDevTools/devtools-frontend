@@ -41,8 +41,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
-import * as Extensions from '../../models/extensions/extensions.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as PanelCommon from '../../panels/common/common.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -333,8 +333,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         event => this.debuggerResumed(event.data));
-    Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
-        Extensions.ExtensionServer.Events.SidebarPaneAdded, this.extensionSidebarPaneAdded, this);
+    PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener(
+        PanelCommon.ExtensionServer.Events.SidebarPaneAdded, this.extensionSidebarPaneAdded, this);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.lastModificationTime = -Infinity;
   }
@@ -1280,7 +1280,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
 
     this.sidebarPaneStack.appendApplicableItems('sources.sidebar-bottom');
-    const extensionSidebarPanes = Extensions.ExtensionServer.ExtensionServer.instance().sidebarPanes();
+    const extensionSidebarPanes = PanelCommon.ExtensionServer.ExtensionServer.instance().sidebarPanes();
     for (let i = 0; i < extensionSidebarPanes.length; ++i) {
       this.addExtensionSidebarPane(extensionSidebarPanes[i]);
     }
@@ -1293,11 +1293,11 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   private extensionSidebarPaneAdded(
-      event: Common.EventTarget.EventTargetEvent<Extensions.ExtensionPanel.ExtensionSidebarPane>): void {
+      event: Common.EventTarget.EventTargetEvent<PanelCommon.ExtensionPanel.ExtensionSidebarPane>): void {
     this.addExtensionSidebarPane(event.data);
   }
 
-  private addExtensionSidebarPane(pane: Extensions.ExtensionPanel.ExtensionSidebarPane): void {
+  private addExtensionSidebarPane(pane: PanelCommon.ExtensionPanel.ExtensionSidebarPane): void {
     if (pane.panelName() === this.name) {
       (this.extensionSidebarPanesContainer as UI.View.ViewLocation).appendView(pane);
     }

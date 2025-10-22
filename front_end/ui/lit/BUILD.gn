@@ -34,10 +34,6 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/*",
     "../../ui/legacy/*",
-
-    # TODO(crbug.com/442509324): front_end/models must not import from
-    # front_end/ui/lit
-    "../../models/extensions",
   ]
 
   visibility += devtools_lit_visibility

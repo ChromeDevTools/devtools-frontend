@@ -47,7 +47,6 @@ import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
-import * as Extensions from '../../models/extensions/extensions.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -473,7 +472,7 @@ export class MainImpl {
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
     // @ts-expect-error e2e test global
-    self.Extensions.extensionServer = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
+    self.Extensions.extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance({forceNew: true});
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         isolatedFileSystemManager, Workspace.Workspace.WorkspaceImpl.instance());
@@ -656,7 +655,7 @@ export class MainImpl {
 
   async #lateInitialization(): Promise<void> {
     MainImpl.time('Main._lateInitialization');
-    Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
+    PanelCommon.ExtensionServer.ExtensionServer.instance().initializeExtensions();
     const promises: Array<Promise<void>> =
         Common.Runnable.lateInitializationRunnables().map(async lateInitializationLoader => {
           const runnable = await lateInitializationLoader();

@@ -26,6 +26,9 @@ devtools_ui_module("common") {
     "AiCodeCompletionSummaryToolbar.ts",
     "AiCodeCompletionTeaser.ts",
     "BadgeNotification.ts",
+    "ExtensionPanel.ts",
+    "ExtensionServer.ts",
+    "ExtensionView.ts",
     "FreDialog.ts",
     "GdpSignUpDialog.ts",
     "PersistenceUtils.ts",
@@ -37,6 +40,7 @@ devtools_ui_module("common") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../models/badges:bundle",
+    "../../models/extensions:bundle",
     "../../models/geometry:bundle",
     "../../models/persistence:bundle",
     "../../services/window_bounds:bundle",
@@ -66,6 +70,8 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../*",
+    "../../entrypoints/main",
+    "../../testing",
     "../../ui/components/text_editor/*",
     "../../ui/legacy/components/source_frame/*",
   ]
@@ -81,6 +87,7 @@ devtools_ui_module("unittests") {
     "AiCodeCompletionSummaryToolbar.test.ts",
     "AiCodeCompletionTeaser.test.ts",
     "BadgeNotification.test.ts",
+    "ExtensionServer.test.ts",
     "GdpSignUpDialog.test.ts",
   ]
 

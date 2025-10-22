@@ -88,6 +88,7 @@ devtools_ui_module("elements") {
     "../../models/issues_manager:bundle",
     "../../models/workspace:bundle",
     "../../models/workspace_diff:bundle",
+    "../../panels/common:bundle",
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/issues:bundle",

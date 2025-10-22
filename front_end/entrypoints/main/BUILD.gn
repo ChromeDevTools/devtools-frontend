@@ -34,6 +34,7 @@ devtools_module("main") {
     "../../models/project_settings:bundle",
     "../../models/workspace:bundle",
     "../../panels/ai_assistance:bundle",
+    "../../panels/common:bundle",
     "../../panels/snippets:bundle",
     "../../panels/timeline:bundle",
     "../../ui/components/buttons:bundle",

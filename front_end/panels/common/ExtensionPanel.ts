@@ -6,9 +6,9 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Extensions from '../../models/extensions/extensions.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as ExtensionAPI from './ExtensionAPI.js';
 import type {ExtensionServer} from './ExtensionServer.js';
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
@@ -38,7 +38,7 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
   }
 
   onSearchCanceled(): void {
-    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
+    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
     this.#searchableView.updateSearchMatchesCount(0);
   }
 
@@ -48,15 +48,17 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void {
     const query = searchConfig.query;
-    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch, query);
+    this.server.notifySearchAction(
+        this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch, query);
   }
 
   jumpToNextSearchResult(): void {
-    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
+    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
   }
 
   jumpToPreviousSearchResult(): void {
-    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult);
+    this.server.notifySearchAction(
+        this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult);
   }
 
   supportsCaseSensitiveSearch(): boolean {

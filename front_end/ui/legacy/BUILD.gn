@@ -165,7 +165,6 @@ devtools_entrypoint("bundle") {
     # front_end/ui/legacy
     "../../models/ai_assistance:unittests",
     "../../models/autofill_manager",
-    "../../models/extensions",
     "../../models/har:unittests",
     "../../services/window_bounds/*",
   ]

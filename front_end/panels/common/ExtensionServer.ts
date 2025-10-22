@@ -14,21 +14,17 @@ import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Extensions from '../../models/extensions/extensions.js';
+import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import * as Bindings from '../bindings/bindings.js';
-import * as HAR from '../har/har.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as Workspace from '../workspace/workspace.js';
 
-import {PrivateAPI} from './ExtensionAPI.js';
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
-import {HostUrlPattern} from './HostUrlPattern.js';
-import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
-import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
-import {RecorderPluginManager} from './RecorderPluginManager.js';
 
 const extensionOrigins = new WeakMap<MessagePort, Platform.DevToolsPath.UrlString>();
 const kPermittedSchemes = ['http:', 'https:', 'file:', 'data:', 'chrome-extension:', 'about:'];
@@ -47,14 +43,14 @@ export class HostsPolicy {
     const runtimeBlockedHosts = [];
     if (policy) {
       for (const pattern of policy.runtimeAllowedHosts) {
-        const parsedPattern = HostUrlPattern.parse(pattern);
+        const parsedPattern = Extensions.HostUrlPattern.HostUrlPattern.parse(pattern);
         if (!parsedPattern) {
           return null;
         }
         runtimeAllowedHosts.push(parsedPattern);
       }
       for (const pattern of policy.runtimeBlockedHosts) {
-        const parsedPattern = HostUrlPattern.parse(pattern);
+        const parsedPattern = Extensions.HostUrlPattern.HostUrlPattern.parse(pattern);
         if (!parsedPattern) {
           return null;
         }
@@ -63,7 +59,9 @@ export class HostsPolicy {
     }
     return new HostsPolicy(runtimeAllowedHosts, runtimeBlockedHosts);
   }
-  private constructor(readonly runtimeAllowedHosts: HostUrlPattern[], readonly runtimeBlockedHosts: HostUrlPattern[]) {
+  private constructor(
+      readonly runtimeAllowedHosts: Extensions.HostUrlPattern.HostUrlPattern[],
+      readonly runtimeBlockedHosts: Extensions.HostUrlPattern.HostUrlPattern[]) {
   }
 
   isAllowedOnURL(inspectedURL?: Platform.DevToolsPath.UrlString): boolean {
@@ -127,7 +125,8 @@ export class RevealableNetworkRequestFilter {
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly clientObjects: Map<string, unknown>;
   private readonly handlers:
-      Map<string, (message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort) => unknown>;
+      Map<string,
+          (message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort) => unknown>;
   private readonly subscribers: Map<string, Set<MessagePort>>;
   private readonly subscriptionStartHandlers: Map<string, () => unknown>;
   private readonly subscriptionStopHandlers: Map<string, () => unknown>;
@@ -161,42 +160,66 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // TODO(caseq): properly unload extensions when we disable them.
     this.extensionsEnabled = true;
 
-    this.registerHandler(PrivateAPI.Commands.AddRequestHeaders, this.onAddRequestHeaders.bind(this));
-    this.registerHandler(PrivateAPI.Commands.CreatePanel, this.onCreatePanel.bind(this));
-    this.registerHandler(PrivateAPI.Commands.CreateSidebarPane, this.onCreateSidebarPane.bind(this));
-    this.registerHandler(PrivateAPI.Commands.CreateToolbarButton, this.onCreateToolbarButton.bind(this));
-    this.registerHandler(PrivateAPI.Commands.EvaluateOnInspectedPage, this.onEvaluateOnInspectedPage.bind(this));
-    this.registerHandler(PrivateAPI.Commands.ForwardKeyboardEvent, this.onForwardKeyboardEvent.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetHAR, this.onGetHAR.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetPageResources, this.onGetPageResources.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetRequestContent, this.onGetRequestContent.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetResourceContent, this.onGetResourceContent.bind(this));
-    this.registerHandler(PrivateAPI.Commands.Reload, this.onReload.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetOpenResourceHandler, this.onSetOpenResourceHandler.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetThemeChangeHandler, this.onSetThemeChangeHandler.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetResourceContent, this.onSetResourceContent.bind(this));
-    this.registerHandler(PrivateAPI.Commands.AttachSourceMapToResource, this.onAttachSourceMapToResource.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetSidebarHeight, this.onSetSidebarHeight.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetSidebarContent, this.onSetSidebarContent.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetSidebarPage, this.onSetSidebarPage.bind(this));
-    this.registerHandler(PrivateAPI.Commands.ShowPanel, this.onShowPanel.bind(this));
-    this.registerHandler(PrivateAPI.Commands.Subscribe, this.onSubscribe.bind(this));
-    this.registerHandler(PrivateAPI.Commands.OpenResource, this.onOpenResource.bind(this));
-    this.registerHandler(PrivateAPI.Commands.Unsubscribe, this.onUnsubscribe.bind(this));
-    this.registerHandler(PrivateAPI.Commands.UpdateButton, this.onUpdateButton.bind(this));
     this.registerHandler(
-        PrivateAPI.Commands.RegisterLanguageExtensionPlugin, this.registerLanguageExtensionEndpoint.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetWasmLinearMemory, this.onGetWasmLinearMemory.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetWasmGlobal, this.onGetWasmGlobal.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetWasmLocal, this.onGetWasmLocal.bind(this));
-    this.registerHandler(PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
+        Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders, this.onAddRequestHeaders.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.CreatePanel, this.onCreatePanel.bind(this));
     this.registerHandler(
-        PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
-    this.registerHandler(PrivateAPI.Commands.ReportResourceLoad, this.onReportResourceLoad.bind(this));
-    this.registerHandler(PrivateAPI.Commands.SetFunctionRangesForScript, this.onSetFunctionRangesForScript.bind(this));
-    this.registerHandler(PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
-    this.registerHandler(PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
-    this.registerHandler(PrivateAPI.Commands.ShowNetworkPanel, this.onShowNetworkPanel.bind(this));
+        Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane, this.onCreateSidebarPane.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.CreateToolbarButton, this.onCreateToolbarButton.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.EvaluateOnInspectedPage, this.onEvaluateOnInspectedPage.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent, this.onForwardKeyboardEvent.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR, this.onGetHAR.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.GetPageResources, this.onGetPageResources.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.GetRequestContent, this.onGetRequestContent.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.GetResourceContent, this.onGetResourceContent.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.Reload, this.onReload.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.SetOpenResourceHandler, this.onSetOpenResourceHandler.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.SetThemeChangeHandler, this.onSetThemeChangeHandler.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.SetResourceContent, this.onSetResourceContent.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.AttachSourceMapToResource,
+        this.onAttachSourceMapToResource.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarHeight, this.onSetSidebarHeight.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarContent, this.onSetSidebarContent.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarPage, this.onSetSidebarPage.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.ShowPanel, this.onShowPanel.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.Subscribe, this.onSubscribe.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.OpenResource, this.onOpenResource.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.Unsubscribe, this.onUnsubscribe.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.UpdateButton, this.onUpdateButton.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterLanguageExtensionPlugin,
+        this.registerLanguageExtensionEndpoint.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory, this.onGetWasmLinearMemory.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal, this.onGetWasmGlobal.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal, this.onGetWasmLocal.bind(this));
+    this.registerHandler(Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin,
+        this.registerRecorderExtensionEndpoint.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.ReportResourceLoad, this.onReportResourceLoad.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.SetFunctionRangesForScript,
+        this.onSetFunctionRangesForScript.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
+    this.registerHandler(
+        Extensions.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel, this.onShowNetworkPanel.bind(this));
     window.addEventListener('message', this.onWindowMessage, false);  // Only for main window.
 
     const existingTabId = window.DevToolsAPI?.getInspectedTabId?.();
@@ -233,7 +256,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #onThemeChange = (): void => {
     const themeName = ThemeSupport.ThemeSupport.instance().themeName();
     for (const port of this.themeChangeHandlers.values()) {
-      port.postMessage({command: PrivateAPI.Events.ThemeChange, themeName});
+      port.postMessage({command: Extensions.ExtensionAPI.PrivateAPI.Events.ThemeChange, themeName});
     }
   };
 
@@ -261,33 +284,34 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   notifySearchAction(panelId: string, action: string, searchString?: string): void {
-    this.postNotification(PrivateAPI.Events.PanelSearch + panelId, [action, searchString]);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.PanelSearch + panelId, [action, searchString]);
   }
 
   notifyViewShown(identifier: string, frameIndex?: number): void {
-    this.postNotification(PrivateAPI.Events.ViewShown + identifier, [frameIndex]);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ViewShown + identifier, [frameIndex]);
   }
 
   notifyViewHidden(identifier: string): void {
-    this.postNotification(PrivateAPI.Events.ViewHidden + identifier, []);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ViewHidden + identifier, []);
   }
 
   notifyButtonClicked(identifier: string): void {
-    this.postNotification(PrivateAPI.Events.ButtonClicked + identifier, []);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ButtonClicked + identifier, []);
   }
 
   profilingStarted(): void {
-    this.postNotification(PrivateAPI.Events.ProfilingStarted, []);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ProfilingStarted, []);
   }
 
   profilingStopped(): void {
-    this.postNotification(PrivateAPI.Events.ProfilingStopped, []);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ProfilingStopped, []);
   }
 
   private registerLanguageExtensionEndpoint(
-      message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.RegisterLanguageExtensionPlugin) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.RegisterLanguageExtensionPlugin}`);
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterLanguageExtensionPlugin) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterLanguageExtensionPlugin}`);
     }
     const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const {pluginName, port, supportedScriptTypes: {language, symbol_types}} = message;
@@ -298,7 +322,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!registration) {
       throw new Error('Received a message from an unregistered extension');
     }
-    const endpoint = new LanguageExtensionEndpoint(
+    const endpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
         registration.allowFileAccess, extensionOrigin, pluginName, {language, symbol_types: symbol_types_array}, port);
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
@@ -328,9 +352,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.E_FAILED('Failed');
   }
 
-  private async onGetWasmLinearMemory(message: PrivateAPI.ExtensionServerRequestMessage): Promise<Record|number[]> {
-    if (message.command !== PrivateAPI.Commands.GetWasmLinearMemory) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmLinearMemory}`);
+  private async onGetWasmLinearMemory(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
+      Promise<Record|number[]> {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory}`);
     }
     return await this.loadWasmValue<number[]>(
         false, result => result.value,
@@ -364,10 +390,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     };
   }
 
-  private async onGetWasmGlobal(message: PrivateAPI.ExtensionServerRequestMessage):
+  private async onGetWasmGlobal(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
       Promise<Record|Chrome.DevTools.WasmValue> {
-    if (message.command !== PrivateAPI.Commands.GetWasmGlobal) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmGlobal}`);
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal}`);
     }
     const global = Number(message.global);
     const result = await this.loadWasmValue<Chrome.DevTools.WasmValue|undefined>(
@@ -375,10 +401,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return result ?? this.status.E_BADARG('global', `No global with index ${global}`);
   }
 
-  private async onGetWasmLocal(message: PrivateAPI.ExtensionServerRequestMessage):
+  private async onGetWasmLocal(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
       Promise<Record|Chrome.DevTools.WasmValue> {
-    if (message.command !== PrivateAPI.Commands.GetWasmLocal) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmLocal}`);
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal}`);
     }
     const local = Number(message.local);
     const result = await this.loadWasmValue<Chrome.DevTools.WasmValue|undefined>(
@@ -386,10 +412,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return result ?? this.status.E_BADARG('local', `No local with index ${local}`);
   }
 
-  private async onGetWasmOp(message: PrivateAPI.ExtensionServerRequestMessage):
+  private async onGetWasmOp(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
       Promise<Record|Chrome.DevTools.WasmValue> {
-    if (message.command !== PrivateAPI.Commands.GetWasmOp) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmOp}`);
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp}`);
     }
     const op = Number(message.op);
     const result = await this.loadWasmValue<Chrome.DevTools.WasmValue|undefined>(
@@ -398,19 +424,21 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private registerRecorderExtensionEndpoint(
-      message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.RegisterRecorderExtensionPlugin) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.RegisterRecorderExtensionPlugin}`);
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin}`);
     }
     const {pluginName, mediaType, port, capabilities} = message;
-    RecorderPluginManager.instance().addPlugin(
-        new RecorderExtensionEndpoint(pluginName, port, capabilities, mediaType));
+    Extensions.RecorderPluginManager.RecorderPluginManager.instance().addPlugin(
+        new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, mediaType));
     return this.status.OK();
   }
 
-  private onReportResourceLoad(message: PrivateAPI.ExtensionServerRequestMessage): Record {
-    if (message.command !== PrivateAPI.Commands.ReportResourceLoad) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ReportResourceLoad}`);
+  private onReportResourceLoad(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.ReportResourceLoad) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.ReportResourceLoad}`);
     }
     const {resourceUrl, extensionId, status} = message;
     const url = resourceUrl as Platform.DevToolsPath.UrlString;
@@ -429,9 +457,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onSetFunctionRangesForScript(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.SetFunctionRangesForScript) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetFunctionRangesForScript}`);
+  private onSetFunctionRangesForScript(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetFunctionRangesForScript) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetFunctionRangesForScript}`);
     }
     const {scriptUrl, ranges} = message;
     if (!scriptUrl || !ranges?.length) {
@@ -453,25 +483,31 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onShowRecorderView(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.ShowRecorderView) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ShowRecorderView}`);
+  private onShowRecorderView(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record
+      |undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView}`);
     }
-    RecorderPluginManager.instance().showView(message.id);
+    Extensions.RecorderPluginManager.RecorderPluginManager.instance().showView(message.id);
     return undefined;
   }
 
-  private onShowNetworkPanel(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.ShowNetworkPanel) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ShowNetworkPanel}`);
+  private onShowNetworkPanel(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record
+      |undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel}`);
     }
     void Common.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
     return this.status.OK();
   }
 
-  private onCreateRecorderView(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.CreateRecorderView) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateRecorderView}`);
+  private onCreateRecorderView(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.CreateRecorderView) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.CreateRecorderView}`);
     }
     const id = message.id;
     // The ids are generated on the client API side and must be unique, so the check below
@@ -486,7 +522,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     const onShown = (): void => this.notifyViewShown(id);
     const onHidden = (): void => this.notifyViewHidden(id);
-    RecorderPluginManager.instance().registerView({
+    Extensions.RecorderPluginManager.RecorderPluginManager.instance().registerView({
       id,
       pagePath,
       title: message.title,
@@ -507,7 +543,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.requests = new Map();
     this.enableExtensions();
     const url = event.data.inspectedURL();
-    this.postNotification(PrivateAPI.Events.InspectedURLChanged, [url]);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.InspectedURLChanged, [url]);
     const extensions = this.#pendingExtensions.splice(0);
     extensions.forEach(e => this.addExtension(e));
   }
@@ -540,9 +576,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  private onSubscribe(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.Subscribe) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.Subscribe}`);
+  private onSubscribe(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
+      Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.Subscribe) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.Subscribe}`);
     }
     const subscribers = this.subscribers.get(message.type);
     if (subscribers) {
@@ -557,9 +594,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onUnsubscribe(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.Unsubscribe) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.Unsubscribe}`);
+  private onUnsubscribe(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
+      Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.Unsubscribe) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.Unsubscribe}`);
     }
     const subscribers = this.subscribers.get(message.type);
     if (!subscribers) {
@@ -576,9 +614,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onAddRequestHeaders(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.AddRequestHeaders) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.AddRequestHeaders}`);
+  private onAddRequestHeaders(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record
+      |undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders}`);
     }
     const id = message.extensionId;
     if (typeof id !== 'string') {
@@ -613,9 +653,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return origin;
   }
 
-  private onCreatePanel(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.CreatePanel) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreatePanel}`);
+  private onCreatePanel(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
+      Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.CreatePanel) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.CreatePanel}`);
     }
     const id = message.id;
     // The ids are generated on the client API side and must be unique, so the check below
@@ -637,9 +678,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onShowPanel(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.ShowPanel) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ShowPanel}`);
+  private onShowPanel(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.ShowPanel) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.ShowPanel}`);
     }
 
     let panelViewId = message.id;
@@ -651,9 +692,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onCreateToolbarButton(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.CreateToolbarButton) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateToolbarButton}`);
+  private onCreateToolbarButton(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.CreateToolbarButton) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.CreateToolbarButton}`);
     }
     const panelView = this.clientObjects.get(message.panel);
     if (!panelView || !(panelView instanceof ExtensionServerPanelView)) {
@@ -675,9 +718,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onUpdateButton(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.UpdateButton) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.UpdateButton}`);
+  private onUpdateButton(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
+      Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.UpdateButton) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.UpdateButton}`);
     }
     const button = this.clientObjects.get(message.id);
     if (!button || !(button instanceof ExtensionButton)) {
@@ -692,9 +736,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onCreateSidebarPane(message: PrivateAPI.ExtensionServerRequestMessage): Record {
-    if (message.command !== PrivateAPI.Commands.CreateSidebarPane) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateSidebarPane}`);
+  private onCreateSidebarPane(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane}`);
     }
     const id = message.id;
     const sidebar = new ExtensionSidebarPane(this, message.panel, i18n.i18n.lockedString(message.title), id);
@@ -709,9 +754,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#sidebarPanes;
   }
 
-  private onSetSidebarHeight(message: PrivateAPI.ExtensionServerRequestMessage): Record {
-    if (message.command !== PrivateAPI.Commands.SetSidebarHeight) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetSidebarHeight}`);
+  private onSetSidebarHeight(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarHeight) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarHeight}`);
     }
     const sidebar = this.clientObjects.get(message.id);
     if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
@@ -721,9 +767,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onSetSidebarContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.SetSidebarContent) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetSidebarContent}`);
+  private onSetSidebarContent(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarContent) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarContent}`);
     }
     const {requestId, id, rootTitle, expression, evaluateOptions, evaluateOnPage} = message;
     const sidebar = this.clientObjects.get(id);
@@ -743,9 +791,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onSetSidebarPage(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.SetSidebarPage) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetSidebarPage}`);
+  private onSetSidebarPage(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarPage) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetSidebarPage}`);
     }
     const sidebar = this.clientObjects.get(message.id);
     if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
@@ -759,9 +808,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onOpenResource(message: PrivateAPI.ExtensionServerRequestMessage): Record {
-    if (message.command !== PrivateAPI.Commands.OpenResource) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.OpenResource}`);
+  private onOpenResource(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.OpenResource) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.OpenResource}`);
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
@@ -784,10 +833,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.E_NOTFOUND(message.url);
   }
 
-  private onSetOpenResourceHandler(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record
-      |undefined {
-    if (message.command !== PrivateAPI.Commands.SetOpenResourceHandler) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetOpenResourceHandler}`);
+  private onSetOpenResourceHandler(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetOpenResourceHandler) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetOpenResourceHandler}`);
     }
     const extension = this.registeredExtensions.get(this.getExtensionOrigin(port));
     if (!extension) {
@@ -814,10 +864,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onSetThemeChangeHandler(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record
-      |undefined {
-    if (message.command !== PrivateAPI.Commands.SetThemeChangeHandler) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetThemeChangeHandler}`);
+  private onSetThemeChangeHandler(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetThemeChangeHandler) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetThemeChangeHandler}`);
     }
     const extensionOrigin = this.getExtensionOrigin(port);
     const extension = this.registeredExtensions.get(extensionOrigin);
@@ -919,9 +970,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.extensionAllowedOnURL(target.inspectedURL(), port);
   }
 
-  private onReload(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
-    if (message.command !== PrivateAPI.Commands.Reload) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.Reload}`);
+  private onReload(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
+      Record {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.Reload) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.Reload}`);
     }
     const options = (message.options || {});
 
@@ -943,10 +995,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onEvaluateOnInspectedPage(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record
-      |undefined {
-    if (message.command !== PrivateAPI.Commands.EvaluateOnInspectedPage) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.EvaluateOnInspectedPage}`);
+  private onEvaluateOnInspectedPage(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.EvaluateOnInspectedPage) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.EvaluateOnInspectedPage}`);
     }
 
     const {requestId, expression, evaluateOptions} = message;
@@ -967,10 +1020,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.evaluate(expression, true, true, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
   }
 
-  private async onGetHAR(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
+  private async onGetHAR(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
       Promise<Record|HAR.Log.LogDTO> {
-    if (message.command !== PrivateAPI.Commands.GetHAR) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetHAR}`);
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR) {
+      return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR}`);
     }
     const requests =
         Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnURL(r.url(), port));
@@ -1025,8 +1078,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private async getResourceContent(
-      contentProvider: TextUtils.ContentProvider.ContentProvider, message: PrivateAPI.ExtensionServerRequestMessage,
-      port: MessagePort): Promise<void> {
+      contentProvider: TextUtils.ContentProvider.ContentProvider,
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Promise<void> {
     if (!this.extensionAllowedOnContentProvider(contentProvider, port)) {
       this.dispatchCallback(message.requestId, port, this.status.E_FAILED('Permission denied'));
       return undefined;
@@ -1041,9 +1094,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dispatchCallback(message.requestId, port, {encoding, content});
   }
 
-  private onGetRequestContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.GetRequestContent) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetRequestContent}`);
+  private onGetRequestContent(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetRequestContent) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetRequestContent}`);
     }
     const request = this.requestById(message.id);
     if (!request) {
@@ -1053,9 +1108,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onGetResourceContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.GetResourceContent) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetResourceContent}`);
+  private onGetResourceContent(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetResourceContent) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetResourceContent}`);
     }
     const url = message.url as Platform.DevToolsPath.UrlString;
     const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) ||
@@ -1067,10 +1124,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onAttachSourceMapToResource(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record
-      |undefined {
-    if (message.command !== PrivateAPI.Commands.AttachSourceMapToResource) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetResourceContent}`);
+  private onAttachSourceMapToResource(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.AttachSourceMapToResource) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetResourceContent}`);
     }
 
     if (!message.sourceMapURL) {
@@ -1094,9 +1152,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onSetResourceContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.SetResourceContent) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetResourceContent}`);
+  private onSetResourceContent(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.SetResourceContent) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.SetResourceContent}`);
     }
 
     const {url, requestId, content, commit} = message;
@@ -1140,9 +1200,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.requests.get(id);
   }
 
-  private onForwardKeyboardEvent(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.ForwardKeyboardEvent) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ForwardKeyboardEvent}`);
+  private onForwardKeyboardEvent(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record
+      |undefined {
+    if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent) {
+      return this.status.E_BADARG(
+          'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent}`);
     }
     message.entries.forEach(handleEventEntry);
 
@@ -1186,10 +1248,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private initExtensions(): void {
     this.registerAutosubscriptionHandler(
-        PrivateAPI.Events.ResourceAdded, Workspace.Workspace.WorkspaceImpl.instance(),
+        Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded, Workspace.Workspace.WorkspaceImpl.instance(),
         Workspace.Workspace.Events.UISourceCodeAdded, this.notifyResourceAdded);
     this.registerAutosubscriptionTargetManagerHandler(
-        PrivateAPI.Events.NetworkRequestFinished, SDK.NetworkManager.NetworkManager,
+        Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished, SDK.NetworkManager.NetworkManager,
         SDK.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
 
     function onElementsSubscriptionStarted(this: ExtensionServer): void {
@@ -1203,8 +1265,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     this.registerSubscriptionHandler(
-        PrivateAPI.Events.PanelObjectSelected + 'elements', onElementsSubscriptionStarted.bind(this),
-        onElementsSubscriptionStopped.bind(this));
+        Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'elements',
+        onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
@@ -1214,7 +1276,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private notifyResourceAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
     this.postNotification(
-        PrivateAPI.Events.ResourceAdded, [this.makeResource(uiSourceCode)],
+        Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded, [this.makeResource(uiSourceCode)],
         extension => extension.isAllowedOnTarget(uiSourceCode.url()));
   }
 
@@ -1222,7 +1284,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.WorkingCopyCommittedEvent>): void {
     const {uiSourceCode, content} = event.data;
     this.postNotification(
-        PrivateAPI.Events.ResourceContentCommitted, [this.makeResource(uiSourceCode), content],
+        Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted, [this.makeResource(uiSourceCode), content],
         extension => extension.isAllowedOnTarget(uiSourceCode.url()));
   }
 
@@ -1231,17 +1293,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const request = event.data;
     const entry = await HAR.Log.Entry.build(request, {sanitize: false});
     this.postNotification(
-        PrivateAPI.Events.NetworkRequestFinished, [this.requestId(request), entry],
+        Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished, [this.requestId(request), entry],
         extension => extension.isAllowedOnTarget(entry.request.url));
   }
 
   private notifyElementsSelectionChanged(): void {
-    this.postNotification(PrivateAPI.Events.PanelObjectSelected + 'elements', []);
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'elements', []);
   }
 
   sourceSelectionChanged(url: Platform.DevToolsPath.UrlString, range: TextUtils.TextRange.TextRange): void {
     this.postNotification(
-        PrivateAPI.Events.PanelObjectSelected + 'sources', [{
+        Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'sources', [{
           startLine: range.startLine,
           startColumn: range.startColumn,
           endLine: range.endLine,
@@ -1369,7 +1431,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private registerHandler(
       command: string,
-      callback: (message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort) => unknown): void {
+      callback:
+          (message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort) => unknown):
+      void {
     console.assert(Boolean(command));
     this.handlers.set(command, callback);
   }
@@ -1414,7 +1478,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     this.registerSubscriptionHandler(
-        PrivateAPI.Events.ResourceContentCommitted, addFirstEventListener.bind(this),
+        Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted, addFirstEventListener.bind(this),
         removeLastEventListener.bind(this));
   }
 
@@ -1430,7 +1494,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   evaluate(
       expression: string, exposeCommandLineAPI: boolean, returnByValue: boolean,
-      options: PrivateAPI.EvaluateOptions|undefined, securityOrigin: string,
+      options: Extensions.ExtensionAPI.PrivateAPI.EvaluateOptions|undefined, securityOrigin: string,
       callback: (arg0: string|null, arg1: SDK.RemoteObject.RemoteObject|null, arg2: boolean) => unknown): Record
       |undefined {
     let context;

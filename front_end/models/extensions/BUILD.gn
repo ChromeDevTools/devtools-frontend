@@ -11,9 +11,6 @@ devtools_module("extensions") {
   sources = [
     "ExtensionAPI.ts",
     "ExtensionEndpoint.ts",
-    "ExtensionPanel.ts",
-    "ExtensionServer.ts",
-    "ExtensionView.ts",
     "HostUrlPattern.ts",
     "LanguageExtensionEndpoint.ts",
     "RecorderExtensionEndpoint.ts",
@@ -34,11 +31,6 @@ devtools_module("extensions") {
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
-
-    # TODO(crbug.com/442509324): Remove UI dependencies.
-    "../../ui/legacy:bundle",
-    "../../ui/legacy/components/utils:bundle",
-    "../../ui/lit:bundle",
   ]
 }
 
@@ -50,6 +42,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main/*",
+    "../../panels/common",
     "../../panels/elements/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
@@ -64,7 +57,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "ExtensionServer.test.ts",
     "HostUrlPattern.test.ts",
     "LanguageExtensionEndpoint.test.ts",
     "RecorderPluginManager.test.ts",

@@ -100,4 +100,7 @@ export {GdpSignUpDialog} from './GdpSignUpDialog.js';
 export {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
 export {AiCodeCompletionSummaryToolbar} from './AiCodeCompletionSummaryToolbar.js';
 export * from './BadgeNotification.js';
+export * as ExtensionPanel from './ExtensionPanel.js';
+export * as ExtensionServer from './ExtensionServer.js';
+export * as ExtensionView from './ExtensionView.js';
 export * as PersistenceUtils from './PersistenceUtils.js';

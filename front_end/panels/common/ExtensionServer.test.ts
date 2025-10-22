@@ -7,6 +7,12 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Extensions from '../../models/extensions/extensions.js';
+import type * as HAR from '../../models/har/har.js';
+import * as Logs from '../../models/logs/logs.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {
@@ -18,12 +24,8 @@ import {addChildFrame, FRAME_URL, getMainFrame} from '../../testing/ResourceTree
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Bindings from '../bindings/bindings.js';
-import * as Extensions from '../extensions/extensions.js';
-import type * as HAR from '../har/har.js';
-import * as Logs from '../logs/logs.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as Workspace from '../workspace/workspace.js';
+
+import * as PanelCommon from './common.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -33,7 +35,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     // API is available as soon as the extension page is loaded, which we don't do in the test.
     assert.isUndefined(context.chrome.devtools);
 
-    const addExtensionStub = sinon.stub(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const addExtensionStub = sinon.stub(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
     createTarget().setInspectedURL(urlString`http://example.com`);
     sinon.assert.calledOnceWithExactly(addExtensionStub, context.extensionDescriptor);
   });
@@ -43,13 +45,13 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     // API is available as soon as the extension page is loaded, which we don't do in the test.
     assert.isUndefined(context.chrome.devtools);
 
-    const addExtensionStub = sinon.stub(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const addExtensionStub = sinon.stub(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
     createTarget().setInspectedURL(urlString`chrome://version`);
     sinon.assert.notCalled(addExtensionStub);
   });
 
   it('defers loading extensions until after navigation from a privileged to a non-privileged host', async () => {
-    const addExtensionSpy = sinon.spy(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const addExtensionSpy = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
     const target = createTarget({type: SDK.Target.Type.FRAME});
     target.setInspectedURL(urlString`chrome://abcdef`);
     assert.isTrue(addExtensionSpy.notCalled, 'addExtension not called');
@@ -451,7 +453,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     assert.isOk(target);
     target.setInspectedURL(urlString`chrome://version`);
-    const extensionServer = Extensions.ExtensionServer.ExtensionServer.instance();
+    const extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance();
 
     const addExtensionSpy = sinon.spy(extensionServer, 'addExtension');
 
@@ -468,7 +470,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   it('correcly reenables extensions after navigation', async () => {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     assert.isOk(target);
-    const extensionServer = Extensions.ExtensionServer.ExtensionServer.instance();
+    const extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance();
 
     assert.isTrue(extensionServer.isEnabledForTest);
     target.setInspectedURL(urlString`chrome://version`);
@@ -506,7 +508,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     it(`blocks API calls on blocked protocols: ${protocol}`, async () => {
       assert.isUndefined(context.chrome.devtools);
       const target = createTarget({type: SDK.Target.Type.FRAME});
-      const addExtensionStub = sinon.stub(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+      const addExtensionStub = sinon.stub(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
 
       target.setInspectedURL(urlString`${`${protocol}://foo`}`);
       sinon.assert.notCalled(addExtensionStub);
@@ -517,7 +519,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
   it('blocks API calls on blocked hosts', async () => {
     assert.isUndefined(context.chrome.devtools);
     const target = createTarget({type: SDK.Target.Type.FRAME});
-    const addExtensionStub = sinon.spy(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const addExtensionStub = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
 
     target.setInspectedURL(blockedUrl);
     assert.isTrue(addExtensionStub.alwaysReturned(undefined));
@@ -543,7 +545,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
   });
 
   it('defers loading extensions until after navigation from a blocked to an allowed host', async () => {
-    const addExtensionSpy = sinon.spy(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const addExtensionSpy = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
     const target = createTarget({type: SDK.Target.Type.FRAME});
     target.setInspectedURL(blockedUrl);
     assert.isTrue(addExtensionSpy.calledOnce, 'addExtension called once');
@@ -776,7 +778,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     context.chrome.devtools?.network.onRequestFinished.addListener(
         r => requests.push(r as unknown as HAR.Log.EntryDTO));
     await waitForFunction(
-        () => Extensions.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+        () => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
             Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished));
 
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -830,21 +832,22 @@ describe('ExtensionServer', () => {
     const almostOrigin = urlString`${`${extensionOrigin}/`}`;
     const expectation = urlString`${`${extensionOrigin}/foo`}`;
     assert.isUndefined(
-        Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'http://example.com/foo'));
+        PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'http://example.com/foo'));
     assert.strictEqual(
-        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, expectation));
+        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, expectation));
     assert.strictEqual(
-        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, '/foo'));
+        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, '/foo'));
     assert.strictEqual(
-        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'foo'));
+        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'foo'));
 
     assert.isUndefined(
-        Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'http://example.com/foo'));
+        PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'http://example.com/foo'));
     assert.strictEqual(
-        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, expectation));
+        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, expectation));
     assert.strictEqual(
-        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, '/foo'));
-    assert.strictEqual(expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'foo'));
+        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, '/foo'));
+    assert.strictEqual(
+        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'foo'));
   });
 
   it('cannot inspect chrome webstore URLs', () => {
@@ -885,10 +888,10 @@ describe('ExtensionServer', () => {
       'https://chromewebstor.google.com./',
     ];
     for (const url of blockedUrls as Platform.DevToolsPath.UrlString[]) {
-      assert.isFalse(Extensions.ExtensionServer.ExtensionServer.canInspectURL(url), url);
+      assert.isFalse(PanelCommon.ExtensionServer.ExtensionServer.canInspectURL(url), url);
     }
     for (const url of allowedUrls as Platform.DevToolsPath.UrlString[]) {
-      assert.isTrue(Extensions.ExtensionServer.ExtensionServer.canInspectURL(url), url);
+      assert.isTrue(PanelCommon.ExtensionServer.ExtensionServer.canInspectURL(url), url);
     }
   });
 
@@ -902,13 +905,13 @@ describe('ExtensionServer', () => {
       'chrome-search://foo/bar',
     ];
     for (const url of blockedUrls as Platform.DevToolsPath.UrlString[]) {
-      assert.isFalse(Extensions.ExtensionServer.ExtensionServer.canInspectURL(url), url);
+      assert.isFalse(PanelCommon.ExtensionServer.ExtensionServer.canInspectURL(url), url);
     }
   });
 });
 
-function assertIsStatus<T>(value: T|Extensions.ExtensionServer.Record):
-    asserts value is Extensions.ExtensionServer.Record {
+function assertIsStatus<T>(value: T|PanelCommon.ExtensionServer.Record):
+    asserts value is PanelCommon.ExtensionServer.Record {
   if (value && typeof value === 'object' && 'code' in value) {
     assert.isTrue(value.code === 'OK' || Boolean(value.isError), `Value ${value} is not a status code`);
   } else {

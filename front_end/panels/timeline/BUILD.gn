@@ -118,6 +118,7 @@ devtools_ui_module("timeline") {
     "../../models/trace:bundle",
     "../../models/trace_source_maps_resolver:bundle",
     "../../models/workspace:bundle",
+    "../../panels/common:bundle",
     "../../panels/coverage:bundle",
     "../../panels/layer_viewer:bundle",
     "../../panels/mobile_throttling:bundle",

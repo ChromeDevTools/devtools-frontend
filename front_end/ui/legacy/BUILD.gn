@@ -164,7 +164,6 @@ devtools_entrypoint("bundle") {
     # TODO(crbug.com/442509324): front_end/models must not import from
     # front_end/ui/legacy
     "../../models/ai_assistance:unittests",
-    "../../models/autofill_manager",
     "../../models/har:unittests",
     "../../services/window_bounds/*",
   ]

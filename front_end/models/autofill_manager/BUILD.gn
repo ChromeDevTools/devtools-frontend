@@ -13,7 +13,6 @@ devtools_module("autofill_manager") {
   deps = [
     "../../core/common:bundle",
     "../../core/sdk:bundle",
-    "../../ui/legacy:bundle",
   ]
 }
 

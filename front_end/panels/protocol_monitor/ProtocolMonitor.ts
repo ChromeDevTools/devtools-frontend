@@ -359,7 +359,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-export class ProtocolMonitorImpl extends UI.Panel.Panel {
+export class ProtocolMonitorImpl extends UI.Panel.Panel implements SDK.TargetManager.Observer {
   private started: boolean;
   private startTime: number;
   private readonly messageForId = new Map<number, Message>();
@@ -374,6 +374,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
   #selectedMessage: Message|undefined;
   #filter = '';
   #editorWidget!: JSONEditor;
+  #targetsBySessionId = new Map<string, SDK.Target.Target>();
   constructor(view: View = DEFAULT_VIEW) {
     super('protocol-monitor', true);
     this.#view = view;
@@ -392,6 +393,15 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
         SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, () => {
           this.requestUpdate();
         });
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+  }
+
+  targetAdded(target: SDK.Target.Target): void {
+    this.#targetsBySessionId.set(target.sessionId, target);
+  }
+
+  targetRemoved(target: SDK.Target.Target): void {
+    this.#targetsBySessionId.delete(target.sessionId);
   }
 
   #populateToolbarInput(): void {
@@ -552,7 +562,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
     }
   }
 
-  private messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
+  private messageReceived(message: Message): void {
     if ('id' in message && message.id) {
       const existingMessage = this.messageForId.get(message.id);
       if (!existingMessage) {
@@ -568,10 +578,11 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
       return;
     }
 
+    const target = message.sessionId !== undefined ? this.#targetsBySessionId.get(message.sessionId) : undefined;
     this.#messages.push({
       method: message.method,
       sessionId: message.sessionId,
-      target: (target ?? undefined) as SDK.Target.Target | undefined,
+      target,
       requestTime: Date.now() - this.startTime,
       result: message.params,
     });
@@ -580,14 +591,15 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
   }
 
   private messageSent(
-      message: {domain: string, method: string, params: Record<string, unknown>, id: number, sessionId?: string},
-      target: ProtocolClient.InspectorBackend.TargetBase|null): void {
+      message: {domain: string, method: string, params: Record<string, unknown>, id: number, sessionId?: string}):
+      void {
+    const target = message.sessionId !== undefined ? this.#targetsBySessionId.get(message.sessionId) : undefined;
     const messageRecord = {
       method: message.method,
       params: message.params,
       id: message.id,
       sessionId: message.sessionId,
-      target: (target ?? undefined) as SDK.Target.Target | undefined,
+      target,
       requestTime: Date.now() - this.startTime,
     };
     this.#messages.push(messageRecord);

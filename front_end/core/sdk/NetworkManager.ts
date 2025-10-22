@@ -1575,24 +1575,6 @@ export type RequestConditionsSetting = {
   enabled: boolean,
 };
 
-declare global {
-  // TS typedefs are not up to date
-  interface URLPattern {
-    hash: string;
-    hostname: string;
-    password: string;
-    pathname: string;
-    port: string;
-    protocol: string;
-    search: string;
-    username: string;
-    hasRegExpGroups: boolean;
-    test(url: string): boolean;
-  }
-  /* eslint-disable-next-line @typescript-eslint/naming-convention */
-  var URLPattern: {prototype: URLPattern, new (input: string): URLPattern};
-}
-
 export type URLPatternConstructorString = Platform.Brand.Brand<string, 'URLPatternConstructorString'>;
 
 export const enum RequestURLPatternValidity {

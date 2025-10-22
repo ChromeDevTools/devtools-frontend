@@ -12,6 +12,22 @@ declare module '*.css.js' {
   export default styles;
 }
 
+// TODO: remove once URLPattern types are available in TypeScript (see https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1199).
+declare class URLPattern {
+  constructor(input: string);
+  hash: string;
+  hostname: string;
+  password: string;
+  pathname: string;
+  port: string;
+  protocol: string;
+  search: string;
+  username: string;
+  hasRegExpGroups: boolean;
+  test(url: string): boolean;
+  prototype: URLPattern;
+}
+
 // [start] Types for the Scheduler API.
 // These are taken from
 // https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/wicg-task-scheduling

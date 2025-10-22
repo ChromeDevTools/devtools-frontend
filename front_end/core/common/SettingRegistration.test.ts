@@ -7,7 +7,6 @@ import {
   initializeGlobalVars,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
-import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as i18n from '../i18n/i18n.js';
 
 import * as Common from './common.js';
@@ -59,18 +58,6 @@ describe('SettingRegistration', () => {
     } catch {
       assert.fail('Failed to find setting registration');
     }
-  });
-
-  it('adds commands for changing a setting\'s value', () => {
-    const allCommands = QuickOpen.CommandMenu.CommandMenu.instance({forceNew: true}).commands();
-    const disableSettingCommands = allCommands.filter(
-        command => command.title === disableTitle &&
-            command.category === Common.Settings.getLocalizedSettingsCategory(settingCategory));
-    const enableSettingCommands = allCommands.filter(
-        command => command.title === enableTitle &&
-            command.category === Common.Settings.getLocalizedSettingsCategory(settingCategory));
-    assert.lengthOf(disableSettingCommands, 1, 'Commands for changing a setting\'s value were not added correctly');
-    assert.lengthOf(enableSettingCommands, 1, 'Commands for changing a setting\'s value were not added correctly');
   });
 
   it('triggers a setting\'s change listener when a setting is set', () => {

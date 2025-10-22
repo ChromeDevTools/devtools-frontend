@@ -25,9 +25,11 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
+    # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy/*,
+    # as the UI modules should only be used to actually build user interfaces,
+    # and the business logic should never depend on the UI modules.
     "../*",
     "../../../entrypoints/main/*",
-    "../../../models/extensions/*",
     "../../../panels/*",
     "../../../testing/*",
     "../../components/docs/*",

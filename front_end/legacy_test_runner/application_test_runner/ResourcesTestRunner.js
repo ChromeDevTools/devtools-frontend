@@ -21,7 +21,8 @@ export const resetState = async function() {
       continue;
     }
     const securityOrigin = new Common.ParsedURL.ParsedURL(target.inspectedURL()).securityOrigin();
-    await target.storageAgent().clearDataForOrigin(securityOrigin, Application.StorageView.AllStorageTypes.join(','));
+    await target.storageAgent().invoke_clearDataForOrigin(
+        {origin: securityOrigin, storageTypes: Application.StorageView.AllStorageTypes.join(',')});
   }
 };
 

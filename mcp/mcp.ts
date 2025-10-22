@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export {PerformanceInsightFormatter} from '../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js';
-export {PerformanceTraceFormatter} from '../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js';
+export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
+export {
+  PerformanceInsightFormatter
+} from '../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js';
+export {
+  PerformanceTraceFormatter
+} from '../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js';
 export {AgentFocus} from '../front_end/models/ai_assistance/performance/AIContext.js';
 export * as TraceEngine from '../front_end/models/trace/trace.js';

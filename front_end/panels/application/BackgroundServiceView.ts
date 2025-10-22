@@ -304,7 +304,16 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * Called when the `Toggle Record` button is clicked.
    */
   toggleRecording(): void {
-    this.model.setRecording(!this.recordButton.isToggled(), this.serviceName);
+    const isRecording = !this.recordButton.isToggled();
+    this.model.setRecording(isRecording, this.serviceName);
+    const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
+
+    if (isRecording) {
+      UI.ARIAUtils.LiveAnnouncer.alert(
+          i18nString(UIStrings.recordingSActivity, {PH1: featureName}) + ' ' +
+          i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName}));
+      this.preview?.focus();
+    }
   }
 
   /**
@@ -508,7 +517,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
           {jslogContext: 'start-recording', variant: Buttons.Button.Variant.TONAL});
       emptyWidget.contentElement.appendChild(button);
     }
-
+    emptyWidget.setDefaultFocusedElement(emptyWidget.contentElement);
     this.preview = emptyWidget;
     this.preview.show(this.previewPanel.contentElement);
   }

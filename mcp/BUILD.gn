@@ -12,3 +12,19 @@ devtools_module("mcp") {
     "../front_end/models/trace:bundle",
   ]
 }
+
+ts_library("foundation_unittests") {
+  testonly = true
+
+  sources = [ "mcp.test.ts" ]
+
+  deps = [ ":mcp" ]
+}
+
+generated_file("test_inputs") {
+  outputs = [ "$target_gen_dir/foundation_tests.txt" ]
+  data_keys = [ "tests" ]
+  rebase = target_gen_dir
+
+  deps = [ ":foundation_unittests" ]
+}

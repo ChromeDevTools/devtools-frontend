@@ -21,6 +21,7 @@ group("unittests") {
     "../front_end:test_inputs",
     "../front_end:unittests",
     "../inspector_overlay:unittests",
+    "../mcp:foundation_unittests",
     "shared",
     "unit:karma",
   ]

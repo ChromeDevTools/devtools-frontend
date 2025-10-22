@@ -12,7 +12,11 @@ module.exports = {
   // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
   allowUncaught : true,
   require : ['source-map-support/register', 'chai/register-assert'],
-  spec : loadTests(path.join(GEN_DIR, 'front_end'), 'foundation_tests.txt'),
+  spec :
+       [
+         ...loadTests(path.join(GEN_DIR, 'front_end'), 'foundation_tests.txt'),
+         ...loadTests(path.join(GEN_DIR, 'mcp'), 'foundation_tests.txt')
+       ],
   timeout : TestConfig.debug ? 0 : 10_000,
   reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
   retries : TestConfig.retries,

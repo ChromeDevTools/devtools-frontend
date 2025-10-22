@@ -285,7 +285,7 @@ function main() {
   const tests: string[] = typeof options['tests'] === 'string' ? [options['tests']] : options['tests'];
   const testKinds = [
     new (options['node-unit-tests'] ? MochaFrontendTests : KarmaTests)(
-        path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
+        path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay'), path.join(GEN_DIR, 'mcp')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
     new NonHostedMochaTests(path.join(GEN_DIR, 'test/e2e_non_hosted')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),

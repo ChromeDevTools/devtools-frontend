@@ -87,13 +87,10 @@ export class BidiHTTPRequest extends HTTPRequest {
         return this.#request.postData;
     }
     hasPostData() {
-        if (!this.#frame.page().browser().cdpSupported) {
-            throw new UnsupportedOperation();
-        }
         return this.#request.hasPostData;
     }
     async fetchPostData() {
-        throw new UnsupportedOperation();
+        return await this.#request.fetchPostData();
     }
     get #hasInternalHeaderOverwrite() {
         return Boolean(Object.keys(this.#extraHTTPHeaders).length ||
@@ -106,6 +103,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         return this.#frame?.page()._userAgentHeaders ?? {};
     }
     headers() {
+        // Callers should not be allowed to mutate internal structure.
         const headers = {};
         for (const header of this.#request.headers) {
             headers[header.name.toLowerCase()] = header.value.value;

@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.25.0';
+  const packageVersion = '24.26.0';
   // x-release-please-end
 
   /**
@@ -12895,10 +12895,28 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return false;
       }
     }
+    isLandmark() {
+      switch (_classPrivateFieldGet(_role, this)) {
+        case 'banner':
+        case 'complementary':
+        case 'contentinfo':
+        case 'form':
+        case 'main':
+        case 'navigation':
+        case 'region':
+        case 'search':
+          return true;
+        default:
+          return false;
+      }
+    }
     isInteresting(insideControl) {
       const role = _classPrivateFieldGet(_role, this);
       if (role === 'Ignored' || _classPrivateFieldGet(_hidden, this) || _classPrivateFieldGet(_ignored, this)) {
         return false;
+      }
+      if (this.isLandmark()) {
+        return true;
       }
       if (_classPrivateFieldGet(_focusable, this) || _classPrivateFieldGet(_richlyEditable, this)) {
         return true;
@@ -17135,7 +17153,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
     }
     headers() {
-      return _classPrivateFieldGet(_headers, this);
+      // Callers should not be allowed to mutate internal structure.
+      return structuredClone(_classPrivateFieldGet(_headers, this));
     }
     response() {
       return this._response;
@@ -17397,7 +17416,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             return stringToTypedArray(response.body, response.base64Encoded);
           } catch (error) {
             if (error instanceof ProtocolError && error.originalMessage === 'No resource with given identifier found') {
-              throw new ProtocolError('Could not load body for this request. This might happen if the request is a preflight request.');
+              throw new ProtocolError('Could not load response body for this request. This might happen if the request is a preflight request.');
             }
             throw error;
           }

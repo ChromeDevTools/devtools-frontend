@@ -40,7 +40,23 @@ export class BidiConnection extends EventEmitter {
     pipeTo(emitter) {
         this.#emitters.push(emitter);
     }
+    #toWebDriverOnlyEvent(event) {
+        for (const key in event) {
+            if (key.startsWith('goog:')) {
+                delete event[key];
+            }
+            else {
+                if (typeof event[key] === 'object' && event[key] !== null) {
+                    this.#toWebDriverOnlyEvent(event[key]);
+                }
+            }
+        }
+    }
     emit(type, event) {
+        if (process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true') {
+            // Required for WebDriver-only testing.
+            this.#toWebDriverOnlyEvent(event);
+        }
         for (const emitter of this.#emitters) {
             emitter.emit(type, event);
         }

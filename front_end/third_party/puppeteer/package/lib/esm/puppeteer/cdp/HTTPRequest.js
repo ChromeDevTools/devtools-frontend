@@ -70,7 +70,8 @@ export class CdpHTTPRequest extends HTTPRequest {
         }
     }
     headers() {
-        return this.#headers;
+        // Callers should not be allowed to mutate internal structure.
+        return structuredClone(this.#headers);
     }
     response() {
         return this._response;

@@ -105,7 +105,7 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
                     if (error instanceof Errors_js_1.ProtocolError &&
                         error.originalMessage ===
                             'No resource with given identifier found') {
-                        throw new Errors_js_1.ProtocolError('Could not load body for this request. This might happen if the request is a preflight request.');
+                        throw new Errors_js_1.ProtocolError('Could not load response body for this request. This might happen if the request is a preflight request.');
                     }
                     throw error;
                 }

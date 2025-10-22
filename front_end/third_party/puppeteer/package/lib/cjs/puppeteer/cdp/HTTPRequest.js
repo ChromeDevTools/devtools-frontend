@@ -73,7 +73,8 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         }
     }
     headers() {
-        return this.#headers;
+        // Callers should not be allowed to mutate internal structure.
+        return structuredClone(this.#headers);
     }
     response() {
         return this._response;

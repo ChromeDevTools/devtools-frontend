@@ -41,6 +41,7 @@ export declare class Request extends EventEmitter<{
     continueRequest({ url, method, headers, cookies, body, }: Omit<Bidi.Network.ContinueRequestParameters, 'request'>): Promise<void>;
     failRequest(): Promise<void>;
     provideResponse({ statusCode, reasonPhrase, headers, body, }: Omit<Bidi.Network.ProvideResponseParameters, 'request'>): Promise<void>;
+    fetchPostData(): Promise<string | undefined>;
     getResponseContent(): Promise<Uint8Array>;
     continueWithAuth(parameters: Bidi.Network.ContinueWithAuthCredentials | Bidi.Network.ContinueWithAuthNoCredentials): Promise<void>;
     private dispose;

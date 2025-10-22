@@ -37,7 +37,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
-import { ProtocolError } from '../../common/Errors.js';
+import { ProtocolError, UnsupportedOperation } from '../../common/Errors.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
@@ -62,6 +62,7 @@ let Request = (() => {
             return request;
         }
         #responseContentPromise = (__runInitializers(this, _instanceExtraInitializers), null);
+        #requestBodyPromise = null;
         #error;
         #redirect;
         #response;
@@ -154,7 +155,14 @@ let Request = (() => {
             return this.#event.request.request;
         }
         get initiator() {
-            return this.#event.initiator;
+            return {
+                ...this.#event.initiator,
+                // Initiator URL is not specified in BiDi.
+                // @ts-expect-error non-standard property.
+                url: this.#event.request['goog:resourceInitiator']?.url,
+                // @ts-expect-error non-standard property.
+                stack: this.#event.request['goog:resourceInitiator']?.stack,
+            };
         }
         get method() {
             return this.#event.request.method;
@@ -193,8 +201,7 @@ let Request = (() => {
             return this.#event.request['goog:postData'] ?? undefined;
         }
         get hasPostData() {
-            // @ts-expect-error non-standard attribute.
-            return this.#event.request['goog:hasPostData'] ?? false;
+            return (this.#event.request.bodySize ?? 0) > 0;
         }
         async continueRequest({ url, method, headers, cookies, body, }) {
             await this.#session.send('network.continueRequest', {
@@ -220,6 +227,25 @@ let Request = (() => {
                 body,
             });
         }
+        async fetchPostData() {
+            if (!this.hasPostData) {
+                return undefined;
+            }
+            if (!this.#requestBodyPromise) {
+                this.#requestBodyPromise = (async () => {
+                    const data = await this.#session.send('network.getData', {
+                        dataType: "request" /* Bidi.Network.DataType.Request */,
+                        request: this.id,
+                    });
+                    if (data.result.bytes.type === 'string') {
+                        return data.result.bytes.value;
+                    }
+                    // TODO: support base64 response.
+                    throw new UnsupportedOperation(`Collected request body data of type ${data.result.bytes.type} is not supported`);
+                })();
+            }
+            return await this.#requestBodyPromise;
+        }
         async getResponseContent() {
             if (!this.#responseContentPromise) {
                 this.#responseContentPromise = (async () => {
@@ -233,7 +259,7 @@ let Request = (() => {
                     catch (error) {
                         if (error instanceof ProtocolError &&
                             error.originalMessage.includes('No resource with given identifier found')) {
-                            throw new ProtocolError('Could not load body for this request. This might happen if the request is a preflight request.');
+                            throw new ProtocolError('Could not load response body for this request. This might happen if the request is a preflight request.');
                         }
                         throw error;
                     }

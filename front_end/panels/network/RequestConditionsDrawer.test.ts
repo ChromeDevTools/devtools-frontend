@@ -29,6 +29,8 @@ for (const individualThrottlingEnabled of [false, true]) {
           ]);
           SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions.conditionsEnabled =
               (true);
+          sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions, 'applyConditions')
+              .returns(false);
         });
 
         it('shows a placeholder', async () => {

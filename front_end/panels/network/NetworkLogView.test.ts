@@ -15,7 +15,7 @@ import {
   getMenu,
   getMenuItemLabels,
 } from '../../testing/ContextMenuHelpers.js';
-import {dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -26,7 +26,11 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {
+  describeWithMockConnection,
+  dispatchEvent,
+  setMockConnectionResponseHandler
+} from '../../testing/MockConnection.js';
 import {activate} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -41,6 +45,8 @@ describeWithMockConnection('NetworkLogView', () => {
   let networkLog: Logs.NetworkLog.NetworkLog;
 
   beforeEach(() => {
+    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
     const dummyStorage = new Common.Settings.SettingsStorage({});
 
     for (const settingName of ['network-color-code-resource-types', 'network.group-by-frame']) {
@@ -75,10 +81,11 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   let nextId = 0;
-  function createNetworkRequest(
-      url: string,
-      options: {requestHeaders?: SDK.NetworkRequest.NameValue[], finished?: boolean, target?: SDK.Target.Target}):
-      SDK.NetworkRequest.NetworkRequest {
+  function createNetworkRequest(url: string, options: {
+    requestHeaders?: SDK.NetworkRequest.NameValue[],
+    finished?: boolean,
+    target?: SDK.Target.Target,
+  }): SDK.NetworkRequest.NetworkRequest {
     const effectiveTarget = options.target || target;
     const networkManager = effectiveTarget.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
@@ -1185,6 +1192,77 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
       assert.strictEqual(conditions[0].conditions, SDK.NetworkManager.BlockingConditions);
       sinon.assert.calledOnceWithExactly(showView, 'network.blocked-urls');
     });
+  });
+
+  it('displays throttled requests correctly', async () => {
+    setMockConnectionResponseHandler('Network.setBlockedURLs', () => ({}));
+    setMockConnectionResponseHandler('Network.overrideNetworkState', () => ({}));
+    setMockConnectionResponseHandler(
+        'Network.emulateNetworkConditionsByRule',
+        params => params.matchedNetworkConditions.length > 0 ? {ruleIds: [ruleId]} : {ruleIds: []});
+
+    updateHostConfig({devToolsIndividualRequestThrottling: {enabled: true}});
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    networkLogView = createNetworkLogView();
+    const container = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
+    networkLogView.markAsRoot();
+    networkLogView.show(container);
+    networkLogView.columns().switchViewMode(true);
+    networkLogView.setRecording(true);
+    const ruleId = 'rule-id';
+
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.conditionsEnabled = true;
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.add(
+        SDK.NetworkManager.RequestCondition.create(
+            SDK.NetworkManager.RequestURLPattern.create(
+                'http://localhost:*' as SDK.NetworkManager.URLPatternConstructorString) as
+                SDK.NetworkManager.RequestURLPattern,
+            SDK.NetworkManager.Slow3GConditions));
+    await SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.conditionsAppliedForTest();
+
+    const request = createNetworkRequest(urlString`http://localhost`, {finished: true});
+    request.timing = {
+      requestTime: 0,
+      proxyStart: 0,
+      proxyEnd: 0,
+      dnsStart: 0,
+      dnsEnd: 0,
+      connectStart: 0,
+      connectEnd: 0,
+      sslStart: 0,
+      sslEnd: 0,
+      workerStart: 0,
+      workerReady: 0,
+      workerFetchStart: 0,
+      workerRespondWithSettled: 0,
+      sendStart: 0,
+      sendEnd: 10,
+      pushStart: 0,
+      pushEnd: 0,
+      receiveHeadersStart: 0,
+      receiveHeadersEnd: 0
+    };
+    request.endTime = 100;
+    request.addExtraRequestInfo({
+      blockedRequestCookies: [],
+      includedRequestCookies: [],
+      requestHeaders: [],
+      connectTiming: {requestTime: 0},
+      appliedNetworkConditionsId: ruleId,
+    });
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+    assert.exists(networkManager);
+    networkLog.modelAdded(networkManager);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.LoadingFinished, request);
+    networkLogView.element.style.height = '100px';
+    networkLogView.element.style.width = '400px';
+    networkLogView.columns().dataGrid().updateInstantly();
+
+    await assertScreenshot('network-log/throttled-request.png');
+
+    assert.deepEqual(
+        Array.from(container.querySelectorAll('devtools-icon')).map(e => e.title),
+        ['Other (throttled to 3G)', 'Request was throttled (3G)']);
   });
 });
 

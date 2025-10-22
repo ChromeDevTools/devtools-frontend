@@ -131,6 +131,7 @@
   color: var(--sys-color-error) !important;
 }
 
+.network-throttled-row,
 .network-warning-row,
 .network-warning-row .network-cell-subtitle {
   color: var(--sys-color-yellow);
@@ -224,6 +225,29 @@
 .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
   /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */
   filter: brightness(0) saturate(100%) invert(35%) sepia(76%) saturate(1413%) hue-rotate(338deg) brightness(92%) contrast(103%);
+}
+
+.network-throttled-row {
+  devtools-icon {
+    color: var(--sys-color-yellow);
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+  }
+
+  .image.icon::before,
+  devtools-icon.icon::before {
+    background-color: var(--sys-color-yellow);
+    content: var(--image-file-empty);
+    width: 35%;
+    height: 35%;
+    border-radius: 50%;
+    outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
+    top: 60%;
+    left: 55%;
+    position: absolute;
+    z-index: 1;
+  }
 }
 
 .data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],

@@ -64,6 +64,11 @@ const UIStrings = {
   dBlocked: '{PH1} blocked',
   /**
    * @description Text in Blocked URLs Pane of the Network panel
+   * @example {4} PH1
+   */
+  dAffected: '{PH1} affected',
+  /**
+   * @description Text in Blocked URLs Pane of the Network panel
    */
   textPatternToBlockMatching: 'Text pattern to block matching requests; use * for wildcard',
   /**
@@ -189,6 +194,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.RequestCondition>;
   private editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>|null;
   private blockedCountForUrl: Map<Platform.DevToolsPath.UrlString, number>;
+  #throttledCount = new Map<string, number>();
   #view: View;
 
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
@@ -243,7 +249,8 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
   }
 
   renderItem(condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number): Element {
-    const count = this.blockedRequestsCount(condition);
+    const blockedCount = this.blockedRequestsCount(condition);
+    const throttledCount = this.#throttledRequestsCount(condition);
     const element = document.createElement('div');
     element.classList.add('blocked-url');
     const toggle = (e: Event): void => {
@@ -342,7 +349,9 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
           onConditionsChanged,
           currentConditions: condition.conditions,
         })}></devtools-widget>
-    <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
+    <div class=blocked-url-count>${i18nString(UIStrings.dAffected, {PH1: condition.isBlocking
+                                                                           ? blockedCount
+                                                                           : throttledCount})}</div>`,
           // clang-format on
           element);
     } else {
@@ -356,7 +365,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       ?disabled=${!editable}
       .jslog=${VisualLogging.toggle().track({ change: true })}>
     <div @click=${toggle} class=blocked-url-label>${wildcardURL}</div>
-    <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: count})}</div>`,
+    <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: blockedCount})}</div>`,
           // clang-format on
           element);
     }
@@ -465,6 +474,14 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     return result;
   }
 
+  #throttledRequestsCount(condition: SDK.NetworkManager.RequestCondition): number {
+    let result = 0;
+    for (const ruleId of condition.ruleIds) {
+      result += this.#throttledCount.get(ruleId) ?? 0;
+    }
+    return result;
+  }
+
   private matches(pattern: string, url: string): boolean {
     let pos = 0;
     const parts = pattern.split('*');
@@ -484,14 +501,21 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
 
   private onNetworkLogReset(_event: Common.EventTarget.EventTargetEvent<Logs.NetworkLog.ResetEvent>): void {
     this.blockedCountForUrl.clear();
+    this.#throttledCount.clear();
     this.update();
   }
 
   private onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
+    if (request.appliedNetworkConditionsId) {
+      const count = this.#throttledCount.get(request.appliedNetworkConditionsId) ?? 0;
+      this.#throttledCount.set(request.appliedNetworkConditionsId, count + 1);
+    }
     if (request.wasBlocked()) {
       const count = this.blockedCountForUrl.get(request.url()) || 0;
       this.blockedCountForUrl.set(request.url(), count + 1);
+    }
+    if (request.appliedNetworkConditionsId || request.wasBlocked()) {
       this.update();
     }
   }

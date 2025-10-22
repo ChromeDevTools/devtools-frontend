@@ -1384,6 +1384,7 @@ describeWithEnvironment('RequestConditions', () => {
       const setBlockedURLs = sinon.stub(agent, 'invoke_setBlockedURLs');
       const emulateNetworkConditions = sinon.stub(agent, 'invoke_emulateNetworkConditions');
       const emulateNetworkConditionsByRule = sinon.stub(agent, 'invoke_emulateNetworkConditionsByRule');
+      emulateNetworkConditionsByRule.resolves({ruleIds: [], getError: () => undefined});
 
       return {agent, setBlockedURLs, emulateNetworkConditions, emulateNetworkConditionsByRule};
     }
@@ -1551,6 +1552,45 @@ describeWithEnvironment('RequestConditions', () => {
           {urlPattern: '*://throttle:*', block: false},
         ]
       });
+    });
+
+    it('correctly maps ruleIds to conditions', async () => {
+      updateHostConfig({devToolsIndividualRequestThrottling: {enabled: true}});
+      const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+      const requestConditions = multitargetNetworkManager.requestConditions;
+      const {agent, emulateNetworkConditionsByRule} = stubAgent();
+
+      const ruleId = 'mock-rule-id-1';
+      emulateNetworkConditionsByRule.resolves({ruleIds: [ruleId], getError: () => undefined});
+
+      const throttlingCondition = SDK.NetworkManager.RequestCondition.createFromSetting({
+        urlPattern: '*://example.com:*' as SDK.NetworkManager.URLPatternConstructorString,
+        enabled: true,
+        conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.SPEED_3G,
+      });
+      requestConditions.add(throttlingCondition);
+      requestConditions.conditionsEnabled = true;
+
+      await requestConditions.applyConditions(false, null, agent);
+
+      const conditions = requestConditions.conditionsForId(ruleId);
+      assert.strictEqual(conditions?.conditions, SDK.NetworkManager.Slow3GConditions);
+      assert.strictEqual(conditions?.urlPattern, '*://example.com:*');
+
+      const request = SDK.NetworkRequest.NetworkRequest.create(
+          'mockRequestId' as Protocol.Network.RequestId, urlString`http://example.com`, urlString`http://example.com`,
+          null, null, null);
+      request.addExtraRequestInfo({
+        blockedRequestCookies: [],
+        includedRequestCookies: [],
+        requestHeaders: [],
+        connectTiming: {requestTime: 0},
+        appliedNetworkConditionsId: ruleId,
+      });
+
+      const appliedConditions = multitargetNetworkManager.appliedRequestConditions(request);
+      assert.strictEqual(appliedConditions?.conditions, SDK.NetworkManager.Slow3GConditions);
+      assert.strictEqual(appliedConditions?.urlPattern, '*://example.com:*');
     });
   });
 });

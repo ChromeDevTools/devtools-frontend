@@ -6,7 +6,7 @@ import '../../ui/components/icon_button/icon_button.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
@@ -36,6 +36,12 @@ const UIStrings = {
    */
   thirdPartyPhaseout:
       'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
+  /**
+   * @description Tooltip to explain that a request was throttled
+   * @example {Image} PH1
+   * @example {3G} PH2
+   */
+  resourceTypeWithThrottling: '{PH1} (throttled to {PH2})',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/utils/utils.ts', UIStrings);
@@ -129,8 +135,10 @@ export class PanelUtils {
 
     if (type === Common.ResourceType.resourceTypes.Image) {
       return html`<div class="image icon">
-          <img class="image-network-icon-preview" alt=${request.resourceType().title()}
-              ${ref(e => request.populateImageSource(e as HTMLImageElement))}>
+          <img class="image-network-icon-preview"
+               title=${iconTitleForRequest(request)}
+               alt=${iconTitleForRequest(request)}
+               ${ref(e => request.populateImageSource(e as HTMLImageElement))}>
         </div>`;
     }
 
@@ -139,7 +147,7 @@ export class PanelUtils {
         Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === 'application/json') {
       // clang-format off
       return html`<devtools-icon
-          class="icon" name="file-json" title=${request.resourceType().title()}
+          class="icon" name="file-json" title=${iconTitleForRequest(request)}
           style="color:var(--icon-file-script)">
         </devtools-icon>`;
       // clang-format on
@@ -149,10 +157,22 @@ export class PanelUtils {
     const {iconName, color} = PanelUtils.iconDataForResourceType(type);
     // clang-format off
     return html`<devtools-icon
-        class="icon" name=${iconName} title=${request.resourceType().title()}
+        class="icon" name=${iconName} title=${iconTitleForRequest(request)}
         style=${styleMap({color})}>
       </devtools-icon>`;
     // clang-format on
+
+    function iconTitleForRequest(request: SDK.NetworkRequest.NetworkRequest): string {
+      const throttlingConditions =
+          SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(request);
+      if (!throttlingConditions?.urlPattern) {
+        return request.resourceType().title();
+      }
+      const title = typeof throttlingConditions?.conditions.title === 'string' ?
+          throttlingConditions?.conditions.title :
+          throttlingConditions?.conditions.title();
+      return i18nString(UIStrings.resourceTypeWithThrottling, {PH1: request.resourceType().title(), PH2: title});
+    }
   }
 
   static iconDataForResourceType(resourceType: Common.ResourceType.ResourceType): {iconName: string, color?: string} {

@@ -1022,9 +1022,15 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   requestIntercepted({}: Protocol.Network.RequestInterceptedEvent): void {
   }
 
-  requestWillBeSentExtraInfo(
-      {requestId, associatedCookies, headers, clientSecurityState, connectTiming, siteHasCookieInOtherPartition}:
-          Protocol.Network.RequestWillBeSentExtraInfoEvent): void {
+  requestWillBeSentExtraInfo({
+    requestId,
+    associatedCookies,
+    headers,
+    clientSecurityState,
+    connectTiming,
+    siteHasCookieInOtherPartition,
+    appliedNetworkConditionsId
+  }: Protocol.Network.RequestWillBeSentExtraInfoEvent): void {
     const blockedRequestCookies: BlockedCookieWithReason[] = [];
     const includedRequestCookies: IncludedCookieWithReason[] = [];
     for (const {blockedReasons, exemptionReason, cookie} of associatedCookies) {
@@ -1041,6 +1047,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       clientSecurityState,
       connectTiming,
       siteHasCookieInOtherPartition,
+      appliedNetworkConditionsId,
     };
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }
@@ -1632,6 +1639,7 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
   #pattern: RequestURLPattern|{wildcardURL: string, upgradedPattern?: RequestURLPattern};
   #enabled: boolean;
   #conditions: ThrottlingConditions;
+  #ruleIds = new Set<string>();
 
   static createFromSetting(setting: RequestConditionsSetting): RequestCondition {
     if ('urlPattern' in setting) {
@@ -1665,6 +1673,14 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
     this.#pattern = pattern;
     this.#enabled = enabled;
     this.#conditions = conditions;
+  }
+
+  get isBlocking(): boolean {
+    return this.conditions === BlockingConditions;
+  }
+
+  get ruleIds(): Set<string> {
+    return this.#ruleIds;
   }
 
   get constructorString(): string|undefined {
@@ -1713,6 +1729,7 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
 
   set conditions(conditions: ThrottlingConditions) {
     this.#conditions = conditions;
+    this.#ruleIds = new Set();
     this.dispatchEventToListeners(RequestCondition.Events.REQUEST_CONDITION_CHANGED);
   }
 
@@ -1748,6 +1765,11 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
   readonly #conditionsEnabledSetting =
       Common.Settings.Settings.instance().moduleSetting<boolean>('request-blocking-enabled');
   readonly #conditions: RequestCondition[] = [];
+  readonly #requestConditionsById = new Map<string, {
+    conditions: Conditions,
+    urlPattern?: string,
+  }>();
+  #conditionsAppliedForTestPromise: Promise<unknown> = Promise.resolve();
 
   constructor() {
     super();
@@ -1853,7 +1875,8 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     }
     if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
       const urlPatterns: Protocol.Network.BlockPattern[] = [];
-      const matchedNetworkConditions: Protocol.Network.NetworkConditions[] = [];
+      // We store all this info out-of-band to prevent races with changing conditions while the promise is still pending
+      const matchedNetworkConditions: Array<{conditions: Conditions, ruleIds?: Set<string>, urlPattern?: string}> = [];
       if (this.conditionsEnabled) {
         for (const condition of this.#conditions) {
           const urlPattern = condition.constructorString;
@@ -1864,43 +1887,56 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
           const block = !isNonBlockingCondition(conditions);
           urlPatterns.push({urlPattern, block});
           if (!block) {
-            matchedNetworkConditions.push({
-              urlPattern,
-              latency: conditions.latency,
-              downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
-              uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
-              packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
-              packetQueueLength: conditions.packetQueueLength,
-              packetReordering: conditions.packetReordering,
-              connectionType: NetworkManager.connectionType(conditions),
-            });
+            const {ruleIds} = condition;
+            matchedNetworkConditions.push({ruleIds, urlPattern, conditions});
           }
         }
 
         if (globalConditions) {
-          matchedNetworkConditions.push({
-            urlPattern: '',
-            latency: globalConditions.latency,
-            downloadThroughput: globalConditions.download < 0 ? 0 : globalConditions.download,
-            uploadThroughput: globalConditions.upload < 0 ? 0 : globalConditions.upload,
-            packetLoss: (globalConditions.packetLoss ?? 0) < 0 ? 0 : globalConditions.packetLoss,
-            packetQueueLength: globalConditions.packetQueueLength,
-            packetReordering: globalConditions.packetReordering,
-            connectionType: NetworkManager.connectionType(globalConditions),
-          });
+          matchedNetworkConditions.push({conditions: globalConditions});
         }
       }
 
+      const promises: Array<Promise<unknown>> = [];
+
       for (const agent of agents) {
-        void agent.invoke_setBlockedURLs({urlPatterns});
-        void agent.invoke_emulateNetworkConditionsByRule({offline, matchedNetworkConditions});
-        void agent.invoke_overrideNetworkState({
+        promises.push(agent.invoke_setBlockedURLs({urlPatterns}));
+        promises.push(agent
+                          .invoke_emulateNetworkConditionsByRule({
+                            offline,
+                            matchedNetworkConditions: matchedNetworkConditions.map(
+                                ({urlPattern, conditions}) => ({
+                                  urlPattern: urlPattern ?? '',
+                                  latency: conditions.latency,
+                                  downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
+                                  uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
+                                  packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
+                                  packetQueueLength: conditions.packetQueueLength,
+                                  packetReordering: conditions.packetReordering,
+                                  connectionType: NetworkManager.connectionType(conditions),
+                                }))
+                          })
+                          .then(response => {
+                            if (!response.getError()) {
+                              for (let i = 0; i < response.ruleIds.length; ++i) {
+                                const ruleId = response.ruleIds[i];
+                                const {ruleIds, conditions, urlPattern} = matchedNetworkConditions[i];
+                                if (ruleIds) {
+                                  this.#requestConditionsById.set(ruleId, {urlPattern, conditions});
+                                  matchedNetworkConditions[i].ruleIds?.add(ruleId);
+                                }
+                              }
+                            }
+                          }));
+        promises.push(agent.invoke_overrideNetworkState({
           offline,
           latency: globalConditions?.latency ?? 0,
           downloadThroughput: !globalConditions || globalConditions.download < 0 ? 0 : globalConditions.download,
           uploadThroughput: !globalConditions || globalConditions.upload < 0 ? 0 : globalConditions.upload,
-        });
+        }));
       }
+
+      this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));
       return urlPatterns.length > 0;
     }
 
@@ -1913,6 +1949,17 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
       void agent.invoke_setBlockedURLs({urls});
     }
     return urls.length > 0;
+  }
+
+  conditionsAppliedForTest(): Promise<unknown> {
+    return this.#conditionsAppliedForTestPromise;
+  }
+
+  conditionsForId(appliedNetworkConditionsId: string): {
+    conditions: Conditions,
+    urlPattern?: string,
+  }|undefined {
+    return this.#requestConditionsById.get(appliedNetworkConditionsId);
   }
 }
 
@@ -2294,6 +2341,16 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
           resolve({success, content, errorDescription});
         }, allowRemoteFilePaths));
+  }
+
+  appliedRequestConditions(requestInternal: NetworkRequest): {
+    conditions: Conditions,
+    urlPattern?: string,
+  }|undefined {
+    if (!requestInternal.appliedNetworkConditionsId) {
+      return undefined;
+    }
+    return this.requestConditions.conditionsForId(requestInternal.appliedNetworkConditionsId);
   }
 }
 

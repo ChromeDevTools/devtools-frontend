@@ -217,6 +217,11 @@ const UIStrings = {
   servedFromNetwork: '{PH1} transferred over network, resource size: {PH2}',
   /**
    * @description Cell title in Network Data Grid Node of the Network panel
+   * @example {Fast 4G} PH1
+   */
+  wasThrottled: 'Request was throttled ({PH1})',
+  /**
+   * @description Cell title in Network Data Grid Node of the Network panel
    * @example {4 B} PH1
    * @example {10 B} PH2
    */
@@ -953,6 +958,10 @@ export class NetworkRequestNode extends NetworkNode {
     return this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Prefetch;
   }
 
+  throttlingConditions(): {conditions: SDK.NetworkManager.Conditions, urlPattern?: string}|undefined {
+    return SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.requestInternal);
+  }
+
   override isWarning(): boolean {
     return this.isFailed() && this.isPrefetch();
   }
@@ -964,6 +973,7 @@ export class NetworkRequestNode extends NetworkNode {
   override createCells(element: Element): void {
     this.initiatorCell = null;
 
+    element.classList.toggle('network-throttled-row', Boolean(this.throttlingConditions()?.urlPattern));
     element.classList.toggle('network-warning-row', this.isWarning());
     element.classList.toggle('network-error-row', this.isError());
     element.classList.toggle('network-navigation-row', this.isNavigationRequestInternal);
@@ -1505,6 +1515,15 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   private renderTimeCell(cell: HTMLElement): void {
+    const throttlingConditions = this.throttlingConditions();
+    if (throttlingConditions?.urlPattern) {
+      const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === 'string' ?
+          throttlingConditions.conditions.title :
+          throttlingConditions.conditions.title();
+      const icon = IconButton.Icon.create('watch');
+      icon.title = i18nString(UIStrings.wasThrottled, {PH1: throttlingConditionsTitle});
+      cell.append(icon);
+    }
     if (this.requestInternal.duration > 0) {
       this.setTextAndTitle(cell, i18n.TimeUtilities.secondsToString(this.requestInternal.duration));
       this.appendSubtitle(

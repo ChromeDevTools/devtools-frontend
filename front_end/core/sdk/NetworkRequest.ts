@@ -319,6 +319,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   readonly #directSocketChunks: DirectSocketChunk[] = [];
   #isIpProtectionUsed: boolean;
   #isAdRelated: boolean;
+  #appliedNetworkConditionsId?: string;
 
   constructor(
       requestId: string,
@@ -453,6 +454,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   get loaderId(): Protocol.Network.LoaderId|null {
     return this.#loaderId;
+  }
+
+  get appliedNetworkConditionsId(): string|undefined {
+    return this.#appliedNetworkConditionsId;
   }
 
   setRemoteAddress(ip: string, port: number): void {
@@ -1613,6 +1618,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#hasExtraRequestInfo = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
     this.#clientSecurityState = extraRequestInfo.clientSecurityState;
+    this.#appliedNetworkConditionsId = extraRequestInfo.appliedNetworkConditionsId;
     if (extraRequestInfo.connectTiming) {
       this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
     }
@@ -2170,6 +2176,7 @@ export interface ExtraRequestInfo {
   clientSecurityState?: Protocol.Network.ClientSecurityState;
   connectTiming: Protocol.Network.ConnectTiming;
   siteHasCookieInOtherPartition?: boolean;
+  appliedNetworkConditionsId?: string;
 }
 
 export interface ExtraResponseInfo {

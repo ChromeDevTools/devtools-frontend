@@ -839,10 +839,6 @@ inspectorBackend.registerEvent("Network.responseReceivedEarlyHints", ["requestId
 inspectorBackend.registerEnum("Network.TrustTokenOperationDoneEventStatus", {Ok: "Ok", InvalidArgument: "InvalidArgument", MissingIssuerKeys: "MissingIssuerKeys", FailedPrecondition: "FailedPrecondition", ResourceExhausted: "ResourceExhausted", AlreadyExists: "AlreadyExists", ResourceLimited: "ResourceLimited", Unauthorized: "Unauthorized", BadResponse: "BadResponse", InternalError: "InternalError", UnknownError: "UnknownError", FulfilledLocally: "FulfilledLocally", SiteIssuerLimit: "SiteIssuerLimit"});
 inspectorBackend.registerEvent("Network.trustTokenOperationDone", ["status", "type", "requestId", "topLevelOrigin", "issuerOrigin", "issuedTokenCount"]);
 inspectorBackend.registerEvent("Network.policyUpdated", []);
-inspectorBackend.registerEvent("Network.subresourceWebBundleMetadataReceived", ["requestId", "urls"]);
-inspectorBackend.registerEvent("Network.subresourceWebBundleMetadataError", ["requestId", "errorMessage"]);
-inspectorBackend.registerEvent("Network.subresourceWebBundleInnerResponseParsed", ["innerRequestId", "innerRequestURL", "bundleRequestId"]);
-inspectorBackend.registerEvent("Network.subresourceWebBundleInnerResponseError", ["innerRequestId", "innerRequestURL", "errorMessage", "bundleRequestId"]);
 inspectorBackend.registerEvent("Network.reportingApiReportAdded", ["report"]);
 inspectorBackend.registerEvent("Network.reportingApiReportUpdated", ["report"]);
 inspectorBackend.registerEvent("Network.reportingApiEndpointsChangedForOrigin", ["origin", "endpoints"]);

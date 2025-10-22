@@ -2874,28 +2874,6 @@ declare namespace ProtocolProxyApi {
     policyUpdated(): void;
 
     /**
-     * Fired once when parsing the .wbn file has succeeded.
-     * The event contains the information about the web bundle contents.
-     */
-    subresourceWebBundleMetadataReceived(params: Protocol.Network.SubresourceWebBundleMetadataReceivedEvent): void;
-
-    /**
-     * Fired once when parsing the .wbn file has failed.
-     */
-    subresourceWebBundleMetadataError(params: Protocol.Network.SubresourceWebBundleMetadataErrorEvent): void;
-
-    /**
-     * Fired when handling requests for resources within a .wbn file.
-     * Note: this will only be fired for resources that are requested by the webpage.
-     */
-    subresourceWebBundleInnerResponseParsed(params: Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent): void;
-
-    /**
-     * Fired when request for resources within a .wbn file failed.
-     */
-    subresourceWebBundleInnerResponseError(params: Protocol.Network.SubresourceWebBundleInnerResponseErrorEvent): void;
-
-    /**
      * Is sent whenever a new report is added.
      * And after 'enableReportingApi' for all existing reports.
      */

@@ -20,10 +20,10 @@ ElementsTestRunner.setUpTestSuite = function(next) {
 
   function step2(node) {
     ElementsTestRunner.containerId = node.id;
-    TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId).then(step3);
+    TestRunner.DOMAgent.invoke_getOuterHTML({nodeId: ElementsTestRunner.containerId}).then(step3);
   }
 
-  function step3(text) {
+  function step3({outerHTML: text}) {
     ElementsTestRunner.containerText = text;
 
     for (const key in SDK.DOMModel.Events) {
@@ -88,7 +88,7 @@ ElementsTestRunner.setOuterHTMLUseUndo = function(newText, next) {
 };
 
 ElementsTestRunner.innerSetOuterHTML = async function(newText, last, next) {
-  await TestRunner.DOMAgent.setOuterHTML(ElementsTestRunner.containerId, newText);
+  await TestRunner.DOMAgent.invoke_setOuterHTML({nodeId: ElementsTestRunner.containerId, outerHTML: newText});
   TestRunner.domModel.markUndoableState();
   ElementsTestRunner._dumpOuterHTML(last, next);
 };
@@ -103,7 +103,7 @@ ElementsTestRunner._dumpOuterHTML = async function(last, next) {
   }
 
   ElementsTestRunner.events = [];
-  const text = await TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId);
+  const {outerHTML: text} = await TestRunner.DOMAgent.invoke_getOuterHTML({nodeId: ElementsTestRunner.containerId});
   TestRunner.addResult('==========8<==========');
   TestRunner.addResult(text);
   TestRunner.addResult('==========>8==========');

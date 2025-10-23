@@ -89,7 +89,8 @@ export const runAsyncCallStacksTest = function(totalDebuggerStatements, maxAsync
   startDebuggerTest(step1);
 
   async function step1() {
-    await TestRunner.DebuggerAgent.setAsyncCallStackDepth(maxAsyncCallStackDepth || defaultMaxAsyncCallStackDepth);
+    await TestRunner.DebuggerAgent.invoke_setAsyncCallStackDepth(
+        {maxDepth: maxAsyncCallStackDepth || defaultMaxAsyncCallStackDepth});
     runTestFunctionAndWaitUntilPaused(didPause);
   }
 

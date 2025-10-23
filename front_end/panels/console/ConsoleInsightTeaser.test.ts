@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -109,20 +111,6 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     show.restore();
   });
 
-  it('executes action on "Tell me more" click if onboarding is completed', async () => {
-    const action = sinon.spy();
-    const getAction = sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction').returns({
-      execute: action,
-    } as unknown as UI.ActionRegistration.Action);
-    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
-    new Console.ConsoleInsightTeaser.ConsoleInsightTeaser(
-        'test-uuid', {} as Console.ConsoleViewMessage.ConsoleViewMessage, undefined, view);
-    const input = await view.nextInput;
-    input.onTellMeMoreClick(new Event('click'));
-    sinon.assert.calledOnce(action);
-    getAction.restore();
-  });
-
   it('disables teasers on "Dont show" change', async () => {
     const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
     new Console.ConsoleInsightTeaser.ConsoleInsightTeaser(
@@ -214,5 +202,34 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isEmpty(input.mainText);
     assert.isEmpty(input.headerText);
     assert.isTrue(input.isError);
+  });
+
+  it('show the "Tell me more" button only when AIDA is available', async () => {
+    const checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction').returns(true);
+    const consoleViewMessage = setupBuiltInAi(async function*() {
+      yield JSON.stringify({
+        header: 'test header',
+        explanation: 'test explanation',
+      });
+    });
+
+    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
+    const teaser =
+        new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
+    teaser.markAsRoot();
+    renderElementIntoDOM(teaser);
+
+    await teaser.maybeGenerateTeaser();
+    let input = await view.nextInput;
+    assert.isTrue(input.hasTellMeMoreButton);
+
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.NO_INTERNET);
+    Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+    input = await view.nextInput;
+    assert.isFalse(input.hasTellMeMoreButton);
+    teaser.detach();
   });
 });

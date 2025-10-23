@@ -215,6 +215,8 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   #isSlow = false;
   #timeoutId: ReturnType<typeof setTimeout>|null = null;
   #isError = false;
+  #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
+  #boundOnAidaAvailabilityChange: () => Promise<void>;
 
   constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View) {
     super(element);
@@ -222,6 +224,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#uuid = uuid;
     this.#promptBuilder = new PromptBuilder(consoleViewMessage);
     this.#consoleViewMessage = consoleViewMessage;
+    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.requestUpdate();
   }
 
@@ -235,6 +238,14 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
   #getOnboardingCompletedSetting(): Common.Settings.Setting<boolean> {
     return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', true);
+  }
+
+  async #onAidaAvailabilityChange(): Promise<void> {
+    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
+      this.requestUpdate();
+    }
   }
 
   #executeConsoleInsightAction(): void {
@@ -399,7 +410,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     if (Root.Runtime.hostConfig.aidaAvailability?.blockedByAge || Root.Runtime.hostConfig.isOffTheRecord) {
       return false;
     }
-    if (!Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+    if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
       return false;
     }
     return true;
@@ -420,5 +431,18 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
           isError: this.#isError,
         },
         undefined, this.contentElement);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    void this.#onAidaAvailabilityChange();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
   }
 }

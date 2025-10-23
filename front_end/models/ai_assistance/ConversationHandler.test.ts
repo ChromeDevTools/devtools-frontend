@@ -12,6 +12,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as AiAssistancePanel from '../../panels/ai_assistance/ai_assistance.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
 import {
+  cleanup,
   createAiAssistancePanel,
   createNetworkRequest,
   mockAidaClient,
@@ -51,6 +52,8 @@ describeWithMockConnection('ConversationHandler', () => {
       performSearchStub = sinon.stub(target.domAgent(), 'invoke_performSearch')
                               .resolves({searchId: 'uniqueId', resultCount: 0, getError: () => undefined});
     });
+
+    afterEach(cleanup);
 
     describe('can be blocked', () => {
       it('by a setting', async () => {

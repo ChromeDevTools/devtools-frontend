@@ -592,6 +592,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           multimodal: true,
         },
       });
+      AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
       const {panel, view} = await createAiAssistancePanel(
           {aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
       void panel.handleAction('freestyler.elements-floating-button');

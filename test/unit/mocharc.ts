@@ -11,7 +11,7 @@ module.exports = {
   // This should make mocha crash on uncaught errors.
   // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
   allowUncaught : true,
-  require : ['source-map-support/register', 'chai/register-assert'],
+  require : ['source-map-support/register', 'chai/register-assert', 'sinon/pkg/sinon.js'],
   spec :
        [
          ...loadTests(path.join(GEN_DIR, 'front_end'), 'foundation_tests.txt'),

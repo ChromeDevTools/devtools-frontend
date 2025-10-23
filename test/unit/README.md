@@ -2,9 +2,10 @@
 
 Unit tests are written using [Mocha](https://mochajs.org/) and
 [Chai](https://www.chaijs.com/) and run with
-[Karma](https://karma-runner.github.io/latest/index.html) in a web
-browser. The unit tests live next to the source code they are
-testing and follow the naming convention `Foo.test.ts` for `Foo.ts`.
+[Karma](https://karma-runner.github.io/latest/index.html) in a web browser. A
+subset of unit tests called `foundation_unittests` is additionally run in Node.
+The unit tests live next to the source code they are testing and follow the
+naming convention `Foo.test.ts` for `Foo.ts`.
 
 [TOC]
 
@@ -36,6 +37,12 @@ file, say `SourcesView.test.ts` for example, use:
 
 ```bash
 npm run test front_end/panels/sources/SourcesView.test.ts
+```
+
+To run only **foundation unit tests in Node** use `--node-unit-tests flag`:
+
+```bash
+npm run test front_end -- --node-unit-tests
 ```
 
 Check the output of `npm run test -- --help` for an overview of
@@ -208,3 +215,10 @@ scripts/tools/update_goldens.py
 
 The command is expected to fetch images from the bots and apply them to
 your local source code. You need to review and commit them to your CL.
+
+## Foundation unit tests
+
+Foundation unit tests (GN target name is usually `foundation_unittests`) is a
+set of unit tests that do not depend on the DevTools UI and can run in Node. We
+use these tests to test functionality exposed via
+https://github.com/ChromeDevTools/chrome-devtools-mcp in Node.js.

@@ -139,6 +139,7 @@ devtools_entrypoint("bundle") {
     "../../panels/*",
     "../../testing/*",
     "../components/data_grid:*",
+    "../components/dialogs:*",
     "../components/docs/combo_box/*",
     "../components/docs/context_menu/*",
     "../components/docs/performance_panel/*",
@@ -148,6 +149,7 @@ devtools_entrypoint("bundle") {
     "../components/legacy_wrapper:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
+    "../components/menus:*",
     "../components/request_link_icon:unittests",
     "../components/snackbars:*",
     "../components/tooltips:*",
@@ -164,7 +166,6 @@ devtools_entrypoint("bundle") {
     # TODO(crbug.com/442509324): front_end/models must not import from
     # front_end/ui/legacy
     "../../models/ai_assistance:unittests",
-    "../../services/window_bounds/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

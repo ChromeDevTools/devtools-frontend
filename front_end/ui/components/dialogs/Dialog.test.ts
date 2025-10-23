@@ -3,21 +3,17 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import type * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
-import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line @devtools/es-modules-import
-import {assertScreenshot} from '../../../testing/DOMHelpers.js';
+import {
+  assertScreenshot,
+  dispatchClickEvent,
+  dispatchKeyDownEvent,
+  raf,
+  renderElementIntoDOM
+} from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as Dialogs from './dialogs.js';
-
-class DialogExampleWindowBoundsServiceFactory implements WindowBoundsService.WindowBoundsService.WindowBoundsService {
-  constructor(private boundingElement: HTMLElement) {
-  }
-  getDevToolsBoundingElement(): HTMLElement {
-    return this.boundingElement;
-  }
-}
 
 describe('Dialog', () => {
   describe('positioning', () => {
@@ -25,13 +21,14 @@ describe('Dialog', () => {
     let container: HTMLDivElement;
     let host: HTMLDivElement;
     beforeEach(() => {
-      dialog = new Dialogs.Dialog.Dialog();
       container = document.createElement('div');
       container.style.width = '500px';
       container.style.height = '500px';
       container.style.display = 'flex';
       container.style.alignItems = 'center';
       container.style.justifyContent = 'center';
+
+      dialog = new Dialogs.Dialog.Dialog();
 
       host = document.createElement('div');
       host.textContent = 'Hover me';
@@ -47,10 +44,10 @@ describe('Dialog', () => {
 
       container.appendChild(host);
       container.appendChild(dialog);
-      Helpers.renderElementIntoDOM(container);
+      renderElementIntoDOM(container);
       await RenderCoordinator.done();
 
-      Helpers.dispatchClickEvent(host);
+      dispatchClickEvent(host);
       await RenderCoordinator.done();
 
       const hostBounds = host.getBoundingClientRect();
@@ -80,8 +77,7 @@ describe('Dialog', () => {
       dialog.horizontalAlignment = Dialogs.Dialog.DialogHorizontalAlignment.AUTO;
       dialog.origin = host;
 
-      // Set the dialog's "window" to be the container element we just created.
-      dialog.windowBoundsService = new DialogExampleWindowBoundsServiceFactory(container);
+      dialog.setBoundingElementForTesting(container);
 
       host.addEventListener('click', () => dialog.setDialogVisible(true));
       dialog.addEventListener('clickoutsidedialog', () => dialog.setDialogVisible(false));
@@ -89,18 +85,18 @@ describe('Dialog', () => {
       dialog.appendChild(content);
       container.appendChild(host);
       container.appendChild(dialog);
-      Helpers.renderElementIntoDOM(container);
+      renderElementIntoDOM(container);
       await RenderCoordinator.done();
 
       // Open the dialog and check its position.
-      Helpers.dispatchClickEvent(host);
+      dispatchClickEvent(host);
       await RenderCoordinator.done();
 
       // Test the dialog is deployed left to right, since this way there is more space.
       assert.strictEqual(dialog.bestHorizontalAlignment, Dialogs.Dialog.DialogHorizontalAlignment.LEFT);
 
       // Close the dialog
-      Helpers.dispatchKeyDownEvent(dialog, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
+      dispatchKeyDownEvent(dialog, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
       await RenderCoordinator.done();
 
       // With the host in the right border of the window, the Dialog
@@ -110,7 +106,7 @@ describe('Dialog', () => {
       await RenderCoordinator.done();
 
       // Open the dialog and check its position.
-      Helpers.dispatchClickEvent(host);
+      dispatchClickEvent(host);
       await RenderCoordinator.done();
 
       // Test the dialog is deployed right to left.
@@ -138,9 +134,7 @@ describe('Dialog', () => {
 
       dialog.position = Dialogs.Dialog.DialogVerticalPosition.AUTO;
       dialog.origin = host;
-
-      // Set the dialog's "window" to be the container element we just created.
-      dialog.windowBoundsService = new DialogExampleWindowBoundsServiceFactory(container);
+      dialog.setBoundingElementForTesting(container);
 
       host.addEventListener('click', () => dialog.setDialogVisible(true));
       dialog.addEventListener('clickoutsidedialog', () => dialog.setDialogVisible(false));
@@ -148,11 +142,11 @@ describe('Dialog', () => {
       dialog.appendChild(content);
       container.appendChild(host);
       container.appendChild(dialog);
-      Helpers.renderElementIntoDOM(container);
+      renderElementIntoDOM(container);
       await RenderCoordinator.done();
 
       // Open the dialog and check its position.
-      Helpers.dispatchClickEvent(host);
+      dispatchClickEvent(host);
       await RenderCoordinator.done();
 
       // Test the capped dimensions
@@ -180,9 +174,7 @@ describe('Dialog', () => {
 
       dialog.position = Dialogs.Dialog.DialogVerticalPosition.AUTO;
       dialog.origin = host;
-
-      // Set the dialog's "window" to be the container element we just created.
-      dialog.windowBoundsService = new DialogExampleWindowBoundsServiceFactory(container);
+      dialog.setBoundingElementForTesting(container);
 
       host.addEventListener('click', () => dialog.setDialogVisible(true));
       dialog.addEventListener('clickoutsidedialog', () => dialog.setDialogVisible(false));
@@ -190,11 +182,11 @@ describe('Dialog', () => {
       dialog.appendChild(content);
       container.appendChild(host);
       container.appendChild(dialog);
-      Helpers.renderElementIntoDOM(container);
+      renderElementIntoDOM(container);
       await RenderCoordinator.done();
 
       // Open the dialog and check its position.
-      Helpers.dispatchClickEvent(host);
+      dispatchClickEvent(host);
       await RenderCoordinator.done();
 
       // Test the capped dimensions
@@ -203,6 +195,7 @@ describe('Dialog', () => {
     it('sets the max width and height correctly when the dialog\'s content dimensions exceed the viewport and the dialog is displayed as a modal',
        async () => {
          const devtoolsDialog = new Dialogs.Dialog.Dialog();
+         devtoolsDialog.setBoundingElementForTesting(container);
          const WINDOW_WIDTH = 300;
          // This container will be set as the dialog's "window", or the representation
          // of DevTools bounding element.
@@ -220,26 +213,20 @@ describe('Dialog', () => {
 
          devtoolsDialog.origin = Dialogs.Dialog.MODAL;
 
-         // Set the dialog's "window" to be the container element we just created.
-         devtoolsDialog.windowBoundsService = new DialogExampleWindowBoundsServiceFactory(container);
-
          host.addEventListener('click', () => devtoolsDialog.setDialogVisible(true));
          devtoolsDialog.addEventListener('clickoutsidedialog', () => devtoolsDialog.setDialogVisible(false));
 
          container.appendChild(host);
          container.appendChild(devtoolsDialog);
-         Helpers.renderElementIntoDOM(container);
+         renderElementIntoDOM(container);
          await RenderCoordinator.done();
          devtoolsDialog.appendChild(content);
 
          // Open the dialog and check its position.
-         Helpers.dispatchClickEvent(host);
+         dispatchClickEvent(host);
          await RenderCoordinator.done();
          const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-         if (!dialog) {
-           assert.fail('Dialog not found');
-           return;
-         }
+         assert.exists(dialog, 'Dialog not found');
          assert.strictEqual(
              dialog.clientWidth,
              WINDOW_WIDTH - Dialogs.Dialog.DIALOG_PADDING_FROM_WINDOW + 2 * Dialogs.Dialog.DIALOG_SIDE_PADDING);
@@ -283,15 +270,15 @@ describe('Dialog', () => {
         devtoolsDialog.origin = host;
         devtoolsDialog.horizontalAlignment = Dialogs.Dialog.DialogHorizontalAlignment.CENTER;
 
-        // Set the dialog's "window" to be the container element we just created.
-        devtoolsDialog.windowBoundsService = new DialogExampleWindowBoundsServiceFactory(container);
-
         host.addEventListener('click', () => devtoolsDialog.setDialogVisible(true));
         devtoolsDialog.addEventListener('clickoutsidedialog', () => devtoolsDialog.setDialogVisible(false));
 
+        devtoolsDialog.setBoundingElementForTesting(container);
+        dialog.setBoundingElementForTesting(container);
+
         container.appendChild(host);
         container.appendChild(devtoolsDialog);
-        Helpers.renderElementIntoDOM(container);
+        renderElementIntoDOM(container);
         await RenderCoordinator.done();
         devtoolsDialog.appendChild(content);
       });
@@ -299,13 +286,11 @@ describe('Dialog', () => {
          async () => {
            devtoolsDialog.horizontalAlignment = Dialogs.Dialog.DialogHorizontalAlignment.LEFT;
            // Open the dialog and check its position.
-           Helpers.dispatchClickEvent(host);
+           dispatchClickEvent(host);
            await RenderCoordinator.done();
            const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-           if (!dialog) {
-             assert.fail('Dialog not found');
-             return;
-           }
+           assert.exists(dialog, 'Dialog not found');
+
            // Test the capped dimensions
            const {left: dialogLeft, width: dialogWidth} = dialog.getBoundingClientRect();
            const dialogLeftBorderLimitPosition = dialogWidth + dialogLeft + Dialogs.Dialog.DIALOG_PADDING_FROM_WINDOW -
@@ -321,13 +306,11 @@ describe('Dialog', () => {
            devtoolsDialog.horizontalAlignment = Dialogs.Dialog.DialogHorizontalAlignment.RIGHT;
            await RenderCoordinator.done();
            // Open the dialog and check its position.
-           Helpers.dispatchClickEvent(host);
+           dispatchClickEvent(host);
            await RenderCoordinator.done();
            const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-           if (!dialog) {
-             assert.fail('Dialog not found');
-             return;
-           }
+           assert.exists(dialog, 'Dialog not found');
+
            // Test the capped dimensions
            const dialogRight = host.getBoundingClientRect().right;
            const containerLeft = container.getBoundingClientRect().left;
@@ -343,13 +326,10 @@ describe('Dialog', () => {
 
            await RenderCoordinator.done();
            // Open the dialog and check its position.
-           Helpers.dispatchClickEvent(host);
+           dispatchClickEvent(host);
            await RenderCoordinator.done();
            const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-           if (!dialog) {
-             assert.fail('Dialog not found');
-             return;
-           }
+           assert.exists(dialog, 'Dialog not found');
            // Test the capped dimensions
            const dialogLeft = dialog.getBoundingClientRect().left;
            const containerLeft = container.getBoundingClientRect().left;
@@ -363,13 +343,10 @@ describe('Dialog', () => {
 
            await RenderCoordinator.done();
            // Open the dialog and check its position.
-           Helpers.dispatchClickEvent(host);
+           dispatchClickEvent(host);
            await RenderCoordinator.done();
            const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-           if (!dialog) {
-             assert.fail('Dialog not found');
-             return;
-           }
+           assert.exists(dialog, 'Dialog not found');
            // Test the capped dimensions
            const dialogRight = dialog.getBoundingClientRect().right;
            const dialogRightEdgePosition =
@@ -383,13 +360,10 @@ describe('Dialog', () => {
 
            await RenderCoordinator.done();
            // Open the dialog and check its position.
-           Helpers.dispatchClickEvent(host);
+           dispatchClickEvent(host);
            await RenderCoordinator.done();
            const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-           if (!dialog) {
-             assert.fail('Dialog not found');
-             return;
-           }
+           assert.exists(dialog, 'Dialog not found');
            // Test the capped dimensions
            const dialogRight = dialog.getBoundingClientRect().right;
            const dialogRightEdgePosition =
@@ -403,13 +377,10 @@ describe('Dialog', () => {
 
            await RenderCoordinator.done();
            // Open the dialog and check its position.
-           Helpers.dispatchClickEvent(host);
+           dispatchClickEvent(host);
            await RenderCoordinator.done();
            const dialog = devtoolsDialog.shadowRoot?.querySelector('dialog');
-           if (!dialog) {
-             assert.fail('Dialog not found');
-             return;
-           }
+           assert.exists(dialog, 'Dialog not found');
            // Test the capped dimensions
            const containerLeft = container.getBoundingClientRect().left;
            const dialogLeft = dialog.getBoundingClientRect().left;
@@ -433,10 +404,10 @@ describe('Dialog', () => {
           dialog.append(dialogContent);
           container.appendChild(host);
           container.appendChild(dialog);
-          Helpers.renderElementIntoDOM(container);
+          renderElementIntoDOM(container);
           await RenderCoordinator.done();
 
-          Helpers.dispatchClickEvent(host);
+          dispatchClickEvent(host);
           await RenderCoordinator.done();
 
           const initialWidth = dialog.getDialogBounds().width;
@@ -458,9 +429,10 @@ describe('Dialog', () => {
 
   describe('closing the dialog with the ESC key', () => {
     let devtoolsDialog: Dialogs.Dialog.Dialog;
+    let container: HTMLElement;
     beforeEach(async () => {
       devtoolsDialog = new Dialogs.Dialog.Dialog();
-      const container = document.createElement('div');
+      container = document.createElement('div');
 
       const host = document.createElement('div');
 
@@ -474,81 +446,53 @@ describe('Dialog', () => {
 
       container.appendChild(host);
       container.appendChild(devtoolsDialog);
-      Helpers.renderElementIntoDOM(container);
+      renderElementIntoDOM(container);
       await RenderCoordinator.done();
       devtoolsDialog.appendChild(content);
 
       // Open the dialog.
-      Helpers.dispatchClickEvent(host);
+      dispatchClickEvent(host);
       await RenderCoordinator.done();
     });
 
     it('closes the dialog by default when the ESC key is pressed', async () => {
       let dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-      if (!dialog) {
-        assert.fail('Dialog not found');
-        return;
-      }
+      assert.exists(dialog, 'Dialog not found');
 
-      Helpers.dispatchKeyDownEvent(dialog, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
+      dispatchKeyDownEvent(dialog, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
       await RenderCoordinator.done();
       dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-      if (dialog) {
-        assert.fail('Dialog did not close');
-        return;
-      }
+      assert.notExists(dialog, 'Dialog did not close');
     });
 
     it('closes the dialog by default when the ESC key is pressed from document.body', async () => {
       let dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-      if (!dialog) {
-        assert.fail('Dialog not found');
-        return;
-      }
-      Helpers.dispatchKeyDownEvent(
-          document.body, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
+      assert.exists(dialog, 'Dialog not found');
+      dispatchKeyDownEvent(document.body, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
       await RenderCoordinator.done();
       dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-      if (dialog) {
-        assert.fail('Dialog did not close');
-        return;
-      }
+      assert.notExists(dialog, 'Dialog did not close');
     });
 
     it('closes the dialog by default when the ESC key is pressed anywhere within the devtools bounding element',
        async () => {
          let dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-         if (!dialog) {
-           assert.fail('Dialog not found');
-           return;
-         }
-
-         const boundingElement = devtoolsDialog.windowBoundsService.getDevToolsBoundingElement();
-         Helpers.dispatchKeyDownEvent(
-             boundingElement, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
+         assert.exists(dialog, 'Dialog not found');
+         dispatchKeyDownEvent(container, {key: Platform.KeyboardUtilities.ESCAPE_KEY, bubbles: true, composed: true});
          await RenderCoordinator.done();
          dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-         if (dialog) {
-           assert.fail('Dialog did not close');
-           return;
-         }
+         assert.notExists(dialog, 'Dialog did not close');
        });
 
     it('does not close the dialog when the ESC key is pressed if the closeOnESC prop is set to false', async () => {
       let dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
       devtoolsDialog.closeOnESC = false;
-      if (!dialog) {
-        assert.fail('Dialog not found');
-        return;
-      }
+      assert.exists(dialog, 'Dialog not found');
 
-      Helpers.dispatchKeyDownEvent(dialog, {key: Platform.KeyboardUtilities.ESCAPE_KEY});
+      dispatchKeyDownEvent(dialog, {key: Platform.KeyboardUtilities.ESCAPE_KEY});
       await RenderCoordinator.done();
       dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-      if (!dialog) {
-        assert.fail('Dialog was closed');
-        return;
-      }
+      assert.exists(dialog, 'Dialog was closed');
     });
   });
 
@@ -557,7 +501,7 @@ describe('Dialog', () => {
       const dialog = new Dialogs.Dialog.Dialog();
       dialog.closeButton = false;
       dialog.dialogTitle = '';
-      Helpers.renderElementIntoDOM(dialog);
+      renderElementIntoDOM(dialog);
       await RenderCoordinator.done();
 
       assert.isNotNull(dialog.shadowRoot);
@@ -569,7 +513,7 @@ describe('Dialog', () => {
     it('should render a close button in the dialog if closeButton is true', async () => {
       const dialog = new Dialogs.Dialog.Dialog();
       dialog.closeButton = true;
-      Helpers.renderElementIntoDOM(dialog);
+      renderElementIntoDOM(dialog);
       await RenderCoordinator.done();
 
       assert.isNotNull(dialog.shadowRoot);
@@ -583,7 +527,7 @@ describe('Dialog', () => {
       const dialogTitle = 'Button dialog example';
       const dialog = new Dialogs.Dialog.Dialog();
       dialog.dialogTitle = dialogTitle;
-      Helpers.renderElementIntoDOM(dialog);
+      renderElementIntoDOM(dialog);
       await RenderCoordinator.done();
 
       assert.isNotNull(dialog.shadowRoot);
@@ -596,7 +540,7 @@ describe('Dialog', () => {
   });
 });
 
-describe('closing the dialog with click', () => {
+describe('clo lick', () => {
   let devtoolsDialog: Dialogs.Dialog.Dialog;
   beforeEach(async () => {
     devtoolsDialog = new Dialogs.Dialog.Dialog();
@@ -614,45 +558,37 @@ describe('closing the dialog with click', () => {
 
     container.appendChild(host);
     container.appendChild(devtoolsDialog);
-    Helpers.renderElementIntoDOM(container);
+    renderElementIntoDOM(container);
     await RenderCoordinator.done();
     devtoolsDialog.appendChild(content);
 
     // Open the dialog.
-    Helpers.dispatchClickEvent(host);
+    dispatchClickEvent(host);
     await RenderCoordinator.done();
   });
 
   it('Only closes the dialog if the click falls outside its content', async () => {
     let dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-    if (!dialog) {
-      assert.fail('Dialog not found');
-      return;
-    }
+    assert.exists(dialog, 'Dialog not found');
     const {x, width, bottom} = dialog.getBoundingClientRect();
 
     // Click just inside must not close the dialog.
-    Helpers.dispatchClickEvent(dialog, {clientX: x + width / 2, clientY: bottom - 1});
+    dispatchClickEvent(dialog, {clientX: x + width / 2, clientY: bottom - 1});
     await RenderCoordinator.done();
     dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-    if (!dialog) {
-      assert.fail('Dialog closed when it should not');
-      return;
-    }
-    Helpers.dispatchClickEvent(dialog, {clientX: x + width / 2, clientY: bottom + 1});
+    assert.exists(dialog, 'Dialog closed when it should not');
+
+    dispatchClickEvent(dialog, {clientX: x + width / 2, clientY: bottom + 1});
     await RenderCoordinator.done();
 
     // Click just outside must close the dialog.
     dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
-    if (dialog) {
-      assert.fail('Dialog did not close');
-      return;
-    }
+    assert.notExists(dialog, 'Dialog did not close');
   });
 });
 
 describeWithLocale('visual appearance', () => {
-  /** FIXME: clean up and modularize these test helpers. **/
+  /** FIXME: clean up and modularize these test  **/
   async function renderDialogs() {
     const verticalPositions = [Dialogs.Dialog.DialogVerticalPosition.TOP, Dialogs.Dialog.DialogVerticalPosition.BOTTOM];
     const horizontalAlignments = [
@@ -752,6 +688,7 @@ describeWithLocale('visual appearance', () => {
         const dialog = new Dialogs.Dialog.Dialog();
 
         const container = document.createElement('div');
+
         container.classList.add('container');
         container.id = `container-${i}`;
 
@@ -850,16 +787,16 @@ describeWithLocale('visual appearance', () => {
       }
     }
 
-    Helpers.renderElementIntoDOM(root);
+    renderElementIntoDOM(root);
 
     return root;
   }
 
   async function openDialog(dialogNumber: number) {
-    const dialog = document.querySelector(`#dialog-${dialogNumber}`);
-    await (dialog as Dialogs.Dialog.Dialog).setDialogVisible(true);
-    await Helpers.raf();
-    return dialog as Dialogs.Dialog.Dialog;
+    const dialog = document.querySelector(`#dialog-${dialogNumber}`) as Dialogs.Dialog.Dialog;
+    await dialog.setDialogVisible(true);
+    await raf();
+    return dialog;
   }
 
   it('renders the dialog at the top left properly', async () => {

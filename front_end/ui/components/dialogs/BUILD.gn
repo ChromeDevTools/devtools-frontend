@@ -23,7 +23,7 @@ devtools_ui_module("dialogs") {
   ]
   deps = [
     "../../../core/platform:bundle",
-    "../../../services/window_bounds:bundle",
+    "../../legacy:bundle",
     "../buttons:bundle",
     "../helpers:bundle",
     "../render_coordinator:bundle",
@@ -53,8 +53,8 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../../core/platform:bundle",
-    "../../../services/window_bounds:bundle",
     "../../../testing",
+    "../../legacy:bundle",
     "../render_coordinator:bundle",
   ]
 }

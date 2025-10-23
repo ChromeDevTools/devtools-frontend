@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as WindowBounds from '../../../../services/window_bounds/window_bounds.js';
+import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import type {FlameChart} from './FlameChart.js';
@@ -124,7 +124,7 @@ export class BrickBreaker extends HTMLElement {
   #keyPressHandlerBound = this.#keyPressHandler.bind(this);
   #closeGameBound = this.#closeGame.bind(this);
   #mouseMoveHandlerBound = this.#mouseMoveHandler.bind(this);
-  #boundingElement = WindowBounds.WindowBoundsService.WindowBoundsServiceImpl.instance().getDevToolsBoundingElement();
+  #boundingElement = UI.UIUtils.getDevToolsBoundingElement();
   // Value by which we moved the game up relative to the viewport
   #gameViewportOffset = 0;
   #running = false;

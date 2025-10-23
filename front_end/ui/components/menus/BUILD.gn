@@ -24,10 +24,10 @@ devtools_ui_module("menus") {
   ]
   deps = [
     "../../../../front_end/core/platform:bundle",
-    "../../../../front_end/services/window_bounds:bundle",
     "../../../../front_end/ui/components/buttons:bundle",
     "../../../../front_end/ui/components/helpers:bundle",
     "../../../../front_end/ui/components/render_coordinator:bundle",
+    "../../legacy:bundle",
     "../dialogs:bundle",
   ]
 }

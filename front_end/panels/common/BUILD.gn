@@ -43,7 +43,6 @@ devtools_ui_module("common") {
     "../../models/extensions:bundle",
     "../../models/geometry:bundle",
     "../../models/persistence:bundle",
-    "../../services/window_bounds:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/snackbars:bundle",

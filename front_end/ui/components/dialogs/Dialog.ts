@@ -5,11 +5,11 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as UI from '../../legacy/legacy.js';
 import * as Buttons from '../buttons/buttons.js';
 
 import dialogStyles from './dialog.css.js';
@@ -78,10 +78,6 @@ interface DialogData {
   dialogShownCallback: (() => unknown)|null;
 
   /**
-   * Optional. Service that provides the window dimensions used for positioning the Dialog.
-   */
-  windowBoundsService: WindowBoundsService.WindowBoundsService.WindowBoundsService;
-  /**
    * Whether the dialog is closed when the 'Escape' key is pressed. When true, the event is
    * propagation is stopped.
    */
@@ -132,7 +128,6 @@ export class Dialog extends HTMLElement {
     horizontalAlignment: DialogHorizontalAlignment.CENTER,
     getConnectorCustomXPosition: null,
     dialogShownCallback: null,
-    windowBoundsService: WindowBoundsService.WindowBoundsService.WindowBoundsServiceImpl.instance(),
     closeOnESC: true,
     closeOnScroll: true,
     closeButton: false,
@@ -161,7 +156,7 @@ export class Dialog extends HTMLElement {
     this.#forceDialogCloseInDevToolsBound();
   });
   readonly #dialogResizeObserver = new ResizeObserver(this.#updateDialogBounds.bind(this));
-  #devToolsBoundingElement = this.windowBoundsService.getDevToolsBoundingElement();
+  #devToolsBoundingElement = UI.UIUtils.getDevToolsBoundingElement();
 
   // We bind here because we have to listen to keydowns on the entire window,
   // not on the Dialog element itself. This is because if the user has the
@@ -201,16 +196,6 @@ export class Dialog extends HTMLElement {
 
   set horizontalAlignment(alignment: DialogHorizontalAlignment) {
     this.#props.horizontalAlignment = alignment;
-    this.#onStateChange();
-  }
-
-  get windowBoundsService(): WindowBoundsService.WindowBoundsService.WindowBoundsService {
-    return this.#props.windowBoundsService;
-  }
-
-  set windowBoundsService(windowBoundsService: WindowBoundsService.WindowBoundsService.WindowBoundsService) {
-    this.#props.windowBoundsService = windowBoundsService;
-    this.#devToolsBoundingElement = this.windowBoundsService.getDevToolsBoundingElement();
     this.#onStateChange();
   }
 
@@ -732,6 +717,11 @@ export class Dialog extends HTMLElement {
     `, this.#shadow, { host: this });
     VisualLogging.setMappedParent(this.#getDialog(), this.parentElementOrShadowHost() as HTMLElement);
     // clang-format on
+  }
+
+  setBoundingElementForTesting(element: HTMLElement): void {
+    this.#devToolsBoundingElement = element;
+    this.#onStateChange();
   }
 }
 

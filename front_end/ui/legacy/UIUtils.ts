@@ -56,6 +56,7 @@ import confirmDialogStyles from './confirmDialog.css.js';
 import {Dialog} from './Dialog.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
+import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
 import {Tooltip} from './Tooltip.js';
@@ -2347,4 +2348,8 @@ export function copyTextToClipboard(text: string, alert?: string): void {
   if (alert) {
     ARIAUtils.LiveAnnouncer.alert(alert);
   }
+}
+
+export function getDevToolsBoundingElement(): HTMLElement {
+  return InspectorView.maybeGetInspectorViewInstance()?.element || document.body;
 }

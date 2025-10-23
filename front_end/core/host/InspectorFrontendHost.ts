@@ -569,7 +569,7 @@ class InspectorFrontendAPIImpl {
   constructor() {
     for (const descriptor of EventDescriptors) {
       // @ts-expect-error Dispatcher magic
-      this[descriptor[1]] = this.dispatch.bind(this, descriptor[0], descriptor[2], descriptor[3]);
+      this[descriptor[0]] = this.dispatch.bind(this, descriptor[0], descriptor[1], descriptor[2]);
     }
   }
 

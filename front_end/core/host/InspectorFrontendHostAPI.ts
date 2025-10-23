@@ -6,6 +6,9 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Common from '../common/common.js';
 import type * as Root from '../root/root.js';
 
+/**
+ * This values should match the one getting called from Chromium
+ */
 export enum Events {
   /* eslint-disable @typescript-eslint/naming-convention -- Accessed from web_tests */
   AppendedToURL = 'appendedToURL',
@@ -24,7 +27,7 @@ export enum Events {
   FileSystemsLoaded = 'fileSystemsLoaded',
   FileSystemRemoved = 'fileSystemRemoved',
   FileSystemAdded = 'fileSystemAdded',
-  FileSystemFilesChangedAddedRemoved = 'FileSystemFilesChangedAddedRemoved',
+  FileSystemFilesChangedAddedRemoved = 'fileSystemFilesChangedAddedRemoved',
   IndexingTotalWorkCalculated = 'indexingTotalWorkCalculated',
   IndexingWorked = 'indexingWorked',
   IndexingDone = 'indexingDone',
@@ -40,34 +43,34 @@ export enum Events {
 }
 
 export const EventDescriptors = [
-  [Events.AppendedToURL, 'appendedToURL', ['url']],
-  [Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
-  [Events.ColorThemeChanged, 'colorThemeChanged', []],
-  [Events.ContextMenuCleared, 'contextMenuCleared', []],
-  [Events.ContextMenuItemSelected, 'contextMenuItemSelected', ['id']],
-  [Events.DeviceCountUpdated, 'deviceCountUpdated', ['count']],
-  [Events.DevicesDiscoveryConfigChanged, 'devicesDiscoveryConfigChanged', ['config']],
-  [Events.DevicesPortForwardingStatusChanged, 'devicesPortForwardingStatusChanged', ['status']],
-  [Events.DevicesUpdated, 'devicesUpdated', ['devices']],
-  [Events.DispatchMessage, 'dispatchMessage', ['messageObject']],
-  [Events.DispatchMessageChunk, 'dispatchMessageChunk', ['messageChunk', 'messageSize']],
-  [Events.EnterInspectElementMode, 'enterInspectElementMode', []],
-  [Events.EyeDropperPickedColor, 'eyeDropperPickedColor', ['color']],
-  [Events.FileSystemsLoaded, 'fileSystemsLoaded', ['fileSystems']],
-  [Events.FileSystemRemoved, 'fileSystemRemoved', ['fileSystemPath']],
-  [Events.FileSystemAdded, 'fileSystemAdded', ['errorMessage', 'fileSystem']],
-  [Events.FileSystemFilesChangedAddedRemoved, 'fileSystemFilesChangedAddedRemoved', ['changed', 'added', 'removed']],
-  [Events.IndexingTotalWorkCalculated, 'indexingTotalWorkCalculated', ['requestId', 'fileSystemPath', 'totalWork']],
-  [Events.IndexingWorked, 'indexingWorked', ['requestId', 'fileSystemPath', 'worked']],
-  [Events.IndexingDone, 'indexingDone', ['requestId', 'fileSystemPath']],
-  [Events.KeyEventUnhandled, 'keyEventUnhandled', ['event']],
-  [Events.ReloadInspectedPage, 'reloadInspectedPage', ['hard']],
-  [Events.RevealSourceLine, 'revealSourceLine', ['url', 'lineNumber', 'columnNumber']],
-  [Events.SavedURL, 'savedURL', ['url', 'fileSystemPath']],
-  [Events.SearchCompleted, 'searchCompleted', ['requestId', 'fileSystemPath', 'files']],
-  [Events.SetInspectedTabId, 'setInspectedTabId', ['tabId']],
-  [Events.SetUseSoftMenu, 'setUseSoftMenu', ['useSoftMenu']],
-  [Events.ShowPanel, 'showPanel', ['panelName']],
+  [Events.AppendedToURL, ['url']],
+  [Events.CanceledSaveURL, ['url']],
+  [Events.ColorThemeChanged, []],
+  [Events.ContextMenuCleared, []],
+  [Events.ContextMenuItemSelected, ['id']],
+  [Events.DeviceCountUpdated, ['count']],
+  [Events.DevicesDiscoveryConfigChanged, ['config']],
+  [Events.DevicesPortForwardingStatusChanged, ['status']],
+  [Events.DevicesUpdated, ['devices']],
+  [Events.DispatchMessage, ['messageObject']],
+  [Events.DispatchMessageChunk, ['messageChunk', 'messageSize']],
+  [Events.EnterInspectElementMode, []],
+  [Events.EyeDropperPickedColor, ['color']],
+  [Events.FileSystemsLoaded, ['fileSystems']],
+  [Events.FileSystemRemoved, ['fileSystemPath']],
+  [Events.FileSystemAdded, ['errorMessage', 'fileSystem']],
+  [Events.FileSystemFilesChangedAddedRemoved, ['changed', 'added', 'removed']],
+  [Events.IndexingTotalWorkCalculated, , ['requestId', 'fileSystemPath', 'totalWork']],
+  [Events.IndexingWorked, ['requestId', 'fileSystemPath', 'worked']],
+  [Events.IndexingDone, ['requestId', 'fileSystemPath']],
+  [Events.KeyEventUnhandled, ['event']],
+  [Events.ReloadInspectedPage, ['hard']],
+  [Events.RevealSourceLine, ['url', 'lineNumber', 'columnNumber']],
+  [Events.SavedURL, ['url', 'fileSystemPath']],
+  [Events.SearchCompleted, ['requestId', 'fileSystemPath', 'files']],
+  [Events.SetInspectedTabId, ['tabId']],
+  [Events.SetUseSoftMenu, ['useSoftMenu']],
+  [Events.ShowPanel, ['panelName']],
 ] as const;
 
 export interface DispatchMessageChunkEvent {

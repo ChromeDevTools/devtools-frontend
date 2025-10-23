@@ -16,7 +16,8 @@ export type ProtocolCommand = keyof ProtocolMapping.Commands;
 export type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
 export type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
 export type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
-    Omit<ProtocolResponse<C>, 'getError'>|{getError(): string};
+    Omit<ProtocolResponse<C>, 'getError'>|{getError(): string}|
+    PromiseLike<Omit<ProtocolResponse<C>, 'getError'>|{getError(): string}>;
 export type MessageCallback = (result: string|Object) => void;
 interface Message {
   id: number;
@@ -112,12 +113,13 @@ class MockConnection extends ProtocolClient.ConnectionTransport.ConnectionTransp
         return;
       }
 
-      let result = handler.call(undefined, outgoingMessage.params) || {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let result = handler.call(undefined, outgoingMessage.params as any) || {};
       if ('then' in result) {
         result = await result;
       }
 
-      const errorMessage: string = ('getError' in result) ? result.getError() : undefined;
+      const errorMessage: string|undefined = ('getError' in result) ? result.getError() : undefined;
       const error = errorMessage ? {message: errorMessage, code: -32000} : undefined;
 
       this.messageCallback?.call(undefined, {

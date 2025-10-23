@@ -341,6 +341,9 @@ const getCommandMapping = (command: Protocol.Command, domainName: string,
 const emitMapping = (moduleName: string, protocolModuleName: string, domains: Protocol.Domain[]) => {
   moduleName = toTitleCase(moduleName);
   emitHeaderComments();
+  emitLine();
+  emitLine('import type * as Protocol from \'./protocol.js\'');
+  emitLine();
   emitDescription(['Mappings from protocol event and command names to the types required for them.']);
   emitOpenBlock(`export namespace ${moduleName}`);
 

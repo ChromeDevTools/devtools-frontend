@@ -7,6 +7,9 @@
  * Re-generate with: npm run generate-protocol-resources.
  */
 
+
+import type * as Protocol from './protocol.js'
+
 /**
  * Mappings from protocol event and command names to the types required for them.
  */

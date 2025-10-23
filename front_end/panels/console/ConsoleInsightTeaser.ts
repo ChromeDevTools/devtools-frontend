@@ -130,29 +130,33 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
           <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
         ` :
           showPlaceholder ? html`
-            <h2>${input.isSlowGeneration ?
-              lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
-              lockedString(UIStringsNotTranslate.summarizing)
-            }</h2>
-            <div
-              role="presentation"
-              aria-label=${lockedString(UIStringsNotTranslate.loading)}
-              class="loader"
-              style="clip-path: url(${'#clipPath-' + input.uuid});"
-            >
-              <svg width="100%" height="58">
-                <defs>
-                <clipPath id=${'clipPath-' + input.uuid}>
-                  <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
-                  <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
-                  <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
-                </clipPath>
-              </defs>
-              </svg>
+            <div class="response-container">
+              <h2>${input.isSlowGeneration ?
+                lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
+                lockedString(UIStringsNotTranslate.summarizing)
+              }</h2>
+              <div
+                role="presentation"
+                aria-label=${lockedString(UIStringsNotTranslate.loading)}
+                class="loader"
+                style="clip-path: url(${'#clipPath-' + input.uuid});"
+              >
+                <svg width="100%" height="58">
+                  <defs>
+                  <clipPath id=${'clipPath-' + input.uuid}>
+                    <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
+                    <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
+                    <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
+                  </clipPath>
+                </defs>
+                </svg>
+              </div>
             </div>
           ` : html`
-            <h2>${input.headerText}</h2>
-            <div class="main-text">${input.mainText}</div>
+            <div class="response-container">
+              <h2>${input.headerText}</h2>
+              <div class="main-text">${input.mainText}</div>
+            </div>
           `
         }
         <div class="tooltip-footer">
@@ -167,25 +171,23 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
               ${lockedString(UIStringsNotTranslate.tellMeMore)}
             </devtools-button>
           ` : Lit.nothing}
-          ${showPlaceholder ? Lit.nothing : html`
-            <devtools-button
-              .iconName=${'info'}
-              .variant=${Buttons.Button.Variant.ICON}
-              aria-details=${'teaser-info-tooltip-' + input.uuid}
-              .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
-            ></devtools-button>
-            <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
-              <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
-              <div class="learn-more">
-                <x-link
-                  class="devtools-link"
-                  title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
-                  href=${DATA_USAGE_URL}
-                  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
-                >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
-              </div>
-            </devtools-tooltip>
-          `}
+          <devtools-button
+            .iconName=${'info'}
+            .variant=${Buttons.Button.Variant.ICON}
+            aria-details=${'teaser-info-tooltip-' + input.uuid}
+            .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
+          ></devtools-button>
+          <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
+            <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
+            <div class="learn-more">
+              <x-link
+                class="devtools-link"
+                title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
+                href=${DATA_USAGE_URL}
+                jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('explain.teaser.learn-more')}
+              >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
+            </div>
+          </devtools-tooltip>
           <devtools-checkbox
             aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
             @change=${input.dontShowChanged}
@@ -318,6 +320,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     if (this.#abortController) {
       this.#abortController.abort();
     }
+    if (this.#isGenerating) {
+      this.#mainText = '';
+    }
     this.#isGenerating = false;
     if (this.#timeoutId) {
       clearTimeout(this.#timeoutId);
@@ -338,12 +343,15 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   }
 
   async #generateTeaserText(): Promise<void> {
+    this.#headerText = this.#consoleViewMessage.toMessageTextString().substring(0, 70);
     this.#isGenerating = true;
     this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
     let teaserText = '';
     try {
       for await (const chunk of this.#getOnDeviceInsight()) {
         teaserText += chunk;
+        this.#mainText = teaserText;
+        this.requestUpdate();
       }
     } catch (err) {
       // Ignore `AbortError` errors, which are thrown on mouse leave.
@@ -359,25 +367,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
     clearTimeout(this.#timeoutId);
     this.#isGenerating = false;
-    let responseObject = {
-      header: null,
-      explanation: null,
-    };
-    try {
-      responseObject = JSON.parse(teaserText);
-    } catch (err) {
-      console.error(err.name, err.message);
-      this.#isError = true;
-      this.requestUpdate();
-      return;
-    }
-    if (responseObject.header && typeof responseObject.header === 'string' && responseObject.explanation &&
-        typeof responseObject.explanation === 'string') {
-      this.#headerText = responseObject.header;
-      this.#mainText = responseObject.explanation;
-    } else {
-      this.#isError = true;
-    }
+    this.#mainText = teaserText;
     this.requestUpdate();
   }
 

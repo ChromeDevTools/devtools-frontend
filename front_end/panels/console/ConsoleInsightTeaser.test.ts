@@ -70,10 +70,8 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
 
   it('renders the generated response', async () => {
     const consoleViewMessage = setupBuiltInAi(async function*() {
-      yield JSON.stringify({
-        header: 'test header',
-        explanation: 'test explanation',
-      });
+      yield 'This is the';
+      yield ' explanation';
     });
     const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
     const teaser =
@@ -81,8 +79,8 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     await teaser.maybeGenerateTeaser();
     const input = await view.nextInput;
     assert.isFalse(input.isInactive);
-    assert.strictEqual(input.headerText, 'test header');
-    assert.strictEqual(input.mainText, 'test explanation');
+    assert.strictEqual(input.headerText, 'message text string');
+    assert.strictEqual(input.mainText, 'This is the explanation');
   });
 
   it('executes action on "Tell me more" click if onboarding is completed', async () => {
@@ -148,18 +146,18 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     input = await view.nextInput;
     assert.isFalse(input.isInactive);
     assert.isEmpty(input.mainText);
-    assert.isEmpty(input.headerText);
+    assert.strictEqual(input.headerText, 'message text string');
     assert.isTrue(input.isSlowGeneration);
     clock.restore();
   });
 
   it('can show error state', async () => {
     const consoleViewMessage = setupBuiltInAi(async function*() {
-      yield 'Not a JSON, causes error';
+      yield 'This is an incomplete';
+      throw new Error('something went wrong');
     });
 
-    // A console error is emitted when the response cannot be parsed correctly.
-    // We don't need that noise in the test output.
+    // The error is logged to the console. We don't need that noise in the test output.
     sinon.stub(console, 'error');
 
     const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
@@ -174,33 +172,8 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
 
     input = await view.nextInput;
     assert.isFalse(input.isInactive);
-    assert.isEmpty(input.mainText);
-    assert.isEmpty(input.headerText);
-    assert.isTrue(input.isError);
-  });
-
-  it('shows error state for incorrect JSON', async () => {
-    const consoleViewMessage = setupBuiltInAi(async function*() {
-      yield JSON.stringify({
-        header: 'test header',
-        answer: 'test explanation',
-      });
-    });
-
-    const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
-    const teaser =
-        new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
-    let input = await view.nextInput;
-    assert.isFalse(input.isInactive);
-    assert.isEmpty(input.mainText);
-    assert.isEmpty(input.headerText);
-    assert.isFalse(input.isError);
-    await teaser.maybeGenerateTeaser();
-
-    input = await view.nextInput;
-    assert.isFalse(input.isInactive);
-    assert.isEmpty(input.mainText);
-    assert.isEmpty(input.headerText);
+    assert.strictEqual(input.mainText, 'This is an incomplete');
+    assert.strictEqual(input.headerText, 'message text string');
     assert.isTrue(input.isError);
   });
 

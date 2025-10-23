@@ -11,6 +11,10 @@
     margin-top: var(--sys-size-2);
   }
 
+  .response-container {
+    height: 85px;
+  }
+
   @keyframes gradient {
     0% { background-position: 100% 0; }
     100% { background-position: -100% 0; }

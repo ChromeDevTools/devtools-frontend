@@ -7,24 +7,8 @@ import * as Root from '../../core/root/root.js';
 let builtInAiInstance: BuiltInAi|undefined;
 let availability = '';
 
-const RESPONSE_SCHEMA = {
-  type: 'object',
-  properties: {
-    header: {type: 'string', maxLength: 60, description: 'Label for the console message which is being analyzed'},
-    // No hard `maxLength` for `explanation`. This would often result in responses which are cut off in the middle of a
-    // sentence. Instead provide a soft `maxLength` via the prompt.
-    explanation: {
-      type: 'string',
-      description: 'Actual explanation of the console message being analyzed',
-    },
-  },
-  required: ['header', 'explanation'],
-  additionalProperties: false,
-};
-
 export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
-    responseConstraint: Object,
     signal?: AbortSignal,
   }) => AsyncGenerator<string>;
   clone: () => LanguageModel;
@@ -101,7 +85,6 @@ Your instructions are as follows:
     const session = await this.#consoleInsightsSession.clone();
     const stream = session.promptStreaming(prompt, {
       signal: abortController.signal,
-      responseConstraint: RESPONSE_SCHEMA,
     });
     for await (const chunk of stream) {
       yield chunk;

@@ -645,7 +645,7 @@ class CdpPage extends Page_js_1.Page {
         }
         const textTokens = [];
         // eslint-disable-next-line max-len -- The comment is long.
-        // eslint-disable-next-line rulesdir/use-using -- These are not owned by this function.
+        // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
         for (const arg of args) {
             const remoteObject = arg.remoteObject();
             if (remoteObject.objectId) {

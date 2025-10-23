@@ -442,6 +442,7 @@ class AXNode {
             'keyshortcuts',
             'roledescription',
             'valuetext',
+            'url',
         ];
         const getUserStringPropertyValue = (key) => {
             return properties.get(key);

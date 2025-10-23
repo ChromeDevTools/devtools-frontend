@@ -7574,6 +7574,10 @@ export declare interface SerializedAXNode {
     invalid?: string;
     orientation?: string;
     /**
+     * Url for link elements.
+     */
+    url?: string;
+    /**
      * Children of this node, if there are any.
      */
     children?: SerializedAXNode[];

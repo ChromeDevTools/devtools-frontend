@@ -392,7 +392,7 @@ let Frame = (() => {
          * matching the given selector. Otherwise, `null`.
          */
         async $(selector) {
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$(selector);
         }
@@ -419,7 +419,7 @@ let Frame = (() => {
          * elements matching the given selector.
          */
         async $$(selector, options) {
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$$(selector, options);
         }
@@ -459,7 +459,7 @@ let Frame = (() => {
          */
         async $eval(selector, pageFunction, ...args) {
             pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$eval(selector, pageFunction, ...args);
         }
@@ -499,7 +499,7 @@ let Frame = (() => {
          */
         async $$eval(selector, pageFunction, ...args) {
             pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$$eval(selector, pageFunction, ...args);
         }

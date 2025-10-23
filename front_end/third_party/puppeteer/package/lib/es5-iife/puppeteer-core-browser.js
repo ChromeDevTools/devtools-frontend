@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.26.0';
+  const packageVersion = '24.26.1';
   // x-release-please-end
 
   /**
@@ -8022,7 +8022,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         };
         try {
           await this.assertConnectedElement();
-          // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
+          // eslint-disable-next-line @puppeteer/use-using -- Returns `this`.
           const handle = await _assertClassBrand(_ElementHandle_brand, this, _asSVGElementHandle).call(this);
           const target = __addDisposableResource$7(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
           return await (target ?? this).evaluate(async (element, threshold) => {
@@ -9009,7 +9009,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * matching the given selector. Otherwise, `null`.
        */
       async $(selector) {
-        // eslint-disable-next-line rulesdir/use-using -- This is cached.
+        // eslint-disable-next-line @puppeteer/use-using -- This is cached.
         const document = await _assertClassBrand(_Frame_brand, this, _document2).call(this);
         return await document.$(selector);
       }
@@ -9036,7 +9036,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * elements matching the given selector.
        */
       async $$(selector, options) {
-        // eslint-disable-next-line rulesdir/use-using -- This is cached.
+        // eslint-disable-next-line @puppeteer/use-using -- This is cached.
         const document = await _assertClassBrand(_Frame_brand, this, _document2).call(this);
         return await document.$$(selector, options);
       }
@@ -9076,7 +9076,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        */
       async $eval(selector, pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-        // eslint-disable-next-line rulesdir/use-using -- This is cached.
+        // eslint-disable-next-line @puppeteer/use-using -- This is cached.
         const document = await _assertClassBrand(_Frame_brand, this, _document2).call(this);
         return await document.$eval(selector, pageFunction, ...args);
       }
@@ -9116,7 +9116,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        */
       async $$eval(selector, pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
-        // eslint-disable-next-line rulesdir/use-using -- This is cached.
+        // eslint-disable-next-line @puppeteer/use-using -- This is cached.
         const document = await _assertClassBrand(_Frame_brand, this, _document2).call(this);
         return await document.$$eval(selector, pageFunction, ...args);
       }
@@ -12971,7 +12971,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           }
         }
       };
-      const userStringProperties = ['name', 'value', 'description', 'keyshortcuts', 'roledescription', 'valuetext'];
+      const userStringProperties = ['name', 'value', 'description', 'keyshortcuts', 'roledescription', 'valuetext', 'url'];
       const getUserStringPropertyValue = key => {
         return properties.get(key);
       };
@@ -21616,7 +21616,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     const textTokens = [];
     // eslint-disable-next-line max-len -- The comment is long.
-    // eslint-disable-next-line rulesdir/use-using -- These are not owned by this function.
+    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
     for (const arg of args) {
       const remoteObject = arg.remoteObject();
       if (remoteObject.objectId) {
@@ -24791,8 +24791,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '141.0.7390.78',
-    'chrome-headless-shell': '141.0.7390.78',
+    chrome: '141.0.7390.122',
+    'chrome-headless-shell': '141.0.7390.122',
     firefox: 'stable_144.0'
   });
 

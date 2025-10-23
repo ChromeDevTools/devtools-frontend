@@ -1323,7 +1323,7 @@ let ElementHandle = (() => {
             const env_5 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.assertConnectedElement();
-                // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
+                // eslint-disable-next-line @puppeteer/use-using -- Returns `this`.
                 const handle = await this.#asSVGElementHandle();
                 const target = __addDisposableResource(env_5, handle && (await handle.#getOwnerSVGElement()), false);
                 return await (target ?? this).evaluate(async (element, threshold) => {

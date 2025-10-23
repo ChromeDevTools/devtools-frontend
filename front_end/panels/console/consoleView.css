@@ -527,7 +527,6 @@
 }
 
 .console-view-pinpane {
-  flex: none;
   max-height: 50%;
 }
 

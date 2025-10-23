@@ -505,6 +505,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.pinPane = new ConsolePinPane(liveExpressionButton, () => this.prompt.focus());
     this.pinPane.element.classList.add('console-view-pinpane');
+    this.pinPane.element.classList.remove('flex-auto');
     this.pinPane.show(this.contentsElement);
 
     this.viewport = new ConsoleViewport(this);

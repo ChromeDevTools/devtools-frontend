@@ -1520,22 +1520,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     request.setTrustTokenOperationDoneEvent(event);
   }
 
-  subresourceWebBundleMetadataReceived(): void {
-    // TODO: remove implementation after deleting this methods from definition in Network.pdl
-  }
-
-  subresourceWebBundleMetadataError(): void {
-    // TODO: remove implementation after deleting this methods from definition in Network.pdl
-  }
-
-  subresourceWebBundleInnerResponseParsed(): void {
-    // TODO: remove implementation after deleting this methods from definition in Network.pdl
-  }
-
-  subresourceWebBundleInnerResponseError(): void {
-    // TODO: remove implementation after deleting this methods from definition in Network.pdl
-  }
-
   reportingApiReportAdded(data: Protocol.Network.ReportingApiReportAddedEvent): void {
     this.#manager.dispatchEventToListeners(Events.ReportingApiReportAdded, data.report);
   }

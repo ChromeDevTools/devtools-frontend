@@ -129,7 +129,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();  // Silence console error
-    setMockConnectionResponseHandler('Storage.getSharedStorageEntries', () => ({}));
+    setMockConnectionResponseHandler(
+        'Storage.getSharedStorageEntries', () => ({} as Protocol.Storage.GetSharedStorageEntriesResponse));
     setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
   });
 

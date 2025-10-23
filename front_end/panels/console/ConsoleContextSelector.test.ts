@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
@@ -35,7 +36,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     ++id;
     dispatchEvent(target, 'Runtime.executionContextCreated', {
       context: {
-        id,
+        id: id as Protocol.Runtime.ExecutionContextId,
         origin: 'http://example.com',
         name: `c${id}`,
         uniqueId: `c${id}`,

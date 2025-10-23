@@ -45,8 +45,8 @@ describeWithMockConnection('NetworkLogView', () => {
   let networkLog: Logs.NetworkLog.NetworkLog;
 
   beforeEach(() => {
-    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
-    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
+    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     const dummyStorage = new Common.Settings.SettingsStorage({});
 
     for (const settingName of ['network-color-code-resource-types', 'network.group-by-frame']) {

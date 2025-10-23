@@ -67,7 +67,7 @@ describeWithMockConnection('OverlayModel', () => {
     // Set up mock response handler to set the configuration
     setMockConnectionResponseHandler('Overlay.setShowWindowControlsOverlay', request => {
       config = request;
-      return request;
+      return request as Protocol.Overlay.SetShowWindowControlsOverlayRequest;
     });
 
     // Verify the config is empty when toggling toolbar to be false
@@ -106,7 +106,7 @@ describeWithMockConnection('OverlayModel', () => {
     // Set up mock response handler to set the style sheet
     setMockConnectionResponseHandler('CSS.setStyleSheetText', req => {
       styleSheet = req.text;
-      return req;
+      return req as unknown as Protocol.CSS.SetStyleSheetTextResponse;
     });
 
     // Toggle emulated overlay and verify no emulated overlay when no styles are preset

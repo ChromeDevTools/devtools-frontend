@@ -241,7 +241,7 @@ describeWithMockConnection('PageResourceLoader', () => {
         setMockConnectionResponseHandler('IO.read', () => {
           const data = contentToRead;
           contentToRead = null;
-          return {data};
+          return {data} as Protocol.IO.ReadResponse;
         });
         setMockConnectionResponseHandler('IO.close', () => ({}));
         setMockConnectionResponseHandler('Network.loadNetworkResource', request => {

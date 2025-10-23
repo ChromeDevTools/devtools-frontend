@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../models/trace/trace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -64,7 +65,7 @@ describeWithMockConnection('TimelineController', () => {
     setMockConnectionResponseHandler('Target.setAutoAttach', () => ({}));
     setMockConnectionResponseHandler('DOM.enable', () => ({}));
     setMockConnectionResponseHandler('CSS.enable', () => ({}));
-    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
     setMockConnectionResponseHandler('Overlay.enable', () => ({}));
     setMockConnectionResponseHandler('Overlay.setShowViewportSizeOnResize', () => ({}));
     setMockConnectionResponseHandler('Animation.enable', () => ({}));
@@ -75,9 +76,10 @@ describeWithMockConnection('TimelineController', () => {
     setMockConnectionResponseHandler('Overlay.disable', () => ({}));
     setMockConnectionResponseHandler('Animation.disable', () => ({}));
     setMockConnectionResponseHandler('Tracing.start', () => ({}));
-    setMockConnectionResponseHandler('Runtime.evaluate', () => ({}));
+    setMockConnectionResponseHandler('Runtime.evaluate', () => ({} as Protocol.Runtime.EvaluateResponse));
     setMockConnectionResponseHandler('Runtime.addBinding', () => ({}));
-    setMockConnectionResponseHandler('Page.addScriptToEvaluateOnNewDocument', () => ({}));
+    setMockConnectionResponseHandler(
+        'Page.addScriptToEvaluateOnNewDocument', () => ({} as Protocol.Page.AddScriptToEvaluateOnNewDocumentResponse));
     setMockConnectionResponseHandler('Tracing.end', () => {
       dispatchEvent(rootTarget, 'Tracing.tracingComplete', {dataLossOccurred: false});
       return {};

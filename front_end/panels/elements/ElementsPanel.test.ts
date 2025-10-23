@@ -4,6 +4,7 @@
 
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
@@ -25,43 +26,43 @@ describeWithMockConnection('ElementsPanel', () => {
     setMockConnectionResponseHandler('DOM.requestChildNodes', () => ({}));
     setMockConnectionResponseHandler('DOM.getDocument', () => ({
                                                           root: {
-                                                            nodeId: 1,
-                                                            backendNodeId: 2,
+                                                            nodeId: 1 as Protocol.DOM.NodeId,
+                                                            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
                                                             nodeType: Node.DOCUMENT_NODE,
                                                             nodeName: '#document',
                                                             childNodeCount: 1,
                                                             children: [{
-                                                              nodeId: 4,
-                                                              parentId: 1,
-                                                              backendNodeId: 5,
+                                                              nodeId: 4 as Protocol.DOM.NodeId,
+                                                              parentId: 1 as Protocol.DOM.NodeId,
+                                                              backendNodeId: 5 as Protocol.DOM.BackendNodeId,
                                                               nodeType: Node.ELEMENT_NODE,
                                                               nodeName: 'HTML',
                                                               childNodeCount: 1,
                                                               children: [{
-                                                                nodeId: 6,
-                                                                parentId: 4,
-                                                                backendNodeId: 7,
+                                                                nodeId: 6 as Protocol.DOM.NodeId,
+                                                                parentId: 4 as Protocol.DOM.NodeId,
+                                                                backendNodeId: 7 as Protocol.DOM.BackendNodeId,
                                                                 nodeType: Node.ELEMENT_NODE,
                                                                 nodeName: 'BODY',
                                                                 childNodeCount: 1,
-                                                              }],
-                                                            }],
+                                                              } as Protocol.DOM.Node],
+                                                            } as Protocol.DOM.Node],
                                                           },
-                                                        }));
+                                                        } as Protocol.DOM.GetDocumentResponse));
     setMockConnectionResponseHandler('DOM.copyTo', () => {
       dispatchEvent(target, 'DOM.childNodeInserted', {
-        parentNodeId: 4,
-        previousNodeId: 6,
+        parentNodeId: 4 as Protocol.DOM.NodeId,
+        previousNodeId: 6 as Protocol.DOM.NodeId,
         node: {
-          nodeId: 7,
-          parentId: 4,
-          backendNodeId: 8,
+          nodeId: 7 as Protocol.DOM.NodeId,
+          parentId: 4 as Protocol.DOM.NodeId,
+          backendNodeId: 8 as Protocol.DOM.BackendNodeId,
           nodeType: Node.ELEMENT_NODE,
           nodeName: 'BODY',
           childNodeCount: 1,
-        }
+        } as Protocol.DOM.Node
       });
-      return {nodeId: 7};
+      return {nodeId: 7 as Protocol.DOM.NodeId};
     });
   });
 

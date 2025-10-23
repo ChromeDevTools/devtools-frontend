@@ -21,10 +21,10 @@ describe('userAgentGroups', () => {
 describeWithMockConnection('NetworkConfigView', () => {
   it('supports enabling data saver emulation', async () => {
     createTarget();
-    const saveDataSpy = Promise.withResolvers<Protocol.Emulation.SetDataSaverOverrideRequest>();
+    const saveDataSpy = Promise.withResolvers<Protocol.Emulation.SetDataSaverOverrideRequest|undefined>();
     setMockConnectionResponseHandler('Emulation.setDataSaverOverride', request => {
       saveDataSpy.resolve(request);
-      const {promise, resolve} = Promise.withResolvers<Protocol.Emulation.SetDataSaverOverrideRequest>();
+      const {promise, resolve} = Promise.withResolvers<Protocol.Emulation.SetDataSaverOverrideRequest|undefined>();
       saveDataSpy.promise = promise;
       saveDataSpy.resolve = resolve;
       return {};
@@ -36,7 +36,7 @@ describeWithMockConnection('NetworkConfigView', () => {
     assert.exists(saveDataSelect);
     assert.instanceOf(saveDataSelect, HTMLSelectElement);
 
-    const select = (index: number): Promise<Protocol.Emulation.SetDataSaverOverrideRequest> => {
+    const select = (index: number): Promise<Protocol.Emulation.SetDataSaverOverrideRequest|undefined> => {
       const {promise} = saveDataSpy;
       saveDataSelect.selectedIndex = index;
       saveDataSelect.dispatchEvent(new Event('change'));

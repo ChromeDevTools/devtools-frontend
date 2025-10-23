@@ -1405,7 +1405,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       highlightMock = sinon.mock();
       revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
       hideDOMNodeHighlightStub = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
-      setMockConnectionResponseHandler('DOM.getAnchorElement', () => ({result: undefined}));
+      setMockConnectionResponseHandler(
+          'DOM.getAnchorElement', () => ({result: undefined} as unknown as Protocol.DOM.GetAnchorElementResponse));
     });
 
     it('renders anchor() function correctly', async () => {
@@ -1907,7 +1908,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       sinon.stub(Elements.StylePropertyTreeElement.LengthRenderer.prototype, 'popOverAttachedForTest')
           .callsFake(() => addPopoverPromise.resolve());
       const stylePropertyTreeElement = getTreeElement('property', '5px 2em');
-      setMockConnectionResponseHandler('CSS.getComputedStyleForNode', () => ({computedStyle: {}}));
+      setMockConnectionResponseHandler(
+          'CSS.getComputedStyleForNode', () => ({computedStyle: {}} as Protocol.CSS.GetComputedStyleForNodeResponse));
 
       await stylePropertyTreeElement.onpopulate();
       stylePropertyTreeElement.updateTitle();
@@ -2119,9 +2121,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const computedStyle = Object.keys(style).map(name => ({name, value: style[name]}));
       setMockConnectionResponseHandler('CSS.getComputedStyleForNode', ({nodeId}) => {
         if (nodeId === 0) {
-          return {computedStyle};
+          return {computedStyle} as Protocol.CSS.GetComputedStyleForNodeResponse;
         }
-        return {};
+        return {} as Protocol.CSS.GetComputedStyleForNodeResponse;
       });
     }
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
@@ -14,8 +15,8 @@ describeWithMockConnection('ARIAAttributesView', () => {
   let node: SDK.DOMModel.DOMNode;
 
   beforeEach(() => {
-    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
-    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
+    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     stubNoopSettings();
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;

@@ -19,7 +19,8 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
-    setMockConnectionResponseHandler('DOM.getDocument', () => ({root: {nodeId: NODE_ID}}));
+    setMockConnectionResponseHandler(
+        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
     setMockConnectionResponseHandler('DOM.getNodesForSubtreeByStyle', () => ({nodeIds: []}));
   });
 

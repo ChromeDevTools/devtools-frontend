@@ -40,7 +40,7 @@ describeWithMockConnection('DebuggerModel', () => {
       setMockConnectionResponseHandler('Target.setAutoAttach', () => ({}));
 
       // Dummy handlers for unblocking target resumption.
-      setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+      setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
       setMockConnectionResponseHandler('Debugger.setPauseOnExceptions', () => ({}));
       setMockConnectionResponseHandler('DOM.enable', () => ({}));
       setMockConnectionResponseHandler('Overlay.enable', () => ({}));
@@ -126,8 +126,9 @@ describeWithMockConnection('DebuggerModel', () => {
         startColumn: 0,
         endLine: 1,
         endColumn: 10,
-        executionContextId: 1,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
         hash: '',
+        buildId: '',
         isLiveEdit: false,
         sourceMapURL: undefined,
         hasSourceURL: false,
@@ -140,8 +141,9 @@ describeWithMockConnection('DebuggerModel', () => {
         startColumn: 0,
         endLine: 21,
         endColumn: 10,
-        executionContextId: 1,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
         hash: '',
+        buildId: '',
         isLiveEdit: false,
         sourceMapURL: undefined,
         hasSourceURL: false,
@@ -196,8 +198,9 @@ describeWithMockConnection('DebuggerModel', () => {
         startColumn: 0,
         endLine: 1,
         endColumn: 10,
-        executionContextId: 1,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
         hash: '',
+        buildId: '',
         isLiveEdit: false,
         sourceMapURL: undefined,
         hasSourceURL: false,
@@ -210,7 +213,8 @@ describeWithMockConnection('DebuggerModel', () => {
         startColumn: 0,
         endLine: 21,
         endColumn: 10,
-        executionContextId: 1,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        buildId: '',
         hash: '',
         isLiveEdit: false,
         sourceMapURL: undefined,

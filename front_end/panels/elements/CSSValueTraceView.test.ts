@@ -16,7 +16,8 @@ import * as Elements from './elements.js';
 async function setUpStyles() {
   stubNoopSettings();
   setMockConnectionResponseHandler('CSS.enable', () => ({}));
-  setMockConnectionResponseHandler('CSS.getEnvironmentVariables', () => ({}));
+  setMockConnectionResponseHandler(
+      'CSS.getEnvironmentVariables', () => ({} as Protocol.CSS.GetEnvironmentVariablesResponse));
   const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
   const cssModel = new SDK.CSSModel.CSSModel(createTarget());
   await cssModel.resumeModel();

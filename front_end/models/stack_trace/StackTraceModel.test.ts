@@ -92,7 +92,8 @@ describeWithMockConnection('StackTraceModel', () => {
     it('correctly handles a async fragments from different targets', async () => {
       {
         let index = 0;
-        setMockConnectionResponseHandler('Debugger.enable', () => ({debuggerId: `target${index++}`}));
+        setMockConnectionResponseHandler(
+            'Debugger.enable', () => ({debuggerId: `target${index++}` as Protocol.Runtime.UniqueDebuggerId}));
         sinon.stub(SDK.DebuggerModel.DebuggerModel, 'resyncDebuggerIdForModels');
       }
       const {model} = setup();

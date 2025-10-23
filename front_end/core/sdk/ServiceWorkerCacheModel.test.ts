@@ -56,7 +56,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
           'CacheStorage.requestCacheNames',
           () => ({
             caches: [{cacheId: 'id', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache'}],
-          }));
+          } as Protocol.CacheStorage.RequestCacheNamesResponse));
 
       manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
       assert.isFalse(cacheAdeddSpy.calledWithExactly(
@@ -112,7 +112,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
         'CacheStorage.requestCacheNames',
         () => ({
           caches: [{cacheId: 'id', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache'}],
-        }));
+        } as Protocol.CacheStorage.RequestCacheNamesResponse));
     cacheStorageModel.enable();
     manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 
@@ -159,7 +159,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
             {cacheId: 'id1', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache-1'},
             {cacheId: 'id2', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache-2'},
           ],
-        }));
+        } as Protocol.CacheStorage.RequestCacheNamesResponse));
     cacheStorageModel.enable();
     manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
     // make sure enough time passed for caches to populate
@@ -178,7 +178,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
             {cacheId: 'id1', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache-1'},
             {cacheId: 'id2', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache-2'},
           ],
-        }));
+        } as Protocol.CacheStorage.RequestCacheNamesResponse));
     cacheStorageModel.enable();
     manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
     cacheStorageModel.refreshCacheNames();

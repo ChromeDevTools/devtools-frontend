@@ -52,8 +52,8 @@ export function createFileSystemFileForPersistenceTests(
 function dispatchDocumentOpened(target: SDK.Target.Target, origin: Platform.DevToolsPath.UrlString) {
   dispatchEvent(target, 'Page.documentOpened', {
     frame: {
-      id: 'main',
-      loaderId: 'foo',
+      id: 'main' as Protocol.Page.FrameId,
+      loaderId: 'foo' as Protocol.Network.LoaderId,
       url: `${origin}/index.html`,
       domainAndRegistry: 'site',
       securityOrigin: origin,

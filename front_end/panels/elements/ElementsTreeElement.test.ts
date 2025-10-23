@@ -76,7 +76,8 @@ describeWithMockConnection('ElementsTreeElement', () => {
   beforeEach(() => {
     updateHostConfig({devToolsAllowPopoverForcing: {enabled: true}});
     setMockConnectionResponseHandler('CSS.enable', () => ({}));
-    setMockConnectionResponseHandler('CSS.getComputedStyleForNode', () => ({}));
+    setMockConnectionResponseHandler(
+        'CSS.getComputedStyleForNode', () => ({} as Protocol.CSS.GetComputedStyleForNodeResponse));
   });
   it('popoverAdorner supports force-opening popovers', async () => {
     const model = new SDK.DOMModel.DOMModel(createTarget());

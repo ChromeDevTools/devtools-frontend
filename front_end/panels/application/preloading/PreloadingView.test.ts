@@ -100,6 +100,7 @@ class NavigationEmulator {
         crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
         gatedAPIFeatures: [],
       },
+      type: Protocol.Page.NavigationType.Navigation,
     });
   }
 
@@ -133,7 +134,7 @@ class NavigationEmulator {
     // It's not so important and omitted.
     dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', {
       ...this.prerenderStatusUpdatedEvent,
-      status: SDK.PreloadingModel.PreloadingStatus.SUCCESS,
+      status: Protocol.Preload.PreloadingStatus.Success,
     });
   }
 
@@ -147,10 +148,10 @@ class NavigationEmulator {
     } catch {
       dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
         ruleSet: {
-          id: `ruleSetId:0.${this.seq}`,
+          id: `ruleSetId:0.${this.seq}` as Protocol.Preload.RuleSetId,
           loaderId: this.loaderId,
           sourceText: specrules,
-          backendNodeId: this.seq,
+          backendNodeId: this.seq as Protocol.DOM.BackendNodeId,
           errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
           errorMessage: 'fake error message',
         },
@@ -160,10 +161,10 @@ class NavigationEmulator {
 
     dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
       ruleSet: {
-        id: `ruleSetId:0.${this.seq}`,
+        id: `ruleSetId:0.${this.seq}` as Protocol.Preload.RuleSetId,
         loaderId: this.loaderId,
         sourceText: specrules,
-        backendNodeId: this.seq,
+        backendNodeId: this.seq as Protocol.DOM.BackendNodeId,
       },
     });
 
@@ -182,8 +183,8 @@ class NavigationEmulator {
         },
         initiatingFrameId: this.frameId,
         prefetchUrl: url,
-        status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
-      });
+        status: Protocol.Preload.PreloadingStatus.Running,
+      } as Protocol.Preload.PrefetchStatusUpdatedEvent);
     }
 
     if (json['prerender'] === undefined) {
@@ -234,6 +235,7 @@ class NavigationEmulator {
         crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
         gatedAPIFeatures: [],
       },
+      type: Protocol.Page.NavigationType.Navigation,
     });
   }
 }
@@ -336,15 +338,15 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
 }
 `);
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
-      loaderId: 'loaderId:1',
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
       preloadingAttemptSources: [
         {
           key: {
-            loaderId: 'loaderId:1',
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/prerendered.html',
           },
-          ruleSetIds: ['ruleSetId:0.2'],
+          ruleSetIds: ['ruleSetId:0.2'] as Protocol.Preload.RuleSetId[],
           nodeIds: [],
         },
       ],
@@ -682,25 +684,25 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 }
 `);
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
-      loaderId: 'loaderId:1',
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
       preloadingAttemptSources: [
         {
           key: {
-            loaderId: 'loaderId:1',
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
             url: 'https://example.com/subresource2.js',
           },
-          ruleSetIds: ['ruleSetId:0.2'],
-          nodeIds: [2, 3],
+          ruleSetIds: ['ruleSetId:0.2'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [2, 3] as Protocol.DOM.BackendNodeId[],
         },
         {
           key: {
-            loaderId: 'loaderId:1',
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/prerendered3.html',
           },
-          ruleSetIds: ['ruleSetId:0.3'],
-          nodeIds: [3],
+          ruleSetIds: ['ruleSetId:0.3'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [3] as Protocol.DOM.BackendNodeId[],
         },
       ],
     });
@@ -856,12 +858,12 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
       key: {
-        loaderId: 'loaderId:1',
+        loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
         action: Protocol.Preload.SpeculationAction.Prerender,
         url: 'https://example.com/prerendered.html',
       },
       status: Protocol.Preload.PreloadingStatus.Ready,
-    });
+    } as Protocol.Preload.PrerenderStatusUpdatedEvent);
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assert.isNotNull(preloadingGridComponent.shadowRoot);
@@ -923,14 +925,14 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
       key: {
-        loaderId: 'loaderId:1',
+        loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
         action: Protocol.Preload.SpeculationAction.Prerender,
         url: 'https://example.com/prerendered.html',
       },
       status: Protocol.Preload.PreloadingStatus.Failure,
       prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
       disallowedMojoInterface: 'device.mojom.GamepadMonitor',
-    });
+    } as Protocol.Preload.PrerenderStatusUpdatedEvent);
     // Note that `TargetManager.removeTarget` is not called on `Target.targetDestroyed`.
     // Here, we manually remove the target for prerendered page from `TargetManager`.
     const prerenderTarget = SDK.TargetManager.TargetManager.instance().targets().find(

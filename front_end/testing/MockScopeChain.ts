@@ -46,8 +46,10 @@ export class MockProtocolBackend {
     setMockConnectionResponseHandler('Storage.getStorageKey', () => ({storageKey: 'test-key'}));
     setMockConnectionResponseHandler('Debugger.removeBreakpoint', this.#removeBreakpointHandler.bind(this));
     setMockConnectionResponseHandler('Debugger.resume', () => ({}));
-    setMockConnectionResponseHandler('Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID'}));
-    setMockConnectionResponseHandler('Debugger.setInstrumentationBreakpoint', () => ({}));
+    setMockConnectionResponseHandler(
+        'Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID' as Protocol.Runtime.UniqueDebuggerId}));
+    setMockConnectionResponseHandler(
+        'Debugger.setInstrumentationBreakpoint', () => ({} as Protocol.Debugger.SetInstrumentationBreakpointResponse));
 
     SDK.PageResourceLoader.PageResourceLoader.instance({
       forceNew: true,
@@ -123,13 +125,14 @@ export class MockProtocolBackend {
     }
 
     dispatchEvent(target, 'Debugger.scriptParsed', {
-      scriptId,
+      scriptId: scriptId as Protocol.Runtime.ScriptId,
       url: scriptDescription.url,
       startLine,
       startColumn,
       endLine,
       endColumn,
-      executionContextId: scriptDescription?.executionContextId ?? 1,
+      buildId: '',
+      executionContextId: (scriptDescription?.executionContextId ?? 1) as Protocol.Runtime.ExecutionContextId,
       executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
       hash: '',
       hasSourceURL: Boolean(scriptDescription.hasSourceURL),

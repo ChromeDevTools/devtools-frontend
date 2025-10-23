@@ -122,7 +122,8 @@ export function getMatchedStylesWithProperties(payload: {
 
 export function getMatchedStyles(
     payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload> = {},
-    getEnvironmentVariablesCallback: ProtocolCommandHandler<'CSS.getEnvironmentVariables'> = () => ({})) {
+    getEnvironmentVariablesCallback: ProtocolCommandHandler<'CSS.getEnvironmentVariables'> = () =>
+        ({environmentVariables: {}})) {
   clearMockConnectionResponseHandler('CSS.getEnvironmentVariables');
   setMockConnectionResponseHandler('CSS.getEnvironmentVariables', getEnvironmentVariablesCallback);
   let node = payload.node;

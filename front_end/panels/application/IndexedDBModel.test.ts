@@ -186,7 +186,7 @@ describeWithMockConnection('IndexedDBModel', () => {
     setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
     setMockConnectionResponseHandler(
         'IndexedDB.requestDatabase',
-        () => ({databaseWithObjectStores: {name: 'test-database', version: '1', objectStores: []}}));
+        () => ({databaseWithObjectStores: {name: 'test-database', version: 1, objectStores: []}}));
     indexedDBModel.enable();
     manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 

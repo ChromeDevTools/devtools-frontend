@@ -54,7 +54,8 @@ describeWithMockConnection('InspectElementModeController', () => {
     failOnModeToggle(outOfScopeSubTarget);
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScopeTarget);
     modeController = new Elements.InspectElementModeController.InspectElementModeController();
-    setMockConnectionResponseHandler('DOM.getDocument', () => ({root: {nodeId: NODE_ID}}));
+    setMockConnectionResponseHandler(
+        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
   });
 
   it('synchronises mode for in scope models', async () => {
@@ -96,7 +97,8 @@ describeWithMockConnection('InspectElementModeController panel interactions', ()
   beforeEach(() => {
     stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
-    setMockConnectionResponseHandler('DOM.getDocument', () => ({root: {nodeId: NODE_ID}}));
+    setMockConnectionResponseHandler(
+        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
     setMockConnectionResponseHandler('DOM.pushNodeByPathToFrontend', () => ({nodeId: NODE_ID}));
 
     viewManager = sinon.createStubInstance(UI.ViewManager.ViewManager, {

@@ -28,8 +28,8 @@ async function expectStartScreencastCalled<T>(action: () => Promise<T>| T): Prom
   clearMockConnectionResponseHandler('Page.startScreencast');
 
   const startScreencastCalledPromise = Promise.withResolvers<Protocol.Page.StartScreencastRequest>();
-  setMockConnectionResponseHandler('Page.startScreencast', (request: Protocol.Page.StartScreencastRequest) => {
-    startScreencastCalledPromise.resolve(request);
+  setMockConnectionResponseHandler('Page.startScreencast', (request?: Protocol.Page.StartScreencastRequest) => {
+    startScreencastCalledPromise.resolve(request as Protocol.Page.StartScreencastRequest);
     return {};
   });
 
@@ -183,8 +183,8 @@ describeWithMockConnection('ScreenCaptureModel', () => {
             screenCaptureModel, {onFrame: initialFrameCallback, onVisibilityChanged: initialVisibilityChangeCallback});
         await startMockScreencast(
             screenCaptureModel, {onFrame: lastFrameCallback, onVisibilityChanged: lastVisibilityChangeCallback});
-        dispatchEvent(target, 'Page.screencastFrame', {});
-        dispatchEvent(target, 'Page.screencastVisibilityChanged', {});
+        dispatchEvent(target, 'Page.screencastFrame', {} as Protocol.Page.ScreencastFrameEvent);
+        dispatchEvent(target, 'Page.screencastVisibilityChanged', {} as Protocol.Page.ScreencastVisibilityChangedEvent);
 
         sinon.assert.notCalled(initialFrameCallback);
         sinon.assert.notCalled(initialVisibilityChangeCallback);
@@ -203,8 +203,8 @@ describeWithMockConnection('ScreenCaptureModel', () => {
         const {id} = await startMockScreencast(
             screenCaptureModel, {onFrame: lastFrameCallback, onVisibilityChanged: lastVisibilityChangeCallback});
         await stopMockScreencast(screenCaptureModel, {id});
-        dispatchEvent(target, 'Page.screencastFrame', {});
-        dispatchEvent(target, 'Page.screencastVisibilityChanged', {});
+        dispatchEvent(target, 'Page.screencastFrame', {} as Protocol.Page.ScreencastFrameEvent);
+        dispatchEvent(target, 'Page.screencastVisibilityChanged', {} as Protocol.Page.ScreencastVisibilityChangedEvent);
 
         sinon.assert.calledOnce(initialFrameCallback);
         sinon.assert.calledOnce(initialVisibilityChangeCallback);

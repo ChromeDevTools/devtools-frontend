@@ -56,7 +56,8 @@ describeWithMockConnection('CookieModel', () => {
 
   it('can retrieve cookies for domain', async () => {
     // CDP Connection mock: for Network.getCookies, respond with a single cookie.
-    setMockConnectionResponseHandler('Network.getCookies', ({urls}) => {
+    setMockConnectionResponseHandler('Network.getCookies', ({urls} = {urls: []}) => {
+      urls ??= [];
       return {
         cookies: [
           {...PROTOCOL_COOKIE_PARTITIONED, domain: `.${new URL(urls[0]).host}`},
@@ -93,7 +94,8 @@ describeWithMockConnection('CookieModel', () => {
   });
 
   it('can detect cookie list changes', async () => {
-    setMockConnectionResponseHandler('Network.getCookies', ({urls}) => {
+    setMockConnectionResponseHandler('Network.getCookies', ({urls} = {urls: []}) => {
+      urls ??= [];
       return {
         cookies: [
           {...PROTOCOL_COOKIE, domain: `.${new URL(urls[0]).host}`},

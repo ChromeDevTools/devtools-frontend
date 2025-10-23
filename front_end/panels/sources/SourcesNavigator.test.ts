@@ -9,6 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -404,7 +405,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 2,
+          id: 2 as Protocol.Runtime.ExecutionContextId,
           origin: 'http://example.com',
           name: 'c2',
           uniqueId: 'c2',
@@ -439,7 +440,8 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const nodeCSelectSpy = sinon.spy(nodeC, 'select');
 
       dispatchEvent(
-          target, 'Runtime.executionContextDestroyed', {executionContextId: 2, executionContextUniqueId: 'c2'});
+          target, 'Runtime.executionContextDestroyed',
+          {executionContextId: 2 as Protocol.Runtime.ExecutionContextId, executionContextUniqueId: 'c2'});
 
       sinon.assert.notCalled(nodeBSelectSpy);
       sinon.assert.called(nodeCSelectSpy);

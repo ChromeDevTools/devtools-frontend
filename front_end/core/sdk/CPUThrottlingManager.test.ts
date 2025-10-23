@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
@@ -18,7 +19,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
   it('can get the current hardwareConcurrency.', async () => {
     setMockConnectionResponseHandler('Runtime.evaluate', ({expression}) => {
       assert.strictEqual(expression, 'navigator.hardwareConcurrency');
-      return ({getError: () => undefined, result: {value: 42}});
+      return ({getError: () => undefined, result: {value: 42}} as Protocol.Runtime.EvaluateResponse);
     });
 
     const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();

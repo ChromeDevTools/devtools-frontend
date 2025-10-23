@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -36,7 +37,7 @@ describeWithMockConnection('NavigatorView', () => {
     setMockConnectionResponseHandler('Page.getResourceTree', async () => {
       return {
         frameTree: null,
-      };
+      } as unknown as Protocol.Page.GetResourceTreeResponse;
     });
 
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
@@ -104,7 +105,7 @@ describeWithMockConnection('NavigatorView', () => {
 
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 1,
+          id: 1 as Protocol.Runtime.ExecutionContextId,
           origin: 'http://example.com',
           name: 'Main Context',
           uniqueId: 'main_context',
@@ -117,7 +118,7 @@ describeWithMockConnection('NavigatorView', () => {
       });
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 2,
+          id: 2 as Protocol.Runtime.ExecutionContextId,
           origin: 'chrome-extension://ahfhijdlegdabablpippeagghigmibma',
           name: 'Extension Context',
           uniqueId: 'extension_context',
@@ -147,7 +148,7 @@ describeWithMockConnection('NavigatorView', () => {
 
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 1,
+          id: 1 as Protocol.Runtime.ExecutionContextId,
           origin: 'http://example.com',
           name: 'Main Context',
           uniqueId: 'main_context',
@@ -160,7 +161,7 @@ describeWithMockConnection('NavigatorView', () => {
       });
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 2,
+          id: 2 as Protocol.Runtime.ExecutionContextId,
           origin: 'chrome-extension://ahfhijdlegdabablpippeagghigmibma',
           name: 'Extension Context',
           uniqueId: 'extension_context',
@@ -190,7 +191,7 @@ describeWithMockConnection('NavigatorView', () => {
 
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 1,
+          id: 1 as Protocol.Runtime.ExecutionContextId,
           origin: 'http://example.com',
           name: 'Other Context',
           uniqueId: 'other_context',
@@ -206,7 +207,7 @@ describeWithMockConnection('NavigatorView', () => {
       // project origin should be used as the display name.
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 2,
+          id: 2 as Protocol.Runtime.ExecutionContextId,
           origin: 'http://example.com',
           name: 'Main Context',
           uniqueId: 'main_context',
@@ -236,7 +237,7 @@ describeWithMockConnection('NavigatorView', () => {
 
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
-          id: 1,
+          id: 1 as Protocol.Runtime.ExecutionContextId,
           origin: 'http://example.com',
           name: '',
           uniqueId: 'no_name_context',

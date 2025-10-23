@@ -303,7 +303,7 @@ describeWithMockConnection('BreakpointManager', () => {
         clearMockConnectionResponseHandler('Debugger.setBreakpointByUrl');
         setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', request => {
           res(request);
-          return {};
+          return {} as Protocol.Debugger.SetBreakpointByUrlResponse;
         });
       });
 
@@ -359,11 +359,11 @@ describeWithMockConnection('BreakpointManager', () => {
       clearMockConnectionResponseHandler('Debugger.setBreakpointByUrl');
       const requests = new Map<string, Protocol.Debugger.SetBreakpointByUrlRequest>();
       setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', request => {
-        requests.set(request.url, request);
+        requests.set(request.url ?? '', request);
         if (requests.size === 2) {
           res(requests);
         }
-        return {};
+        return {} as Protocol.Debugger.SetBreakpointByUrlResponse;
       });
     });
 
@@ -1130,8 +1130,8 @@ describeWithMockConnection('BreakpointManager', () => {
       function dispatchDocumentOpened() {
         dispatchEvent(target, 'Page.documentOpened', {
           frame: {
-            id: 'main',
-            loaderId: 'foo',
+            id: 'main' as Protocol.Page.FrameId,
+            loaderId: 'foo' as Protocol.Network.LoaderId,
             url: URL_HTML,
             domainAndRegistry: 'example.com',
             securityOrigin: 'https://example.com/',

@@ -253,9 +253,9 @@ describeWithMockConnection('InspectorMainImpl', () => {
       setMockConnectionResponseHandler('Debugger.pause', debuggerPause);
       const debuggerPauseCalled = expectCall(debuggerPause);
 
-      let debuggerEnable = (_: Protocol.Debugger.EnableResponse) => {};
+      let debuggerEnable = (_: Protocol.Debugger.EnableResponse): void => {};
       setMockConnectionResponseHandler(
-          'Debugger.enable', () => new Promise<Protocol.Debugger.EnableResponse>(resolve => {
+          'Debugger.enable', () => new Promise<Omit<Protocol.Debugger.EnableResponse, 'getError'>>(resolve => {
                                debuggerEnable = resolve;
                              }));
 

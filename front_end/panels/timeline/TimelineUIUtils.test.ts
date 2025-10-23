@@ -615,7 +615,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       // though we return none, we need to mock these calls else the frontend
       // will not work.)
       const documentNode = {nodeId: 1 as Protocol.DOM.BackendNodeId};
-      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode}));
+      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode as unknown as Protocol.DOM.Node}));
       setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => {
         return {
           nodeIds: [],

@@ -122,7 +122,8 @@ describeWithMockConnection('EntryNodes', function() {
 
       // Set related CDP methods responses to return our mock document and node.
       setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domNode.id]}));
-      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode}));
+      setMockConnectionResponseHandler(
+          'DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
 
       // Register the mock document and node in DOMModel, these use the mock responses set above.
       await domModel.requestDocument();

@@ -19,7 +19,7 @@ describeWithMockConnection('Script', () => {
       const target = createTarget();
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       const url = 'webpack:///src/foo.js';
-      const scriptId = '1';
+      const scriptId = '1' as Protocol.Runtime.ScriptId;
       const scriptSource = `
 console.log("foo");
 //# sourceURL=${url}
@@ -31,8 +31,9 @@ console.log("foo");
         startColumn: 14,
         endLine: 5,
         endColumn: 0,
-        executionContextId: 1,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
         hash: '',
+        buildId: '',
         hasSourceURL: true,
       });
       setMockConnectionResponseHandler('Debugger.getScriptSource', () => {
@@ -55,14 +56,15 @@ console.log("foo");
       const target = createTarget();
       const model = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       dispatchEvent(target, 'Debugger.scriptParsed', {
-        scriptId,
+        scriptId: scriptId as Protocol.Runtime.ScriptId,
         url: 'https://example.com/test.js',
         startLine: 0,
         startColumn: 0,
         endLine: 2,
         endColumn: 0,
-        executionContextId: 1,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
         hash: '',
+        buildId: '',
         hasSourceURL: false,
       });
       setMockConnectionResponseHandler('Debugger.getScriptSource', () => {

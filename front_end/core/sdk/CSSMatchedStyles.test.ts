@@ -804,7 +804,8 @@ describe('CSSMatchedStyles', () => {
 
 describeWithMockConnection('NodeCascade', () => {
   it('correctly marks custom properties as Overloaded if they are registered as inherits: false', async () => {
-    setMockConnectionResponseHandler('CSS.getEnvironmentVariables', () => ({}));
+    setMockConnectionResponseHandler(
+        'CSS.getEnvironmentVariables', () => ({} as Protocol.CSS.GetEnvironmentVariablesResponse));
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);

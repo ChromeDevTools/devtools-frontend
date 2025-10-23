@@ -21,8 +21,9 @@ for (const individualThrottlingEnabled of [false, true]) {
       () => {
         beforeEach(() => {
           updateHostConfig({devToolsIndividualRequestThrottling: {enabled: individualThrottlingEnabled}});
-          setMockConnectionResponseHandler('Debugger.enable', () => ({}));
-          setMockConnectionResponseHandler('Storage.getStorageKey', () => ({}));
+          setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+          setMockConnectionResponseHandler(
+              'Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
           registerNoopActions([
             'network.add-network-request-blocking-pattern',
             'network.remove-all-network-request-blocking-patterns',

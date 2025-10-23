@@ -178,7 +178,7 @@ describeWithMockConnection('AnimationModel', () => {
                type: 'number',
                value: 1,
              },
-           };
+           } as Protocol.Runtime.EvaluateResponse;
          });
          const target = createTarget();
          const model = new SDK.AnimationModel.AnimationModel(target);

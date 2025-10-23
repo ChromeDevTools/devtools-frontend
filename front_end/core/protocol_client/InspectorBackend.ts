@@ -75,7 +75,6 @@ interface CallbackWithDebugInfo {
 
 export class InspectorBackend {
   readonly agentPrototypes = new Map<ProtocolDomainName, AgentPrototype>();
-  #initialized = false;
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
   readonly typeMap = new Map<QualifiedName, CommandParameter[]>();
   readonly enumMap = new Map<QualifiedName, Record<string, string>>();
@@ -114,10 +113,6 @@ export class InspectorBackend {
     console.warn(error + ': ' + JSON.stringify(messageObject));
   }
 
-  isInitialized(): boolean {
-    return this.#initialized;
-  }
-
   private agentPrototype(domain: ProtocolDomainName): AgentPrototype {
     let prototype = this.agentPrototypes.get(domain);
     if (!prototype) {
@@ -131,7 +126,6 @@ export class InspectorBackend {
       void {
     const [domain, command] = splitQualifiedName(method);
     this.agentPrototype(domain as ProtocolDomainName).registerCommand(command, parameters, replyArgs, description);
-    this.#initialized = true;
   }
 
   registerEnum(type: QualifiedName, values: Record<string, string>): void {
@@ -145,19 +139,16 @@ export class InspectorBackend {
     // @ts-expect-error globalThis global namespace pollution
     globalThis.Protocol[domain][name] = values;
     this.enumMap.set(type, values);
-    this.#initialized = true;
   }
 
   registerType(method: QualifiedName, parameters: CommandParameter[]): void {
     this.typeMap.set(method, parameters);
-    this.#initialized = true;
   }
 
   registerEvent(eventName: QualifiedName, params: string[]): void {
     const domain = eventName.split('.')[0];
     const eventParameterNames = this.getOrCreateEventParameterNamesForDomain(domain as ProtocolDomainName);
     eventParameterNames.set(eventName, params);
-    this.#initialized = true;
   }
 }
 

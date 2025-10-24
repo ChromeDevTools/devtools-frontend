@@ -600,13 +600,9 @@ class InspectorFrontendAPIImpl {
     resourceLoaderStreamWrite(id, chunk);
   }
 }
-/**
- * Used in `front_end/devtools_compatibility.js` to verify that calls from there
- * are valid.
- */
-export type InspectorFrontendAPIImplMethods = keyof InspectorFrontendAPIImpl;
 
 (function(): void {
+
 function initializeInspectorFrontendHost(): void {
   if (!InspectorFrontendHostInstance) {
     // Instantiate stub for web-hosted mode if necessary.

@@ -7,10 +7,6 @@
 // https://crsrc.org/c/third_party/blink/renderer/controller/dev_tools_frontend_impl.cc;l=107
 (window => {
   /**
-   * A function that tries to check the remotely connected instance
-   * major version. You should check against this to provide
-   * forward and backwards compatibility.
-   *
    * @returns {number|null}
    */
   function getRemoteMajorVersion() {
@@ -24,6 +20,8 @@
       return null;
     }
   }
+  // eslint-disable-next-line no-unused-vars
+  const majorVersion = getRemoteMajorVersion();
 
   // DevToolsAPI ----------------------------------------------------------------
   /**
@@ -89,9 +87,7 @@
     }
 
     /**
-     * @typedef {import('./core/host/InspectorFrontendHostAPI.js').Events} Events
-     * @typedef {import('./core/host/InspectorFrontendHost.js').InspectorFrontendAPIImplMethods} Methods
-     * @param method {`${Events|Methods}`}
+     * @param method
      * @param args
      */
     _dispatchOnInspectorFrontendAPI(method, args) {
@@ -161,7 +157,7 @@
     }
 
     /**
-     * @param count {number}
+     * @param count
      */
     deviceCountUpdated(count) {
       this._dispatchOnInspectorFrontendAPI('deviceCountUpdated', [count]);
@@ -1112,7 +1108,6 @@
   function installBackwardsCompatibility() {
     // Any polyfill that we need for backwards compatibility should be
     // Added in this function
-    // Use getRemoteMajorVersion to get the correct Major Chrome version
   }
 
   installBackwardsCompatibility();

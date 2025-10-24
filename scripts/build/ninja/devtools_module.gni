@@ -6,7 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 template("devtools_base_module") {
   ts_library(target_name) {
-    forward_variables_from(invoker, "*", ["visibility"])
+    forward_variables_from(invoker, "*", [ "visibility" ])
 
     reset_timestamps = true
 
@@ -17,6 +17,17 @@ template("devtools_base_module") {
 template("devtools_module") {
   devtools_base_module(target_name) {
     forward_variables_from(invoker, "*")
+  }
+}
+
+# A module that can run in any runtime we support. As such, it must only use
+# features and APIs shared across all supported runtimes.
+template("devtools_foundation_module") {
+  devtools_base_module(target_name) {
+    forward_variables_from(invoker, "*")
+
+    es_target = "es2023"
+    es_libs = []
   }
 }
 
@@ -34,6 +45,7 @@ template("devtools_ui_module") {
 
 foreach(module,
         [
+          "devtools_foundation_module",
           "devtools_module",
           "devtools_ui_module",
         ]) {

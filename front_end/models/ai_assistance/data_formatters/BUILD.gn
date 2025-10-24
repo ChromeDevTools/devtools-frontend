@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 ts_library("unittests") {
@@ -29,7 +30,7 @@ ts_library("unittests") {
   ]
 }
 
-ts_library("foundation_unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [ "PerformanceTraceFormatterBounds.test.ts" ]

@@ -290,7 +290,8 @@ def main():
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     tsconfig['compilerOptions']['target'] = opts.es_target
-    tsconfig['compilerOptions']['lib'] = (opts.es_libs or ['dom', 'dom.iterable']) + [
+    es_libs = ['dom', 'dom.iterable'] if opts.es_libs is None else opts.es_libs
+    tsconfig['compilerOptions']['lib'] = es_libs + [
         'ES2023', 'ES2024.Promise', 'ESNext.Iterator', 'ESNext.Collection',
         'ESNext.Array'
     ]

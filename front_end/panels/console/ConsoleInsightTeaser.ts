@@ -124,6 +124,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
       variant="rich"
       vertical-distance-increase=-6
       prefer-span-left
+      jslogContext="console-insight-teaser"
     >
       <div class="teaser-tooltip-container">
         ${input.isError ? html`
@@ -177,7 +178,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
             aria-details=${'teaser-info-tooltip-' + input.uuid}
             .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
           ></devtools-button>
-          <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich">
+          <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich" jslogContext="teaser-info-tooltip">
             <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
             <div class="learn-more">
               <x-link
@@ -322,6 +323,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     }
     if (this.#isGenerating) {
       this.#mainText = '';
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationAborted);
     }
     this.#isGenerating = false;
     if (this.#timeoutId) {
@@ -345,6 +347,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   async #generateTeaserText(): Promise<void> {
     this.#headerText = this.#consoleViewMessage.toMessageTextString().substring(0, 70);
     this.#isGenerating = true;
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationStarted);
     this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
     const startTime = performance.now();
     let teaserText = '';
@@ -359,6 +362,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       if (err.name !== 'AbortError') {
         console.error(err.name, err.message);
         this.#isError = true;
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationErrored);
       }
       this.#isGenerating = false;
       clearTimeout(this.#timeoutId);
@@ -370,6 +374,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     Host.userMetrics.consoleInsightTeaserGenerated(performance.now() - startTime);
     this.#isGenerating = false;
     this.#mainText = teaserText;
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationCompleted);
     this.requestUpdate();
   }
 

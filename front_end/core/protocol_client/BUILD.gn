@@ -8,6 +8,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("protocol_client") {
   sources = [
+    "CDPConnection.ts",
     "ConnectionTransport.ts",
     "InspectorBackend.ts",
     "NodeURL.ts",

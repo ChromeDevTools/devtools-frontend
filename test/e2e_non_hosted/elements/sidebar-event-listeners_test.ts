@@ -168,9 +168,6 @@ describe('Event listeners in the elements sidebar', () => {
     assert.include(firstListenerText, 'button#test-button');
     const removeButtonSelector = `${listenerSelector} devtools-button`;
     const removeButton = await devToolsPage.waitFor(removeButtonSelector);
-    if (!removeButton) {
-      assert.fail(`Could not find remove button with selector ${removeButtonSelector}`);
-    }
     const buttonTitle = await removeButton.evaluate(n => {
       const button = n.shadowRoot?.querySelector('button');
       return button?.title;

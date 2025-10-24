@@ -11,11 +11,10 @@ const UserAgentMetadata = EmulationUtils.UserAgentMetadata;
 const errParse = 'syntax error';
 const errStruct = 'data form error';
 
-function assertNotError(result: Protocol.Emulation.UserAgentBrandVersion[]|
-                        string): Protocol.Emulation.UserAgentBrandVersion[] {
+function assertNotError(result: Protocol.Emulation.UserAgentBrandVersion[]|string):
+    Protocol.Emulation.UserAgentBrandVersion[] {
   if (typeof result === 'string') {
     assert.fail('Unexpected error');
-    return [];
   }
   return result;
 }
@@ -23,7 +22,6 @@ function assertNotError(result: Protocol.Emulation.UserAgentBrandVersion[]|
 function assertError(result: Protocol.Emulation.UserAgentBrandVersion[]|string, expectedError: string): void {
   if (typeof result !== 'string') {
     assert.fail('Expected error, but got result');
-    return;
   }
   assert.strictEqual(result, expectedError);
 }

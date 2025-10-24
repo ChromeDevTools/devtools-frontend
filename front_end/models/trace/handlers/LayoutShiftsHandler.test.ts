@@ -10,16 +10,13 @@ async function processTrace(context: Mocha.Suite|Mocha.Context|null, url: string
 
   Trace.Handlers.ModelHandlers.LayoutShifts.reset();
 
-  try {
-    const events = await TraceLoader.rawEvents(context, url);
-    for (const event of events) {
-      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
-      Trace.Handlers.ModelHandlers.Screenshots.handleEvent(event);
-      Trace.Handlers.ModelHandlers.LayoutShifts.handleEvent(event);
-    }
-  } catch (error) {
-    assert.fail(error);
+  const events = await TraceLoader.rawEvents(context, url);
+  for (const event of events) {
+    Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    Trace.Handlers.ModelHandlers.Screenshots.handleEvent(event);
+    Trace.Handlers.ModelHandlers.LayoutShifts.handleEvent(event);
   }
+
   await Trace.Handlers.ModelHandlers.Meta.finalize();
   await Trace.Handlers.ModelHandlers.Screenshots.finalize();
   await Trace.Handlers.ModelHandlers.LayoutShifts.finalize();

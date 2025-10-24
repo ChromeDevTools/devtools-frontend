@@ -99,7 +99,7 @@ export class CSSAngle extends HTMLElement {
       this.angleElement = this.querySelector<HTMLElement>('.css-angle');
     }
     if (!this.swatchElement) {
-      this.swatchElement = this.querySelector<HTMLElement>('devtools-css-angle-swatch');
+      this.swatchElement = this.querySelector('devtools-css-angle-swatch');
     }
     if (!this.angleElement || !this.swatchElement) {
       return;

@@ -53,19 +53,13 @@ describeWithLocale('SelectMenu', () => {
   it('will use the buttonTitle property if that is provided', async () => {
     const menu = await createMenu();
     const firsItem = menu.querySelector('devtools-menu-item');
-    if (!firsItem) {
-      assert.fail('No item was found.');
-      return;
-    }
+    assert.exists(firsItem);
     menu.buttonTitle = 'Override Title';
     Helpers.renderElementIntoDOM(menu);
     await RenderCoordinator.done();
     assert.isNotNull(menu.shadowRoot);
     const button = menu.shadowRoot.querySelector('devtools-select-menu-button');
-    if (!button) {
-      assert.fail('devtools-select-menu-button not found');
-      return;
-    }
+    assert.exists(button);
     assert.instanceOf(button, HTMLElement);
     assert.strictEqual(button.innerText, 'Override Title');
   });
@@ -73,20 +67,14 @@ describeWithLocale('SelectMenu', () => {
   it('allows the buttonTitle to be a function', async () => {
     const menu = await createMenu();
     const firsItem = menu.querySelector('devtools-menu-item');
-    if (!firsItem) {
-      assert.fail('No item was found.');
-      return;
-    }
+    assert.exists(firsItem);
     firsItem.selected = true;
     menu.buttonTitle = () => html`Override Title`;
     Helpers.renderElementIntoDOM(menu);
     await RenderCoordinator.done();
     assert.isNotNull(menu.shadowRoot);
     const button = menu.shadowRoot.querySelector('devtools-select-menu-button');
-    if (!button) {
-      assert.fail('devtools-select-menu-button not found');
-      return;
-    }
+    assert.exists(button);
     assert.instanceOf(button, HTMLElement);
     assert.strictEqual(button.innerText, 'Override Title');
   });

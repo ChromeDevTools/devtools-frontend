@@ -15,12 +15,10 @@ function assertItemValue(
     expected: string|number|boolean): void {
   if (result.kind === StructuredHeaders.ResultKind.ERROR) {
     assert.fail('Got error instead of Item containing kind ' + expectedKind);
-    return;
   }
   const bareItem = result.value;
   if (bareItem.kind !== expectedKind) {
     assert.fail('Item type is ' + bareItem.kind + ' instead of ' + expectedKind);
-    return;
   }
 
   assert.strictEqual(bareItem.value, expected);
@@ -64,7 +62,6 @@ function assertItemParams(
     expectParams: Array<[string, StructuredHeaders.BareItem]>): void {
   if (result.kind === StructuredHeaders.ResultKind.ERROR) {
     assert.fail('No params on parse error');
-    return;
   }
   assertParams(result.parameters, expectParams);
 }
@@ -76,7 +73,6 @@ function assertListError(result: StructuredHeaders.List|StructuredHeaders.Error)
 function assertListAndGetItems(result: StructuredHeaders.List|StructuredHeaders.Error): StructuredHeaders.ListMember[] {
   if (result.kind === StructuredHeaders.ResultKind.ERROR) {
     assert.fail('Got error instead of List');
-    return [];
   }
   return result.items;
 }
@@ -86,7 +82,6 @@ function assertListItem(
     expectParams: Array<[string, StructuredHeaders.BareItem]>): void {
   if (item.kind === StructuredHeaders.ResultKind.INNER_LIST) {
     assert.fail('Unexpected inner list when an item expected');
-    return;
   }
   assert.deepEqual(
       item.value, expectValue,
@@ -99,7 +94,6 @@ function assertInnerListAndGetItems(
     expectParams: Array<[string, StructuredHeaders.BareItem]>): StructuredHeaders.Item[] {
   if (item.kind !== StructuredHeaders.ResultKind.INNER_LIST) {
     assert.fail('Expected inner list, got:' + item.kind);
-    return [];
   }
   assertParams(item.parameters, expectParams);
   return item.items;
@@ -109,7 +103,6 @@ function assertSerializeResult(
     result: StructuredHeaders.SerializationResult|StructuredHeaders.Error, expected: string): void {
   if (result.kind === StructuredHeaders.ResultKind.ERROR) {
     assert.fail('Got error instead of serialization result');
-    return;
   }
   assert.strictEqual(result.value, expected);
 }

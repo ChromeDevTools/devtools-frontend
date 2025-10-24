@@ -28,7 +28,6 @@ describeWithMockConnection('WebAuthn pane', () => {
 
     if (!largeBlob || !residentKeys) {
       assert.fail('Required checkbox not found');
-      return;
     }
 
     // Make sure resident keys is disabled. Large blob should be disabled and
@@ -81,7 +80,6 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
-        return;
       }
       residentKeys.checked = true;
       residentKeys.dispatchEvent(new Event('change'));
@@ -107,7 +105,6 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
-        return;
       }
       residentKeys.checked = true;
       residentKeys.dispatchEvent(new Event('change'));
@@ -143,10 +140,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Verify a data grid appeared with a single row to show there is no data.
       const dataGrid = panel.contentElement.querySelector('devtools-data-grid tbody');
-      if (!dataGrid) {
-        assert.fail('Expected dataGrid to be truthy');
-        return;
-      }
+      assert.exists(dataGrid);
       assert.include(dataGrid.deepInnerText(), 'No credentials');
 
       // Add a credential.
@@ -206,10 +200,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Verify the credential appeared.
       const dataGrid = panel.contentElement.querySelector('devtools-data-grid tbody');
-      if (!dataGrid) {
-        assert.fail('Expected dataGrid to be truthy');
-        return;
-      }
+      assert.exists(dataGrid);
       assert.include(dataGrid.deepInnerText(), Object.values(credential).join('\n'));
 
       // Update the credential.
@@ -297,10 +288,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Verify the credential appeared.
       const dataGrid = panel.contentElement.querySelector('devtools-data-grid tbody');
-      if (!dataGrid) {
-        assert.fail('Expected dataGrid to be truthy');
-        return;
-      }
+      assert.exists(dataGrid);
       assert.include(dataGrid.deepInnerText(), Object.values(credential).join('\n'));
 
       // Delete a credential with a different ID. This should be ignored.

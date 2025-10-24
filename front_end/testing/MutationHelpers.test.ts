@@ -23,16 +23,14 @@ async function assertThrowsAsync(fn: () => Promise<void>, errorMessage: string) 
 }
 
 async function assertNotThrowsAsync(fn: () => Promise<void>) {
-  let errorMessage = '';
+  let errorMessage;
   try {
     await fn();
   } catch (e) {
     errorMessage = e.message;
   }
 
-  if (errorMessage) {
-    assert.fail(`Expected no error but got:\n${errorMessage}`);
-  }
+  assert.notExists(errorMessage);
 }
 
 describe('MutationHelpers', () => {

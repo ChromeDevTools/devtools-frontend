@@ -422,7 +422,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   }
 
   function getPieChartDataForDetailsElement(details: DocumentFragment) {
-    const pieChartComp = details.querySelector<HTMLDivElement>('devtools-perf-piechart');
+    const pieChartComp = details.querySelector('devtools-perf-piechart');
     if (!pieChartComp?.shadowRoot) {
       return [];
     }

@@ -217,11 +217,7 @@ export function drawGridLineNamesAndAssertLabels(
 
   for (const expected of expectedLabels) {
     const foundLabel = foundLabels.find(({textContent}) => textContent === expected.textContent);
-
-    if (!foundLabel) {
-      assert.fail(`Expected line name label with text content ${expected.textContent} not found`);
-      return;
-    }
+    assert.exists(foundLabel, `Expected line name label with text content ${expected.textContent} not found`);
 
     if (expected.type === 'column' && typeof expected.x !== 'undefined') {
       assert.closeTo(
@@ -256,11 +252,7 @@ export function drawGridAreaNamesAndAssertLabels(
   });
   for (const expected of expectedLabels) {
     const foundLabel = foundLabels.find(({textContent}) => textContent === expected.textContent);
-
-    if (!foundLabel) {
-      assert.fail(`Expected area label with text content ${expected.textContent} not found`);
-      return;
-    }
+    assert.exists(foundLabel, `Expected area label with text content ${expected.textContent} not found`);
 
     if (typeof expected.left !== 'undefined') {
       assert.strictEqual(

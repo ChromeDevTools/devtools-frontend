@@ -8,10 +8,7 @@ import {type CookieExpectation, expectCookie} from '../../testing/Cookies.js';
 import * as SDK from './sdk.js';
 
 function ensureCookiesExistOrFailTest(cookies: SDK.Cookie.Cookie[]|null): cookies is SDK.Cookie.Cookie[] {
-  if (!cookies) {
-    assert.fail('expected cookies to exist');
-    return false;
-  }
+  assert.exists(cookies, 'expected cookies to exist');
   return true;
 }
 

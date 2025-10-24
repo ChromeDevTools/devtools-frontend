@@ -49,15 +49,10 @@ describe('SettingRegistration', () => {
   });
 
   it('retrieves a registered setting', () => {
-    try {
-      const preRegisteredSetting = Common.Settings.Settings.instance().moduleSetting(settingName);
-      assert.strictEqual(preRegisteredSetting.title(), settingTitle, 'Setting title is not returned correctly');
-      assert.strictEqual(
-          preRegisteredSetting.category(), settingCategory, 'Setting category is not returned correctly');
-      assert.isNotTrue(preRegisteredSetting.get(), 'Setting value is not returned correctly');
-    } catch {
-      assert.fail('Failed to find setting registration');
-    }
+    const preRegisteredSetting = Common.Settings.Settings.instance().moduleSetting(settingName);
+    assert.strictEqual(preRegisteredSetting.title(), settingTitle, 'Setting title is not returned correctly');
+    assert.strictEqual(preRegisteredSetting.category(), settingCategory, 'Setting category is not returned correctly');
+    assert.isNotTrue(preRegisteredSetting.get(), 'Setting value is not returned correctly');
   });
 
   it('triggers a setting\'s change listener when a setting is set', () => {

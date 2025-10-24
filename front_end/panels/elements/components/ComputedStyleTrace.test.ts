@@ -19,10 +19,7 @@ describe('ComputedStyleTrace', () => {
     component.data = data;
 
     const renderedSelector = component.shadowRoot!.querySelector('.trace-selector');
-    if (!renderedSelector) {
-      assert.fail('selector was not rendered');
-      return;
-    }
+    assert.exists(renderedSelector, 'selector was not rendered');
     assert.strictEqual(renderedSelector.textContent, selector);
   });
 
@@ -40,18 +37,12 @@ describe('ComputedStyleTrace', () => {
     component.data = data;
 
     const goto = component.shadowRoot!.querySelector<HTMLElement>('.goto');
-    if (!goto) {
-      assert.fail('goto did not exist');
-      return;
-    }
+    assert.exists(goto, 'goto did not exist');
     goto.click();
     assert.strictEqual(clickCounter, 1, 'goto icon should be clickable');
 
     const traceValue = component.shadowRoot!.querySelector<HTMLElement>('slot[name="trace-value"]');
-    if (!traceValue) {
-      assert.fail('trace value slot was not rendered');
-      return;
-    }
+    assert.exists(traceValue, 'trace value slot was not rendered');
     traceValue.click();
     assert.strictEqual(clickCounter, 2, 'trace value should be clickable');
   });

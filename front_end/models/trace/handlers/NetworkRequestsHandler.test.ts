@@ -476,10 +476,7 @@ describe('NetworkRequestsHandler', function() {
 function assertDataArgsStats<D extends keyof DataArgs>(
     requests: Trace.Types.Events.SyntheticNetworkRequest[], url: string, stats: Map<D, DataArgs[D]>): void {
   const request = requests.find(request => request.args.data.url === url);
-  if (!request) {
-    assert.fail(`Unable to find request for URL ${url}`);
-    return;
-  }
+  assert.exists(request, `Unable to find request for URL ${url}`);
 
   for (const [name, value] of stats.entries()) {
     if (typeof request.args.data[name] === 'number') {
@@ -496,10 +493,7 @@ function assertDataArgsProcessedDataStats<D extends keyof DataArgsProcessedData>
     requests: Trace.Types.Events.SyntheticNetworkRequest[], url: string,
     stats: Map<D, DataArgsProcessedData[D]>): void {
   const request = requests.find(request => request.args.data.url === url);
-  if (!request) {
-    assert.fail(`Unable to find request for URL ${url}`);
-    return;
-  }
+  assert.exists(request, `Unable to find request for URL ${url}`);
 
   for (const [name, value] of stats.entries()) {
     if (typeof request.args.data.syntheticData[name] === 'number') {

@@ -137,7 +137,7 @@ describeWithEnvironment('Ignore List Setting', () => {
     // There should only be one add new regex row.
     assert.lengthOf(newRegexRows, 1);
     // There are two elements, one is checkbox, one is the input
-    const newRegexCheckboxes = newRegexRows[0].querySelectorAll<HTMLInputElement>('devtools-checkbox');
+    const newRegexCheckboxes = newRegexRows[0].querySelectorAll('devtools-checkbox');
     assert.lengthOf(newRegexCheckboxes, 1);
     const newRegexInputs = newRegexRows[0].querySelectorAll<HTMLInputElement>('.new-regex-text-input');
     assert.lengthOf(newRegexInputs, 1);

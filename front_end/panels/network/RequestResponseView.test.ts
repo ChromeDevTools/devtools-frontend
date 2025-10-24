@@ -145,8 +145,7 @@ describeWithEnvironment('RequestResponseView', () => {
     renderElementIntoDOM(component);
 
     await component.updateComplete;
-    assert.strictEqual(
-        component.contentElement.querySelector<HTMLElement>('devtools-widget')?.innerText,
-        'Nothing to preview\nThis request has no response data available');
+    const element = component.contentElement.querySelector<HTMLElement>('devtools-widget');
+    assert.strictEqual(element?.innerText, 'Nothing to preview\nThis request has no response data available');
   });
 });

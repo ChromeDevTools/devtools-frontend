@@ -476,8 +476,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     const {valueElement} = stylePropertyTreeElement;
     assert.exists(valueElement);
 
-    const swatch = valueElement.querySelector<InlineEditor.ColorSwatch.ColorSwatch>('devtools-color-swatch');
-
+    const swatch = valueElement.querySelector('devtools-color-swatch');
     assert.exists(swatch);
 
     const expectedColorString = swatch.getColor()?.asString(Common.Color.Format.LAB);

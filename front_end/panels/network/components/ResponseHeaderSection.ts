@@ -29,7 +29,6 @@ import {
   type HeaderEditedEvent,
   type HeaderEditorDescriptor,
   type HeaderRemovedEvent,
-  type HeaderSectionRow,
   type HeaderSectionRowData,
   isValidHeaderName,
 } from './HeaderSectionRow.js';
@@ -515,7 +514,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
     this.#updateOverrides(this.#headerEditors[index].name, this.#headerEditors[index].value || '', index);
     this.#render();
 
-    const rows = this.shadow.querySelectorAll<HeaderSectionRow>('devtools-header-section-row');
+    const rows = this.shadow.querySelectorAll('devtools-header-section-row');
     const [lastRow] = Array.from(rows).slice(-1);
     lastRow?.focus();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideHeaderAdded);

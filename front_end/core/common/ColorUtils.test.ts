@@ -88,7 +88,6 @@ describe('ColorUtils', () => {
       const bg = Common.Color.parse(test.bgColor)?.asLegacyColor();
       if (!fg || !bg) {
         assert.fail(`Failed to parse foreground and/or background color: ${test.fgColor}, ${test.bgColor}`);
-        return;
       }
       assert.closeTo(Common.ColorUtils.contrastRatioAPCA(fg.rgba(), bg.rgba()), test.expectedContrast, 0.1);
     }

@@ -230,37 +230,27 @@ describe('TreeHelpers', () => {
       const taskC = nodeC.entry;
 
       const taskCTotalTime = taskC.dur;
-      if (taskCTotalTime === undefined) {
-        assert.fail('Total time for task was not found');
-      }
+      assert.exists(taskCTotalTime, 'Total time for task was not found');
       assert.strictEqual(taskCTotalTime, Trace.Types.Timing.Micro(1));
       assert.strictEqual(nodeC.selfTime, taskCTotalTime);
 
       const taskBTotalTime = taskB.dur;
-      if (taskBTotalTime === undefined) {
-        assert.fail('Total time for task was not found');
-      }
+      assert.exists(taskBTotalTime, 'Total time for task was not found');
       assert.strictEqual(taskBTotalTime, Trace.Types.Timing.Micro(3));
       assert.strictEqual(nodeB.selfTime, Trace.Types.Timing.Micro(taskBTotalTime - taskCTotalTime));
 
       const taskDTotalTime = taskD.dur;
-      if (taskDTotalTime === undefined) {
-        assert.fail('Total time for task was not found');
-      }
+      assert.exists(taskDTotalTime, 'Total time for task was not found');
       assert.strictEqual(taskDTotalTime, Trace.Types.Timing.Micro(3));
       assert.strictEqual(nodeD.selfTime, taskDTotalTime);
 
       const taskATotalTime = taskA.dur;
-      if (taskATotalTime === undefined) {
-        assert.fail('Total time for task was not found');
-      }
+      assert.exists(taskATotalTime, 'Total time for task was not found');
       assert.strictEqual(taskATotalTime, Trace.Types.Timing.Micro(10));
       assert.strictEqual(nodeA.selfTime, Trace.Types.Timing.Micro(taskATotalTime - taskBTotalTime - taskDTotalTime));
 
       const taskETotalTime = taskE.dur;
-      if (taskETotalTime === undefined) {
-        assert.fail('Total time for task was not found');
-      }
+      assert.exists(taskETotalTime, 'Total time for task was not found');
       assert.strictEqual(taskETotalTime, Trace.Types.Timing.Micro(3));
       assert.strictEqual(nodeD.selfTime, taskETotalTime);
     });

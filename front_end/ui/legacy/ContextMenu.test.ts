@@ -223,7 +223,7 @@ describeWithEnvironment('MenuButton', function() {
     });
 
     renderElementIntoDOM(container);
-    const menuButton = container.querySelector<UI.ContextMenu.MenuButton>('devtools-menu-button');
+    const menuButton = container.querySelector('devtools-menu-button');
     assert.exists(menuButton, 'MenuButton element should exist');
     const devtoolsButton = menuButton.shadowRoot?.querySelector('devtools-button');
     assert.exists(devtoolsButton);
@@ -250,7 +250,7 @@ describeWithEnvironment('MenuButton', function() {
     // clang-format on
 
     renderElementIntoDOM(container);
-    const menuButton = container.querySelector<UI.ContextMenu.MenuButton>('devtools-menu-button');
+    const menuButton = container.querySelector('devtools-menu-button');
     assert.exists(menuButton, 'MenuButton element should exist');
 
     const devtoolsButton = menuButton.shadowRoot?.querySelector('devtools-button');

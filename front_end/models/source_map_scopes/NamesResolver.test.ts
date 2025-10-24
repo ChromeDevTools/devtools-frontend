@@ -415,10 +415,7 @@ describeWithMockConnection('NameResolver', () => {
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       const script = debuggerModel?.scripts()[0];
       const scriptId = script?.scriptId;
-      if (scriptId === undefined) {
-        assert.fail('Script id not found');
-        return;
-      }
+      assert.exists(scriptId, 'Script id not found');
       const {lineNumber, columnNumber} = scopeLocation;
       await script?.requestContentData();
       const functionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(

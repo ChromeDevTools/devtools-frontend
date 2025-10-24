@@ -652,7 +652,7 @@ describeWithEnvironment('Overlays', () => {
           elementsWrapper.querySelector<HTMLElement>('.ai-label-button-wrapper') as HTMLSpanElement;
       assert.isOk(aiLabelButtonWrapper);
 
-      const tooltip = aiLabelButtonWrapper.querySelector<HTMLElement>('devtools-tooltip');
+      const tooltip = aiLabelButtonWrapper.querySelector('devtools-tooltip');
       assert.isOk(tooltip);
       assert.strictEqual(
           cleanTextContent(tooltip.innerText),
@@ -687,7 +687,7 @@ describeWithEnvironment('Overlays', () => {
       const aiLabelButtonWrapper =
           elementsWrapper.querySelector<HTMLElement>('.ai-label-button-wrapper') as HTMLSpanElement;
       assert.isOk(aiLabelButtonWrapper);
-      const tooltip = aiLabelButtonWrapper.querySelector<HTMLElement>('devtools-tooltip');
+      const tooltip = aiLabelButtonWrapper.querySelector('devtools-tooltip');
       assert.isOk(tooltip);
       assert.strictEqual(
           cleanTextContent(tooltip.innerText),
@@ -763,7 +763,7 @@ describeWithEnvironment('Overlays', () => {
              elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
          assert.isOk(aiLabelButtonWrapper);
 
-         const tooltip = aiLabelButtonWrapper.querySelector<HTMLElement>('devtools-tooltip');
+         const tooltip = aiLabelButtonWrapper.querySelector('devtools-tooltip');
          assert.isOk(tooltip);
          assert.strictEqual(
              cleanTextContent(tooltip.innerText),
@@ -793,7 +793,7 @@ describeWithEnvironment('Overlays', () => {
           elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
       assert.isOk(aiLabelButtonWrapper);
 
-      const tooltip = aiLabelButtonWrapper.querySelector<HTMLElement>('devtools-tooltip');
+      const tooltip = aiLabelButtonWrapper.querySelector('devtools-tooltip');
       assert.isOk(tooltip);
       assert.strictEqual(
           cleanTextContent(tooltip.innerText),

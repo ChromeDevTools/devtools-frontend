@@ -15,35 +15,26 @@ describe('Drawer', () => {
     let drawerBox = await drawerElement?.boundingBox();
     let originalWidth = 0;
     let originalHeight = 0;
-    if (drawerBox) {
-      originalWidth = drawerBox.width;
-      originalHeight = drawerBox.height;
-    } else {
-      assert.fail();
-    }
+    assert.exists(drawerBox);
+    originalWidth = drawerBox.width;
+    originalHeight = drawerBox.height;
 
     // Toggle drawer to vertical
     await devToolsPage.pressKey('Escape', {shift: true});
 
     drawerElement = await devToolsPage.waitFor('.drawer-tabbed-pane');
     drawerBox = await drawerElement?.boundingBox();
-    if (drawerBox) {
-      assert.isTrue(drawerBox.width < originalWidth);
-      assert.isTrue(drawerBox.height > originalHeight);
-    } else {
-      assert.fail();
-    }
+    assert.exists(drawerBox);
+    assert.isTrue(drawerBox.width < originalWidth);
+    assert.isTrue(drawerBox.height > originalHeight);
 
     // Toggle drawer back to horizontal
     await devToolsPage.pressKey('Escape', {shift: true});
 
     drawerElement = await devToolsPage.waitFor('.drawer-tabbed-pane');
     drawerBox = await drawerElement?.boundingBox();
-    if (drawerBox) {
-      assert.strictEqual(drawerBox.width, originalWidth);
-      assert.strictEqual(drawerBox.height, originalHeight);
-    } else {
-      assert.fail();
-    }
+    assert.exists(drawerBox);
+    assert.strictEqual(drawerBox.width, originalWidth);
+    assert.strictEqual(drawerBox.height, originalHeight);
   });
 });

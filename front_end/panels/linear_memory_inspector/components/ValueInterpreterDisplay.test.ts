@@ -433,9 +433,7 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const selection = document.getSelection();
 
     for (let i = 0; i < dataValues.length; ++i) {
-      if (selection === null) {
-        assert.fail('Selection is null');
-      }
+      assert.exists(selection);
       // Set range around the element.
       range.selectNodeContents(dataValues[i]);
       // Remove ranges associated with selection.

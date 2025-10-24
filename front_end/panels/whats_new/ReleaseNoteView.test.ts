@@ -7,7 +7,6 @@ import * as Platform from '../../core/platform/platform.js';
 import {
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
-import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as WhatsNew from './whats_new.js';
@@ -116,7 +115,7 @@ describeWithEnvironment('Release Note View', () => {
     sinon.stub(WhatsNew.ReleaseNoteView.ReleaseNoteView, 'getFileContent').returns(Promise.resolve(''));
     const releaseNoteView = new WhatsNew.ReleaseNoteView.ReleaseNoteView();
     await releaseNoteView.updateComplete;
-    const button = releaseNoteView.contentElement.querySelector<Buttons.Button.Button>('devtools-button');
+    const button = releaseNoteView.contentElement.querySelector('devtools-button');
     assert.isNotNull(button);
     const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
 

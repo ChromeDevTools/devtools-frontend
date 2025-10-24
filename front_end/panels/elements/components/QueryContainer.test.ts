@@ -4,7 +4,6 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import {assertNodeTextContent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import type * as NodeText from '../../../ui/components/node_text/node_text.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -29,10 +28,9 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
 };
 
 const assertContainerContent = (container: HTMLElement, expectedContent: string) => {
-  const nodeText = container.shadowRoot!.querySelector<NodeText.NodeText.NodeText>('devtools-node-text');
+  const nodeText = container.shadowRoot!.querySelector('devtools-node-text');
   if (!nodeText?.shadowRoot) {
     assert.fail('node text element and its shadowRoot should exist');
-    return;
   }
 
   assertNodeTextContent(nodeText, expectedContent);
@@ -73,10 +71,7 @@ describe('QueryContainer', () => {
 
     assertContainerContent(component, 'named-container');
     const containerLink = component.shadowRoot?.querySelector('a');
-    if (!containerLink) {
-      assert.fail('container link element should exist');
-      return;
-    }
+    assert.exists(containerLink, 'container link element should exist');
 
     containerLink.click();
     assert.strictEqual(clickListener.callCount, 1, 'container link click listener should be triggered by clicking');

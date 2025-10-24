@@ -7,8 +7,13 @@
 // https://crsrc.org/c/third_party/blink/renderer/controller/dev_tools_frontend_impl.cc;l=107
 (window => {
   /**
+   * A function that tries to check the remotely connected instance
+   * major version. You should check against this to provide
+   * forward and backwards compatibility.
+   *
    * @returns {number|null}
    */
+
   function getRemoteMajorVersion() {
     try {
       const remoteVersion = new URLSearchParams(window.location.search).get('remoteVersion');
@@ -97,7 +102,9 @@
     }
 
     /**
-     * @param method
+     * @typedef {import('./core/host/InspectorFrontendHostAPI.js').Events} Events
+     * @typedef {import('./core/host/InspectorFrontendHost.js').InspectorFrontendAPIImplMethods} Methods
+     * @param {`${Events|Methods}`} method
      * @param args
      */
     _dispatchOnInspectorFrontendAPI(method, args) {
@@ -114,7 +121,7 @@
     // API methods below this line --------------------------------------------
 
     /**
-     * @param extensions {ExtensionDescriptor[]}
+     * @param {ExtensionDescriptor[]} extensions
      */
     addExtensions(extensions) {
       // The addExtensions command is sent as the onload event happens for
@@ -128,7 +135,7 @@
     }
 
     /**
-     * @param forbiddenOrigins {string[]}
+     * @param {string[]} forbiddenOrigins
      */
     setOriginsForbiddenForExtensions(forbiddenOrigins) {
       this._originsForbiddenForExtensions = forbiddenOrigins;
@@ -142,14 +149,14 @@
     }
 
     /**
-     * @param url {string}
+     * @param {string} url
      */
     appendedToURL(url) {
       this._dispatchOnInspectorFrontendAPI('appendedToURL', [url]);
     }
 
     /**
-     * @param url {string}
+     * @param {string} url
      */
     canceledSaveURL(url) {
       this._dispatchOnInspectorFrontendAPI('canceledSaveURL', [url]);
@@ -167,7 +174,7 @@
     }
 
     /**
-     * @param count
+     * @param {number} count
      */
     deviceCountUpdated(count) {
       this._dispatchOnInspectorFrontendAPI('deviceCountUpdated', [count]);
@@ -287,7 +294,7 @@
     }
 
     /**
-     * @param callback {(param: object) => unknown}
+     * @param {(param: object) => unknown} callback
      */
     setAddExtensionCallback(callback) {
       this._addExtensionCallback = callback;
@@ -298,7 +305,7 @@
     }
 
     /**
-     * @param hard {boolean}
+     * @param {boolean} hard
      */
     reloadInspectedPage(hard) {
       this._dispatchOnInspectorFrontendAPI('reloadInspectedPage', [hard]);
@@ -335,7 +342,7 @@
     }
 
     /**
-     * @param tabId {string}
+     * @param {string} tabId
      */
     setInspectedTabId(tabId) {
       this._inspectedTabIdValue = tabId;
@@ -344,7 +351,7 @@
     }
 
     /**
-     * @param targetId {string}
+     * @param {string} targetId
      */
     setInitialTargetId(targetId) {
       this._setInitialTargetId(targetId);
@@ -358,30 +365,30 @@
     }
 
     /**
-     * @param useSoftMenu {boolean}
+     * @param {boolean} useSoftMenu
      */
     setUseSoftMenu(useSoftMenu) {
       this._dispatchOnInspectorFrontendAPI('setUseSoftMenu', [useSoftMenu]);
     }
 
     /**
-     * @param panelName {string}
+     * @param {string} panelName
      */
     showPanel(panelName) {
       this._dispatchOnInspectorFrontendAPI('showPanel', [panelName]);
     }
 
     /**
-     * @param id {number}
-     * @param chunk {string}
-     * @param encoded {boolean}
+     * @param {number} id
+     * @param {string} chunk
+     * @param {boolean} encoded
      */
     streamWrite(id, chunk, encoded) {
       this._dispatchOnInspectorFrontendAPI('streamWrite', [id, encoded ? this._decodeBase64(chunk) : chunk]);
     }
 
     /**
-     * @param chunk {string}
+     * @param {string} chunk
      * @returns {string}
      */
     _decodeBase64(chunk) {
@@ -516,7 +523,7 @@
 
     /**
      * @param trigger
-     * @param callback {(param: object) => unknown}
+     * @param {(param: object) => unknown} callback
      */
     showSurvey(trigger, callback) {
       DevToolsAPI.sendMessageToEmbedder('showSurvey', [trigger], callback);
@@ -524,7 +531,7 @@
 
     /**
      * @param trigger
-     * @param callback {(param: object) => unknown}
+     * @param {(param: object) => unknown} callback
      */
     canShowSurvey(trigger, callback) {
       DevToolsAPI.sendMessageToEmbedder('canShowSurvey', [trigger], callback);
@@ -546,7 +553,7 @@
      * @param url
      * @param headers
      * @param streamId
-     * @param callback {(param: object) => unknown}
+     * @param {(param: object) => unknown} callback
      */
     loadNetworkResource(url, headers, streamId, callback) {
       DevToolsAPI.sendMessageToEmbedder('loadNetworkResource', [url, headers, streamId], callback);
@@ -561,7 +568,7 @@
     }
 
     /**
-     * @param callback {(param: object) => unknown}
+     * @param {(param: object) => unknown} callback
      */
     getPreferences(callback) {
       DevToolsAPI.sendMessageToEmbedder('getPreferences', [], callback);
@@ -569,7 +576,7 @@
 
     /**
      * @param name
-     * @param callback {(param: object) => unknown}
+     * @param {(param: object) => unknown} callback
      */
     getPreference(name, callback) {
       DevToolsAPI.sendMessageToEmbedder('getPreference', [name], callback);
@@ -709,9 +716,10 @@
     }
 
     /**
-     * @param url
+     * @param {string} _url
      */
-    close(url) {
+    close(_url) {
+      // This is required when InspectorFrontendHostStub is used
     }
 
     /**
@@ -1136,7 +1144,7 @@
   ]);
 
   /**
-   * @param keyCode {number}
+   * @param {number} keyCode
    * @returns
    */
   function keyCodeToKeyIdentifier(keyCode) {

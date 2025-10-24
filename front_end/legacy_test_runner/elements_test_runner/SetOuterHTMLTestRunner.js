@@ -94,7 +94,8 @@ ElementsTestRunner.innerSetOuterHTML = async function(newText, last, next) {
 };
 
 ElementsTestRunner._dumpOuterHTML = async function(last, next) {
-  const result = await TestRunner.RuntimeAgent.evaluate('document.getElementById("identity").wrapperIdentity');
+  const {result} = await TestRunner.RuntimeAgent.invoke_evaluate(
+      {expression: 'document.getElementById("identity").wrapperIdentity'});
   TestRunner.addResult('Wrapper identity: ' + result.value);
   ElementsTestRunner.events.sort();
 

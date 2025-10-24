@@ -50,7 +50,8 @@ ExtensionsTestRunner.evaluateInExtension = function(code) {
 };
 
 ExtensionsTestRunner.runExtensionTests = async function(tests) {
-  const result = await TestRunner.RuntimeAgent.evaluate('location.href', 'console', false);
+  const {result} = await TestRunner.RuntimeAgent.invoke_evaluate(
+      {expression: 'location.href', objectGroup: 'console', includeCommandLineAPI: false});
 
   if (!result) {
     return;

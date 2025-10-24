@@ -175,8 +175,9 @@ NetworkTestRunner.makeFetchInWorker = function(url, requestInitializer, callback
 NetworkTestRunner.clearNetworkCache = function() {
   // This turns cache off and then on, effectively clearning the memory cache.
   return Promise.all([
-    TestRunner.NetworkAgent.clearBrowserCache(),
-    TestRunner.NetworkAgent.setCacheDisabled(true).then(() => TestRunner.NetworkAgent.setCacheDisabled(false))
+    TestRunner.NetworkAgent.invoke_clearBrowserCache(),
+    TestRunner.NetworkAgent.invoke_setCacheDisabled({cacheDisabled: true})
+        .then(() => TestRunner.NetworkAgent.invoke_setCacheDisabled({cacheDisabled: false}))
   ]);
 };
 

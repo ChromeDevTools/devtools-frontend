@@ -691,7 +691,13 @@ export function startDumpingProtocolMessages() {
 export function addScriptForFrame(url, content, frame) {
   content += '\n//# sourceURL=' + url;
   const executionContext = TestRunner.runtimeModel.executionContexts().find(context => context.frameId === frame.id);
-  TestRunner.RuntimeAgent.evaluate(content, 'console', false, false, executionContext.id);
+  TestRunner.RuntimeAgent.invoke_evaluate({
+    expression: content,
+    objectGroup: 'console',
+    includeCommandLineAPI: false,
+    silent: false,
+    contextId: executionContext.id
+  });
 }
 
 export const formatters = {

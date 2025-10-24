@@ -521,6 +521,7 @@ interface DevToolsStartingStyleDebugging {
 
 interface AiPromptApi {
   enabled: boolean;
+  allowWithoutGpu: boolean;
 }
 
 interface DevToolsIndividualRequestThrottling {

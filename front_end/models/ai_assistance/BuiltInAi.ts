@@ -6,6 +6,7 @@ import * as Root from '../../core/root/root.js';
 
 let builtInAiInstance: BuiltInAi|undefined;
 let availability = '';
+let hasGpu: boolean|undefined;
 
 export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
@@ -31,12 +32,44 @@ export class BuiltInAi {
     return availability === 'available';
   }
 
+  static isGpuAvailable(): boolean {
+    const hasGpuHelper = (): boolean => {
+      const canvas = document.createElement('canvas');
+      try {
+        const webgl = canvas.getContext('webgl');
+        if (!webgl) {
+          return false;
+        }
+        const debugInfo = webgl.getExtension('WEBGL_debug_renderer_info');
+        if (!debugInfo) {
+          return false;
+        }
+        const renderer = webgl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        if (renderer.includes('SwiftShader')) {
+          return false;
+        }
+      } catch {
+        return false;
+      }
+      return true;
+    };
+
+    if (hasGpu !== undefined) {
+      return hasGpu;
+    }
+    hasGpu = hasGpuHelper();
+    return hasGpu;
+  }
+
   private constructor(consoleInsightsSession: LanguageModel) {
     this.#consoleInsightsSession = consoleInsightsSession;
   }
 
   static async instance(): Promise<BuiltInAi|undefined> {
     if (builtInAiInstance === undefined) {
+      if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !BuiltInAi.isGpuAvailable()) {
+        return undefined;
+      }
       if (!(await BuiltInAi.isAvailable())) {
         return undefined;
       }

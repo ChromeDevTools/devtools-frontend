@@ -10,6 +10,7 @@ describe('BuiltInAi', () => {
     updateHostConfig({
       devToolsAiPromptApi: {
         enabled: true,
+        allowWithoutGpu: true,
       },
     });
 
@@ -39,5 +40,23 @@ describe('BuiltInAi', () => {
     }
     assert.strictEqual(response, 'This is an explanation.');
     AiAssistanceModel.BuiltInAi.BuiltInAi.removeInstance();
+  });
+
+  it('is not available if there is no dedicated GPU', async () => {
+    updateHostConfig({
+      devToolsAiPromptApi: {
+        enabled: true,
+        allowWithoutGpu: false,
+      },
+    });
+
+    // @ts-expect-error
+    window.LanguageModel = {
+      availability: () => 'available',
+      create: () => {},
+    };
+
+    const builtInAi = await AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    assert.isUndefined(builtInAi);
   });
 });

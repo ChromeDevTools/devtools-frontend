@@ -42,6 +42,7 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     updateHostConfig({
       devToolsAiPromptApi: {
         enabled: true,
+        allowWithoutGpu: true,
       },
     });
 

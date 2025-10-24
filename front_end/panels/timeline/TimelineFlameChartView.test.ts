@@ -77,36 +77,33 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       Common.Settings.Settings.instance().createSetting('timeline-flamechart-network-view-group-expansion', {}).set({});
     });
 
-    // Flaky
-    it.skip(
-        '[crbug.com/453626439] renders the network and other tracks in collapsed and expanded modes', async function() {
-          const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-          const mockViewDelegate = new MockViewDelegate();
+    it('renders the network and other tracks in collapsed and expanded modes', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
 
-          const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-          flameChartView.updateCountersGraphToggle(false);  // don't care about the memory view in this test
-          renderWidgetInVbox(flameChartView);
-          // IMPORTANT: order is important; for the flame chart view to render properly
-          // it must be in the DOM before we set the model, so it can calculate and
-          // set heights.
-          flameChartView.setModel(parsedTrace, new Map());
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      flameChartView.updateCountersGraphToggle(false);  // don't care about the memory view in this test
+      renderWidgetInVbox(flameChartView);
+      // IMPORTANT: order is important; for the flame chart view to render properly
+      // it must be in the DOM before we set the model, so it can calculate and
+      // set heights.
+      flameChartView.setModel(parsedTrace, new Map());
 
-          // Most of the network content is in the first ~700ms of this trace
-          const {min} = parsedTrace.data.Meta.traceBounds;
-          const interestingRange = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(700));
-          const max = Trace.Types.Timing.Micro(min + interestingRange);
-          const newBounds = microsecondsTraceWindow(min, max);
-          TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(newBounds);
-          await raf();
+      // Most of the network content is in the first ~700ms of this trace
+      const {min} = parsedTrace.data.Meta.traceBounds;
+      const interestingRange = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(700));
+      const max = Trace.Types.Timing.Micro(min + interestingRange);
+      const newBounds = microsecondsTraceWindow(min, max);
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(newBounds);
+      await raf();
 
-          await assertScreenshot('timeline/flamechart_view_network_collapsed.png');
-          flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
-          await raf();
-          await assertScreenshot('timeline/flamechart_view_network_expanded.png');
-        });
+      await assertScreenshot('timeline/flamechart_view_network_collapsed.png');
+      flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
+      await raf();
+      await assertScreenshot('timeline/flamechart_view_network_expanded.png');
+    });
 
-    // Flaky
-    it.skip('[crbug.com/453630637] does not show the network track when there is no network request', async function() {
+    it('does not show the network track when there is no network request', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
       const mockViewDelegate = new MockViewDelegate();
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -116,8 +113,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       await assertScreenshot('timeline/flamechart_view_no_network_events.png');
     });
 
-    // Flaky
-    it.skip('[crbug.com/453622839] shows the details for a selected network event', async function() {
+    it('shows the details for a selected network event', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const mockViewDelegate = new MockViewDelegate();
 
@@ -153,8 +149,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       await assertScreenshot('timeline/timeline_with_network_selection.png');
     });
 
-    // Flaky
-    it.skip('[crbug.com/453629222] shows the details for a selected main thread event', async function() {
+    it('shows the details for a selected main thread event', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const mockViewDelegate = new MockViewDelegate();
 

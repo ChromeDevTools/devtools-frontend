@@ -346,6 +346,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#headerText = this.#consoleViewMessage.toMessageTextString().substring(0, 70);
     this.#isGenerating = true;
     this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
+    const startTime = performance.now();
     let teaserText = '';
     try {
       for await (const chunk of this.#getOnDeviceInsight()) {
@@ -366,6 +367,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     }
 
     clearTimeout(this.#timeoutId);
+    Host.userMetrics.consoleInsightTeaserGenerated(performance.now() - startTime);
     this.#isGenerating = false;
     this.#mainText = teaserText;
     this.requestUpdate();

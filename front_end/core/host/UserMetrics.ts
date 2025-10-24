@@ -312,6 +312,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.BuiltInAiAvailability, availability, BuiltInAiAvailability.MAX_VALUE);
   }
+
+  consoleInsightTeaserGenerated(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Insights.TeaserGenerationTime', timeInMilliseconds);
+  }
 }
 
 /**

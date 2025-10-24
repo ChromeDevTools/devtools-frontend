@@ -2,60 +2,49 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// We want to keep this a IIFE as we want to keep the global scope clean
-// We inject this script via a Classic script
-// https://crsrc.org/c/third_party/blink/renderer/controller/dev_tools_frontend_impl.cc;l=107
 (window => {
-  /**
-   * @returns {number|null}
-   */
-  function getRemoteMajorVersion() {
-    try {
-      const remoteVersion = new URLSearchParams(window.location.search).get('remoteVersion');
-      if (!remoteVersion) {
-        return null;
-      }
-      return parseInt(remoteVersion.split('.')[0], 10);
-    } catch {
-      return null;
-    }
-  }
-  // eslint-disable-next-line no-unused-vars
-  const majorVersion = getRemoteMajorVersion();
-
   // DevToolsAPI ----------------------------------------------------------------
+
   /**
-   * @typedef {{runtimeAllowedHosts: string[], runtimeBlockedHosts: string[]}} ExtensionHostsPolicy
+   * @typedef {{runtimeAllowedHosts: !Array<string>, runtimeBlockedHosts: !Array<string>}} ExtensionHostsPolicy
+   */
+  /**
    * @typedef {{startPage: string, name: string, exposeExperimentalAPIs: boolean, hostsPolicy?: ExtensionHostsPolicy}} ExtensionDescriptor
    */
-  class DevToolsAPIImpl {
-    /**
-     * @type {string[]}
-     */
-    _originsForbiddenForExtensions = [];
+  const DevToolsAPIImpl = class {
+    constructor() {
+      /**
+       * @type {number}
+       */
+      this._lastCallId = 0;
 
-    /**
-     * @type {ExtensionDescriptor[]}
-     */
-    _pendingExtensionDescriptors = [];
-    /**
-     * @type {number}
-     */
-    _lastCallId = 0;
-    /**
-     * @type {Record<number, (arg1: object) => void>}
-     */
-    _callbacks = {};
+      /**
+       * @type {!Object.<number, function(?Object)>}
+       */
+      this._callbacks = {};
 
-    /**
-     * @type {((param:ExtensionDescriptor)=> void) | null}
-     */
-    _addExtensionCallback = null;
+      /**
+       * @type {!Array.<!ExtensionDescriptor>}
+       */
+      this._pendingExtensionDescriptors = [];
 
-    /**
-     * @type {ReturnType<typeof Promise.withResolvers<string>>}
-     */
-    _initialTargetIdPromiseWithResolver = Promise.withResolvers();
+      /**
+       * @type {?function(!ExtensionDescriptor): void}
+       */
+      this._addExtensionCallback = null;
+
+      /**
+       * @type {!Array<string>}
+       */
+      this._originsForbiddenForExtensions = [];
+
+      /**
+       * @type {!Promise<string>}
+       */
+      this._initialTargetIdPromise = new Promise(resolve => {
+        this._setInitialTargetId = resolve;
+      });
+    }
 
     /**
      * @param id
@@ -91,7 +80,7 @@
      * @param args
      */
     _dispatchOnInspectorFrontendAPI(method, args) {
-      const inspectorFrontendAPI = window.InspectorFrontendAPI;
+      const inspectorFrontendAPI = /** @type {!Object<string, function()>} */ (window['InspectorFrontendAPI']);
       if (!inspectorFrontendAPI) {
         // This is the case for device_mode_emulation_frame entrypoint. It's created via `window.open` from
         // the DevTools window, so it shares a context with DevTools but has a separate DevToolsUIBinding and `window` object.
@@ -104,13 +93,16 @@
     // API methods below this line --------------------------------------------
 
     /**
-     * @param extensions {ExtensionDescriptor[]}
+     * @param extensions
      */
     addExtensions(extensions) {
-      // The addExtensions command is sent as the onload event happens for
-      // DevTools front-end. We should buffer this command until the frontend
-      // is ready for it.
-      if (this._addExtensionCallback) {
+      // Support for legacy front-ends (<M41).
+      if (window['WebInspector'] && window['WebInspector']['addExtensions']) {
+        window['WebInspector']['addExtensions'](extensions);
+        // The addExtensions command is sent as the onload event happens for
+        // DevTools front-end. We should buffer this command until the frontend
+        // is ready for it.
+      } else if (this._addExtensionCallback) {
         extensions.forEach(this._addExtensionCallback);
       } else {
         this._pendingExtensionDescriptors.push(...extensions);
@@ -118,28 +110,28 @@
     }
 
     /**
-     * @param forbiddenOrigins {string[]}
+     * @param forbiddenOrigins
      */
     setOriginsForbiddenForExtensions(forbiddenOrigins) {
       this._originsForbiddenForExtensions = forbiddenOrigins;
     }
 
     /**
-     * @returns {string[]}
+     * @returns
      */
     getOriginsForbiddenForExtensions() {
       return this._originsForbiddenForExtensions;
     }
 
     /**
-     * @param url {string}
+     * @param url
      */
     appendedToURL(url) {
       this._dispatchOnInspectorFrontendAPI('appendedToURL', [url]);
     }
 
     /**
-     * @param url {string}
+     * @param url
      */
     canceledSaveURL(url) {
       this._dispatchOnInspectorFrontendAPI('canceledSaveURL', [url]);
@@ -238,8 +230,14 @@
      * @param removedPaths
      */
     fileSystemFilesChangedAddedRemoved(changedPaths, addedPaths, removedPaths) {
-      this._dispatchOnInspectorFrontendAPI(
-          'fileSystemFilesChangedAddedRemoved', [changedPaths, addedPaths, removedPaths]);
+      // Support for legacy front-ends (<M58)
+      if (window['InspectorFrontendAPI'] && window['InspectorFrontendAPI']['fileSystemFilesChanged']) {
+        this._dispatchOnInspectorFrontendAPI(
+            'fileSystemFilesChanged', [changedPaths.concat(addedPaths).concat(removedPaths)]);
+      } else {
+        this._dispatchOnInspectorFrontendAPI(
+            'fileSystemFilesChangedAddedRemoved', [changedPaths, addedPaths, removedPaths]);
+      }
     }
 
     /**
@@ -277,7 +275,7 @@
     }
 
     /**
-     * @param callback {(param: object) => unknown}
+     * @param callback
      */
     setAddExtensionCallback(callback) {
       this._addExtensionCallback = callback;
@@ -288,7 +286,7 @@
     }
 
     /**
-     * @param hard {boolean}
+     * @param hard
      */
     reloadInspectedPage(hard) {
       this._dispatchOnInspectorFrontendAPI('reloadInspectedPage', [hard]);
@@ -325,19 +323,24 @@
     }
 
     /**
-     * @param tabId {string}
+     * @param tabId
      */
     setInspectedTabId(tabId) {
       this._inspectedTabIdValue = tabId;
 
-      this._dispatchOnInspectorFrontendAPI('setInspectedTabId', [tabId]);
+      // Support for legacy front-ends (<M41).
+      if (window['WebInspector'] && window['WebInspector']['setInspectedTabId']) {
+        window['WebInspector']['setInspectedTabId'](tabId);
+      } else {
+        this._dispatchOnInspectorFrontendAPI('setInspectedTabId', [tabId]);
+      }
     }
 
     /**
-     * @param targetId {string}
+     * @param targetId
      */
     setInitialTargetId(targetId) {
-      this._initialTargetIdPromiseWithResolver.resolve(targetId);
+      this._setInitialTargetId(targetId);
     }
 
     /**
@@ -348,31 +351,31 @@
     }
 
     /**
-     * @param useSoftMenu {boolean}
+     * @param useSoftMenu
      */
     setUseSoftMenu(useSoftMenu) {
       this._dispatchOnInspectorFrontendAPI('setUseSoftMenu', [useSoftMenu]);
     }
 
     /**
-     * @param panelName {string}
+     * @param panelName
      */
     showPanel(panelName) {
       this._dispatchOnInspectorFrontendAPI('showPanel', [panelName]);
     }
 
     /**
-     * @param id {number}
-     * @param chunk {string}
-     * @param encoded {boolean}
+     * @param id
+     * @param chunk
+     * @param encoded
      */
     streamWrite(id, chunk, encoded) {
       this._dispatchOnInspectorFrontendAPI('streamWrite', [id, encoded ? this._decodeBase64(chunk) : chunk]);
     }
 
     /**
-     * @param chunk {string}
-     * @returns {string}
+     * @param chunk
+     * @returns
      */
     _decodeBase64(chunk) {
       const request = new XMLHttpRequest();
@@ -384,7 +387,7 @@
       console.error('Error while decoding chunk in streamWrite');
       return '';
     }
-  }
+  };
 
   const DevToolsAPI = new DevToolsAPIImpl();
   window.DevToolsAPI = DevToolsAPI;
@@ -438,36 +441,75 @@
   };
 
   /**
-   * @typedef {import('./core/host/InspectorFrontendHostAPI.js').InspectorFrontendHostAPI} InspectorFrontendHostAPI
    * @implements {InspectorFrontendHostAPI}
    */
-  class InspectorFrontendHostImpl {
+  const InspectorFrontendHostImpl = class {
     /**
-     * Update inside `front_end/core/host/InspectorFrontendHost.ts:627`
-     * @type {any}
+     * @returns
      */
-    events;
+    getSelectionBackgroundColor() {
+      return '#6e86ff';
+    }
 
     /**
+     * @returns
+     */
+    getSelectionForegroundColor() {
+      return '#ffffff';
+    }
+
+    /**
+     * @returns
+     */
+    getInactiveSelectionBackgroundColor() {
+      return '#c9c8c8';
+    }
+
+    /**
+     * @returns
+     */
+    getInactiveSelectionForegroundColor() {
+      return '#323232';
+    }
+
+    /**
+     * @override
      * @returns
      */
     platform() {
       return DevToolsHost.platform();
     }
 
+    /**
+     * @override
+     */
     loadCompleted() {
       DevToolsAPI.sendMessageToEmbedder('loadCompleted', [], null);
+      // Support for legacy (<57) frontends.
+      if (window.Runtime && window.Runtime.queryParam) {
+        const panelToOpen = window.Runtime.queryParam('panel');
+        if (panelToOpen) {
+          window.DevToolsAPI.showPanel(panelToOpen);
+        }
+      }
     }
 
+    /**
+     * @override
+     */
     bringToFront() {
       DevToolsAPI.sendMessageToEmbedder('bringToFront', [], null);
     }
 
+    /**
+     * @override
+     */
     closeWindow() {
       DevToolsAPI.sendMessageToEmbedder('closeWindow', [], null);
     }
 
     /**
+     * @override
      * @param isDocked
      * @param callback
      */
@@ -476,44 +518,58 @@
     }
 
     /**
+     * @override
      * @param trigger
-     * @param callback {(param: object) => unknown}
+     * @param callback
      */
     showSurvey(trigger, callback) {
-      DevToolsAPI.sendMessageToEmbedder('showSurvey', [trigger], callback);
+      DevToolsAPI.sendMessageToEmbedder(
+          'showSurvey', [trigger],
+          /** @type {function(?Object)} */ (callback));
     }
 
     /**
+     * @override
      * @param trigger
-     * @param callback {(param: object) => unknown}
+     * @param callback
      */
     canShowSurvey(trigger, callback) {
-      DevToolsAPI.sendMessageToEmbedder('canShowSurvey', [trigger], callback);
+      DevToolsAPI.sendMessageToEmbedder(
+          'canShowSurvey', [trigger],
+          /** @type {function(?Object)} */ (callback));
     }
 
     /**
      * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
+     * @override
      * @param bounds
      */
     setInspectedPageBounds(bounds) {
       DevToolsAPI.sendMessageToEmbedder('setInspectedPageBounds', [bounds], null);
     }
 
+    /**
+     * @override
+     */
     inspectElementCompleted() {
       DevToolsAPI.sendMessageToEmbedder('inspectElementCompleted', [], null);
     }
 
     /**
+     * @override
      * @param url
      * @param headers
      * @param streamId
-     * @param callback {(param: object) => unknown}
+     * @param callback
      */
     loadNetworkResource(url, headers, streamId, callback) {
-      DevToolsAPI.sendMessageToEmbedder('loadNetworkResource', [url, headers, streamId], callback);
+      DevToolsAPI.sendMessageToEmbedder(
+          'loadNetworkResource', [url, headers, streamId],
+          /** @type {function(?Object)} */ (callback));
     }
 
     /**
+     * @override
      * @param name
      * @param options
      */
@@ -522,21 +578,28 @@
     }
 
     /**
-     * @param callback {(param: object) => unknown}
+     * @override
+     * @param callback
      */
     getPreferences(callback) {
-      DevToolsAPI.sendMessageToEmbedder('getPreferences', [], callback);
+      DevToolsAPI.sendMessageToEmbedder(
+          'getPreferences', [],
+          /** @type {function(?Object)} */ (callback));
     }
 
     /**
+     * @override
      * @param name
-     * @param callback {(param: object) => unknown}
+     * @param callback
      */
     getPreference(name, callback) {
-      DevToolsAPI.sendMessageToEmbedder('getPreference', [name], callback);
+      DevToolsAPI.sendMessageToEmbedder(
+          'getPreference', [name],
+          /** @type {function(string)} */ (callback));
     }
 
     /**
+     * @override
      * @param name
      * @param value
      */
@@ -545,17 +608,22 @@
     }
 
     /**
+     * @override
      * @param name
      */
     removePreference(name) {
       DevToolsAPI.sendMessageToEmbedder('removePreference', [name], null);
     }
 
+    /**
+     * @override
+     */
     clearPreferences() {
       DevToolsAPI.sendMessageToEmbedder('clearPreferences', [], null);
     }
 
     /**
+     * @override
      * @param callback
      */
     getSyncInformation(callback) {
@@ -563,6 +631,7 @@
     }
 
     /**
+     * @override
      * @param callback
      */
     getHostConfig(callback) {
@@ -609,6 +678,7 @@
     }
 
     /**
+     * @override
      * @param origin
      * @param script
      */
@@ -617,6 +687,7 @@
     }
 
     /**
+     * @override
      * @param url
      */
     inspectedURLChanged(url) {
@@ -624,6 +695,7 @@
     }
 
     /**
+     * @override
      * @param text
      */
     copyText(text) {
@@ -631,6 +703,7 @@
     }
 
     /**
+     * @override
      * @param url
      */
     openInNewTab(url) {
@@ -638,6 +711,7 @@
     }
 
     /**
+     * @override
      * @param query
      */
     openSearchResultsInNewTab(query) {
@@ -645,6 +719,7 @@
     }
 
     /**
+     * @override
      * @param fileSystemPath
      */
     showItemInFolder(fileSystemPath) {
@@ -652,6 +727,7 @@
     }
 
     /**
+     * @override
      * @param url
      * @param content
      * @param forceSaveAs
@@ -662,6 +738,7 @@
     }
 
     /**
+     * @override
      * @param url
      * @param content
      */
@@ -670,12 +747,14 @@
     }
 
     /**
+     * @override
      * @param url
      */
     close(url) {
     }
 
     /**
+     * @override
      * @param message
      */
     sendMessageToBackend(message) {
@@ -683,6 +762,7 @@
     }
 
     /**
+     * @override
      * @param histogramName
      * @param sample
      * @param min
@@ -695,6 +775,7 @@
     }
 
     /**
+     * @override
      * @param actionName
      * @param actionCode
      * @param bucketSize
@@ -707,6 +788,7 @@
     }
 
     /**
+     * @override
      * @param histogramName
      * @param duration
      */
@@ -715,6 +797,7 @@
     }
 
     /**
+     * @override
      * @param featureName
      */
     recordNewBadgeUsage(featureName) {
@@ -722,26 +805,37 @@
     }
 
     /**
+     * @override
      * @param umaName
      */
     recordUserMetricsAction(umaName) {
       DevToolsAPI.sendMessageToEmbedder('recordUserMetricsAction', [umaName], null);
     }
 
+    /**
+     * @override
+     */
     connectAutomaticFileSystem(fileSystemPath, fileSystemUUID, addIfMissing, callback) {
       DevToolsAPI.sendMessageToEmbedder(
           'connectAutomaticFileSystem', [fileSystemPath, fileSystemUUID, addIfMissing], callback);
     }
 
+    /**
+     * @override
+     */
     disconnectAutomaticFileSystem(fileSystemPath) {
       DevToolsAPI.sendMessageToEmbedder('disconnectAutomaticFileSystem', [fileSystemPath], null);
     }
 
+    /**
+     * @override
+     */
     requestFileSystems() {
       DevToolsAPI.sendMessageToEmbedder('requestFileSystems', [], null);
     }
 
     /**
+     * @override
      * @param type
      */
     addFileSystem(type) {
@@ -749,6 +843,7 @@
     }
 
     /**
+     * @override
      * @param fileSystemPath
      */
     removeFileSystem(fileSystemPath) {
@@ -756,6 +851,7 @@
     }
 
     /**
+     * @override
      * @param fileSystemId
      * @param registeredName
      * @returns
@@ -765,6 +861,7 @@
     }
 
     /**
+     * @override
      * @param fileSystem
      */
     upgradeDraggedFileSystemPermissions(fileSystem) {
@@ -772,6 +869,7 @@
     }
 
     /**
+     * @override
      * @param requestId
      * @param fileSystemPath
      * @param excludedFolders
@@ -784,6 +882,7 @@
     }
 
     /**
+     * @override
      * @param requestId
      */
     stopIndexing(requestId) {
@@ -791,6 +890,7 @@
     }
 
     /**
+     * @override
      * @param requestId
      * @param fileSystemPath
      * @param query
@@ -800,25 +900,36 @@
     }
 
     /**
+     * @override
      * @returns
      */
     zoomFactor() {
       return DevToolsHost.zoomFactor();
     }
 
+    /**
+     * @override
+     */
     zoomIn() {
       DevToolsAPI.sendMessageToEmbedder('zoomIn', [], null);
     }
 
+    /**
+     * @override
+     */
     zoomOut() {
       DevToolsAPI.sendMessageToEmbedder('zoomOut', [], null);
     }
 
+    /**
+     * @override
+     */
     resetZoom() {
       DevToolsAPI.sendMessageToEmbedder('resetZoom', [], null);
     }
 
     /**
+     * @override
      * @param shortcuts
      */
     setWhitelistedShortcuts(shortcuts) {
@@ -826,6 +937,7 @@
     }
 
     /**
+     * @override
      * @param active
      */
     setEyeDropperActive(active) {
@@ -833,6 +945,7 @@
     }
 
     /**
+     * @override
      * @param certChain
      */
     showCertificateViewer(certChain) {
@@ -841,21 +954,29 @@
 
     /**
      * Only needed to run Lighthouse on old devtools.
+     * @override
      * @param callback
      */
     reattach(callback) {
       DevToolsAPI.sendMessageToEmbedder('reattach', [], callback);
     }
 
+    /**
+     * @override
+     */
     readyForTest() {
       DevToolsAPI.sendMessageToEmbedder('readyForTest', [], null);
     }
 
+    /**
+     * @override
+     */
     connectionReady() {
       DevToolsAPI.sendMessageToEmbedder('connectionReady', [], null);
     }
 
     /**
+     * @override
      * @param value
      */
     setOpenNewWindowForPopups(value) {
@@ -863,6 +984,7 @@
     }
 
     /**
+     * @override
      * @param config
      */
     setDevicesDiscoveryConfig(config) {
@@ -876,6 +998,7 @@
     }
 
     /**
+     * @override
      * @param enabled
      */
     setDevicesUpdatesEnabled(enabled) {
@@ -883,6 +1006,7 @@
     }
 
     /**
+     * @override
      * @param browserId
      * @param url
      */
@@ -890,11 +1014,15 @@
       DevToolsAPI.sendMessageToEmbedder('openRemotePage', [browserId, url], null);
     }
 
+    /**
+     * @override
+     */
     openNodeFrontend() {
       DevToolsAPI.sendMessageToEmbedder('openNodeFrontend', [], null);
     }
 
     /**
+     * @override
      * @param x
      * @param y
      * @param items
@@ -905,6 +1033,7 @@
     }
 
     /**
+     * @override
      * @returns
      */
     isHostedMode() {
@@ -912,6 +1041,7 @@
     }
 
     /**
+     * @override
      * @param callback
      */
     setAddExtensionCallback(callback) {
@@ -919,6 +1049,7 @@
     }
 
     /**
+     * @override
      * @param impressionEvent
      */
     recordImpression(impressionEvent) {
@@ -926,6 +1057,7 @@
     }
 
     /**
+     * @override
      * @param resizeEvent
      */
     recordResize(resizeEvent) {
@@ -933,6 +1065,7 @@
     }
 
     /**
+     * @override
      * @param clickEvent
      */
     recordClick(clickEvent) {
@@ -940,6 +1073,7 @@
     }
 
     /**
+     * @override
      * @param hoverEvent
      */
     recordHover(hoverEvent) {
@@ -947,6 +1081,7 @@
     }
 
     /**
+     * @override
      * @param dragEvent
      */
     recordDrag(dragEvent) {
@@ -954,6 +1089,7 @@
     }
 
     /**
+     * @override
      * @param changeEvent
      */
     recordChange(changeEvent) {
@@ -961,6 +1097,7 @@
     }
 
     /**
+     * @override
      * @param keyDownEvent
      */
     recordKeyDown(keyDownEvent) {
@@ -968,6 +1105,7 @@
     }
 
     /**
+     * @override
      * @param settingAccessEvent
      */
     recordSettingAccess(settingAccessEvent) {
@@ -975,6 +1113,7 @@
     }
 
     /**
+     * @override
      * @param functionCallEvent
      */
     recordFunctionCall(functionCallEvent) {
@@ -984,10 +1123,78 @@
     // Backward-compatible methods below this line --------------------------------------------
 
     /**
+     * Support for legacy front-ends (<M65).
+     * @returns
+     */
+    isUnderTest() {
+      return false;
+    }
+
+    /**
+     * Support for legacy front-ends (<M50).
+     * @param message
+     */
+    sendFrontendAPINotification(message) {
+    }
+
+    /**
+     * Support for legacy front-ends (<M41).
+     * @returns
+     */
+    port() {
+      return 'unknown';
+    }
+
+    /**
+     * Support for legacy front-ends (<M38).
+     * @param zoomFactor
+     */
+    setZoomFactor(zoomFactor) {
+    }
+
+    /**
+     * Support for legacy front-ends (<M34).
+     */
+    sendMessageToEmbedder() {
+    }
+
+    /**
+     * Support for legacy front-ends (<M34).
+     * @param dockSide
+     */
+    requestSetDockSide(dockSide) {
+      DevToolsAPI.sendMessageToEmbedder('setIsDocked', [dockSide !== 'undocked'], null);
+    }
+
+    /**
+     * Support for legacy front-ends (<M34).
+     * @returns
+     */
+    supportsFileSystems() {
+      return true;
+    }
+
+    /**
+     * Support for legacy front-ends (<M44).
+     * @param actionCode
+     */
+    recordActionTaken(actionCode) {
+      // Do not record actions, as that may crash the DevTools renderer.
+    }
+
+    /**
+     * Support for legacy front-ends (<M44).
+     * @param panelCode
+     */
+    recordPanelShown(panelCode) {
+      // Do not record actions, as that may crash the DevTools renderer.
+    }
+
+    /**
      * @returns
      */
     initialTargetId() {
-      return DevToolsAPI._initialTargetIdPromiseWithResolver.promise;
+      return DevToolsAPI._initialTargetIdPromise;
     }
 
     /**
@@ -1022,12 +1229,269 @@
     dispatchHttpRequest(request, cb) {
       DevToolsAPI.sendMessageToEmbedder('dispatchHttpRequest', [request], cb);
     }
-  }
+  };
 
   window.InspectorFrontendHost = new InspectorFrontendHostImpl();
 
   // DevToolsApp ---------------------------------------------------------------
 
+  function installObjectObserve() {
+    /** @type {!Array<string>} */
+    const properties = [
+      'advancedSearchConfig',
+      'auditsPanelSplitViewState',
+      'auditsSidebarWidth',
+      'blockedURLs',
+      'breakpoints',
+      'cacheDisabled',
+      'colorFormat',
+      'consoleHistory',
+      'consoleTimestampsEnabled',
+      'cpuProfilerView',
+      'cssSourceMapsEnabled',
+      'currentDockState',
+      'customColorPalette',
+      'customDevicePresets',
+      'customEmulatedDeviceList',
+      'customFormatters',
+      'customUserAgent',
+      'databaseTableViewVisibleColumns',
+      'dataGrid-cookiesTable',
+      'dataGrid-DOMStorageItemsView',
+      'debuggerSidebarHidden',
+      'disablePausedStateOverlay',
+      'domBreakpoints',
+      'domWordWrap',
+      'elementsPanelSplitViewState',
+      'elementsSidebarWidth',
+      'emulation.deviceHeight',
+      'emulation.deviceModeValue',
+      'emulation.deviceOrientationOverride',
+      'emulation.deviceScale',
+      'emulation.deviceScaleFactor',
+      'emulation.deviceUA',
+      'emulation.deviceWidth',
+      'emulation.locationOverride',
+      'emulation.showDeviceMode',
+      'emulation.showRulers',
+      'enableAsyncStackTraces',
+      'enableIgnoreListing',
+      'eventListenerBreakpoints',
+      'fileMappingEntries',
+      'fileSystemMapping',
+      'FileSystemViewSidebarWidth',
+      'fileSystemViewSplitViewState',
+      'filterBar-consoleView',
+      'filterBar-networkPanel',
+      'filterBar-promisePane',
+      'filterBar-timelinePanel',
+      'frameViewerHideChromeWindow',
+      'heapSnapshotRetainersViewSize',
+      'heapSnapshotSplitViewState',
+      'hideCollectedPromises',
+      'hideNetworkMessages',
+      'highlightNodeOnHoverInOverlay',
+      'inlineVariableValues',
+      'Inspector.drawerSplitView',
+      'Inspector.drawerSplitViewState',
+      'InspectorView.panelOrder',
+      'InspectorView.screencastSplitView',
+      'InspectorView.screencastSplitViewState',
+      'InspectorView.splitView',
+      'InspectorView.splitViewState',
+      'javaScriptDisabled',
+      'jsSourceMapsEnabled',
+      'lastActivePanel',
+      'lastDockState',
+      'lastSelectedSourcesSidebarPaneTab',
+      'lastSnippetEvaluationIndex',
+      'layerDetailsSplitView',
+      'layerDetailsSplitViewState',
+      'layersPanelSplitViewState',
+      'layersShowInternalLayers',
+      'layersSidebarWidth',
+      'messageLevelFilters',
+      'messageURLFilters',
+      'monitoringXHREnabled',
+      'navigatorGroupByAuthored',
+      'navigatorGroupByFolder',
+      'navigatorHidden',
+      'networkColorCodeResourceTypes',
+      'networkConditions',
+      'networkConditionsCustomProfiles',
+      'networkHideDataURL',
+      'networkLogColumnsVisibility',
+      'networkLogLargeRows',
+      'networkLogShowOverview',
+      'networkPanelSplitViewState',
+      'networkRecordFilmStripSetting',
+      'networkResourceTypeFilters',
+      'networkShowPrimaryLoadWaterfall',
+      'networkSidebarWidth',
+      'openLinkHandler',
+      'pauseOnUncaughtException',
+      'pauseOnCaughtException',
+      'pauseOnExceptionEnabled',
+      'preserveConsoleLog',
+      'prettyPrintInfobarDisabled',
+      'previouslyViewedFiles',
+      'profilesPanelSplitViewState',
+      'profilesSidebarWidth',
+      'promiseStatusFilters',
+      'recordAllocationStacks',
+      'requestHeaderFilterSetting',
+      'request-info-formData-category-expanded',
+      'request-info-general-category-expanded',
+      'request-info-queryString-category-expanded',
+      'request-info-requestHeaders-category-expanded',
+      'request-info-requestPayload-category-expanded',
+      'request-info-responseHeaders-category-expanded',
+      'resources',
+      'resourcesLastSelectedItem',
+      'resourcesPanelSplitViewState',
+      'resourcesSidebarWidth',
+      'resourceViewTab',
+      'savedURLs',
+      'screencastEnabled',
+      'scriptsPanelNavigatorSidebarWidth',
+      'searchInContentScripts',
+      'selectedAuditCategories',
+      'selectedColorPalette',
+      'selectedProfileType',
+      'shortcutPanelSwitch',
+      'showAdvancedHeapSnapshotProperties',
+      'showEventListenersForAncestors',
+      'showFrameowkrListeners',
+      'showHeaSnapshotObjectsHiddenProperties',
+      'showInheritedComputedStyleProperties',
+      'showMediaQueryInspector',
+      'showUAShadowDOM',
+      'showWhitespacesInEditor',
+      'sidebarPosition',
+      'skipContentScripts',
+      'automaticallyIgnoreListKnownThirdPartyScripts',
+      'skipStackFramesPattern',
+      'sourceMapInfobarDisabled',
+      'sourceMapSkippedInfobarDisabled',
+      'sourcesPanelDebuggerSidebarSplitViewState',
+      'sourcesPanelNavigatorSplitViewState',
+      'sourcesPanelSplitSidebarRatio',
+      'sourcesPanelSplitViewState',
+      'sourcesSidebarWidth',
+      'standardEmulatedDeviceList',
+      'StylesPaneSplitRatio',
+      'stylesPaneSplitViewState',
+      'textEditorAutocompletion',
+      'textEditorAutoDetectIndent',
+      'textEditorBracketMatching',
+      'textEditorIndent',
+      'textEditorTabMovesFocus',
+      'timelineCaptureFilmStrip',
+      'timelineCaptureLayersAndPictures',
+      'timelineCaptureMemory',
+      'timelineCaptureNetwork',
+      'timeline-details',
+      'timelineEnableJSSampling',
+      'timelineOverviewMode',
+      'timelinePanelDetailsSplitViewState',
+      'timelinePanelRecorsSplitViewState',
+      'timelinePanelTimelineStackSplitViewState',
+      'timelinePerspective',
+      'timeline-split',
+      'timelineTreeGroupBy',
+      'timeline-view',
+      'timelineViewMode',
+      'uiTheme',
+      'watchExpressions',
+      'WebInspector.Drawer.lastSelectedView',
+      'WebInspector.Drawer.showOnLoad',
+      'workspaceExcludedFolders',
+      'workspaceFolderExcludePattern',
+      'workspaceInfobarDisabled',
+      'workspaceMappingInfobarDisabled',
+      'xhrBreakpoints'
+    ];
+
+    /**
+     * @this {!{_storage: Object, _name: string}}
+     */
+    function settingRemove() {
+      this._storage[this._name] = undefined;
+    }
+
+    /**
+     * @param object
+     * @param observer
+     */
+    function objectObserve(object, observer) {
+      if (window['WebInspector']) {
+        const settingPrototype = /** @type {!Object} */ (window['WebInspector']['Setting']['prototype']);
+        if (typeof settingPrototype['remove'] === 'function') {
+          settingPrototype['remove'] = settingRemove;
+        }
+      }
+      /** @type {!Set<string>} */
+      const changedProperties = new Set();
+      let scheduled = false;
+
+      function scheduleObserver() {
+        if (scheduled) {
+          return;
+        }
+        scheduled = true;
+        queueMicrotask(callObserver);
+      }
+
+      function callObserver() {
+        scheduled = false;
+        const changes = /** @type {!Array<!{name: string}>} */ ([]);
+        changedProperties.forEach(function(name) {
+          changes.push({name});
+        });
+        changedProperties.clear();
+        observer.call(null, changes);
+      }
+
+      /** @type {!Map<string, *>} */
+      const storage = new Map();
+
+      /**
+       * @param property
+       */
+      function defineProperty(property) {
+        if (property in object) {
+          storage.set(property, object[property]);
+          delete object[property];
+        }
+
+        Object.defineProperty(object, property, {
+          /**
+           * @returns
+           */
+          get: function() {
+            return storage.get(property);
+          },
+
+          /**
+           * @param value
+           */
+          set: function(value) {
+            storage.set(property, value);
+            changedProperties.add(property);
+            scheduleObserver();
+          }
+        });
+      }
+
+      for (let i = 0; i < properties.length; ++i) {
+        defineProperty(properties[i]);
+      }
+    }
+
+    window.Object.observe = objectObserve;
+  }
+
+  /** @type {!Map<number, string>} */
   const staticKeyIdentifiers = new Map([
     [0x12, 'Alt'],
     [0x11, 'Control'],
@@ -1088,7 +1552,7 @@
   ]);
 
   /**
-   * @param keyCode {number}
+   * @param keyCode
    * @returns
    */
   function keyCodeToKeyIdentifier(keyCode) {
@@ -1106,8 +1570,200 @@
   }
 
   function installBackwardsCompatibility() {
-    // Any polyfill that we need for backwards compatibility should be
-    // Added in this function
+    const majorVersion = getRemoteMajorVersion();
+    if (!majorVersion) {
+      return;
+    }
+
+    /** @type {!Array<string>} */
+    const styleRules = [];
+    // Shadow DOM V0 polyfill
+    if (majorVersion <= 73 && !Element.prototype.createShadowRoot) {
+      Element.prototype.createShadowRoot = function() {
+        try {
+          return this.attachShadow({mode: 'open'});
+        } catch {
+          // some elements we use to add shadow roots can no
+          // longer have shadow roots.
+          const fakeShadowHost = document.createElement('span');
+          this.appendChild(fakeShadowHost);
+          fakeShadowHost.className = 'fake-shadow-host';
+          return fakeShadowHost.createShadowRoot();
+        }
+      };
+
+      const origAdd = DOMTokenList.prototype.add;
+      DOMTokenList.prototype.add = function(...tokens) {
+        if (tokens[0].startsWith('insertion-point') || tokens[0].startsWith('tabbed-pane-header')) {
+          this._myElement.slot = '.' + tokens[0];
+        }
+        return origAdd.apply(this, tokens);
+      };
+
+      const origCreateElement = Document.prototype.createElement;
+      Document.prototype.createElement = function(tagName, ...rest) {
+        if (tagName === 'content') {
+          tagName = 'slot';
+        }
+        const element = origCreateElement.call(this, tagName, ...rest);
+        element.classList._myElement = element;
+        return element;
+      };
+
+      Object.defineProperty(HTMLSlotElement.prototype, 'select', {
+        set(selector) {
+          this.name = selector;
+        }
+      });
+    }
+
+    // Custom Elements V0 polyfill
+    if (majorVersion <= 73 && !Document.prototype.hasOwnProperty('registerElement')) {
+      const fakeRegistry = new Map();
+      Document.prototype.registerElement = function(typeExtension, options) {
+        const {prototype, extends: localName} = options;
+        const document = this;
+        const callback = function() {
+          const element = document.createElement(localName || typeExtension);
+          const skip = new Set(['constructor', '__proto__']);
+          for (const key of Object.keys(Object.getOwnPropertyDescriptors(prototype.__proto__ || {}))) {
+            if (skip.has(key)) {
+              continue;
+            }
+            element[key] = prototype[key];
+          }
+          element.setAttribute('is', typeExtension);
+          if (element['createdCallback']) {
+            element['createdCallback']();
+          }
+          return element;
+        };
+        fakeRegistry.set(typeExtension, callback);
+        return callback;
+      };
+
+      const origCreateElement = Document.prototype.createElement;
+      Document.prototype.createElement = function(tagName, fakeCustomElementType) {
+        const fakeConstructor = fakeRegistry.get(fakeCustomElementType);
+        if (fakeConstructor) {
+          return fakeConstructor();
+        }
+        return origCreateElement.call(this, tagName, fakeCustomElementType);
+      };
+
+      // DevTools front-ends mistakenly assume that
+      //   classList.toggle('a', undefined) works as
+      //   classList.toggle('a', false) rather than as
+      //   classList.toggle('a');
+      const originalDOMTokenListToggle = DOMTokenList.prototype.toggle;
+      DOMTokenList.prototype.toggle = function(token, force) {
+        if (arguments.length === 1) {
+          force = !this.contains(token);
+        }
+        return originalDOMTokenListToggle.call(this, token, Boolean(force));
+      };
+    }
+
+    if (majorVersion <= 66) {
+      /** @type {(!function(number, number):Element|undefined)} */
+      ShadowRoot.prototype.__originalShadowRootElementFromPoint;
+
+      if (!ShadowRoot.prototype.__originalShadowRootElementFromPoint) {
+        ShadowRoot.prototype.__originalShadowRootElementFromPoint = ShadowRoot.prototype.elementFromPoint;
+        /**
+         *  @param x
+         *  @param y
+         *  @returns
+         */
+        ShadowRoot.prototype.elementFromPoint = function(x, y) {
+          const originalResult = ShadowRoot.prototype.__originalShadowRootElementFromPoint.apply(this, arguments);
+          if (this.host && originalResult === this.host) {
+            return null;
+          }
+          return originalResult;
+        };
+      }
+    }
+
+    if (majorVersion <= 53) {
+      Object.defineProperty(window.KeyboardEvent.prototype, 'keyIdentifier', {
+        /**
+         * @returns
+         * @this {KeyboardEvent}
+         */
+        get: function() {
+          return keyCodeToKeyIdentifier(this.keyCode);
+        }
+      });
+    }
+
+    if (majorVersion <= 50) {
+      installObjectObserve();
+    }
+
+    if (majorVersion <= 71) {
+      styleRules.push(
+          '.coverage-toolbar-container, .animation-timeline-toolbar-container, .computed-properties { flex-basis: auto; }');
+    }
+
+    if (majorVersion <= 50) {
+      Event.prototype.deepPath = undefined;
+    }
+
+    if (majorVersion <= 54) {
+      window.FileError = /** @type {!function (new: FileError) : ?} */ ({
+        NOT_FOUND_ERR: DOMException.NOT_FOUND_ERR,
+        ABORT_ERR: DOMException.ABORT_ERR,
+        INVALID_MODIFICATION_ERR: DOMException.INVALID_MODIFICATION_ERR,
+        NOT_READABLE_ERR: 0  // No matching DOMException, so code will be 0.
+      });
+    }
+
+    installExtraStyleRules(styleRules);
+  }
+
+  /**
+   * @returns
+   */
+  function getRemoteMajorVersion() {
+    try {
+      const remoteVersion = new URLSearchParams(window.location.search).get('remoteVersion');
+      if (!remoteVersion) {
+        return null;
+      }
+      const majorVersion = parseInt(remoteVersion.split('.')[0], 10);
+      return majorVersion;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * @param styleRules
+   */
+  function installExtraStyleRules(styleRules) {
+    if (!styleRules.length) {
+      return;
+    }
+    const styleText = styleRules.join('\n');
+    document.head.appendChild(createStyleElement(styleText));
+
+    const origCreateShadowRoot = HTMLElement.prototype.createShadowRoot;
+    HTMLElement.prototype.createShadowRoot = function(...args) {
+      const shadowRoot = origCreateShadowRoot.call(this, ...args);
+      shadowRoot.appendChild(createStyleElement(styleText));
+      return shadowRoot;
+    };
+  }
+
+  /**
+   * @param styleText
+   * @returns
+   */
+  function createStyleElement(styleText) {
+    const style = document.createElement('style');
+    style.textContent = styleText;
+    return style;
   }
 
   installBackwardsCompatibility();

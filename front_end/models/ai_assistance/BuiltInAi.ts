@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
 let builtInAiInstance: BuiltInAi|undefined;
-let availability = '';
+let availability: LanguageModelAvailability|undefined;
 let hasGpu: boolean|undefined;
+let isFirstRun = true;
 
 export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
@@ -16,20 +18,33 @@ export interface LanguageModel {
   destroy: () => void;
 }
 
+export const enum LanguageModelAvailability {
+  UNAVAILABLE = 'unavailable',
+  DOWNLOADABLE = 'downloadable',
+  DOWNLOADING = 'downloading',
+  AVAILABLE = 'available',
+  DISABLED = 'disabled',
+}
+
 export class BuiltInAi {
   #consoleInsightsSession: LanguageModel;
 
-  static async isAvailable(): Promise<boolean> {
+  static async getLanguageModelAvailability(): Promise<LanguageModelAvailability> {
     if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
-      return false;
+      return LanguageModelAvailability.DISABLED;
     }
-    // @ts-expect-error
-    availability = await window.LanguageModel.availability({expectedOutputs: [{type: 'text', languages: ['en']}]});
-    return availability === 'available';
+    try {
+      // @ts-expect-error
+      availability = await window.LanguageModel.availability({expectedOutputs: [{type: 'text', languages: ['en']}]}) as
+          LanguageModelAvailability;
+      return availability;
+    } catch {
+      return LanguageModelAvailability.UNAVAILABLE;
+    }
   }
 
   static cachedIsAvailable(): boolean {
-    return availability === 'available';
+    return availability === LanguageModelAvailability.AVAILABLE;
   }
 
   static isGpuAvailable(): boolean {
@@ -67,43 +82,97 @@ export class BuiltInAi {
 
   static async instance(): Promise<BuiltInAi|undefined> {
     if (builtInAiInstance === undefined) {
-      if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !BuiltInAi.isGpuAvailable()) {
-        return undefined;
+      if (isFirstRun) {
+        const languageModelAvailability = await BuiltInAi.getLanguageModelAvailability();
+        const hasGpu = BuiltInAi.isGpuAvailable();
+        if (hasGpu) {
+          switch (languageModelAvailability) {
+            case LanguageModelAvailability.UNAVAILABLE:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
+              break;
+            case LanguageModelAvailability.DOWNLOADABLE:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
+              break;
+            case LanguageModelAvailability.DOWNLOADING:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
+              break;
+            case LanguageModelAvailability.AVAILABLE:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
+              break;
+            case LanguageModelAvailability.DISABLED:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
+              break;
+          }
+        } else {
+          switch (languageModelAvailability) {
+            case LanguageModelAvailability.UNAVAILABLE:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
+              break;
+            case LanguageModelAvailability.DOWNLOADABLE:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
+              break;
+            case LanguageModelAvailability.DOWNLOADING:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
+              break;
+            case LanguageModelAvailability.AVAILABLE:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
+              break;
+            case LanguageModelAvailability.DISABLED:
+              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
+              break;
+          }
+        }
+        isFirstRun = false;
+        if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !hasGpu) {
+          return undefined;
+        }
+        if (languageModelAvailability !== LanguageModelAvailability.AVAILABLE) {
+          return undefined;
+        }
+      } else {
+        if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !BuiltInAi.isGpuAvailable()) {
+          return undefined;
+        }
+        if ((await BuiltInAi.getLanguageModelAvailability()) !== LanguageModelAvailability.AVAILABLE) {
+          return undefined;
+        }
       }
-      if (!(await BuiltInAi.isAvailable())) {
-        return undefined;
-      }
-      // @ts-expect-error
-      const consoleInsightsSession = await window.LanguageModel.create({
-        initialPrompts: [{
-          role: 'system',
-          content: `
-You are an expert web developer. Your goal is to help a human web developer who
-is using Chrome DevTools to debug a web site or web app. The Chrome DevTools
-console is showing a message which is either an error or a warning. Please help
-the user understand the problematic console message.
 
-Your instructions are as follows:
-  - Explain the reason why the error or warning is showing up.
-  - The explanation has a maximum length of 200 characters. Anything beyond this
-    length will be cut off. Make sure that your explanation is at most 200 characters long.
-  - Your explanation should not end in the middle of a sentence.
-  - Your explanation should consist of a single paragraph only. Do not include any
-    headings or code blocks. Only write a single paragraph of text.
-  - Your response should be concise and to the point. Avoid lengthy explanations
-    or unnecessary details.
-          `
-        }],
-        expectedInputs: [{
-          type: 'text',
-          languages: ['en'],
-        }],
-        expectedOutputs: [{
-          type: 'text',
-          languages: ['en'],
-        }],
-      }) as LanguageModel;
-      builtInAiInstance = new BuiltInAi(consoleInsightsSession);
+      try {
+        // @ts-expect-error
+        const consoleInsightsSession = await window.LanguageModel.create({
+          initialPrompts: [{
+            role: 'system',
+            content: `
+  You are an expert web developer. Your goal is to help a human web developer who
+  is using Chrome DevTools to debug a web site or web app. The Chrome DevTools
+  console is showing a message which is either an error or a warning. Please help
+  the user understand the problematic console message.
+
+  Your instructions are as follows:
+    - Explain the reason why the error or warning is showing up.
+    - The explanation has a maximum length of 200 characters. Anything beyond this
+      length will be cut off. Make sure that your explanation is at most 200 characters long.
+    - Your explanation should not end in the middle of a sentence.
+    - Your explanation should consist of a single paragraph only. Do not include any
+      headings or code blocks. Only write a single paragraph of text.
+    - Your response should be concise and to the point. Avoid lengthy explanations
+      or unnecessary details.
+            `
+          }],
+          expectedInputs: [{
+            type: 'text',
+            languages: ['en'],
+          }],
+          expectedOutputs: [{
+            type: 'text',
+            languages: ['en'],
+          }],
+        }) as LanguageModel;
+        builtInAiInstance = new BuiltInAi(consoleInsightsSession);
+      } catch {
+        return undefined;
+      }
     }
     return builtInAiInstance;
   }

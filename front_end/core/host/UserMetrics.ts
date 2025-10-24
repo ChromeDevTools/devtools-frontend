@@ -307,6 +307,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordCountHistogram(
         'DevTools.PerformanceAI.MainThreadActivityResponseSize', bytes, 0, 100_000, 100);
   }
+
+  builtInAiAvailability(availability: BuiltInAiAvailability): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.BuiltInAiAvailability, availability, BuiltInAiAvailability.MAX_VALUE);
+  }
 }
 
 /**
@@ -1228,4 +1233,18 @@ export const enum TimelineNavigationSetting {
   SWITCHED_TO_CLASSIC = 2,
   SWITCHED_TO_MODERN = 3,
   MAX_VALUE = 4,
+}
+
+export const enum BuiltInAiAvailability {
+  UNAVAILABLE_HAS_GPU = 0,
+  DOWNLOADABLE_HAS_GPU = 1,
+  DOWNLOADING_HAS_GPU = 2,
+  AVAILABLE_HAS_GPU = 3,
+  DISABLED_HAS_GPU = 4,
+  UNAVAILABLE_NO_GPU = 5,
+  DOWNLOADABLE_NO_GPU = 6,
+  DOWNLOADING_NO_GPU = 7,
+  AVAILABLE_NO_GPU = 8,
+  DISABLED_NO_GPU = 9,
+  MAX_VALUE = 10,
 }

@@ -550,5 +550,6 @@ export const enum EnumeratedHistogram {
   LighthouseCategoryUsed = 'DevTools.LighthouseCategoryUsed',
   SwatchActivated = 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged = 'DevTools.AnimationPlaybackRateChanged',
+  BuiltInAiAvailability = 'DevTools.BuiltInAiAvailability',
   // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 }

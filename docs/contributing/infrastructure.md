@@ -68,6 +68,27 @@ https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main/recipes
 and upload a CL for
 [`chromium/tools/build`](https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main).
 
+It's good practice to also manually test your recipes. You can test your recipe
+changes against a build that was performed with the same recipes. To do so
+follow these steps:
+- authenticate with `led auth-login`
+- select a particular build that ran with your target recipe ([example](https://ci.chromium.org/ui/p/devtools-frontend/builders/try/dtf_linux_dbg/14161))
+- got to Infra tab and collect the Buildbucket id (8700153319150087425 for the example above)
+- run `led get-build --real-build 8700153319150087425 | led edit-recipe-bundle | led edit-system -p 25 | led launch` while in your local recipe checkout
+- collect the output link to your test build and verify that you got the expected result
+
+## Pin older version of DevTools recipes to a branch
+
+Updating a recipe that depends on DevTools repo recent changes can break the
+build in beta/stable/extended branches. If those changes cannot be back-merged
+into the branches you can pin the older version of the recipe to the branches in
+infra/config.
+
+To do so update the `legacy_recipe` config in `definitions.star` with the number
+of the last branch you need the old version of the recipe to run on and with the
+revision hash of that version. Branches with number higher than the one you
+configured will run ToT recipe version. [Example](https://crrev.com/c/7003685)
+
 ## Updating test commands in the infrastructure
 
 The DevTools recipes are defined in
@@ -227,6 +248,17 @@ Below is a detailed description of what happens in such a build:
     run was unsuccessful
   - fail the builder if tests failed in the deflaking phase
   - otherwise report build as passing
+
+## Skip flake detection
+
+Test that are already flaky can end up being updated in CLs that do not deal
+with the original flakiness nor can be blamed for introducing or increasing the
+flakiness of the test. However CQ builder will fail in Flake Detection steps
+because they picked up the test as it was being touched.
+
+You can skip Flake Detection for your tests by adding the `Skip-Flake-Detection`
+CL footer (see example [CL](https://crrev.com/c/6994031)). Make sure you use the
+full path to your test.
 
 ### Common build failures
 

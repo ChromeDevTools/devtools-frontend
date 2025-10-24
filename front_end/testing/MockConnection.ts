@@ -12,12 +12,13 @@ import {cleanTestDOM} from './DOMHooks.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
 import {setMockResourceTree} from './ResourceTreeHelpers.js';
 
-export type ProtocolCommand = keyof ProtocolMapping.Commands;
-export type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
-export type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
-export type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
-    Omit<ProtocolResponse<C>, 'getError'>|{getError(): string}|
-    PromiseLike<Omit<ProtocolResponse<C>, 'getError'>|{getError(): string}>;
+type ProtocolCommand = keyof ProtocolMapping.Commands;
+type CommandParams<C extends keyof ProtocolMapping.Commands> = ProtocolClient.CDPConnection.CommandParams<C>;
+type CommandResult<C extends keyof ProtocolMapping.Commands> = ProtocolClient.CDPConnection.CommandResult<C>;
+
+export type ProtocolCommandHandler<C extends keyof ProtocolMapping.Commands> = (param: CommandParams<C>) =>
+    Omit<CommandResult<C>, 'getError'>|{getError(): string}|
+    PromiseLike<Omit<CommandResult<C>, 'getError'>|{getError(): string}>;
 export type MessageCallback = (result: string|Object) => void;
 interface Message {
   id: number;

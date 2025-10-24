@@ -125,6 +125,7 @@ devtools_ui_module("unittests") {
     "LiveMetricsView.test.ts",
     "MetricCard.test.ts",
     "NetworkRequestDetails.test.ts",
+    "NetworkRequestTooltip.test.ts",
     "NetworkThrottlingSelector.test.ts",
     "OriginMap.test.ts",
     "RelatedInsightChips.test.ts",

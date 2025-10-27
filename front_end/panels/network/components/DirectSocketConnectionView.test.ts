@@ -196,7 +196,7 @@ describeWithEnvironment('view', () => {
       onCopyRow: () => {}
     };
 
-    view(viewInput, target);
+    view(viewInput, undefined, target);
     await assertScreenshot('direct_socket_connection_view/all_categories_open.png');
   });
 
@@ -221,7 +221,7 @@ describeWithEnvironment('view', () => {
       onCopyRow: () => {}
     };
 
-    view(viewInput, target);
+    view(viewInput, undefined, target);
     await assertScreenshot('direct_socket_connection_view/all_categories_open_values_absent.png');
   });
 
@@ -247,7 +247,7 @@ describeWithEnvironment('view', () => {
       onCopyRow: () => {}
     };
 
-    view(viewInput, target);
+    view(viewInput, undefined, target);
     await assertScreenshot('direct_socket_connection_view/all_categories_closed.png');
   });
 });

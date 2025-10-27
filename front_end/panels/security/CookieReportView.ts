@@ -196,17 +196,8 @@ export interface CookieReportNodeData {
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-
-export class CookieReportView extends UI.Widget.VBox {
-  #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
-  namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
-  #cookieRows = new Map<string, IssuesManager.CookieIssue.CookieReportInfo>();
-  #view: View;
-  filterItems: UI.FilterBar.Item[] = [];
-  searchText: string;
-
-  constructor(element?: HTMLElement, view: View = (input, output, target) => {
-    // clang-format off
+const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
     render(html `
         <div class="report overflow-auto">
             <div class="header">
@@ -283,9 +274,19 @@ export class CookieReportView extends UI.Widget.VBox {
             }
 
         </div>
-    `, target, {host: this});
-    // clang-format on
-  }) {
+    `, target);
+  // clang-format on
+};
+
+export class CookieReportView extends UI.Widget.VBox {
+  #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
+  namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
+  #cookieRows = new Map<string, IssuesManager.CookieIssue.CookieReportInfo>();
+  #view: View;
+  filterItems: UI.FilterBar.Item[] = [];
+  searchText: string;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(cookieReportViewStyles);

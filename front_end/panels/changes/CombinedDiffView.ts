@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -101,6 +100,18 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
   // clang-format on
 }
 
+const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  Lit.render(
+      html`
+      <div class="combined-diff-view">
+        ${input.singleDiffViewInputs.map(singleDiffViewInput => renderSingleDiffView(singleDiffViewInput))}
+      </div>
+    `,
+      target);
+  // clang-format on
+};
+
 export class CombinedDiffView extends UI.Widget.Widget {
   /**
    * Ignores urls that start with any in the list
@@ -113,19 +124,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
   #copiedFiles: Record<string, boolean> = {};
   #view: View;
   #viewOutput: ViewOutput = {};
-  constructor(element?: HTMLElement, view: View = (input, output, target) => {
-    output.scrollToSelectedDiff = () => {
-      target.querySelector('details.selected')?.scrollIntoView();
-    };
-
-    Lit.render(
-        html`
-      <div class="combined-diff-view">
-        ${input.singleDiffViewInputs.map(singleDiffViewInput => renderSingleDiffView(singleDiffViewInput))}
-      </div>
-    `,
-        target, {host: target});
-  }) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.registerRequiredCSS(combinedDiffViewStyles);
     this.#view = view;

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -112,9 +110,9 @@ export interface ViewInput {
   onCopyRow: () => void;
 }
 
-export type View = (input: ViewInput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-export const DEFAULT_VIEW: View = (input, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   function isCategoryOpen(name: string): boolean {
     return input.openCategories.includes(name);
   }
@@ -203,7 +201,7 @@ export const DEFAULT_VIEW: View = (input, target) => {
     ${renderCategory(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
     ${renderCategory(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
     ${socketInfo.openInfo ? renderCategory(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
-  `, target, {host: input});
+  `, target);
   // clang-format on
 };
 
@@ -278,7 +276,7 @@ export class DirectSocketConnectionView extends UI.Widget.Widget {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
       }
     };
-    this.#view(viewInput, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   #setIsOpen(categoryName: string, open: boolean): void {

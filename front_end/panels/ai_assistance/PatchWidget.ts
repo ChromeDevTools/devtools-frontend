@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
@@ -187,42 +186,8 @@ export interface ViewOutput {
 }
 
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-
-export class PatchWidget extends UI.Widget.Widget {
-  changeSummary = '';
-  changeManager: AiAssistanceModel.ChangeManager.ChangeManager|undefined;
-  // Whether the user completed first run experience dialog or not.
-  #aiPatchingFreCompletedSetting =
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
-  #projectIdSetting =
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', '');
-  #view: View;
-  #viewOutput: ViewOutput = {};
-  #aidaClient: Host.AidaClient.AidaClient;
-  #applyPatchAbortController?: AbortController;
-  #project?: Workspace.Workspace.Project;
-  #patchSources?: string;
-  #savedToDisk?: boolean;
-  #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-  #patchSuggestionState = PatchSuggestionState.INITIAL;
-  #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
-  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  #automaticFileSystem =
-      Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().automaticFileSystem;
-  #applyToDisconnectedAutomaticWorkspace = false;
-  // `rpcId` from the `applyPatch` request
-  #rpcId: Host.AidaClient.RpcGlobalId|null = null;
-
-  constructor(element?: HTMLElement, view?: View, opts?: {
-    aidaClient: Host.AidaClient.AidaClient,
-  }) {
-    super(element);
-    this.#aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
-    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-
-    // clang-format off
-    this.#view = view ?? ((input, output, target) => {
+const DEFAULT_VIEW: View =
+    (input, output, target) => {
       if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
         return;
       }
@@ -428,9 +393,43 @@ export class PatchWidget extends UI.Widget.Widget {
           </details>
         `;
 
-      render(template, target, {host: target});
-    });
-    // clang-format on
+      render(template, target);
+    };
+
+export class PatchWidget extends UI.Widget.Widget {
+  changeSummary = '';
+  changeManager: AiAssistanceModel.ChangeManager.ChangeManager|undefined;
+  // Whether the user completed first run experience dialog or not.
+  #aiPatchingFreCompletedSetting =
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
+  #projectIdSetting =
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', '');
+  #view: View;
+  #viewOutput: ViewOutput = {};
+  #aidaClient: Host.AidaClient.AidaClient;
+  #applyPatchAbortController?: AbortController;
+  #project?: Workspace.Workspace.Project;
+  #patchSources?: string;
+  #savedToDisk?: boolean;
+  #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
+  #patchSuggestionState = PatchSuggestionState.INITIAL;
+  #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  #automaticFileSystem =
+      Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().automaticFileSystem;
+  #applyToDisconnectedAutomaticWorkspace = false;
+  // `rpcId` from the `applyPatch` request
+  #rpcId: Host.AidaClient.RpcGlobalId|null = null;
+
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW, opts?: {
+    aidaClient: Host.AidaClient.AidaClient,
+  }) {
+    super(element);
+    this.#aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
+    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    this.#view = view;
+
     this.requestUpdate();
   }
 

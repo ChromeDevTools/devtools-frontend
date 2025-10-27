@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/components/adorners/adorners.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
@@ -250,7 +249,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
             </div>
           </div>
         </main>
-      `, target, {host: this});
+      `, target);
     // clang-format on
     return;
   }
@@ -287,7 +286,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
           ${renderFilledFields()}
         </div>
       </main>
-    `, target, {host: this});
+    `, target);
   // clang-format on
 };
 

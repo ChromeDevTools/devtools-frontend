@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/components/switch/switch.js';
 import '../../ui/components/cards/cards.js';
@@ -136,7 +135,7 @@ export interface ViewInput {
 }
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
-export const DEFAULT_VIEW: View = (input, _, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   const {status} = input;
   const statusText = status ? i18nString(UIStrings[status]) : i18nString(UIStrings.statusUnknown);
 

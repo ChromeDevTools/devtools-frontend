@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 import '../../ui/components/linkifier/linkifier.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
@@ -125,24 +123,9 @@ interface ViewInput {
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
-export class TimelineSelectorStatsView extends UI.Widget.VBox {
-  #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
-  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
-  /**
-   * We store the last event (or array of events) that we renderered. We do
-   * this because as the user zooms around the panel this view is updated,
-   * however if the set of events that are populating the view is the same as it
-   * was the last time, we can bail without doing any re-rendering work.
-   * If the user views a single event, this will be set to that single event, but if they are viewing a range of events, this will be set to an array.
-   * If it's null, that means we have not rendered yet.
-   */
-  #lastStatsSourceEventOrEvents: Trace.Types.Events.RecalcStyle|Trace.Types.Events.RecalcStyle[]|null = null;
-  #view: View;
-  #timings: SelectorTiming[] = [];
-
-  constructor(parsedTrace: Trace.TraceModel.ParsedTrace|null, view: View = (input, _, target) => {
-    render(
-        html`
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  render(
+      html`
       <devtools-data-grid striped name=${i18nString(UIStrings.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -153,7 +136,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             </th>
             <th id=${SelectorTimingsKey.InvalidationCount} weight="1.5" sortable hideable>
               <span title=${i18nString(UIStrings.invalidationCountExplanation)}>${
-            i18nString(UIStrings.invalidationCount)}</span>
+          i18nString(UIStrings.invalidationCount)}</span>
             </th>
             <th id=${SelectorTimingsKey.MatchAttempts} weight="1" sortable hideable align="right">
               <span title=${i18nString(UIStrings.matchAttemptsExplanation)}>
@@ -165,7 +148,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             </th>
             <th id=${SelectorTimingsKey.RejectPercentage} weight="1" sortable hideable align="right">
               <span title=${i18nString(UIStrings.slowPathNonMatchesExplanation)}>${
-            i18nString(UIStrings.slowPathNonMatches)}</span>
+          i18nString(UIStrings.slowPathNonMatches)}</span>
             </th>
             <th id=${SelectorTimingsKey.Selector} weight="3" sortable hideable>
               <span title=${i18nString(UIStrings.selectorExplanation)}>
@@ -177,15 +160,15 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             </th>
           </tr>
           ${input.timings.map(timing => {
-          const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
-          const slowPathNonMatches =
-              (nonMatches ? 1.0 - timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 0) * 100;
-          const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
-          const locations = timing.locations;
-          const locationMessage = locations ? null :
-              locations === null            ? '' :
-                                              i18nString(UIStrings.unableToLinkViaStyleSheetId, {PH1: styleSheetId});
-          return html`<tr>
+        const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
+        const slowPathNonMatches =
+            (nonMatches ? 1.0 - timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 0) * 100;
+        const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
+        const locations = timing.locations;
+        const locationMessage = locations ? null :
+            locations === null            ? '' :
+                                            i18nString(UIStrings.unableToLinkViaStyleSheetId, {PH1: styleSheetId});
+        return html`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1000.0).toFixed(3)}
             </td>
@@ -201,17 +184,34 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
              ${timing[SelectorTimingsKey.Selector]}
             </td>
             <td data-value=${styleSheetId}>${
-              locations ? html`${locations.map((location, itemIndex) => html`
+            locations ? html`${locations.map((location, itemIndex) => html`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? ',' : ''}`)}` :
-                          locationMessage}
+                        locationMessage}
             </td>
           </tr>`;
-        })}
+      })}
         </table>
       </devtools-data-grid>`,
-        target, {host: this});
-  }) {
+      target);
+};
+
+export class TimelineSelectorStatsView extends UI.Widget.VBox {
+  #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
+  /**
+   * We store the last event (or array of events) that we renderered. We do
+   * this because as the user zooms around the panel this view is updated,
+   * however if the set of events that are populating the view is the same as it
+   * was the last time, we can bail without doing any re-rendering work.
+   * If the user views a single event, this will be set to that single event, but if they are viewing a range of events, this will be set to an array.
+   * If it's null, that means we have not rendered yet.
+   */
+  #lastStatsSourceEventOrEvents: Trace.Types.Events.RecalcStyle|Trace.Types.Events.RecalcStyle[]|null = null;
+  #view: View;
+  #timings: SelectorTiming[] = [];
+
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace|null, view: View = DEFAULT_VIEW) {
     super({jslog: `${VisualLogging.pane('selector-stats').track({resize: true})}`});
     this.registerRequiredCSS(timelineSelectorStatsViewStyles);
 

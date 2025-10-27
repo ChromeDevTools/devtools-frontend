@@ -38,7 +38,6 @@ export class SoftDropDown<T> implements ListDelegate<T> {
   private list: ListControl<T>;
   private rowHeight: number;
   private width: number;
-  private listWasShowing200msAgo: boolean;
 
   constructor(model: ListModel<T>, delegate: Delegate<T>, jslogContext?: string) {
     this.delegate = delegate;
@@ -79,9 +78,8 @@ export class SoftDropDown<T> implements ListDelegate<T> {
         'jslog',
         `${VisualLogging.menu().parent('mapped').track({resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown'})}`);
 
-    this.listWasShowing200msAgo = false;
     this.element.addEventListener('mousedown', event => {
-      if (this.listWasShowing200msAgo) {
+      if (this.glassPane.isShowing()) {
         this.hide(event);
       } else if (!this.element.disabled) {
         this.show(event);
@@ -96,9 +94,6 @@ export class SoftDropDown<T> implements ListDelegate<T> {
         return;
       }
 
-      if (!this.listWasShowing200msAgo) {
-        return;
-      }
       this.selectHighlightedItem();
       if (event.target instanceof Element && event.target?.parentElement) {
         // hide() will consume the mouseup event and click won't be triggered
@@ -122,9 +117,6 @@ export class SoftDropDown<T> implements ListDelegate<T> {
       this.list.selectItem(this.selectedItem);
     }
     event.consume(true);
-    window.setTimeout(() => {
-      this.listWasShowing200msAgo = true;
-    }, 200);
   }
 
   private updateGlasspaneSize(): void {
@@ -134,9 +126,6 @@ export class SoftDropDown<T> implements ListDelegate<T> {
   }
 
   private hide(event: Event): void {
-    window.setTimeout(() => {
-      this.listWasShowing200msAgo = false;
-    }, 200);
     this.glassPane.hide();
     this.list.selectItem(null);
     ARIAUtils.setExpanded(this.element, false);

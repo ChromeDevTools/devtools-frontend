@@ -12,8 +12,6 @@ describe('The Elements tab', () => {
     await inspectedPage.goToResource('recorder/prerender.html');
     await waitForElementWithPartialText('The next page is prerendered', devToolsPage);
     await devToolsPage.click('aria/Page: Main');
-    // work around listWasShowing200msAgo in SoftDropDown.ts.
-    await new Promise(resolve => setTimeout(resolve, 250));
     await devToolsPage.click('aria/prerendered.html prerender');
     await waitForElementWithPartialText('Is this page prerendered?', devToolsPage);
   });

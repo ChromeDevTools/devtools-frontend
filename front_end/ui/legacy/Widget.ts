@@ -125,6 +125,14 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     widget.show(this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
   }
 
+  disconnectedCallback(): void {
+    const widget = Widget.get(this);
+    if (widget) {
+      widget.setHideOnDetach();
+      widget.detach();
+    }
+  }
+
   override appendChild<T extends Node>(child: T): T {
     if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
       Widget.getOrCreateWidget(child).show(this);

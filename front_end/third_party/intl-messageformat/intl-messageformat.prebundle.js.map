@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["intl-messageformat.prebundle.ts"],
+  "sourcesContent": ["// Copyright 2021 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport IntlMessageFormat from './package/intl-messageformat.esm.js';\nexport {IntlMessageFormat};\n"],
+  "mappings": ";AAIA,OAAO,uBAAuB;AAC9B,SAAQ;",
+  "names": []
+}

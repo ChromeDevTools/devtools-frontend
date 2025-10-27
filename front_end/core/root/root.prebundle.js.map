@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["root.prebundle.ts"],
+  "sourcesContent": ["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\nimport * as Runtime from './Runtime.js';\n\nexport {Runtime};\n"],
+  "mappings": ";AAGA,YAAY,aAAa;AAEzB,SAAQ;",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../../front_end/ui/components/helpers/get-root-node.ts"],
+  "sourcesContent": ["// Copyright 2021 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Function to return the root node of a given node.\n */\nexport function getRootNode(node: Node): ShadowRoot|Document {\n  const potentialRoot = node.getRootNode();\n  if (!(potentialRoot instanceof Document || potentialRoot instanceof ShadowRoot)) {\n    throw new Error(`Expected root of widget to be a document or shadowRoot, but was \"${potentialRoot.nodeName}\"`);\n  }\n  return potentialRoot;\n}\n"],
+  "mappings": ";AAOO,gBAAS,YAAY,MAAiC;AAC3D,QAAM,gBAAgB,KAAK,YAAY;AACvC,MAAI,EAAE,yBAAyB,YAAY,yBAAyB,aAAa;AAC/E,UAAM,IAAI,MAAM,oEAAoE,cAAc,QAAQ,GAAG;AAAA,EAC/G;AACA,SAAO;AACT;",
+  "names": []
+}

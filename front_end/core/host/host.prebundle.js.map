@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["host.prebundle.ts"],
+  "sourcesContent": ["// Copyright 2019 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as AidaClient from './AidaClient.js';\nimport * as GdpClient from './GdpClient.js';\nimport * as InspectorFrontendHost from './InspectorFrontendHost.js';\nimport * as InspectorFrontendHostAPI from './InspectorFrontendHostAPI.js';\nimport * as Platform from './Platform.js';\nimport * as ResourceLoader from './ResourceLoader.js';\nimport * as UserMetrics from './UserMetrics.js';\n\nexport {\n  AidaClient,\n  GdpClient,\n  InspectorFrontendHost,\n  InspectorFrontendHostAPI,\n  Platform,\n  ResourceLoader,\n  UserMetrics,\n};\n\nexport const userMetrics = new UserMetrics.UserMetrics();\n"],
+  "mappings": ";AAIA,YAAY,gBAAgB;AAC5B,YAAY,eAAe;AAC3B,YAAY,2BAA2B;AACvC,YAAY,8BAA8B;AAC1C,YAAY,cAAc;AAC1B,YAAY,oBAAoB;AAChC,YAAY,iBAAiB;AAE7B;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA;AAGK,aAAM,cAAc,IAAI,YAAY,YAAY;",
+  "names": []
+}

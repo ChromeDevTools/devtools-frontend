@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../front_end/core/common/ReturnToPanel.ts"],
+  "sourcesContent": ["// Copyright 2025 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Set instance of this class as flavor to mark what panel triggered the\n * 'elements.toggle-element-search' action if it was not the elements panel.\n * This will cause specified panel to be made visible instead of the elements\n * panel after the inspection is done.\n **/\nexport class ReturnToPanelFlavor {\n  readonly viewId: string;\n\n  constructor(viewId: string) {\n    this.viewId = viewId;\n  }\n}\n"],
+  "mappings": ";AAUO,aAAM,oBAAoB;AAAA,EACtB;AAAA,EAET,YAAY,QAAgB;AAC1B,SAAK,SAAS;AAAA,EAChB;AACF;",
+  "names": []
+}

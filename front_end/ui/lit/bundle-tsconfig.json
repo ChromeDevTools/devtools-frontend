@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/ui/lit"},"files":["../../../../../../front_end/ui/lit/lit.ts"],"references":[{"path":"./lit-tsconfig.json"}]}

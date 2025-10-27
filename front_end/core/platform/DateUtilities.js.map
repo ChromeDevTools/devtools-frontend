@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../front_end/core/platform/DateUtilities.ts"],
+  "sourcesContent": ["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nexport const isValid = (date: Date): boolean => {\n  return !isNaN(date.getTime());\n};\n\nexport const toISO8601Compact = (date: Date): string => {\n  function leadZero(x: number): string {\n    return (x > 9 ? '' : '0') + x;\n  }\n  return date.getFullYear() + leadZero(date.getMonth() + 1) + leadZero(date.getDate()) + 'T' +\n      leadZero(date.getHours()) + leadZero(date.getMinutes()) + leadZero(date.getSeconds());\n};\n"],
+  "mappings": ";AAIO,aAAM,UAAU,CAAC,SAAwB;AAC9C,SAAO,CAAC,MAAM,KAAK,QAAQ,CAAC;AAC9B;AAEO,aAAM,mBAAmB,CAAC,SAAuB;AACtD,WAAS,SAAS,GAAmB;AACnC,YAAQ,IAAI,IAAI,KAAK,OAAO;AAAA,EAC9B;AACA,SAAO,KAAK,YAAY,IAAI,SAAS,KAAK,SAAS,IAAI,CAAC,IAAI,SAAS,KAAK,QAAQ,CAAC,IAAI,MACnF,SAAS,KAAK,SAAS,CAAC,IAAI,SAAS,KAAK,WAAW,CAAC,IAAI,SAAS,KAAK,WAAW,CAAC;AAC1F;",
+  "names": []
+}

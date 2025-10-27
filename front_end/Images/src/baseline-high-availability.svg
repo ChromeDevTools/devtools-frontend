@@ -1,0 +1,17 @@
+<svg width="18" height="10" viewBox="0 0 540 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baseline icons CC BY-ND licensed: https://web-platform-dx.github.io/web-features/name-and-logo-usage-guidelines/ -->
+  <style>
+    .green-shape {
+      fill: #C4EED0; /* Light mode */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .green-shape {
+        fill: #125225; /* Dark mode */
+      }
+    }
+  </style>
+  <path d="M420 30L390 60L480 150L390 240L330 180L300 210L390 300L540 150L420 30Z" class="green-shape"/>
+  <path d="M150 0L30 120L60 150L150 60L210 120L240 90L150 0Z" class="green-shape"/>
+  <path d="M390 0L420 30L150 300L0 150L30 120L150 240L390 0Z" fill="#1EA446"/>
+</svg>

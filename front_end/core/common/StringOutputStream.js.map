@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../front_end/core/common/StringOutputStream.ts"],
+  "sourcesContent": ["// Copyright 2015 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nexport interface OutputStream {\n  write(data: string, endOfFile?: boolean): Promise<void>;\n  close(): Promise<void>;\n}\n\nexport class StringOutputStream implements OutputStream {\n  #data: string;\n  constructor() {\n    this.#data = '';\n  }\n\n  async write(chunk: string): Promise<void> {\n    this.#data += chunk;\n  }\n\n  async close(): Promise<void> {\n  }\n\n  data(): string {\n    return this.#data;\n  }\n}\n"],
+  "mappings": ";AASO,aAAM,mBAA2C;AAAA,EACtD;AAAA,EACA,cAAc;AACZ,SAAK,QAAQ;AAAA,EACf;AAAA,EAEA,MAAM,MAAM,OAA8B;AACxC,SAAK,SAAS;AAAA,EAChB;AAAA,EAEA,MAAM,QAAuB;AAAA,EAC7B;AAAA,EAEA,OAAe;AACb,WAAO,KAAK;AAAA,EACd;AACF;",
+  "names": []
+}

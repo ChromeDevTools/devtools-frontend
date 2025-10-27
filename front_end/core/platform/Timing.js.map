@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../front_end/core/platform/Timing.ts"],
+  "sourcesContent": ["// Copyright 2023 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport type {Brand} from './Brand.js';\n\nexport type Seconds = Brand<number, 'Seconds'>;\nexport type MilliSeconds = Brand<number, 'MilliSeconds'>;\nexport type MicroSeconds = Brand<number, 'MicroSeconds'>;\n\nexport function milliSecondsToSeconds(x: MilliSeconds): Seconds {\n  return (x / 1000) as Seconds;\n}\n\nexport function microSecondsToMilliSeconds(x: MicroSeconds): MilliSeconds {\n  return (x / 1000) as MilliSeconds;\n}\n"],
+  "mappings": ";AAUO,gBAAS,sBAAsB,GAA0B;AAC9D,SAAQ,IAAI;AACd;AAEO,gBAAS,2BAA2B,GAA+B;AACxE,SAAQ,IAAI;AACd;",
+  "names": []
+}

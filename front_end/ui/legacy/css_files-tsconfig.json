@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "checkboxTextLabel.css.js",
+        "confirmDialog.css.js",
+        "dialog.css.js",
+        "dropTarget.css.js",
+        "emptyWidget.css.js",
+        "filter.css.js",
+        "glassPane.css.js",
+        "infobar.css.js",
+        "inspectorCommon.css.js",
+        "listWidget.css.js",
+        "popover.css.js",
+        "progressIndicator.css.js",
+        "remoteDebuggingTerminatedScreen.css.js",
+        "reportView.css.js",
+        "rootView.css.js",
+        "searchableView.css.js",
+        "smallBubble.css.js",
+        "softContextMenu.css.js",
+        "softDropDown.css.js",
+        "softDropDownButton.css.js",
+        "splitWidget.css.js",
+        "suggestBox.css.js",
+        "tabbedPane.css.js",
+        "targetCrashedScreen.css.js",
+        "textPrompt.css.js",
+        "toolbar.css.js",
+        "treeoutline.css.js",
+        "viewContainers.css.js"
+    ]
+}

@@ -1,0 +1,61 @@
+/*
+* Copyright 2025 The Chromium Authors
+* Use of this source code is governed by a BSD-style license that can be
+* found in the LICENSE file.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+  display: grid;
+  grid-template-columns: var(--sys-size-28) var(--sys-size-1) 1fr;
+  margin: 0;
+}
+
+.sidebar {
+  grid-column: 1;
+  overflow-y: auto;
+  padding: var(--sys-size-6);
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.sidebar h1 {
+  text-align: left;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-6);
+  width: 100%;
+  margin: 0 0 var(--sys-size-6) 0;
+  font-size: var(--sys-size-9);
+}
+
+.divider {
+  grid-column: 2;
+  cursor: col-resize;
+  background-color: var(--sys-color-divider);
+}
+
+.main-content {
+  grid-column: 3;
+  overflow-y: auto;
+  padding: var(--sys-size-9);
+}
+
+.components-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.components-list a {
+  display: block;
+  padding: var(--sys-size-6);
+  text-decoration: none;
+  color: var(--sys-color-primary);
+  text-transform: capitalize;
+  box-shadow: var(--sys-elevation-level1);
+  margin-bottom: var(--sys-size-6);
+}
+
+.components-list a:hover {
+  box-shadow: var(--sys-elevation-level2);
+}

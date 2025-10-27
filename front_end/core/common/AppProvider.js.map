@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../front_end/core/common/AppProvider.ts"],
+  "sourcesContent": ["// Copyright 2019 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as Root from '../root/root.js';\n\nimport type {App} from './App.js';\n\nexport interface AppProvider {\n  createApp(): App;\n}\n\nconst registeredAppProvider: AppProviderRegistration[] = [];\n\nexport function registerAppProvider(registration: AppProviderRegistration): void {\n  registeredAppProvider.push(registration);\n}\nexport function getRegisteredAppProviders(): AppProviderRegistration[] {\n  return registeredAppProvider\n      .filter(\n          provider => Root.Runtime.Runtime.isDescriptorEnabled({experiment: undefined, condition: provider.condition}))\n      .sort((firstProvider, secondProvider) => {\n        const order1 = firstProvider.order || 0;\n        const order2 = secondProvider.order || 0;\n        return order1 - order2;\n      });\n}\nexport interface AppProviderRegistration {\n  loadAppProvider: () => Promise<AppProvider>;\n  condition?: Root.Runtime.Condition;\n  order: number;\n}\n"],
+  "mappings": ";AAIA,YAAY,UAAU;AAQtB,MAAM,wBAAmD,CAAC;AAEnD,gBAAS,oBAAoB,cAA6C;AAC/E,wBAAsB,KAAK,YAAY;AACzC;AACO,gBAAS,4BAAuD;AACrE,SAAO,sBACF;AAAA,IACG,cAAY,KAAK,QAAQ,QAAQ,oBAAoB,EAAC,YAAY,QAAW,WAAW,SAAS,UAAS,CAAC;AAAA,EAAC,EAC/G,KAAK,CAAC,eAAe,mBAAmB;AACvC,UAAM,SAAS,cAAc,SAAS;AACtC,UAAM,SAAS,eAAe,SAAS;AACvC,WAAO,SAAS;AAAA,EAClB,CAAC;AACP;",
+  "names": []
+}

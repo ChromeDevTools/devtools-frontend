@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["i18n.prebundle.ts"],
+  "sourcesContent": ["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as ByteUtilities from './ByteUtilities.js';\nimport * as DevToolsLocale from './DevToolsLocale.js';\nimport * as i18n from './i18nImpl.js';\nimport * as NumberFormatter from './NumberFormatter.js';\nimport * as TimeUtilities from './time-utilities.js';\n\nexport {\n  ByteUtilities,\n  DevToolsLocale,\n  i18n,\n  NumberFormatter,\n  TimeUtilities,\n};\n"],
+  "mappings": ";AAIA,YAAY,mBAAmB;AAC/B,YAAY,oBAAoB;AAChC,YAAY,UAAU;AACtB,YAAY,qBAAqB;AACjC,YAAY,mBAAmB;AAE/B;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA;",
+  "names": []
+}

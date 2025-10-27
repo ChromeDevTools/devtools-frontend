@@ -422,7 +422,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       if (domModel.parentModel()) {
         continue;
       }
-      if (!this.rootDOMNode) {
+      if (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel) {
         if (domModel.existingDocument()) {
           this.rootDOMNode = domModel.existingDocument();
           this.onDocumentUpdated(domModel);

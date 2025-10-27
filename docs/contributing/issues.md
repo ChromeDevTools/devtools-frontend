@@ -61,53 +61,29 @@ Tracker]. This section provides an overview of the Chromium DevTools specifics.
 ### Issue types
 
 [crbug] supports a wide range of different issue types, with ambiguous semantics.
-For Chromium DevTools we explicitly limit the set of types we use and give them
-well-defined semantics:
+For the Chromium DevTools component tree ([Chromium>Platform>DevTools]) we
+explicitly limit the set of types we use and give them well-defined semantics:
 
 | Issue Type           | Meaning                                    |
 | -------------------- | ------------------------------------------ |
 | **Bug**              | The behavior does not match what is supposed to occur or what is documented. The product does not work as expected. |
 | **Feature Request**  | The product works as intended but could be improved. |
 | **Internal Cleanup** | This is typically a maintenance issue. The issue has no effect on the behavior of a product, but addressing it may allow more intuitive interaction. |
-| **Vulnerability**    | Security vulnerabilities subject to the handling outlined in Google's [Vulnerability Priority Guidelines](http://go/vulnerability-slo). |
 | **Privacy Issue**    | Privacy issues subject to the handling outlined in Google's [Privacy Issue Bugs](http://go/pib-slo). |
 | **Task**             | A small unit of work.                      |
-| **Project**          | A goal-driven effort with a finite start and end, focused on creating a unique product, service, or result. |
-| **Feature**          | A collection of work that provides a specific value to the user. |
+| **Vulnerability**    | Security vulnerabilities subject to the handling outlined in Google's [Vulnerability Priority Guidelines](http://go/vulnerability-slo). |
 
-The first 6 (**Bug** to **Task**) are used for day-to-day work and for issues
-reported by users. The last 2 (**Project** and **Feature**) are used to organize
-the other types of issues for the purpose of planning (ahead). We explicitly
-don't use Customer Issue, Process, Milestone, Epic, and Story within Chrome DevTools.
+These are used to track day-to-day work, primarily issues reported by users. We
+explicitly don't use the Customer Issue, Process, and Story types, because the
+former is already sufficiently covered with **Bug**, **Privacy Issue** and
+**Vulnerability**, while the latter two are basically just special sub types of
+**Task** and this fine-grained distinction would add more confusion than good.
+Any use of the disallowed issue types will be corrected automatically by the
+[Blunderbuss](http://go/blunderbuss) bot.
 
-*** promo
-**BEST PRACTICE:** Limit the nesting of **Project** and **Feature** to the bare
-minimum needed, and use **Task** for small chunks of work.
-***
-
-### Parent-Child Relationships and Blocking
-
-*** note
-**TL;DR:**
-
--  Prefer parent-child relationships to split work into smaller chunks.
--  Prefer blocking to express dependencies between independent / adjacent
-issues.
-***
-
-When splitting up work into smaller chunks or when scoping a project that
-encompasses multiple bugs or feature requests, favor to express this via a
-parent-child relationship. Consider the example of a CSS Nesting:
-
-1.  This should start with an issue of type Feature which is about adding CSS
-    Nesting support to Chromium DevTools.
-1.  This Feature has child issues of type Task, which are concerned with adding
-    CSS Nesting support to the various parts of DevTools involved, for example
-    the CDP (Chrome DevTools Protocol), the Elements panel, the Sources panel,
-    and so forth.
-1.  Over the course of the project there'll likely also be Feature Requests and
-    Bugs from internal and external developers, which should also be parented
-    under the CSS Nesting Feature issue.
+We also explicitly disallow goal-type issues in the [Chromium>Platform>DevTools]
+component tree. Check out [go/chrome-tooling/project-management] for guidance
+how to manage goals using **Feature** and **Project** (_Googlers-only_).
 
 ### Priorities
 
@@ -265,6 +241,8 @@ refreshed every 2-4 hours, to see SLO compliance for a given lead.
   [Chrome SLO Policy]: https://b.corp.google.com/slos/1834
   [go/chrome-slo]: http://go/chrome-slo
   [go/chrome-release-slos]: http://go/chrome-release-slos
+  [go/chrome-tooling/project-management]: http://go/chrome-tooling/project-management
   [Buganizer SLO Compliance]: go/b-slo-compliance
   [TaskFlow]: http://go/chrome-devtools:taskflow
   [TaskFlow Inbox]: http://go/chrome-devtools:taskflow/inbox
+  [Chromium>Platform>DevTools]: https://issues.chromium.org/components/1457055

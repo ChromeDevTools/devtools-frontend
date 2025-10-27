@@ -1,9 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
-import '../../../ui/legacy/legacy.js';
 import '../../../ui/components/icon_button/icon_button.js';
 import './ControlButton.js';
 
@@ -11,6 +9,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Badges from '../../../models/badges/badges.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
@@ -18,7 +17,7 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import createRecordingViewStyles from './createRecordingView.css.js';
 
-const {html, Directives: {ifDefined}} = Lit;
+const {html, Directives: {ifDefined, ref, createRef}} = Lit;
 
 const UIStrings = {
   /**
@@ -103,96 +102,39 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-create-recording-view': CreateRecordingView;
-  }
-  interface HTMLElementEventMap {
-    recordingstarted: RecordingStartedEvent;
-    recordingcancelled: RecordingCancelledEvent;
-  }
+export interface ViewInput {
+  defaultRecordingName: string;
+  recorderSettings?: Models.RecorderSettings.RecorderSettings;
+  error?: Error;
+  startRecording: (name: string, selectorTypes: Models.Schema.SelectorType[], selectorAttribute?: string) => void;
+  onRecordingCancelled: () => void;
+  resetError: () => void;
 }
 
-export class RecordingStartedEvent extends Event {
-  static readonly eventName = 'recordingstarted';
-  name: string;
-  selectorAttribute?: string;
-  selectorTypesToRecord: Models.Schema.SelectorType[];
-
-  constructor(
-      name: string,
-      selectorTypesToRecord: Models.Schema.SelectorType[],
-      selectorAttribute?: string,
-  ) {
-    super(RecordingStartedEvent.eventName, {});
-    this.name = name;
-    this.selectorAttribute = selectorAttribute || undefined;
-    this.selectorTypesToRecord = selectorTypesToRecord;
-  }
+export interface ViewOutput {
+  focusInput?: () => void;
+  triggerFormSubmission?: () => void;
 }
 
-export class RecordingCancelledEvent extends Event {
-  static readonly eventName = 'recordingcancelled';
-  constructor() {
-    super(RecordingCancelledEvent.eventName);
-  }
-}
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+  const {defaultRecordingName, recorderSettings, error, startRecording, onRecordingCancelled, resetError} = input;
 
-export interface CreateRecordingViewData {
-  recorderSettings: Models.RecorderSettings.RecorderSettings;
-}
-
-export class CreateRecordingView extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #defaultRecordingName = '';
-  #error?: Error;
-  #recorderSettings?: Models.RecorderSettings.RecorderSettings;
-
-  constructor() {
-    super();
-    this.setAttribute('jslog', `${VisualLogging.section('create-recording-view')}`);
-  }
-
-  connectedCallback(): void {
-    this.#render();
-    this.#shadow.querySelector('input')?.focus();
-  }
-
-  set data(data: CreateRecordingViewData) {
-    this.#recorderSettings = data.recorderSettings;
-    this.#defaultRecordingName = this.#recorderSettings.defaultTitle;
-  }
-
-  #onKeyDown(event: KeyboardEvent): void {
-    if (this.#error) {
-      this.#error = undefined;
-      this.#render();
-    }
-
-    const keyboardEvent = event;
-    if (keyboardEvent.key === 'Enter') {
-      this.startRecording();
-      event.stopPropagation();
-      event.preventDefault();
-    }
-  }
-
-  startRecording(): void {
-    const nameInput = this.#shadow.querySelector<HTMLInputElement>('#user-flow-name');
-    if (!nameInput) {
-      throw new Error('input#user-flow-name not found');
-    }
-    if (!this.#recorderSettings) {
-      throw new Error('settings not set');
-    }
-
-    if (!nameInput.value.trim()) {
-      this.#error = new Error(i18nString(UIStrings.recordingNameIsRequired));
-      this.#render();
-      return;
-    }
-
-    const selectorTypeElements = this.#shadow.querySelectorAll(
+  // TODO(crbug.com/455531160): move state from input elements into the presenter widget.
+  const selectorTypeToLabel = new Map([
+    [Models.Schema.SelectorType.ARIA, i18nString(UIStrings.selectorTypeARIA)],
+    [Models.Schema.SelectorType.CSS, i18nString(UIStrings.selectorTypeCSS)],
+    [Models.Schema.SelectorType.Text, i18nString(UIStrings.selectorTypeText)],
+    [
+      Models.Schema.SelectorType.XPath,
+      i18nString(UIStrings.selectorTypeXPath),
+    ],
+    [
+      Models.Schema.SelectorType.Pierce,
+      i18nString(UIStrings.selectorTypePierce),
+    ],
+  ]);
+  function getSelectorTypes(): Models.Schema.SelectorType[] {
+    const selectorTypeElements = target.querySelectorAll(
         '.selector-type input[type=checkbox]',
     );
     const selectorTypesToRecord: Models.Schema.SelectorType[] = [];
@@ -203,172 +145,239 @@ export class CreateRecordingView extends HTMLElement {
         selectorTypesToRecord.push(checkboxValue);
       }
     }
-
-    if (!selectorTypesToRecord.includes(Models.Schema.SelectorType.CSS) &&
-        !selectorTypesToRecord.includes(Models.Schema.SelectorType.XPath) &&
-        !selectorTypesToRecord.includes(Models.Schema.SelectorType.Pierce)) {
-      this.#error = new Error(i18nString(UIStrings.includeNecessarySelectors));
-      this.#render();
-      return;
-    }
-
-    for (const selectorType of Object.values(Models.Schema.SelectorType)) {
-      this.#recorderSettings.setSelectorByType(
-          selectorType,
-          selectorTypesToRecord.includes(selectorType),
-      );
-    }
-
-    const selectorAttributeEl = this.#shadow.querySelector(
-                                    '#selector-attribute',
-                                    ) as HTMLInputElement;
-    const selectorAttribute = selectorAttributeEl.value.trim();
-    this.#recorderSettings.selectorAttribute = selectorAttribute;
-
-    this.dispatchEvent(
-        new RecordingStartedEvent(
-            nameInput.value.trim(),
-            selectorTypesToRecord,
-            selectorAttribute,
-            ),
-    );
-    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECORDER_RECORDING_STARTED);
+    return selectorTypesToRecord;
   }
 
-  #dispatchRecordingCancelled(): void {
-    this.dispatchEvent(new RecordingCancelledEvent());
+  const selectorAttributeInputRef = createRef<HTMLInputElement>();
+
+  function getSelectorAttribute(): string|undefined {
+    const selectorAttribute = selectorAttributeInputRef.value?.value.trim();
+    if (!selectorAttribute) {
+      return undefined;
+    }
+    return selectorAttribute;
   }
 
-  #onInputFocus = (): void => {
-    (this.#shadow.querySelector('#user-flow-name') as HTMLInputElement)?.select();
+  const nameInputRef = createRef<HTMLInputElement>();
+
+  function handleStartRecording(): void {
+    startRecording(nameInputRef.value?.value ?? '', getSelectorTypes(), getSelectorAttribute());
+  }
+
+  const onKeyDown = (event: KeyboardEvent): void => {
+    if (error) {
+      resetError();
+    }
+
+    const keyboardEvent = event;
+    if (keyboardEvent.key === 'Enter') {
+      handleStartRecording();
+      event.stopPropagation();
+      event.preventDefault();
+    }
   };
 
-  #render(): void {
-    const selectorTypeToLabel = new Map([
-      [Models.Schema.SelectorType.ARIA, i18nString(UIStrings.selectorTypeARIA)],
-      [Models.Schema.SelectorType.CSS, i18nString(UIStrings.selectorTypeCSS)],
-      [Models.Schema.SelectorType.Text, i18nString(UIStrings.selectorTypeText)],
-      [
-        Models.Schema.SelectorType.XPath,
-        i18nString(UIStrings.selectorTypeXPath),
-      ],
-      [
-        Models.Schema.SelectorType.Pierce,
-        i18nString(UIStrings.selectorTypePierce),
-      ],
-    ]);
-    // clang-format off
-    Lit.render(
-      html`
-        <style>${createRecordingViewStyles}</style>
-        <style>${Input.textInputStyles}</style>
-        <style>${Input.checkboxStyles}</style>
-        <div class="wrapper">
-          <div class="header-wrapper">
-            <h1>${i18nString(UIStrings.createRecording)}</h1>
-            <devtools-button
-              title=${i18nString(UIStrings.cancelRecording)}
-              jslog=${VisualLogging.close().track({click: true})}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ICON,
-                  size: Buttons.Button.Size.SMALL,
-                  iconName: 'cross',
-                } as Buttons.Button.ButtonData
-              }
-              @click=${this.#dispatchRecordingCancelled}
-            ></devtools-button>
-          </div>
-          <label class="row-label" for="user-flow-name">${i18nString(
-            UIStrings.recordingName,
-          )}</label>
-          <input
-            value=${this.#defaultRecordingName}
-            @focus=${this.#onInputFocus}
-            @keydown=${this.#onKeyDown}
-            jslog=${VisualLogging.textField('user-flow-name').track({change: true})}
-            class="devtools-text-input"
-            id="user-flow-name"
-          />
-          <label class="row-label" for="selector-attribute">
-            <span>${i18nString(UIStrings.selectorAttribute)}</span>
-            <x-link
-              class="link" href="https://g.co/devtools/recorder#selector"
-              title=${i18nString(UIStrings.learnMore)}
-              jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
-              <devtools-icon name="help">
-              </devtools-icon>
-            </x-link>
-          </label>
-          <input
-            value=${ifDefined(this.#recorderSettings?.selectorAttribute)}
-            placeholder="data-testid"
-            @keydown=${this.#onKeyDown}
-            jslog=${VisualLogging.textField('selector-attribute').track({change: true})}
-            class="devtools-text-input"
-            id="selector-attribute"
-          />
-          <label class="row-label">
-            <span>${i18nString(UIStrings.selectorTypes)}</span>
-            <x-link
-              class="link" href="https://g.co/devtools/recorder#selector"
-              title=${i18nString(UIStrings.learnMore)}
-              jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
-              <devtools-icon name="help">
-              </devtools-icon>
-            </x-link>
-          </label>
-          <div class="checkbox-container">
-            ${Object.values(Models.Schema.SelectorType).map(selectorType => {
-              const checked =
-                this.#recorderSettings?.getSelectorByType(selectorType);
-              return html`
-                  <label class="checkbox-label selector-type">
-                    <input
-                      @keydown=${this.#onKeyDown}
-                      .value=${selectorType}
-                      jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${selectorType}`)}
-                      ?checked=${checked}
-                      type="checkbox"
-                    />
-                    ${selectorTypeToLabel.get(selectorType) || selectorType}
-                  </label>
-                `;
-            })}
-          </div>
+  const onInputFocus = (): void => {
+    nameInputRef.value?.select();
+  };
 
-          ${
-            this.#error &&
-            html`
-          <div class="error" role="alert">
-            ${this.#error.message}
-          </div>
-        `
-          }
+  output.focusInput = () => {
+    nameInputRef.value?.focus();
+  };
+
+  output.triggerFormSubmission = () => {
+    handleStartRecording();
+  };
+
+  // clang-format off
+  Lit.render(
+    html`
+      <style>${createRecordingViewStyles}</style>
+      <style>${Input.textInputStyles}</style>
+      <style>${Input.checkboxStyles}</style>
+      <div class="wrapper" jslog=${VisualLogging.section('create-recording-view')}>
+        <div class="header-wrapper">
+          <h1>${i18nString(UIStrings.createRecording)}</h1>
+          <devtools-button
+            title=${i18nString(UIStrings.cancelRecording)}
+            jslog=${VisualLogging.close().track({click: true})}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ICON,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'cross',
+              } as Buttons.Button.ButtonData
+            }
+            @click=${onRecordingCancelled}
+          ></devtools-button>
         </div>
-        <div class="footer">
-          <div class="controls">
-            <devtools-control-button
-              @click=${this.startRecording}
-              .label=${i18nString(UIStrings.startRecording)}
-              .shape=${'circle'}
-              jslog=${VisualLogging.action(Actions.RecorderActions.START_RECORDING).track({click: true})}
-              title=${Models.Tooltip.getTooltipForActions(
-                i18nString(UIStrings.startRecording),
-                Actions.RecorderActions.START_RECORDING,
-              )}
-            ></devtools-control-button>
-          </div>
+        <label class="row-label" for="user-flow-name">${i18nString(
+          UIStrings.recordingName,
+        )}</label>
+        <input
+          value=${defaultRecordingName}
+          @focus=${onInputFocus}
+          @keydown=${onKeyDown}
+          jslog=${VisualLogging.textField('user-flow-name').track({change: true})}
+          class="devtools-text-input"
+          id="user-flow-name"
+          ${ref(nameInputRef)}
+        />
+        <label class="row-label" for="selector-attribute">
+          <span>${i18nString(UIStrings.selectorAttribute)}</span>
+          <x-link
+            class="link" href="https://g.co/devtools/recorder#selector"
+            title=${i18nString(UIStrings.learnMore)}
+            jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
+            <devtools-icon name="help">
+            </devtools-icon>
+          </x-link>
+        </label>
+        <input
+          value=${ifDefined(recorderSettings?.selectorAttribute)}
+          placeholder="data-testid"
+          @keydown=${onKeyDown}
+          jslog=${VisualLogging.textField('selector-attribute').track({change: true})}
+          class="devtools-text-input"
+          id="selector-attribute"
+          ${ref(selectorAttributeInputRef)}
+        />
+        <label class="row-label">
+          <span>${i18nString(UIStrings.selectorTypes)}</span>
+          <x-link
+            class="link" href="https://g.co/devtools/recorder#selector"
+            title=${i18nString(UIStrings.learnMore)}
+            jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
+            <devtools-icon name="help">
+            </devtools-icon>
+          </x-link>
+        </label>
+        <div class="checkbox-container">
+          ${Object.values(Models.Schema.SelectorType).map(selectorType => {
+            const checked =
+              recorderSettings?.getSelectorByType(selectorType);
+            return html`
+                <label class="checkbox-label selector-type">
+                  <input
+                    @keydown=${onKeyDown}
+                    .value=${selectorType}
+                    jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${selectorType}`)}
+                    ?checked=${checked}
+                    type="checkbox"
+                  />
+                  ${selectorTypeToLabel.get(selectorType) || selectorType}
+                </label>
+              `;
+          })}
         </div>
-      `,
-      this.#shadow,
-      { host: this },
-    );
-    // clang-format on
+
+        ${
+          error &&
+          html`
+        <div class="error" role="alert">
+          ${error.message}
+        </div>
+      `
+        }
+      </div>
+      <div class="footer">
+        <div class="controls">
+          <devtools-control-button
+            @click=${handleStartRecording}
+            .label=${i18nString(UIStrings.startRecording)}
+            .shape=${'circle'}
+            jslog=${VisualLogging.action(Actions.RecorderActions.START_RECORDING).track({click: true})}
+            title=${Models.Tooltip.getTooltipForActions(
+              i18nString(UIStrings.startRecording),
+              Actions.RecorderActions.START_RECORDING,
+            )}
+          ></devtools-control-button>
+        </div>
+      </div>
+    `,
+    target,
+  );
+  // clang-format on
+};
+
+export class CreateRecordingView extends UI.Widget.Widget {
+  #error?: Error;
+  #view: typeof DEFAULT_VIEW;
+  #output: ViewOutput = {};
+
+  onRecordingStarted:
+      (data: {name: string, selectorTypesToRecord: Models.Schema.SelectorType[], selectorAttribute?: string}) => void =
+          () => {};
+  onRecordingCancelled = (): void => {};
+  recorderSettings?: Models.RecorderSettings.RecorderSettings;
+  defaultRecordingName = '';
+
+  constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view || DEFAULT_VIEW;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.#output.focusInput?.());
+  }
+
+  triggerFormSubmission(): void {
+    this.#output.triggerFormSubmission?.();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          defaultRecordingName: this.defaultRecordingName,
+          recorderSettings: this.recorderSettings,
+          error: this.#error,
+          onRecordingCancelled: this.onRecordingCancelled,
+          startRecording:
+              (name: string, selectorTypesToRecord: Models.Schema.SelectorType[], selectorAttribute?: string): void => {
+                if (!this.recorderSettings) {
+                  throw new Error('settings not set');
+                }
+
+                if (!name.trim()) {
+                  this.#error = new Error(i18nString(UIStrings.recordingNameIsRequired));
+                  this.requestUpdate();
+                  return;
+                }
+
+                if (!selectorTypesToRecord.includes(Models.Schema.SelectorType.CSS) &&
+                    !selectorTypesToRecord.includes(Models.Schema.SelectorType.XPath) &&
+                    !selectorTypesToRecord.includes(Models.Schema.SelectorType.Pierce)) {
+                  this.#error = new Error(i18nString(UIStrings.includeNecessarySelectors));
+                  this.requestUpdate();
+                  return;
+                }
+
+                for (const selectorType of Object.values(Models.Schema.SelectorType)) {
+                  this.recorderSettings.setSelectorByType(
+                      selectorType,
+                      selectorTypesToRecord.includes(selectorType),
+                  );
+                }
+
+                if (selectorAttribute) {
+                  this.recorderSettings.selectorAttribute = selectorAttribute;
+                }
+
+                this.onRecordingStarted({
+                  name,
+                  selectorTypesToRecord,
+                  selectorAttribute,
+                });
+
+                Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECORDER_RECORDING_STARTED);
+              },
+          resetError: () => {
+            this.#error = undefined;
+            this.requestUpdate();
+          },
+        },
+        this.#output, this.contentElement);
   }
 }
-
-customElements.define(
-    'devtools-create-recording-view',
-    CreateRecordingView,
-);

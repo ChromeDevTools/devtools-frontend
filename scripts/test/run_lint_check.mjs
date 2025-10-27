@@ -111,6 +111,15 @@ async function runESLint(scriptFiles) {
     }
   }
 
+  // Only do this for a single file as else its too noisy
+  // Also there is no file name we can print
+  if (files.length === 1) {
+    debugLogging('[lint]: EsLint suppressed the following errors:');
+    for (const result of results) {
+      debugLogging(result.suppressedMessages);
+    }
+  }
+
   if (flags.fix) {
     await ESLint.outputFixes(results);
   }

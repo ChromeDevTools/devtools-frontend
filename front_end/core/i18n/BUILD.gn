@@ -34,7 +34,33 @@ devtools_entrypoint("bundle") {
   entrypoint = "i18n.ts"
   deps = [ ":i18n" ]
 
-  visibility = [ "*" ]
+  visibility = [
+    # IMPORTANT: Be careful when extending visibility of front_end/core/i18n,
+    # as the i18n module should only be used in UI code, and business logic
+    # should never depend on the i18n module.
+    ":*",
+    "../../entrypoints/*",
+    "../../panels/*",
+    "../../ui/*",
+
+    # TODO(crbug/452597733): remove these dependencies.
+    "../../core/common/*",
+    "../../core/host/*",
+    "../../core/sdk/*",
+    "../../models/ai_assistance/*",
+    "../../models/bindings/*",
+    "../../models/emulation/*",
+    "../../models/extensions/*",
+    "../../models/har/*",
+    "../../models/issues_manager/*",
+    "../../models/logs/*",
+    "../../models/network_time_calculator/*",
+    "../../models/persistence/*",
+    "../../models/workspace/*",
+
+    # TODO(crbug/452597733): testing should be split up for UI/non-UI testing utilities.
+    "../../testing/*",
+  ]
 }
 
 node_action("generate_locales_js") {

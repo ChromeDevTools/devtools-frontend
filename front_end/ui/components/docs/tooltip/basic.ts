@@ -31,7 +31,7 @@ Lit.render(
       >
         Non-button click trigger
       </span>
-      <devtools-tooltip id="rich-tooltip" variant="rich" use-click>
+      <devtools-tooltip id="rich-tooltip" variant="rich" trigger="click">
         <p>Rich tooltip</p>
         <button>Action</button>
       </devtools-tooltip>

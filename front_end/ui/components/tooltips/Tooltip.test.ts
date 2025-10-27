@@ -13,7 +13,7 @@ const {html, nothing} = Lit;
 interface RenderProps {
   variant?: Tooltips.Tooltip.TooltipVariant;
   attribute?: 'aria-describedby'|'aria-details';
-  useClick?: boolean;
+  trigger?: Tooltips.Tooltip.TooltipTrigger;
   useHotkey?: boolean;
   jslogContext?: string;
   id?: string;
@@ -22,7 +22,7 @@ interface RenderProps {
 function renderTooltip({
   variant = 'simple',
   attribute = 'aria-describedby',
-  useClick = false,
+  trigger = 'hover',
   useHotkey = false,
   jslogContext = undefined,
   id = 'tooltip-id',
@@ -38,7 +38,7 @@ function renderTooltip({
      id=${id}
      variant=${variant}
      hover-delay=${0}
-     ?use-click=${useClick}
+     trigger=${trigger}
      ?use-hotkey=${useHotkey}
      jslogContext=${jslogContext??nothing}
      >
@@ -233,9 +233,9 @@ describe('Tooltip', () => {
     assert.isFalse(tooltip.open);
   });
 
-  it('should not open on hover if use-click is set', () => {
+  it('should not open on hover if `trigger` is set to `click`', () => {
     const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
-    const container = renderTooltip({useClick: true});
+    const container = renderTooltip({trigger: 'click'});
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
@@ -245,9 +245,9 @@ describe('Tooltip', () => {
     clock.restore();
   });
 
-  it('should not open on focus if use-click is set', () => {
+  it('should not open on focus if `trigger` is set to `click`', () => {
     const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
-    const container = renderTooltip({useClick: true});
+    const container = renderTooltip({trigger: 'click'});
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new FocusEvent('focus'));
@@ -257,8 +257,41 @@ describe('Tooltip', () => {
     clock.restore();
   });
 
-  it('should open with click if use-click is set', () => {
-    const container = renderTooltip({useClick: true});
+  it('should open with click if `trigger` is set to `click`', () => {
+    const container = renderTooltip({trigger: 'click'});
+
+    const button = container.querySelector('button');
+    button?.click();
+
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should open on hover if `trigger` is set to `both`', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+    const container = renderTooltip({trigger: 'both'});
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new MouseEvent('mouseenter'));
+
+    clock.runAll();
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
+  });
+
+  it('should open on focus if `trigger` is set to `both`', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+    const container = renderTooltip({trigger: 'both'});
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new FocusEvent('focus'));
+
+    clock.runAll();
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
+  });
+
+  it('should open with click if `trigger` is set to `both`', () => {
+    const container = renderTooltip({trigger: 'both'});
 
     const button = container.querySelector('button');
     button?.click();

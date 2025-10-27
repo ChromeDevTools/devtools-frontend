@@ -178,7 +178,13 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
             aria-details=${'teaser-info-tooltip-' + input.uuid}
             .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
           ></devtools-button>
-          <devtools-tooltip id=${'teaser-info-tooltip-' + input.uuid} variant="rich" jslogContext="teaser-info-tooltip">
+          <devtools-tooltip
+            id=${'teaser-info-tooltip-' + input.uuid}
+            variant="rich"
+            jslogContext="teaser-info-tooltip"
+            trigger="both"
+            hover-delay=500
+          >
             <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
             <div class="learn-more">
               <x-link

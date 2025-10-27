@@ -627,19 +627,24 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #declareFunctions(context: PerformanceTraceContext): void {
     const focus = context.getItem();
     const {parsedTrace} = focus;
-    const insightSet = focus.primaryInsightSet;
 
-    this.declareFunction<{insightName: string}, {details: string}>('getInsightDetails', {
+    this.declareFunction<{insightSetId: string, insightName: string}, {details: string}>('getInsightDetails', {
       description:
-          'Returns detailed information about a specific insight. Use this before commenting on any specific issue to get more information.',
+          'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
         nullable: false,
         properties: {
+          insightSetId: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description:
+                'The id for the specific insight set. Only use the ids given in the "Available insight sets" list.',
+            nullable: false,
+          },
           insightName: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'The name of the insight. Only use the insight names given in the Available Insights list.',
+            description: 'The name of the insight. Only use the insight names given in the "Available insights" list.',
             nullable: false,
           }
         },
@@ -647,19 +652,30 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       displayInfoFromArgs: params => {
         return {
           title: lockedString(`Investigating insight ${params.insightName}…`),
-          action: `getInsightDetails('${params.insightName}')`
+          action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
         };
       },
       handler: async params => {
         debugLog('Function call: getInsightDetails', params);
+        const insightSet = parsedTrace.insights?.get(params.insightSetId);
+        if (!insightSet) {
+          const valid = ([...parsedTrace.insights?.values() ?? []])
+                            .map(
+                                insightSet => `id: ${insightSet.id}, url: ${insightSet.url}, bounds: ${
+                                    this.#formatter?.serializeBounds(insightSet.bounds)}`)
+                            .join('; ');
+          return {error: `Invalid insight set id. Valid insight set ids are: ${valid}`};
+        }
+
         const insight = insightSet?.model[params.insightName as keyof Trace.Insights.Types.InsightModels];
         if (!insight) {
-          return {error: 'No insight available'};
+          const valid = Object.keys(insightSet?.model).join(', ');
+          return {error: `No insight available. Valid insight names are: ${valid}`};
         }
 
         const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
 
-        const key = `getInsightDetails('${params.insightName}')`;
+        const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
         this.#cacheFunctionResult(focus, key, details);
         return {result: {details}};
       },

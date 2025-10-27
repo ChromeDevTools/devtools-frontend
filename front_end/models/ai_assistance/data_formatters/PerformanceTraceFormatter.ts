@@ -116,62 +116,69 @@ export class PerformanceTraceFormatter {
 
   formatTraceSummary(): string {
     const parsedTrace = this.#parsedTrace;
-    const insightSet = this.#insightSet;
     const traceMetadata = this.#parsedTrace.metadata;
     const data = parsedTrace.data;
 
     const parts = [];
 
-    const lcp = insightSet ? Trace.Insights.Common.getLCP(insightSet) : null;
-    const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
-    const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
-
     parts.push(`URL: ${data.Meta.mainFrameURL}`);
-    parts.push(`Bounds: ${this.serializeBounds(data.Meta.traceBounds)}`);
+    parts.push(`Trace bounds: ${this.serializeBounds(data.Meta.traceBounds)}`);
     parts.push('CPU throttling: ' + (traceMetadata.cpuThrottling ? `${traceMetadata.cpuThrottling}x` : 'none'));
     parts.push(`Network throttling: ${traceMetadata.networkThrottling ?? 'none'}`);
-    if (lcp || cls || inp) {
-      parts.push('Metrics (lab / observed):');
-      if (lcp) {
-        const nodeId = insightSet?.model.LCPBreakdown.lcpEvent?.args.data?.nodeId;
-        const nodeIdText = nodeId !== undefined ? `, nodeId: ${nodeId}` : '';
-        parts.push(
-            `  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}${nodeIdText}`);
-        const subparts = insightSet?.model.LCPBreakdown.subparts;
-        if (subparts) {
-          const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {
-            return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
-          };
-          parts.push('  - LCP breakdown:');
-          parts.push(`    - TTFB: ${serializeSubpart(subparts.ttfb)}`);
-          if (subparts.loadDelay !== undefined) {
-            parts.push(`    - Load delay: ${serializeSubpart(subparts.loadDelay)}`);
+
+    parts.push('\n# Available insight sets\n');
+    parts.push(
+        'The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.');
+
+    for (const insightSet of parsedTrace.insights?.values() ?? []) {
+      const lcp = insightSet ? Trace.Insights.Common.getLCP(insightSet) : null;
+      const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
+      const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
+
+      parts.push(`\n## insight set id: ${insightSet.id}\n`);
+      parts.push(`URL: ${insightSet.url}`);
+      parts.push(`Bounds: ${this.serializeBounds(insightSet.bounds)}`);
+      if (lcp || cls || inp) {
+        parts.push('Metrics (lab / observed):');
+        if (lcp) {
+          const nodeId = insightSet?.model.LCPBreakdown.lcpEvent?.args.data?.nodeId;
+          const nodeIdText = nodeId !== undefined ? `, nodeId: ${nodeId}` : '';
+          parts.push(
+              `  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}${nodeIdText}`);
+          const subparts = insightSet?.model.LCPBreakdown.subparts;
+          if (subparts) {
+            const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {
+              return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
+            };
+            parts.push('  - LCP breakdown:');
+            parts.push(`    - TTFB: ${serializeSubpart(subparts.ttfb)}`);
+            if (subparts.loadDelay !== undefined) {
+              parts.push(`    - Load delay: ${serializeSubpart(subparts.loadDelay)}`);
+            }
+            if (subparts.loadDuration !== undefined) {
+              parts.push(`    - Load duration: ${serializeSubpart(subparts.loadDuration)}`);
+            }
+            parts.push(`    - Render delay: ${serializeSubpart(subparts.renderDelay)}`);
           }
-          if (subparts.loadDuration !== undefined) {
-            parts.push(`    - Load duration: ${serializeSubpart(subparts.loadDuration)}`);
-          }
-          parts.push(`    - Render delay: ${serializeSubpart(subparts.renderDelay)}`);
         }
+        if (inp) {
+          parts.push(`  - INP: ${Math.round(inp.value / 1000)} ms, event: ${this.serializeEvent(inp.event)}`);
+        }
+        if (cls) {
+          const eventText = cls.worstClusterEvent ? `, event: ${this.serializeEvent(cls.worstClusterEvent)}` : '';
+          parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
+        }
+      } else {
+        parts.push('Metrics (lab / observed): n/a');
       }
-      if (inp) {
-        parts.push(`  - INP: ${Math.round(inp.value / 1000)} ms, event: ${this.serializeEvent(inp.event)}`);
-      }
-      if (cls) {
-        const eventText = cls.worstClusterEvent ? `, event: ${this.serializeEvent(cls.worstClusterEvent)}` : '';
-        parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
-      }
-    } else {
-      parts.push('Metrics (lab / observed): n/a');
-    }
 
-    const cruxParts = insightSet && this.#getCruxTraceSummary(insightSet);
-    if (cruxParts?.length) {
-      parts.push(...cruxParts);
-    } else {
-      parts.push('Metrics (field / real users): n/a – no data for this page in CrUX');
-    }
+      const cruxParts = insightSet && this.#getCruxTraceSummary(insightSet);
+      if (cruxParts?.length) {
+        parts.push(...cruxParts);
+      } else {
+        parts.push('Metrics (field / real users): n/a – no data for this page in CrUX');
+      }
 
-    if (insightSet) {
       parts.push('Available insights:');
       for (const [insightName, model] of Object.entries(insightSet.model)) {
         if (model.state === 'pass') {
@@ -202,8 +209,6 @@ export class PerformanceTraceFormatter {
         const insightPartsText = insightParts.join('\n    ');
         parts.push(`  - ${insightPartsText}`);
       }
-    } else {
-      parts.push('Available insights: none');
     }
 
     return parts.join('\n');

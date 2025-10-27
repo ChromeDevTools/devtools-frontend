@@ -41,6 +41,12 @@ describeWithLocale('PerformanceTraceFormatter', function() {
       snapshotTester.assert(this, output);
     });
 
+    it('multiple-navigations-render-blocking.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'multiple-navigations-render-blocking.json.gz');
+      const output = formatter.formatTraceSummary();
+      snapshotTester.assert(this, output);
+    });
+
     it('deals with CrUX manager errors', async function() {
       const {formatter} = await createFormatter(this, 'image-delivery.json.gz');
       sinon.stub(CrUXManager.CrUXManager, 'instance').callsFake(() => {

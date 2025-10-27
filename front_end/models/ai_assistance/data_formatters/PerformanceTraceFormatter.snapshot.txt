@@ -504,9 +504,18 @@ IMPORTANT: Never show eventKey to the user.
 Title: PerformanceTraceFormatter formatTraceSummary web-dev.json.gz
 Content:
 URL: https://web.dev/cls/
-Bounds: {min: 1020034823047, max: 1020036087961}
+Trace bounds: {min: 1020034823047, max: 1020036087961}
 CPU throttling: none
 Network throttling: none
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: 86EB5E5C401E3E17ECE461B3FC627867
+
+URL: https://web.dev/cls/
+Bounds: {min: 1020034834921, max: 1020036087961}
 Metrics (lab / observed):
   - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358), nodeId: 209
   - LCP breakdown:
@@ -537,9 +546,18 @@ Available insights:
 Title: PerformanceTraceFormatter formatTraceSummary yahoo-news.json.gz
 Content:
 URL: https://news.yahoo.com/
-Bounds: {min: 157423484442, max: 157427277166}
+Trace bounds: {min: 157423484442, max: 157427277166}
 CPU throttling: none
 Network throttling: none
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: 513BDA1E9EC088611B53BFF7A859B5DD
+
+URL: https://news.yahoo.com/
+Bounds: {min: 157423488682, max: 157427277166}
 Metrics (lab / observed):
   - LCP: 464 ms, event: (eventKey: r-33210, ts: 157423953162), nodeId: 8
   - LCP breakdown:
@@ -596,12 +614,81 @@ Available insights:
     example question: How can I reduce the amount of legacy JavaScript on my page?
 === end content
 
+Title: PerformanceTraceFormatter formatTraceSummary multiple-navigations-render-blocking.json.gz
+Content:
+URL: http://localhost:8080/render-blocking
+Trace bounds: {min: 171605647473, max: 171616667355}
+CPU throttling: 1x
+Network throttling: Fast 3G
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: 8671F33ECE0C8DBAEFBC2F9A2D1D6107
+
+URL: http://localhost:8080/render-blocking
+Bounds: {min: 171607579779, max: 171613750571}
+Metrics (lab / observed):
+  - LCP: 1317 ms, event: (eventKey: r-6686, ts: 171608897210), nodeId: 10
+  - LCP breakdown:
+    - TTFB: 10 ms, bounds: {min: 171607579779, max: 171607589981.99997}
+    - Render delay: 1,307 ms, bounds: {min: 171607589981.99997, max: 171608897210}
+  - CLS: 0.00
+Metrics (field / real users): n/a – no data for this page in CrUX
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 171607579779, max: 171608897210}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: RenderBlocking
+    description: Requests are blocking the page's initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+    relevant trace bounds: {min: 171608170438, max: 171608877165}
+    example question: Show me the most impactful render blocking requests that I should focus on
+    example question: How can I reduce the number of render blocking requests?
+
+## insight set id: 1AE2016BBCC48AA090FDAE2CBBA01900
+
+URL: http://localhost:8080/render-blocking
+Bounds: {min: 171613750571, max: 171616667355}
+Metrics (lab / observed):
+  - LCP: 1310 ms, event: (eventKey: r-15639, ts: 171615060776), nodeId: 18
+  - LCP breakdown:
+    - TTFB: 3 ms, bounds: {min: 171613750571, max: 171613753188}
+    - Render delay: 1,308 ms, bounds: {min: 171613753188, max: 171615060776}
+  - CLS: 0.00
+Metrics (field / real users): n/a – no data for this page in CrUX
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 171613750571, max: 171615060776}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: RenderBlocking
+    description: Requests are blocking the page's initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+    relevant trace bounds: {min: 171614330544, max: 171615043224}
+    example question: Show me the most impactful render blocking requests that I should focus on
+    example question: How can I reduce the number of render blocking requests?
+=== end content
+
 Title: PerformanceTraceFormatter formatTraceSummary deals with CrUX manager errors
 Content:
 URL: http://localhost/image-delivery-cases.html
-Bounds: {min: 59728641874, max: 59734400108}
+Trace bounds: {min: 59728641874, max: 59734400108}
 CPU throttling: 1x
 Network throttling: No throttling
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: 9094E106056B51D078CE44F3356FE194
+
+URL: http://localhost/image-delivery-cases.html
+Bounds: {min: 59728649746, max: 59734400108}
 Metrics (lab / observed):
   - LCP: 663 ms, event: (eventKey: r-14753, ts: 59729312744), nodeId: 12
   - LCP breakdown:
@@ -663,9 +750,18 @@ Available insights:
 Title: PerformanceTraceFormatter formatTraceSummary image-delivery.json.gz
 Content:
 URL: http://localhost/image-delivery-cases.html
-Bounds: {min: 59728641874, max: 59734400108}
+Trace bounds: {min: 59728641874, max: 59734400108}
 CPU throttling: 1x
 Network throttling: No throttling
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: 9094E106056B51D078CE44F3356FE194
+
+URL: http://localhost/image-delivery-cases.html
+Bounds: {min: 59728649746, max: 59734400108}
 Metrics (lab / observed):
   - LCP: 663 ms, event: (eventKey: r-14753, ts: 59729312744), nodeId: 12
   - LCP breakdown:
@@ -734,9 +830,18 @@ Available insights:
 Title: PerformanceTraceFormatter formatTraceSummary includes INP insight when there is no navigation
 Content:
 URL: https://b2607f8b04800100000289cb1c0a82ba72253000000000000000001.proxy.googlers.com/long-interaction/index.html?x=35
-Bounds: {min: 337943614456, max: 337947260898}
+Trace bounds: {min: 337943614456, max: 337947260898}
 CPU throttling: none
 Network throttling: none
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: NO_NAVIGATION
+
+URL: https://b2607f8b04800100000289cb1c0a82ba72253000000000000000001.proxy.googlers.com/long-interaction/index.html?x=35
+Bounds: {min: 337943614456, max: 337947260898}
 Metrics (lab / observed):
   - INP: 139 ms, event: (eventKey: s-3347, ts: 337944870984)
   - CLS: 0.00

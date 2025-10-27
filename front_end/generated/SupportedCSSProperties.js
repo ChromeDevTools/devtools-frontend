@@ -721,6 +721,7 @@ export const generatedProperties = [
    "text-emphasis-style",
    "text-grow",
    "text-indent",
+   "text-justify",
    "text-orientation",
    "text-overflow",
    "text-rendering",
@@ -4335,6 +4336,16 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "auto",
+   "none",
+   "inter-word",
+   "inter-character"
+  ],
+  "name": "text-justify"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "sideways",
    "mixed",
    "upright"
@@ -6790,6 +6801,14 @@ export const generatedPropertyValues = {
  "text-emphasis-color": {
   "values": [
    "currentcolor"
+  ]
+ },
+ "text-justify": {
+  "values": [
+   "auto",
+   "none",
+   "inter-word",
+   "inter-character"
   ]
  },
  "text-orientation": {

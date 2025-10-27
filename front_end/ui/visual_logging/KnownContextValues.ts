@@ -3730,6 +3730,7 @@ export const knownContextValues = new Set([
   'text-emphasis-style',
   'text-grow',
   'text-indent',
+  'text-justify',
   'text-node',
   'text-orientation',
   'text-overflow',

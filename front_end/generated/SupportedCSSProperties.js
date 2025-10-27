@@ -421,6 +421,7 @@ export const generatedProperties = [
    "column-rule-color",
    "column-rule-outset",
    "column-rule-style",
+   "column-rule-visibility-items",
    "column-rule-width",
    "column-span",
    "column-width",
@@ -1735,6 +1736,16 @@ export const generatedProperties = [
    "double"
   ],
   "name": "column-rule-style"
+ },
+ {
+  "inherited": false,
+  "keywords": [
+   "all",
+   "around",
+   "between",
+   "none"
+  ],
+  "name": "column-rule-visibility-items"
  },
  {
   "keywords": [
@@ -5362,6 +5373,14 @@ export const generatedPropertyValues = {
    "dashed",
    "solid",
    "double"
+  ]
+ },
+ "column-rule-visibility-items": {
+  "values": [
+   "all",
+   "around",
+   "between",
+   "none"
   ]
  },
  "column-rule-width": {

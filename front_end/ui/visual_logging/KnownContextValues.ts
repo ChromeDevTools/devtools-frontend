@@ -810,6 +810,7 @@ export const knownContextValues = new Set([
   'column-rule-color',
   'column-rule-outset',
   'column-rule-style',
+  'column-rule-visibility-items',
   'column-rule-width',
   'column-span',
   'column-width',

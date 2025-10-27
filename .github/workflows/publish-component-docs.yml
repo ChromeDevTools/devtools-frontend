@@ -1,0 +1,42 @@
+name: DevTools Component Documentation release
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout depot_tools
+        run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      - name: Add depot_tools to path
+        run: echo $(realpath depot_tools) >> $GITHUB_PATH
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          # We need to make sure that the parent directory of the checkout
+          # is correctly identified as a standalone checkout (see devtools_paths.py).
+          # Therefore name the parent directory 'devtools'.
+          path: devtools/devtools-frontend
+        # Since we didn't fetch but just checkout the repository content,
+        # we need to create an unmanaged gclient config.
+      - name: Create gclient config
+        run: gclient config --unmanaged https://chromium.googlesource.com/devtools/devtools-frontend
+        working-directory: devtools
+      - name: Sync dependencies
+        run: gclient sync
+        working-directory: devtools/devtools-frontend
+      - name: Generate build files (gn)
+        run: gn gen out/Default --args='devtools_skip_typecheck=true'
+        working-directory: devtools/devtools-frontend
+      - name: Build DevTools Frontend (autoninja)
+        run: autoninja -C out/Default scripts/component_docs
+        working-directory: devtools/devtools-frontend
+      - name: GitHub Pages v3
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: devtools/devtools-frontend/out/Default/gen

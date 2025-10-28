@@ -272,7 +272,6 @@ export class Widget {
   #notificationDepth = 0;
   #invalidationsSuspended = 0;
   #parentWidget: Widget|null = null;
-  #defaultFocusedElement?: Element|null;
   #cachedConstraints?: Geometry.Constraints;
   #constraints?: Geometry.Constraints;
   #invalidationsRequested?: boolean;
@@ -732,7 +731,13 @@ export class Widget {
   }
 
   setDefaultFocusedElement(element: Element|null): void {
-    this.#defaultFocusedElement = element;
+    const defaultFocusedElement = this.getDefaultFocusedElement();
+    if (defaultFocusedElement) {
+      defaultFocusedElement.removeAttribute('autofocus');
+    }
+    if (element) {
+      element.setAttribute('autofocus', '');
+    }
   }
 
   setDefaultFocusedChild(child: Widget): void {
@@ -740,21 +745,28 @@ export class Widget {
     this.defaultFocusedChild = child;
   }
 
+  getDefaultFocusedElement(): HTMLElement|null {
+    const autofocusElement = this.contentElement.hasAttribute('autofocus') ?
+        this.contentElement :
+        this.contentElement.querySelector<HTMLElement>('[autofocus]');
+    let widgetElement: Element|null = autofocusElement;
+    while (widgetElement) {
+      const widget = Widget.get(widgetElement);
+      if (widget) {
+        return widget === this ? autofocusElement : null;
+      }
+      widgetElement = widgetElement.parentElementOrShadowHost();
+    }
+    return null;
+  }
+
   focus(): void {
     if (!this.isShowing()) {
       return;
     }
-
-    if (this.#shadowRoot?.delegatesFocus && this.contentElement.querySelector('[autofocus]')) {
-      this.element.focus();
-      return;
-    }
-
-    const element = (this.#defaultFocusedElement as HTMLElement | null);
-    if (element) {
-      if (!element.hasFocus()) {
-        element.focus();
-      }
+    const autofocusElement = this.getDefaultFocusedElement();
+    if (autofocusElement) {
+      autofocusElement.focus();
       return;
     }
 
@@ -766,10 +778,6 @@ export class Widget {
           child.focus();
           return;
         }
-      }
-      let child = this.contentElement.traverseNextNode(this.contentElement);
-      while (child) {
-        child = child.traverseNextNode(this.contentElement);
       }
     }
   }

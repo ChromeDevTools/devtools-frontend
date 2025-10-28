@@ -11,7 +11,7 @@ describe('ScriptsHandler', () => {
     Trace.Handlers.ModelHandlers.Meta.reset();
     Trace.Handlers.ModelHandlers.NetworkRequests.reset();
     Trace.Handlers.ModelHandlers.Scripts.reset();
-    const events = await TraceLoader.rawEvents(this, 'enhanced-traces.json.gz');
+    const events = await TraceLoader.rawEvents(this, 'enhanced-traces.json');
     for (const event of events) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);

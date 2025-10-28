@@ -164,6 +164,10 @@ export class EnhancedTracesParser {
           if (frame.url === 'about:blank') {
             continue;
           }
+          if (!frame.isInPrimaryMainFrame) {
+            continue;
+          }
+
           const frameId = frame.frame as string as Protocol.Target.TargetID;
           if (!this.#targets.find(target => target.targetId === frameId)) {
             const frameType = frame.isOutermostMainFrame ? 'page' : 'iframe';

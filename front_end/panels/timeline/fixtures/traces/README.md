@@ -91,10 +91,12 @@ A bunch of bundles with the exact same content: https://dupe-modules-lh-2.surge.
 
 Like above, but the source maps are inline data urls. https://dupe-modules-lh-inline-data.surge.sh/smaller.html
 
-### enhanced-traces.json.gz
+### enhanced-traces.json
 
 a) Contains traces with metadata needed to power a rehydrated session for enhanced tracing.
 b) (faked) script contents and source map urls, from the new "enhanced traces" feature. See http://crbug.com/337909145
+
+Not compressed because this is small and often modified.
 
 ### forced-layouts-and-no-gpu.json.gz
 

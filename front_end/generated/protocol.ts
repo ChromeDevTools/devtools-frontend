@@ -18030,29 +18030,6 @@ export namespace SystemInfo {
   }
 
   /**
-   * Describes a supported image decoding profile with its associated minimum and
-   * maximum resolutions and subsampling.
-   */
-  export interface ImageDecodeAcceleratorCapability {
-    /**
-     * Image coded, e.g. Jpeg.
-     */
-    imageType: ImageType;
-    /**
-     * Maximum supported dimensions of the image in pixels.
-     */
-    maxDimensions: Size;
-    /**
-     * Minimum supported dimensions of the image in pixels.
-     */
-    minDimensions: Size;
-    /**
-     * Optional array of supported subsampling formats, e.g. 4:2:0, if known.
-     */
-    subsamplings: SubsamplingFormat[];
-  }
-
-  /**
    * Provides information about the GPU(s) on the system.
    */
   export interface GPUInfo {
@@ -18080,10 +18057,6 @@ export namespace SystemInfo {
      * Supported accelerated video encoding capabilities.
      */
     videoEncoding: VideoEncodeAcceleratorCapability[];
-    /**
-     * Supported accelerated image decoding capabilities.
-     */
-    imageDecoding: ImageDecodeAcceleratorCapability[];
   }
 
   /**

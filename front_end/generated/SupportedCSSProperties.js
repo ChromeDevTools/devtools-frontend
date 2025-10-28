@@ -640,6 +640,7 @@ export const generatedProperties = [
    "row-rule-color",
    "row-rule-outset",
    "row-rule-style",
+   "row-rule-visibility-items",
    "row-rule-width",
    "ruby-align",
    "ruby-overhang",
@@ -3727,6 +3728,16 @@ export const generatedProperties = [
   "name": "row-rule-style"
  },
  {
+  "inherited": false,
+  "keywords": [
+   "all",
+   "around",
+   "between",
+   "none"
+  ],
+  "name": "row-rule-visibility-items"
+ },
+ {
   "keywords": [
    "thin",
    "medium",
@@ -6508,6 +6519,14 @@ export const generatedPropertyValues = {
    "dashed",
    "solid",
    "double"
+  ]
+ },
+ "row-rule-visibility-items": {
+  "values": [
+   "all",
+   "around",
+   "between",
+   "none"
   ]
  },
  "row-rule-width": {

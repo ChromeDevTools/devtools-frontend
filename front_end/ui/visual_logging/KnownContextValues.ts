@@ -3162,6 +3162,7 @@ export const knownContextValues = new Set([
   'row-rule-color',
   'row-rule-outset',
   'row-rule-style',
+  'row-rule-visibility-items',
   'row-rule-width',
   'rp-id',
   'rpId',

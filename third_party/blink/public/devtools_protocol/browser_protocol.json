@@ -27462,36 +27462,6 @@
                     ]
                 },
                 {
-                    "id": "ImageDecodeAcceleratorCapability",
-                    "description": "Describes a supported image decoding profile with its associated minimum and\nmaximum resolutions and subsampling.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "imageType",
-                            "description": "Image coded, e.g. Jpeg.",
-                            "$ref": "ImageType"
-                        },
-                        {
-                            "name": "maxDimensions",
-                            "description": "Maximum supported dimensions of the image in pixels.",
-                            "$ref": "Size"
-                        },
-                        {
-                            "name": "minDimensions",
-                            "description": "Minimum supported dimensions of the image in pixels.",
-                            "$ref": "Size"
-                        },
-                        {
-                            "name": "subsamplings",
-                            "description": "Optional array of supported subsampling formats, e.g. 4:2:0, if known.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "SubsamplingFormat"
-                            }
-                        }
-                    ]
-                },
-                {
                     "id": "GPUInfo",
                     "description": "Provides information about the GPU(s) on the system.",
                     "type": "object",
@@ -27538,14 +27508,6 @@
                             "type": "array",
                             "items": {
                                 "$ref": "VideoEncodeAcceleratorCapability"
-                            }
-                        },
-                        {
-                            "name": "imageDecoding",
-                            "description": "Supported accelerated image decoding capabilities.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "ImageDecodeAcceleratorCapability"
                             }
                         }
                     ]

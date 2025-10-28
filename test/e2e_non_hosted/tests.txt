@@ -66,6 +66,7 @@ elements/grid-editor_test.js
 elements/layout-pane_test.js
 elements/masonry-editor_test.js
 elements/oopif-elements_test.js
+elements/prerender_test.js
 elements/pseudo-states_test.js
 elements/reveal-correct-node_test.js
 elements/search-elements_test.js

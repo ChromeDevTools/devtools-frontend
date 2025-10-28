@@ -16,20 +16,26 @@ import {
   litAnalyzerExecutablePath,
   nodePath,
   nodeModulesPath,
-  tsconfigJsonPath,
+  tsconfigJsonPath
 } from '../devtools_paths.js';
 
 const flags = yargs(hideBin(process.argv))
   .option('fix', {
     type: 'boolean',
     default: true,
-    describe: 'Automatically fix, where possible, problems reported by rules.',
+    describe: 'Automatically fix, where possible, problems reported by rules.'
+  })
+  .option('force-fix', {
+    type: 'boolean',
+    default: false,
+    describe:
+      'Disables inline rule and allows auto fixers to run unconditionally.'
   })
   .option('debug', {
     type: 'boolean',
     default: false,
     describe:
-      'Disable cache validations during debugging, useful for custom rule creation/debugging.',
+      'Disable cache validations during debugging, useful for custom rule creation/debugging.'
   })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
     return yargs.positional('files', {
@@ -42,8 +48,8 @@ const flags = yargs(hideBin(process.argv))
         'scripts',
         'test',
         'extensions',
-        'extension-api',
-      ],
+        'extension-api'
+      ]
     });
   })
   .parseSync();
@@ -51,6 +57,11 @@ const flags = yargs(hideBin(process.argv))
 if (!flags.fix) {
   console.log('[lint]: fix is disabled; no errors will be autofixed.');
 }
+
+if (flags.forceFix && !flags.fix) {
+  throw new Error('`--force-fix` need `--fix` to work as intended');
+}
+
 if (flags.debug) {
   console.log('[lint]: Cache disabled, linting may take longer.');
 }
@@ -70,6 +81,7 @@ async function runESLint(scriptFiles) {
     cwd: join(import.meta.dirname, '..', '..'),
     fix: flags.fix,
     cache: cacheLinters,
+    allowInlineConfig: !flags.forceFix
   });
 
   // We filter out certain files in the `eslint.config.mjs` `Ignore list` entry.
@@ -83,7 +95,7 @@ async function runESLint(scriptFiles) {
     await Promise.all(
       scriptFiles.map(async file => {
         return (await cli.isPathIgnored(file)) ? null : file;
-      }),
+      })
     )
   ).filter(file => file !== null);
 
@@ -98,15 +110,13 @@ async function runESLint(scriptFiles) {
   const results = await cli.lintFiles(files);
 
   const usedDeprecatedRules = results.flatMap(
-    result => result.usedDeprecatedRules,
+    result => result.usedDeprecatedRules
   );
   if (usedDeprecatedRules.length) {
     console.log('Used deprecated rules:');
     for (const { ruleId, replacedBy } of usedDeprecatedRules) {
       console.log(
-        ` Rule ${ruleId} can be replaced with ${
-          replacedBy.join(',') ?? 'none'
-        }`,
+        ` Rule ${ruleId} can be replaced with ${replacedBy.join(',') ?? 'none'}`
       );
     }
   }
@@ -142,7 +152,7 @@ async function runStylelint(files) {
     files,
     formatter: 'string',
     cache: cacheLinters,
-    allowEmptyInput: true,
+    allowEmptyInput: true
   });
 
   if (report) {
@@ -165,37 +175,37 @@ async function runLitAnalyzer(files) {
 
   const readLitAnalyzerConfigFromCompilerOptions = () => {
     const { compilerOptions } = JSON.parse(
-      readFileSync(tsconfigJsonPath(), 'utf-8'),
+      readFileSync(tsconfigJsonPath(), 'utf-8')
     );
     const { plugins } = compilerOptions;
     const tsLitPluginOptions = plugins.find(
-      plugin => plugin.name === 'ts-lit-plugin',
+      plugin => plugin.name === 'ts-lit-plugin'
     );
     if (tsLitPluginOptions === null) {
       throw new Error(
-        `Failed to find ts-lit-plugin options in ${tsconfigJsonPath()}`,
+        `Failed to find ts-lit-plugin options in ${tsconfigJsonPath()}`
       );
     }
     return tsLitPluginOptions;
   };
 
-  const {rules} = readLitAnalyzerConfigFromCompilerOptions();
+  const { rules } = readLitAnalyzerConfigFromCompilerOptions();
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
       ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]),
-      ...subsetFiles,
+      ...subsetFiles
     ];
 
     const result = {
       output: '',
       error: '',
-      status: false,
+      status: false
     };
 
     return await new Promise(resolve => {
       const litAnalyzerProcess = spawn(nodePath(), args, {
-        cwd: devtoolsRootPath(),
+        cwd: devtoolsRootPath()
       });
 
       litAnalyzerProcess.stdout.on('data', data => {
@@ -242,7 +252,7 @@ async function runLitAnalyzer(files) {
   const results = await Promise.all(
     getSplitFiles(files).map(filesBatch => {
       return getLitAnalyzerResult(filesBatch);
-    }),
+    })
   );
   for (const result of results) {
     // Don't print if no problems are found
@@ -280,7 +290,7 @@ async function runEslintRulesTypeCheck(_files) {
     devtoolsRootPath(),
     'scripts',
     'eslint_rules',
-    'tsconfig.json',
+    'tsconfig.json'
   );
   const args = [tscPath, '-b', tsConfigEslintRules];
   /**
@@ -290,12 +300,12 @@ async function runEslintRulesTypeCheck(_files) {
     const result = {
       output: '',
       error: '',
-      status: false,
+      status: false
     };
 
     return await new Promise(resolve => {
       const tscProcess = spawn(nodePath(), args, {
-        cwd: devtoolsRootPath(),
+        cwd: devtoolsRootPath()
       });
 
       tscProcess.stdout.on('data', data => {
@@ -334,7 +344,7 @@ async function run() {
   const styles = [];
   for (const path of sync(files, {
     expandDirectories: { extensions: ['css', 'mjs', 'js', 'ts'] },
-    gitignore: true,
+    gitignore: true
   })) {
     if (shouldIgnoreFile(path)) {
       continue;
@@ -349,7 +359,7 @@ async function run() {
 
   const frontEndFiles = scripts.filter(script => script.includes('front_end'));
   const esLintRules = scripts.filter(script =>
-    script.includes('scripts/eslint_rules'),
+    script.includes('scripts/eslint_rules')
   );
 
   let succeed = true;

@@ -164,7 +164,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
           ${input.hasTellMeMoreButton ? html`
             <devtools-button
               title=${lockedString(UIStringsNotTranslate.tellMeMore)}
-              .jslogContext=${'insights-teaser-tell-me-more'},
+              .jslogContext=${'insights-teaser-tell-me-more'}
               .variant=${Buttons.Button.Variant.PRIMARY}
               @click=${input.onTellMeMoreClick}
             >

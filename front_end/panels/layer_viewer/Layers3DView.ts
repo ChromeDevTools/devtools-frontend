@@ -10,6 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Geometry from '../../models/geometry/geometry.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -772,7 +773,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private webglDisabledBanner(): UI.EmptyWidget.EmptyWidget {
     const emptyWidget = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.cantDisplayLayers), i18nString(UIStrings.webglSupportIsDisabledInYour));
-    emptyWidget.contentElement.appendChild(i18n.i18n.getFormatLocalizedString(
+    emptyWidget.contentElement.appendChild(uiI18n.getFormatLocalizedString(
         str_, UIStrings.checkSForPossibleReasons,
         {PH1: UI.XLink.XLink.create('about:gpu', undefined, undefined, undefined, 'about-gpu')}));
     return emptyWidget;

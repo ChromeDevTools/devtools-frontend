@@ -113,6 +113,17 @@ devtools_pre_built("locales_js") {
 ts_library("unittests") {
   testonly = true
 
+  sources = [ "i18nImpl.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}
+
+devtools_foundation_module("foundation_unittests") {
+  testonly = true
+
   sources = [
     "ByteUtilities.test.ts",
     "DevToolsLocale.test.ts",

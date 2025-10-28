@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -63,7 +64,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/common/BadgeNotification.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nFormatString = i18n.i18n.getFormatLocalizedString.bind(undefined, str_);
+const i18nFormatString = uiI18n.getFormatLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 const LEFT_OFFSET = 5;

@@ -25,6 +25,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Settings from '../../../ui/components/settings/settings.js';
+import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -629,8 +630,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       <div class="device-toolbar-description">${md(i18nString(UIStrings.useDeviceToolbar))}</div>
       ${fieldEnabled ? html`
         <ul class="environment-recs-list">
-          <li>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.device, {PH1: deviceRecEl})}</li>
-          <li>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.network, {PH1: networkRecEl})}</li>
+          <li>${uiI18n.getFormatLocalizedString(str_, UIStrings.device, {PH1: deviceRecEl})}</li>
+          <li>${uiI18n.getFormatLocalizedString(str_, UIStrings.network, {PH1: networkRecEl})}</li>
         </ul>
       ` : nothing}
       <div class="environment-option">
@@ -839,7 +840,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     dateEl.classList.add('collection-period-range');
     dateEl.textContent = range || i18nString(UIStrings.notEnoughData);
 
-    const message = i18n.i18n.getFormatLocalizedString(str_, UIStrings.collectionPeriod, {
+    const message = uiI18n.getFormatLocalizedString(str_, UIStrings.collectionPeriod, {
       PH1: dateEl,
     });
 
@@ -862,7 +863,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     const linkEl =
         UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', i18n.i18n.lockedString('Chrome UX Report'));
-    const messageEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.seeHowYourLocalMetricsCompare, {PH1: linkEl});
+    const messageEl = uiI18n.getFormatLocalizedString(str_, UIStrings.seeHowYourLocalMetricsCompare, {PH1: linkEl});
 
     return html`
       <div class="field-data-message">${messageEl}</div>

@@ -14,6 +14,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -113,7 +114,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieControlsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export const i18nFormatString = i18n.i18n.getFormatLocalizedString.bind(undefined, str_);
+export const i18nFormatString = uiI18n.getFormatLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
   thirdPartyControlsDict: Root.Runtime.HostConfig['thirdPartyCookieControls'];

@@ -76,56 +76,6 @@ describe('getLocalizedLanguageRegion', () => {
   });
 });
 
-describe('getFormatLocalizedString', () => {
-  let i18nInstance: i18nRaw.I18n.I18n;
-  beforeEach(() => {
-    i18n.DevToolsLocale.DevToolsLocale.instance({
-      create: true,
-      data: {
-        navigatorLanguage: 'en-US',
-        settingLanguage: 'en-US',
-        lookupClosestDevToolsLocale: () => 'en-US',
-      },
-    });
-    i18nInstance = new i18nRaw.I18n.I18n(['en-US'], 'en-US');
-    i18nInstance.registerLocaleData('en-US', {});  // Always fall back to UIStrings.
-  });
-
-  it('returns an HTML element', () => {
-    const uiStrings = {simple: 'a simple message'};
-    const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
-
-    const messageElement = i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.simple, {});
-
-    assert.instanceOf(messageElement, HTMLElement);
-    assert.strictEqual(messageElement.innerText, 'a simple message');
-  });
-
-  it('nests HTML placeholders in the message element', () => {
-    const uiStrings = {placeholder: 'a message with a {PH1} placeholder'};
-    const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
-    const placeholder = document.createElement('span');
-    placeholder.innerText = 'very pretty';
-
-    const messageElement =
-        i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.placeholder, {PH1: placeholder});
-
-    assert.instanceOf(messageElement, HTMLElement);
-    assert.strictEqual(messageElement.innerHTML, 'a message with a <span>very pretty</span> placeholder');
-  });
-
-  it('nests string placeholders in the message element', () => {
-    const uiStrings = {placeholder: 'a message with a {PH1} placeholder'};
-    const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
-
-    const messageElement =
-        i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.placeholder, {PH1: 'somewhat nice'});
-
-    assert.instanceOf(messageElement, HTMLElement);
-    assert.strictEqual(messageElement.innerHTML, 'a message with a somewhat nice placeholder');
-  });
-});
-
 describe('falling back when a locale errors', () => {
   it('reverts to using the UIStrings directly', async () => {
     i18n.DevToolsLocale.DevToolsLocale.instance({
@@ -160,48 +110,5 @@ describe('falling back when a locale errors', () => {
     // the UIStrings.
     const output = i18n.i18n.getLocalizedString(registeredStrings, uiStrings.placeholder);
     assert.strictEqual(output, 'US: hello world');
-  });
-});
-
-describe('fetchAndRegisterLocaleData', () => {
-  let fetchStub: sinon.SinonStub;
-
-  beforeEach(() => {
-    fetchStub = sinon.stub(window, 'fetch');
-    fetchStub.returns(Promise.resolve(new window.Response(JSON.stringify({}), {
-      // Always return an empty JSON object.
-      status: 200,
-      headers: {'Content-type': 'application/json'},
-    })));
-  });
-
-  afterEach(() => {
-    fetchStub.restore();
-    i18n.i18n.resetLocaleDataForTest();
-  });
-
-  const bundled = 'devtools://devtools/bundled/devtools_app.html';
-  const version = '@ffe848af6a5df4fa127e2929331116b7f9f1cb30';
-  const remoteOrigin = 'https://chrome-devtools-frontend.appspot.com/';
-  const remote = `${remoteOrigin}serve_file/${version}/`;
-  const fullLocation = `${bundled}?remoteBase=${remote}&can_dock=true&dockSide=undocked`;
-
-  it('fetches bundled locale files the same way as i18nImpl.ts itself is loaded', async () => {
-    await i18n.i18n.fetchAndRegisterLocaleData('en-US', fullLocation);
-
-    // We can't mock `import.meta.url` from i18nImpl so the Karam host leaks into
-    // this test. This means we only check the last part of the URL with which `fetch`
-    // was called.
-    const actualUrl = fetchStub.args[0][0];
-    assert.isTrue(actualUrl.endsWith('front_end/core/i18n/locales/en-US.json'), `Actually called with ${actualUrl}`);
-  });
-
-  it('fetches non-bundled locale files from the remote service endpoint', async () => {
-    await i18n.i18n.fetchAndRegisterLocaleData('de', fullLocation);
-
-    assert.isTrue(
-        fetchStub.calledWith(
-            'devtools://devtools/remote/serve_file/@ffe848af6a5df4fa127e2929331116b7f9f1cb30/core/i18n/locales/de.json'),
-        `Actually called with ${fetchStub.args[0][0]}`);
   });
 });

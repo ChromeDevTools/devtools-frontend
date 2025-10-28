@@ -12,6 +12,7 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import type * as Switch from '../../ui/components/switch/switch.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 
@@ -150,7 +151,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             <h2 class="section-title">${i18nString(UIStrings.tailorProfile)}</h2>
             <div class="section-text">
               <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
-              <div>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.tailorProfileBodyDisclaimer, {
+              <div>${uiI18n.getFormatLocalizedString(str_, UIStrings.tailorProfileBodyDisclaimer, {
       PH1: UI.XLink.XLink.create(CONTENT_POLICY_URL, i18nString(UIStrings.contentPolicy), 'link', undefined, 'content-policy'),
       PH2: UI.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString(UIStrings.termsOfService), 'link',
         undefined, 'terms-of-service'),

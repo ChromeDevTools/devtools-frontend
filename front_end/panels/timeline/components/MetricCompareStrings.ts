@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as uiI18n from '../../../ui/i18n/i18n.js';
 
 import type {MetricRating} from './Utils.js';
 
@@ -185,40 +186,40 @@ export function renderCompareText(
   };
 
   if (rating === 'good' && compare === 'better') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodBetterCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodBetterCompare, values);
   }
   if (rating === 'good' && compare === 'worse') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodWorseCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodWorseCompare, values);
   }
   if (rating === 'good' && compare === 'similar') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodSimilarCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodSimilarCompare, values);
   }
   if (rating === 'good' && !compare) {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodSummarized, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodSummarized, values);
   }
   if (rating === 'needs-improvement' && compare === 'better') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementBetterCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementBetterCompare, values);
   }
   if (rating === 'needs-improvement' && compare === 'worse') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementWorseCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementWorseCompare, values);
   }
   if (rating === 'needs-improvement' && compare === 'similar') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSimilarCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSimilarCompare, values);
   }
   if (rating === 'needs-improvement' && !compare) {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSummarized, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSummarized, values);
   }
   if (rating === 'poor' && compare === 'better') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorBetterCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorBetterCompare, values);
   }
   if (rating === 'poor' && compare === 'worse') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorWorseCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorWorseCompare, values);
   }
   if (rating === 'poor' && compare === 'similar') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorSimilarCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorSimilarCompare, values);
   }
   if (rating === 'poor' && !compare) {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorSummarized, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorSummarized, values);
   }
 
   throw new Error('Compare string not found');
@@ -241,40 +242,40 @@ export function renderDetailedCompareText(options: {
   };
 
   if (localRating === 'good' && fieldRating === 'good') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodGoodDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodGoodDetailedCompare, values);
   }
   if (localRating === 'good' && fieldRating === 'needs-improvement') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodNeedsImprovementDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodNeedsImprovementDetailedCompare, values);
   }
   if (localRating === 'good' && fieldRating === 'poor') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodPoorDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodPoorDetailedCompare, values);
   }
   if (localRating === 'good' && !fieldRating) {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodSummarized, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.goodSummarized, values);
   }
   if (localRating === 'needs-improvement' && fieldRating === 'good') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementGoodDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementGoodDetailedCompare, values);
   }
   if (localRating === 'needs-improvement' && fieldRating === 'needs-improvement') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementNeedsImprovementDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementNeedsImprovementDetailedCompare, values);
   }
   if (localRating === 'needs-improvement' && fieldRating === 'poor') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementPoorDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementPoorDetailedCompare, values);
   }
   if (localRating === 'needs-improvement' && !fieldRating) {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSummarized, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSummarized, values);
   }
   if (localRating === 'poor' && fieldRating === 'good') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorGoodDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorGoodDetailedCompare, values);
   }
   if (localRating === 'poor' && fieldRating === 'needs-improvement') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorNeedsImprovementDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorNeedsImprovementDetailedCompare, values);
   }
   if (localRating === 'poor' && fieldRating === 'poor') {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorPoorDetailedCompare, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorPoorDetailedCompare, values);
   }
   if (localRating === 'poor' && !fieldRating) {
-    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorSummarized, values);
+    return uiI18n.getFormatLocalizedString(str_, UIStrings.poorSummarized, values);
   }
 
   throw new Error('Detailed compare string not found');

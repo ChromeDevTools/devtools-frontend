@@ -12,6 +12,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -448,7 +449,7 @@ export class CookieReportView extends UI.Widget.VBox {
                 'https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md',
             i18nString(UIStrings.guidance), undefined, undefined, 'readiness-list-link');
 
-        return html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.gitHubResource, {
+        return html`${uiI18n.getFormatLocalizedString(str_, UIStrings.gitHubResource, {
           PH1: githubLink,
         })}`;
       }
@@ -461,7 +462,7 @@ export class CookieReportView extends UI.Widget.VBox {
                 (domain.charAt(0) === '.' ? domain.substring(1) : domain),
             i18nString(UIStrings.reportedIssues), undefined, undefined, 'compatibility-lookup-link');
 
-        return html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.gracePeriod, {
+        return html`${uiI18n.getFormatLocalizedString(str_, UIStrings.gracePeriod, {
           PH1: gracePeriodLink,
         })}`;
       }

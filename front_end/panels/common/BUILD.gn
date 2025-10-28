@@ -49,6 +49,7 @@ devtools_ui_module("common") {
     "../../ui/components/spinners:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/components/tooltips:bundle",
+    "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",

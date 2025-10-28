@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -412,7 +413,7 @@ export class RequestTimingView extends UI.Widget.VBox {
           'https://web.dev/custom-metrics/#server-timing-api', i18nString(UIStrings.theServerTimingApi), undefined,
           undefined, 'server-timing-api');
       information.appendChild(
-          i18n.i18n.getFormatLocalizedString(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, {PH1: link}));
+          uiI18n.getFormatLocalizedString(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, {PH1: link}));
 
       return tableElement;
     }

@@ -70,6 +70,7 @@ devtools_ui_module("components") {
     "../../../ui/components/report_view:bundle",
     "../../../ui/components/text_prompt:bundle",
     "../../../ui/components/tree_outline:bundle",
+    "../../../ui/i18n:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/data_grid:bundle",
     "../../../ui/legacy/components/source_frame:bundle",

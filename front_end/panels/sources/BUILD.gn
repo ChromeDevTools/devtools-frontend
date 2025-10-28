@@ -95,6 +95,7 @@ devtools_ui_module("sources") {
     "../../ui/components/spinners:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tooltips:bundle",
+    "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/inline_editor:bundle",

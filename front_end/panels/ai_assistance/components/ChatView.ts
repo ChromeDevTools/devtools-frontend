@@ -19,6 +19,7 @@ import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
+import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -1546,16 +1547,16 @@ function renderConsentViewContents(): Lit.TemplateResult {
     return html`${i18nString(UIStrings.notAvailableInIncognitoMode)}`;
   }
   if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
-    consentViewContents = i18n.i18n.getFormatLocalizedString(
+    consentViewContents = uiI18n.getFormatLocalizedString(
         str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, {PH1: settingsLink});
   } else if (config.devToolsAiAssistanceFileAgent?.enabled) {
     consentViewContents =
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsAndFiles, {PH1: settingsLink});
+        uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsAndFiles, {PH1: settingsLink});
   } else if (config.devToolsAiAssistanceNetworkAgent?.enabled) {
     consentViewContents =
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink});
+        uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink});
   } else {
-    consentViewContents = i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink});
+    consentViewContents = uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink});
   }
 
   return html`${consentViewContents}`;

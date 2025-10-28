@@ -1,0 +1,33 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+
+devtools_entrypoint("bundle") {
+  entrypoint = "i18n.ts"
+
+  deps = [
+    "../../core/i18n:bundle",
+    "../../third_party/i18n:bundle",
+  ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/*",
+    "../../panels/*",
+    "../../ui/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "i18n.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -704,7 +705,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
         });
         suggestedIdNote.appendChild(
-            i18n.i18n.getFormatLocalizedString(str_, UIStrings.appIdNote, {PH1: suggestedIdSpan, PH2: copyButton}));
+            uiI18n.getFormatLocalizedString(str_, UIStrings.appIdNote, {PH1: suggestedIdSpan, PH2: copyButton}));
       }
     } else {
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
@@ -781,7 +782,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         'https://web.dev/maskable-icon/', i18nString(UIStrings.documentationOnMaskableIcons), undefined, undefined,
         'learn-more');
     this.iconsSection.appendRow().appendChild(
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOurS, {PH1: documentationLink}));
+        uiI18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOurS, {PH1: documentationLink}));
 
     let squareSizedIconAvailable = false;
     for (const icon of icons) {
@@ -938,8 +939,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const wco = document.createElement('code');
       wco.classList.add('wco');
       wco.textContent = 'window-controls-overlay';
-      wcoStatusMessage.appendChild(i18n.i18n.getFormatLocalizedString(
-          str_, UIStrings.wcoFound, {PH1: wco, PH2: displayOverrideText, PH3: link}));
+      wcoStatusMessage.appendChild(
+          uiI18n.getFormatLocalizedString(str_, UIStrings.wcoFound, {PH1: wco, PH2: displayOverrideText, PH3: link}));
 
       if (this.overlayModel) {
         await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty('theme_color'));
@@ -950,14 +951,14 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       wcoStatusMessage.appendChild(infoIcon);
 
       wcoStatusMessage.appendChild(
-          i18n.i18n.getFormatLocalizedString(str_, UIStrings.wcoNotFound, {PH1: displayOverrideText}));
+          uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNotFound, {PH1: displayOverrideText}));
     }
 
     const wcoDocumentationLink = UI.XLink.XLink.create(
         'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay',
         i18nString(UIStrings.customizePwaTitleBar), undefined, undefined, 'customize-pwa-tittle-bar');
     this.windowControlsSection.appendRow().appendChild(
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
+        uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
 
     this.dispatchEventToListeners(Events.MANIFEST_RENDERED);
   }

@@ -7,6 +7,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
@@ -97,7 +98,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         'https://nodejs.org/en/docs/inspector/', i18nString(UIStrings.nodejsDebuggingGuide), undefined, undefined,
         'node-js-debugging');
     networkDiscoveryFooter.appendChild(
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
+        uiI18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
     this.#list = new UI.ListWidget.ListWidget(this);
     this.#list.registerRequiredCSS(nodeConnectionsPanelStyles);

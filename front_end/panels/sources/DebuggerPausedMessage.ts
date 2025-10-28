@@ -11,6 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -175,12 +176,12 @@ export class DebuggerPausedMessage {
       let messageElement;
       if (data.insertion) {
         if (data.targetNode === data.node) {
-          messageElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.childSAdded, {PH1: targetNodeLink});
+          messageElement = uiI18n.getFormatLocalizedString(str_, UIStrings.childSAdded, {PH1: targetNodeLink});
         } else {
-          messageElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.descendantSAdded, {PH1: targetNodeLink});
+          messageElement = uiI18n.getFormatLocalizedString(str_, UIStrings.descendantSAdded, {PH1: targetNodeLink});
         }
       } else {
-        messageElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.descendantSRemoved, {PH1: targetNodeLink});
+        messageElement = uiI18n.getFormatLocalizedString(str_, UIStrings.descendantSRemoved, {PH1: targetNodeLink});
       }
       subElement.appendChild(document.createElement('br'));
       subElement.appendChild(messageElement);

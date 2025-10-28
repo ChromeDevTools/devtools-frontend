@@ -10,6 +10,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -116,7 +117,7 @@ export class ProtocolHandlersView extends HTMLElement {
             <devtools-icon class="inline-icon"
                            name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
             </devtools-icon>
-            ${i18n.i18n.getFormatLocalizedString(str_, statusString, {
+            ${uiI18n.getFormatLocalizedString(str_, statusString, {
       PH1: manifestInTextLink,
     })}
     </div>
@@ -175,7 +176,7 @@ export class ProtocolHandlersView extends HTMLElement {
       <style>${Input.textInputStyles}</style>
       ${this.#renderStatusMessage()}
       <div class="protocol-handlers-row">
-          ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}
+          ${uiI18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}
       </div>
       ${this.#renderProtocolTest()}
     `, this.#shadow, {host: this});

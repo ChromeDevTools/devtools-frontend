@@ -131,6 +131,7 @@ devtools_ui_module("timeline") {
     "../../ui/components/linkifier:bundle",
     "../../ui/components/menus:bundle",
     "../../ui/components/snackbars:bundle",
+    "../../ui/i18n:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/utils:bundle",

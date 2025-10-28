@@ -13,6 +13,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Switch from '../../ui/components/switch/switch.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -515,7 +516,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       },
       {
         icon: 'policy',
-        text: html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
+        text: html`${uiI18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
           PH1: tosLink,
           PH2: privacyNoticeLink,
         })}`,

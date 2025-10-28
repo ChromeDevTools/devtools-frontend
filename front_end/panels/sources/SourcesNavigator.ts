@@ -15,6 +15,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
@@ -190,7 +191,7 @@ export class FilesNavigatorView extends NavigatorView {
     const link =
         UI.XLink.XLink.create('https://goo.gle/devtools-automatic-workspace-folders', 'com.chrome.devtools.json');
     this.#automaticFileSystemNudge =
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.automaticWorkspaceNudge, {PH1: link});
+        uiI18n.getFormatLocalizedString(str_, UIStrings.automaticWorkspaceNudge, {PH1: link});
     this.#automaticFileSystemNudge.classList.add('automatic-file-system-nudge');
     this.contentElement.insertBefore(this.#automaticFileSystemNudge, this.contentElement.firstChild);
 

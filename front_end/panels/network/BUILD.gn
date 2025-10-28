@@ -88,6 +88,7 @@ devtools_ui_module("network") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/icon_button:bundle",
+    "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/cookie_table:bundle",
     "../../ui/legacy/components/data_grid:bundle",

@@ -12,6 +12,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -633,11 +634,11 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
             await UI.ViewManager.ViewManager.instance().showView('navigator-files');
             await automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true);
           });
-          tooltip.append(i18n.i18n.getFormatLocalizedString(
+          tooltip.append(uiI18n.getFormatLocalizedString(
               str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {PH1: link}));
         } else {
           const link = UI.XLink.XLink.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Workspace');
-          tooltip.append(i18n.i18n.getFormatLocalizedString(
+          tooltip.append(uiI18n.getFormatLocalizedString(
               str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {PH1: link}));
         }
         suffixElement.append(icon, tooltip);

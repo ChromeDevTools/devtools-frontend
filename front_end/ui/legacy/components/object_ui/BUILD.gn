@@ -41,6 +41,7 @@ devtools_ui_module("object_ui") {
     "../../../../third_party/acorn:bundle",
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/components/text_editor:bundle",
+    "../../../../ui/i18n:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",
   ]

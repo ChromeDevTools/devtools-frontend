@@ -35,6 +35,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as uiI18n from '../../../../ui/i18n/i18n.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -438,7 +439,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       wrapperElement.classList.add('error');
       wrapperElement.classList.add('value');
       wrapperElement.appendChild(
-          i18n.i18n.getFormatLocalizedString(str_, UIStrings.exceptionS, {PH1: propertyValue.element}));
+          uiI18n.getFormatLocalizedString(str_, UIStrings.exceptionS, {PH1: propertyValue.element}));
       propertyValue.element = wrapperElement;
     }
     propertyValue.element.classList.add('value');

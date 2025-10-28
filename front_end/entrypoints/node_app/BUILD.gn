@@ -23,6 +23,7 @@ devtools_module("node_app") {
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]

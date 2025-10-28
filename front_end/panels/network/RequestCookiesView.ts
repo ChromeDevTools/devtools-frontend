@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -120,7 +121,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this.siteHasCookieInOtherPartition =
         this.element.createChild('div', 'cookies-panel-item site-has-cookies-in-other-partition');
     this.siteHasCookieInOtherPartition.appendChild(
-        i18n.i18n.getFormatLocalizedString(str_, UIStrings.siteHasCookieInOtherPartition, {
+        uiI18n.getFormatLocalizedString(str_, UIStrings.siteHasCookieInOtherPartition, {
           PH1: UI.XLink.XLink.create(
               'https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore), undefined,
               undefined, 'learn-more'),

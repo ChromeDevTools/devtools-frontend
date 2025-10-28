@@ -256,6 +256,7 @@ group("unittests") {
     "ui/components/text_prompt:unittests",
     "ui/components/tooltips:unittests",
     "ui/components/tree_outline:unittests",
+    "ui/i18n:unittests",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:unittests",
     "ui/legacy/components/color_picker:unittests",
@@ -273,7 +274,10 @@ group("unittests") {
 }
 
 group("foundation_unittests") {
-  deps = [ "models/ai_assistance:foundation_unittests" ]
+  deps = [
+    "core/i18n:foundation_unittests",
+    "models/ai_assistance:foundation_unittests",
+  ]
 }
 
 generated_file("foundation_test_inputs") {

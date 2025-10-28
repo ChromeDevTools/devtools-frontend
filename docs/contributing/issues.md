@@ -174,25 +174,21 @@ DevTools we want to
 1. reduce the number of regressions that ship to the (Chrome) Stable channel, and
 2. reduce the number of bugs overall.
 
-The following SLOs (Service Level Objectives) apply to issues of type Bug,
-Vulnerability, and Privacy Issue. other types of issues such as Feature Request
-or Task are out of scope for SLOs (with the notable exception of Postmortem action
-items, where Chrome also enforces SLOs for non-bug issues). We also explicitly
-restrict these SLOs to bugs in [crbug], and are not concerned with bugs that are
-tracked in other places such as GitHub. Below is a high level summary of our SLOs
-(Googlers can check the [Chrome DevTools SLO Policy] and [Chrome SLO Policy] for
-more details):
+The following SLOs (Service Level Objectives) apply to issues of type "Bug",
+"Vulnerability", and "Privacy Issue". other types of issues such as "Feature
+Request" or "Task" are out of scope for SLOs (with the notable exception of
+Postmortem action items, where Chrome also enforces SLOs for non-bug issues).
+We also explicitly restrict these SLOs to bugs in [crbug], and are not concerned
+with bugs that are tracked in other places such as GitHub. Below is a high level
+summary of our SLOs (Googlers can check the [Chrome SLO Policy] for details):
 
 |      | Assignment     | Response           | Closure
 | ---- | -------------- | ------------------ | --------
 | `P0` | 1 business day | Every business day | 1 week
 | `P1` | 1 week         | 1 week             | 4 weeks
-| `P2` | 2 months       | -                  | 6 months
-| `P3` | 1 year         | -                  | -
 
-The first two rows are identical to [go/chrome-slo], with the last two rows being
-specific to Chrome DevTools. [crbug] provides a **Nearest SLO** column that
-surfaces SLO violations easily:
+These are identical to [go/chrome-slo]. [crbug] provides a **Nearest SLO**
+column that surfaces SLO violations easily:
 
 ![Nearest SLO in crbug](./images/issues-nearestslo.png "Nearest SLO in crbug")
 
@@ -201,7 +197,7 @@ surfaces SLO violations easily:
 
 ### Release Blocking Issues
 
-In accordance with go/chrome-slo there are special SLOs for issues that are
+In compliance with [go/chrome-slo] there are special SLOs for issues that are
 severe enough to block a release shipping to users (see [go/chrome-release-slos]).
 They apply to bug types in the same way as the above SLOs.
 
@@ -238,12 +234,11 @@ refreshed every 2-4 hours, to see SLO compliance for a given lead.
   [How to file a good browser bug]: https://web.dev/articles/how-to-file-a-good-bug
   [Open Chromium DevTools Bugs]: https://issues.chromium.org/issues?q=status:open%20componentid:1457055%2B%20type:bug
   [goo.gle/devtools-bug]: https://goo.gle/devtools-bug
-  [Chrome DevTools SLO Policy]: https://b.corp.google.com/slos/61348
-  [Chrome SLO Policy]: https://b.corp.google.com/slos/1834
+  [Chrome SLO Policy]: http://b/slos/1834
   [go/chrome-slo]: http://go/chrome-slo
   [go/chrome-release-slos]: http://go/chrome-release-slos
   [go/chrome-tooling/project-management]: http://go/chrome-tooling/project-management
-  [Buganizer SLO Compliance]: go/b-slo-compliance
+  [Buganizer SLO Compliance]: http://go/b-slo-compliance
   [TaskFlow]: http://go/chrome-devtools:taskflow
   [TaskFlow Inbox]: http://go/chrome-devtools:taskflow/inbox
   [Chromium>Platform>DevTools]: https://issues.chromium.org/components/1457055

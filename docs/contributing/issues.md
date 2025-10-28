@@ -48,10 +48,11 @@ to Markdown (with a preview below the text input box).
 1.  Replace `<from chrome://version/>` and `<OS version>` with the relevant
     version information.
 1.  Outline exact steps to reproduce the problem. Make sure to provide steps
-    that are easy and accessible. Ideally create a minified test case on
-    [glitch.com](http://glitch.com) or [GitHub](http://github.com). Also
-    make sure to include screenshots and videos that help us to reproduce
-    and understand the problem you are facing.
+    that are easy and accessible. Ideally create a [minimal, reproducible
+    example](https://stackoverflow.com/help/minimal-reproducible-example), e.g.
+    on [codepen.io](https://codepen.io), [jsbin.com](https://jsbin.com) or
+    [GitHub](https://github.com). Also make sure to include screenshots and
+    videos that help us to reproduce and understand the problem you are facing.
 
 ## Overview
 

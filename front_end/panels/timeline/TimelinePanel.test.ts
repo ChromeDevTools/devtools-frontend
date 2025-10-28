@@ -360,7 +360,7 @@ describeWithEnvironment('TimelinePanel', function() {
       });
 
       it('saves an enhanced trace file without sourcemaps', async function() {
-        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json.gz');
+        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json');
         await timeline.innerSaveToFile(traceEvents, metadata, {
           includeScriptContent: true,
           includeSourceMaps: false,

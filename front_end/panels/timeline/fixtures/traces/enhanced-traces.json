@@ -1,0 +1,665 @@
+[
+  {
+    "args": { "name": "swapper" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "name": "CrBrowserMain" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 775,
+    "ts": 0
+  },
+  {
+    "args": { "name": "CrRendererMain" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 0
+  },
+  {
+    "args": { "name": "CrRendererMain" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 775,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Chrome_IOThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 30979,
+    "ts": 0
+  },
+  {
+    "args": { "name": "VizCompositorThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 44803,
+    "ts": 0
+  },
+  {
+    "args": { "name": "CrGpuMain" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 775,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolServiceThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 35339,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolServiceThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 39963,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Compositor" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 16387,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Compositor" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 15875,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Chrome_ChildIOThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 13059,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Chrome_ChildIOThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 13827,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolBackgroundWorker" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 27587,
+    "ts": 0
+  },
+  {
+    "args": { "name": "GpuWatchdog" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 30031,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Chrome_DevToolsADBThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 161795,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolServiceThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 20483,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolServiceThread" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 12291,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolForegroundWorker" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 75627,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolForegroundWorker" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 196767,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolForegroundWorker" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 33899,
+    "ts": 0
+  },
+  {
+    "args": { "name": "ThreadPoolForegroundWorker" },
+    "cat": "__metadata",
+    "name": "thread_name",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 86555,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Browser" },
+    "cat": "__metadata",
+    "name": "process_name",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "name": "GPU Process" },
+    "cat": "__metadata",
+    "name": "process_name",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Renderer" },
+    "cat": "__metadata",
+    "name": "process_name",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "name": "Renderer" },
+    "cat": "__metadata",
+    "name": "process_name",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "uptime": "11470" },
+    "cat": "__metadata",
+    "name": "process_uptime_seconds",
+    "ph": "M",
+    "pid": 8017,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "uptime": "11470" },
+    "cat": "__metadata",
+    "name": "process_uptime_seconds",
+    "ph": "M",
+    "pid": 8040,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "uptime": "11469" },
+    "cat": "__metadata",
+    "name": "process_uptime_seconds",
+    "ph": "M",
+    "pid": 8050,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": { "uptime": "11469" },
+    "cat": "__metadata",
+    "name": "process_uptime_seconds",
+    "ph": "M",
+    "pid": 8051,
+    "tid": 0,
+    "ts": 0
+  },
+  {
+    "args": {
+      "data": {
+        "frameTreeNodeId": 1,
+        "frames": [
+          {
+            "frame": "21D58E83A5C17916277166140F6A464B",
+            "isOutermostMainFrame": true,
+            "isInPrimaryMainFrame": true,
+            "name": "",
+            "processId": 8050,
+            "url": "http://localhost:8080/index.html"
+          },
+          {
+            "frame": "AAAAAAAAAAAAAAAAA",
+            "isOutermostMainFrame": true,
+            "isInPrimaryMainFrame": false,
+            "name": "",
+            "processId": 8053,
+            "url": "http://google.com/warmup.html"
+          },
+          {
+            "frame": "3E1717BE677B75D0536E292E00D6A34A",
+            "isOutermostMainFrame": false,
+            "isInPrimaryMainFrame": true,
+            "name": "",
+            "processId": 8051,
+            "url": "http://localhost:8080/test.html"
+          },
+          {
+            "frame": "6A7611591E1EBABAACBAB2B23F0AEC93",
+            "isOutermostMainFrame": false,
+            "isInPrimaryMainFrame": true,
+            "name": "",
+            "parent": "3E1717BE677B75D0536E292E00D6A34A",
+            "processId": 8052,
+            "url": "test1"
+          }
+        ],
+        "persistentIds": true
+      }
+    },
+    "cat": "disabled-by-default-devtools.timeline",
+    "name": "TracingStartedInBrowser",
+    "ph": "I",
+    "pid": 8017,
+    "tid": 775,
+    "ts": 50442438975,
+    "tts": 8066447
+  },
+  {
+    "args": {
+      "data": {
+        "endColumn": 10,
+        "endLine": 1,
+        "executionContextId": 1,
+        "hasSourceUrl": false,
+        "hash": "",
+        "isModule": false,
+        "isolate": "12345",
+        "scriptId": "3",
+        "sourceMapUrl": "http://localhost:8080/source.map.json",
+        "startColumn": 0,
+        "startLine": 0,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "endColumn": 10,
+        "endLine": 1,
+        "executionContextId": 1,
+        "hasSourceUrl": false,
+        "hash": "",
+        "isModule": false,
+        "isolate": "12345",
+        "scriptId": "4",
+        "sourceMapUrl": "http://localhost:8080/source.map.json",
+        "startColumn": 0,
+        "startLine": 0,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "endColumn": 10,
+        "endLine": 1,
+        "executionContextId": 1,
+        "hasSourceUrl": false,
+        "hash": "",
+        "isModule": false,
+        "isolate": "1357",
+        "scriptId": "1",
+        "sourceMapUrl": "http://localhost:8080/source.map.json",
+        "startColumn": 0,
+        "startLine": 0,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8052,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "frame": "21D58E83A5C17916277166140F6A464B",
+        "name": "",
+        "parent": "3E1717BE677B75D0536E292E00D6A34A",
+        "processId": 28274,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.timeline",
+    "name": "FrameCommittedInBrowser",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "contextType": "type",
+        "frame": "21D58E83A5C17916277166140F6A464B",
+        "frameType": "page",
+        "isDefault": true,
+        "isolate": "12345",
+        "origin": "http://localhost:8080",
+        "scriptId": "1",
+        "url": "http://localhost:8080/index.html",
+        "v8context": "example context 1"
+      }
+    },
+    "cat": "disabled-by-default-devtools.target-rundown",
+    "name": "ScriptCompiled",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "endColumn": 10,
+        "endLine": 1,
+        "executionContextId": 1,
+        "hasSourceUrl": false,
+        "hash": "",
+        "isModule": false,
+        "isolate": "12345",
+        "scriptId": "1",
+        "sourceMapUrl": "http://localhost:8080/source.map.json",
+        "startColumn": 0,
+        "startLine": 0,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "isolate": "12345",
+        "scriptId": "1",
+        "length": 13,
+        "sourceText": "source text 1"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown-sources",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "contextType": "type",
+        "frame": "21D58E83A5C17916277166140F6A464B",
+        "frameType": "page",
+        "isDefault": true,
+        "isolate": "12345",
+        "origin": "http://localhost:8080",
+        "scriptId": "2",
+        "url": "http://localhost:8080/index.html",
+        "v8context": "example context 2"
+      }
+    },
+    "cat": "disabled-by-default-devtools.target-rundown",
+    "name": "ScriptCompiled",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "endColumn": 10,
+        "endLine": 1,
+        "executionContextId": 2,
+        "hasSourceUrl": false,
+        "hash": "",
+        "isModule": false,
+        "isolate": "12345",
+        "scriptId": "2",
+        "startColumn": 0,
+        "startLine": 0,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "isolate": "12345",
+        "scriptId": "2",
+        "length": 13,
+        "sourceText": "source text 2"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown-sources",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8050,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "contextType": "type",
+        "frame": "3E1717BE677B75D0536E292E00D6A34A",
+        "frameType": "iframe",
+        "isDefault": true,
+        "isolate": "6789",
+        "origin": "http://localhost:8080",
+        "scriptId": "1",
+        "url": "http://localhost:8080/index.html",
+        "v8context": "example context 3"
+      }
+    },
+    "cat": "disabled-by-default-devtools.target-rundown",
+    "name": "ScriptCompiled",
+    "ph": "I",
+    "pid": 8051,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "endColumn": 10,
+        "endLine": 1,
+        "executionContextId": 1,
+        "hasSourceUrl": false,
+        "hash": "",
+        "isModule": false,
+        "isolate": "6789",
+        "scriptId": "1",
+        "startColumn": 0,
+        "startLine": 0,
+        "url": "http://localhost:8080/index.html"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8051,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "splitIndex": 0,
+        "splitCount": 3,
+        "isolate": "6789",
+        "scriptId": "1",
+        "sourceText": "source"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown-sources",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8051,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "splitIndex": 2,
+        "splitCount": 3,
+        "isolate": "6789",
+        "scriptId": "1",
+        "sourceText": "3"
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown-sources",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8051,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+  {
+    "args": {
+      "data": {
+        "splitIndex": 1,
+        "splitCount": 3,
+        "isolate": "6789",
+        "scriptId": "1",
+        "sourceText": " text "
+      }
+    },
+    "cat": "disabled-by-default-devtools.v8-source-rundown-sources",
+    "name": "ScriptCatchup",
+    "ph": "I",
+    "pid": 8051,
+    "tid": 775,
+    "ts": 50442438976,
+    "tts": 8066448
+  },
+    {
+        "args": {
+            "data": {
+                "columnNumber": 11687,
+                "frame": "21D58E83A5C17916277166140F6A464B",
+                "functionName": "",
+                "isolate": 12345,
+                "lineNumber": 44,
+                "sampleTraceId": 6503813545926637,
+                "scriptId": "3",
+                "url": "http://localhost:8080/index.html"
+            }
+        },
+        "cat": "devtools.timeline",
+        "dur": 56,
+        "name": "FunctionCall",
+        "ph": "X",
+        "pid": 8050,
+        "tdur": 51,
+        "tid": 23412,
+        "ts": 569121323076,
+        "tts": 609862
+    }
+]

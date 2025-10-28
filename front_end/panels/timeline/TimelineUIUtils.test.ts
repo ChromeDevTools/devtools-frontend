@@ -66,6 +66,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
   const SCRIPT_ID_STRING = String(SCRIPT_ID_NUMBER) as Protocol.Runtime.ScriptId;
 
   beforeEach(() => {
+    setMockConnectionResponseHandler(
+        'Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID' as Protocol.Runtime.UniqueDebuggerId}));
+    setMockConnectionResponseHandler(
+        'Debugger.setInstrumentationBreakpoint', () => ({} as Protocol.Debugger.SetInstrumentationBreakpointResponse));
     target = createTarget();
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();

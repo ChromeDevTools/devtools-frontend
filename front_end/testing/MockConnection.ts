@@ -111,6 +111,14 @@ class MockConnection extends ProtocolClient.ConnectionTransport.ConnectionTransp
       }
       const handler = responseMap.get(outgoingMessage.method);
       if (!handler) {
+        this.messageCallback?.call(undefined, {
+          id: outgoingMessage.id,
+          sessionId: outgoingMessage.sessionId,
+          error: {
+            message: `Method ${outgoingMessage.method} is not stubbed in MockConnection`,
+            code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode,
+          }
+        });
         return;
       }
 

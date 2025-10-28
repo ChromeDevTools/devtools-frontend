@@ -361,7 +361,7 @@ export class CSSMatchedStyles {
       inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
     }
 
-    this.#environmentVariables = await this.cssModel().getEnvironmentVariales();
+    this.#environmentVariables = await this.cssModel().getEnvironmentVariables();
 
     this.#mainDOMCascade = await this.buildMainCascade(
         inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload,
@@ -450,7 +450,7 @@ export class CSSMatchedStyles {
     nodeCascades.push(new NodeCascade(this, nodeStyles, this.#node, false /* #isInherited */));
 
     // Walk the node structure and identify styles with inherited properties.
-    let parentNode: (DOMNode|null) = this.#node.parentNode;
+    let parentNode: DOMNode|null = this.#node.parentNode;
     const traverseParentInFlatTree = async(node: DOMNode): Promise<DOMNode|null> => {
       if (node.hasAssignedSlot()) {
         return await node.assignedSlot?.deferredNode.resolvePromise() ?? null;

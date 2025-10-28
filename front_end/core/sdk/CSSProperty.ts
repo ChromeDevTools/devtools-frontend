@@ -41,9 +41,9 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   implicit: boolean;
   text: string|null|undefined;
   range: TextUtils.TextRange.TextRange|null;
-  #active: boolean;
-  #nameRange: TextUtils.TextRange.TextRange|null;
-  #valueRange: TextUtils.TextRange.TextRange|null;
+  #active = true;
+  #nameRange: TextUtils.TextRange.TextRange|null = null;
+  #valueRange: TextUtils.TextRange.TextRange|null = null;
   #invalidString?: Common.UIString.LocalizedString;
   #longhandProperties: CSSProperty[] = [];
 
@@ -62,9 +62,6 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.implicit = implicit;  // A longhand, implicitly set by missing values of shorthand.
     this.text = text;
     this.range = range ? TextUtils.TextRange.TextRange.fromObject(range) : null;
-    this.#active = true;
-    this.#nameRange = null;
-    this.#valueRange = null;
 
     if (longhandProperties && longhandProperties.length > 0) {
       for (const property of longhandProperties) {

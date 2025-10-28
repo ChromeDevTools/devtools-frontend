@@ -407,7 +407,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     };
   }
 
-  async getEnvironmentVariales(): Promise<Record<string, string>> {
+  async getEnvironmentVariables(): Promise<Record<string, string>> {
     const response = await this.agent.invoke_getEnvironmentVariables();
     if (response.getError()) {
       return {};

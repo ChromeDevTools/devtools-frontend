@@ -128,7 +128,7 @@ export class SourceMap {
   readonly #compiledURL: Platform.DevToolsPath.UrlString;
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
   readonly #baseURL: Platform.DevToolsPath.UrlString;
-  #mappings: SourceMapEntry[]|null;
+  #mappings: SourceMapEntry[]|null = null;
 
   readonly #sourceInfos: SourceInfo[] = [];
   readonly #sourceInfoByURL = new Map<Platform.DevToolsPath.UrlString, SourceInfo>();
@@ -154,7 +154,6 @@ export class SourceMap {
     this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
     this.#debugId = 'debugId' in payload ? (payload.debugId as DebugId | undefined) : undefined;
 
-    this.#mappings = null;
     if ('sections' in this.#json) {
       if (this.#json.sections.find(section => 'url' in section)) {
         Common.Console.Console.instance().warn(
@@ -435,7 +434,7 @@ export class SourceMap {
   #computeReverseMappings(mappings: SourceMapEntry[]): void {
     const reverseMappingsPerUrl = new Map<Platform.DevToolsPath.UrlString, number[]>();
     for (let i = 0; i < mappings.length; i++) {
-      const entryUrl = mappings[i].sourceURL;
+      const entryUrl = mappings[i]?.sourceURL;
       if (!entryUrl) {
         continue;
       }

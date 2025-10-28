@@ -836,12 +836,11 @@ export class AnimationGroup {
   readonly #id: string;
   #scrollNode: AnimationDOMNode|undefined;
   #animations: AnimationImpl[];
-  #paused: boolean;
+  #paused = false;
   constructor(animationModel: AnimationModel, id: string, animations: AnimationImpl[]) {
     this.#animationModel = animationModel;
     this.#id = id;
     this.#animations = animations;
-    this.#paused = false;
   }
 
   isScrollDriven(): boolean {

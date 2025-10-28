@@ -8,10 +8,7 @@ export interface OutputStream {
 }
 
 export class StringOutputStream implements OutputStream {
-  #data: string;
-  constructor() {
-    this.#data = '';
-  }
+  #data = '';
 
   async write(chunk: string): Promise<void> {
     this.#data += chunk;

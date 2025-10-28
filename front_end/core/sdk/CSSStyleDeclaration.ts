@@ -14,14 +14,14 @@ import type {Target} from './Target.js';
 export class CSSStyleDeclaration {
   readonly #cssModel: CSSModel;
   parentRule: CSSRule|null;
-  #allProperties!: CSSProperty[];
+  #allProperties: CSSProperty[] = [];
   styleSheetId?: Protocol.CSS.StyleSheetId;
-  range!: TextUtils.TextRange.TextRange|null;
+  range: TextUtils.TextRange.TextRange|null = null;
   cssText?: string;
   #shorthandValues = new Map<string, string>();
   #shorthandIsImportant = new Set<string>();
   #activePropertyMap = new Map<string, CSSProperty>();
-  #leadingProperties!: CSSProperty[]|null;
+  #leadingProperties: CSSProperty[]|null = null;
   type: Type;
   // For CSSStyles coming from animations,
   // This holds the name of the animation.
@@ -97,7 +97,7 @@ export class CSSStyleDeclaration {
     this.#computeInactiveProperties();
 
     // TODO(changhaohan): verify if this #activePropertyMap is still necessary, or if it is
-    // providing different information against the activeness in allPropertiesInternal.
+    // providing different information against the activeness in #allProperties.
     this.#activePropertyMap = new Map();
     for (const property of this.#allProperties) {
       if (!property.activeInStyle()) {

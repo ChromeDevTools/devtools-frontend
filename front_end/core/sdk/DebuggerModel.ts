@@ -1402,14 +1402,13 @@ export class Scope implements ScopeChainEntry {
   readonly #name: string|undefined;
   #ordinal: number;
   readonly #locationRange: LocationRange|null;
-  #object: RemoteObject|null;
+  #object: RemoteObject|null = null;
   constructor(callFrame: CallFrame, ordinal: number) {
     this.#callFrame = callFrame;
     this.#payload = callFrame.getPayload().scopeChain[ordinal];
     this.#type = this.#payload.type;
     this.#name = this.#payload.name;
     this.#ordinal = ordinal;
-    this.#object = null;
 
     const start =
         this.#payload.startLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;

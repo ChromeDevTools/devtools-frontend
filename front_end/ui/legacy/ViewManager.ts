@@ -164,14 +164,12 @@ export interface EventTypes {
 }
 
 export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  readonly views: Map<string, View>;
-  private readonly locationNameByViewId: Map<string, string>;
+  readonly views = new Map<string, View>();
+  private readonly locationNameByViewId = new Map<string, string>();
   private readonly locationOverrideSetting: Common.Settings.Setting<Record<string, string>>;
 
   private constructor() {
     super();
-    this.views = new Map();
-    this.locationNameByViewId = new Map();
 
     // Read override setting for location
     this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('views-location-override', {});

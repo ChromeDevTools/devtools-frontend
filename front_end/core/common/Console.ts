@@ -8,14 +8,7 @@ import {reveal} from './Revealer.js';
 let consoleInstance: Console|undefined;
 
 export class Console extends ObjectWrapper<EventTypes> {
-  readonly #messages: Message[];
-  /**
-   * Instantiable via the instance() factory below.
-   */
-  constructor() {
-    super();
-    this.#messages = [];
-  }
+  readonly #messages: Message[] = [];
 
   static instance(opts?: {forceNew: boolean}): Console {
     if (!consoleInstance || opts?.forceNew) {

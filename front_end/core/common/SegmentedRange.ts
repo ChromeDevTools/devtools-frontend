@@ -24,11 +24,10 @@ export class Segment<T> {
 }
 
 export class SegmentedRange<T> {
-  #segments: Array<Segment<T>>;
+  #segments: Array<Segment<T>> = [];
   readonly #mergeCallback: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T>| null)|undefined;
 
   constructor(mergeCallback?: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T>| null)) {
-    this.#segments = [];
     this.#mergeCallback = mergeCallback;
   }
 

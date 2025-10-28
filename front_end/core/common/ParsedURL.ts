@@ -57,33 +57,23 @@ type BrandedPathString =
     Platform.DevToolsPath.UrlString|Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.EncodedPathString;
 
 export class ParsedURL {
-  isValid: boolean;
+  isValid = false;
   url: string;
-  scheme: string;
-  user: string;
-  host: string;
-  port: string;
-  path: string;
-  queryParams: string;
-  fragment: string;
-  folderPathComponents: string;
-  lastPathComponent: string;
+  scheme = '';
+  user = '';
+  host = '';
+  port = '';
+  path = '';
+  queryParams = '';
+  fragment = '';
+  folderPathComponents = '';
+  lastPathComponent = '';
   readonly blobInnerScheme: string|undefined;
   #displayName?: string;
   #dataURLDisplayName?: string;
 
   constructor(url: string) {
-    this.isValid = false;
     this.url = url;
-    this.scheme = '';
-    this.user = '';
-    this.host = '';
-    this.port = '';
-    this.path = '';
-    this.queryParams = '';
-    this.fragment = '';
-    this.folderPathComponents = '';
-    this.lastPathComponent = '';
 
     const isBlobUrl = this.url.startsWith('blob:');
     const urlToMatch = isBlobUrl ? url.substring(5) : url;

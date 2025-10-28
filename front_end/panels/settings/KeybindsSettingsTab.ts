@@ -43,6 +43,11 @@ const UIStrings = {
    */
   addAShortcut: 'Add a shortcut',
   /**
+   * @description Placeholder text in the settings pane when adding a new shortcut.
+   * Explaining that key strokes are going to be recoded.
+   */
+  recordingKeys: 'Recoding keys',
+  /**
    * @description Label for a button in the settings pane that confirms changes to a keyboard shortcut
    */
   confirmChanges: 'Confirm changes',
@@ -446,6 +451,7 @@ export class ShortcutListItem {
     if (this.isEditing) {
       const shortcutInput = shortcutElement.createChild('input', 'harmony-input');
       shortcutInput.setAttribute('jslog', `${VisualLogging.textField().track({change: true})}`);
+      shortcutInput.setAttribute('placeholder', i18nString(UIStrings.recordingKeys));
       shortcutInput.spellcheck = false;
       shortcutInput.maxLength = 0;
       this.shortcutInputs.set(shortcut, shortcutInput);

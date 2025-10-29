@@ -7,7 +7,6 @@ import './emulation/emulation-meta.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Settings from './settings.js';
@@ -117,7 +116,7 @@ UI.ViewManager.registerViewExtension({
   order: 2,
   async loadView() {
     const Settings = await loadSettingsModule();
-    return LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, new Settings.AISettingsTab.AISettingsTab());
+    return new Settings.AISettingsTab.AISettingsTab();
   },
   iconName: 'button-magic',
   settings: ['console-insights-enabled'],

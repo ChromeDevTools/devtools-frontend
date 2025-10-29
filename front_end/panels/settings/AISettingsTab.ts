@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -11,7 +10,6 @@ import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Switch from '../../ui/components/switch/switch.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -20,7 +18,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import aiSettingsTabStyles from './aiSettingsTab.css.js';
 
-const {html, Directives: {ifDefined, classMap}} = Lit;
+const {html, nothing, render, Directives: {ifDefined, classMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -231,8 +229,143 @@ interface AiSettingParams {
   };
 }
 
-export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+interface ViewInput {
+  disabledReasons: string[];
+  sharedDisclaimerBulletPoints: Array<{icon: string, text: Common.UIString.LocalizedString|Lit.TemplateResult}>;
+  settingToParams: Map<Common.Settings.Setting<boolean>, AiSettingParams>;
+  expandSetting(setting: Common.Settings.Setting<boolean>): void;
+  toggleSetting(setting: Common.Settings.Setting<boolean>, ev: Event): void;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void => {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  const disabledReasonsExplainer = input.disabledReasons.length ? html`
+    <div class="disabled-explainer">
+      ${input.disabledReasons.map(reason => html`
+        <div class="disabled-explainer-row">
+          <devtools-icon name="warning" class="medium" style="color: var(--icon-warning);">
+          </devtools-icon>
+          ${reason}
+        </div>
+      `)}
+    </div>
+  ` : nothing;
+
+  const sharedDisclaimer = html`
+    <div class="shared-disclaimer">
+      <h2>${i18nString(UIStrings.boostYourProductivity)}</h2>
+      <h3 class="disclaimer-list-header">${i18nString(UIStrings.thingsToConsider)}</h3>
+      <div class="disclaimer-list">
+        ${input.sharedDisclaimerBulletPoints.map(item =>
+          html`<div><devtools-icon .name=${item.icon} class="medium"></devtools-icon>
+              </div><div>${item.text}</div>`
+        )}
+      </div>
+    </div>
+  `;
+
+  const renderSettingItem = (settingItem: SettingItem): Lit.TemplateResult => {
+    return html`
+      <div>
+        <devtools-icon class="extra-large" .name=${settingItem.iconName}>
+        </devtools-icon>
+      </div>
+      <div class="padded">${settingItem.text}</div>
+    `;
+  };
+
+  const isDisabled = input.disabledReasons.length > 0;
+  const disabledReasonsJoined = input.disabledReasons.join('\n') || undefined;
+  const settings = Array.from(input.settingToParams.keys()).map(setting => {
+    const settingData = input.settingToParams.get(setting);
+    if (!settingData) {
+      return nothing;
+    }
+    const detailsClasses = {
+      'whole-row': true,
+      open: settingData.settingExpandState.isSettingExpanded,
+    };
+    const tabindex = settingData.settingExpandState.isSettingExpanded ? '0' : '-1';
+    return html`
+      <div class="accordion-header" @click=${input.expandSetting.bind(this, setting)}>
+        <div class="icon-container centered">
+          <devtools-icon name=${settingData.iconName}></devtools-icon>
+        </div>
+        <div class="setting-card">
+          <h2>${settingData.settingName}</h2>
+          <div class="setting-description">${settingData.settingDescription}</div>
+        </div>
+        <div class="dropdown centered">
+          <devtools-button
+            .data=${{
+              title: settingData.settingExpandState.isSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
+              size: Buttons.Button.Size.SMALL,
+              iconName: settingData.settingExpandState.isSettingExpanded ? 'chevron-up' : 'chevron-down',
+              variant: Buttons.Button.Variant.ICON,
+              jslogContext: settingData.settingExpandState.expandSettingJSLogContext,
+            } as Buttons.Button.ButtonData}
+          ></devtools-button>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="toggle-container centered"
+        title=${ifDefined(disabledReasonsJoined)}
+        @click=${input.toggleSetting.bind(this, setting)}
+      >
+        <devtools-switch
+          .checked=${Boolean(setting.get()) && !isDisabled}
+          .jslogContext=${setting.name || ''}
+          .disabled=${isDisabled}
+          .label=${disabledReasonsJoined || settingData.enableSettingText}
+          data-testid=${settingData.enableSettingText}
+          @switchchange=${input.toggleSetting.bind(this, setting)}
+        ></devtools-switch>
+      </div>
+      <div class=${classMap(detailsClasses)}>
+        <div class="overflow-hidden">
+          <div class="expansion-grid">
+            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
+            ${settingData.settingItems.map(item => renderSettingItem(item))}
+            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
+            ${settingData.toConsiderSettingItems.map(item => renderSettingItem(item))}
+            <div class="expansion-grid-whole-row">
+              <x-link
+                href=${settingData.learnMoreLink.url}
+                class="link"
+                tabindex=${tabindex}
+                jslog=${VisualLogging.link(settingData.learnMoreLink.linkJSLogContext).track({
+                  click: true,
+                })}
+              >${i18nString(UIStrings.learnMore)}</x-link>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  render(html`
+    <style>${Input.checkboxStyles}</style>
+    <style>${aiSettingsTabStyles}</style>
+    <div class="ai-settings-container">
+    <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
+      ${sharedDisclaimer}
+      ${input.settingToParams.size ? html`
+        ${disabledReasonsExplainer}
+        <div class="settings-container">
+          ${settings}
+        </div>
+      ` : nothing}
+    </div></div>
+  `, target);
+  // clang-format on
+};
+
+export class AISettingsTab extends UI.Widget.VBox {
+  #view: View;
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
   #aiAnnotationsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting?: Common.Settings.Setting<boolean>;
@@ -243,7 +376,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   // To display a a setting, it needs to be added to this map.
   #settingToParams = new Map<Common.Settings.Setting<boolean>, AiSettingParams>();
 
-  constructor() {
+  constructor(view?: View) {
     super();
     try {
       this.#consoleInsightsSetting = Common.Settings.Settings.instance().moduleSetting('console-insights-enabled');
@@ -269,15 +402,31 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#initSettings();
+    this.#view = view ?? AI_SETTINGS_TAB_DEFAULT_VIEW;
   }
 
-  connectedCallback(): void {
+  override performUpdate(): void {
+    const disabledReasons = AiAssistanceModel.AiUtils.getDisabledReasons(this.#aidaAvailability);
+    const viewInput: ViewInput = {
+      disabledReasons,
+      sharedDisclaimerBulletPoints: this.#getSharedDisclaimerBulletPoints(),
+      settingToParams: this.#settingToParams,
+      expandSetting: this.#expandSetting.bind(this),
+      toggleSetting: this.#toggleSetting.bind(this),
+    };
+    this.#view(viewInput, undefined, this.contentElement);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
+    this.requestUpdate();
   }
 
-  disconnectedCallback(): void {
+  override willHide(): void {
+    super.willHide();
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
   }
@@ -400,7 +549,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
-      void this.render();
+      this.requestUpdate();
     }
   }
 
@@ -438,7 +587,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       return;
     }
     settingData.settingExpandState.isSettingExpanded = !settingData.settingExpandState.isSettingExpanded;
-    void this.render();
+    this.requestUpdate();
   }
 
   #toggleSetting(setting: Common.Settings.Setting<boolean>, ev: Event): void {
@@ -477,24 +626,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       // If the "AI Assistance" is toggled off, we remove all the history entries related to the feature.
       void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
     }
-    void this.render();
+    this.requestUpdate();
   }
 
-  #renderSharedDisclaimerItem(icon: string, text: Common.UIString.LocalizedString|Lit.TemplateResult):
-      Lit.TemplateResult {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div>
-        <devtools-icon .name=${icon} class="medium">
-        </devtools-icon>
-      </div>
-      <div>${text}</div>
-    `;
-    // clang-format on
-  }
-
-  #renderSharedDisclaimer(): Lit.TemplateResult {
+  #getSharedDisclaimerBulletPoints(): Array<{icon: string, text: Common.UIString.LocalizedString|Lit.TemplateResult}> {
     const tosLink = UI.XLink.XLink.create(
         'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
         'terms-of-service');
@@ -504,7 +639,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
-    const bulletPoints = [
+    return [
       {icon: 'psychiatry', text: i18nString(UIStrings.experimentalFeatures)},
       {
         icon: 'google',
@@ -522,149 +657,5 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         })}`,
       },
     ];
-
-    return html`
-      <div class="shared-disclaimer">
-        <h2>${i18nString(UIStrings.boostYourProductivity)}</h2>
-        <h3 class="disclaimer-list-header">${i18nString(UIStrings.thingsToConsider)}</h3>
-        <div class="disclaimer-list">
-          ${bulletPoints.map(item => this.#renderSharedDisclaimerItem(item.icon, item.text))}
-        </div>
-      </div>
-    `;
-  }
-
-  #renderSettingItem(settingItem: SettingItem): Lit.TemplateResult {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div>
-        <devtools-icon class="extra-large" .name=${settingItem.iconName}>
-        </devtools-icon>
-      </div>
-      <div class="padded">${settingItem.text}</div>
-    `;
-    // clang-format on
-  }
-
-  #renderSetting(setting: Common.Settings.Setting<boolean>): Lit.LitTemplate {
-    const settingData = this.#settingToParams.get(setting);
-    if (!settingData) {
-      return Lit.nothing;
-    }
-    const disabledReasons = AiAssistanceModel.AiUtils.getDisabledReasons(this.#aidaAvailability);
-    const isDisabled = disabledReasons.length > 0;
-    const disabledReasonsJoined = disabledReasons.join('\n') || undefined;
-    const detailsClasses = {
-      'whole-row': true,
-      open: settingData.settingExpandState.isSettingExpanded,
-    };
-    const tabindex = settingData.settingExpandState.isSettingExpanded ? '0' : '-1';
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div class="accordion-header" @click=${this.#expandSetting.bind(this, setting)}>
-        <div class="icon-container centered">
-          <devtools-icon name=${settingData.iconName}></devtools-icon>
-        </div>
-        <div class="setting-card">
-          <h2>${settingData.settingName}</h2>
-          <div class="setting-description">${settingData.settingDescription}</div>
-        </div>
-        <div class="dropdown centered">
-          <devtools-button
-            .data=${{
-              title: settingData.settingExpandState.isSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
-              size: Buttons.Button.Size.SMALL,
-              iconName: settingData.settingExpandState.isSettingExpanded ? 'chevron-up' : 'chevron-down',
-              variant: Buttons.Button.Variant.ICON,
-              jslogContext: settingData.settingExpandState.expandSettingJSLogContext,
-            } as Buttons.Button.ButtonData}
-          ></devtools-button>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="toggle-container centered"
-        title=${ifDefined(disabledReasonsJoined)}
-        @click=${this.#toggleSetting.bind(this, setting)}
-      >
-        <devtools-switch
-          .checked=${Boolean(setting.get()) && !isDisabled}
-          .jslogContext=${setting.name || ''}
-          .disabled=${isDisabled}
-          .label=${disabledReasonsJoined || settingData.enableSettingText}
-          data-testid=${settingData.enableSettingText}
-          @switchchange=${this.#toggleSetting.bind(this, setting)}
-        ></devtools-switch>
-      </div>
-      <div class=${classMap(detailsClasses)}>
-        <div class="overflow-hidden">
-          <div class="expansion-grid">
-            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
-            ${settingData.settingItems.map(item => this.#renderSettingItem(item))}
-            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
-            ${settingData.toConsiderSettingItems.map(item => this.#renderSettingItem(item))}
-            <div class="expansion-grid-whole-row">
-              <x-link
-                href=${settingData.learnMoreLink.url}
-                class="link"
-                tabindex=${tabindex}
-                jslog=${VisualLogging.link(settingData.learnMoreLink.linkJSLogContext).track({
-                  click: true,
-                })}
-              >${i18nString(UIStrings.learnMore)}</x-link>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #renderDisabledExplainer(disabledReasons: string[]): Lit.LitTemplate {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div class="disabled-explainer">
-        ${disabledReasons.map(reason => html`
-          <div class="disabled-explainer-row">
-            <devtools-icon name="warning" class="medium" style="color: var(--icon-warning);">
-            </devtools-icon>
-            ${reason}
-          </div>
-        `)}
-      </div>
-    `;
-    // clang-format on
-  }
-
-  override async render(): Promise<void> {
-    const disabledReasons = AiAssistanceModel.AiUtils.getDisabledReasons(this.#aidaAvailability);
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    Lit.render(html`
-      <style>${Input.checkboxStyles}</style>
-      <style>${aiSettingsTabStyles}</style>
-      <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
-        ${this.#renderSharedDisclaimer()}
-        ${this.#settingToParams.size > 0 ? html`
-          ${disabledReasons.length ? this.#renderDisabledExplainer(disabledReasons) : Lit.nothing}
-          <div class="settings-container">
-            ${this.#settingToParams.keys().map(setting => this.#renderSetting(setting))}
-          </div>
-        ` : Lit.nothing}
-      </div>
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-}
-
-customElements.define('devtools-settings-ai-settings-tab', AISettingsTab);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-settings-ai-settings-tab': AISettingsTab;
   }
 }

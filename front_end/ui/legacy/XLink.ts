@@ -4,7 +4,6 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import {html} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -155,5 +154,3 @@ export class ContextMenuProvider implements Provider<Node> {
 }
 
 customElements.define('x-link', XLink);
-
-export const sample = html`<p>Hello, <x-link>world!</x-link></p>`;

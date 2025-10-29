@@ -20,6 +20,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -66,6 +67,10 @@ const UIStrings = {
    * page eligible for back/forward cache.
    */
   pageSupportNeeded: 'Actionable',
+  /**
+   * @description Label for the completion of the back/forward cache test
+   */
+  testCompleted: 'Back/forward cache test completed.',
   /**
    * @description Explanation for actionable items which prevent the page from being eligible
    * for back/forward cache.
@@ -279,7 +284,7 @@ function renderBackForwardCacheStatus(status: boolean|undefined): Lit.TemplateRe
     case true:
       // clang-format off
       return html`
-        <devtools-report-section>
+        <devtools-report-section class="cache-status-section" tabindex="-1">
           <div class="status extra-large">
             <devtools-icon class="inline-icon extra-large" name="check-circle" style="color: var(--icon-checkmark-green);">
             </devtools-icon>
@@ -290,7 +295,7 @@ function renderBackForwardCacheStatus(status: boolean|undefined): Lit.TemplateRe
     case false:
       // clang-format off
       return html`
-        <devtools-report-section>
+        <devtools-report-section class="cache-status-section" tabindex="-1">
           <div class="status">
             <devtools-icon class="inline-icon extra-large" name="clear">
             </devtools-icon>
@@ -301,7 +306,7 @@ function renderBackForwardCacheStatus(status: boolean|undefined): Lit.TemplateRe
   }
   // clang-format off
   return html`
-    <devtools-report-section>
+    <devtools-report-section class="cache-status-section" tabindex="-1">
       ${i18nString(UIStrings.unknown)}
     </devtools-report-section>`;
   // clang-format on
@@ -510,7 +515,13 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.#renderBackForwardCacheTestResult, this);
     this.#screenStatus = ScreenStatusType.RESULT;
-    void this.render();
+    void this.render().then(() => {
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.testCompleted));
+      const resultsSection = this.shadowRoot?.querySelector('.cache-status-section') as HTMLElement;
+      if (resultsSection) {
+        resultsSection.focus();
+      }
+    });
   }
 
   async #onNavigatedAway(): Promise<void> {

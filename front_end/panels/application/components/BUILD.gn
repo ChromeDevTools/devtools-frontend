@@ -66,6 +66,7 @@ devtools_ui_module("components") {
     "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/icon_button:bundle",
+    "../../../ui/components/input:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/report_view:bundle",
     "../../../ui/components/text_prompt:bundle",

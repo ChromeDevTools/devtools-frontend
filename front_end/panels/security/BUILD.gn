@@ -47,6 +47,7 @@ devtools_ui_module("security") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/cards:bundle",
     "../../ui/components/chrome_link:bundle",
+    "../../ui/components/input:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",

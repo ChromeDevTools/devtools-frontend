@@ -11,6 +11,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -126,8 +127,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     const keybindsSetSetting = Common.Settings.Settings.instance().moduleSetting('active-keybind-set');
     const userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('user-shortcuts');
     keybindsSetSetting.addChangeListener(this.update, this);
-    const keybindsSetSelect =
-        UI.SettingsUI.createControlForSetting(keybindsSetSetting, i18nString(UIStrings.matchShortcutsFromPreset));
+    const keybindsSetSelect = SettingsUI.SettingsUI.createControlForSetting(
+        keybindsSetSetting, i18nString(UIStrings.matchShortcutsFromPreset));
 
     const card = settingsContent.createChild('devtools-card');
     card.heading = i18nString(UIStrings.shortcuts);

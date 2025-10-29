@@ -51,6 +51,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -470,29 +471,30 @@ export class ConsoleView extends UI.Widget.VBox implements
     const preserveConsoleLogSetting = Common.Settings.Settings.instance().moduleSetting('preserve-console-log');
     const userActivationEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval');
     settingsPane.append(
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.hideNetwork), this.filter.hideNetworkMessagesSetting,
             this.filter.hideNetworkMessagesSetting.title()),
-        UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting),
+        SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.preserveLog), preserveConsoleLogSetting,
             i18nString(UIStrings.doNotClearLogOnPageReload)),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             consoleEagerEvalSetting.title(), consoleEagerEvalSetting,
             i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting,
             i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting,
             i18nString(UIStrings.autocompleteFromHistory)),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             this.groupSimilarSetting.title(), this.groupSimilarSetting,
             i18nString(UIStrings.groupSimilarMessagesInConsole)),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             userActivationEvalSetting.title(), userActivationEvalSetting,
             i18nString(UIStrings.treatEvaluationAsUserActivation)),
-        UI.SettingsUI.createSettingCheckbox(
+        SettingsUI.SettingsUI.createSettingCheckbox(
             this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting,
             i18nString(UIStrings.showCorsErrorsInConsole)),
     );

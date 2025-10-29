@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -208,7 +209,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
   private createCacheSection(): void {
     const section = this.createSection(i18nString(UIStrings.caching), 'network-config-disable-cache');
-    section.appendChild(UI.SettingsUI.createSettingCheckbox(
+    section.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.disableCache), Common.Settings.Settings.instance().moduleSetting('cache-disabled')));
   }
 

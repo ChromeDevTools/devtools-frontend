@@ -15,11 +15,10 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import filterStyles from './filter.css.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
-import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestions} from './SuggestBox.js';
 import {type ToolbarButton, ToolbarFilter, ToolbarInput, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import {CheckboxLabel, createTextChild} from './UIUtils.js';
+import {bindCheckbox, CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
 
 const UIStrings = {

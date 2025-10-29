@@ -20,7 +20,7 @@ import autofillViewStyles from './autofillView.css.js';
 
 const {html, render, Directives: {styleMap}} = Lit;
 const {FillingStrategy} = Protocol.Autofill;
-const {bindToSetting} = UI.SettingsUI;
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**

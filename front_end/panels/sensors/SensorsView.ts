@@ -8,6 +8,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Geometry from '../../models/geometry/geometry.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -549,7 +550,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   private createPressureSection(): void {
     const container = this.contentElement.createChild('div', 'pressure-section');
-    const control = UI.SettingsUI.createControlForSetting(
+    const control = SettingsUI.SettingsUI.createControlForSetting(
         Common.Settings.Settings.instance().moduleSetting('emulation.cpu-pressure'),
         i18nString(UIStrings.forcesSelectedPressureStateEmulation));
 
@@ -798,7 +799,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   private appendTouchControl(): void {
     const container = this.contentElement.createChild('div', 'touch-section');
-    const control = UI.SettingsUI.createControlForSetting(
+    const control = SettingsUI.SettingsUI.createControlForSetting(
         Common.Settings.Settings.instance().moduleSetting('emulation.touch'),
         i18nString(UIStrings.forcesTouchInsteadOfClick));
 
@@ -809,7 +810,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   private appendIdleEmulator(): void {
     const container = this.contentElement.createChild('div', 'idle-section');
-    const control = UI.SettingsUI.createControlForSetting(
+    const control = SettingsUI.SettingsUI.createControlForSetting(
         Common.Settings.Settings.instance().moduleSetting('emulation.idle-detection'),
         i18nString(UIStrings.forcesSelectedIdleStateEmulation));
 

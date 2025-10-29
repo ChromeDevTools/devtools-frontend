@@ -34,6 +34,7 @@ devtools_module("inspector_main") {
     "../../panels/security:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]
 }

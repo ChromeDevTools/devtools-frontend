@@ -14,6 +14,7 @@ import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
@@ -355,7 +356,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
     const sectionElement = document.createElement('div');
     for (const settingRegistration of settings) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
-      const settingControl = UI.SettingsUI.createControlForSetting(setting);
+      const settingControl = SettingsUI.SettingsUI.createControlForSetting(setting);
       if (settingControl) {
         this.settingToControl.set(setting, settingControl);
         sectionElement.appendChild(settingControl);

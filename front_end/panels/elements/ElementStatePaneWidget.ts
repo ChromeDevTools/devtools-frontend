@@ -12,7 +12,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
 
-const {bindToSetting} = UI.SettingsUI;
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**

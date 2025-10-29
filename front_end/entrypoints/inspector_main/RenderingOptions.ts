@@ -7,6 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -278,15 +279,15 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
   #appendCheckbox(
       label: Common.UIString.LocalizedString, subtitle: Common.UIString.LocalizedString,
-      setting: Common.Settings.Setting<boolean>, metric?: UI.SettingsUI.UserMetricOptions): UI.UIUtils.CheckboxLabel {
+      setting: Common.Settings.Setting<boolean>, metric?: UI.UIUtils.UserMetricOptions): UI.UIUtils.CheckboxLabel {
     const checkbox = UI.UIUtils.CheckboxLabel.create(label, false, subtitle, setting.name);
-    UI.SettingsUI.bindCheckbox(checkbox, setting, metric);
+    UI.UIUtils.bindCheckbox(checkbox, setting, metric);
     this.contentElement.appendChild(checkbox);
     return checkbox;
   }
 
   #appendSelect(label: string, setting: Common.Settings.Setting<unknown>): void {
-    const control = UI.SettingsUI.createControlForSetting(setting, label);
+    const control = SettingsUI.SettingsUI.createControlForSetting(setting, label);
     if (control) {
       this.contentElement.appendChild(control);
     }

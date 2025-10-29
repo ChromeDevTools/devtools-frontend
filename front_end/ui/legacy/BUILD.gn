@@ -78,7 +78,6 @@ devtools_ui_module("ui") {
     "ResizerWidget.ts",
     "RootView.ts",
     "SearchableView.ts",
-    "SettingsUI.ts",
     "ShortcutRegistry.ts",
     "SoftContextMenu.ts",
     "SoftDropDown.ts",
@@ -115,7 +114,6 @@ devtools_ui_module("ui") {
     "../components/helpers:bundle",
     "../components/highlighting:bundle",
     "../components/icon_button:bundle",
-    "../components/settings:bundle",
     "../lit:bundle",
     "../visual_logging:bundle",
   ]
@@ -185,7 +183,6 @@ devtools_ui_module("unittests") {
     "ListModel.test.ts",
     "ListWidget.test.ts",
     "SearchableView.test.ts",
-    "SettingsUI.test.ts",
     "ShortcutRegistry.test.ts",
     "SplitWidget.test.ts",
     "SuggestBox.test.ts",

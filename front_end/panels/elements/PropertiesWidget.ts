@@ -47,7 +47,7 @@ import propertiesWidgetStyles from './propertiesWidget.css.js';
 
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 
-const {bindToSetting} = UI.SettingsUI;
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**

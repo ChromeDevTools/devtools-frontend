@@ -134,6 +134,7 @@ devtools_ui_module("timeline") {
     "../../ui/i18n:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
+    "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",

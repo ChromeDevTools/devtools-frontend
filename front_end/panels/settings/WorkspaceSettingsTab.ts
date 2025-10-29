@@ -61,7 +61,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             <input
               class="harmony-input"
               jslog=${VisualLogging.textField().track({keydown: 'Enter', change: true}).context(input.excludePatternSetting.name)}
-              ${UI.SettingsUI.bindToSetting(input.excludePatternSetting)}
+              ${UI.UIUtils.bindToSetting(input.excludePatternSetting)}
               id="workspace-setting-folder-exclude-pattern"></input>
           </div>
           <div class="mappings-info">${i18nString(UIStrings.mappingsAreInferredAutomatically)}</div>

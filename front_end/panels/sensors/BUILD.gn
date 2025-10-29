@@ -30,6 +30,7 @@ devtools_ui_module("sensors") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/cards:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/settings_ui:bundle",
   ]
 }
 

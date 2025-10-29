@@ -39,8 +39,7 @@ import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 
-const {bindToSetting} = UI.SettingsUI;
-const {bindToAction} = UI.UIUtils;
+const {bindToAction, bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**

@@ -57,6 +57,7 @@ import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -1290,7 +1291,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
     cpuThrottlingPane.append(this.cpuThrottlingSelect.control.element);
 
-    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
+    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
         this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting,
         i18nString(UIStrings.capturesSelectorStats)));
 
@@ -1298,11 +1299,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     networkThrottlingPane.append(i18nString(UIStrings.network));
     networkThrottlingPane.append(this.createNetworkConditionsSelectToolbarItem().element);
 
-    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
+    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
         this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting,
         i18nString(UIStrings.capturesAdvancedPaint)));
 
-    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
+    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
         this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting,
         i18nString(UIStrings.disablesJavascriptSampling)));
 

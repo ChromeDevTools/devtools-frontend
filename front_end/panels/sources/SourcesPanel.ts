@@ -44,6 +44,7 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -921,7 +922,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     const label = i18nString(UIStrings.pauseOnCaughtExceptions);
     const setting = Common.Settings.Settings.instance().moduleSetting('pause-on-caught-exception');
-    debugToolbarDrawer.appendChild(UI.SettingsUI.createSettingCheckbox(label, setting));
+    debugToolbarDrawer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(label, setting));
 
     return debugToolbarDrawer;
   }

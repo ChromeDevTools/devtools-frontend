@@ -12,6 +12,7 @@ import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -207,7 +208,7 @@ export class StorageView extends UI.Widget.VBox {
     this.clearButton.id = 'storage-view-clear-button';
     clearButtonSection.appendChild(this.clearButton);
 
-    const includeThirdPartyCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
+    const includeThirdPartyCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting);
     includeThirdPartyCookiesCheckbox.classList.add('include-third-party-cookies');
     clearButtonSection.appendChild(includeThirdPartyCookiesCheckbox);
@@ -280,7 +281,7 @@ export class StorageView extends UI.Widget.VBox {
     const row = section.appendRow();
     const setting = this.settings.get(settingName);
     if (setting) {
-      row.appendChild(UI.SettingsUI.createSettingCheckbox(title, setting));
+      row.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(title, setting));
     }
   }
 

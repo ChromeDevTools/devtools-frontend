@@ -10,6 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -104,7 +105,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     titleText.textContent = i18nString(UIStrings.requestCookies);
     UI.Tooltip.Tooltip.install(titleText, i18nString(UIStrings.cookiesThatWereSentToTheServerIn));
 
-    const requestCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
+    const requestCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.showFilteredOutRequestCookies), this.showFilteredOutCookiesSetting);
     requestCookiesCheckbox.addEventListener('change', () => {
       this.refreshRequestCookiesView();

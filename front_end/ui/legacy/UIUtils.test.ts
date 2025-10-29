@@ -7,7 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import type * as Buttons from '../components/buttons/buttons.js';
 import * as Lit from '../lit/lit.js';
 
@@ -463,5 +463,152 @@ describe('UIUtils', () => {
         sinon.assert.calledOnce(divClickHandler);
       });
     });
+  });
+});
+
+describe('bindToSetting (string)', () => {
+  function setup(validate?: (arg: string) => boolean) {
+    const {bindToSetting} = UI.UIUtils;
+    const setting = createFakeSetting<string>('fake-setting', 'defaultValue');
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const inputRef = Lit.Directives.createRef<HTMLInputElement>();
+    Lit.render(html`<input ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, validate)}></input>`, container);
+
+    const input = inputRef.value;
+    assert.exists(input);
+
+    return {input, setting, container};
+  }
+
+  it('shows the current value on initial render', () => {
+    const {input} = setup();
+
+    assert.strictEqual(input.value, 'defaultValue');
+  });
+
+  it('changes the setting when the input changes', () => {
+    const {setting, input} = setup();
+
+    input.value = 'new value via user edit';
+    input.dispatchEvent(new Event('change'));
+
+    assert.strictEqual(setting.get(), 'new value via user edit');
+  });
+
+  it('changes the input when the setting changes', () => {
+    const {setting, input} = setup();
+
+    setting.set('new value via change listener');
+
+    assert.strictEqual(input.value, 'new value via change listener');
+  });
+
+  it('does not change the setting when validation fails', () => {
+    const {setting, input} = setup(arg => /[0-9]+/.test(arg));
+
+    input.value = 'text must not update the setting';
+    input.dispatchEvent(new Event('change'));
+
+    assert.strictEqual(setting.get(), 'defaultValue');
+
+    input.value = '42';
+    input.dispatchEvent(new Event('change'));
+
+    assert.strictEqual(setting.get(), '42');
+  });
+
+  it('removes the change listener when the input is removed from the DOM', () => {
+    const {setting, input, container} = setup();
+    Lit.render(html``, container);
+
+    setting.set('new value via change listener');
+
+    assert.isFalse(input.isConnected);
+    assert.strictEqual(input.value, 'defaultValue');
+  });
+});
+
+describe('bindToSetting (boolean)', () => {
+  function setup() {
+    const {bindToSetting} = UI.UIUtils;
+    const setting = createFakeSetting<boolean>('fake-setting', true);
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const inputRef = Lit.Directives.createRef<UI.UIUtils.CheckboxLabel>();
+    Lit.render(
+        html`<devtools-checkbox ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting)}></devtools-checkbox>`,
+        container);
+
+    const input = inputRef.value;
+    assert.exists(input);
+
+    return {input, setting, container};
+  }
+
+  it('shows the current value on initial render', () => {
+    const {input} = setup();
+
+    assert.isTrue(input.checked);
+  });
+
+  it('changes the setting when the checkbox changes', () => {
+    const {input, setting} = setup();
+
+    input.checked = false;
+    input.dispatchEvent(new Event('change'));
+
+    assert.isFalse(setting.get());
+  });
+
+  it('changes the checkbox when the setting changes', () => {
+    const {input, setting} = setup();
+
+    setting.set(false);
+
+    assert.isFalse(input.checked);
+  });
+
+  it('removes the change listener when the input is removed from the DOM', () => {
+    const {setting, input, container} = setup();
+    Lit.render(html``, container);
+
+    setting.set(false);
+
+    assert.isFalse(input.isConnected);
+    assert.isTrue(input.checked);
+  });
+});
+
+describe('bindCheckbox', () => {
+  function setup() {
+    const setting = createFakeSetting<boolean>('fake-setting', true);
+    const input = document.createElement('devtools-checkbox');
+    UI.UIUtils.bindCheckbox(input, setting);
+
+    return {setting, input};
+  }
+
+  it('shows the current value on initial render', () => {
+    const {input} = setup();
+
+    assert.isTrue(input.checked);
+  });
+
+  it('changes the setting when the checkbox changes', () => {
+    const {input, setting} = setup();
+
+    input.checked = false;
+    input.dispatchEvent(new Event('change'));
+
+    assert.isFalse(setting.get());
+  });
+
+  it('changes the checkbox when the setting changes', () => {
+    const {input, setting} = setup();
+
+    setting.set(false);
+
+    assert.isFalse(input.checked);
   });
 });

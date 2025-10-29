@@ -8,6 +8,7 @@ import '../../ui/components/cards/cards.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -112,7 +113,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     const enabledSetting = Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
     const enableIgnoreListing = this.contentElement.createChild('div', 'enable-ignore-listing');
     enableIgnoreListing.appendChild(
-        UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting));
+        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting));
     UI.Tooltip.Tooltip.install(enableIgnoreListing, i18nString(UIStrings.enableIgnoreListingTooltip));
 
     const enableIgnoreListingCard = settingsContent.createChild('devtools-card');
@@ -123,14 +124,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     generalExclusionGroup.classList.add('general-exclusion-group');
     const ignoreListContentScripts =
         generalExclusionGroup.createChild('div', 'ignore-list-option')
-            .appendChild(UI.SettingsUI.createSettingCheckbox(
+            .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
                 i18nString(UIStrings.ignoreListContentScripts),
                 Common.Settings.Settings.instance().moduleSetting('skip-content-scripts')));
 
     const automaticallyIgnoreListContainer = generalExclusionGroup.createChild('div', 'ignore-list-option');
-    const automaticallyIgnoreList = automaticallyIgnoreListContainer.appendChild(UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
-        Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts')));
+    const automaticallyIgnoreList =
+        automaticallyIgnoreListContainer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
+            Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts')));
 
     const automaticallyIgnoreLinkButton = new Buttons.Button.Button();
     automaticallyIgnoreLinkButton.data = {
@@ -148,7 +150,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     const ignoreListAnonymousScripts =
         generalExclusionGroup.createChild('div', 'ignore-list-option')
-            .appendChild(UI.SettingsUI.createSettingCheckbox(
+            .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
                 i18nString(UIStrings.ignoreListAnonymousScripts),
                 Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts')));
 

@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
+import '../../../ui/components/settings/settings.js';
 import '../../../ui/components/icon_button/icon_button.js';
 import './FieldSettingsDialog.js';
 import './NetworkThrottlingSelector.js';

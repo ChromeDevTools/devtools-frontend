@@ -17,7 +17,7 @@ import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 import developerResourcesViewStyles from './developerResourcesView.css.js';
 
 const {widgetConfig} = UI.Widget;
-const {bindToSetting} = UI.SettingsUI;
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**

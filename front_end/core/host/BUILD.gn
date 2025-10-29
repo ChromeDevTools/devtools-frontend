@@ -8,6 +8,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("host") {
   sources = [
     "AidaClient.ts",
+    "DispatchHttpRequestClient.ts",
     "GdpClient.ts",
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",

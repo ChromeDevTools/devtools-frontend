@@ -4,8 +4,8 @@
 
 import * as Root from '../root/root.js';
 
-import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
-import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './InspectorFrontendHostAPI.js';
+import * as DispatchHttpRequestClient from './DispatchHttpRequestClient.js';
+import type {DispatchHttpRequestRequest} from './InspectorFrontendHostAPI.js';
 
 export enum SubscriptionStatus {
   ENABLED = 'SUBSCRIPTION_STATE_ENABLED',
@@ -73,17 +73,6 @@ export interface GetProfileResponse {
   isEligible: boolean;
 }
 
-export enum GdpErrorType {
-  HTTP_RESPONSE_UNAVAILABLE = 'HTTP_RESPONSE_UNAVAILABLE',
-  NOT_FOUND = 'NOT_FOUND',
-}
-
-class GdpError extends Error {
-  constructor(readonly type: GdpErrorType, options?: ErrorOptions) {
-    super(undefined, options);
-  }
-}
-
 /**
  * The `batchGet` awards endpoint returns badge names with an
  * obfuscated user ID (e.g., `profiles/12345/awards/badge-name`).
@@ -99,27 +88,12 @@ export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.google.
 
 async function makeHttpRequest<R>(request: DispatchHttpRequestRequest): Promise<R> {
   if (!isGdpProfilesAvailable()) {
-    throw new GdpError(GdpErrorType.HTTP_RESPONSE_UNAVAILABLE);
+    throw new DispatchHttpRequestClient.DispatchHttpRequestError(
+        DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE);
   }
 
-  const response = await new Promise<DispatchHttpRequestResult>(resolve => {
-    InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
-  });
-
-  debugLog({request, response});
-  if (response.statusCode === 404) {
-    throw new GdpError(GdpErrorType.NOT_FOUND);
-  }
-
-  if ('response' in response && response.statusCode === 200) {
-    try {
-      return JSON.parse(response.response) as R;
-    } catch (err) {
-      throw new GdpError(GdpErrorType.HTTP_RESPONSE_UNAVAILABLE, {cause: err});
-    }
-  }
-
-  throw new GdpError(GdpErrorType.HTTP_RESPONSE_UNAVAILABLE);
+  const response = await DispatchHttpRequestClient.makeHttpRequest(request) as R;
+  return response;
 }
 
 const SERVICE_NAME = 'gdpService';
@@ -158,7 +132,8 @@ export class GdpClient {
         isEligible: true,
       };
     } catch (err: unknown) {
-      if (err instanceof GdpError && err.type === GdpErrorType.HTTP_RESPONSE_UNAVAILABLE) {
+      if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError &&
+          err.type === DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
         return null;
       }
     }
@@ -265,27 +240,6 @@ export class GdpClient {
   }
 }
 
-function isDebugMode(): boolean {
-  return Boolean(localStorage.getItem('debugGdpIntegrationEnabled'));
-}
-
-function debugLog(...log: unknown[]): void {
-  if (!isDebugMode()) {
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log('debugLog', ...log);
-}
-
-function setDebugGdpIntegrationEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('debugGdpIntegrationEnabled', 'true');
-  } else {
-    localStorage.removeItem('debugGdpIntegrationEnabled');
-  }
-}
-
 export function isGdpProfilesAvailable(): boolean {
   const isBaseFeatureEnabled = Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
   const isBrandedBuild = Boolean(Root.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
@@ -311,6 +265,3 @@ export function isBadgesEnabled(): boolean {
 export function isStarterBadgeEnabled(): boolean {
   return Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
 }
-
-// @ts-expect-error
-globalThis.setDebugGdpIntegrationEnabled = setDebugGdpIntegrationEnabled;

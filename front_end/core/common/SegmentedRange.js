@@ -17,10 +17,9 @@ export class Segment {
   }
 }
 export class SegmentedRange {
-  #segments;
+  #segments = [];
   #mergeCallback;
   constructor(mergeCallback) {
-    this.#segments = [];
     this.#mergeCallback = mergeCallback;
   }
   append(newSegment) {

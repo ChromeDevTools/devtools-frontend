@@ -1,9 +1,6 @@
 "use strict";
 export class StringOutputStream {
-  #data;
-  constructor() {
-    this.#data = "";
-  }
+  #data = "";
   async write(chunk) {
     this.#data += chunk;
   }

@@ -32,32 +32,22 @@ export function schemeIs(url, scheme) {
   }
 }
 export class ParsedURL {
-  isValid;
+  isValid = false;
   url;
-  scheme;
-  user;
-  host;
-  port;
-  path;
-  queryParams;
-  fragment;
-  folderPathComponents;
-  lastPathComponent;
+  scheme = "";
+  user = "";
+  host = "";
+  port = "";
+  path = "";
+  queryParams = "";
+  fragment = "";
+  folderPathComponents = "";
+  lastPathComponent = "";
   blobInnerScheme;
   #displayName;
   #dataURLDisplayName;
   constructor(url) {
-    this.isValid = false;
     this.url = url;
-    this.scheme = "";
-    this.user = "";
-    this.host = "";
-    this.port = "";
-    this.path = "";
-    this.queryParams = "";
-    this.fragment = "";
-    this.folderPathComponents = "";
-    this.lastPathComponent = "";
     const isBlobUrl = this.url.startsWith("blob:");
     const urlToMatch = isBlobUrl ? url.substring(5) : url;
     const match = urlToMatch.match(ParsedURL.urlRegex());

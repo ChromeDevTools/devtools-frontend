@@ -3,14 +3,7 @@ import { ObjectWrapper } from "./Object.js";
 import { reveal } from "./Revealer.js";
 let consoleInstance;
 export class Console extends ObjectWrapper {
-  #messages;
-  /**
-   * Instantiable via the instance() factory below.
-   */
-  constructor() {
-    super();
-    this.#messages = [];
-  }
+  #messages = [];
   static instance(opts) {
     if (!consoleInstance || opts?.forceNew) {
       consoleInstance = new Console();

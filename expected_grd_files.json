@@ -796,6 +796,7 @@
   "front_end/ui/components/text_prompt/text_prompt.js",
   "front_end/ui/components/tooltips/tooltips.js",
   "front_end/ui/components/tree_outline/tree_outline.js",
+  "front_end/ui/i18n/i18n.js",
   "front_end/ui/legacy/components/color_picker/color_picker.js",
   "front_end/ui/legacy/components/cookie_table/cookie_table.js",
   "front_end/ui/legacy/components/data_grid/data_grid.js",

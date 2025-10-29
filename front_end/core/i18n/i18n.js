@@ -177,7 +177,6 @@ __export(i18nImpl_exports, {
   deserializeUIString: () => deserializeUIString,
   fetchAndRegisterLocaleData: () => fetchAndRegisterLocaleData,
   getAllSupportedDevToolsLocales: () => getAllSupportedDevToolsLocales,
-  getFormatLocalizedString: () => getFormatLocalizedString,
   getLazilyComputedLocalizedString: () => getLazilyComputedLocalizedString,
   getLocalizedLanguageRegion: () => getLocalizedLanguageRegion,
   getLocalizedString: () => getLocalizedString,
@@ -326,22 +325,6 @@ function getLocalizedString(registeredStrings, id, values = {}) {
 }
 function registerUIStrings(path, stringStructure) {
   return i18nInstance.registerFileStrings(path, stringStructure);
-}
-function getFormatLocalizedString(registeredStrings, stringId, placeholders) {
-  const formatter = registeredStrings.getLocalizedStringSetFor(DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
-  const element = document.createElement("span");
-  for (const icuElement of formatter.getAst()) {
-    if (icuElement.type === /* argumentElement */
-    1) {
-      const placeholderValue = placeholders[icuElement.value];
-      if (placeholderValue) {
-        element.append(placeholderValue);
-      }
-    } else if ("value" in icuElement) {
-      element.append(String(icuElement.value));
-    }
-  }
-  return element;
 }
 function serializeUIString(string, values = {}) {
   const serializedMessage = { string, values };

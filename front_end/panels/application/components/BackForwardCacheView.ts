@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/expandable_list/expandable_list.js';
@@ -15,19 +14,15 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
 import backForwardCacheViewStyles from './backForwardCacheView.css.js';
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -163,7 +158,7 @@ function renderMainFrameInformation(
     frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
     frameTreeData: {node: FrameTreeNodeData, frameCount: number, issueCount: number}|undefined,
     reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>, screenStatus: ScreenStatusType,
-    navigateAwayAndBack: () => Promise<void>): Lit.TemplateResult {
+    navigateAwayAndBack: () => Promise<void>): TemplateResult {
   if (!frame) {
     // clang-format of
     return html`
@@ -213,19 +208,19 @@ function renderMainFrameInformation(
 }
 
 function maybeRenderFrameTree(
-    frameTreeData: {node: FrameTreeNodeData, frameCount: number, issueCount: number}|undefined): Lit.LitTemplate {
+    frameTreeData: {node: FrameTreeNodeData, frameCount: number, issueCount: number}|undefined): LitTemplate {
   if (!frameTreeData || (frameTreeData.frameCount === 0 && frameTreeData.issueCount === 0)) {
-    return Lit.nothing;
+    return nothing;
   }
 
-  function treeNodeRenderer(node: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>): Lit.TemplateResult {
+  function treeNodeRenderer(node: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>): TemplateResult {
     // clang-format off
     return html`
       <div class="text-ellipsis">
         ${node.treeNodeData.iconName ? html`
           <devtools-icon class="inline-icon extra-large" .name=${node.treeNodeData.iconName} style="margin-bottom: -3px;">
           </devtools-icon>
-        ` : Lit.nothing}
+        ` : nothing}
         ${node.treeNodeData.text}
       </div>`;
     // clang-format on
@@ -279,7 +274,7 @@ function buildFrameTree(data: FrameTreeNodeData): TreeOutline.TreeOutlineUtils.T
   return node;
 }
 
-function renderBackForwardCacheStatus(status: boolean|undefined): Lit.TemplateResult {
+function renderBackForwardCacheStatus(status: boolean|undefined): TemplateResult {
   switch (status) {
     case true:
       // clang-format off
@@ -315,9 +310,9 @@ function renderBackForwardCacheStatus(status: boolean|undefined): Lit.TemplateRe
 function maybeRenderExplanations(
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
     explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|undefined,
-    reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): Lit.LitTemplate {
+    reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): LitTemplate {
   if (explanations.length === 0) {
-    return Lit.nothing;
+    return nothing;
   }
 
   const pageSupportNeeded = explanations.filter(
@@ -339,7 +334,7 @@ function maybeRenderExplanations(
 function renderExplanations(
     category: Platform.UIString.LocalizedString, explainerText: Platform.UIString.LocalizedString,
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
-    reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): Lit.TemplateResult {
+    reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): TemplateResult {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   return html`
@@ -352,11 +347,11 @@ function renderExplanations(
         </div>
       </devtools-report-section-header>
       ${explanations.map(explanation => renderReason(explanation, reasonToFramesMap.get(explanation.reason)))}
-    ` : Lit.nothing}`;
+    ` : nothing}`;
   // clang-format on
 }
 
-function maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): Lit.LitTemplate {
+function maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitTemplate {
   if (explanation.reason ===
           Protocol.Page.BackForwardCacheNotRestoredReason.EmbedderExtensionSentMessageToCachedFrame &&
       explanation.context) {
@@ -366,12 +361,12 @@ function maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNot
       <devtools-chrome-link .href=${link}>${explanation.context}</devtools-chrome-link>`;
     // clang-format on
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function renderFramesPerReason(frames: string[]|undefined): Lit.LitTemplate {
+function renderFramesPerReason(frames: string[]|undefined): LitTemplate {
   if (frames === undefined || frames.length === 0) {
-    return Lit.nothing;
+    return nothing;
   }
   const rows = [html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
   rows.push(...frames.map(url => html`<div class="text-ellipsis" title=${url}
@@ -388,8 +383,7 @@ function renderFramesPerReason(frames: string[]|undefined): Lit.LitTemplate {
     `;
 }
 
-function maybeRenderDeepLinkToUnload(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation):
-    Lit.LitTemplate {
+function maybeRenderDeepLinkToUnload(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitTemplate {
   if (explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInMainFrame ||
       explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInSubFrame) {
     return html`
@@ -400,13 +394,12 @@ function maybeRenderDeepLinkToUnload(explanation: Protocol.Page.BackForwardCache
           ${i18nString(UIStrings.neverUseUnload)}
         </x-link>`;
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function maybeRenderJavaScriptDetails(details: Protocol.Page.BackForwardCacheBlockingDetails[]|undefined):
-    Lit.LitTemplate {
+function maybeRenderJavaScriptDetails(details: Protocol.Page.BackForwardCacheBlockingDetails[]|undefined): LitTemplate {
   if (details === undefined || details.length === 0) {
-    return Lit.nothing;
+    return nothing;
   }
   const maxLengthForDisplayedURLs = 50;
   const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
@@ -428,7 +421,7 @@ function maybeRenderJavaScriptDetails(details: Protocol.Page.BackForwardCacheBlo
 }
 
 function renderReason(
-    explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation, frames: string[]|undefined): Lit.TemplateResult {
+    explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation, frames: string[]|undefined): TemplateResult {
   // clang-format off
   return html`
     <devtools-report-section>
@@ -443,7 +436,7 @@ function renderReason(
             ${maybeRenderDeepLinkToUnload(explanation)}
             ${maybeRenderReasonContext(explanation)}
           </div>` :
-          Lit.nothing}
+          nothing}
     </devtools-report-section>
     <div class="gray-text">
       ${explanation.reason}
@@ -453,36 +446,44 @@ function renderReason(
   // clang-format on
 }
 
-function renderBackForwardCacheView(
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
-    frameTreeData: {node: FrameTreeNodeData, frameCount: number, issueCount: number}|undefined,
-    reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>, screenStatus: ScreenStatusType,
-    navigateAwayAndBack: () => Promise<void>, target: ShadowRoot): void {
+interface ViewInput {
+  frame: SDK.ResourceTreeModel.ResourceTreeFrame|null;
+  frameTreeData: {node: FrameTreeNodeData, frameCount: number, issueCount: number}|undefined;
+  reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>;
+  screenStatus: ScreenStatusType;
+  navigateAwayAndBack: () => Promise<void>;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, output, target) => {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
-  Lit.render(html`
+  render(html`
     <style>${backForwardCacheViewStyles}</style>
     <devtools-report .data=${
         {reportTitle: i18nString(UIStrings.backForwardCacheTitle)} as ReportView.ReportView.ReportData
     } jslog=${VisualLogging.pane('back-forward-cache')}>
 
-      ${renderMainFrameInformation(frame, frameTreeData, reasonToFramesMap, screenStatus, navigateAwayAndBack)}
+      ${renderMainFrameInformation(input.frame, input.frameTreeData, input.reasonToFramesMap, input.screenStatus, input.navigateAwayAndBack)}
     </devtools-report>
   `, target);
   // clang-format on
-}
+};
 
-export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class BackForwardCacheView extends UI.Widget.Widget {
   #screenStatus = ScreenStatusType.RESULT;
   #historyIndex = 0;
+  #view: View;
 
-  constructor() {
-    super();
+  constructor(view = DEFAULT_VIEW) {
+    super({useShadowDom: true});
+    this.#view = view;
     this.#getMainResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.render, this);
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.requestUpdate, this);
     this.#getMainResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.render, this);
+        SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
   #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
@@ -493,21 +494,21 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
   #getMainFrame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
     return this.#getMainResourceTreeModel()?.mainFrame || null;
   }
-  connectedCallback(): void {
-    this.parentElement?.classList.add('overflow-auto');
-  }
 
-  override async render(): Promise<void> {
-    await RenderCoordinator.write('BackForwardCacheView render', () => {
-      const reasonToFramesMap = new Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>();
-      const explanationTree = this.#getMainFrame()?.backForwardCacheDetails?.explanationsTree;
-      if (explanationTree) {
-        this.#buildReasonToFramesMap(explanationTree, {blankCount: 1}, reasonToFramesMap);
-      }
-      renderBackForwardCacheView(
-          this.#getMainFrame(), this.#buildFrameTreeDataRecursive(explanationTree, {blankCount: 1}), reasonToFramesMap,
-          this.#screenStatus, this.#navigateAwayAndBack.bind(this), this.#shadow);
-    });
+  override async performUpdate(): Promise<void> {
+    const reasonToFramesMap = new Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>();
+    const explanationTree = this.#getMainFrame()?.backForwardCacheDetails?.explanationsTree;
+    if (explanationTree) {
+      this.#buildReasonToFramesMap(explanationTree, {blankCount: 1}, reasonToFramesMap);
+    }
+    const viewInput: ViewInput = {
+      frame: this.#getMainFrame(),
+      frameTreeData: this.#buildFrameTreeDataRecursive(explanationTree, {blankCount: 1}),
+      reasonToFramesMap,
+      screenStatus: this.#screenStatus,
+      navigateAwayAndBack: this.#navigateAwayAndBack.bind(this),
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   #renderBackForwardCacheTestResult(): void {
@@ -515,9 +516,10 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.#renderBackForwardCacheTestResult, this);
     this.#screenStatus = ScreenStatusType.RESULT;
-    void this.render().then(() => {
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.testCompleted));
-      const resultsSection = this.shadowRoot?.querySelector('.cache-status-section') as HTMLElement;
+      const resultsSection = this.contentElement?.querySelector('.cache-status-section') as HTMLElement;
       if (resultsSection) {
         resultsSection.focus();
       }
@@ -563,7 +565,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     }
     this.#historyIndex = historyResults.currentIndex;
     this.#screenStatus = ScreenStatusType.RUNNING;
-    void this.render();
+    this.requestUpdate();
 
     // This event listener is removed inside of onNavigatedAway().
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -653,12 +655,4 @@ interface FrameTreeNodeData {
   text: string;
   iconName?: string;
   children?: FrameTreeNodeData[];
-}
-
-customElements.define('devtools-resources-back-forward-cache-view', BackForwardCacheView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-back-forward-cache-view': BackForwardCacheView;
-  }
 }

@@ -34,7 +34,7 @@ export declare const asyncDisposeSymbol: typeof Symbol.asyncDispose;
 /**
  * @internal
  */
-declare class DisposableStackPolyfill {
+export declare class DisposableStackPolyfill {
     #private;
     /**
      * Returns a value indicating whether the stack has been disposed.
@@ -114,7 +114,7 @@ export declare const DisposableStack: typeof DisposableStackPolyfill;
 /**
  * @internal
  */
-declare class AsyncDisposableStackPolyfill {
+export declare class AsyncDisposableStackPolyfill {
     #private;
     /**
      * Returns a value indicating whether the stack has been disposed.

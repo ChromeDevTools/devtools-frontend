@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SuppressedError = exports.AsyncDisposableStack = exports.DisposableStack = exports.asyncDisposeSymbol = exports.disposeSymbol = void 0;
+exports.SuppressedError = exports.AsyncDisposableStack = exports.AsyncDisposableStackPolyfill = exports.DisposableStack = exports.DisposableStackPolyfill = exports.asyncDisposeSymbol = exports.disposeSymbol = void 0;
 Symbol.dispose ??= Symbol('dispose');
 Symbol.asyncDispose ??= Symbol('asyncDispose');
 /**
@@ -153,6 +153,7 @@ class DisposableStackPolyfill {
     }
     [Symbol.toStringTag] = 'DisposableStack';
 }
+exports.DisposableStackPolyfill = DisposableStackPolyfill;
 /**
  * @internal
  */
@@ -305,6 +306,7 @@ class AsyncDisposableStackPolyfill {
     }
     [Symbol.toStringTag] = 'AsyncDisposableStack';
 }
+exports.AsyncDisposableStackPolyfill = AsyncDisposableStackPolyfill;
 /**
  * @internal
  */

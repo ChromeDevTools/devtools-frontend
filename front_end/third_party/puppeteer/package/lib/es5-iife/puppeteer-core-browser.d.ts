@@ -254,7 +254,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * Creates a new {@link Page | page} in the
      * {@link Browser.defaultBrowserContext | default browser context}.
      */
-    abstract newPage(): Promise<Page>;
+    abstract newPage(options?: CreatePageOptions): Promise<Page>;
     /**
      * Gets all active {@link Target | targets}.
      *
@@ -513,7 +513,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * Creates a new {@link Page | page} in this
      * {@link BrowserContext | browser context}.
      */
-    abstract newPage(): Promise<Page>;
+    abstract newPage(options?: CreatePageOptions): Promise<Page>;
     /**
      * Gets the {@link Browser | browser} associated with this
      * {@link BrowserContext | browser context}.
@@ -1496,6 +1496,15 @@ export declare interface CoverageEntry {
         end: number;
     }>;
 }
+
+/**
+ * @public
+ */
+export declare type CreatePageOptions = {
+    type: 'tab';
+} | {
+    type: 'window';
+};
 
 /**
  * @public
@@ -5449,7 +5458,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * multiple redirects, the navigation will resolve with the response of the
      * last redirect.
      */
-    abstract reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
+    abstract reload(options?: ReloadOptions): Promise<HTTPResponse | null>;
     /**
      * Waits for the page to navigate to a new URL or to reload. It is useful when
      * you run code that will indirectly cause the page to navigate.
@@ -6895,6 +6904,7 @@ declare namespace Puppeteer_2 {
         BrowserEvent,
         BrowserEvents,
         DebugInfo,
+        CreatePageOptions,
         Browser,
         BrowserContextEvent,
         BrowserContextEvents,
@@ -6961,6 +6971,7 @@ declare namespace Puppeteer_2 {
         PageEvent,
         PageEvents,
         NewDocumentScriptEvaluation,
+        ReloadOptions,
         Page,
         TargetType,
         Target,
@@ -7257,6 +7268,19 @@ export declare interface QueryOptions {
      * @defaultValue `true`
      */
     isolate: boolean;
+}
+
+/**
+ * @public
+ */
+export declare interface ReloadOptions extends WaitForOptions {
+    /**
+     * If set to true, the browser caches are ignored for the page reload.
+     *
+     * @defaultValue true
+     * @public
+     */
+    ignoreCache?: boolean;
 }
 
 /**
@@ -7581,6 +7605,7 @@ export declare interface SerializedAXNode {
      * Children of this node, if there are any.
      */
     children?: SerializedAXNode[];
+
     /**
      * Get an ElementHandle for this AXNode if available.
      *

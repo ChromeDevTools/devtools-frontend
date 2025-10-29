@@ -434,6 +434,7 @@ class AXNode {
                     __disposeResources(env_2);
                 }
             },
+            backendNodeId: this.payload.backendDOMNodeId,
         };
         const userStringProperties = [
             'name',

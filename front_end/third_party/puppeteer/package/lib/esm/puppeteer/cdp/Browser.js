@@ -179,10 +179,15 @@ export class CdpBrowser extends BrowserBase {
     async newPage() {
         return await this.#defaultContext.newPage();
     }
-    async _createPageInContext(contextId) {
+    async _createPageInContext(contextId, options) {
+        const hasTargets = this.targets().filter(t => {
+            return t.browserContext().id === contextId;
+        }).length > 0;
         const { targetId } = await this.#connection.send('Target.createTarget', {
             url: 'about:blank',
             browserContextId: contextId || undefined,
+            // Works around crbug.com/454825274.
+            newWindow: hasTargets && options?.type === 'window' ? true : undefined,
         });
         const target = (await this.waitForTarget(t => {
             return t._targetId === targetId;

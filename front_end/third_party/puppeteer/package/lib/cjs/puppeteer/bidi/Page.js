@@ -340,7 +340,9 @@ let BidiPage = (() => {
         async reload(options = {}) {
             const [response] = await Promise.all([
                 this.#frame.waitForNavigation(options),
-                this.#frame.browsingContext.reload(),
+                this.#frame.browsingContext.reload({
+                    ignoreCache: options.ignoreCache ? true : undefined,
+                }),
             ]).catch((0, util_js_2.rewriteNavigationError)(this.url(), options.timeout ?? this._timeoutSettings.navigationTimeout()));
             return response;
         }

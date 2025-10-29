@@ -81,6 +81,12 @@ export interface SerializedAXNode {
      */
     children?: SerializedAXNode[];
     /**
+     * CDP-specifc ID to reference the DOM node.
+     *
+     * @internal
+     */
+    backendNodeId?: number;
+    /**
      * Get an ElementHandle for this AXNode if available.
      *
      * If the underlying DOM element has been disposed, the method might return an

@@ -10,7 +10,7 @@ import { type CDPSession } from '../api/CDPSession.js';
 import type { Frame, WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
-import type { Credentials } from '../api/Page.js';
+import type { Credentials, ReloadOptions } from '../api/Page.js';
 import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
 import type { Cookie, DeleteCookiesRequest, CookieParam, CookiePartitionKey } from '../common/Cookie.js';
 import { FileChooser } from '../common/FileChooser.js';
@@ -77,7 +77,7 @@ export declare class CdpPage extends Page {
         platform?: string;
     }, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     metrics(): Promise<Metrics>;
-    reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
+    reload(options?: ReloadOptions): Promise<HTTPResponse | null>;
     createCDPSession(): Promise<CDPSession>;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;

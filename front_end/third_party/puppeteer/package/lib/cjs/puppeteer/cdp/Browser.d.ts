@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ChildProcess } from 'node:child_process';
-import type { DebugInfo } from '../api/Browser.js';
+import type { CreatePageOptions, DebugInfo } from '../api/Browser.js';
 import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
@@ -32,7 +32,7 @@ export declare class CdpBrowser extends BrowserBase {
     _disposeContext(contextId?: string): Promise<void>;
     wsEndpoint(): string;
     newPage(): Promise<Page>;
-    _createPageInContext(contextId?: string): Promise<Page>;
+    _createPageInContext(contextId?: string, options?: CreatePageOptions): Promise<Page>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     targets(): CdpTarget[];

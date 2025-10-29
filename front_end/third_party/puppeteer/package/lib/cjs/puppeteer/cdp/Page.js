@@ -679,7 +679,9 @@ class CdpPage extends Page_js_1.Page {
                 ...options,
                 ignoreSameDocumentNavigation: true,
             }),
-            this.#primaryTargetClient.send('Page.reload'),
+            this.#primaryTargetClient.send('Page.reload', {
+                ignoreCache: options?.ignoreCache ?? false,
+            }),
         ]);
         return result;
     }

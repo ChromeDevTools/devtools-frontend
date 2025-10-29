@@ -8,7 +8,7 @@ import * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
-import type { Credentials, GeolocationOptions, MediaFeature, PageEvents, WaitTimeoutOptions } from '../api/Page.js';
+import type { Credentials, GeolocationOptions, MediaFeature, PageEvents, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import { Coverage } from '../cdp/Coverage.js';
 import type { NetworkConditions } from '../cdp/NetworkManager.js';
@@ -68,7 +68,7 @@ export declare class BidiPage extends Page {
     close(options?: {
         runBeforeUnload?: boolean;
     }): Promise<void>;
-    reload(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;
+    reload(options?: ReloadOptions): Promise<BidiHTTPResponse | null>;
     setDefaultNavigationTimeout(timeout: number): void;
     setDefaultTimeout(timeout: number): void;
     getDefaultTimeout(): number;

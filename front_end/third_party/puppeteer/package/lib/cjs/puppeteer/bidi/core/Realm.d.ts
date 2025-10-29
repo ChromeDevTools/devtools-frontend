@@ -33,18 +33,7 @@ export declare abstract class Realm extends EventEmitter<{
     sharedworker: SharedWorkerRealm;
 }> {
     #private;
-    protected readonly disposables: {
-        "__#59474@#disposed": boolean;
-        "__#59474@#stack": Disposable[];
-        readonly disposed: boolean;
-        dispose(): void;
-        use<T extends Disposable | null | undefined>(value: T): T;
-        adopt<T>(value: T, onDispose: (value: T) => void): T;
-        defer(onDispose: () => void): void;
-        move(): /*elided*/ any;
-        [Symbol.dispose](): void;
-        readonly [Symbol.toStringTag]: "DisposableStack";
-    };
+    protected readonly disposables: import("../../util/disposable.js").DisposableStackPolyfill;
     readonly id: string;
     readonly origin: string;
     protected executionContextId?: number;

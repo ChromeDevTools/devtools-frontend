@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.26.1';
+  const packageVersion = '24.27.0';
   // x-release-please-end
 
   /**
@@ -12969,7 +12969,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           } finally {
             __disposeResources$4(env_2);
           }
-        }
+        },
+        backendNodeId: this.payload.backendDOMNodeId
       };
       const userStringProperties = ['name', 'value', 'description', 'keyshortcuts', 'roledescription', 'valuetext', 'url'];
       const getUserStringPropertyValue = key => {
@@ -21179,7 +21180,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       const [result] = await Promise.all([this.waitForNavigation({
         ...options,
         ignoreSameDocumentNavigation: true
-      }), _classPrivateFieldGet(_primaryTargetClient, this).send('Page.reload')]);
+      }), _classPrivateFieldGet(_primaryTargetClient, this).send('Page.reload', {
+        ignoreCache: options?.ignoreCache ?? false
+      })]);
       return result;
     }
     async createCDPSession() {
@@ -21809,7 +21812,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         browserContextId: _classPrivateFieldGet(_id7, this) || undefined
       });
     }
-    async newPage() {
+    async newPage(options) {
       const env_1 = {
         stack: [],
         error: void 0,
@@ -21817,7 +21820,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       };
       try {
         const _guard = __addDisposableResource(env_1, await this.waitForScreenshotOperations(), false);
-        return await _classPrivateFieldGet(_browser, this)._createPageInContext(_classPrivateFieldGet(_id7, this));
+        return await _classPrivateFieldGet(_browser, this)._createPageInContext(_classPrivateFieldGet(_id7, this), options);
       } catch (e_1) {
         env_1.error = e_1;
         env_1.hasError = true;
@@ -22601,12 +22604,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async newPage() {
       return await _classPrivateFieldGet(_defaultContext, this).newPage();
     }
-    async _createPageInContext(contextId) {
+    async _createPageInContext(contextId, options) {
+      const hasTargets = this.targets().filter(t => {
+        return t.browserContext().id === contextId;
+      }).length > 0;
       const {
         targetId
       } = await _classPrivateFieldGet(_connection4, this).send('Target.createTarget', {
         url: 'about:blank',
-        browserContextId: contextId || undefined
+        browserContextId: contextId || undefined,
+        // Works around crbug.com/454825274.
+        newWindow: hasTargets && options?.type === 'window' ? true : undefined
       });
       const target = await this.waitForTarget(t => {
         return t._targetId === targetId;
@@ -24791,9 +24799,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '141.0.7390.122',
-    'chrome-headless-shell': '141.0.7390.122',
-    firefox: 'stable_144.0'
+    chrome: '142.0.7444.59',
+    'chrome-headless-shell': '142.0.7444.59',
+    firefox: 'stable_144.0.2'
   });
 
   /**
@@ -24816,6 +24824,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.ARIAQueryHandler = ARIAQueryHandler;
   exports.Accessibility = Accessibility;
   exports.AsyncDisposableStack = AsyncDisposableStack;
+  exports.AsyncDisposableStackPolyfill = AsyncDisposableStackPolyfill;
   exports.AsyncIterableUtil = AsyncIterableUtil;
   exports.Binding = Binding;
   exports.Browser = Browser;
@@ -24858,6 +24867,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.DeviceRequestPromptManager = DeviceRequestPromptManager;
   exports.Dialog = Dialog;
   exports.DisposableStack = DisposableStack;
+  exports.DisposableStackPolyfill = DisposableStackPolyfill;
   exports.ElementHandle = ElementHandle;
   exports.EmulatedState = EmulatedState;
   exports.EmulationManager = EmulationManager;
@@ -24938,6 +24948,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.convertCookiesPartitionKeyFromPuppeteerToCdp = convertCookiesPartitionKeyFromPuppeteerToCdp;
   exports.createClientError = createClientError;
   exports.createEvaluationError = createEvaluationError;
+  exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
   exports.createProtocolErrorMessage = createProtocolErrorMessage;
   exports.customQueryHandlers = customQueryHandlers;
   exports.debug = debug;

@@ -3,7 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { Permission } from '../api/Browser.js';
+import type { CreatePageOptions, Permission } from '../api/Browser.js';
 import type { BrowserContextEvents } from '../api/BrowserContext.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { type Page } from '../api/Page.js';
@@ -30,7 +30,7 @@ export declare class BidiBrowserContext extends BrowserContext {
     readonly userContext: UserContext;
     private constructor();
     targets(): Target[];
-    newPage(): Promise<Page>;
+    newPage(options?: CreatePageOptions): Promise<Page>;
     close(): Promise<void>;
     browser(): BidiBrowser;
     pages(): Promise<BidiPage[]>;

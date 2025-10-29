@@ -7971,7 +7971,7 @@ export const NativeFunctions = [
   },
   {
     name: "createContext",
-    signatures: [["?options"],["gpuDevice"]]
+    signatures: [["?options"]]
   },
   {
     name: "MLGraphBuilder",

@@ -81,5 +81,6 @@ afterEach(async function() {
   await checkForPendingActivity(this.currentTest?.fullTitle());
   stopTrackingAsyncActivity();
   // Clear out any Sinon stubs or spies between individual tests.
+  sinon.clock?.runToLast();
   sinon.restore();
 });

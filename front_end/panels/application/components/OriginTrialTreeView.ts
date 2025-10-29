@@ -11,6 +11,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import badgeStyles from './badge.css.js';
@@ -118,6 +119,7 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeN
 
       return html`
         ${trial.trialName}
+        <style>${badgeStyles}</style>
         ${createBadge({
         badgeContent: trial.status,
         style: trial.status === Protocol.Page.OriginTrialStatus.Enabled ? 'success' : 'error',
@@ -269,7 +271,9 @@ export class OriginTrialTokenRows extends HTMLElement {
     const tokenDetails: TokenField[] = [
       {
         name: i18nString(UIStrings.status),
-        value: html`${createBadge({
+        value: html`
+          <style>${badgeStyles}</style>
+          ${createBadge({
           badgeContent: this.#tokenWithStatus.status,
           style: this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
         })}`,
@@ -287,7 +291,6 @@ export class OriginTrialTokenRows extends HTMLElement {
     Lit.render(
         html`
       <style>
-        ${badgeStyles}
         ${originTrialTokenRowsStyles}
       </style>
       <div class="content">
@@ -304,47 +307,56 @@ export interface OriginTrialTreeViewData {
   trials: Protocol.Page.OriginTrial[];
 }
 
-export class OriginTrialTreeView extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+type View = (input: OriginTrialTreeViewData, output: undefined, target: HTMLElement) => void;
 
-  set data(data: OriginTrialTreeViewData) {
-    this.#render(data.trials);
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  if (!input.trials.length) {
+    // clang-format off
+    Lit.render(html`
+      <style>${originTrialTreeViewStyles}</style>
+      <span class="status-badge">
+        <devtools-icon class="medium" name="clear"></devtools-icon>
+        <span>${i18nString(UIStrings.noTrialTokens)}</span>
+      </span>`, target);
+    // clang-format on
+    return;
   }
 
-  #render(trials: Protocol.Page.OriginTrial[]): void {
-    if (!trials.length) {
-      Lit.render(
-          html`
-    <style>${originTrialTreeViewStyles}</style>
-    <span class="status-badge">
-      <devtools-icon class="medium" name="clear"></devtools-icon>
-      <span>${i18nString(UIStrings.noTrialTokens)}</span>
-    </span>`,
-          this.#shadow, {host: this});
-      return;
-    }
+  // clang-format off
+  Lit.render(html`
+    <style>
+      ${originTrialTreeViewStyles}
+    </style>
+    <devtools-tree-outline .data=${{
+      tree: input.trials.map(constructOriginTrialTree),
+      defaultRenderer,
+    } as TreeOutline.TreeOutline.TreeOutlineData < OriginTrialTreeNodeData >}>
+    </devtools-tree-outline>
+  `, target);
+  // clang-format on
+};
 
-    Lit.render(
-        html`
-      <style>
-        ${badgeStyles}
-        ${originTrialTreeViewStyles}
-      </style>
-      <devtools-tree-outline .data=${{
-          tree: trials.map(constructOriginTrialTree),
-          defaultRenderer,
-        } as TreeOutline.TreeOutline.TreeOutlineData < OriginTrialTreeNodeData >}>
-      </devtools-tree-outline>
-    `,
-        this.#shadow, {host: this});
+export class OriginTrialTreeView extends UI.Widget.Widget {
+  #data: OriginTrialTreeViewData = {trials: []};
+  #view: View;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+  }
+
+  set data(data: OriginTrialTreeViewData) {
+    this.#data = data;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(this.#data, undefined, this.contentElement);
   }
 }
 
-customElements.define('devtools-resources-origin-trial-tree-view', OriginTrialTreeView);
-
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-resources-origin-trial-tree-view': OriginTrialTreeView;
     'devtools-resources-origin-trial-token-rows': OriginTrialTokenRows;
   }
 }

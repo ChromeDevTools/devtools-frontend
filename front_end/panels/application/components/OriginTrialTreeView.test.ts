@@ -4,31 +4,24 @@
 
 import * as Protocol from '../../../generated/protocol.js';
 import {
-  getElementWithinComponent,
   renderElementIntoDOM,
   stripLitHtmlCommentNodes,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
+import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 
 import * as ApplicationComponents from './components.js';
 
 async function renderOriginTrialTreeView(
     data: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeViewData,
-    ): Promise<{
-  component: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeView,
-  shadowRoot: ShadowRoot,
-}> {
+    ): Promise<ApplicationComponents.OriginTrialTreeView.OriginTrialTreeView> {
   const component = new ApplicationComponents.OriginTrialTreeView.OriginTrialTreeView();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  await component.updateComplete;
   await RenderCoordinator.done();
-  return {
-    component,
-    shadowRoot: component.shadowRoot,
-  };
+  return component;
 }
 
 type OriginTrialTreeOutline =
@@ -43,10 +36,9 @@ async function renderOriginTrialTreeViewTreeOutline(
   component: OriginTrialTreeOutline,
   shadowRoot: ShadowRoot,
 }> {
-  const {component} = await renderOriginTrialTreeView(data);
+  const component = await renderOriginTrialTreeView(data);
   const treeOutline: OriginTrialTreeOutline =
-      getElementWithinComponent<ApplicationComponents.OriginTrialTreeView.OriginTrialTreeView, OriginTrialTreeOutline>(
-          component, 'devtools-tree-outline', TreeOutline.TreeOutline.TreeOutline);
+      component.contentElement.querySelector<OriginTrialTreeOutline>('devtools-tree-outline')!;
   assert.isNotNull(treeOutline.shadowRoot);
   return {
     component: treeOutline,
@@ -208,6 +200,7 @@ describeWithLocale('OriginTrialTreeView', () => {
         trialWithUnparsableToken,
       ],
     });
+
     const visibleItems = shadowRoot.querySelectorAll<HTMLLIElement>('li[role="treeitem"]');
     assert.lengthOf(visibleItems, 3);
     assert.include(nodeKeyInnerHTML(visibleItems[0]), trialWithMultipleTokens.trialName);

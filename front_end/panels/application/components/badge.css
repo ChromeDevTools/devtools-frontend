@@ -20,6 +20,6 @@
 }
 
 /* Use mono-space source code font to assist reading of adorner content */
-:host {
+:host devtools-adorner {
   font-family: var(--source-code-font-family);
 }

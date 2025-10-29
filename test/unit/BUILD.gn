@@ -7,6 +7,7 @@ import("../../scripts/build/typescript/typescript.gni")
 node_ts_library("karma") {
   sources = [
     "karma.conf.ts",
+    "mocha-hooks.ts",
     "mocharc.ts",
   ]
   deps = [

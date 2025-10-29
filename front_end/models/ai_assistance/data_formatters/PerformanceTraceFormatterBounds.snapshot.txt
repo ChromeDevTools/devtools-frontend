@@ -1,4 +1,0 @@
-Title: PerformanceTraceFormatterBounds serializeBounds works
-Content:
-{min: 1, max: 2}
-=== end content

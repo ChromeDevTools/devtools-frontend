@@ -204,10 +204,6 @@ const UIStringsNotTranslate = {
    * @description Title for the add image button.
    */
   addImageButtonTitle: 'Add image',
-  /**
-   * @description Disclaimer text right after the chat input.
-   */
-  inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
@@ -517,6 +513,10 @@ export class ChatView extends HTMLElement {
 
   #render(): void {
     const renderFooter = (): Lit.LitTemplate => {
+      if (this.#props.state !== State.CHAT_VIEW) {
+        return Lit.nothing;
+      }
+
       const classes = Lit.Directives.classMap({
         'chat-view-footer': true,
         'has-conversation': !!this.#props.conversationType,
@@ -524,35 +524,58 @@ export class ChatView extends HTMLElement {
       });
 
       // clang-format off
-      const footerContents = this.#props.conversationType
-        ? renderRelevantDataDisclaimer({
-          isLoading: this.#props.isLoading,
-          blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-          tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
-          disclaimerText: this.#props.disclaimerText,
-        })
-        : html`<p>
-            ${lockedString(UIStringsNotTranslate.inputDisclaimerForEmptyState)}
-            <button
-              class="link"
-              role="link"
-              jslog=${VisualLogging.link('open-ai-settings').track({
-                click: true,
-              })}
-              @click=${() => {
-                void UI.ViewManager.ViewManager.instance().showView(
-                  'chrome-ai',
-                );
-              }}
-            >${i18nString(UIStrings.learnAbout)}</button>
-          </p>`;
-
       return html`
         <footer class=${classes} jslog=${VisualLogging.section('footer')}>
-          ${footerContents}
+          ${renderRelevantDataDisclaimer({
+            isLoading: this.#props.isLoading,
+            blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
+            tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
+            disclaimerText: this.#props.disclaimerText
+          })}
         </footer>
       `;
+      // clang-format on
     };
+
+    const renderInputOrReadOnlySection = (): Lit.LitTemplate => {
+      if (this.#props.state !== State.CHAT_VIEW) {
+        return Lit.nothing;
+      }
+
+      if (this.#props.conversationType && this.#props.isReadOnly) {
+        return renderReadOnlySection({
+          conversationType: this.#props.conversationType,
+          onNewConversation: this.#props.onNewConversation,
+        });
+      }
+
+      return renderChatInput({
+        isLoading: this.#props.isLoading,
+        blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
+        isTextInputDisabled: this.#props.isTextInputDisabled,
+        inputPlaceholder: this.#props.inputPlaceholder,
+        disclaimerText: this.#props.disclaimerText,
+        selectedContext: this.#props.selectedContext,
+        inspectElementToggled: this.#props.inspectElementToggled,
+        multimodalInputEnabled: this.#props.multimodalInputEnabled,
+        conversationType: this.#props.conversationType,
+        imageInput: this.#props.imageInput,
+        aidaAvailability: this.#props.aidaAvailability,
+        isTextInputEmpty: this.#props.isTextInputEmpty,
+        uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
+        onContextClick: this.#props.onContextClick,
+        onInspectElementClick: this.#props.onInspectElementClick,
+        onSubmit: this.#handleSubmit,
+        onTextAreaKeyDown: this.#handleTextAreaKeyDown,
+        onCancel: this.#handleCancel,
+        onNewConversation: this.#props.onNewConversation,
+        onTakeScreenshot: this.#props.onTakeScreenshot,
+        onRemoveImageInput: this.#props.onRemoveImageInput,
+        onTextInputChange: this.#props.onTextInputChange,
+        onImageUpload: this.#handleImageUpload
+      });
+    };
+
     // clang-format off
     Lit.render(html`
       <style>${chatViewStyles}</style>
@@ -577,38 +600,7 @@ export class ChatView extends HTMLElement {
             onMessageContainerRef: this.#handleMessageContainerRef,
             onCopyResponseClick: this.#props.onCopyResponseClick,
           })}
-          ${this.#props.isReadOnly
-            ? renderReadOnlySection({
-                conversationType: this.#props.conversationType,
-                onNewConversation: this.#props.onNewConversation,
-              })
-            : renderChatInput({
-                isLoading: this.#props.isLoading,
-                blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-                isTextInputDisabled: this.#props.isTextInputDisabled,
-                inputPlaceholder: this.#props.inputPlaceholder,
-                state: this.#props.state,
-                disclaimerText: this.#props.disclaimerText,
-                selectedContext: this.#props.selectedContext,
-                inspectElementToggled: this.#props.inspectElementToggled,
-                multimodalInputEnabled: this.#props.multimodalInputEnabled,
-                conversationType: this.#props.conversationType,
-                imageInput: this.#props.imageInput,
-                isTextInputEmpty: this.#props.isTextInputEmpty,
-                aidaAvailability: this.#props.aidaAvailability,
-                uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
-                onContextClick: this.#props.onContextClick,
-                onInspectElementClick: this.#props.onInspectElementClick,
-                onSubmit: this.#handleSubmit,
-                onTextAreaKeyDown: this.#handleTextAreaKeyDown,
-                onCancel: this.#handleCancel,
-                onNewConversation: this.#props.onNewConversation,
-                onTakeScreenshot: this.#props.onTakeScreenshot,
-                onRemoveImageInput: this.#props.onRemoveImageInput,
-                onTextInputChange: this.#props.onTextInputChange,
-                onImageUpload: this.#handleImageUpload,
-              })
-          }
+          ${renderInputOrReadOnlySection()}
         </main>
        ${renderFooter()}
       </div>
@@ -1412,7 +1404,6 @@ function renderChatInput({
   blockedByCrossOrigin,
   isTextInputDisabled,
   inputPlaceholder,
-  state,
   selectedContext,
   inspectElementToggled,
   multimodalInputEnabled,
@@ -1437,7 +1428,6 @@ function renderChatInput({
   blockedByCrossOrigin: boolean,
   isTextInputDisabled: boolean,
   inputPlaceholder: Platform.UIString.LocalizedString,
-  state: State,
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
   isTextInputEmpty: boolean,
@@ -1462,8 +1452,7 @@ function renderChatInput({
     return Lit.nothing;
   }
 
-  const shouldShowMultiLine = state !== State.CONSENT_VIEW &&
-      aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE && selectedContext;
+  const shouldShowMultiLine = aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE && selectedContext;
   const chatInputContainerCls = Lit.Directives.classMap({
     'chat-input-container': true,
     'single-line-layout': !shouldShowMultiLine,
@@ -1619,10 +1608,9 @@ function renderMainContents({
   changeSummary?: string,
 }): Lit.LitTemplate {
   if (state === State.CONSENT_VIEW) {
-    return renderDisabledState(renderConsentViewContents());
-  }
-
-  if (aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+    if (aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+      return renderDisabledState(renderConsentViewContents());
+    }
     return renderDisabledState(renderAidaUnavailableContents(aidaAvailability));
   }
 

@@ -531,12 +531,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #getChatUiState(): ChatViewState {
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
 
-    // Special case due to the way its handled downstream quirks
-    if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
-      return ChatViewState.CHAT_VIEW;
-    }
-
-    if (!this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
+    if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE ||
+        !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
       return ChatViewState.CONSENT_VIEW;
     }
 

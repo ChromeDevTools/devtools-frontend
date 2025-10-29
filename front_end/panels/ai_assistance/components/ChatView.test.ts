@@ -91,7 +91,7 @@ describeWithEnvironment('ChatView', () => {
 
     it('shows the disabled view when the AIDA is not available', async () => {
       const props = getProp({
-        state: AiAssistancePanel.State.CHAT_VIEW,
+        state: AiAssistancePanel.State.CONSENT_VIEW,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET,
       });
       const chat = new AiAssistancePanel.ChatView(props);

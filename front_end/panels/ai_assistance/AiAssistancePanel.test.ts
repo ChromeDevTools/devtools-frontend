@@ -73,22 +73,22 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 
   describe('consent view', () => {
-    it('should render chat view when no account email', async () => {
+    it('should render consent view when no account email', async () => {
       const {view} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.CHAT_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.State.CONSENT_VIEW);
     });
 
-    it('should render chat view when sync paused', async () => {
+    it('should render consent view when sync paused', async () => {
       const {view} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED});
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.CHAT_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.State.CONSENT_VIEW);
     });
 
-    it('should render chat view when no internet', async () => {
+    it('should render consent view when no internet', async () => {
       const {view} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET});
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.CHAT_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.State.CONSENT_VIEW);
     });
 
     it('should render consent view when the consent is not given before', async () => {
@@ -137,7 +137,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {view, stubAidaCheckAccessPreconditions} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
 
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.CHAT_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.State.CONSENT_VIEW);
       assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
 
       stubAidaCheckAccessPreconditions(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);

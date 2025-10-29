@@ -5,7 +5,7 @@
 import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line @devtools/es-modules-import
 import {
   describeWithLocale,
-} from '../../../testing/EnvironmentHelpers.js';
+} from '../../../testing/LocaleHelpers.js';
 import {html} from '../../lit/lit.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';

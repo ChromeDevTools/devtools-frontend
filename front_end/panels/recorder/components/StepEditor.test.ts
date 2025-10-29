@@ -7,16 +7,13 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-// eslint-disable-next-line @devtools/es-modules-import
-import * as EnvironmentHelpers from '../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as Models from '../models/models.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as RecorderHelpers from '../testing/RecorderHelpers.js';
 
 import type * as Components from './components.js';
-
-const {describeWithLocale} = EnvironmentHelpers;
 
 function getStepEditedPromise(editor: Components.StepEditor.StepEditor) {
   return getEventPromise<Components.StepEditor.StepEditedEvent>(

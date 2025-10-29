@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 import type * as Search from '../search/search.js';
 
 import * as Network from './network.js';

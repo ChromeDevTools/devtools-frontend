@@ -4,10 +4,6 @@
 
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-// @ts-expect-error tsc doesn't like import assertions.
-// eslint-disable-next-line  @devtools/es-modules-import
-import EnUsLocaleData from '../core/i18n/locales/en-US.json' with {type : 'json'};
 import type * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
@@ -20,6 +16,8 @@ import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import type * as UIModule from '../ui/legacy/legacy.js';
+
+import {deinitializeGlobalLocaleVars, initializeGlobalLocaleVars} from './LocaleHelpers.js';
 
 // Don't import UI at this stage because it will fail without
 // the environment. Instead we do the import at the end of the
@@ -423,50 +421,6 @@ describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) =
 describeWithEnvironment.skip = function(title: string, fn: (this: Mocha.Suite) => void, _opts: {reset: boolean} = {
   reset: true,
 }) {
-  // eslint-disable-next-line @devtools/check-test-definitions
-  return describe.skip(title, function() {
-    fn.call(this);
-  });
-};
-
-export async function initializeGlobalLocaleVars() {
-  // Expose the locale.
-  i18n.DevToolsLocale.DevToolsLocale.instance({
-    create: true,
-    data: {
-      navigatorLanguage: 'en-US',
-      settingLanguage: 'en-US',
-      lookupClosestDevToolsLocale: () => 'en-US',
-    },
-  });
-
-  if (i18n.i18n.hasLocaleDataForTest('en-US')) {
-    return;
-  }
-
-  i18n.i18n.registerLocaleDataForTest('en-US', EnUsLocaleData);
-}
-
-export function deinitializeGlobalLocaleVars() {
-  i18n.DevToolsLocale.DevToolsLocale.removeInstance();
-}
-
-export function describeWithLocale(title: string, fn: (this: Mocha.Suite) => void) {
-  return describe(title, function() {
-    before(async () => await initializeGlobalLocaleVars());
-    fn.call(this);
-    after(deinitializeGlobalLocaleVars);
-  });
-}
-describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => void) {
-  // eslint-disable-next-line mocha/no-exclusive-tests
-  return describe.only(title, function() {
-    before(async () => await initializeGlobalLocaleVars());
-    fn.call(this);
-    after(deinitializeGlobalLocaleVars);
-  });
-};
-describeWithLocale.skip = function(title: string, fn: (this: Mocha.Suite) => void) {
   // eslint-disable-next-line @devtools/check-test-definitions
   return describe.skip(title, function() {
     fn.call(this);

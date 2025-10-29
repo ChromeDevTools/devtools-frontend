@@ -9,7 +9,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 
 import * as NetworkComponents from './components.js';
 

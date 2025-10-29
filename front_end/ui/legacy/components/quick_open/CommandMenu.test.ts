@@ -8,9 +8,9 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import {
   createFakeSetting,
   deinitializeGlobalVars,
-  describeWithLocale,
   initializeGlobalVars
 } from '../../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
 
 import * as QuickOpen from './quick_open.js';
 

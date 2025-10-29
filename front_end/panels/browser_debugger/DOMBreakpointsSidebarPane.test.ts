@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 
 import * as BrowserDebugger from './browser_debugger.js';
 

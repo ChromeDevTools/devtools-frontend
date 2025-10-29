@@ -5,7 +5,8 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {createFakeSetting, describeWithLocale, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as SettingComponents from '../../../ui/components/settings/settings.js';
 import * as PanelCommon from '../../common/common.js';

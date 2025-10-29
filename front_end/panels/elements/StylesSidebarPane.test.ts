@@ -9,10 +9,10 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
-  describeWithLocale,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';

@@ -6,7 +6,7 @@ import {
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import * as UI from '../../legacy/legacy.js';
 
 import * as Snackbars from './snackbars.js';

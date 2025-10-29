@@ -7,7 +7,7 @@ import {
   assertElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import {MockIssuesManager} from '../../../testing/MockIssuesManager.js';
 import * as IconButton from '../icon_button/icon_button.js';
 

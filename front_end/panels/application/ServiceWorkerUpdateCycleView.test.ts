@@ -4,7 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 
 import * as Resources from './application.js';
 

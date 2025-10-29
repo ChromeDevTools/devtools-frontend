@@ -6,8 +6,8 @@ import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
   describeWithEnvironment,
-  describeWithLocale,
 } from '../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,

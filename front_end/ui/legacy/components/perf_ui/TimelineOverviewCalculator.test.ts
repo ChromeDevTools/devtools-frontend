@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../../../models/trace/trace.js';
-import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
 
 import * as PerfUI from './perf_ui.js';
 

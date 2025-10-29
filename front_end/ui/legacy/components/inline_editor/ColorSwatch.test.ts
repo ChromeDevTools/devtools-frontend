@@ -12,7 +12,7 @@ import {
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
 import type * as UI from '../../legacy.js';
 
 import * as InlineEditor from './inline_editor.js';

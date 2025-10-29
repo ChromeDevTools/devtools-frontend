@@ -13,7 +13,8 @@ import {
   createConsoleViewMessageWithStubDeps,
   createStackTrace,
 } from '../../testing/ConsoleHelpers.js';
-import {createTarget, describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 

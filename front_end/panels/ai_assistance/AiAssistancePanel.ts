@@ -533,7 +533,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE ||
         !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
-      return ChatViewState.CONSENT_VIEW;
+      return ChatViewState.DISABLED_VIEW;
     }
 
     if (this.#conversation?.type) {
@@ -982,7 +982,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #getChatInputPlaceholder(): Platform.UIString.LocalizedString {
     const state = this.#getChatUiState();
-    if (state === ChatViewState.CONSENT_VIEW || !this.#conversation) {
+    if (state === ChatViewState.DISABLED_VIEW || !this.#conversation) {
       return i18nString(UIStrings.followTheSteps);
     }
 
@@ -1015,7 +1015,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #getDisclaimerText(): Platform.UIString.LocalizedString {
     const state = this.#getChatUiState();
-    if (state === ChatViewState.CONSENT_VIEW || !this.#conversation || this.#conversation.isReadOnly) {
+    if (state === ChatViewState.DISABLED_VIEW || !this.#conversation || this.#conversation.isReadOnly) {
       return i18nString(UIStrings.inputDisclaimerForEmptyState);
     }
 

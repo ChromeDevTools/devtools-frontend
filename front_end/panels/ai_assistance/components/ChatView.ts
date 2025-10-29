@@ -260,7 +260,7 @@ export interface ModelChatMessage {
 export type ChatMessage = UserChatMessage|ModelChatMessage;
 
 export const enum State {
-  CONSENT_VIEW = 'consent-view',
+  DISABLED_VIEW = 'disabled-view',
   CHAT_VIEW = 'chat-view',
   EXPLORE_VIEW = 'explore-view'
 }
@@ -1607,7 +1607,7 @@ function renderMainContents({
   conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
   changeSummary?: string,
 }): Lit.LitTemplate {
-  if (state === State.CONSENT_VIEW) {
+  if (state === State.DISABLED_VIEW) {
     if (aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
       return renderDisabledState(renderConsentViewContents());
     }

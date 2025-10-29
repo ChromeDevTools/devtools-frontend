@@ -101,7 +101,7 @@ To add snapshot tests to a new test file, add a before and after hook to the des
 ```
 let snapshotTester: SnapshotTester;
 before(async () => {
-  snapshotTester = new SnapshotTester(import.meta);
+  snapshotTester = new SnapshotTester(this, import.meta);
   await snapshotTester.load();
 });
 

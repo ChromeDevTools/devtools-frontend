@@ -11,10 +11,10 @@ import {AICallTree} from '../ai_assistance.js';
 
 const NODE_NAME_INDEX = 2;
 
-describeWithEnvironment('AICallTree', () => {
+describeWithEnvironment('AICallTree', function() {
   let snapshotTester: SnapshotTester;
   before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
+    snapshotTester = new SnapshotTester(this, import.meta);
     await snapshotTester.load();
   });
 

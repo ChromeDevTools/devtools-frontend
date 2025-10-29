@@ -4,11 +4,10 @@
 
 import {SnapshotTester} from './SnapshotTester.js';
 
-// Started failing and blocking CfT rolls since 143.0.7447.0
-describe.skip('[crbug.com/449129415]: SnapshotTester', () => {
+describe('SnapshotTester', function() {
   let snapshotTester: SnapshotTester;
   before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
+    snapshotTester = new SnapshotTester(this, import.meta);
     await snapshotTester.load();
   });
 

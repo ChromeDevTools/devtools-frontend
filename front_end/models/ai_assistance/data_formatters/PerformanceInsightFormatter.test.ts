@@ -16,7 +16,7 @@ describeWithLocale('PerformanceInsightFormatter', function() {
 
   let snapshotTester: SnapshotTester;
   before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
+    snapshotTester = new SnapshotTester(this, import.meta);
     await snapshotTester.load();
   });
 

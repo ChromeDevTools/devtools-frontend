@@ -23,11 +23,9 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
 }
 
 describeWithLocale('PerformanceTraceFormatter', function() {
-  this.timeout(20000);
-
   let snapshotTester: SnapshotTester;
   before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
+    snapshotTester = new SnapshotTester(this, import.meta);
     await snapshotTester.load();
   });
 

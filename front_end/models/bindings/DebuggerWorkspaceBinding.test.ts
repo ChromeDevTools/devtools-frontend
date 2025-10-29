@@ -8,6 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -30,6 +31,7 @@ describeWithMockConnection('DebuggerWorkspaceBinding', () => {
       targetManager,
       ignoreListManager,
     });
+    setMockResourceTree(false);
   });
 
   it('can wait for a uiSourceCode if it is not yet available', async () => {

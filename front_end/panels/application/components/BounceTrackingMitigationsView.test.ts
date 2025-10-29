@@ -46,6 +46,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
+    await component.wrapper?.updateComplete;
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
@@ -66,6 +67,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
+    await component.wrapper?.updateComplete;
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
@@ -91,6 +93,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
+    await component.wrapper?.updateComplete;
 
     const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
     assert.instanceOf(forceRunButton, HTMLElement);
@@ -98,6 +101,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     await runBounceTrackingMitigationsPromise;
 
     await RenderCoordinator.done();
+    await component.wrapper?.updateComplete;
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
@@ -121,12 +125,14 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
+    await component.wrapper?.updateComplete;
 
     const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
     assert.instanceOf(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 
     await RenderCoordinator.done({waitForWork: true});
+    await component.wrapper?.updateComplete;
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);

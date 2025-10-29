@@ -117,6 +117,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
   it('clears preview when view is cleared', async () => {
     backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
     manager?.updateStorageKeys(new Set([testKey]));
+    manager?.setMainStorageKey(testKey);
 
     await view.updateComplete;
     view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();
@@ -147,6 +148,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
     };
     backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: eventWithMetadata});
     manager?.updateStorageKeys(new Set([testKey]));
+    manager?.setMainStorageKey(testKey);
 
     await view.updateComplete;
     view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();

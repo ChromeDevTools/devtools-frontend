@@ -30,6 +30,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   // that all assertions and success criteria are met (e.g. autocompletions etc).
   // See: https://crbug.com/1192052
   'Request Runtime.evaluate failed. {"code":-32602,"message":"uniqueContextId not found"}',
+  'Session is unregistering, can\'t dispatch pending call to Runtime.evaluate',  // same as above
   'uniqueContextId not found',
   'Request Storage.getStorageKey failed. {"code":-32602,"message":"Frame tree node for given frame not found"}',
   // Some left-over a11y calls show up in the logs.

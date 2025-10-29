@@ -19,7 +19,7 @@ import {
 } from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
-import {getInitializedResourceTreeModel} from '../../testing/ResourceTreeHelpers.js';
+import {getInitializedResourceTreeModel, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
 import {
@@ -104,6 +104,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Wait for the resource tree model to load; otherwise, our uiSourceCodes could be asynchronously
     // invalidated during the test.
+    setMockResourceTree(false);
     await getInitializedResourceTreeModel(target);
 
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(

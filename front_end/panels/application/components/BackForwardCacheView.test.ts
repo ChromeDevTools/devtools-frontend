@@ -11,7 +11,7 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import {getMainFrame, navigate} from '../../../testing/ResourceTreeHelpers.js';
+import {getMainFrame, navigate, setMockResourceTree} from '../../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 
@@ -50,6 +50,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
   let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
 
   beforeEach(async () => {
+    setMockResourceTree(false);
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});

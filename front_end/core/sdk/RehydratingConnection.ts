@@ -32,8 +32,8 @@ import * as Root from '../root/root.js';
 
 import * as EnhancedTraces from './EnhancedTracesParser.js';
 import type {
-  ProtocolMessage, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from
-  './RehydratingObject.js';
+  ProtocolMessage, RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget,
+  ServerMessage} from './RehydratingObject.js';
 import {TraceObject} from './TraceObject.js';
 
 const UIStrings = {
@@ -157,6 +157,7 @@ export class RehydratingConnection implements ProtocolClient.ConnectionTransport
       const target = hydratingDataPerTarget.target;
       const executionContexts = hydratingDataPerTarget.executionContexts;
       const scripts = hydratingDataPerTarget.scripts;
+      const resources = hydratingDataPerTarget.resources;
       this.postToFrontend({
         method: 'Target.targetCreated',
         params: {
@@ -172,7 +173,7 @@ export class RehydratingConnection implements ProtocolClient.ConnectionTransport
       });
 
       sessionId += 1;
-      const session = new RehydratingSession(sessionId, target, executionContexts, scripts, this);
+      const session = new RehydratingSession(sessionId, target, executionContexts, scripts, resources, this);
       this.sessions.set(sessionId, session);
       session.declareSessionAttachedToTarget();
     }
@@ -267,15 +268,17 @@ export class RehydratingSession extends RehydratingSessionBase {
   target: RehydratingTarget;
   executionContexts: RehydratingExecutionContext[] = [];
   scripts: RehydratingScript[] = [];
+  resources: RehydratingResource[] = [];
 
   constructor(
       sessionId: number, target: RehydratingTarget, executionContexts: RehydratingExecutionContext[],
-      scripts: RehydratingScript[], connection: RehydratingConnectionInterface) {
+      scripts: RehydratingScript[], resources: RehydratingResource[], connection: RehydratingConnectionInterface) {
     super(connection);
     this.sessionId = sessionId;
     this.target = target;
     this.executionContexts = executionContexts;
     this.scripts = scripts;
+    this.resources = resources;
   }
 
   override sendMessageToFrontend(payload: ServerMessage, attachSessionId = true): void {
@@ -294,12 +297,31 @@ export class RehydratingSession extends RehydratingSessionBase {
       case 'Debugger.enable':
         this.handleDebuggerEnable(data.id);
         break;
+      case 'CSS.enable':
+        this.sendMessageToFrontend({
+          id: data.id,
+          result: {},
+        });
+        break;
       case 'Debugger.getScriptSource':
         if (data.params) {
           const params = data.params as Protocol.Debugger.GetScriptSourceRequest;
           this.handleDebuggerGetScriptSource(data.id, params.scriptId);
         }
         break;
+      case 'Page.getResourceTree':
+        this.handleGetResourceTree(data.id);
+        break;
+      case 'Page.getResourceContent': {
+        const request = data.params as unknown as Protocol.Page.GetResourceContentRequest;
+        this.handleGetResourceContent(request.frameId, request.url, data.id);
+        break;
+      }
+      case 'CSS.getStyleSheetText': {
+        const request = data.params as unknown as Protocol.CSS.GetStyleSheetTextRequest;
+        this.handleGetStyleSheetText(request.styleSheetId, data.id);
+        break;
+      }
       default:
         this.sendMessageToFrontend({
           id: data.id,
@@ -368,7 +390,22 @@ export class RehydratingSession extends RehydratingSessionBase {
   // script parsed event to communicate the current script state and respond with a mock
   // debugger id.
   private handleDebuggerEnable(id: number): void {
+    const htmlResourceUrls = new Set(this.resources.filter(r => r.mimeType === 'text/html').map(r => r.url));
+
     for (const script of this.scripts) {
+      // Handle inline scripts.
+      if (htmlResourceUrls.has(script.url)) {
+        script.embedderName = script.url;
+        // We don't have the actual embedded offset from this trace event. Non-zero
+        // values are important though: that is what `Script.isInlineScript()`
+        // checks. Otherwise these scripts would try to show individually within the
+        // Sources panel.
+        script.startColumn = 1;
+        script.startLine = 1;
+        script.endColumn = 1;
+        script.endLine = 1;
+      }
+
       this.sendMessageToFrontend({
         method: 'Debugger.scriptParsed',
         params: script,
@@ -380,6 +417,77 @@ export class RehydratingSession extends RehydratingSessionBase {
       id,
       result: {
         debuggerId: mockDebuggerId,
+      },
+    });
+  }
+
+  private handleGetResourceTree(id: number): void {
+    const resources = this.resources.filter(r => r.mimeType === 'text/html' || r.mimeType === 'text/css');
+    if (!resources.length) {
+      return;
+    }
+
+    const frameTree = {
+      frame: {
+        id: this.target.targetId,
+        url: this.target.url,
+      },
+      childFrames: [],
+      resources: resources.map(r => ({
+                                 url: r.url,
+                                 type: r.mimeType === 'text/html' ? 'Document' : 'Stylesheet',
+                                 mimeType: r.mimeType,
+                                 contentSize: r.content.length,
+                               })),
+    };
+
+    this.sendMessageToFrontend({
+      id,
+      result: {
+        frameTree,
+      },
+    });
+
+    const stylesheets = this.resources.filter(r => r.mimeType === 'text/css');
+    for (const stylesheet of stylesheets) {
+      this.sendMessageToFrontend({
+        method: 'CSS.styleSheetAdded',
+        params: {
+          header: {
+            styleSheetId: `sheet.${stylesheet.frame}.${stylesheet.url}`,
+            frameId: stylesheet.frame,
+            sourceURL: stylesheet.url,
+          },
+        },
+      });
+    }
+  }
+
+  private handleGetResourceContent(frame: string, url: string, id: number): void {
+    const resource = this.resources.find(r => r.frame === frame && r.url === url);
+    if (!resource) {
+      return;
+    }
+
+    this.sendMessageToFrontend({
+      id,
+      result: {
+        content: resource.content,
+        base64Encoded: false,
+      },
+    });
+  }
+
+  private handleGetStyleSheetText(stylesheetId: string, id: number): void {
+    const resource = this.resources.find(r => `sheet.${r.frame}.${r.url}` === stylesheetId);
+    if (!resource) {
+      return;
+    }
+
+    this.sendMessageToFrontend({
+      id,
+      result: {
+        text: resource.content,
       },
     });
   }

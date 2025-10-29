@@ -8,7 +8,7 @@ import type * as Platform from '../platform/platform.js';
 import {UserVisibleError} from '../platform/platform.js';
 
 import type {
-  HydratingDataPerTarget, RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from
+  HydratingDataPerTarget, RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget} from
   './RehydratingObject.js';
 import type {SourceMapV3} from './SourceMap.js';
 import type {TraceObject} from './TraceObject.js';
@@ -142,6 +142,7 @@ export class EnhancedTracesParser {
   #targets: RehydratingTarget[] = [];
   #executionContexts: RehydratingExecutionContext[] = [];
   #scripts: RehydratingScript[] = [];
+  #resources: RehydratingResource[] = [];
   static readonly enhancedTraceVersion: number = 1;
 
   constructor(trace: TraceObject) {
@@ -319,7 +320,10 @@ export class EnhancedTracesParser {
       this.resolveSourceMap(script);
     }
 
-    return this.groupContextsAndScriptsUnderTarget(this.#targets, this.#executionContexts, this.#scripts);
+    this.#resources = this.#trace.metadata.resources ?? [];
+
+    return this.groupContextsAndScriptsUnderTarget(
+        this.#targets, this.#executionContexts, this.#scripts, this.#resources);
   }
 
   private resolveSourceMap(script: RehydratingScript): void {
@@ -411,8 +415,8 @@ export class EnhancedTracesParser {
   }
 
   private groupContextsAndScriptsUnderTarget(
-      targets: RehydratingTarget[], executionContexts: RehydratingExecutionContext[],
-      scripts: RehydratingScript[]): HydratingDataPerTarget[] {
+      targets: RehydratingTarget[], executionContexts: RehydratingExecutionContext[], scripts: RehydratingScript[],
+      resources: RehydratingResource[]): HydratingDataPerTarget[] {
     const data: HydratingDataPerTarget[] = [];
     const targetIds = new Set<Protocol.Target.TargetID>();
     const targetToExecutionContexts: Map<string, RehydratingExecutionContext[]> =
@@ -424,12 +428,15 @@ export class EnhancedTracesParser {
     const targetToScripts: Map<Protocol.Target.TargetID, RehydratingScript[]> =
         new Map<Protocol.Target.TargetID, RehydratingScript[]>();
     const orphanScripts: RehydratingScript[] = [];
+    const targetToResources: Map<Protocol.Target.TargetID, RehydratingResource[]> =
+        new Map<Protocol.Target.TargetID, RehydratingResource[]>();
 
     // Initialize all the mapping needed
     for (const target of targets) {
       targetIds.add(target.targetId);
       targetToExecutionContexts.set(target.targetId, []);
       targetToScripts.set(target.targetId, []);
+      targetToResources.set(target.targetId, []);
     }
 
     // Put all of the known execution contexts under respective targets
@@ -485,12 +492,20 @@ export class EnhancedTracesParser {
       }
     }
 
+    for (const resource of resources) {
+      const frameId = resource.frame as Protocol.Target.TargetID;
+      if (targetIds.has(frameId)) {
+        targetToResources.get(frameId)?.push(resource);
+      }
+    }
+
     // Now all the scripts are linked to a target, we want to make sure all the scripts are pointing to a valid
     // execution context. If not, we will create an artificial execution context for the script
     for (const target of targets) {
       const targetId = target.targetId;
       const executionContexts = targetToExecutionContexts.get(targetId) || [];
       const scripts = targetToScripts.get(targetId) || [];
+      const resources = targetToResources.get(targetId) || [];
       for (const script of scripts) {
         if (!executionContexts.find(context => context.id === script.executionContextId)) {
           const artificialContext: RehydratingExecutionContext = {
@@ -511,7 +526,7 @@ export class EnhancedTracesParser {
       }
 
       // Finally, we put all the information into the data structure we want to return as.
-      data.push({target, executionContexts, scripts});
+      data.push({target, executionContexts, scripts, resources});
     }
 
     return data;

@@ -12,7 +12,7 @@ import * as TimelineComponents from './components.js';
 
 describeWithEnvironment('Export Trace Options ', () => {
   interface CallbackArgsType {
-    includeScriptContent: boolean;
+    includeResourceContent: boolean;
     includeSourceMaps: boolean;
     addModifications: boolean;
   }
@@ -94,7 +94,7 @@ describeWithEnvironment('Export Trace Options ', () => {
     buttonFromDialog.click();
     const dialogContent = await waitFor('.export-trace-options-content', component.shadowRoot) as HTMLElement;
     const resultElement =
-        await waitFor('devtools-checkbox[title="Include script content"]', dialogContent) as HTMLElement;
+        await waitFor('devtools-checkbox[title="Include resource content"]', dialogContent) as HTMLElement;
     assert.isNotNull(resultElement);
   });
 
@@ -118,7 +118,7 @@ describeWithEnvironment('Export Trace Options ', () => {
     assert.lengthOf(regexRows, 4);
   });
 
-  it('should disable sourcemaps checkbox when script content is disabled', async () => {
+  it('should disable sourcemaps checkbox when resource content is disabled', async () => {
     const component = await renderExportTraceOptionsDialog();
 
     assert.isNotNull(component.shadowRoot);
@@ -141,7 +141,7 @@ describeWithEnvironment('Export Trace Options ', () => {
     assert.isFalse(regexRows[2].checked);
     assert.isTrue(regexRows[2].disabled);
     regexRows[1].click();
-    await waitFor('devtools-checkbox[title="Include script content"][checked]', dialogContent) as HTMLElement;
+    await waitFor('devtools-checkbox[title="Include resource content"][checked]', dialogContent) as HTMLElement;
     regexRows = dialogContent.querySelectorAll('devtools-checkbox') || [];
     assert.isTrue(regexRows[0].checked);
     assert.isTrue(regexRows[1].checked);
@@ -183,13 +183,13 @@ describeWithEnvironment('Export Trace Options ', () => {
     const saveButton = dialogContent.querySelector<HTMLElement>('devtools-button[data-export-button]');
     let regexRows = dialogContent.querySelectorAll('devtools-checkbox') || [];
     assert.lengthOf(regexRows, 4);
-    // Initial checkbox states: annotations=true, script=false, sourcemaps=false
+    // Initial checkbox states: annotations=true, resource=false, sourcemaps=false
     assert.isTrue(regexRows[0].checked);
     assert.isFalse(regexRows[1].checked);
     assert.isFalse(regexRows[2].checked);
     assert.isTrue(regexRows[2].disabled);
-    regexRows[1].click();  // Enable script content checkbox
-    await waitFor('devtools-checkbox[title="Include script content"][checked]', dialogContent) as HTMLElement;
+    regexRows[1].click();  // Enable resource content checkbox
+    await waitFor('devtools-checkbox[title="Include resource content"][checked]', dialogContent) as HTMLElement;
     regexRows = dialogContent.querySelectorAll('devtools-checkbox') || [];
     assert.isTrue(regexRows[0].checked);
     assert.isTrue(regexRows[1].checked);
@@ -202,7 +202,7 @@ describeWithEnvironment('Export Trace Options ', () => {
     assert.isNotNull(passedArgs);
     // Verify callback receives correct checkbox states
     assert.isTrue((passedArgs as CallbackArgsType).addModifications);
-    assert.isTrue((passedArgs as CallbackArgsType).includeScriptContent);
+    assert.isTrue((passedArgs as CallbackArgsType).includeResourceContent);
     assert.isFalse((passedArgs as CallbackArgsType).includeSourceMaps);
 
     regexRows[1].click();  // Clean-up

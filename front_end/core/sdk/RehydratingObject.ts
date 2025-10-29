@@ -14,6 +14,13 @@ export interface RehydratingScript extends Protocol.Debugger.ScriptParsedEvent {
   pid: number;
 }
 
+export interface RehydratingResource {
+  url: string;
+  content: string;
+  frame: string;
+  mimeType: string;
+}
+
 export interface RehydratingExecutionContextAuxData {
   frameId?: Protocol.Page.FrameId;
   isDefault?: boolean;
@@ -39,6 +46,7 @@ export interface HydratingDataPerTarget {
   target: RehydratingTarget;
   executionContexts: RehydratingExecutionContext[];
   scripts: RehydratingScript[];
+  resources: RehydratingResource[];
 }
 
 export interface ProtocolMessage {

@@ -209,7 +209,7 @@ describeWithEnvironment('TimelinePanel', function() {
     await timeline.loadingComplete(events, null, metadata);
 
     await timeline.saveToFile({
-      includeScriptContent: false,
+      includeResourceContent: false,
       includeSourceMaps: false,
       addModifications: false,
       shouldCompress: false,
@@ -310,7 +310,7 @@ describeWithEnvironment('TimelinePanel', function() {
       it('saves a regular trace file', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          includeScriptContent: false,
+          includeResourceContent: false,
           includeSourceMaps: false,
           addModifications: false,
           shouldCompress: true,
@@ -341,7 +341,7 @@ describeWithEnvironment('TimelinePanel', function() {
         const {traceEvents, metadata} = file;
 
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          includeScriptContent: false,
+          includeResourceContent: false,
           includeSourceMaps: false,
           addModifications: false,
           shouldCompress: true,
@@ -362,7 +362,7 @@ describeWithEnvironment('TimelinePanel', function() {
       it('saves an enhanced trace file without sourcemaps', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          includeScriptContent: true,
+          includeResourceContent: true,
           includeSourceMaps: false,
           addModifications: false,
           shouldCompress: true,
@@ -382,7 +382,7 @@ describeWithEnvironment('TimelinePanel', function() {
       it('saves an enhanced trace file with sourcemaps', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'dupe-js-inline-maps.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          includeScriptContent: true,
+          includeResourceContent: true,
           includeSourceMaps: true,
           addModifications: false,
           shouldCompress: true,
@@ -416,7 +416,7 @@ describeWithEnvironment('TimelinePanel', function() {
             {loadedFromFile: false, muteAriaNotifications: false});
 
         await timeline.saveToFile({
-          includeScriptContent: false,
+          includeResourceContent: false,
           includeSourceMaps: false,
           addModifications: true,
           shouldCompress: true,
@@ -437,7 +437,7 @@ describeWithEnvironment('TimelinePanel', function() {
       it('saves a regular trace file', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          includeScriptContent: false,
+          includeResourceContent: false,
           includeSourceMaps: false,
           addModifications: false,
           shouldCompress: false,
@@ -474,7 +474,7 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.isDefined(castedEvent.args.data.sourceText);
 
         await timeline.saveToFile({
-          includeScriptContent: true,
+          includeResourceContent: true,
           includeSourceMaps: false,
           addModifications: false,
           shouldCompress: false,
@@ -517,7 +517,7 @@ describeWithEnvironment('TimelinePanel', function() {
             await TraceLoader.traceFile(this, 'chrome-ext-sourcemap-script-content.json.gz');
 
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          includeScriptContent: true,
+          includeResourceContent: true,
           includeSourceMaps: true,
           addModifications: false,
           shouldCompress: false,

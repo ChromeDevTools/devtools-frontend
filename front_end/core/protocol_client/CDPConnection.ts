@@ -41,17 +41,19 @@ export const enum CDPErrorStatus {
   SESSION_NOT_FOUND = SERVER_ERROR - 1,
 }
 
-export interface CDPError extends CDPBaseMessage {
+export interface CDPError {
+  code: CDPErrorStatus;
+  message: string;
+  data?: string;
+}
+
+export interface CDPErrorMessage extends CDPBaseMessage {
   id?: number;
-  error: {
-    code: CDPErrorStatus,
-    message: string,
-    data?: string,
-  };
+  error: CDPError;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CDPMessage = CDPCommandRequest<any>|CDPCommandResponse<any>|CDPEvent<any>|CDPError;
+export type CDPMessage = CDPCommandRequest<any>|CDPCommandResponse<any>|CDPEvent<any>|CDPErrorMessage;
 
 /**
  * Allows the sending and receiving of CDP commands and the notification of CDP events to observers.
@@ -62,7 +64,7 @@ export type CDPMessage = CDPCommandRequest<any>|CDPCommandResponse<any>|CDPEvent
  */
 export interface CDPConnection {
   send<T extends keyof ProtocolMapping.Commands>(method: T, params: CommandParams<T>, sessionId: string|undefined):
-      Promise<CommandResult<T>|{getError(): string}>;
+      Promise<{result: CommandResult<T>}|{error: CDPError}>;
 
   observe(observer: CDPConnectionObserver): void;
   unobserve(observer: CDPConnectionObserver): void;

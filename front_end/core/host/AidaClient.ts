@@ -252,6 +252,12 @@ export enum Reason {
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
+export interface AdditionalFile {
+  path: string;
+  content: string;
+  included_reason: Reason;
+}
+
 export interface CompletionRequest {
   client: string;
   prefix: string;
@@ -259,11 +265,7 @@ export interface CompletionRequest {
   options?: CompleteCodeOptions;
   metadata: RequestMetadata;
   last_user_action?: EditType;
-  additional_files?: Array<{
-    path: string,
-    content: string,
-    included_reason: Reason,
-  }>;
+  additional_files?: AdditionalFile[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

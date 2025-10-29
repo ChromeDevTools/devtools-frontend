@@ -11,7 +11,6 @@ ts_library("unittests") {
   sources = [
     "FileFormatter.test.ts",
     "NetworkRequestFormatter.test.ts",
-    "PerformanceInsightFormatter.test.ts",
     "UnitFormatters.test.ts",
   ]
 
@@ -32,7 +31,10 @@ ts_library("unittests") {
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 
-  sources = [ "PerformanceTraceFormatter.test.ts" ]
+  sources = [
+    "PerformanceInsightFormatter.test.ts",
+    "PerformanceTraceFormatter.test.ts",
+  ]
 
   deps = [
     "..:bundle",

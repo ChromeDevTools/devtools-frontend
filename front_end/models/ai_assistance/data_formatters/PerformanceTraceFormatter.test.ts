@@ -4,7 +4,9 @@
 
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {AICallTree, AIContext, PerformanceTraceFormatter} from '../ai_assistance.js';
@@ -20,7 +22,7 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
   return {formatter, parsedTrace};
 }
 
-describeWithEnvironment('PerformanceTraceFormatter', () => {
+describeWithLocale('PerformanceTraceFormatter', () => {
   let snapshotTester: SnapshotTester;
   before(async () => {
     snapshotTester = new SnapshotTester(import.meta);
@@ -30,6 +32,9 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
   after(async () => {
     await snapshotTester.finish();
   });
+
+  setupRuntimeHooks();
+  setupSettingsHooks();
 
   describe('formatTraceSummary', () => {
     it('web-dev.json.gz', async function() {

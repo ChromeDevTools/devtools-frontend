@@ -443,7 +443,7 @@ export class Tooltip extends HTMLElement {
     this.#previousAnchorRect = anchorRect;
     this.#previousPopoverRect = currentPopoverRect;
 
-    const inspectorViewRect = UI.InspectorView.InspectorView.instance().element.getBoundingClientRect();
+    const inspectorViewRect = UI.UIUtils.getDevToolsBoundingElement().getBoundingClientRect();
     const preferredPositions =
         this.preferSpanLeft ? [PositionOption.BOTTOM_SPAN_LEFT, PositionOption.TOP_SPAN_LEFT] : [];
     const proposedPopoverRect = this.variant === 'rich' ?

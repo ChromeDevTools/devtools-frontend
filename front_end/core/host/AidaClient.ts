@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
+import * as DispatchHttpRequestClient from './DispatchHttpRequestClient.js';
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {AidaClientResult, AidaCodeCompleteResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
@@ -213,6 +214,24 @@ export interface CompleteCodeOptions {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface GenerateCodeOptions {
+  temperature?: number;
+  model_id?: string;
+  inference_language?: AidaInferenceLanguage;
+  expect_code_output?: boolean;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface ContextFile {
+  path: string;
+  full_content: string;
+  selected_content?: string;
+  programming_language: AidaInferenceLanguage;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
 export enum EditType {
   // Unknown edit type
   EDIT_TYPE_UNSPECIFIED = 0,
@@ -266,6 +285,27 @@ export interface CompletionRequest {
   metadata: RequestMetadata;
   last_user_action?: EditType;
   additional_files?: AdditionalFile[];
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+export enum UseCase {
+  // Unspecified usecase.
+  USE_CASE_UNSPECIFIED = 0,
+
+  // Code generation use case is expected to generate code from scratch
+  CODE_GENERATION = 1,
+}
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface GenerateCodeRequest {
+  client: string;
+  preamble: string;
+  current_message: Content;
+  options?: GenerateCodeOptions;
+  context_files?: ContextFile[];
+  use_case: UseCase;
+  metadata: RequestMetadata;
+  client_feature?: ClientFeature;
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -365,6 +405,11 @@ export interface CompletionResponse {
   metadata: ResponseMetadata;
 }
 
+export interface GenerateCodeResponse {
+  samples: GenerationSample[];
+  metadata: ResponseMetadata;
+}
+
 export interface GenerationSample {
   generationString: string;
   score: number;
@@ -418,6 +463,7 @@ const AidaLanguageToMarkdown: Record<AidaInferenceLanguage, string> = {
 };
 
 export const CLIENT_NAME = 'CHROME_DEVTOOLS';
+export const SERVICE_NAME = 'aidaService';
 
 const CODE_CHUNK_SEPARATOR = (lang = ''): string => ('\n`````' + lang + '\n');
 
@@ -658,6 +704,17 @@ export class AidaClient {
     }
 
     return {generatedSamples, metadata};
+  }
+
+  async generateCode(request: GenerateCodeRequest): Promise<GenerateCodeResponse|null> {
+    const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateCodeResponse>({
+      service: SERVICE_NAME,
+      path: '/v1/aida:generateCode',
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+
+    return response;
   }
 }
 

@@ -372,6 +372,15 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       this.#updateColumns();
     }
     this.#updateCreationNode();
+
+    const hadAddedNodes = mutationList.some(m => m.addedNodes.length > 0);
+    // If we got an update, and the data grid is sorted, we need to update the
+    // columns to maintain the sort order as the data within has changed.
+    // However, if we have nodes added, that will trigger a sort anyway so we
+    // don't need to re-sort again.
+    if (this.#dataGrid.sortColumnId() !== null && !hadAddedNodes) {
+      this.#dataGrid.dispatchEventToListeners(DataGridEvents.SORTING_CHANGED);
+    }
   }
 
   #editCallback(

@@ -79,33 +79,17 @@ export interface BadgeData {
   style: 'error'|'success'|'secondary';
 }
 
-export class Badge extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #adorner = new Adorners.Adorner.Adorner();
-
-  set data(data: BadgeData) {
-    this.#render(data);
-  }
-
-  #render(data: BadgeData): void {
-    const adornerContent = document.createElement('span');
-    adornerContent.textContent = data.badgeContent;
-    this.#adorner.data = {
-      name: 'badge',
-      content: adornerContent,
-    };
-    this.#adorner.classList.add(`badge-${data.style}`);
-
-    Lit.render(
-        html`
-      <style>${badgeStyles}</style>
-      ${this.#adorner}
-    `,
-        this.#shadow, {host: this});
-  }
+function createBadge(data: BadgeData): Adorners.Adorner.Adorner {
+  const adorner = new Adorners.Adorner.Adorner();
+  const adornerContent = document.createElement('span');
+  adornerContent.textContent = data.badgeContent;
+  adorner.data = {
+    name: 'badge',
+    content: adornerContent,
+  };
+  adorner.classList.add(`badge-${data.style}`);
+  return adorner;
 }
-
-customElements.define('devtools-resources-origin-trial-tree-view-badge', Badge);
 
 type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
 
@@ -127,19 +111,17 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeN
         constructTokenDetailsNodes(originTrial.tokensWithStatus[0]),
     renderer: (node: TreeNode<OriginTrialTreeNodeData>) => {
       const trial = node.treeNodeData as Protocol.Page.OriginTrial;
-      const tokenCountBadge = html`
-        <devtools-resources-origin-trial-tree-view-badge .data=${{
+      const tokenCountBadge = createBadge({
         badgeContent: i18nString(UIStrings.tokens, {PH1: trial.tokensWithStatus.length}),
         style: 'secondary',
-      } as BadgeData}></devtools-resources-origin-trial-tree-view-badge>
-      `;
+      });
 
       return html`
         ${trial.trialName}
-        <devtools-resources-origin-trial-tree-view-badge .data=${{
+        ${createBadge({
         badgeContent: trial.status,
         style: trial.status === Protocol.Page.OriginTrialStatus.Enabled ? 'success' : 'error',
-      } as BadgeData}></devtools-resources-origin-trial-tree-view-badge>
+      })}
         ${trial.tokensWithStatus.length > 1 ? tokenCountBadge : Lit.nothing}
       `;
     },
@@ -153,12 +135,10 @@ function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Tr
     children: async () => constructTokenDetailsNodes(token),
     renderer: (node: TreeNode<OriginTrialTreeNodeData>, state: {isExpanded: boolean}) => {
       const tokenStatus = node.treeNodeData as string;
-      const statusBadge = html`
-        <devtools-resources-origin-trial-tree-view-badge .data=${{
+      const statusBadge = createBadge({
         badgeContent: tokenStatus,
         style: tokenStatus === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
-      } as BadgeData}></devtools-resources-origin-trial-tree-view-badge>
-      `;
+      });
       // Only display token status for convenience when the node is not expanded.
       return html`${i18nString(UIStrings.token)} ${state.isExpanded ? Lit.nothing : statusBadge}`;
     },
@@ -289,11 +269,10 @@ export class OriginTrialTokenRows extends HTMLElement {
     const tokenDetails: TokenField[] = [
       {
         name: i18nString(UIStrings.status),
-        value: html`
-          <devtools-resources-origin-trial-tree-view-badge .data=${{
+        value: html`${createBadge({
           badgeContent: this.#tokenWithStatus.status,
           style: this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
-        } as BadgeData}></devtools-resources-origin-trial-tree-view-badge>`,
+        })}`,
       },
       ...this.#parsedTokenDetails,
     ];
@@ -307,7 +286,10 @@ export class OriginTrialTokenRows extends HTMLElement {
 
     Lit.render(
         html`
-      <style>${originTrialTokenRowsStyles}</style>
+      <style>
+        ${badgeStyles}
+        ${originTrialTokenRowsStyles}
+      </style>
       <div class="content">
         ${tokenDetailRows}
       </div>
@@ -344,7 +326,10 @@ export class OriginTrialTreeView extends HTMLElement {
 
     Lit.render(
         html`
-      <style>${originTrialTreeViewStyles}</style>
+      <style>
+        ${badgeStyles}
+        ${originTrialTreeViewStyles}
+      </style>
       <devtools-tree-outline .data=${{
           tree: trials.map(constructOriginTrialTree),
           defaultRenderer,
@@ -361,6 +346,5 @@ declare global {
   interface HTMLElementTagNameMap {
     'devtools-resources-origin-trial-tree-view': OriginTrialTreeView;
     'devtools-resources-origin-trial-token-rows': OriginTrialTokenRows;
-    'devtools-resources-origin-trial-tree-view-badge': Badge;
   }
 }

@@ -129,12 +129,7 @@ const trialWithUnparsableToken: Protocol.Page.OriginTrial = {
 };
 
 function extractBadgeTextFromTreeNode(node: HTMLLIElement): string[] {
-  return [...node.querySelectorAll('devtools-resources-origin-trial-tree-view-badge')].map(badgeElement => {
-    const adornerElement = badgeElement.shadowRoot!.querySelector('devtools-adorner');
-    assert.isNotNull(adornerElement);
-    if (adornerElement === null) {
-      return '';
-    }
+  return [...node.querySelectorAll('devtools-adorner')].map(adornerElement => {
     const contentElement = adornerElement.firstElementChild;
     assert.isNotNull(contentElement);
     if (contentElement === null) {

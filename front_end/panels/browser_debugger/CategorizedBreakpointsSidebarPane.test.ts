@@ -134,7 +134,6 @@ describeWithMockConnection('CategorizedBreakpointsSidebarPane', () => {
             userExpandedCategories: new Set(),
           },
           {
-            defaultFocus: undefined,
             userExpandedCategories: new Set(),
           },
           target);
@@ -159,7 +158,6 @@ describeWithMockConnection('CategorizedBreakpointsSidebarPane', () => {
             userExpandedCategories: new Set(),
           },
           {
-            defaultFocus: undefined,
             userExpandedCategories: new Set(),
           },
           target);
@@ -185,7 +183,6 @@ describeWithMockConnection('CategorizedBreakpointsSidebarPane', () => {
             userExpandedCategories: new Set(),
           },
           {
-            defaultFocus: undefined,
             userExpandedCategories: new Set(),
           },
           target);

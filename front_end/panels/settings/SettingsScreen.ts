@@ -403,15 +403,13 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
     render(
         html`
         <devtools-toolbar>
-          <devtools-toolbar-input type="filter" placeholder=${
+          <devtools-toolbar-input autofocus type="filter" placeholder=${
             i18nString(UIStrings.searchExperiments)} style="flex-grow:1" @change=${
             this.#onFilterChanged.bind(this)}></devtools-toolbar-input>
         </devtools-toolbar>
     `,
         filterSection);
     this.renderExperiments('');
-    const filter = filterSection.querySelector('devtools-toolbar-input') as HTMLElement;
-    this.setDefaultFocusedElement(filter);
   }
 
   #onFilterChanged(e: CustomEvent<string>): void {

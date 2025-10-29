@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import dialogStyles from './dialog.css.js';
@@ -27,28 +27,29 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/AddSourceMapURLDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {ref} = Directives;
 
 interface ViewInput {
   label: Platform.UIString.LocalizedString;
-  onKeyDown: (event: KeyboardEvent) => void;
+  onEnter: (value: string) => void;
+  onInputChange: (value: string) => void;
   apply: () => void;
 }
 
-interface ViewOutput {
-  input: HTMLInputElement;
-}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-
-export const DEFAULT_VIEW: View = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
     <style>${dialogStyles}</style>
     <label>${input.label}</label>
     <input class="harmony-input add-source-map" spellcheck="false" type="text"
         jslog=${VisualLogging.textField('url').track({keydown: 'Enter', change: true})}
-        @keydown=${input.onKeyDown} ${ref(e => { output.input = e as HTMLInputElement; })}>
+        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter') {
+          e.consume(true);
+          input.onEnter((e.target as HTMLInputElement).value); }
+        }}
+        @change=${(e: Event) => input.onInputChange((e.target as HTMLInputElement).value)}
+        autofocus>
     <devtools-button @click=${input.apply} .jslogContext=${'add'}
         .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.add)}</devtools-button>`,
     target);
@@ -56,7 +57,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 };
 
 export class AddDebugInfoURLDialog extends UI.Widget.HBox {
-  private input!: HTMLInputElement;
+  private url = '';
   private readonly dialog: UI.Dialog.Dialog;
   private readonly callback: (arg0: Platform.DevToolsPath.UrlString) => void;
   private constructor(
@@ -66,20 +67,14 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
 
     const viewInput = {
       label,
-      onKeyDown: this.onKeyDown.bind(this),
+      onEnter: this.onEnter.bind(this),
+      onInputChange: this.onInputChange.bind(this),
       apply: this.apply.bind(this),
     };
-    const that = this;
-    const viewOutput = {
-      set input(input: HTMLInputElement) {
-        that.input = input;
-      },
-    };
-    view(viewInput, viewOutput, this.contentElement);
+    view(viewInput, undefined, this.contentElement);
 
     this.dialog = new UI.Dialog.Dialog(jslogContext);
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    this.dialog.setDefaultFocusedElement(this.input);
 
     this.callback = callback;
   }
@@ -103,14 +98,16 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
     this.callback(value);
   }
 
-  private apply(): void {
-    this.done(this.input.value as Platform.DevToolsPath.UrlString);
+  private onInputChange(value: string): void {
+    this.url = value;
   }
 
-  private onKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      event.consume(true);
-      this.apply();
-    }
+  private apply(): void {
+    this.done(this.url as Platform.DevToolsPath.UrlString);
+  }
+
+  private onEnter(value: string): void {
+    this.url = value;
+    this.apply();
   }
 }

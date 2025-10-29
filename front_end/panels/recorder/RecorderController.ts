@@ -1072,7 +1072,7 @@ export class RecorderController extends LitElement {
         } else if (this.currentPage === Pages.CREATE_RECORDING_PAGE) {
           if (this.#createRecordingView) {
             this.#shortcutHelper.handleShortcut(() => {
-              this.#createRecordingView?.triggerFormSubmission();
+              this.#createRecordingView?.startRecording();
             });
           }
         } else if (this.isRecording) {
@@ -1242,7 +1242,6 @@ export class RecorderController extends LitElement {
         class="recording-view"
         .widgetConfig=${UI.Widget.widgetConfig(Components.CreateRecordingView.CreateRecordingView, {
           recorderSettings: this.#recorderSettings,
-          defaultRecordingName: this.#recorderSettings.defaultTitle,
           onRecordingStarted: this.#onRecordingStarted.bind(this),
           onRecordingCancelled: this.onRecordingCancelled.bind(this),
         })}

@@ -18,16 +18,16 @@ import * as Components from './components.js';
 describeWithEnvironment('CreateRecordingView', () => {
   setupActionRegistry();
 
-  const views: Components.CreateRecordingView.CreateRecordingView[] = [];
+  const widgets: Components.CreateRecordingView.CreateRecordingView[] = [];
 
   afterEach(() => {
     // Unregister global listeners in willHide to prevent leaks.
-    for (const view of views) {
-      view.willHide();
+    for (const widget of widgets) {
+      widget.willHide();
     }
   });
 
-  async function createView(
+  async function createWidget(
       params?: {
         onRecordingStarted:
             (data: {name: string, selectorTypesToRecord: Models.Schema.SelectorType[], selectorAttribute?: string}) =>
@@ -46,17 +46,24 @@ describeWithEnvironment('CreateRecordingView', () => {
       component.onRecordingStarted = params?.onRecordingStarted;
     }
     component.wasShown();
-    views.push(component);
+    widgets.push(component);
     await view.nextInput;
     return [view, component];
   }
 
   it('starts a recording if data is correct', async () => {
     const recordingStartedStub = sinon.stub();
-    const [view] = await createView({
+    const [view] = await createWidget({
       onRecordingStarted: recordingStartedStub,
     });
-    view.input.startRecording('test', [Models.Schema.SelectorType.CSS], 'test-attr');
+    view.input.onUpdate({name: 'test'});
+    view.input.onUpdate({selectorAttribute: 'test-attr'});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.CSS, checked: true});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.ARIA, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.Pierce, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.Text, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.XPath, checked: false});
+    view.input.onRecordingStarted();
     sinon.assert.calledOnceWithExactly(recordingStartedStub, {
       selectorTypesToRecord: [Models.Schema.SelectorType.CSS],
       selectorAttribute: 'test-attr',
@@ -66,10 +73,13 @@ describeWithEnvironment('CreateRecordingView', () => {
 
   it('renders an error if the name is empty', async () => {
     const recordingStartedStub = sinon.stub();
-    const [view] = await createView({
+    const [view] = await createWidget({
       onRecordingStarted: recordingStartedStub,
     });
-    view.input.startRecording('', [Models.Schema.SelectorType.CSS], 'test-attr');
+    view.input.onUpdate({name: ''});
+    view.input.onUpdate({selectorAttribute: 'test-attr'});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.CSS, checked: true});
+    view.input.onRecordingStarted();
     const input = await view.nextInput;
     assert.deepEqual(input.error?.message, 'Recording name is required');
     sinon.assert.notCalled(recordingStartedStub);
@@ -77,10 +87,17 @@ describeWithEnvironment('CreateRecordingView', () => {
 
   it('renders an error if the selector attributes are turned off', async () => {
     const recordingStartedStub = sinon.stub();
-    const [view] = await createView({
+    const [view] = await createWidget({
       onRecordingStarted: recordingStartedStub,
     });
-    view.input.startRecording('test', [], 'test-attr');
+    view.input.onUpdate({name: 'test'});
+    view.input.onUpdate({selectorAttribute: 'test-attr'});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.CSS, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.ARIA, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.Pierce, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.Text, checked: false});
+    view.input.onUpdate({selectorType: Models.Schema.SelectorType.XPath, checked: false});
+    view.input.onRecordingStarted();
     const input = await view.nextInput;
     assert.deepEqual(
         input.error?.message,
@@ -94,10 +111,19 @@ describeWithEnvironment('CreateRecordingView', () => {
       renderElementIntoDOM(target);
       Components.CreateRecordingView.DEFAULT_VIEW(
           {
-            defaultRecordingName: 'test',
-            startRecording: sinon.stub(),
+            name: 'test',
+            selectorAttribute: '',
+            selectorTypes: [
+              {selectorType: Models.Schema.SelectorType.CSS, checked: false},
+              {selectorType: Models.Schema.SelectorType.ARIA, checked: false},
+              {selectorType: Models.Schema.SelectorType.Text, checked: false},
+              {selectorType: Models.Schema.SelectorType.XPath, checked: false},
+              {selectorType: Models.Schema.SelectorType.Pierce, checked: false}
+            ],
+            onRecordingStarted: sinon.stub(),
             onRecordingCancelled: sinon.stub(),
-            resetError: sinon.stub(),
+            onErrorReset: sinon.stub(),
+            onUpdate: sinon.stub(),
           },
           {}, target);
       await assertScreenshot('CreateRecordingView/default-view.png');
@@ -107,11 +133,20 @@ describeWithEnvironment('CreateRecordingView', () => {
       renderElementIntoDOM(target);
       Components.CreateRecordingView.DEFAULT_VIEW(
           {
-            defaultRecordingName: 'test',
+            name: 'test',
+            selectorAttribute: '',
+            selectorTypes: [
+              {selectorType: Models.Schema.SelectorType.CSS, checked: false},
+              {selectorType: Models.Schema.SelectorType.ARIA, checked: false},
+              {selectorType: Models.Schema.SelectorType.Text, checked: false},
+              {selectorType: Models.Schema.SelectorType.XPath, checked: false},
+              {selectorType: Models.Schema.SelectorType.Pierce, checked: false}
+            ],
             error: new Error('error'),
-            startRecording: sinon.stub(),
+            onRecordingStarted: sinon.stub(),
             onRecordingCancelled: sinon.stub(),
-            resetError: sinon.stub(),
+            onErrorReset: sinon.stub(),
+            onUpdate: sinon.stub(),
           },
           {}, target);
       await assertScreenshot('CreateRecordingView/error-view.png');

@@ -17,7 +17,7 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import createRecordingViewStyles from './createRecordingView.css.js';
 
-const {html, Directives: {ifDefined, ref, createRef}} = Lit;
+const {html, Directives: {ref, createRef, repeat}} = Lit;
 
 const UIStrings = {
   /**
@@ -103,23 +103,61 @@ const str_ = i18n.i18n.registerUIStrings(
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
-  defaultRecordingName: string;
-  recorderSettings?: Models.RecorderSettings.RecorderSettings;
+  name: string;
+  selectorAttribute: string;
+  selectorTypes: Array<{
+    selectorType: Models.Schema.SelectorType,
+    checked: boolean,
+  }>;
   error?: Error;
-  startRecording: (name: string, selectorTypes: Models.Schema.SelectorType[], selectorAttribute?: string) => void;
+  onRecordingStarted: () => void;
   onRecordingCancelled: () => void;
-  resetError: () => void;
+  onErrorReset: () => void;
+  onUpdate: (update: {
+    selectorType: Models.Schema.SelectorType,
+    checked: boolean,
+  }|{
+    name: string,
+  }|{
+    selectorAttribute: string,
+  }) => void;
 }
 
 export interface ViewOutput {
   focusInput?: () => void;
-  triggerFormSubmission?: () => void;
 }
 
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
-  const {defaultRecordingName, recorderSettings, error, startRecording, onRecordingCancelled, resetError} = input;
+  const {
+    name,
+    selectorAttribute,
+    selectorTypes,
+    error,
+    onUpdate,
+    onRecordingStarted,
+    onRecordingCancelled,
+    onErrorReset
+  } = input;
 
-  // TODO(crbug.com/455531160): move state from input elements into the presenter widget.
+  const nameInputRef = createRef<HTMLInputElement>();
+
+  const onKeyDown = (event: KeyboardEvent): void => {
+    if (error) {
+      onErrorReset();
+    }
+
+    const keyboardEvent = event;
+    if (keyboardEvent.key === 'Enter') {
+      onRecordingStarted();
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  };
+
+  output.focusInput = () => {
+    nameInputRef.value?.focus();
+  };
+
   const selectorTypeToLabel = new Map([
     [Models.Schema.SelectorType.ARIA, i18nString(UIStrings.selectorTypeARIA)],
     [Models.Schema.SelectorType.CSS, i18nString(UIStrings.selectorTypeCSS)],
@@ -133,61 +171,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       i18nString(UIStrings.selectorTypePierce),
     ],
   ]);
-  function getSelectorTypes(): Models.Schema.SelectorType[] {
-    const selectorTypeElements = target.querySelectorAll(
-        '.selector-type input[type=checkbox]',
-    );
-    const selectorTypesToRecord: Models.Schema.SelectorType[] = [];
-    for (const selectorType of selectorTypeElements) {
-      const checkbox = selectorType as HTMLInputElement;
-      const checkboxValue = checkbox.value as Models.Schema.SelectorType;
-      if (checkbox.checked) {
-        selectorTypesToRecord.push(checkboxValue);
-      }
-    }
-    return selectorTypesToRecord;
-  }
-
-  const selectorAttributeInputRef = createRef<HTMLInputElement>();
-
-  function getSelectorAttribute(): string|undefined {
-    const selectorAttribute = selectorAttributeInputRef.value?.value.trim();
-    if (!selectorAttribute) {
-      return undefined;
-    }
-    return selectorAttribute;
-  }
-
-  const nameInputRef = createRef<HTMLInputElement>();
-
-  function handleStartRecording(): void {
-    startRecording(nameInputRef.value?.value ?? '', getSelectorTypes(), getSelectorAttribute());
-  }
-
-  const onKeyDown = (event: KeyboardEvent): void => {
-    if (error) {
-      resetError();
-    }
-
-    const keyboardEvent = event;
-    if (keyboardEvent.key === 'Enter') {
-      handleStartRecording();
-      event.stopPropagation();
-      event.preventDefault();
-    }
-  };
-
-  const onInputFocus = (): void => {
-    nameInputRef.value?.select();
-  };
-
-  output.focusInput = () => {
-    nameInputRef.value?.focus();
-  };
-
-  output.triggerFormSubmission = () => {
-    handleStartRecording();
-  };
 
   // clang-format off
   Lit.render(
@@ -215,13 +198,16 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           UIStrings.recordingName,
         )}</label>
         <input
-          value=${defaultRecordingName}
-          @focus=${onInputFocus}
+          value=${name}
+          @focus=${() => nameInputRef.value?.select()}
           @keydown=${onKeyDown}
           jslog=${VisualLogging.textField('user-flow-name').track({change: true})}
           class="devtools-text-input"
           id="user-flow-name"
           ${ref(nameInputRef)}
+          @input=${(e:Event) => onUpdate({
+            name: (e.target as HTMLInputElement).value.trim()
+          })}
         />
         <label class="row-label" for="selector-attribute">
           <span>${i18nString(UIStrings.selectorAttribute)}</span>
@@ -234,13 +220,15 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           </x-link>
         </label>
         <input
-          value=${ifDefined(recorderSettings?.selectorAttribute)}
+          value=${selectorAttribute}
           placeholder="data-testid"
           @keydown=${onKeyDown}
           jslog=${VisualLogging.textField('selector-attribute').track({change: true})}
           class="devtools-text-input"
           id="selector-attribute"
-          ${ref(selectorAttributeInputRef)}
+          @input=${(e:Event) => onUpdate({
+            selectorAttribute: (e.target as HTMLInputElement).value.trim()
+          })}
         />
         <label class="row-label">
           <span>${i18nString(UIStrings.selectorTypes)}</span>
@@ -253,37 +241,34 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           </x-link>
         </label>
         <div class="checkbox-container">
-          ${Object.values(Models.Schema.SelectorType).map(selectorType => {
-            const checked =
-              recorderSettings?.getSelectorByType(selectorType);
+          ${repeat(selectorTypes, item => {
             return html`
-                <label class="checkbox-label selector-type">
-                  <input
-                    @keydown=${onKeyDown}
-                    .value=${selectorType}
-                    jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${selectorType}`)}
-                    ?checked=${checked}
-                    type="checkbox"
-                  />
-                  ${selectorTypeToLabel.get(selectorType) || selectorType}
-                </label>
-              `;
+              <label class="checkbox-label selector-type">
+                <input
+                  @keydown=${onKeyDown}
+                  .value=${item.selectorType}
+                  jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${item.selectorType}`)}
+                  ?checked=${item.checked}
+                  type="checkbox"
+                  @change=${(e:Event) => onUpdate({
+                    selectorType: item.selectorType,
+                    checked: (e.target as HTMLInputElement).checked
+                  })}
+                />
+                ${selectorTypeToLabel.get(item.selectorType) || item.selectorType}
+              </label>
+            `;
           })}
         </div>
-
         ${
           error &&
-          html`
-        <div class="error" role="alert">
-          ${error.message}
-        </div>
-      `
+          html` <div class="error" role="alert"> ${error.message} </div>`
         }
       </div>
       <div class="footer">
         <div class="controls">
           <devtools-control-button
-            @click=${handleStartRecording}
+            @click=${onRecordingStarted}
             .label=${i18nString(UIStrings.startRecording)}
             .shape=${'circle'}
             jslog=${VisualLogging.action(Actions.RecorderActions.START_RECORDING).track({click: true})}
@@ -302,15 +287,33 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
 export class CreateRecordingView extends UI.Widget.Widget {
   #error?: Error;
+  #name = '';
+  #selectorAttribute = '';
+  #selectorTypes: Array<{
+    selectorType: Models.Schema.SelectorType,
+    checked: boolean,
+  }> = [];
   #view: typeof DEFAULT_VIEW;
   #output: ViewOutput = {};
+  #recorderSettings?: Models.RecorderSettings.RecorderSettings;
 
   onRecordingStarted:
       (data: {name: string, selectorTypesToRecord: Models.Schema.SelectorType[], selectorAttribute?: string}) => void =
           () => {};
   onRecordingCancelled = (): void => {};
-  recorderSettings?: Models.RecorderSettings.RecorderSettings;
-  defaultRecordingName = '';
+
+  set recorderSettings(value: Models.RecorderSettings.RecorderSettings) {
+    this.#recorderSettings = value;
+    this.#name = this.#recorderSettings.defaultTitle;
+    this.#selectorAttribute = this.#recorderSettings.selectorAttribute;
+    this.#selectorTypes = Object.values(Models.Schema.SelectorType).map(selectorType => {
+      return {
+        selectorType,
+        checked: this.#recorderSettings?.getSelectorByType(selectorType) ?? true,
+      };
+    }),
+    this.requestUpdate();
+  }
 
   constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -323,57 +326,78 @@ export class CreateRecordingView extends UI.Widget.Widget {
     void this.updateComplete.then(() => this.#output.focusInput?.());
   }
 
-  triggerFormSubmission(): void {
-    this.#output.triggerFormSubmission?.();
+  startRecording(): void {
+    if (!this.#recorderSettings) {
+      throw new Error('settings not set');
+    }
+
+    if (!this.#name.trim()) {
+      this.#error = new Error(i18nString(UIStrings.recordingNameIsRequired));
+      this.requestUpdate();
+      return;
+    }
+
+    const selectorTypesToRecord = this.#selectorTypes.filter(item => item.checked).map(item => item.selectorType);
+
+    if (!selectorTypesToRecord.includes(Models.Schema.SelectorType.CSS) &&
+        !selectorTypesToRecord.includes(Models.Schema.SelectorType.XPath) &&
+        !selectorTypesToRecord.includes(Models.Schema.SelectorType.Pierce)) {
+      this.#error = new Error(i18nString(UIStrings.includeNecessarySelectors));
+      this.requestUpdate();
+      return;
+    }
+
+    for (const selectorType of Object.values(Models.Schema.SelectorType)) {
+      this.#recorderSettings.setSelectorByType(
+          selectorType,
+          selectorTypesToRecord.includes(selectorType),
+      );
+    }
+
+    const selectorAttribute = this.#selectorAttribute.trim();
+    if (selectorAttribute) {
+      this.#recorderSettings.selectorAttribute = selectorAttribute;
+    }
+
+    this.onRecordingStarted({
+      name: this.#name,
+      selectorTypesToRecord,
+      selectorAttribute: this.#selectorAttribute ? this.#selectorAttribute : undefined,
+    });
+
+    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECORDER_RECORDING_STARTED);
   }
 
   override performUpdate(): void {
     this.#view(
         {
-          defaultRecordingName: this.defaultRecordingName,
-          recorderSettings: this.recorderSettings,
+          name: this.#name,
+          selectorAttribute: this.#selectorAttribute,
+          selectorTypes: this.#selectorTypes,
           error: this.#error,
           onRecordingCancelled: this.onRecordingCancelled,
-          startRecording:
-              (name: string, selectorTypesToRecord: Models.Schema.SelectorType[], selectorAttribute?: string): void => {
-                if (!this.recorderSettings) {
-                  throw new Error('settings not set');
+          onUpdate: update => {
+            if ('name' in update) {
+              this.#name = update.name;
+            } else if ('selectorAttribute' in update) {
+              this.#selectorAttribute = update.selectorAttribute;
+            } else {
+              this.#selectorTypes = this.#selectorTypes.map(item => {
+                if (item.selectorType === update.selectorType) {
+                  return {
+                    ...item,
+                    checked: update.checked,
+                  };
                 }
-
-                if (!name.trim()) {
-                  this.#error = new Error(i18nString(UIStrings.recordingNameIsRequired));
-                  this.requestUpdate();
-                  return;
-                }
-
-                if (!selectorTypesToRecord.includes(Models.Schema.SelectorType.CSS) &&
-                    !selectorTypesToRecord.includes(Models.Schema.SelectorType.XPath) &&
-                    !selectorTypesToRecord.includes(Models.Schema.SelectorType.Pierce)) {
-                  this.#error = new Error(i18nString(UIStrings.includeNecessarySelectors));
-                  this.requestUpdate();
-                  return;
-                }
-
-                for (const selectorType of Object.values(Models.Schema.SelectorType)) {
-                  this.recorderSettings.setSelectorByType(
-                      selectorType,
-                      selectorTypesToRecord.includes(selectorType),
-                  );
-                }
-
-                if (selectorAttribute) {
-                  this.recorderSettings.selectorAttribute = selectorAttribute;
-                }
-
-                this.onRecordingStarted({
-                  name,
-                  selectorTypesToRecord,
-                  selectorAttribute,
-                });
-
-                Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECORDER_RECORDING_STARTED);
-              },
-          resetError: () => {
+                return item;
+              });
+            }
+            this.requestUpdate();
+          },
+          onRecordingStarted: (): void => {
+            this.startRecording();
+          },
+          onErrorReset: () => {
             this.#error = undefined;
             this.requestUpdate();
           },

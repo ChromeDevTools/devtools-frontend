@@ -205,16 +205,6 @@ const bindCheckboxImpl = function(
   };
 };
 
-export const createCustomSetting = function(name: string, element: Element): Element {
-  const p = document.createElement('p');
-  p.classList.add('settings-select');
-  const label = p.createChild('label');
-  label.textContent = name;
-  ARIAUtils.bindLabelToControl(label, element);
-  p.appendChild(element);
-  return p;
-};
-
 export const createControlForSetting = function(
     setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
   const uiTitle = setting.title();
@@ -238,10 +228,6 @@ export const createControlForSetting = function(
       return null;
   }
 };
-
-export interface SettingUI {
-  settingElement(): Element|null;
-}
 
 /**
  * Track toggle action as a whole or

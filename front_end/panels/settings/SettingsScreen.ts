@@ -328,11 +328,9 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
 
   private createExtensionSection(settings: Common.Settings.SettingRegistration[]): void {
     const sectionName = Common.Settings.SettingCategory.EXTENSIONS;
-    const settingUI = Components.Linkifier.LinkHandlerSettingUI.instance() as UI.SettingsUI.SettingUI;
+    const settingUI = Components.Linkifier.LinkHandlerSettingUI.instance();
     const element = settingUI.settingElement();
-    if (element) {
-      this.createStandardSectionElement(sectionName, settings, element);
-    }
+    this.createStandardSectionElement(sectionName, settings, element);
   }
 
   private createSectionElement(

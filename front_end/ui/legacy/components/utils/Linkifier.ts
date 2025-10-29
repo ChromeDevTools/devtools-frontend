@@ -919,7 +919,7 @@ export class LinkContextMenuProvider implements UI.ContextMenu.Provider<Node> {
 
 let linkHandlerSettingUIInstance: LinkHandlerSettingUI;
 
-export class LinkHandlerSettingUI implements UI.SettingsUI.SettingUI {
+export class LinkHandlerSettingUI {
   private element: HTMLSelectElement;
 
   private constructor() {
@@ -960,8 +960,14 @@ export class LinkHandlerSettingUI implements UI.SettingsUI.SettingUI {
     Linkifier.linkHandlerSetting().set(value);
   }
 
-  settingElement(): Element|null {
-    return UI.SettingsUI.createCustomSetting(i18nString(UIStrings.linkHandling), this.element);
+  settingElement(): Element {
+    const p = document.createElement('p');
+    p.classList.add('settings-select');
+    const label = p.createChild('label');
+    label.textContent = i18nString(UIStrings.linkHandling);
+    UI.ARIAUtils.bindLabelToControl(label, this.element);
+    p.appendChild(this.element);
+    return p;
   }
 }
 

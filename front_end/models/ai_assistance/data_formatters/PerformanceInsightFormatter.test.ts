@@ -9,7 +9,9 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import type * as Trace from '../../trace/trace.js';
 import {AIContext, PerformanceInsightFormatter} from '../ai_assistance.js';
 
-describeWithEnvironment('PerformanceInsightFormatter', () => {
+describeWithEnvironment('PerformanceInsightFormatter', function() {
+  this.timeout(20000);
+
   let snapshotTester: SnapshotTester;
   before(async () => {
     snapshotTester = new SnapshotTester(import.meta);

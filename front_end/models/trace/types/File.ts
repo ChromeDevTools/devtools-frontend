@@ -219,6 +219,8 @@ export interface MetaData {
   cruxFieldData?: CrUXManager.PageResult[];
   /** Currently only stores JS maps, not CSS. This never stores data url source maps. */
   sourceMaps?: MetadataSourceMap[];
+  /** Currently only stores HTML and CSS resources. */
+  resources?: MetadataResource[];
   visualTrackConfig?: PersistedTraceVisualConfig;
   hostDPR?: number;
 }
@@ -228,6 +230,13 @@ export interface MetadataSourceMap {
   /** If not defined, then this was a data url. */
   sourceMapUrl?: string;
   sourceMap: SDK.SourceMap.SourceMapV3;
+}
+
+export interface MetadataResource {
+  url: string;
+  frame: string;
+  content: string;
+  mimeType: string;
 }
 
 export type Contents = TraceFile|Event[];

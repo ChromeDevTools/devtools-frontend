@@ -42,7 +42,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
@@ -1364,7 +1364,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   async saveToFile(config: {
-    includeScriptContent: boolean,
+    includeResourceContent: boolean,
     includeSourceMaps: boolean,
     /**
      * Includes many things:
@@ -1399,9 +1399,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       if (Trace.Types.Events.isAnyScriptSourceEvent(event) && event.name !== 'StubScriptCatchup') {
         const mappedScript = scriptByIdMap.get(`${event.args.data.isolate}.${event.args.data.scriptId}`);
 
-        // If the checkbox to include script content is not checked or if it comes from and
-        // extension we dont include the script content.
-        if (!config.includeScriptContent ||
+        if (!config.includeResourceContent ||
             (mappedScript?.url && Trace.Helpers.Trace.isExtensionUrl(mappedScript.url))) {
           return {
             cat: event.cat,
@@ -1434,7 +1432,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     try {
       await this.innerSaveToFile(traceEvents, metadata, {
-        includeScriptContent: config.includeScriptContent,
+        includeResourceContent: config.includeResourceContent,
         includeSourceMaps: config.includeSourceMaps,
         addModifications: config.addModifications,
         shouldCompress: config.shouldCompress,
@@ -1454,7 +1452,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   async innerSaveToFile(traceEvents: readonly Trace.Types.Events.Event[], metadata: Trace.Types.File.MetaData, config: {
-    includeScriptContent: boolean,
+    includeResourceContent: boolean,
     includeSourceMaps: boolean,
     addModifications: boolean,
     shouldCompress: boolean,
@@ -1464,9 +1462,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         Platform.DateUtilities.toISO8601Compact(metadata.startTime ? new Date(metadata.startTime) : new Date());
 
     const isCpuProfile = metadata.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
-    const {includeScriptContent, includeSourceMaps} = config;
+    const {includeResourceContent, includeSourceMaps} = config;
     metadata.enhancedTraceVersion =
-        includeScriptContent ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
+        includeResourceContent ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
 
     let fileName =
         (isCpuProfile ? `CPU-${isoDate}.cpuprofile` : `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
@@ -1477,10 +1475,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       blobParts = [JSON.stringify(profile)];
     } else {
       const filteredMetadataSourceMaps =
-          includeScriptContent && includeSourceMaps ? this.#filterMetadataSourceMaps(metadata) : undefined;
+          includeResourceContent && includeSourceMaps ? this.#filterMetadataSourceMaps(metadata) : undefined;
+      const filteredResources = includeResourceContent ? this.#filterMetadataResoures(metadata) : undefined;
       const formattedTraceIter = traceJsonGenerator(traceEvents, {
         ...metadata,
         sourceMaps: filteredMetadataSourceMaps,
+        resources: filteredResources,
       });
       blobParts = Array.from(formattedTraceIter);
     }
@@ -1531,7 +1531,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions;
     const state = exportTraceOptionsElement.state;
     await this.saveToFile({
-      includeScriptContent: state.includeScriptContent,
+      includeResourceContent: state.includeResourceContent,
       includeSourceMaps: state.includeSourceMaps,
       addModifications: state.includeAnnotations,
       shouldCompress: state.shouldCompress,
@@ -1548,6 +1548,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return metadata.sourceMaps.filter(value => {
       return !Trace.Helpers.Trace.isExtensionUrl(value.url);
     });
+  }
+
+  #filterMetadataResoures(metadata: Trace.Types.File.MetaData): Trace.Types.File.MetadataResource[]|undefined {
+    if (!metadata.resources) {
+      return undefined;
+    }
+
+    return metadata.resources;
   }
 
   #showExportTraceErrorDialog(error: Error): void {
@@ -2744,6 +2752,45 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     };
   }
 
+  async #retainResourceContentsForEnhancedTrace(
+      parsedTrace: Trace.TraceModel.ParsedTrace, metadata: Trace.Types.File.MetaData): Promise<void> {
+    // Scripts are already stored as trace events.
+    const resourceTypesToRetain =
+        new Set([Protocol.Network.ResourceType.Document, Protocol.Network.ResourceType.Stylesheet]);
+
+    for (const request of parsedTrace.data.NetworkRequests.byId.values()) {
+      if (!resourceTypesToRetain.has(request.args.data.resourceType)) {
+        continue;
+      }
+
+      const url = request.args.data.url as Platform.DevToolsPath.UrlString;
+      const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+      if (!resource) {
+        continue;
+      }
+
+      const content = await resource.requestContentData();
+      if ('error' in content) {
+        continue;
+      }
+
+      if (!content.isTextContent) {
+        continue;
+      }
+
+      if (!metadata.resources) {
+        metadata.resources = [];
+      }
+
+      metadata.resources.push({
+        url,
+        frame: resource.frameId ?? '',
+        content: content.text,
+        mimeType: content.mimeType,
+      });
+    }
+  }
+
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
@@ -2772,11 +2819,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // Store all source maps on the trace metadata.
     // If not fresh, we can't validate the maps are still accurate.
+    // Also handle HTML content.
     if (isFreshRecording && metadata) {
       const traceIndex = this.#traceEngineModel.lastTraceIndex();
       const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
       if (parsedTrace) {
         await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata);
+        await this.#retainResourceContentsForEnhancedTrace(parsedTrace, metadata);
       }
     }
   }

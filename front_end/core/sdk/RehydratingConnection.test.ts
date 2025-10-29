@@ -10,7 +10,8 @@ import * as Common from '../common/common.js';
 import type {Message} from '../protocol_client/InspectorBackend.js';
 
 import type {
-  RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from './RehydratingObject.js';
+  RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget, ServerMessage} from
+  './RehydratingObject.js';
 import * as SDK from './sdk.js';
 
 const mockTarget1: RehydratingTarget = {
@@ -60,7 +61,7 @@ const mockScript1: RehydratingScript = {
   endColumn: 10,
   hash: '',
   isModule: false,
-  url: 'example.com',
+  url: 'example.com',  // inline
   hasSourceURL: false,
   sourceMapURL: undefined,
   length: 10,
@@ -84,7 +85,7 @@ const mockScript2: RehydratingScript = {
   endColumn: 10,
   hash: '',
   isModule: false,
-  url: 'example.com',
+  url: 'example.com/script.js',
   hasSourceURL: false,
   sourceMapURL: undefined,
   length: 10,
@@ -97,6 +98,13 @@ const mockScript2: RehydratingScript = {
   buildId: ''
 };
 
+const mockResource: RehydratingResource = {
+  url: 'example.com',
+  frame: 'ABCDE',
+  content: '<html>',
+  mimeType: 'text/html',
+};
+
 describe('RehydratingSession', () => {
   const sessionId = 1;
   const messageId = 1;
@@ -105,6 +113,7 @@ describe('RehydratingSession', () => {
   let mockRehydratingSession: SDK.RehydratingConnection.RehydratingSession;
   const executionContextsForTarget1 = [mockExecutionContext1, mockExecutionContext2];
   const scriptsForTarget1 = [mockScript1, mockScript2];
+  const resourcesForTarget1 = [mockResource];
 
   class MockRehydratingConnection implements SDK.RehydratingConnection.RehydratingConnectionInterface {
     messageQueue: ServerMessage[] = [];
@@ -126,7 +135,8 @@ describe('RehydratingSession', () => {
   beforeEach(() => {
     mockRehydratingConnection = new MockRehydratingConnection();
     mockRehydratingSession = new RehydratingSessionForTest(
-        sessionId, target, executionContextsForTarget1, scriptsForTarget1, mockRehydratingConnection);
+        sessionId, target, executionContextsForTarget1, scriptsForTarget1, resourcesForTarget1,
+        mockRehydratingConnection);
     mockRehydratingSession.declareSessionAttachedToTarget();
   });
 
@@ -140,25 +150,6 @@ describe('RehydratingSession', () => {
     assert.strictEqual(
         (attachToTargetMessage.params as Protocol.Target.AttachedToTargetEvent).targetInfo.targetId.toString(),
         target.targetId.toString());
-  });
-
-  it('sends script parsed and debugger id while handling debugger enable', async function() {
-    mockRehydratingConnection.clearMessageQueue();
-    mockRehydratingSession.handleFrontendMessageAsFakeCDPAgent({
-      id: messageId,
-      method: 'Debugger.enable',
-      sessionId,
-    });
-    assert.lengthOf(mockRehydratingConnection.messageQueue, 3);
-    const scriptParsedMessages = mockRehydratingConnection.messageQueue.slice(0, 2);
-    const resultMessage = mockRehydratingConnection.messageQueue.slice(2);
-    for (const scriptParsedMessage of scriptParsedMessages) {
-      assert.strictEqual(scriptParsedMessage.method, 'Debugger.scriptParsed');
-      assert.strictEqual((scriptParsedMessage.params as RehydratingScript).isolate, target.isolate);
-    }
-    assert.isNotNull(resultMessage[0]);
-    assert.strictEqual(resultMessage[0].id, messageId);
-    assert.isNotNull((resultMessage[0].result as Protocol.Debugger.EnableResponse).debuggerId);
   });
 
   it('sends execution context created while handling runtime enable', async function() {

@@ -193,11 +193,11 @@ describe('RehydratingSession', () => {
   });
 });
 
-describeWithEnvironment('RehydratingConnection emittance', function() {
+describeWithEnvironment('RehydratingConnection emittance', () => {
   let snapshotTester: SnapshotTester;
 
   before(async () => {
-    snapshotTester = new SnapshotTester(this, import.meta);
+    snapshotTester = new SnapshotTester(import.meta);
     await snapshotTester.load();
 
     // Create fake popup opener as rehydrating connection needs it.

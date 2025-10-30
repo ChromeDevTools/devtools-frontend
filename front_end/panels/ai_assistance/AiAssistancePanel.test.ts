@@ -1738,10 +1738,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
-  describe('getResponseMarkdown', function() {
+  describe('getResponseMarkdown', () => {
     let snapshotTester: SnapshotTester;
     before(async () => {
-      snapshotTester = new SnapshotTester(this, import.meta);
+      snapshotTester = new SnapshotTester(import.meta);
       await snapshotTester.load();
     });
 

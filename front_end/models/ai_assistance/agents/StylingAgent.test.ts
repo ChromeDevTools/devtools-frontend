@@ -17,7 +17,7 @@ import * as AiAssistance from '../ai_assistance.js';
 
 const {StylingAgent, AiAgent} = AiAssistance;
 
-describeWithEnvironment('StylingAgent', function() {
+describeWithEnvironment('StylingAgent', () => {
   function mockHostConfig(
       modelId?: string, temperature?: number, userTier?: string,
       executionMode?: Root.Runtime.HostConfigFreestylerExecutionMode, multimodal?: boolean) {
@@ -62,7 +62,7 @@ describeWithEnvironment('StylingAgent', function() {
 
   let snapshotTester: SnapshotTester;
   before(async () => {
-    snapshotTester = new SnapshotTester(this, import.meta);
+    snapshotTester = new SnapshotTester(import.meta);
     await snapshotTester.load();
   });
 

@@ -32,3 +32,4 @@ codereview.settings
 /front_end/legacy_test_runner
 /front_end/panels/timeline/fixtures/traces
 /front_end/core/i18n/locales/*.json
+/front_end/models/trace/lantern/testing

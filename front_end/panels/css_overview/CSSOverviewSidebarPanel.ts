@@ -129,7 +129,7 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  #select(id: string, shouldFocus = false): Promise<boolean> {
+  #select(id: string, shouldFocus = false): Promise<void> {
     this.#selectedId = id;
     this.requestUpdate();
     this.#onItemSelected(id, shouldFocus);

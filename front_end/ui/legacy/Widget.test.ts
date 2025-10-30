@@ -103,7 +103,7 @@ describe('Widget', () => {
 
       widget.detach();
 
-      assert.isTrue(await widget.updateComplete);
+      await widget.updateComplete;
       assert.strictEqual(performUpdate.callCount, 0, 'Expected no calls to `performUpdate`');
     });
   });
@@ -125,7 +125,7 @@ describe('Widget', () => {
 
       widget.requestUpdate();
 
-      assert.isTrue(await widget.updateComplete);
+      await widget.updateComplete;
     });
   });
 
@@ -146,7 +146,7 @@ describe('Widget', () => {
     it('resolves to `true` when there\'s no pending update', async () => {
       const widget = new Widget();
 
-      assert.isTrue(await widget.updateComplete);
+      await widget.updateComplete;
     });
 
     it('resolves to `true` when update cycles ends without scheduling another update', async () => {
@@ -154,16 +154,16 @@ describe('Widget', () => {
 
       widget.requestUpdate();
 
-      assert.isTrue(await widget.updateComplete);
+      await widget.updateComplete;
     });
 
-    it('resolves to `false` when another update is requested during an update cycle', async () => {
+    it('resolves when another update is requested during an update cycle', async () => {
       const widget = new Widget();
       sinon.stub(widget, 'performUpdate').onFirstCall().callsFake(widget.requestUpdate.bind(widget));
 
       widget.requestUpdate();
 
-      assert.isFalse(await widget.updateComplete);
+      await widget.updateComplete;
       await widget.updateComplete;
     });
 

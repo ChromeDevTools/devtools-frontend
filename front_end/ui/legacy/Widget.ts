@@ -218,8 +218,8 @@ function decrementWidgetCounter(parentElement: Element, childElement: Element): 
 // The resolved `updateComplete` promise, which is used as a marker for the
 // Widget's `#updateComplete` private property to indicate that there's no
 // pending update.
-const UPDATE_COMPLETE = Promise.resolve(true);
-const UPDATE_COMPLETE_RESOLVE = (_result: boolean): void => {};
+const UPDATE_COMPLETE = Promise.resolve();
+const UPDATE_COMPLETE_RESOLVE = (): void => {};
 
 /**
  * Additional options passed to the `Widget` constructor to configure the
@@ -620,7 +620,7 @@ export class Widget {
     // Cancel any pending update.
     if (this.#updateRequestID !== 0) {
       cancelAnimationFrame(this.#updateRequestID);
-      this.#updateCompleteResolve(true);
+      this.#updateCompleteResolve();
       this.#updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
       this.#updateComplete = UPDATE_COMPLETE;
       this.#updateRequestID = 0;
@@ -876,7 +876,7 @@ export class Widget {
   performUpdate(): Promise<void>|void {
   }
 
-  async #performUpdateCallback(): Promise<boolean> {
+  async #performUpdateCallback(): Promise<void> {
     // Mark this update cycle as complete by assigning
     // the marker sentinel.
     this.#updateComplete = UPDATE_COMPLETE;
@@ -885,10 +885,6 @@ export class Widget {
 
     // Run the actual update logic.
     await this.performUpdate();
-
-    // Resolve the `updateComplete` with `true` if no
-    // new update was triggered during this cycle.
-    return this.#updateComplete === UPDATE_COMPLETE;
   }
 
   /**
@@ -931,7 +927,7 @@ export class Widget {
    *          updating, the value is `true` if there are no more pending updates,
    *          and `false` if the update cycle triggered another update.
    */
-  get updateComplete(): Promise<boolean> {
+  get updateComplete(): Promise<void> {
     return this.#updateComplete;
   }
 }

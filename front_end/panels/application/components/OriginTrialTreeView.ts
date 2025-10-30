@@ -12,12 +12,12 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
-const {html, Directives: {ifDefined}} = Lit;
+const {ifDefined} = Directives;
 
 const UIStrings = {
   /**
@@ -85,7 +85,7 @@ type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
  **/
 export type OriginTrialTreeNodeData = Protocol.Page.OriginTrial|Protocol.Page.OriginTrialTokenWithStatus|string;
 
-function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): Lit.LitTemplate {
+function renderOriginTrialTree(originTrial: Protocol.Page.OriginTrial): LitTemplate {
   const success = originTrial.status === Protocol.Page.OriginTrialStatus.Enabled;
   // clang-format off
   return html`
@@ -98,17 +98,17 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): Lit.L
         <devtools-adorner class="badge-secondary">
           ${i18nString(UIStrings.tokens, {PH1: originTrial.tokensWithStatus.length})}
         </devtools-adorner>`
-        : Lit.nothing}
+        : nothing}
       <ul role="group" hidden>
         ${originTrial.tokensWithStatus.length > 1 ?
-          originTrial.tokensWithStatus.map(constructTokenNode) :
-          constructTokenDetailsNodes(originTrial.tokensWithStatus[0])}
+          originTrial.tokensWithStatus.map(renderTokenNode) :
+          renderTokenDetailsNodes(originTrial.tokensWithStatus[0])}
       </ul>
     </li>`;
   // clang-format on
 }
 
-function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Lit.LitTemplate {
+function renderTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): LitTemplate {
   const success = token.status === Protocol.Page.OriginTrialTokenStatus.Success;
   // Only display token status for convenience when the node is not expanded.
   // clang-format off
@@ -119,17 +119,17 @@ function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Li
         ${token.status}
       </devtools-adorner>
       <ul role="group" hidden>
-        ${constructTokenDetailsNodes(token)}
+        ${renderTokenDetailsNodes(token)}
       </ul>
     </li>`;
 }
 
 interface TokenField {
   name: string;
-  value: Lit.TemplateResult;
+  value: TemplateResult;
 }
 
-function renderTokenDetails(token: Protocol.Page.OriginTrialTokenWithStatus): Lit.TemplateResult {
+function renderTokenDetails(token: Protocol.Page.OriginTrialTokenWithStatus): TemplateResult {
   return html`
     <li role="treeitem">
       <devtools-resources-origin-trial-token-rows .data=${token}>
@@ -137,17 +137,17 @@ function renderTokenDetails(token: Protocol.Page.OriginTrialTokenWithStatus): Li
     </li>`;
 }
 
-function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithStatus):
-    Lit.LitTemplate {
+function renderTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithStatus):
+    TemplateResult {
   // clang-format off
   return html`
     ${renderTokenDetails(token)}
-    ${constructRawTokenTextNode(token.rawTokenText)}
+    ${renderRawTokenTextNode(token.rawTokenText)}
   `;
   // clang-format on
 }
 
-function constructRawTokenTextNode(tokenText: string): Lit.LitTemplate {
+function renderRawTokenTextNode(tokenText: string): LitTemplate {
   // clang-format off
   return html`
     <li role="treeitem">
@@ -193,7 +193,7 @@ export class OriginTrialTokenRows extends HTMLElement {
     return clone;
   }
 
-  #renderTokenField = (fieldValue: string, hasError?: boolean): Lit.TemplateResult => html`
+  #renderTokenField = (fieldValue: string, hasError?: boolean): TemplateResult => html`
         <div class=${ifDefined(hasError ? 'error-text' : undefined)}>
           ${fieldValue}
         </div>`;
@@ -264,7 +264,7 @@ export class OriginTrialTokenRows extends HTMLElement {
           `;
     });
 
-    Lit.render(
+    render(
         html`
       <style>
         ${originTrialTokenRowsStyles}
@@ -289,7 +289,7 @@ type View = (input: OriginTrialTreeViewData, output: undefined, target: HTMLElem
 const DEFAULT_VIEW: View = (input, _output, target) => {
   if (!input.trials.length) {
     // clang-format off
-    Lit.render(html`
+    render(html`
       <span class="status-badge">
         <devtools-icon class="medium" name="clear"></devtools-icon>
         <span>${i18nString(UIStrings.noTrialTokens)}</span>
@@ -299,12 +299,12 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
   }
 
   // clang-format off
-  Lit.render(html`
+  render(html`
     <style>${originTrialTreeViewStyles}</style>
     <devtools-tree .template=${html`
       <style>${originTrialTreeViewStyles}</style>
       <ul role="tree">
-        ${input.trials.map(constructOriginTrialTree)}
+        ${input.trials.map(renderOriginTrialTree)}
       </ul>
     `}>
     </devtools-tree>

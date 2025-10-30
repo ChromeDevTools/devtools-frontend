@@ -88,13 +88,6 @@ class ManualPromise {
   }
 }
 
-const cancelAllPendingRaf = () => {
-  let rafId = window.requestAnimationFrame(() => {});
-  while (rafId--) {
-    window.cancelAnimationFrame(rafId);
-  }
-};
-
 const stubAnimationGroup = () => {
   sinon.stub(SDK.AnimationModel.AnimationGroup.prototype, 'scrollNode')
       .resolves(new SDK.AnimationModel.AnimationDOMNode(null as unknown as SDK.DOMModel.DOMNode));
@@ -177,7 +170,6 @@ describeWithMockConnection('AnimationTimeline', () => {
   });
 
   afterEach(() => {
-    cancelAllPendingRaf();
     view.detach();
   });
 
@@ -588,7 +580,6 @@ describeWithMockConnection('AnimationTimeline', () => {
       const toolbarViewInput = await toolbarViewStub.nextInput;
 
       assert.isTrue(toolbarViewInput.playbackRateButtonsDisabled);
-      cancelAllPendingRaf();
     });
 
     it('should show current time text in pixels', async () => {

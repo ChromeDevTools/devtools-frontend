@@ -68,6 +68,64 @@ export function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends 
   return new WidgetConfig(widgetClass, widgetParams);
 }
 
+let currentUpdateQueue: Map<Widget, PromiseWithResolvers<void>>|null = null;
+const currentlyProcessed = new Set<Widget>();
+let nextUpdateQueue = new Map<Widget, PromiseWithResolvers<void>>();
+let pendingAnimationFrame: number|null = null;
+
+function enqueueIntoNextUpdateQueue(widget: Widget): Promise<void> {
+  const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers<void>();
+  nextUpdateQueue.delete(widget);
+  nextUpdateQueue.set(widget, scheduledUpdate);
+  if (pendingAnimationFrame === null) {
+    pendingAnimationFrame = requestAnimationFrame(runNextUpdate);
+  }
+  return scheduledUpdate.promise;
+}
+
+function enqueueWidgetUpdate(widget: Widget): Promise<void> {
+  if (currentUpdateQueue) {
+    if (currentlyProcessed.has(widget)) {
+      return enqueueIntoNextUpdateQueue(widget);
+    }
+    const scheduledUpdate = currentUpdateQueue.get(widget) ?? Promise.withResolvers<void>();
+    currentUpdateQueue.delete(widget);
+    currentUpdateQueue.set(widget, scheduledUpdate);
+    return scheduledUpdate.promise;
+  }
+  return enqueueIntoNextUpdateQueue(widget);
+}
+
+function cancelUpdate(widget: Widget): void {
+  if (currentUpdateQueue) {
+    const scheduledUpdate = currentUpdateQueue.get(widget);
+    if (scheduledUpdate) {
+      scheduledUpdate.resolve();
+      currentUpdateQueue.delete(widget);
+    }
+  }
+  const scheduledUpdate = nextUpdateQueue.get(widget);
+  if (scheduledUpdate) {
+    scheduledUpdate.resolve();
+    nextUpdateQueue.delete(widget);
+  }
+}
+
+function runNextUpdate(): void {
+  pendingAnimationFrame = null;
+  currentUpdateQueue = nextUpdateQueue;
+  nextUpdateQueue = new Map();
+  for (const [widget, {resolve}] of currentUpdateQueue) {
+    currentlyProcessed.add(widget);
+    void (async () => {
+      await widget.performUpdate();
+      resolve();
+    })();
+  }
+  currentUpdateQueue = null;
+  currentlyProcessed.clear();
+}
+
 export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   #widgetClass?: WidgetFactory<WidgetT>;
   #widgetParams?: Partial<WidgetT>;
@@ -219,7 +277,6 @@ function decrementWidgetCounter(parentElement: Element, childElement: Element): 
 // Widget's `#updateComplete` private property to indicate that there's no
 // pending update.
 const UPDATE_COMPLETE = Promise.resolve();
-const UPDATE_COMPLETE_RESOLVE = (): void => {};
 
 /**
  * Additional options passed to the `Widget` constructor to configure the
@@ -277,8 +334,6 @@ export class Widget {
   #invalidationsRequested?: boolean;
   #externallyManaged?: boolean;
   #updateComplete = UPDATE_COMPLETE;
-  #updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
-  #updateRequestID = 0;
 
   /**
    * Constructs a new `Widget` with the given `options`.
@@ -617,14 +672,7 @@ export class Widget {
       return;
     }
 
-    // Cancel any pending update.
-    if (this.#updateRequestID !== 0) {
-      cancelAnimationFrame(this.#updateRequestID);
-      this.#updateCompleteResolve();
-      this.#updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
-      this.#updateComplete = UPDATE_COMPLETE;
-      this.#updateRequestID = 0;
-    }
+    cancelUpdate(this);
 
     // hideOnDetach means that we should never remove element from dom - content
     // has iframes and detaching it will hurt.
@@ -876,17 +924,6 @@ export class Widget {
   performUpdate(): Promise<void>|void {
   }
 
-  async #performUpdateCallback(): Promise<void> {
-    // Mark this update cycle as complete by assigning
-    // the marker sentinel.
-    this.#updateComplete = UPDATE_COMPLETE;
-    this.#updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
-    this.#updateRequestID = 0;
-
-    // Run the actual update logic.
-    await this.performUpdate();
-  }
-
   /**
    * Schedules an asynchronous update for this widget.
    *
@@ -894,12 +931,7 @@ export class Widget {
    * frame.
    */
   requestUpdate(): void {
-    if (this.#updateComplete === UPDATE_COMPLETE) {
-      this.#updateComplete = new Promise((resolve, reject) => {
-        this.#updateCompleteResolve = resolve;
-        this.#updateRequestID = requestAnimationFrame(() => this.#performUpdateCallback().then(resolve, reject));
-      });
-    }
+    this.#updateComplete = enqueueWidgetUpdate(this);
   }
 
   /**

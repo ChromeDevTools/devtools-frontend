@@ -5,6 +5,7 @@
 
 import type * as Platform from '../../../core/platform/platform.js';
 import {html, render} from '../../../ui/lit/lit.js';
+import * as UI from '../../legacy/legacy.js';
 import * as VisualElements from '../../visual_logging/visual_logging.js';
 
 import adornerStyles from './adorner.css.js';
@@ -37,7 +38,7 @@ export class Adorner extends HTMLElement {
   }
 
   override cloneNode(deep?: boolean): Node {
-    const node = super.cloneNode(deep) as Adorner;
+    const node = UI.UIUtils.cloneCustomElement(this, deep);
     node.data = {name: this.name, content: this.#content, jslogContext: this.#jslogContext};
     return node;
   }

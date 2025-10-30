@@ -10,7 +10,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import type * as Adorners from '../components/adorners/adorners.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
 import {type Action, Events as ActionEvents} from './ActionRegistration.js';
@@ -643,7 +642,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
     this.text = text;
   }
 
-  setAdorner(adorner: Adorners.Adorner.Adorner): void {
+  setAdorner(adorner: HTMLElement): void {
     if (this.adorner) {
       this.adorner.replaceWith(adorner);
     } else {
@@ -971,7 +970,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private textElement?: HTMLElement;
   private text?: string;
   private iconName?: string;
-  private adorner?: Adorners.Adorner.Adorner;
+  private adorner?: HTMLElement;
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
   private readonly keepOpen: boolean;
@@ -1028,7 +1027,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.text = text;
   }
 
-  setAdorner(adorner: Adorners.Adorner.Adorner): void {
+  setAdorner(adorner: HTMLElement): void {
     if (this.iconName) {
       return;
     }

@@ -32,7 +32,7 @@ jobs:
         run: gclient sync
         working-directory: devtools/devtools-frontend
       - name: Generate build files (gn)
-        run: gn gen out/Default --args='devtools_skip_typecheck=true'
+        run: gn gen out/Default
         working-directory: devtools/devtools-frontend
       - name: Build DevTools Frontend (autoninja)
         run: autoninja -C out/Default scripts/component_docs

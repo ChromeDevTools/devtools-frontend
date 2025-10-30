@@ -36,10 +36,9 @@ async function main() {
   const componentDocs = JSON.parse(fs.readFileSync(SOURCES_FILE, 'utf-8'));
 
   const componentLinks = componentDocs
-                             .map(p => {
-                               const componentName = path.basename(p, '.docs.js');
-                               return `<li><a href="#${componentName}">${componentName}</a></li>`;
-                             })
+                             .map(p => path.basename(p, '.docs.js'))
+                             .sort()
+                             .map(componentName => `<li><a href="#${componentName}">${componentName}</a></li>`)
                              .join('\n');
 
   const docImports = componentDocs

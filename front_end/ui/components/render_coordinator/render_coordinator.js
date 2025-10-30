@@ -57,9 +57,7 @@ function done(options) {
     logIfEnabled("[Queue empty]");
     return Promise.resolve();
   }
-  return new Promise(
-    (resolve) => window.addEventListener(RenderCoordinatorQueueEmptyEvent.eventName, () => resolve(), { once: true })
-  );
+  return new Promise((resolve) => window.addEventListener(RenderCoordinatorQueueEmptyEvent.eventName, () => resolve(), { once: true }));
 }
 async function read(labelOrCallback, callback) {
   if (typeof labelOrCallback === "string") {
@@ -142,10 +140,7 @@ function scheduleWork() {
       await Promise.race([
         Promise.all(readers.map((r) => r.promise)),
         new Promise((_, reject) => {
-          window.setTimeout(
-            () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
-            DEADLOCK_TIMEOUT
-          );
+          window.setTimeout(() => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)), DEADLOCK_TIMEOUT);
         })
       ]);
     } catch (err) {
@@ -159,10 +154,7 @@ function scheduleWork() {
       await Promise.race([
         Promise.all(writers.map((w) => w.promise)),
         new Promise((_, reject) => {
-          window.setTimeout(
-            () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
-            DEADLOCK_TIMEOUT
-          );
+          window.setTimeout(() => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)), DEADLOCK_TIMEOUT);
         })
       ]);
     } catch (err) {

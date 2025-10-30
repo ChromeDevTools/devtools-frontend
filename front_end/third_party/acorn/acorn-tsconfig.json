@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [
+    "package/dist/acorn.d.mts",
+    "package/dist/acorn.d.ts",
+    "package/dist/acorn.mjs",
+    "package/dist/acorn.mjs.d.ts",
+    "package/dist/acorn.mjs.map"
+  ]
+}

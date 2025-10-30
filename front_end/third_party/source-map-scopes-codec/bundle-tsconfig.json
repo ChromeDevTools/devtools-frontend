@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/third_party/source-map-scopes-codec"},"files":["../../../../../../front_end/third_party/source-map-scopes-codec/source-map-scopes-codec.ts"],"references":[{"path":"./package/src/source-map-scopes-codec-tsconfig.json"}]}

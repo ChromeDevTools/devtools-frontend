@@ -74,9 +74,7 @@ function scheduleRender(component, callback) {
   const request = requests.get(component);
   if (request !== void 0) {
     if (request.callback !== callback) {
-      throw new TypeError(
-        `Incompatible callback arguments for scheduling rendering of ${component.nodeName.toLowerCase()}`
-      );
+      throw new TypeError(`Incompatible callback arguments for scheduling rendering of ${component.nodeName.toLowerCase()}`);
     }
     return request.promise;
   }

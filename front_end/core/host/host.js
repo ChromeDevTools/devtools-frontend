@@ -8,19 +8,14 @@ var __export = (target, all) => {
 var AidaClient_exports = {};
 __export(AidaClient_exports, {
   AidaAbortError: () => AidaAbortError,
-  AidaAccessPreconditions: () => AidaAccessPreconditions,
   AidaBlockError: () => AidaBlockError,
   AidaClient: () => AidaClient,
-  AidaInferenceLanguage: () => AidaInferenceLanguage,
   CLIENT_NAME: () => CLIENT_NAME,
   CitationSourceType: () => CitationSourceType,
   ClientFeature: () => ClientFeature,
   EditType: () => EditType,
-  Events: () => Events2,
   FunctionalityType: () => FunctionalityType,
   HostConfigTracker: () => HostConfigTracker,
-  ParametersTypes: () => ParametersTypes,
-  Rating: () => Rating,
   Reason: () => Reason,
   RecitationAction: () => RecitationAction,
   Role: () => Role,
@@ -55,108 +50,70 @@ import * as Root from "./../root/root.js";
 // gen/front_end/core/host/InspectorFrontendHostAPI.js
 var InspectorFrontendHostAPI_exports = {};
 __export(InspectorFrontendHostAPI_exports, {
-  EnumeratedHistogram: () => EnumeratedHistogram,
   EventDescriptors: () => EventDescriptors,
   Events: () => Events
 });
-var Events = /* @__PURE__ */ ((Events22) => {
-  Events22["AppendedToURL"] = "appendedToURL";
-  Events22["CanceledSaveURL"] = "canceledSaveURL";
-  Events22["ColorThemeChanged"] = "colorThemeChanged";
-  Events22["ContextMenuCleared"] = "contextMenuCleared";
-  Events22["ContextMenuItemSelected"] = "contextMenuItemSelected";
-  Events22["DeviceCountUpdated"] = "deviceCountUpdated";
-  Events22["DevicesDiscoveryConfigChanged"] = "devicesDiscoveryConfigChanged";
-  Events22["DevicesPortForwardingStatusChanged"] = "devicesPortForwardingStatusChanged";
-  Events22["DevicesUpdated"] = "devicesUpdated";
-  Events22["DispatchMessage"] = "dispatchMessage";
-  Events22["DispatchMessageChunk"] = "dispatchMessageChunk";
-  Events22["EnterInspectElementMode"] = "enterInspectElementMode";
-  Events22["EyeDropperPickedColor"] = "eyeDropperPickedColor";
-  Events22["FileSystemsLoaded"] = "fileSystemsLoaded";
-  Events22["FileSystemRemoved"] = "fileSystemRemoved";
-  Events22["FileSystemAdded"] = "fileSystemAdded";
-  Events22["FileSystemFilesChangedAddedRemoved"] = "fileSystemFilesChangedAddedRemoved";
-  Events22["IndexingTotalWorkCalculated"] = "indexingTotalWorkCalculated";
-  Events22["IndexingWorked"] = "indexingWorked";
-  Events22["IndexingDone"] = "indexingDone";
-  Events22["KeyEventUnhandled"] = "keyEventUnhandled";
-  Events22["ReloadInspectedPage"] = "reloadInspectedPage";
-  Events22["RevealSourceLine"] = "revealSourceLine";
-  Events22["SavedURL"] = "savedURL";
-  Events22["SearchCompleted"] = "searchCompleted";
-  Events22["SetInspectedTabId"] = "setInspectedTabId";
-  Events22["SetUseSoftMenu"] = "setUseSoftMenu";
-  Events22["ShowPanel"] = "showPanel";
-  return Events22;
-})(Events || {});
+var Events;
+(function(Events2) {
+  Events2["AppendedToURL"] = "appendedToURL";
+  Events2["CanceledSaveURL"] = "canceledSaveURL";
+  Events2["ColorThemeChanged"] = "colorThemeChanged";
+  Events2["ContextMenuCleared"] = "contextMenuCleared";
+  Events2["ContextMenuItemSelected"] = "contextMenuItemSelected";
+  Events2["DeviceCountUpdated"] = "deviceCountUpdated";
+  Events2["DevicesDiscoveryConfigChanged"] = "devicesDiscoveryConfigChanged";
+  Events2["DevicesPortForwardingStatusChanged"] = "devicesPortForwardingStatusChanged";
+  Events2["DevicesUpdated"] = "devicesUpdated";
+  Events2["DispatchMessage"] = "dispatchMessage";
+  Events2["DispatchMessageChunk"] = "dispatchMessageChunk";
+  Events2["EnterInspectElementMode"] = "enterInspectElementMode";
+  Events2["EyeDropperPickedColor"] = "eyeDropperPickedColor";
+  Events2["FileSystemsLoaded"] = "fileSystemsLoaded";
+  Events2["FileSystemRemoved"] = "fileSystemRemoved";
+  Events2["FileSystemAdded"] = "fileSystemAdded";
+  Events2["FileSystemFilesChangedAddedRemoved"] = "fileSystemFilesChangedAddedRemoved";
+  Events2["IndexingTotalWorkCalculated"] = "indexingTotalWorkCalculated";
+  Events2["IndexingWorked"] = "indexingWorked";
+  Events2["IndexingDone"] = "indexingDone";
+  Events2["KeyEventUnhandled"] = "keyEventUnhandled";
+  Events2["ReloadInspectedPage"] = "reloadInspectedPage";
+  Events2["RevealSourceLine"] = "revealSourceLine";
+  Events2["SavedURL"] = "savedURL";
+  Events2["SearchCompleted"] = "searchCompleted";
+  Events2["SetInspectedTabId"] = "setInspectedTabId";
+  Events2["SetUseSoftMenu"] = "setUseSoftMenu";
+  Events2["ShowPanel"] = "showPanel";
+})(Events || (Events = {}));
 var EventDescriptors = [
-  ["appendedToURL", ["url"]],
-  ["canceledSaveURL", ["url"]],
-  ["colorThemeChanged", []],
-  ["contextMenuCleared", []],
-  ["contextMenuItemSelected", ["id"]],
-  ["deviceCountUpdated", ["count"]],
-  ["devicesDiscoveryConfigChanged", ["config"]],
-  ["devicesPortForwardingStatusChanged", ["status"]],
-  ["devicesUpdated", ["devices"]],
-  ["dispatchMessage", ["messageObject"]],
-  ["dispatchMessageChunk", ["messageChunk", "messageSize"]],
-  ["enterInspectElementMode", []],
-  ["eyeDropperPickedColor", ["color"]],
-  ["fileSystemsLoaded", ["fileSystems"]],
-  ["fileSystemRemoved", ["fileSystemPath"]],
-  ["fileSystemAdded", ["errorMessage", "fileSystem"]],
-  ["fileSystemFilesChangedAddedRemoved", ["changed", "added", "removed"]],
-  ["indexingTotalWorkCalculated", , ["requestId", "fileSystemPath", "totalWork"]],
-  ["indexingWorked", ["requestId", "fileSystemPath", "worked"]],
-  ["indexingDone", ["requestId", "fileSystemPath"]],
-  ["keyEventUnhandled", ["event"]],
-  ["reloadInspectedPage", ["hard"]],
-  ["revealSourceLine", ["url", "lineNumber", "columnNumber"]],
-  ["savedURL", ["url", "fileSystemPath"]],
-  ["searchCompleted", ["requestId", "fileSystemPath", "files"]],
-  ["setInspectedTabId", ["tabId"]],
-  ["setUseSoftMenu", ["useSoftMenu"]],
-  ["showPanel", ["panelName"]]
+  [Events.AppendedToURL, ["url"]],
+  [Events.CanceledSaveURL, ["url"]],
+  [Events.ColorThemeChanged, []],
+  [Events.ContextMenuCleared, []],
+  [Events.ContextMenuItemSelected, ["id"]],
+  [Events.DeviceCountUpdated, ["count"]],
+  [Events.DevicesDiscoveryConfigChanged, ["config"]],
+  [Events.DevicesPortForwardingStatusChanged, ["status"]],
+  [Events.DevicesUpdated, ["devices"]],
+  [Events.DispatchMessage, ["messageObject"]],
+  [Events.DispatchMessageChunk, ["messageChunk", "messageSize"]],
+  [Events.EnterInspectElementMode, []],
+  [Events.EyeDropperPickedColor, ["color"]],
+  [Events.FileSystemsLoaded, ["fileSystems"]],
+  [Events.FileSystemRemoved, ["fileSystemPath"]],
+  [Events.FileSystemAdded, ["errorMessage", "fileSystem"]],
+  [Events.FileSystemFilesChangedAddedRemoved, ["changed", "added", "removed"]],
+  [Events.IndexingTotalWorkCalculated, , ["requestId", "fileSystemPath", "totalWork"]],
+  [Events.IndexingWorked, ["requestId", "fileSystemPath", "worked"]],
+  [Events.IndexingDone, ["requestId", "fileSystemPath"]],
+  [Events.KeyEventUnhandled, ["event"]],
+  [Events.ReloadInspectedPage, ["hard"]],
+  [Events.RevealSourceLine, ["url", "lineNumber", "columnNumber"]],
+  [Events.SavedURL, ["url", "fileSystemPath"]],
+  [Events.SearchCompleted, ["requestId", "fileSystemPath", "files"]],
+  [Events.SetInspectedTabId, ["tabId"]],
+  [Events.SetUseSoftMenu, ["useSoftMenu"]],
+  [Events.ShowPanel, ["panelName"]]
 ];
-var EnumeratedHistogram = /* @__PURE__ */ ((EnumeratedHistogram2) => {
-  EnumeratedHistogram2["ActionTaken"] = "DevTools.ActionTaken";
-  EnumeratedHistogram2["PanelShown"] = "DevTools.PanelShown";
-  EnumeratedHistogram2["KeyboardShortcutFired"] = "DevTools.KeyboardShortcutFired";
-  EnumeratedHistogram2["IssueCreated"] = "DevTools.IssueCreated";
-  EnumeratedHistogram2["IssuesPanelIssueExpanded"] = "DevTools.IssuesPanelIssueExpanded";
-  EnumeratedHistogram2["IssuesPanelOpenedFrom"] = "DevTools.IssuesPanelOpenedFrom";
-  EnumeratedHistogram2["IssuesPanelResourceOpened"] = "DevTools.IssuesPanelResourceOpened";
-  EnumeratedHistogram2["KeybindSetSettingChanged"] = "DevTools.KeybindSetSettingChanged";
-  EnumeratedHistogram2["ExperimentEnabledAtLaunch"] = "DevTools.ExperimentEnabledAtLaunch";
-  EnumeratedHistogram2["ExperimentDisabledAtLaunch"] = "DevTools.ExperimentDisabledAtLaunch";
-  EnumeratedHistogram2["ExperimentEnabled"] = "DevTools.ExperimentEnabled";
-  EnumeratedHistogram2["ExperimentDisabled"] = "DevTools.ExperimentDisabled";
-  EnumeratedHistogram2["DeveloperResourceLoaded"] = "DevTools.DeveloperResourceLoaded";
-  EnumeratedHistogram2["DeveloperResourceScheme"] = "DevTools.DeveloperResourceScheme";
-  EnumeratedHistogram2["Language"] = "DevTools.Language";
-  EnumeratedHistogram2["SyncSetting"] = "DevTools.SyncSetting";
-  EnumeratedHistogram2["RecordingAssertion"] = "DevTools.RecordingAssertion";
-  EnumeratedHistogram2["RecordingCodeToggled"] = "DevTools.RecordingCodeToggled";
-  EnumeratedHistogram2["RecordingCopiedToClipboard"] = "DevTools.RecordingCopiedToClipboard";
-  EnumeratedHistogram2["RecordingEdited"] = "DevTools.RecordingEdited";
-  EnumeratedHistogram2["RecordingExported"] = "DevTools.RecordingExported";
-  EnumeratedHistogram2["RecordingReplayFinished"] = "DevTools.RecordingReplayFinished";
-  EnumeratedHistogram2["RecordingReplaySpeed"] = "DevTools.RecordingReplaySpeed";
-  EnumeratedHistogram2["RecordingReplayStarted"] = "DevTools.RecordingReplayStarted";
-  EnumeratedHistogram2["RecordingToggled"] = "DevTools.RecordingToggled";
-  EnumeratedHistogram2["SourcesPanelFileDebugged"] = "DevTools.SourcesPanelFileDebugged";
-  EnumeratedHistogram2["SourcesPanelFileOpened"] = "DevTools.SourcesPanelFileOpened";
-  EnumeratedHistogram2["NetworkPanelResponsePreviewOpened"] = "DevTools.NetworkPanelResponsePreviewOpened";
-  EnumeratedHistogram2["TimelineNavigationSettingState"] = "DevTools.TimelineNavigationSettingState";
-  EnumeratedHistogram2["LighthouseModeRun"] = "DevTools.LighthouseModeRun";
-  EnumeratedHistogram2["LighthouseCategoryUsed"] = "DevTools.LighthouseCategoryUsed";
-  EnumeratedHistogram2["SwatchActivated"] = "DevTools.SwatchActivated";
-  EnumeratedHistogram2["AnimationPlaybackRateChanged"] = "DevTools.AnimationPlaybackRateChanged";
-  EnumeratedHistogram2["BuiltInAiAvailability"] = "DevTools.BuiltInAiAvailability";
-  return EnumeratedHistogram2;
-})(EnumeratedHistogram || {});
 
 // gen/front_end/core/host/ResourceLoader.js
 var ResourceLoader_exports = {};
@@ -480,14 +437,10 @@ var InspectorFrontendHostStub = class {
     window.open(url, "_blank");
   }
   openSearchResultsInNewTab(_query) {
-    Common2.Console.Console.instance().error(
-      "Search is not enabled in hosted mode. Please inspect using chrome://inspect"
-    );
+    Common2.Console.Console.instance().error("Search is not enabled in hosted mode. Please inspect using chrome://inspect");
   }
   showItemInFolder(_fileSystemPath) {
-    Common2.Console.Console.instance().error(
-      "Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect"
-    );
+    Common2.Console.Console.instance().error("Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect");
   }
   // Reminder: the methods in this class belong to InspectorFrontendHostStub and are typically not executed.
   // InspectorFrontendHostStub is ONLY used in the uncommon case of devtools not being embedded. For example: trace.cafe or http://localhost:9222/devtools/inspector.html?ws=localhost:9222/devtools/page/xTARGET_IDx
@@ -858,12 +811,13 @@ function isUnderTest(prefs) {
 }
 
 // gen/front_end/core/host/DispatchHttpRequestClient.js
-var ErrorType = /* @__PURE__ */ ((ErrorType2) => {
+var ErrorType;
+(function(ErrorType2) {
   ErrorType2["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
   ErrorType2["NOT_FOUND"] = "NOT_FOUND";
-  return ErrorType2;
-})(ErrorType || {});
+})(ErrorType || (ErrorType = {}));
 var DispatchHttpRequestError = class extends Error {
+  type;
   constructor(type, options) {
     super(void 0, options);
     this.type = type;
@@ -875,22 +829,16 @@ async function makeHttpRequest(request) {
   });
   debugLog({ request, response });
   if (response.statusCode === 404) {
-    throw new DispatchHttpRequestError(
-      "NOT_FOUND"
-      /* NOT_FOUND */
-    );
+    throw new DispatchHttpRequestError(ErrorType.NOT_FOUND);
   }
   if ("response" in response && response.statusCode === 200) {
     try {
       return JSON.parse(response.response);
     } catch (err) {
-      throw new DispatchHttpRequestError("HTTP_RESPONSE_UNAVAILABLE", { cause: err });
+      throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, { cause: err });
     }
   }
-  throw new DispatchHttpRequestError(
-    "HTTP_RESPONSE_UNAVAILABLE"
-    /* HTTP_RESPONSE_UNAVAILABLE */
-  );
+  throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE);
 }
 function isDebugMode() {
   return Boolean(localStorage.getItem("debugDispatchHttpRequestEnabled"));
@@ -911,35 +859,21 @@ function setDebugDispatchHttpRequestEnabled(enabled) {
 globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
 
 // gen/front_end/core/host/AidaClient.js
-var Role = /* @__PURE__ */ ((Role2) => {
+var Role;
+(function(Role2) {
   Role2[Role2["ROLE_UNSPECIFIED"] = 0] = "ROLE_UNSPECIFIED";
   Role2[Role2["USER"] = 1] = "USER";
   Role2[Role2["MODEL"] = 2] = "MODEL";
-  return Role2;
-})(Role || {});
-var Rating = /* @__PURE__ */ ((Rating2) => {
-  Rating2["SENTIMENT_UNSPECIFIED"] = "SENTIMENT_UNSPECIFIED";
-  Rating2["POSITIVE"] = "POSITIVE";
-  Rating2["NEGATIVE"] = "NEGATIVE";
-  return Rating2;
-})(Rating || {});
-var ParametersTypes = /* @__PURE__ */ ((ParametersTypes2) => {
-  ParametersTypes2[ParametersTypes2["STRING"] = 1] = "STRING";
-  ParametersTypes2[ParametersTypes2["NUMBER"] = 2] = "NUMBER";
-  ParametersTypes2[ParametersTypes2["INTEGER"] = 3] = "INTEGER";
-  ParametersTypes2[ParametersTypes2["BOOLEAN"] = 4] = "BOOLEAN";
-  ParametersTypes2[ParametersTypes2["ARRAY"] = 5] = "ARRAY";
-  ParametersTypes2[ParametersTypes2["OBJECT"] = 6] = "OBJECT";
-  return ParametersTypes2;
-})(ParametersTypes || {});
-var FunctionalityType = /* @__PURE__ */ ((FunctionalityType2) => {
+})(Role || (Role = {}));
+var FunctionalityType;
+(function(FunctionalityType2) {
   FunctionalityType2[FunctionalityType2["FUNCTIONALITY_TYPE_UNSPECIFIED"] = 0] = "FUNCTIONALITY_TYPE_UNSPECIFIED";
   FunctionalityType2[FunctionalityType2["CHAT"] = 1] = "CHAT";
   FunctionalityType2[FunctionalityType2["EXPLAIN_ERROR"] = 2] = "EXPLAIN_ERROR";
   FunctionalityType2[FunctionalityType2["AGENTIC_CHAT"] = 5] = "AGENTIC_CHAT";
-  return FunctionalityType2;
-})(FunctionalityType || {});
-var ClientFeature = /* @__PURE__ */ ((ClientFeature2) => {
+})(FunctionalityType || (FunctionalityType = {}));
+var ClientFeature;
+(function(ClientFeature2) {
   ClientFeature2[ClientFeature2["CLIENT_FEATURE_UNSPECIFIED"] = 0] = "CLIENT_FEATURE_UNSPECIFIED";
   ClientFeature2[ClientFeature2["CHROME_CONSOLE_INSIGHTS"] = 1] = "CHROME_CONSOLE_INSIGHTS";
   ClientFeature2[ClientFeature2["CHROME_STYLING_AGENT"] = 2] = "CHROME_STYLING_AGENT";
@@ -948,16 +882,16 @@ var ClientFeature = /* @__PURE__ */ ((ClientFeature2) => {
   ClientFeature2[ClientFeature2["CHROME_FILE_AGENT"] = 9] = "CHROME_FILE_AGENT";
   ClientFeature2[ClientFeature2["CHROME_PATCH_AGENT"] = 12] = "CHROME_PATCH_AGENT";
   ClientFeature2[ClientFeature2["CHROME_PERFORMANCE_FULL_AGENT"] = 24] = "CHROME_PERFORMANCE_FULL_AGENT";
-  return ClientFeature2;
-})(ClientFeature || {});
-var UserTier = /* @__PURE__ */ ((UserTier2) => {
+})(ClientFeature || (ClientFeature = {}));
+var UserTier;
+(function(UserTier2) {
   UserTier2[UserTier2["USER_TIER_UNSPECIFIED"] = 0] = "USER_TIER_UNSPECIFIED";
   UserTier2[UserTier2["TESTERS"] = 1] = "TESTERS";
   UserTier2[UserTier2["BETA"] = 2] = "BETA";
   UserTier2[UserTier2["PUBLIC"] = 3] = "PUBLIC";
-  return UserTier2;
-})(UserTier || {});
-var EditType = /* @__PURE__ */ ((EditType2) => {
+})(UserTier || (UserTier = {}));
+var EditType;
+(function(EditType2) {
   EditType2[EditType2["EDIT_TYPE_UNSPECIFIED"] = 0] = "EDIT_TYPE_UNSPECIFIED";
   EditType2[EditType2["ADD"] = 1] = "ADD";
   EditType2[EditType2["DELETE"] = 2] = "DELETE";
@@ -965,63 +899,37 @@ var EditType = /* @__PURE__ */ ((EditType2) => {
   EditType2[EditType2["UNDO"] = 4] = "UNDO";
   EditType2[EditType2["REDO"] = 5] = "REDO";
   EditType2[EditType2["ACCEPT_COMPLETION"] = 6] = "ACCEPT_COMPLETION";
-  return EditType2;
-})(EditType || {});
-var Reason = /* @__PURE__ */ ((Reason2) => {
+})(EditType || (EditType = {}));
+var Reason;
+(function(Reason2) {
   Reason2[Reason2["UNKNOWN"] = 0] = "UNKNOWN";
   Reason2[Reason2["CURRENTLY_OPEN"] = 1] = "CURRENTLY_OPEN";
   Reason2[Reason2["RECENTLY_OPENED"] = 2] = "RECENTLY_OPENED";
   Reason2[Reason2["RECENTLY_EDITED"] = 3] = "RECENTLY_EDITED";
   Reason2[Reason2["COLOCATED"] = 4] = "COLOCATED";
   Reason2[Reason2["RELATED_FILE"] = 5] = "RELATED_FILE";
-  return Reason2;
-})(Reason || {});
-var UseCase = /* @__PURE__ */ ((UseCase2) => {
+})(Reason || (Reason = {}));
+var UseCase;
+(function(UseCase2) {
   UseCase2[UseCase2["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
   UseCase2[UseCase2["CODE_GENERATION"] = 1] = "CODE_GENERATION";
-  return UseCase2;
-})(UseCase || {});
-var RecitationAction = /* @__PURE__ */ ((RecitationAction2) => {
+})(UseCase || (UseCase = {}));
+var RecitationAction;
+(function(RecitationAction2) {
   RecitationAction2["ACTION_UNSPECIFIED"] = "ACTION_UNSPECIFIED";
   RecitationAction2["CITE"] = "CITE";
   RecitationAction2["BLOCK"] = "BLOCK";
   RecitationAction2["NO_ACTION"] = "NO_ACTION";
   RecitationAction2["EXEMPT_FOUND_IN_PROMPT"] = "EXEMPT_FOUND_IN_PROMPT";
-  return RecitationAction2;
-})(RecitationAction || {});
-var CitationSourceType = /* @__PURE__ */ ((CitationSourceType2) => {
+})(RecitationAction || (RecitationAction = {}));
+var CitationSourceType;
+(function(CitationSourceType2) {
   CitationSourceType2["CITATION_SOURCE_TYPE_UNSPECIFIED"] = "CITATION_SOURCE_TYPE_UNSPECIFIED";
   CitationSourceType2["TRAINING_DATA"] = "TRAINING_DATA";
   CitationSourceType2["WORLD_FACTS"] = "WORLD_FACTS";
   CitationSourceType2["LOCAL_FACTS"] = "LOCAL_FACTS";
   CitationSourceType2["INDIRECT"] = "INDIRECT";
-  return CitationSourceType2;
-})(CitationSourceType || {});
-var AidaAccessPreconditions = /* @__PURE__ */ ((AidaAccessPreconditions2) => {
-  AidaAccessPreconditions2["AVAILABLE"] = "available";
-  AidaAccessPreconditions2["NO_ACCOUNT_EMAIL"] = "no-account-email";
-  AidaAccessPreconditions2["NO_INTERNET"] = "no-internet";
-  AidaAccessPreconditions2["SYNC_IS_PAUSED"] = "sync-is-paused";
-  return AidaAccessPreconditions2;
-})(AidaAccessPreconditions || {});
-var AidaInferenceLanguage = /* @__PURE__ */ ((AidaInferenceLanguage2) => {
-  AidaInferenceLanguage2["CPP"] = "CPP";
-  AidaInferenceLanguage2["PYTHON"] = "PYTHON";
-  AidaInferenceLanguage2["KOTLIN"] = "KOTLIN";
-  AidaInferenceLanguage2["JAVA"] = "JAVA";
-  AidaInferenceLanguage2["JAVASCRIPT"] = "JAVASCRIPT";
-  AidaInferenceLanguage2["GO"] = "GO";
-  AidaInferenceLanguage2["TYPESCRIPT"] = "TYPESCRIPT";
-  AidaInferenceLanguage2["HTML"] = "HTML";
-  AidaInferenceLanguage2["BASH"] = "BASH";
-  AidaInferenceLanguage2["CSS"] = "CSS";
-  AidaInferenceLanguage2["DART"] = "DART";
-  AidaInferenceLanguage2["JSON"] = "JSON";
-  AidaInferenceLanguage2["MARKDOWN"] = "MARKDOWN";
-  AidaInferenceLanguage2["VUE"] = "VUE";
-  AidaInferenceLanguage2["XML"] = "XML";
-  return AidaInferenceLanguage2;
-})(AidaInferenceLanguage || {});
+})(CitationSourceType || (CitationSourceType = {}));
 var AidaLanguageToMarkdown = {
   CPP: "cpp",
   PYTHON: "py",
@@ -1054,14 +962,10 @@ var AidaClient = class {
       throw new Error("Cannot determine Chrome version");
     }
     const request = {
-      current_message: {
-        parts: [{ text: input }],
-        role: 1
-        /* USER */
-      },
+      current_message: { parts: [{ text: input }], role: Role.USER },
       client: CLIENT_NAME,
-      functionality_type: 2,
-      client_feature: 1,
+      functionality_type: FunctionalityType.EXPLAIN_ERROR,
+      client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
       metadata: {
         disable_user_content_logging: disallowLogging,
         client_version: chromeVersion
@@ -1087,9 +991,7 @@ var AidaClient = class {
     if (!navigator.onLine) {
       return "no-internet";
     }
-    const syncInfo = await new Promise(
-      (resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2))
-    );
+    const syncInfo = await new Promise((resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2)));
     if (!syncInfo.accountEmail) {
       return "no-account-email";
     }
@@ -1163,7 +1065,7 @@ var AidaClient = class {
       for (const result of results) {
         if ("metadata" in result) {
           metadata = result.metadata;
-          if (metadata?.attributionMetadata?.attributionAction === "BLOCK") {
+          if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
             throw new AidaBlockError();
           }
         }
@@ -1210,14 +1112,11 @@ var AidaClient = class {
   }
   registerClientEvent(clientEvent) {
     const { promise, resolve } = Promise.withResolvers();
-    InspectorFrontendHostInstance.registerAidaClientEvent(
-      JSON.stringify({
-        client: CLIENT_NAME,
-        event_time: (/* @__PURE__ */ new Date()).toISOString(),
-        ...clientEvent
-      }),
-      resolve
-    );
+    InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
+      client: CLIENT_NAME,
+      event_time: (/* @__PURE__ */ new Date()).toISOString(),
+      ...clientEvent
+    }), resolve);
     return promise;
   }
   async completeCode(request) {
@@ -1276,14 +1175,14 @@ function convertToUserTierEnum(userTier) {
   if (userTier) {
     switch (userTier) {
       case "TESTERS":
-        return 1;
+        return UserTier.TESTERS;
       case "BETA":
-        return 2;
+        return UserTier.BETA;
       case "PUBLIC":
-        return 3;
+        return UserTier.PUBLIC;
     }
   }
-  return 2;
+  return UserTier.BETA;
 }
 var hostConfigTrackerInstance;
 var HostConfigTracker = class _HostConfigTracker extends Common3.ObjectWrapper.ObjectWrapper {
@@ -1322,15 +1221,11 @@ var HostConfigTracker = class _HostConfigTracker extends Common3.ObjectWrapper.O
       Object.assign(Root2.Runtime.hostConfig, config);
       this.dispatchEventToListeners(
         "aidaAvailabilityChanged"
-        /* AIDA_AVAILABILITY_CHANGED */
+        /* Events.AIDA_AVAILABILITY_CHANGED */
       );
     }
   }
 };
-var Events2 = /* @__PURE__ */ ((Events22) => {
-  Events22["AIDA_AVAILABILITY_CHANGED"] = "aidaAvailabilityChanged";
-  return Events22;
-})(Events2 || {});
 
 // gen/front_end/core/host/GdpClient.js
 var GdpClient_exports = {};
@@ -1347,41 +1242,39 @@ __export(GdpClient_exports, {
   isStarterBadgeEnabled: () => isStarterBadgeEnabled
 });
 import * as Root3 from "./../root/root.js";
-var SubscriptionStatus = /* @__PURE__ */ ((SubscriptionStatus2) => {
+var SubscriptionStatus;
+(function(SubscriptionStatus2) {
   SubscriptionStatus2["ENABLED"] = "SUBSCRIPTION_STATE_ENABLED";
   SubscriptionStatus2["PENDING"] = "SUBSCRIPTION_STATE_PENDING";
   SubscriptionStatus2["CANCELED"] = "SUBSCRIPTION_STATE_CANCELED";
   SubscriptionStatus2["REFUNDED"] = "SUBSCRIPTION_STATE_REFUNDED";
   SubscriptionStatus2["AWAITING_FIX"] = "SUBSCRIPTION_STATE_AWAITING_FIX";
   SubscriptionStatus2["ON_HOLD"] = "SUBSCRIPTION_STATE_ACCOUNT_ON_HOLD";
-  return SubscriptionStatus2;
-})(SubscriptionStatus || {});
-var SubscriptionTier = /* @__PURE__ */ ((SubscriptionTier2) => {
+})(SubscriptionStatus || (SubscriptionStatus = {}));
+var SubscriptionTier;
+(function(SubscriptionTier2) {
   SubscriptionTier2["PREMIUM_ANNUAL"] = "SUBSCRIPTION_TIER_PREMIUM_ANNUAL";
   SubscriptionTier2["PREMIUM_MONTHLY"] = "SUBSCRIPTION_TIER_PREMIUM_MONTHLY";
   SubscriptionTier2["PRO_ANNUAL"] = "SUBSCRIPTION_TIER_PRO_ANNUAL";
   SubscriptionTier2["PRO_MONTHLY"] = "SUBSCRIPTION_TIER_PRO_MONTHLY";
-  return SubscriptionTier2;
-})(SubscriptionTier || {});
-var EligibilityStatus = /* @__PURE__ */ ((EligibilityStatus2) => {
+})(SubscriptionTier || (SubscriptionTier = {}));
+var EligibilityStatus;
+(function(EligibilityStatus2) {
   EligibilityStatus2["ELIGIBLE"] = "ELIGIBLE";
   EligibilityStatus2["NOT_ELIGIBLE"] = "NOT_ELIGIBLE";
-  return EligibilityStatus2;
-})(EligibilityStatus || {});
-var EmailPreference = /* @__PURE__ */ ((EmailPreference2) => {
+})(EligibilityStatus || (EligibilityStatus = {}));
+var EmailPreference;
+(function(EmailPreference2) {
   EmailPreference2["ENABLED"] = "ENABLED";
   EmailPreference2["DISABLED"] = "DISABLED";
-  return EmailPreference2;
-})(EmailPreference || {});
+})(EmailPreference || (EmailPreference = {}));
 function normalizeBadgeName(name) {
   return name.replace(/profiles\/[^/]+\/awards\//, "profiles/me/awards/");
 }
 var GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profile/u/me";
 async function makeHttpRequest2(request) {
   if (!isGdpProfilesAvailable()) {
-    throw new DispatchHttpRequestError(
-      ErrorType.HTTP_RESPONSE_UNAVAILABLE
-    );
+    throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE);
   }
   const response = await makeHttpRequest(request);
   return response;
@@ -1425,8 +1318,7 @@ var GdpClient = class _GdpClient {
       const checkEligibilityResponse = await this.#checkEligibility();
       return {
         profile: null,
-        isEligible: checkEligibilityResponse.createProfile === "ELIGIBLE"
-        /* ELIGIBLE */
+        isEligible: checkEligibilityResponse.createProfile === EligibilityStatus.ELIGIBLE
       };
     } catch {
       return null;
@@ -1441,10 +1333,7 @@ var GdpClient = class _GdpClient {
       path: "/v1beta1/profile:get",
       method: "GET"
     }).then((profile) => {
-      this.#cachedEligibilityPromise = Promise.resolve({
-        createProfile: "ELIGIBLE"
-        /* ELIGIBLE */
-      });
+      this.#cachedEligibilityPromise = Promise.resolve({ createProfile: EligibilityStatus.ELIGIBLE });
       return profile;
     });
     return await this.#cachedProfilePromise;
@@ -1598,36 +1487,16 @@ function fontFamily() {
 var UserMetrics_exports = {};
 __export(UserMetrics_exports, {
   Action: () => Action,
-  AnimationsPlaybackRate: () => AnimationsPlaybackRate,
-  BadgeType: () => BadgeType,
-  BuiltInAiAvailability: () => BuiltInAiAvailability,
-  DeveloperResourceLoaded: () => DeveloperResourceLoaded,
-  DeveloperResourceScheme: () => DeveloperResourceScheme,
   DevtoolsExperiments: () => DevtoolsExperiments,
   IssueCreated: () => IssueCreated,
   IssueExpanded: () => IssueExpanded,
-  IssueOpener: () => IssueOpener,
   IssueResourceOpened: () => IssueResourceOpened,
   KeybindSetSettings: () => KeybindSetSettings,
   KeyboardShortcutAction: () => KeyboardShortcutAction,
   Language: () => Language,
-  LighthouseCategoryUsed: () => LighthouseCategoryUsed,
-  LighthouseModeRun: () => LighthouseModeRun,
   ManifestSectionCodes: () => ManifestSectionCodes,
   MediaTypes: () => MediaTypes,
   PanelCodes: () => PanelCodes,
-  RecordingAssertion: () => RecordingAssertion,
-  RecordingCodeToggled: () => RecordingCodeToggled,
-  RecordingCopiedToClipboard: () => RecordingCopiedToClipboard,
-  RecordingEdited: () => RecordingEdited,
-  RecordingExported: () => RecordingExported,
-  RecordingReplayFinished: () => RecordingReplayFinished,
-  RecordingReplaySpeed: () => RecordingReplaySpeed,
-  RecordingReplayStarted: () => RecordingReplayStarted,
-  RecordingToggled: () => RecordingToggled,
-  SwatchType: () => SwatchType,
-  SyncSetting: () => SyncSetting,
-  TimelineNavigationSetting: () => TimelineNavigationSetting,
   UserMetrics: () => UserMetrics
 });
 var UserMetrics = class {
@@ -1641,12 +1510,7 @@ var UserMetrics = class {
   }
   panelShown(panelName, isLaunching) {
     const code = PanelCodes[panelName] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.PanelShown,
-      code,
-      69
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.PanelShown", code, PanelCodes.MAX_VALUE);
     InspectorFrontendHostInstance.recordUserMetricsAction("DevTools_PanelShown_" + panelName);
     if (!isLaunching) {
       this.#panelChangedSinceLaunch = true;
@@ -1656,39 +1520,19 @@ var UserMetrics = class {
     this.panelShown("settings-" + settingsViewId);
   }
   sourcesPanelFileDebugged(mediaType) {
-    const code = mediaType && MediaTypes[mediaType] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.SourcesPanelFileDebugged,
-      code,
-      38
-      /* MAX_VALUE */
-    );
+    const code = mediaType && MediaTypes[mediaType] || MediaTypes.Unknown;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SourcesPanelFileDebugged", code, MediaTypes.MAX_VALUE);
   }
   sourcesPanelFileOpened(mediaType) {
-    const code = mediaType && MediaTypes[mediaType] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.SourcesPanelFileOpened,
-      code,
-      38
-      /* MAX_VALUE */
-    );
+    const code = mediaType && MediaTypes[mediaType] || MediaTypes.Unknown;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SourcesPanelFileOpened", code, MediaTypes.MAX_VALUE);
   }
   networkPanelResponsePreviewOpened(mediaType) {
-    const code = mediaType && MediaTypes[mediaType] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.NetworkPanelResponsePreviewOpened,
-      code,
-      38
-      /* MAX_VALUE */
-    );
+    const code = mediaType && MediaTypes[mediaType] || MediaTypes.Unknown;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.NetworkPanelResponsePreviewOpened", code, MediaTypes.MAX_VALUE);
   }
   actionTaken(action) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.ActionTaken,
-      action,
-      195
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken", action, Action.MAX_VALUE);
   }
   panelLoaded(panelName, histogramName) {
     if (this.#firedLaunchHistogram || panelName !== this.#launchPanelName) {
@@ -1713,28 +1557,18 @@ var UserMetrics = class {
   }
   keybindSetSettingChanged(keybindSet) {
     const value = KeybindSetSettings[keybindSet] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.KeybindSetSettingChanged,
-      value,
-      2
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeybindSetSettingChanged", value, KeybindSetSettings.MAX_VALUE);
   }
   keyboardShortcutFired(actionId) {
-    const action = KeyboardShortcutAction[actionId] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.KeyboardShortcutFired,
-      action,
-      120
-      /* MAX_VALUE */
-    );
+    const action = KeyboardShortcutAction[actionId] || KeyboardShortcutAction.OtherShortcut;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeyboardShortcutFired", action, KeyboardShortcutAction.MAX_VALUE);
   }
   issuesPanelOpenedFrom(issueOpener) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.IssuesPanelOpenedFrom,
+      "DevTools.IssuesPanelOpenedFrom",
       issueOpener,
       6
-      /* MAX_VALUE */
+      /* IssueOpener.MAX_VALUE */
     );
   }
   issuesPanelIssueExpanded(issueExpandedCategory) {
@@ -1745,12 +1579,7 @@ var UserMetrics = class {
     if (issueExpanded === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.IssuesPanelIssueExpanded,
-      issueExpanded,
-      9
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelIssueExpanded", issueExpanded, IssueExpanded.MAX_VALUE);
   }
   issuesPanelResourceOpened(issueCategory, type) {
     const key = issueCategory + type;
@@ -1758,43 +1587,28 @@ var UserMetrics = class {
     if (value === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.IssuesPanelResourceOpened,
-      value,
-      13
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelResourceOpened", value, IssueResourceOpened.MAX_VALUE);
   }
   issueCreated(code) {
     const issueCreated = IssueCreated[code];
     if (issueCreated === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.IssueCreated,
-      issueCreated,
-      114
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssueCreated", issueCreated, IssueCreated.MAX_VALUE);
   }
   experimentEnabledAtLaunch(experimentId) {
     const experiment = DevtoolsExperiments[experimentId];
     if (experiment === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.ExperimentEnabledAtLaunch,
-      experiment,
-      110
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ExperimentEnabledAtLaunch", experiment, DevtoolsExperiments.MAX_VALUE);
   }
   navigationSettingAtFirstTimelineLoad(state) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.TimelineNavigationSettingState,
+      "DevTools.TimelineNavigationSettingState",
       state,
       4
-      /* MAX_VALUE */
+      /* TimelineNavigationSetting.MAX_VALUE */
     );
   }
   experimentDisabledAtLaunch(experimentId) {
@@ -1802,35 +1616,25 @@ var UserMetrics = class {
     if (experiment === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.ExperimentDisabledAtLaunch,
-      experiment,
-      110
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ExperimentDisabledAtLaunch", experiment, DevtoolsExperiments.MAX_VALUE);
   }
   experimentChanged(experimentId, isEnabled) {
     const experiment = DevtoolsExperiments[experimentId];
     if (experiment === void 0) {
       return;
     }
-    const actionName = isEnabled ? EnumeratedHistogram.ExperimentEnabled : EnumeratedHistogram.ExperimentDisabled;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      actionName,
-      experiment,
-      110
-      /* MAX_VALUE */
-    );
+    const actionName = isEnabled ? "DevTools.ExperimentEnabled" : "DevTools.ExperimentDisabled";
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, DevtoolsExperiments.MAX_VALUE);
   }
   developerResourceLoaded(developerResourceLoaded) {
     if (developerResourceLoaded >= 8) {
       return;
     }
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.DeveloperResourceLoaded,
+      "DevTools.DeveloperResourceLoaded",
       developerResourceLoaded,
       8
-      /* MAX_VALUE */
+      /* DeveloperResourceLoaded.MAX_VALUE */
     );
   }
   developerResourceScheme(developerResourceScheme) {
@@ -1838,10 +1642,10 @@ var UserMetrics = class {
       return;
     }
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.DeveloperResourceScheme,
+      "DevTools.DeveloperResourceScheme",
       developerResourceScheme,
       9
-      /* MAX_VALUE */
+      /* DeveloperResourceScheme.MAX_VALUE */
     );
   }
   language(language) {
@@ -1849,12 +1653,7 @@ var UserMetrics = class {
     if (languageCode === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.Language,
-      languageCode,
-      83
-      /* MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.Language", languageCode, Language.MAX_VALUE);
   }
   syncSetting(devtoolsSyncSettingEnabled) {
     InspectorFrontendHostInstance.getSyncInformation((syncInfo) => {
@@ -1865,184 +1664,152 @@ var UserMetrics = class {
         settingValue = devtoolsSyncSettingEnabled ? 4 : 3;
       }
       InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.SyncSetting,
+        "DevTools.SyncSetting",
         settingValue,
         5
-        /* MAX_VALUE */
+        /* SyncSetting.MAX_VALUE */
       );
     });
   }
   recordingAssertion(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingAssertion,
+      "DevTools.RecordingAssertion",
       value,
       4
-      /* MAX_VALUE */
+      /* RecordingAssertion.MAX_VALUE */
     );
   }
   recordingToggled(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingToggled,
+      "DevTools.RecordingToggled",
       value,
       3
-      /* MAX_VALUE */
+      /* RecordingToggled.MAX_VALUE */
     );
   }
   recordingReplayFinished(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingReplayFinished,
+      "DevTools.RecordingReplayFinished",
       value,
       5
-      /* MAX_VALUE */
+      /* RecordingReplayFinished.MAX_VALUE */
     );
   }
   recordingReplaySpeed(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingReplaySpeed,
+      "DevTools.RecordingReplaySpeed",
       value,
       5
-      /* MAX_VALUE */
+      /* RecordingReplaySpeed.MAX_VALUE */
     );
   }
   recordingReplayStarted(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingReplayStarted,
+      "DevTools.RecordingReplayStarted",
       value,
       4
-      /* MAX_VALUE */
+      /* RecordingReplayStarted.MAX_VALUE */
     );
   }
   recordingEdited(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingEdited,
+      "DevTools.RecordingEdited",
       value,
       11
-      /* MAX_VALUE */
+      /* RecordingEdited.MAX_VALUE */
     );
   }
   recordingExported(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingExported,
+      "DevTools.RecordingExported",
       value,
       6
-      /* MAX_VALUE */
+      /* RecordingExported.MAX_VALUE */
     );
   }
   recordingCodeToggled(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingCodeToggled,
+      "DevTools.RecordingCodeToggled",
       value,
       3
-      /* MAX_VALUE */
+      /* RecordingCodeToggled.MAX_VALUE */
     );
   }
   recordingCopiedToClipboard(value) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.RecordingCopiedToClipboard,
+      "DevTools.RecordingCopiedToClipboard",
       value,
       9
-      /* MAX_VALUE */
+      /* RecordingCopiedToClipboard.MAX_VALUE */
     );
   }
   lighthouseModeRun(type) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.LighthouseModeRun,
+      "DevTools.LighthouseModeRun",
       type,
       4
-      /* MAX_VALUE */
+      /* LighthouseModeRun.MAX_VALUE */
     );
   }
   lighthouseCategoryUsed(type) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.LighthouseCategoryUsed,
+      "DevTools.LighthouseCategoryUsed",
       type,
       6
-      /* MAX_VALUE */
+      /* LighthouseCategoryUsed.MAX_VALUE */
     );
   }
   swatchActivated(swatch) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.SwatchActivated,
+      "DevTools.SwatchActivated",
       swatch,
       13
-      /* MAX_VALUE */
+      /* SwatchType.MAX_VALUE */
     );
   }
   animationPlaybackRateChanged(playbackRate) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.AnimationPlaybackRateChanged,
+      "DevTools.AnimationPlaybackRateChanged",
       playbackRate,
       4
-      /* MAX_VALUE */
+      /* AnimationsPlaybackRate.MAX_VALUE */
     );
   }
   workspacesPopulated(wallClockTimeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-      "DevTools.Workspaces.PopulateWallClocktime",
-      wallClockTimeInMilliseconds
-    );
+    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Workspaces.PopulateWallClocktime", wallClockTimeInMilliseconds);
   }
   visualLoggingProcessingDone(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-      "DevTools.VisualLogging.ProcessingTime",
-      timeInMilliseconds
-    );
+    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.VisualLogging.ProcessingTime", timeInMilliseconds);
   }
   freestylerQueryLength(numberOfCharacters) {
-    InspectorFrontendHostInstance.recordCountHistogram(
-      "DevTools.Freestyler.QueryLength",
-      numberOfCharacters,
-      0,
-      1e5,
-      100
-    );
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Freestyler.QueryLength", numberOfCharacters, 0, 1e5, 100);
   }
   freestylerEvalResponseSize(bytes) {
     InspectorFrontendHostInstance.recordCountHistogram("DevTools.Freestyler.EvalResponseSize", bytes, 0, 1e5, 100);
   }
   performanceAINetworkSummaryResponseSize(bytes) {
-    InspectorFrontendHostInstance.recordCountHistogram(
-      "DevTools.PerformanceAI.NetworkSummaryResponseSize",
-      bytes,
-      0,
-      1e5,
-      100
-    );
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.PerformanceAI.NetworkSummaryResponseSize", bytes, 0, 1e5, 100);
   }
   performanceAINetworkRequestDetailResponseSize(bytes) {
-    InspectorFrontendHostInstance.recordCountHistogram(
-      "DevTools.PerformanceAI.NetworkRequestDetailResponseSize",
-      bytes,
-      0,
-      1e5,
-      100
-    );
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.PerformanceAI.NetworkRequestDetailResponseSize", bytes, 0, 1e5, 100);
   }
   performanceAIMainThreadActivityResponseSize(bytes) {
-    InspectorFrontendHostInstance.recordCountHistogram(
-      "DevTools.PerformanceAI.MainThreadActivityResponseSize",
-      bytes,
-      0,
-      1e5,
-      100
-    );
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.PerformanceAI.MainThreadActivityResponseSize", bytes, 0, 1e5, 100);
   }
   builtInAiAvailability(availability) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      EnumeratedHistogram.BuiltInAiAvailability,
+      "DevTools.BuiltInAiAvailability",
       availability,
       10
-      /* MAX_VALUE */
+      /* BuiltInAiAvailability.MAX_VALUE */
     );
   }
   consoleInsightTeaserGenerated(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-      "DevTools.Insights.TeaserGenerationTime",
-      timeInMilliseconds
-    );
+    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserGenerationTime", timeInMilliseconds);
   }
 };
-var Action = /* @__PURE__ */ ((Action2) => {
+var Action;
+(function(Action2) {
   Action2[Action2["WindowDocked"] = 1] = "WindowDocked";
   Action2[Action2["WindowUndocked"] = 2] = "WindowUndocked";
   Action2[Action2["ScriptsBreakpointSet"] = 3] = "ScriptsBreakpointSet";
@@ -2233,9 +2000,9 @@ var Action = /* @__PURE__ */ ((Action2) => {
   Action2[Action2["InsightTeaserGenerationAborted"] = 193] = "InsightTeaserGenerationAborted";
   Action2[Action2["InsightTeaserGenerationErrored"] = 194] = "InsightTeaserGenerationErrored";
   Action2[Action2["MAX_VALUE"] = 195] = "MAX_VALUE";
-  return Action2;
-})(Action || {});
-var PanelCodes = /* @__PURE__ */ ((PanelCodes2) => {
+})(Action || (Action = {}));
+var PanelCodes;
+(function(PanelCodes2) {
   PanelCodes2[PanelCodes2["elements"] = 1] = "elements";
   PanelCodes2[PanelCodes2["resources"] = 2] = "resources";
   PanelCodes2[PanelCodes2["network"] = 3] = "network";
@@ -2304,9 +2071,9 @@ var PanelCodes = /* @__PURE__ */ ((PanelCodes2) => {
   PanelCodes2[PanelCodes2["autofill-view"] = 67] = "autofill-view";
   PanelCodes2[PanelCodes2["freestyler"] = 68] = "freestyler";
   PanelCodes2[PanelCodes2["MAX_VALUE"] = 69] = "MAX_VALUE";
-  return PanelCodes2;
-})(PanelCodes || {});
-var MediaTypes = /* @__PURE__ */ ((MediaTypes2) => {
+})(PanelCodes || (PanelCodes = {}));
+var MediaTypes;
+(function(MediaTypes2) {
   MediaTypes2[MediaTypes2["Unknown"] = 0] = "Unknown";
   MediaTypes2[MediaTypes2["text/css"] = 2] = "text/css";
   MediaTypes2[MediaTypes2["text/html"] = 3] = "text/html";
@@ -2345,15 +2112,15 @@ var MediaTypes = /* @__PURE__ */ ((MediaTypes2) => {
   MediaTypes2[MediaTypes2["text/javascript+snippet"] = 36] = "text/javascript+snippet";
   MediaTypes2[MediaTypes2["text/javascript+eval"] = 37] = "text/javascript+eval";
   MediaTypes2[MediaTypes2["MAX_VALUE"] = 38] = "MAX_VALUE";
-  return MediaTypes2;
-})(MediaTypes || {});
-var KeybindSetSettings = /* @__PURE__ */ ((KeybindSetSettings2) => {
+})(MediaTypes || (MediaTypes = {}));
+var KeybindSetSettings;
+(function(KeybindSetSettings2) {
   KeybindSetSettings2[KeybindSetSettings2["devToolsDefault"] = 0] = "devToolsDefault";
   KeybindSetSettings2[KeybindSetSettings2["vsCode"] = 1] = "vsCode";
   KeybindSetSettings2[KeybindSetSettings2["MAX_VALUE"] = 2] = "MAX_VALUE";
-  return KeybindSetSettings2;
-})(KeybindSetSettings || {});
-var KeyboardShortcutAction = /* @__PURE__ */ ((KeyboardShortcutAction2) => {
+})(KeybindSetSettings || (KeybindSetSettings = {}));
+var KeyboardShortcutAction;
+(function(KeyboardShortcutAction2) {
   KeyboardShortcutAction2[KeyboardShortcutAction2["OtherShortcut"] = 0] = "OtherShortcut";
   KeyboardShortcutAction2[KeyboardShortcutAction2["quick-open.show-command-menu"] = 1] = "quick-open.show-command-menu";
   KeyboardShortcutAction2[KeyboardShortcutAction2["console.clear"] = 2] = "console.clear";
@@ -2473,19 +2240,9 @@ var KeyboardShortcutAction = /* @__PURE__ */ ((KeyboardShortcutAction2) => {
   KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.dim-third-parties"] = 118] = "timeline.dim-third-parties";
   KeyboardShortcutAction2[KeyboardShortcutAction2["main.toggle-drawer-orientation"] = 119] = "main.toggle-drawer-orientation";
   KeyboardShortcutAction2[KeyboardShortcutAction2["MAX_VALUE"] = 120] = "MAX_VALUE";
-  return KeyboardShortcutAction2;
-})(KeyboardShortcutAction || {});
-var IssueOpener = /* @__PURE__ */ ((IssueOpener2) => {
-  IssueOpener2[IssueOpener2["CONSOLE_INFO_BAR"] = 0] = "CONSOLE_INFO_BAR";
-  IssueOpener2[IssueOpener2["LEARN_MORE_LINK_COEP"] = 1] = "LEARN_MORE_LINK_COEP";
-  IssueOpener2[IssueOpener2["STATUS_BAR_ISSUES_COUNTER"] = 2] = "STATUS_BAR_ISSUES_COUNTER";
-  IssueOpener2[IssueOpener2["HAMBURGER_MENU"] = 3] = "HAMBURGER_MENU";
-  IssueOpener2[IssueOpener2["ADORNER"] = 4] = "ADORNER";
-  IssueOpener2[IssueOpener2["COMMAND_MENU"] = 5] = "COMMAND_MENU";
-  IssueOpener2[IssueOpener2["MAX_VALUE"] = 6] = "MAX_VALUE";
-  return IssueOpener2;
-})(IssueOpener || {});
-var DevtoolsExperiments = /* @__PURE__ */ ((DevtoolsExperiments2) => {
+})(KeyboardShortcutAction || (KeyboardShortcutAction = {}));
+var DevtoolsExperiments;
+(function(DevtoolsExperiments2) {
   DevtoolsExperiments2[DevtoolsExperiments2["capture-node-creation-stacks"] = 1] = "capture-node-creation-stacks";
   DevtoolsExperiments2[DevtoolsExperiments2["live-heap-profile"] = 11] = "live-heap-profile";
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
@@ -2506,9 +2263,9 @@ var DevtoolsExperiments = /* @__PURE__ */ ((DevtoolsExperiments2) => {
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-show-postmessage-events"] = 86] = "timeline-show-postmessage-events";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-debug-mode"] = 93] = "timeline-debug-mode";
   DevtoolsExperiments2[DevtoolsExperiments2["MAX_VALUE"] = 110] = "MAX_VALUE";
-  return DevtoolsExperiments2;
-})(DevtoolsExperiments || {});
-var IssueExpanded = /* @__PURE__ */ ((IssueExpanded2) => {
+})(DevtoolsExperiments || (DevtoolsExperiments = {}));
+var IssueExpanded;
+(function(IssueExpanded2) {
   IssueExpanded2[IssueExpanded2["CrossOriginEmbedderPolicy"] = 0] = "CrossOriginEmbedderPolicy";
   IssueExpanded2[IssueExpanded2["MixedContent"] = 1] = "MixedContent";
   IssueExpanded2[IssueExpanded2["SameSiteCookie"] = 2] = "SameSiteCookie";
@@ -2519,9 +2276,9 @@ var IssueExpanded = /* @__PURE__ */ ((IssueExpanded2) => {
   IssueExpanded2[IssueExpanded2["ThirdPartyPhaseoutCookie"] = 7] = "ThirdPartyPhaseoutCookie";
   IssueExpanded2[IssueExpanded2["GenericCookie"] = 8] = "GenericCookie";
   IssueExpanded2[IssueExpanded2["MAX_VALUE"] = 9] = "MAX_VALUE";
-  return IssueExpanded2;
-})(IssueExpanded || {});
-var IssueResourceOpened = /* @__PURE__ */ ((IssueResourceOpened2) => {
+})(IssueExpanded || (IssueExpanded = {}));
+var IssueResourceOpened;
+(function(IssueResourceOpened2) {
   IssueResourceOpened2[IssueResourceOpened2["CrossOriginEmbedderPolicyRequest"] = 0] = "CrossOriginEmbedderPolicyRequest";
   IssueResourceOpened2[IssueResourceOpened2["CrossOriginEmbedderPolicyElement"] = 1] = "CrossOriginEmbedderPolicyElement";
   IssueResourceOpened2[IssueResourceOpened2["MixedContentRequest"] = 2] = "MixedContentRequest";
@@ -2531,9 +2288,9 @@ var IssueResourceOpened = /* @__PURE__ */ ((IssueResourceOpened2) => {
   IssueResourceOpened2[IssueResourceOpened2["ContentSecurityPolicyDirective"] = 6] = "ContentSecurityPolicyDirective";
   IssueResourceOpened2[IssueResourceOpened2["ContentSecurityPolicyElement"] = 7] = "ContentSecurityPolicyElement";
   IssueResourceOpened2[IssueResourceOpened2["MAX_VALUE"] = 13] = "MAX_VALUE";
-  return IssueResourceOpened2;
-})(IssueResourceOpened || {});
-var IssueCreated = /* @__PURE__ */ ((IssueCreated2) => {
+})(IssueResourceOpened || (IssueResourceOpened = {}));
+var IssueCreated;
+(function(IssueCreated2) {
   IssueCreated2[IssueCreated2["MixedContentIssue"] = 0] = "MixedContentIssue";
   IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kInlineViolation"] = 1] = "ContentSecurityPolicyIssue::kInlineViolation";
   IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kEvalViolation"] = 2] = "ContentSecurityPolicyIssue::kEvalViolation";
@@ -2644,34 +2401,9 @@ var IssueCreated = /* @__PURE__ */ ((IssueCreated2) => {
   IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch"] = 112] = "SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch";
   IssueCreated2[IssueCreated2["ElementAccessibilityIssue::InteractiveContentSummaryDescendant"] = 113] = "ElementAccessibilityIssue::InteractiveContentSummaryDescendant";
   IssueCreated2[IssueCreated2["MAX_VALUE"] = 114] = "MAX_VALUE";
-  return IssueCreated2;
-})(IssueCreated || {});
-var DeveloperResourceLoaded = /* @__PURE__ */ ((DeveloperResourceLoaded2) => {
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["LOAD_THROUGH_PAGE_VIA_TARGET"] = 0] = "LOAD_THROUGH_PAGE_VIA_TARGET";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["LOAD_THROUGH_PAGE_VIA_FRAME"] = 1] = "LOAD_THROUGH_PAGE_VIA_FRAME";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["LOAD_THROUGH_PAGE_FAILURE"] = 2] = "LOAD_THROUGH_PAGE_FAILURE";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["LOAD_THROUGH_PAGE_FALLBACK"] = 3] = "LOAD_THROUGH_PAGE_FALLBACK";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["FALLBACK_AFTER_FAILURE"] = 4] = "FALLBACK_AFTER_FAILURE";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["FALLBACK_PER_OVERRIDE"] = 5] = "FALLBACK_PER_OVERRIDE";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["FALLBACK_PER_PROTOCOL"] = 6] = "FALLBACK_PER_PROTOCOL";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["FALLBACK_FAILURE"] = 7] = "FALLBACK_FAILURE";
-  DeveloperResourceLoaded2[DeveloperResourceLoaded2["MAX_VALUE"] = 8] = "MAX_VALUE";
-  return DeveloperResourceLoaded2;
-})(DeveloperResourceLoaded || {});
-var DeveloperResourceScheme = /* @__PURE__ */ ((DeveloperResourceScheme2) => {
-  DeveloperResourceScheme2[DeveloperResourceScheme2["OTHER"] = 0] = "OTHER";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["UKNOWN"] = 1] = "UKNOWN";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["HTTP"] = 2] = "HTTP";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["HTTPS"] = 3] = "HTTPS";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["HTTP_LOCALHOST"] = 4] = "HTTP_LOCALHOST";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["HTTPS_LOCALHOST"] = 5] = "HTTPS_LOCALHOST";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["DATA"] = 6] = "DATA";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["FILE"] = 7] = "FILE";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["BLOB"] = 8] = "BLOB";
-  DeveloperResourceScheme2[DeveloperResourceScheme2["MAX_VALUE"] = 9] = "MAX_VALUE";
-  return DeveloperResourceScheme2;
-})(DeveloperResourceScheme || {});
-var Language = /* @__PURE__ */ ((Language2) => {
+})(IssueCreated || (IssueCreated = {}));
+var Language;
+(function(Language2) {
   Language2[Language2["af"] = 1] = "af";
   Language2[Language2["am"] = 2] = "am";
   Language2[Language2["ar"] = 3] = "ar";
@@ -2755,94 +2487,9 @@ var Language = /* @__PURE__ */ ((Language2) => {
   Language2[Language2["zh-TW"] = 81] = "zh-TW";
   Language2[Language2["zu"] = 82] = "zu";
   Language2[Language2["MAX_VALUE"] = 83] = "MAX_VALUE";
-  return Language2;
-})(Language || {});
-var SyncSetting = /* @__PURE__ */ ((SyncSetting2) => {
-  SyncSetting2[SyncSetting2["CHROME_SYNC_DISABLED"] = 1] = "CHROME_SYNC_DISABLED";
-  SyncSetting2[SyncSetting2["CHROME_SYNC_SETTINGS_DISABLED"] = 2] = "CHROME_SYNC_SETTINGS_DISABLED";
-  SyncSetting2[SyncSetting2["DEVTOOLS_SYNC_SETTING_DISABLED"] = 3] = "DEVTOOLS_SYNC_SETTING_DISABLED";
-  SyncSetting2[SyncSetting2["DEVTOOLS_SYNC_SETTING_ENABLED"] = 4] = "DEVTOOLS_SYNC_SETTING_ENABLED";
-  SyncSetting2[SyncSetting2["MAX_VALUE"] = 5] = "MAX_VALUE";
-  return SyncSetting2;
-})(SyncSetting || {});
-var RecordingToggled = /* @__PURE__ */ ((RecordingToggled2) => {
-  RecordingToggled2[RecordingToggled2["RECORDING_STARTED"] = 1] = "RECORDING_STARTED";
-  RecordingToggled2[RecordingToggled2["RECORDING_FINISHED"] = 2] = "RECORDING_FINISHED";
-  RecordingToggled2[RecordingToggled2["MAX_VALUE"] = 3] = "MAX_VALUE";
-  return RecordingToggled2;
-})(RecordingToggled || {});
-var RecordingAssertion = /* @__PURE__ */ ((RecordingAssertion2) => {
-  RecordingAssertion2[RecordingAssertion2["ASSERTION_ADDED"] = 1] = "ASSERTION_ADDED";
-  RecordingAssertion2[RecordingAssertion2["PROPERTY_ASSERTION_EDITED"] = 2] = "PROPERTY_ASSERTION_EDITED";
-  RecordingAssertion2[RecordingAssertion2["ATTRIBUTE_ASSERTION_EDITED"] = 3] = "ATTRIBUTE_ASSERTION_EDITED";
-  RecordingAssertion2[RecordingAssertion2["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return RecordingAssertion2;
-})(RecordingAssertion || {});
-var RecordingReplayFinished = /* @__PURE__ */ ((RecordingReplayFinished2) => {
-  RecordingReplayFinished2[RecordingReplayFinished2["SUCCESS"] = 1] = "SUCCESS";
-  RecordingReplayFinished2[RecordingReplayFinished2["TIMEOUT_ERROR_SELECTORS"] = 2] = "TIMEOUT_ERROR_SELECTORS";
-  RecordingReplayFinished2[RecordingReplayFinished2["TIMEOUT_ERROR_TARGET"] = 3] = "TIMEOUT_ERROR_TARGET";
-  RecordingReplayFinished2[RecordingReplayFinished2["OTHER_ERROR"] = 4] = "OTHER_ERROR";
-  RecordingReplayFinished2[RecordingReplayFinished2["MAX_VALUE"] = 5] = "MAX_VALUE";
-  return RecordingReplayFinished2;
-})(RecordingReplayFinished || {});
-var RecordingReplaySpeed = /* @__PURE__ */ ((RecordingReplaySpeed2) => {
-  RecordingReplaySpeed2[RecordingReplaySpeed2["NORMAL"] = 1] = "NORMAL";
-  RecordingReplaySpeed2[RecordingReplaySpeed2["SLOW"] = 2] = "SLOW";
-  RecordingReplaySpeed2[RecordingReplaySpeed2["VERY_SLOW"] = 3] = "VERY_SLOW";
-  RecordingReplaySpeed2[RecordingReplaySpeed2["EXTREMELY_SLOW"] = 4] = "EXTREMELY_SLOW";
-  RecordingReplaySpeed2[RecordingReplaySpeed2["MAX_VALUE"] = 5] = "MAX_VALUE";
-  return RecordingReplaySpeed2;
-})(RecordingReplaySpeed || {});
-var RecordingReplayStarted = /* @__PURE__ */ ((RecordingReplayStarted2) => {
-  RecordingReplayStarted2[RecordingReplayStarted2["REPLAY_ONLY"] = 1] = "REPLAY_ONLY";
-  RecordingReplayStarted2[RecordingReplayStarted2["REPLAY_WITH_PERFORMANCE_TRACING"] = 2] = "REPLAY_WITH_PERFORMANCE_TRACING";
-  RecordingReplayStarted2[RecordingReplayStarted2["REPLAY_VIA_EXTENSION"] = 3] = "REPLAY_VIA_EXTENSION";
-  RecordingReplayStarted2[RecordingReplayStarted2["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return RecordingReplayStarted2;
-})(RecordingReplayStarted || {});
-var RecordingEdited = /* @__PURE__ */ ((RecordingEdited2) => {
-  RecordingEdited2[RecordingEdited2["SELECTOR_PICKER_USED"] = 1] = "SELECTOR_PICKER_USED";
-  RecordingEdited2[RecordingEdited2["STEP_ADDED"] = 2] = "STEP_ADDED";
-  RecordingEdited2[RecordingEdited2["STEP_REMOVED"] = 3] = "STEP_REMOVED";
-  RecordingEdited2[RecordingEdited2["SELECTOR_ADDED"] = 4] = "SELECTOR_ADDED";
-  RecordingEdited2[RecordingEdited2["SELECTOR_REMOVED"] = 5] = "SELECTOR_REMOVED";
-  RecordingEdited2[RecordingEdited2["SELECTOR_PART_ADDED"] = 6] = "SELECTOR_PART_ADDED";
-  RecordingEdited2[RecordingEdited2["SELECTOR_PART_EDITED"] = 7] = "SELECTOR_PART_EDITED";
-  RecordingEdited2[RecordingEdited2["SELECTOR_PART_REMOVED"] = 8] = "SELECTOR_PART_REMOVED";
-  RecordingEdited2[RecordingEdited2["TYPE_CHANGED"] = 9] = "TYPE_CHANGED";
-  RecordingEdited2[RecordingEdited2["OTHER_EDITING"] = 10] = "OTHER_EDITING";
-  RecordingEdited2[RecordingEdited2["MAX_VALUE"] = 11] = "MAX_VALUE";
-  return RecordingEdited2;
-})(RecordingEdited || {});
-var RecordingExported = /* @__PURE__ */ ((RecordingExported2) => {
-  RecordingExported2[RecordingExported2["TO_PUPPETEER"] = 1] = "TO_PUPPETEER";
-  RecordingExported2[RecordingExported2["TO_JSON"] = 2] = "TO_JSON";
-  RecordingExported2[RecordingExported2["TO_PUPPETEER_REPLAY"] = 3] = "TO_PUPPETEER_REPLAY";
-  RecordingExported2[RecordingExported2["TO_EXTENSION"] = 4] = "TO_EXTENSION";
-  RecordingExported2[RecordingExported2["TO_LIGHTHOUSE"] = 5] = "TO_LIGHTHOUSE";
-  RecordingExported2[RecordingExported2["MAX_VALUE"] = 6] = "MAX_VALUE";
-  return RecordingExported2;
-})(RecordingExported || {});
-var RecordingCodeToggled = /* @__PURE__ */ ((RecordingCodeToggled2) => {
-  RecordingCodeToggled2[RecordingCodeToggled2["CODE_SHOWN"] = 1] = "CODE_SHOWN";
-  RecordingCodeToggled2[RecordingCodeToggled2["CODE_HIDDEN"] = 2] = "CODE_HIDDEN";
-  RecordingCodeToggled2[RecordingCodeToggled2["MAX_VALUE"] = 3] = "MAX_VALUE";
-  return RecordingCodeToggled2;
-})(RecordingCodeToggled || {});
-var RecordingCopiedToClipboard = /* @__PURE__ */ ((RecordingCopiedToClipboard2) => {
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_RECORDING_WITH_PUPPETEER"] = 1] = "COPIED_RECORDING_WITH_PUPPETEER";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_RECORDING_WITH_JSON"] = 2] = "COPIED_RECORDING_WITH_JSON";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_RECORDING_WITH_REPLAY"] = 3] = "COPIED_RECORDING_WITH_REPLAY";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_RECORDING_WITH_EXTENSION"] = 4] = "COPIED_RECORDING_WITH_EXTENSION";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_STEP_WITH_PUPPETEER"] = 5] = "COPIED_STEP_WITH_PUPPETEER";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_STEP_WITH_JSON"] = 6] = "COPIED_STEP_WITH_JSON";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_STEP_WITH_REPLAY"] = 7] = "COPIED_STEP_WITH_REPLAY";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["COPIED_STEP_WITH_EXTENSION"] = 8] = "COPIED_STEP_WITH_EXTENSION";
-  RecordingCopiedToClipboard2[RecordingCopiedToClipboard2["MAX_VALUE"] = 9] = "MAX_VALUE";
-  return RecordingCopiedToClipboard2;
-})(RecordingCopiedToClipboard || {});
-var ManifestSectionCodes = /* @__PURE__ */ ((ManifestSectionCodes2) => {
+})(Language || (Language = {}));
+var ManifestSectionCodes;
+(function(ManifestSectionCodes2) {
   ManifestSectionCodes2[ManifestSectionCodes2["OtherSection"] = 0] = "OtherSection";
   ManifestSectionCodes2[ManifestSectionCodes2["Identity"] = 1] = "Identity";
   ManifestSectionCodes2[ManifestSectionCodes2["Presentation"] = 2] = "Presentation";
@@ -2850,85 +2497,7 @@ var ManifestSectionCodes = /* @__PURE__ */ ((ManifestSectionCodes2) => {
   ManifestSectionCodes2[ManifestSectionCodes2["Icons"] = 4] = "Icons";
   ManifestSectionCodes2[ManifestSectionCodes2["Window Controls Overlay"] = 5] = "Window Controls Overlay";
   ManifestSectionCodes2[ManifestSectionCodes2["MAX_VALUE"] = 6] = "MAX_VALUE";
-  return ManifestSectionCodes2;
-})(ManifestSectionCodes || {});
-var LighthouseModeRun = /* @__PURE__ */ ((LighthouseModeRun2) => {
-  LighthouseModeRun2[LighthouseModeRun2["NAVIGATION"] = 0] = "NAVIGATION";
-  LighthouseModeRun2[LighthouseModeRun2["TIMESPAN"] = 1] = "TIMESPAN";
-  LighthouseModeRun2[LighthouseModeRun2["SNAPSHOT"] = 2] = "SNAPSHOT";
-  LighthouseModeRun2[LighthouseModeRun2["LEGACY_NAVIGATION"] = 3] = "LEGACY_NAVIGATION";
-  LighthouseModeRun2[LighthouseModeRun2["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return LighthouseModeRun2;
-})(LighthouseModeRun || {});
-var LighthouseCategoryUsed = /* @__PURE__ */ ((LighthouseCategoryUsed2) => {
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["PERFORMANCE"] = 0] = "PERFORMANCE";
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["ACCESSIBILITY"] = 1] = "ACCESSIBILITY";
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["BEST_PRACTICES"] = 2] = "BEST_PRACTICES";
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["SEO"] = 3] = "SEO";
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["PWA"] = 4] = "PWA";
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["PUB_ADS"] = 5] = "PUB_ADS";
-  LighthouseCategoryUsed2[LighthouseCategoryUsed2["MAX_VALUE"] = 6] = "MAX_VALUE";
-  return LighthouseCategoryUsed2;
-})(LighthouseCategoryUsed || {});
-var SwatchType = /* @__PURE__ */ ((SwatchType2) => {
-  SwatchType2[SwatchType2["VAR_LINK"] = 0] = "VAR_LINK";
-  SwatchType2[SwatchType2["ANIMATION_NAME_LINK"] = 1] = "ANIMATION_NAME_LINK";
-  SwatchType2[SwatchType2["COLOR"] = 2] = "COLOR";
-  SwatchType2[SwatchType2["ANIMATION_TIMING"] = 3] = "ANIMATION_TIMING";
-  SwatchType2[SwatchType2["SHADOW"] = 4] = "SHADOW";
-  SwatchType2[SwatchType2["GRID"] = 5] = "GRID";
-  SwatchType2[SwatchType2["FLEX"] = 6] = "FLEX";
-  SwatchType2[SwatchType2["ANGLE"] = 7] = "ANGLE";
-  SwatchType2[SwatchType2["LENGTH"] = 8] = "LENGTH";
-  SwatchType2[SwatchType2["POSITION_TRY_LINK"] = 10] = "POSITION_TRY_LINK";
-  SwatchType2[SwatchType2["ATTR_LINK"] = 11] = "ATTR_LINK";
-  SwatchType2[SwatchType2["MASONRY"] = 12] = "MASONRY";
-  SwatchType2[SwatchType2["MAX_VALUE"] = 13] = "MAX_VALUE";
-  return SwatchType2;
-})(SwatchType || {});
-var BadgeType = /* @__PURE__ */ ((BadgeType2) => {
-  BadgeType2[BadgeType2["GRID"] = 0] = "GRID";
-  BadgeType2[BadgeType2["SUBGRID"] = 1] = "SUBGRID";
-  BadgeType2[BadgeType2["FLEX"] = 2] = "FLEX";
-  BadgeType2[BadgeType2["AD"] = 3] = "AD";
-  BadgeType2[BadgeType2["SCROLL_SNAP"] = 4] = "SCROLL_SNAP";
-  BadgeType2[BadgeType2["CONTAINER"] = 5] = "CONTAINER";
-  BadgeType2[BadgeType2["SLOT"] = 6] = "SLOT";
-  BadgeType2[BadgeType2["TOP_LAYER"] = 7] = "TOP_LAYER";
-  BadgeType2[BadgeType2["REVEAL"] = 8] = "REVEAL";
-  BadgeType2[BadgeType2["MAX_VALUE"] = 9] = "MAX_VALUE";
-  return BadgeType2;
-})(BadgeType || {});
-var AnimationsPlaybackRate = /* @__PURE__ */ ((AnimationsPlaybackRate2) => {
-  AnimationsPlaybackRate2[AnimationsPlaybackRate2["PERCENT_100"] = 0] = "PERCENT_100";
-  AnimationsPlaybackRate2[AnimationsPlaybackRate2["PERCENT_25"] = 1] = "PERCENT_25";
-  AnimationsPlaybackRate2[AnimationsPlaybackRate2["PERCENT_10"] = 2] = "PERCENT_10";
-  AnimationsPlaybackRate2[AnimationsPlaybackRate2["OTHER"] = 3] = "OTHER";
-  AnimationsPlaybackRate2[AnimationsPlaybackRate2["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return AnimationsPlaybackRate2;
-})(AnimationsPlaybackRate || {});
-var TimelineNavigationSetting = /* @__PURE__ */ ((TimelineNavigationSetting2) => {
-  TimelineNavigationSetting2[TimelineNavigationSetting2["CLASSIC_AT_SESSION_FIRST_TRACE"] = 0] = "CLASSIC_AT_SESSION_FIRST_TRACE";
-  TimelineNavigationSetting2[TimelineNavigationSetting2["MODERN_AT_SESSION_FIRST_TRACE"] = 1] = "MODERN_AT_SESSION_FIRST_TRACE";
-  TimelineNavigationSetting2[TimelineNavigationSetting2["SWITCHED_TO_CLASSIC"] = 2] = "SWITCHED_TO_CLASSIC";
-  TimelineNavigationSetting2[TimelineNavigationSetting2["SWITCHED_TO_MODERN"] = 3] = "SWITCHED_TO_MODERN";
-  TimelineNavigationSetting2[TimelineNavigationSetting2["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return TimelineNavigationSetting2;
-})(TimelineNavigationSetting || {});
-var BuiltInAiAvailability = /* @__PURE__ */ ((BuiltInAiAvailability2) => {
-  BuiltInAiAvailability2[BuiltInAiAvailability2["UNAVAILABLE_HAS_GPU"] = 0] = "UNAVAILABLE_HAS_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["DOWNLOADABLE_HAS_GPU"] = 1] = "DOWNLOADABLE_HAS_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["DOWNLOADING_HAS_GPU"] = 2] = "DOWNLOADING_HAS_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["AVAILABLE_HAS_GPU"] = 3] = "AVAILABLE_HAS_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["DISABLED_HAS_GPU"] = 4] = "DISABLED_HAS_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["UNAVAILABLE_NO_GPU"] = 5] = "UNAVAILABLE_NO_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["DOWNLOADABLE_NO_GPU"] = 6] = "DOWNLOADABLE_NO_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["DOWNLOADING_NO_GPU"] = 7] = "DOWNLOADING_NO_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["AVAILABLE_NO_GPU"] = 8] = "AVAILABLE_NO_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["DISABLED_NO_GPU"] = 9] = "DISABLED_NO_GPU";
-  BuiltInAiAvailability2[BuiltInAiAvailability2["MAX_VALUE"] = 10] = "MAX_VALUE";
-  return BuiltInAiAvailability2;
-})(BuiltInAiAvailability || {});
+})(ManifestSectionCodes || (ManifestSectionCodes = {}));
 
 // gen/front_end/core/host/host.prebundle.js
 var userMetrics = new UserMetrics();

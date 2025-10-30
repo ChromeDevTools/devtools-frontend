@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "tsBuildInfoFile": "source-map-scopes-codec-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/builder/builder.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/builder/safe_builder.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/codec.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/decode/decode.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/encode/encode.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/encode/encoder.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/mod.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/util.ts",
+    "../../../../../../../../front_end/third_party/source-map-scopes-codec/package/src/vlq.ts",
+    "../../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "./scopes-tsconfig.json"
+    }
+  ]
+}

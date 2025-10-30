@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": ["icon_button.prebundle.ts"],
-  "sourcesContent": ["// Copyright 2021 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as FileSourceIcon from './FileSourceIcon.js';\nimport * as Icon from './Icon.js';\nimport * as IconButton from './IconButton.js';\n\nexport {\n  FileSourceIcon,\n  Icon,\n  IconButton,\n};\n"],
-  "mappings": ";AAIA,YAAY,oBAAoB;AAChC,YAAY,UAAU;AACtB,YAAY,gBAAgB;AAE5B;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA;",
-  "names": []
-}
+{"version":3,"file":"icon_button.prebundle.js","sourceRoot":"","sources":["icon_button.prebundle.ts"],"names":[],"mappings":"AAAA,sCAAsC;AACtC,yEAAyE;AACzE,6BAA6B;AAE7B,OAAO,KAAK,cAAc,MAAM,qBAAqB,CAAC;AACtD,OAAO,KAAK,IAAI,MAAM,WAAW,CAAC;AAClC,OAAO,KAAK,UAAU,MAAM,iBAAiB,CAAC;AAE9C,OAAO,EACL,cAAc,EACd,IAAI,EACJ,UAAU,GACX,CAAC","sourcesContent":["// Copyright 2021 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as FileSourceIcon from './FileSourceIcon.js';\nimport * as Icon from './Icon.js';\nimport * as IconButton from './IconButton.js';\n\nexport {\n  FileSourceIcon,\n  Icon,\n  IconButton,\n};\n"]}

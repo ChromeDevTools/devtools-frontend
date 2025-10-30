@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": ["i18n.prebundle.ts"],
-  "sourcesContent": ["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as ByteUtilities from './ByteUtilities.js';\nimport * as DevToolsLocale from './DevToolsLocale.js';\nimport * as i18n from './i18nImpl.js';\nimport * as NumberFormatter from './NumberFormatter.js';\nimport * as TimeUtilities from './time-utilities.js';\n\nexport {\n  ByteUtilities,\n  DevToolsLocale,\n  i18n,\n  NumberFormatter,\n  TimeUtilities,\n};\n"],
-  "mappings": ";AAIA,YAAY,mBAAmB;AAC/B,YAAY,oBAAoB;AAChC,YAAY,UAAU;AACtB,YAAY,qBAAqB;AACjC,YAAY,mBAAmB;AAE/B;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA;",
-  "names": []
-}
+{"version":3,"file":"i18n.prebundle.js","sourceRoot":"","sources":["i18n.prebundle.ts"],"names":[],"mappings":"AAAA,sCAAsC;AACtC,yEAAyE;AACzE,6BAA6B;AAE7B,OAAO,KAAK,aAAa,MAAM,oBAAoB,CAAC;AACpD,OAAO,KAAK,cAAc,MAAM,qBAAqB,CAAC;AACtD,OAAO,KAAK,IAAI,MAAM,eAAe,CAAC;AACtC,OAAO,KAAK,eAAe,MAAM,sBAAsB,CAAC;AACxD,OAAO,KAAK,aAAa,MAAM,qBAAqB,CAAC;AAErD,OAAO,EACL,aAAa,EACb,cAAc,EACd,IAAI,EACJ,eAAe,EACf,aAAa,GACd,CAAC","sourcesContent":["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as ByteUtilities from './ByteUtilities.js';\nimport * as DevToolsLocale from './DevToolsLocale.js';\nimport * as i18n from './i18nImpl.js';\nimport * as NumberFormatter from './NumberFormatter.js';\nimport * as TimeUtilities from './time-utilities.js';\n\nexport {\n  ByteUtilities,\n  DevToolsLocale,\n  i18n,\n  NumberFormatter,\n  TimeUtilities,\n};\n"]}

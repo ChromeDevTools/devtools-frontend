@@ -5,6 +5,14 @@ import * as Root from "./../../../core/root/root.js";
 var themeSupportInstance;
 var themeValueByTargetByName = /* @__PURE__ */ new Map();
 var ThemeSupport = class _ThemeSupport extends EventTarget {
+  setting;
+  #themeName = "default";
+  computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
+  #documentsToTheme = /* @__PURE__ */ new Set([document]);
+  #darkThemeMediaQuery;
+  #highContrastMediaQuery;
+  #onThemeChangeListener = () => this.#applyTheme();
+  #onHostThemeChangeListener = () => this.fetchColorsAndApplyHostTheme();
   constructor(setting) {
     super();
     this.setting = setting;
@@ -13,26 +21,13 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     this.#darkThemeMediaQuery.addEventListener("change", this.#onThemeChangeListener);
     this.#highContrastMediaQuery.addEventListener("change", this.#onThemeChangeListener);
     setting.addChangeListener(this.#onThemeChangeListener);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-      Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
-      this.#onHostThemeChangeListener
-    );
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
   }
-  #themeName = "default";
-  computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
-  #documentsToTheme = /* @__PURE__ */ new Set([document]);
-  #darkThemeMediaQuery;
-  #highContrastMediaQuery;
-  #onThemeChangeListener = () => this.#applyTheme();
-  #onHostThemeChangeListener = () => this.fetchColorsAndApplyHostTheme();
   #dispose() {
     this.#darkThemeMediaQuery.removeEventListener("change", this.#onThemeChangeListener);
     this.#highContrastMediaQuery.removeEventListener("change", this.#onThemeChangeListener);
     this.setting.removeChangeListener(this.#onThemeChangeListener);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-      Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
-      this.#onHostThemeChangeListener
-    );
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
   }
   static hasInstance() {
     return typeof themeSupportInstance !== "undefined";
@@ -121,10 +116,7 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     }
     const oldColorsCssLink = document2.querySelector("link[href*='//theme/colors.css']");
     const newColorsCssLink = document2.createElement("link");
-    newColorsCssLink.setAttribute(
-      "href",
-      `devtools://theme/colors.css?sets=ui,chrome&version=${(/* @__PURE__ */ new Date()).getTime().toString()}`
-    );
+    newColorsCssLink.setAttribute("href", `devtools://theme/colors.css?sets=ui,chrome&version=${(/* @__PURE__ */ new Date()).getTime().toString()}`);
     newColorsCssLink.setAttribute("rel", "stylesheet");
     newColorsCssLink.setAttribute("type", "text/css");
     newColorsCssLink.onload = () => {

@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": ["intl-messageformat.prebundle.ts"],
-  "sourcesContent": ["// Copyright 2021 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport IntlMessageFormat from './package/intl-messageformat.esm.js';\nexport {IntlMessageFormat};\n"],
-  "mappings": ";AAIA,OAAO,uBAAuB;AAC9B,SAAQ;",
-  "names": []
-}
+{"version":3,"file":"intl-messageformat.prebundle.js","sourceRoot":"","sources":["intl-messageformat.prebundle.ts"],"names":[],"mappings":"AAAA,4DAA4D;AAC5D,yEAAyE;AACzE,6BAA6B;AAE7B,OAAO,iBAAiB,MAAM,qCAAqC,CAAC;AACpE,OAAO,EAAC,iBAAiB,EAAC,CAAC","sourcesContent":["// Copyright 2021 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport IntlMessageFormat from './package/intl-messageformat.esm.js';\nexport {IntlMessageFormat};\n"]}

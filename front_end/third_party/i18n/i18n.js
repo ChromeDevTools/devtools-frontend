@@ -19,12 +19,15 @@ __export(localized_string_set_exports, {
 import * as IntlMessageFormat from "./../intl-messageformat/intl-messageformat.js";
 var EMPTY_VALUES_OBJECT = {};
 var RegisteredFileStrings = class {
+  filename;
+  stringStructure;
+  localizedMessages;
+  localizedStringSet;
   constructor(filename, stringStructure, localizedMessages) {
     this.filename = filename;
     this.stringStructure = stringStructure;
     this.localizedMessages = localizedMessages;
   }
-  localizedStringSet;
   getLocalizedStringSetFor(locale) {
     if (this.localizedStringSet) {
       return this.localizedStringSet;
@@ -38,16 +41,19 @@ var RegisteredFileStrings = class {
   }
 };
 var LocalizedStringSet = class {
+  filename;
+  stringStructure;
+  localizedMessages;
+  cachedSimpleStrings = /* @__PURE__ */ new Map();
+  cachedMessageFormatters = /* @__PURE__ */ new Map();
+  /** For pseudo locales, use 'de-DE' for number formatting */
+  localeForFormatter;
   constructor(filename, stringStructure, locale, localizedMessages) {
     this.filename = filename;
     this.stringStructure = stringStructure;
     this.localizedMessages = localizedMessages;
     this.localeForFormatter = locale === "en-XA" || locale === "en-XL" ? "de-DE" : locale;
   }
-  cachedSimpleStrings = /* @__PURE__ */ new Map();
-  cachedMessageFormatters = /* @__PURE__ */ new Map();
-  /** For pseudo locales, use 'de-DE' for number formatting */
-  localeForFormatter;
   getLocalizedString(message, values = EMPTY_VALUES_OBJECT) {
     if (values === EMPTY_VALUES_OBJECT || Object.keys(values).length === 0) {
       return this.getSimpleLocalizedString(message);

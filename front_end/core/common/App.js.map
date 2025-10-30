@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": [],
-  "sourcesContent": [],
-  "mappings": "",
-  "names": []
-}
+{"version":3,"file":"App.js","sourceRoot":"","sources":["../../../../../../front_end/core/common/App.ts"],"names":[],"mappings":"AAAA,sCAAsC;AACtC,yEAAyE;AACzE,6BAA6B","sourcesContent":["// Copyright 2019 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nexport interface App {\n  presentUI(document: Document): void;\n}\n"]}

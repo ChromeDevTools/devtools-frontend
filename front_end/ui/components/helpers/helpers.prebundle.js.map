@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": ["helpers.prebundle.ts"],
-  "sourcesContent": ["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as ComponentServerSetup from './component-server-setup.js';\nimport * as Directives from './directives.js';\nimport * as GetRootNode from './get-root-node.js';\nimport * as ScheduledRender from './scheduled-render.js';\n\nexport {\n  ComponentServerSetup,\n  Directives,\n  GetRootNode,\n  ScheduledRender,\n};\n"],
-  "mappings": ";AAIA,YAAY,0BAA0B;AACtC,YAAY,gBAAgB;AAC5B,YAAY,iBAAiB;AAC7B,YAAY,qBAAqB;AAEjC;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA;",
-  "names": []
-}
+{"version":3,"file":"helpers.prebundle.js","sourceRoot":"","sources":["helpers.prebundle.ts"],"names":[],"mappings":"AAAA,sCAAsC;AACtC,yEAAyE;AACzE,6BAA6B;AAE7B,OAAO,KAAK,oBAAoB,MAAM,6BAA6B,CAAC;AACpE,OAAO,KAAK,UAAU,MAAM,iBAAiB,CAAC;AAC9C,OAAO,KAAK,WAAW,MAAM,oBAAoB,CAAC;AAClD,OAAO,KAAK,eAAe,MAAM,uBAAuB,CAAC;AAEzD,OAAO,EACL,oBAAoB,EACpB,UAAU,EACV,WAAW,EACX,eAAe,GAChB,CAAC","sourcesContent":["// Copyright 2020 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as ComponentServerSetup from './component-server-setup.js';\nimport * as Directives from './directives.js';\nimport * as GetRootNode from './get-root-node.js';\nimport * as ScheduledRender from './scheduled-render.js';\n\nexport {\n  ComponentServerSetup,\n  Directives,\n  GetRootNode,\n  ScheduledRender,\n};\n"]}

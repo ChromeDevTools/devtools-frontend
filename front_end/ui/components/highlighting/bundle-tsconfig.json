@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/ui/components/highlighting"},"files":["../../../../../../../front_end/ui/components/highlighting/highlighting.ts"],"references":[{"path":"./highlighting-tsconfig.json"}]}

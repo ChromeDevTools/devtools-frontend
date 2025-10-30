@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "button.css.js",
+        "floatingButton.css.js",
+        "textButton.css.js"
+    ]
+}

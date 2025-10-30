@@ -1,26 +1,28 @@
-"use strict";
+// Copyright 2016 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 export class CharacterIdMap {
-  #elementToCharacter = /* @__PURE__ */ new Map();
-  #characterToElement = /* @__PURE__ */ new Map();
-  #charCode = 33;
-  toChar(object) {
-    let character = this.#elementToCharacter.get(object);
-    if (!character) {
-      if (this.#charCode >= 65535) {
-        throw new Error("CharacterIdMap ran out of capacity!");
-      }
-      character = String.fromCharCode(this.#charCode++);
-      this.#elementToCharacter.set(object, character);
-      this.#characterToElement.set(character, object);
+    #elementToCharacter = new Map();
+    #characterToElement = new Map();
+    #charCode = 33;
+    toChar(object) {
+        let character = this.#elementToCharacter.get(object);
+        if (!character) {
+            if (this.#charCode >= 0xFFFF) {
+                throw new Error('CharacterIdMap ran out of capacity!');
+            }
+            character = String.fromCharCode(this.#charCode++);
+            this.#elementToCharacter.set(object, character);
+            this.#characterToElement.set(character, object);
+        }
+        return character;
     }
-    return character;
-  }
-  fromChar(character) {
-    const object = this.#characterToElement.get(character);
-    if (object === void 0) {
-      return null;
+    fromChar(character) {
+        const object = this.#characterToElement.get(character);
+        if (object === undefined) {
+            return null;
+        }
+        return object;
     }
-    return object;
-  }
 }
 //# sourceMappingURL=CharacterIdMap.js.map

@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": [],
-  "sourcesContent": [],
-  "mappings": "",
-  "names": []
-}
+{"version":3,"file":"i18nTypes.js","sourceRoot":"","sources":["../../../../../../front_end/core/i18n/i18nTypes.ts"],"names":[],"mappings":"AAAA,sCAAsC;AACtC,yEAAyE;AACzE,6BAA6B","sourcesContent":["// Copyright 2021 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nexport type Values = Record<string, string|boolean|number>;\n\nexport interface SerializedMessage {\n  string: string;\n  values: Values;\n}\n"]}

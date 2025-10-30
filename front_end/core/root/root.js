@@ -8,7 +8,6 @@ var __export = (target, all) => {
 var Runtime_exports = {};
 __export(Runtime_exports, {
   Experiment: () => Experiment,
-  ExperimentName: () => ExperimentName,
   ExperimentsSupport: () => ExperimentsSupport,
   GdpProfilesEnterprisePolicyValue: () => GdpProfilesEnterprisePolicyValue,
   GenAiEnterprisePolicyValue: () => GenAiEnterprisePolicyValue,
@@ -146,14 +145,7 @@ var ExperimentsSupport = class {
       throw new Error(`Duplicate registration of experiment '${experimentName}'`);
     }
     this.#experimentNames.add(experimentName);
-    this.#experiments.push(new Experiment(
-      this,
-      experimentName,
-      experimentTitle,
-      Boolean(unstable),
-      docLink ?? Platform.DevToolsPath.EmptyUrlString,
-      feedbackLink ?? Platform.DevToolsPath.EmptyUrlString
-    ));
+    this.#experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? Platform.DevToolsPath.EmptyUrlString, feedbackLink ?? Platform.DevToolsPath.EmptyUrlString));
   }
   isEnabled(experimentName) {
     this.checkExperiment(experimentName);
@@ -274,40 +266,24 @@ var Experiment = class {
   }
 };
 var experiments = new ExperimentsSupport();
-var ExperimentName = /* @__PURE__ */ ((ExperimentName2) => {
-  ExperimentName2["CAPTURE_NODE_CREATION_STACKS"] = "capture-node-creation-stacks";
-  ExperimentName2["CSS_OVERVIEW"] = "css-overview";
-  ExperimentName2["LIVE_HEAP_PROFILE"] = "live-heap-profile";
-  ExperimentName2["ALL"] = "*";
-  ExperimentName2["PROTOCOL_MONITOR"] = "protocol-monitor";
-  ExperimentName2["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
-  ExperimentName2["HEADER_OVERRIDES"] = "header-overrides";
-  ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
-  ExperimentName2["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";
-  ExperimentName2["JUST_MY_CODE"] = "just-my-code";
-  ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
-  ExperimentName2["TIMELINE_SHOW_POST_MESSAGE_EVENTS"] = "timeline-show-postmessage-events";
-  ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
-  return ExperimentName2;
-})(ExperimentName || {});
-var GenAiEnterprisePolicyValue = /* @__PURE__ */ ((GenAiEnterprisePolicyValue2) => {
+var GenAiEnterprisePolicyValue;
+(function(GenAiEnterprisePolicyValue2) {
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["ALLOW"] = 0] = "ALLOW";
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["ALLOW_WITHOUT_LOGGING"] = 1] = "ALLOW_WITHOUT_LOGGING";
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["DISABLE"] = 2] = "DISABLE";
-  return GenAiEnterprisePolicyValue2;
-})(GenAiEnterprisePolicyValue || {});
-var HostConfigFreestylerExecutionMode = /* @__PURE__ */ ((HostConfigFreestylerExecutionMode2) => {
+})(GenAiEnterprisePolicyValue || (GenAiEnterprisePolicyValue = {}));
+var HostConfigFreestylerExecutionMode;
+(function(HostConfigFreestylerExecutionMode2) {
   HostConfigFreestylerExecutionMode2["ALL_SCRIPTS"] = "ALL_SCRIPTS";
   HostConfigFreestylerExecutionMode2["SIDE_EFFECT_FREE_SCRIPTS_ONLY"] = "SIDE_EFFECT_FREE_SCRIPTS_ONLY";
   HostConfigFreestylerExecutionMode2["NO_SCRIPTS"] = "NO_SCRIPTS";
-  return HostConfigFreestylerExecutionMode2;
-})(HostConfigFreestylerExecutionMode || {});
-var GdpProfilesEnterprisePolicyValue = /* @__PURE__ */ ((GdpProfilesEnterprisePolicyValue2) => {
+})(HostConfigFreestylerExecutionMode || (HostConfigFreestylerExecutionMode = {}));
+var GdpProfilesEnterprisePolicyValue;
+(function(GdpProfilesEnterprisePolicyValue2) {
   GdpProfilesEnterprisePolicyValue2[GdpProfilesEnterprisePolicyValue2["ENABLED"] = 0] = "ENABLED";
   GdpProfilesEnterprisePolicyValue2[GdpProfilesEnterprisePolicyValue2["ENABLED_WITHOUT_BADGES"] = 1] = "ENABLED_WITHOUT_BADGES";
   GdpProfilesEnterprisePolicyValue2[GdpProfilesEnterprisePolicyValue2["DISABLED"] = 2] = "DISABLED";
-  return GdpProfilesEnterprisePolicyValue2;
-})(GdpProfilesEnterprisePolicyValue || {});
+})(GdpProfilesEnterprisePolicyValue || (GdpProfilesEnterprisePolicyValue = {}));
 var hostConfig = /* @__PURE__ */ Object.create(null);
 var conditions = {
   canDock: () => Boolean(Runtime.queryParam("can_dock"))

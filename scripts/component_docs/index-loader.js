@@ -1,16 +1,29 @@
 
     const components = {
-      'Icon': () => import('../../front_end/ui/components/icon_button/Icon.docs.js'),
+      'Button': () => import('../../front_end/ui/components/buttons/Button.docs.js'),
+'Icon': () => import('../../front_end/ui/components/icon_button/Icon.docs.js'),
+'Spinners': () => import('../../front_end/ui/components/spinners/Spinners.docs.js'),
+'Tooltip': () => import('../../front_end/ui/components/tooltips/Tooltip.docs.js'),
     };
 
-    const container = document.getElementById('container');
+    const mainContent = document.querySelector('.main-content');
 
     async function loadComponent(name) {
-      if (!components[name]) {
+      if (!components[name] || !mainContent) {
         return;
       }
+
+      let container = document.getElementById('container');
+      // Replace the container to start off with a clean one.
+      if (container) {
+        container.remove();
+      }
+
+      container = document.createElement('div');
+      container.id = 'container';
+      mainContent.appendChild(container);
+
       const {render} = await components[name]();
-      container.innerHTML = '';
       render(container);
     }
 

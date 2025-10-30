@@ -1,0 +1,163 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/core/sdk",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "tsBuildInfoFile": "sdk-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../front_end/core/sdk/AccessibilityModel.ts",
+    "../../../../../../front_end/core/sdk/AnimationModel.ts",
+    "../../../../../../front_end/core/sdk/AutofillModel.ts",
+    "../../../../../../front_end/core/sdk/CPUProfilerModel.ts",
+    "../../../../../../front_end/core/sdk/CPUThrottlingManager.ts",
+    "../../../../../../front_end/core/sdk/CSSContainerQuery.ts",
+    "../../../../../../front_end/core/sdk/CSSFontFace.ts",
+    "../../../../../../front_end/core/sdk/CSSLayer.ts",
+    "../../../../../../front_end/core/sdk/CSSMatchedStyles.ts",
+    "../../../../../../front_end/core/sdk/CSSMedia.ts",
+    "../../../../../../front_end/core/sdk/CSSMetadata.ts",
+    "../../../../../../front_end/core/sdk/CSSModel.ts",
+    "../../../../../../front_end/core/sdk/CSSProperty.ts",
+    "../../../../../../front_end/core/sdk/CSSPropertyParser.ts",
+    "../../../../../../front_end/core/sdk/CSSPropertyParserMatchers.ts",
+    "../../../../../../front_end/core/sdk/CSSQuery.ts",
+    "../../../../../../front_end/core/sdk/CSSRule.ts",
+    "../../../../../../front_end/core/sdk/CSSScope.ts",
+    "../../../../../../front_end/core/sdk/CSSStartingStyle.ts",
+    "../../../../../../front_end/core/sdk/CSSStyleDeclaration.ts",
+    "../../../../../../front_end/core/sdk/CSSStyleSheetHeader.ts",
+    "../../../../../../front_end/core/sdk/CSSSupports.ts",
+    "../../../../../../front_end/core/sdk/CategorizedBreakpoint.ts",
+    "../../../../../../front_end/core/sdk/ChildTargetManager.ts",
+    "../../../../../../front_end/core/sdk/CompilerSourceMappingContentProvider.ts",
+    "../../../../../../front_end/core/sdk/Connections.ts",
+    "../../../../../../front_end/core/sdk/ConsoleModel.ts",
+    "../../../../../../front_end/core/sdk/ConsoleModelTypes.ts",
+    "../../../../../../front_end/core/sdk/Cookie.ts",
+    "../../../../../../front_end/core/sdk/CookieModel.ts",
+    "../../../../../../front_end/core/sdk/CookieParser.ts",
+    "../../../../../../front_end/core/sdk/DOMDebuggerModel.ts",
+    "../../../../../../front_end/core/sdk/DOMModel.ts",
+    "../../../../../../front_end/core/sdk/DebuggerModel.ts",
+    "../../../../../../front_end/core/sdk/EmulationModel.ts",
+    "../../../../../../front_end/core/sdk/EnhancedTracesParser.ts",
+    "../../../../../../front_end/core/sdk/EventBreakpointsModel.ts",
+    "../../../../../../front_end/core/sdk/FrameAssociated.ts",
+    "../../../../../../front_end/core/sdk/FrameManager.ts",
+    "../../../../../../front_end/core/sdk/HeapProfilerModel.ts",
+    "../../../../../../front_end/core/sdk/HttpReasonPhraseStrings.ts",
+    "../../../../../../front_end/core/sdk/IOModel.ts",
+    "../../../../../../front_end/core/sdk/IsolateManager.ts",
+    "../../../../../../front_end/core/sdk/IssuesModel.ts",
+    "../../../../../../front_end/core/sdk/LayerTreeBase.ts",
+    "../../../../../../front_end/core/sdk/LogModel.ts",
+    "../../../../../../front_end/core/sdk/NetworkManager.ts",
+    "../../../../../../front_end/core/sdk/NetworkRequest.ts",
+    "../../../../../../front_end/core/sdk/OverlayColorGenerator.ts",
+    "../../../../../../front_end/core/sdk/OverlayModel.ts",
+    "../../../../../../front_end/core/sdk/OverlayPersistentHighlighter.ts",
+    "../../../../../../front_end/core/sdk/PageLoad.ts",
+    "../../../../../../front_end/core/sdk/PageResourceLoader.ts",
+    "../../../../../../front_end/core/sdk/PaintProfiler.ts",
+    "../../../../../../front_end/core/sdk/PerformanceMetricsModel.ts",
+    "../../../../../../front_end/core/sdk/PreloadingModel.ts",
+    "../../../../../../front_end/core/sdk/RehydratingConnection.ts",
+    "../../../../../../front_end/core/sdk/RehydratingObject.ts",
+    "../../../../../../front_end/core/sdk/RemoteObject.ts",
+    "../../../../../../front_end/core/sdk/Resource.ts",
+    "../../../../../../front_end/core/sdk/ResourceTreeModel.ts",
+    "../../../../../../front_end/core/sdk/RuntimeModel.ts",
+    "../../../../../../front_end/core/sdk/SDKModel.ts",
+    "../../../../../../front_end/core/sdk/ScopeTreeCache.ts",
+    "../../../../../../front_end/core/sdk/ScreenCaptureModel.ts",
+    "../../../../../../front_end/core/sdk/Script.ts",
+    "../../../../../../front_end/core/sdk/SecurityOriginManager.ts",
+    "../../../../../../front_end/core/sdk/ServerSentEvents.ts",
+    "../../../../../../front_end/core/sdk/ServerSentEventsProtocol.ts",
+    "../../../../../../front_end/core/sdk/ServerTiming.ts",
+    "../../../../../../front_end/core/sdk/ServiceWorkerCacheModel.ts",
+    "../../../../../../front_end/core/sdk/ServiceWorkerManager.ts",
+    "../../../../../../front_end/core/sdk/SourceMap.ts",
+    "../../../../../../front_end/core/sdk/SourceMapCache.ts",
+    "../../../../../../front_end/core/sdk/SourceMapFunctionRanges.ts",
+    "../../../../../../front_end/core/sdk/SourceMapManager.ts",
+    "../../../../../../front_end/core/sdk/SourceMapScopeChainEntry.ts",
+    "../../../../../../front_end/core/sdk/SourceMapScopesInfo.ts",
+    "../../../../../../front_end/core/sdk/StorageBucketsModel.ts",
+    "../../../../../../front_end/core/sdk/StorageKeyManager.ts",
+    "../../../../../../front_end/core/sdk/Target.ts",
+    "../../../../../../front_end/core/sdk/TargetManager.ts",
+    "../../../../../../front_end/core/sdk/TraceObject.ts",
+    "../../../../../../front_end/core/sdk/WebAuthnModel.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../host/bundle-tsconfig.json"
+    },
+    {
+      "path": "../i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../protocol_client/bundle-tsconfig.json"
+    },
+    {
+      "path": "../root/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../../models/cpu_profile/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/formatter/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.json"
+    }
+  ]
+}

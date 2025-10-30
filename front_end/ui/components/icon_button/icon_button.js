@@ -360,13 +360,11 @@ var IconButton = class extends HTMLElement {
       <style>${iconButton_css_default}</style>
       <button class=${buttonClasses} @click=${this.#onClickHandler} aria-label=${Lit.Directives.ifDefined(this.#accessibleName)}>
       ${!this.#compact && this.#leadingText ? html`<span class="icon-button-title">${this.#leadingText}</span>` : Lit.nothing}
-      ${filteredGroups.map(
-      (counter) => html`
+      ${filteredGroups.map((counter) => html`
       <devtools-icon class="status-icon" name=${counter.iconName} style="color: ${counter.iconColor}; width: ${counter.iconWidth || "var(--sys-size-7)"}; height: ${counter.iconHeight || "var(--sys-size-7)"}">
       </devtools-icon>
       ${this.#compact ? html`<!-- Force line-height for this element --><span>&#8203;</span>` : Lit.nothing}
-      <span class="icon-button-title">${counter.text}</span>`
-    )}
+      <span class="icon-button-title">${counter.text}</span>`)}
       </button>
       ${!this.#compact && this.#trailingText ? html`<span class="icon-button-title">${this.#trailingText}</span>` : Lit.nothing}
     `, this.#shadow, { host: this });
@@ -469,13 +467,9 @@ var FileSourceIcon = class extends HTMLElement {
       green: Boolean(this.#hasDotBadge && !this.#isDotPurple),
       ...this.#contentType ? { [this.#contentType]: this.#contentType } : null
     });
-    render2(
-      html2`
+    render2(html2`
       <style>${fileSourceIcon_css_default}</style>
-      <devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`,
-      this.#shadow,
-      { host: this }
-    );
+      <devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`, this.#shadow, { host: this });
   }
 };
 customElements.define("devtools-file-source-icon", FileSourceIcon);

@@ -1,46 +1,8 @@
-var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJS = (cb, mod2) => function __require() {
-  return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
-  mod2
-));
-
-// gen/front_end/core/platform/Brand.js
-var require_Brand = __commonJS({
-  "gen/front_end/core/platform/Brand.js"() {
-    "use strict";
-  }
-});
-
-// gen/front_end/core/platform/Constructor.js
-var require_Constructor = __commonJS({
-  "gen/front_end/core/platform/Constructor.js"() {
-    "use strict";
-  }
-});
 
 // gen/front_end/core/platform/ArrayUtilities.js
 var ArrayUtilities_exports = {};
@@ -211,7 +173,7 @@ function nearestIndexFromBeginning(arr, predicate) {
     arr,
     predicate,
     "BEGINNING"
-    /* BEGINNING */
+    /* NearestSearchStart.BEGINNING */
   );
 }
 function nearestIndexFromEnd(arr, predicate) {
@@ -219,16 +181,18 @@ function nearestIndexFromEnd(arr, predicate) {
     arr,
     predicate,
     "END"
-    /* END */
+    /* NearestSearchStart.END */
   );
 }
 function arrayDoesNotContainNullOrUndefined(arr) {
   return !arr.includes(null) && !arr.includes(void 0);
 }
 
-// gen/front_end/core/platform/platform.prebundle.js
-var Brand = __toESM(require_Brand());
-var Constructor = __toESM(require_Constructor());
+// gen/front_end/core/platform/Brand.js
+var Brand_exports = {};
+
+// gen/front_end/core/platform/Constructor.js
+var Constructor_exports = {};
 
 // gen/front_end/core/platform/DateUtilities.js
 var DateUtilities_exports = {};
@@ -376,27 +340,13 @@ function appendStyle(node, ...styles) {
 var KeyboardUtilities_exports = {};
 __export(KeyboardUtilities_exports, {
   ARROW_KEYS: () => ARROW_KEYS,
-  ArrowKey: () => ArrowKey,
   ENTER_KEY: () => ENTER_KEY,
   ESCAPE_KEY: () => ESCAPE_KEY,
-  PageKey: () => PageKey,
   TAB_KEY: () => TAB_KEY,
   isEnterOrSpaceKey: () => isEnterOrSpaceKey,
   isEscKey: () => isEscKey,
   keyIsArrowKey: () => keyIsArrowKey
 });
-var ArrowKey = /* @__PURE__ */ ((ArrowKey2) => {
-  ArrowKey2["UP"] = "ArrowUp";
-  ArrowKey2["DOWN"] = "ArrowDown";
-  ArrowKey2["LEFT"] = "ArrowLeft";
-  ArrowKey2["RIGHT"] = "ArrowRight";
-  return ArrowKey2;
-})(ArrowKey || {});
-var PageKey = /* @__PURE__ */ ((PageKey2) => {
-  PageKey2["UP"] = "PageUp";
-  PageKey2["DOWN"] = "PageDown";
-  return PageKey2;
-})(PageKey || {});
 var ENTER_KEY = "Enter";
 var ESCAPE_KEY = "Escape";
 var TAB_KEY = "Tab";
@@ -405,7 +355,6 @@ var ARROW_KEYS = /* @__PURE__ */ new Set([
   "ArrowDown",
   "ArrowLeft",
   "ArrowRight"
-  /* RIGHT */
 ]);
 function keyIsArrowKey(key) {
   return ARROW_KEYS.has(key);
@@ -500,23 +449,9 @@ function getWithDefault(map, key, defaultValueFactory) {
 // gen/front_end/core/platform/MimeType.js
 var MimeType_exports = {};
 __export(MimeType_exports, {
-  MimeType: () => MimeType,
   isTextType: () => isTextType,
   parseContentType: () => parseContentType
 });
-var MimeType = /* @__PURE__ */ ((MimeType2) => {
-  MimeType2["HTML"] = "text/html";
-  MimeType2["XML"] = "text/xml";
-  MimeType2["PLAIN"] = "text/plain";
-  MimeType2["XHTML"] = "application/xhtml+xml";
-  MimeType2["SVG"] = "image/svg+xml";
-  MimeType2["CSS"] = "text/css";
-  MimeType2["XSL"] = "text/xsl";
-  MimeType2["VTT"] = "text/vtt";
-  MimeType2["PDF"] = "application/pdf";
-  MimeType2["EVENTSTREAM"] = "text/event-stream";
-  return MimeType2;
-})(MimeType || {});
 var ADDITIONAL_TEXT_MIME_TYPES = /* @__PURE__ */ new Set([
   "application/ecmascript",
   "application/javascript",
@@ -852,12 +787,7 @@ var toBase64 = (inputString) => {
     shift = i % 3;
     v |= data[i] << (16 >>> shift & 24);
     if (shift === 2) {
-      encoded += String.fromCharCode(
-        encodeBits(v >>> 18 & 63),
-        encodeBits(v >>> 12 & 63),
-        encodeBits(v >>> 6 & 63),
-        encodeBits(v & 63)
-      );
+      encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), encodeBits(v & 63));
       v = 0;
     }
   }
@@ -1371,8 +1301,8 @@ function isUserVisibleError(error) {
 }
 export {
   ArrayUtilities_exports as ArrayUtilities,
-  Brand,
-  Constructor,
+  Brand_exports as Brand,
+  Constructor_exports as Constructor,
   DOMUtilities_exports as DOMUtilities,
   DateUtilities_exports as DateUtilities,
   DevToolsPath_exports as DevToolsPath,

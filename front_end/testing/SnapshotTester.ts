@@ -37,7 +37,21 @@ class BaseSnapshotTester {
   #anyFailures = false;
   #newTests = false;
 
-  constructor(meta: ImportMeta) {
+  constructor(context: Mocha.Suite, meta: ImportMeta) {
+    if (context.timeout() > 0) {
+      // The first usage of SnapshotTester in a test seems to take an extraordinary
+      // amount of time, so let's bump the timeout for all snapshot tests.
+      context.timeout(Math.max(context.timeout(), 45000));
+    }
+
+    context.beforeAll(async () => {
+      await this.load();
+    });
+
+    context.afterAll(async () => {
+      await this.finish();
+    });
+
     // out/Default/gen/third_party/devtools-frontend/src/front_end/testing/SnapshotTester.test.js?8ee4f2b123e221040a4aa075a28d0e5b41d3d3ed
     // ->
     // front_end/testing/SnapshotTester.snapshot.txt

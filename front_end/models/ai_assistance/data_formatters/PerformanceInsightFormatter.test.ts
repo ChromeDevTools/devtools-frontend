@@ -12,17 +12,7 @@ import type * as Trace from '../../trace/trace.js';
 import {AIContext, PerformanceInsightFormatter} from '../ai_assistance.js';
 
 describeWithLocale('PerformanceInsightFormatter', function() {
-  this.timeout(20000);
-
-  let snapshotTester: SnapshotTester;
-  before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
-    await snapshotTester.load();
-  });
-
-  after(async () => {
-    await snapshotTester.finish();
-  });
+  const snapshotTester = new SnapshotTester(this, import.meta);
 
   setupRuntimeHooks();
   setupSettingsHooks();

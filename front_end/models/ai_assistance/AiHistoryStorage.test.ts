@@ -546,16 +546,8 @@ describe('AiHistoryStorage', () => {
     });
   });
 
-  describe('getConversationMarkdown', () => {
-    let snapshotTester: SnapshotTester;
-    before(async () => {
-      snapshotTester = new SnapshotTester(import.meta);
-      await snapshotTester.load();
-    });
-
-    after(async () => {
-      await snapshotTester.finish();
-    });
+  describe('getConversationMarkdown', function() {
+    const snapshotTester = new SnapshotTester(this, import.meta);
 
     it('should generate markdown from a conversation', function() {
       const fakeTime = new Date('2024-01-01T00:00:00.000Z');

@@ -96,18 +96,10 @@ For Karma unit tests, you can add regression tests for string output (similar to
 
 Results for all snapshots for a test file `MyFile.test.ts` are written to `MyFile.snapshot.txt`.
 
-To add snapshot tests to a new test file, add a before and after hook to the describe test suite:
+To add snapshot tests to a new test file, add this within the `describe` test suite:
 
 ```
-let snapshotTester: SnapshotTester;
-before(async () => {
-  snapshotTester = new SnapshotTester(import.meta);
-  await snapshotTester.load();
-});
-
-after(async () => {
-  await snapshotTester.finish();
-});
+const snapshotTester = new SnapshotTester(this, import.meta);
 ```
 
 Then inside a test, call `snapshotTester.assert(this, output)`. For an example, see SnapshotTester.test.ts.

@@ -17,7 +17,9 @@ import * as AiAssistance from '../ai_assistance.js';
 
 const {StylingAgent, AiAgent} = AiAssistance;
 
-describeWithEnvironment('StylingAgent', () => {
+describeWithEnvironment('StylingAgent', function() {
+  const snapshotTester = new SnapshotTester(this, import.meta);
+
   function mockHostConfig(
       modelId?: string, temperature?: number, userTier?: string,
       executionMode?: Root.Runtime.HostConfigFreestylerExecutionMode, multimodal?: boolean) {
@@ -58,16 +60,6 @@ describeWithEnvironment('StylingAgent', () => {
     element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     element.domModel.returns(domModel);
     element.backendNodeId.returns(99 as unknown as ReturnType<SDK.DOMModel.DOMNode['backendNodeId']>);
-  });
-
-  let snapshotTester: SnapshotTester;
-  before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
-    await snapshotTester.load();
-  });
-
-  after(async () => {
-    await snapshotTester.finish();
   });
 
   describe('describeElement', () => {

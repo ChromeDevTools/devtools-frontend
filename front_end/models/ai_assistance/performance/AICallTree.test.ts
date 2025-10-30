@@ -11,16 +11,8 @@ import {AICallTree} from '../ai_assistance.js';
 
 const NODE_NAME_INDEX = 2;
 
-describeWithEnvironment('AICallTree', () => {
-  let snapshotTester: SnapshotTester;
-  before(async () => {
-    snapshotTester = new SnapshotTester(import.meta);
-    await snapshotTester.load();
-  });
-
-  after(async () => {
-    await snapshotTester.finish();
-  });
+describeWithEnvironment('AICallTree', function() {
+  const snapshotTester = new SnapshotTester(this, import.meta);
 
   it('will not build a tree from non-main-thread events', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');

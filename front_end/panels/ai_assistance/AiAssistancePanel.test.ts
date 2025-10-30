@@ -1738,16 +1738,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
-  describe('getResponseMarkdown', () => {
-    let snapshotTester: SnapshotTester;
-    before(async () => {
-      snapshotTester = new SnapshotTester(import.meta);
-      await snapshotTester.load();
-    });
-
-    after(async () => {
-      await snapshotTester.finish();
-    });
+  describe('getResponseMarkdown', function() {
+    const snapshotTester = new SnapshotTester(this, import.meta);
 
     it('should generate correct markdown from a message object', function() {
       const message: AiAssistancePanel.ModelChatMessage = {

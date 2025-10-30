@@ -54,6 +54,9 @@ test/perf/.generated
 
 /.gemini/settings.json
 
+# DevTools common script settings
+.env
+
 # Linters caches
 .eslintcache
 .stylelintcache

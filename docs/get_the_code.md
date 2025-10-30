@@ -100,6 +100,33 @@ sudo sysctl -p
 You may also need to pay attention to the values of `max_queued_events` and `max_user_instances`
 if you encounter any errors.
 
+### Using a `.env` file for default script options
+
+Many scripts, like `npm run build` and `npm start`, accept command-line flags to configure their behavior (e.g., `-t <target>`, `--browser=<name>`).
+
+To avoid typing these flags every time, you can set your preferred defaults in a .env file at the root of the devtools-frontend directory.
+
+The `.env.template` file lists all supported variables. Copy it to `.env` to get started.
+
+```bash
+cp .env.template .env
+```
+
+As mentioned earlier, you might create a fast build target. Instead of always typing `npm run build -- -t fast-build`, to remove the flag repetition you simple run `npm run build` you can set the following variable in your `.env` file:
+
+```shell
+DEVTOOLS_TARGET=fast-build
+```
+
+Another example - by default running `npm start` auto-opens DevTools for new Tabs.
+You may want to disable this so fewer pop-up happen while debugging, usually done via `--no-open` flag. Or with `.env` set the following value:
+
+```shell
+DEVTOOLS_AUTO_OPEN_DEVTOOLS=false
+```
+
+To use `.env` file from other script, refer to the helper in `scripts/env-utils.mjs`. That should provide the necessary helper to work with the config, and make maintenance simpler.
+
 ### Update to latest
 
 To update to latest tip of tree version:

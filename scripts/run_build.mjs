@@ -9,12 +9,13 @@ import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
 import {build, prepareBuild} from './devtools_build.mjs';
+import { ENV, getEnvString } from './env-utils.mjs';
 
 const argv = yargs(hideBin(process.argv))
                  .option('target', {
                    alias: 't',
                    type: 'string',
-                   default: 'Default',
+                   default: getEnvString(ENV.TARGET, 'Default'),
                    description: 'Specify the target build subdirectory under //out',
                  })
                  .option('skip-initial-build', {

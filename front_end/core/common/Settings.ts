@@ -565,6 +565,9 @@ export class Setting<V> {
     return null;
   }
 
+  /**
+   * See {@link LearnMore} for more info
+   */
   learnMore(): LearnMore|null {
     return this.#registration?.learnMore ?? null;
   }

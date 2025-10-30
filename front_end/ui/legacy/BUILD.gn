@@ -155,6 +155,7 @@ devtools_entrypoint("bundle") {
 
     # Required for x-link
     "../components/panel_feedback/*",
+    "../components/settings/*",
     "../components/text_editor/*",
 
     # Required for correct button styling in the Computed tab

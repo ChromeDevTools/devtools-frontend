@@ -35,11 +35,16 @@ p {
   height: var(--sys-size-9);
 }
 
-.learn-more {
+.info-icon {
   cursor: pointer;
   position: relative;
   margin-left: var(--sys-size-2);
   top: var(--sys-size-2);
   width: var(--sys-size-9);
   height: var(--sys-size-9);
+}
+
+.link {
+  color: var(--text-link);
+  text-decoration: underline;
 }

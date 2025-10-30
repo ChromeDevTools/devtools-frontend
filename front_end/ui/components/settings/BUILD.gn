@@ -23,11 +23,13 @@ devtools_ui_module("settings") {
 
   deps = [
     "../../../core/common:bundle",
+    "../../legacy:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",
     "../buttons:bundle",
     "../helpers:bundle",
     "../input:bundle",
+    "../tooltips:bundle",
   ]
 }
 

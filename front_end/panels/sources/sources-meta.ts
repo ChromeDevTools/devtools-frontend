@@ -396,7 +396,11 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Sources category in Settings
    */
-  wasmAutoStepping: 'When debugging Wasm with debug information, do not pause on wasm bytecode if possible',
+  wasmAutoStepping: 'Wasm auto-stepping bytecode',
+  /**
+   * @description Tooltip text for a setting that controls Wasm will try to skip wasm bytecode
+   */
+  wasmAutoSteppingInfo: 'When debugging Wasm with debug information, try to skip wasm bytecode',
   /**
    * @description Title of a setting under the Sources category in Settings
    */
@@ -1850,6 +1854,9 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.disableWasmAutoStepping),
     },
   ],
+  learnMore: {
+    tooltip: i18nLazyString(UIStrings.wasmAutoSteppingInfo),
+  }
 });
 
 UI.ViewManager.registerLocationResolver({

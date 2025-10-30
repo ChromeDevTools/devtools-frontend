@@ -353,8 +353,11 @@ const UIStrings = {
   /**
    * @description Label of a checkbox in the DevTools settings UI.
    */
-  enableRemoteFileLoading:
-      'Allow `DevTools` to load resources, such as source maps, from remote file paths. Disabled by default for security reasons.',
+  enableRemoteFileLoading: 'Allow loading remote file path resources in DevTools',
+  /**
+   * @description Tooltip text for a setting that controls whether external resource can be loaded in DevTools.
+   */
+  remoteFileLoadingInfo: 'Example resource are source maps. Disabled by default for security reasons.',
   /**
    * @description Tooltip text for a setting that controls the network cache. Disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
    */
@@ -1160,4 +1163,7 @@ Common.Settings.registerSettingExtension({
   settingName: 'network.enable-remote-file-loading',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
+  learnMore: {
+    tooltip: i18nLazyString(UIStrings.remoteFileLoadingInfo),
+  }
 });

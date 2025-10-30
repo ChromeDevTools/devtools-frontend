@@ -13,7 +13,7 @@ export class ProfileNode {
   id: number;
   parent: ProfileNode|null;
   children: this[];
-  functionName: string;
+  originalFunctionName: string|null = null;
   depth!: number;
   deoptReason!: string|null;
   constructor(callFrame: Protocol.Runtime.CallFrame) {
@@ -22,7 +22,6 @@ export class ProfileNode {
     this.self = 0;
     this.total = 0;
     this.id = 0;
-    this.functionName = callFrame.functionName;
     this.parent = null;
     this.children = [];
   }
@@ -43,11 +42,12 @@ export class ProfileNode {
     return this.callFrame.columnNumber;
   }
 
-  setFunctionName(name: string|null): void {
-    if (name === null) {
-      return;
-    }
-    this.functionName = name;
+  get functionName(): string {
+    return this.originalFunctionName ?? this.callFrame.functionName;
+  }
+
+  setOriginalFunctionName(name: string|null): void {
+    this.originalFunctionName = name;
   }
 }
 

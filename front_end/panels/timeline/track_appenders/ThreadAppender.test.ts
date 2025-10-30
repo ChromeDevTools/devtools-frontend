@@ -255,10 +255,10 @@ describeWithEnvironment('ThreadAppender', function() {
     const anonymousCall = threadAppenders[0].titleForEvent(entry);
     assert.strictEqual(anonymousCall, '(anonymous)');
     const originalName = cpuProfileNode.functionName;
-    cpuProfileNode.setFunctionName('new-resolved-function-name');
+    cpuProfileNode.setOriginalFunctionName('new-resolved-function-name');
     assert.strictEqual(threadAppenders[0].titleForEvent(entry), 'new-resolved-function-name');
     // Reset the value for future tests.
-    cpuProfileNode.setFunctionName(originalName);
+    cpuProfileNode.setOriginalFunctionName(originalName);
   });
 
   function getDefaultInfo() {

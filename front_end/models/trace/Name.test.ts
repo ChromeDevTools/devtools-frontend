@@ -117,27 +117,21 @@ describeWithEnvironment('Name', () => {
     it('uses the profile name for a ProfileCall if it has been set', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       const {entry, profileNode} = getProfileEventAndNodeForReactTrace(parsedTrace);
-      // Store and then reset this: we are doing this to test the fallback to
-      // the entry callFrame.functionName property. After the assertion we
-      // reset this to avoid impacting other tests.
-      const originalProfileNodeName = profileNode.functionName;
-      profileNode.setFunctionName('testing-profile-name');
+      assert.isNull(profileNode.originalFunctionName);
+      profileNode.setOriginalFunctionName('testing-profile-name');
       const name = Trace.Name.forEntry(entry, parsedTrace);
       assert.strictEqual(name, 'testing-profile-name');
-      profileNode.setFunctionName(originalProfileNodeName);
+
+      // Don't impact other tests.
+      profileNode.setOriginalFunctionName(null);
     });
 
     it('falls back to the call frame name if a specific name has not been set', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       const {entry, profileNode} = getProfileEventAndNodeForReactTrace(parsedTrace);
-      // Store and then reset this: we are doing this to test the fallback to
-      // the entry callFrame.functionName property. After the assertion we
-      // reset this to avoid impacting other tests.
-      const originalProfileNodeName = profileNode.functionName;
-      profileNode.setFunctionName('');
+      assert.isNull(profileNode.originalFunctionName);
       const name = Trace.Name.forEntry(entry, parsedTrace);
       assert.strictEqual(name, 'performConcurrentWorkOnRoot');
-      profileNode.setFunctionName(originalProfileNodeName);
     });
 
     /** Finds a particular event from the react-hello-world trace which is used for our test example. **/

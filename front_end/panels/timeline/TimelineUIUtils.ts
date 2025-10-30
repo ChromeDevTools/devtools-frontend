@@ -732,26 +732,6 @@ export class TimelineUIUtils {
         break;
       }
 
-      case Trace.Types.Events.Name.COMPILE_SCRIPT:
-      case Trace.Types.Events.Name.CACHE_SCRIPT:
-      case Trace.Types.Events.Name.EVALUATE_SCRIPT: {
-        const url = unsafeEventData['url'];
-        if (url) {
-          const {lineNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
-          details = this.linkifyLocation({
-            scriptId: null,
-            url,
-            lineNumber: lineNumber || 0,
-            columnNumber: 0,
-            target,
-            isFreshOrEnhanced,
-            linkifier,
-            omitOrigin: true,
-          });
-        }
-        break;
-      }
-
       case Trace.Types.Events.Name.BACKGROUND_DESERIALIZE:
       case Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT: {
         const url = unsafeEventData['url'];
@@ -1710,6 +1690,7 @@ export class TimelineUIUtils {
     return {callFrames} as Protocol.Runtime.StackTrace;
   }
 
+  /** This renders a stack trace... and other cool stuff. */
   static async generateCauses(
       event: Trace.Types.Events.Event, contentHelper: TimelineDetailsContentHelper,
       parsedTrace: Trace.TraceModel.ParsedTrace): Promise<void> {
@@ -2478,6 +2459,9 @@ export class TimelineDetailsContentHelper {
     if (!this.#linkifier) {
       return;
     }
+
+    // We resolve the original function name here. StackTracePreviewContent uses
+    // Linkifier to resolve the source code location.
     const resolvedStackTrace: Protocol.Runtime.StackTrace = structuredClone(stackTrace);
     let currentResolvedStackTrace: Protocol.Runtime.StackTrace|undefined = resolvedStackTrace;
     while (currentResolvedStackTrace) {

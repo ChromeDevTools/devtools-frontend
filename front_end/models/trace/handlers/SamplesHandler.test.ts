@@ -325,32 +325,25 @@ describeWithEnvironment('SamplesHandler', function() {
       };
     }
 
-    it('falls back to the call frame name if the ProfileNode name is empty', async function() {
+    it('falls back to the call frame name if the ProfileNode originalFunctionName is empty', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       const {entry, profileNode} = getProfileEventAndNode(data);
-      // Store and then reset this: we are doing this to test the fallback to
-      // the entry callFrame.functionName property. After the assertion we
-      // reset this to avoid impacting other tests.
-      const originalProfileNodeName = profileNode.functionName;
-      profileNode.setFunctionName('');
+      assert.isNull(profileNode.originalFunctionName);
       assert.strictEqual(
           Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(data.Samples, entry),
           'performConcurrentWorkOnRoot');
-      // St
-      profileNode.setFunctionName(originalProfileNodeName);
     });
 
-    it('uses the profile name if it has been set', async function() {
+    it('uses the profile originalFunctionName if it has been set', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       const {entry, profileNode} = getProfileEventAndNode(data);
-      // Store and then reset this: we are doing this to test the fallback to
-      // the entry callFrame.functionName property. After the assertion we
-      // reset this to avoid impacting other tests.
-      const originalProfileNodeName = profileNode.functionName;
-      profileNode.setFunctionName('testing-profile-name');
+      assert.isNull(profileNode.originalFunctionName);
+      profileNode.setOriginalFunctionName('testing-profile-name');
       assert.strictEqual(
           Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(data.Samples, entry), 'testing-profile-name');
-      profileNode.setFunctionName(originalProfileNodeName);
+
+      // Don't impact other tests.
+      profileNode.setOriginalFunctionName(null);
     });
   });
 });

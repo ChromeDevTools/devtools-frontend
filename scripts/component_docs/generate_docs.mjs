@@ -54,14 +54,24 @@ async function main() {
       ${docImports}
     };
 
-    const container = document.getElementById('container');
+    const mainContent = document.querySelector('.main-content');
 
     async function loadComponent(name) {
-      if (!components[name]) {
+      if (!components[name] || !mainContent) {
         return;
       }
+
+      let container = document.getElementById('container');
+      // Replace the container to start off with a clean one.
+      if (container) {
+        container.remove();
+      }
+
+      container = document.createElement('div');
+      container.id = 'container';
+      mainContent.appendChild(container);
+
       const {render} = await components[name]();
-      container.innerHTML = '';
       render(container);
     }
 

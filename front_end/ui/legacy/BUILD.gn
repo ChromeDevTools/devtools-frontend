@@ -161,10 +161,6 @@ devtools_entrypoint("bundle") {
     # Required for correct button styling in the Computed tab
     # (http://crbug.com/435601104).
     "../components/tree_outline:*",
-
-    # TODO(crbug.com/442509324): front_end/models must not import from
-    # front_end/ui/legacy
-    "../../models/ai_assistance:unittests",
   ]
 
   visibility += devtools_ui_legacy_visibility

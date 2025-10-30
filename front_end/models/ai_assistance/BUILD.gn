@@ -104,7 +104,6 @@ ts_library("unittests") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../testing",
-    "../../ui/legacy:bundle",
     "../bindings:bundle",
     "../text_utils:bundle",
     "../trace:bundle",

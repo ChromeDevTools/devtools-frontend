@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
@@ -10,6 +11,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -292,6 +294,37 @@ describeWithEnvironment('TimelinePanel', function() {
       for (const title of EXPECTED_INSIGHT_TITLES) {
         assert.include(message, `### Insight Title: ${title}`);
       }
+    });
+  });
+
+  describe('handleExternalRequest', function() {
+    beforeEach(async () => {
+      AIAssistance.ConversationHandler.ConversationHandler.removeInstance();
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+    });
+
+    it('handles performance requests', async function() {
+      const explanation = 'I need more information';
+      const conversationHandler = AIAssistance.ConversationHandler.ConversationHandler.instance({
+        aidaClient: mockAidaClient([[{explanation}]]),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      });
+
+      // Create a timeline panel that has a trace imported with insights.
+      const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+      const traceModel = Trace.TraceModel.Model.createWithAllHandlers();
+      await traceModel.parse(events);
+      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, traceModel});
+
+      const generator = await conversationHandler.handleExternalRequest({
+        prompt: 'Please help me debug this problem',
+        conversationType: AIAssistance.AiHistoryStorage.ConversationType.PERFORMANCE,
+        data: Timeline.TimelinePanel.TimelinePanel.instance().getOrCreateExternalAIConversationData(),
+      });
+      let response = await generator.next();
+      assert.strictEqual(response.value.message, 'Analyzing trace');
+      response = await generator.next();
+      assert.strictEqual(response.value.message, explanation);
     });
   });
 

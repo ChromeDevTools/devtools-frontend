@@ -1849,6 +1849,75 @@ describeWithMockConnection('AI Assistance Panel', () => {
           'Expected live announcer status to be called with the text "Answer loading"');
     });
   });
+
+  describe('external requests', () => {
+    it('can switch contexts', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        }
+      });
+      const aidaClient = mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}], [{explanation: 'test3'}]]);
+      const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance({
+        aidaClient,
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      });
+      const {panel, view} = await createAiAssistancePanel();
+
+      void panel.handleAction('drjones.network-floating-button');
+      (await view.nextInput).onTextSubmit('User question to DrJones?');
+      assert.deepEqual((await view.nextInput).messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'User question to DrJones?',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+
+      const generator = await conversationHandler.handleExternalRequest({
+        prompt: 'Please help me debug this problem',
+        conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING
+      });
+      const response = await generator.next();
+      assert.strictEqual(response.value.message, 'test2');
+
+      view.input.onTextSubmit('Follow-up question to DrJones?');
+      assert.deepEqual((await view.nextInput).messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'User question to DrJones?',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'Follow-up question to DrJones?',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test3',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+    });
+  });
 });
 
 describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {

@@ -3,4 +3,5 @@ core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
 core/i18n/time-utilities.test.js
-models/ai_assistance/data_formatters/PerformanceTraceFormatterBounds.test.js
+models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
+models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js

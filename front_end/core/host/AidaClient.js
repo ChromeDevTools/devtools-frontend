@@ -1,6 +1,7 @@
 "use strict";
 import * as Common from "../common/common.js";
 import * as Root from "../root/root.js";
+import * as DispatchHttpRequestClient from "./DispatchHttpRequestClient.js";
 import { InspectorFrontendHostInstance } from "./InspectorFrontendHost.js";
 import { bindOutputStream } from "./ResourceLoader.js";
 export var Role = /* @__PURE__ */ ((Role2) => {
@@ -68,6 +69,11 @@ export var Reason = /* @__PURE__ */ ((Reason2) => {
   Reason2[Reason2["RELATED_FILE"] = 5] = "RELATED_FILE";
   return Reason2;
 })(Reason || {});
+export var UseCase = /* @__PURE__ */ ((UseCase2) => {
+  UseCase2[UseCase2["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
+  UseCase2[UseCase2["CODE_GENERATION"] = 1] = "CODE_GENERATION";
+  return UseCase2;
+})(UseCase || {});
 export var RecitationAction = /* @__PURE__ */ ((RecitationAction2) => {
   RecitationAction2["ACTION_UNSPECIFIED"] = "ACTION_UNSPECIFIED";
   RecitationAction2["CITE"] = "CITE";
@@ -127,6 +133,7 @@ const AidaLanguageToMarkdown = {
   XML: "xml"
 };
 export const CLIENT_NAME = "CHROME_DEVTOOLS";
+export const SERVICE_NAME = "aidaService";
 const CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
 export class AidaAbortError extends Error {
 }
@@ -343,6 +350,15 @@ export class AidaClient {
       return null;
     }
     return { generatedSamples, metadata };
+  }
+  async generateCode(request) {
+    const response = await DispatchHttpRequestClient.makeHttpRequest({
+      service: SERVICE_NAME,
+      path: "/v1/aida:generateCode",
+      method: "POST",
+      body: JSON.stringify(request)
+    });
+    return response;
   }
 }
 export function convertToUserTierEnum(userTier) {

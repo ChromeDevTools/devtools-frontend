@@ -1,6 +1,6 @@
 "use strict";
 import * as Root from "../root/root.js";
-import { InspectorFrontendHostInstance } from "./InspectorFrontendHost.js";
+import * as DispatchHttpRequestClient from "./DispatchHttpRequestClient.js";
 export var SubscriptionStatus = /* @__PURE__ */ ((SubscriptionStatus2) => {
   SubscriptionStatus2["ENABLED"] = "SUBSCRIPTION_STATE_ENABLED";
   SubscriptionStatus2["PENDING"] = "SUBSCRIPTION_STATE_PENDING";
@@ -27,40 +27,18 @@ export var EmailPreference = /* @__PURE__ */ ((EmailPreference2) => {
   EmailPreference2["DISABLED"] = "DISABLED";
   return EmailPreference2;
 })(EmailPreference || {});
-export var GdpErrorType = /* @__PURE__ */ ((GdpErrorType2) => {
-  GdpErrorType2["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
-  GdpErrorType2["NOT_FOUND"] = "NOT_FOUND";
-  return GdpErrorType2;
-})(GdpErrorType || {});
-class GdpError extends Error {
-  constructor(type, options) {
-    super(void 0, options);
-    this.type = type;
-  }
-}
 function normalizeBadgeName(name) {
   return name.replace(/profiles\/[^/]+\/awards\//, "profiles/me/awards/");
 }
 export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profile/u/me";
 async function makeHttpRequest(request) {
   if (!isGdpProfilesAvailable()) {
-    throw new GdpError("HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */);
+    throw new DispatchHttpRequestClient.DispatchHttpRequestError(
+      DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE
+    );
   }
-  const response = await new Promise((resolve) => {
-    InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
-  });
-  debugLog({ request, response });
-  if (response.statusCode === 404) {
-    throw new GdpError("NOT_FOUND" /* NOT_FOUND */);
-  }
-  if ("response" in response && response.statusCode === 200) {
-    try {
-      return JSON.parse(response.response);
-    } catch (err) {
-      throw new GdpError("HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */, { cause: err });
-    }
-  }
-  throw new GdpError("HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */);
+  const response = await DispatchHttpRequestClient.makeHttpRequest(request);
+  return response;
 }
 const SERVICE_NAME = "gdpService";
 let gdpClientInstance = null;
@@ -93,7 +71,7 @@ export class GdpClient {
         isEligible: true
       };
     } catch (err) {
-      if (err instanceof GdpError && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
+      if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError && err.type === DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
         return null;
       }
     }
@@ -185,22 +163,6 @@ export class GdpClient {
     }
   }
 }
-function isDebugMode() {
-  return Boolean(localStorage.getItem("debugGdpIntegrationEnabled"));
-}
-function debugLog(...log) {
-  if (!isDebugMode()) {
-    return;
-  }
-  console.log("debugLog", ...log);
-}
-function setDebugGdpIntegrationEnabled(enabled) {
-  if (enabled) {
-    localStorage.setItem("debugGdpIntegrationEnabled", "true");
-  } else {
-    localStorage.removeItem("debugGdpIntegrationEnabled");
-  }
-}
 export function isGdpProfilesAvailable() {
   const isBaseFeatureEnabled = Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
   const isBrandedBuild = Boolean(Root.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
@@ -219,5 +181,4 @@ export function isBadgesEnabled() {
 export function isStarterBadgeEnabled() {
   return Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
 }
-globalThis.setDebugGdpIntegrationEnabled = setDebugGdpIntegrationEnabled;
 //# sourceMappingURL=GdpClient.js.map

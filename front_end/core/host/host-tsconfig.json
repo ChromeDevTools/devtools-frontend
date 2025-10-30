@@ -35,6 +35,7 @@
   },
   "files": [
     "../../../../../../front_end/core/host/AidaClient.ts",
+    "../../../../../../front_end/core/host/DispatchHttpRequestClient.ts",
     "../../../../../../front_end/core/host/GdpClient.ts",
     "../../../../../../front_end/core/host/InspectorFrontendHost.ts",
     "../../../../../../front_end/core/host/InspectorFrontendHostAPI.ts",

@@ -3,7 +3,8 @@ core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
 core/i18n/time-utilities.test.js
-models/ai_assistance/data_formatters/PerformanceTraceFormatterBounds.test.js
+models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
+models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 core/common/Base64.test.js
 core/common/CharacterIdMap.test.js
 core/common/Color.test.js
@@ -114,8 +115,6 @@ entrypoints/main/MainImpl.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
 models/ai_assistance/data_formatters/FileFormatter.test.js
 models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js
-models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
-models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 models/ai_assistance/data_formatters/UnitFormatters.test.js
 models/ai_assistance/AgentProject.test.js
 models/ai_assistance/AiHistoryStorage.test.js
@@ -644,6 +643,7 @@ ui/components/settings/SettingDeprecationWarning.test.js
 ui/components/snackbars/Snackbar.test.js
 ui/components/survey_link/SurveyLink.test.js
 ui/components/switch/SwitchImpl.test.js
+ui/components/text_editor/AiCodeCompletionProvider.test.js
 ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.test.js
 ui/components/text_editor/AutocompleteHistory.test.js
 ui/components/text_editor/ExecutionPositionHighlighter.test.js

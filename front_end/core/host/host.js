@@ -24,11 +24,21 @@ __export(AidaClient_exports, {
   Reason: () => Reason,
   RecitationAction: () => RecitationAction,
   Role: () => Role,
+  SERVICE_NAME: () => SERVICE_NAME,
+  UseCase: () => UseCase,
   UserTier: () => UserTier,
   convertToUserTierEnum: () => convertToUserTierEnum
 });
 import * as Common3 from "./../common/common.js";
 import * as Root2 from "./../root/root.js";
+
+// gen/front_end/core/host/DispatchHttpRequestClient.js
+var DispatchHttpRequestClient_exports = {};
+__export(DispatchHttpRequestClient_exports, {
+  DispatchHttpRequestError: () => DispatchHttpRequestError,
+  ErrorType: () => ErrorType,
+  makeHttpRequest: () => makeHttpRequest
+});
 
 // gen/front_end/core/host/InspectorFrontendHost.js
 var InspectorFrontendHost_exports = {};
@@ -847,6 +857,59 @@ function isUnderTest(prefs) {
   return Common2.Settings.Settings.hasInstance() && Common2.Settings.Settings.instance().createSetting("isUnderTest", false).get();
 }
 
+// gen/front_end/core/host/DispatchHttpRequestClient.js
+var ErrorType = /* @__PURE__ */ ((ErrorType2) => {
+  ErrorType2["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
+  ErrorType2["NOT_FOUND"] = "NOT_FOUND";
+  return ErrorType2;
+})(ErrorType || {});
+var DispatchHttpRequestError = class extends Error {
+  constructor(type, options) {
+    super(void 0, options);
+    this.type = type;
+  }
+};
+async function makeHttpRequest(request) {
+  const response = await new Promise((resolve) => {
+    InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
+  });
+  debugLog({ request, response });
+  if (response.statusCode === 404) {
+    throw new DispatchHttpRequestError(
+      "NOT_FOUND"
+      /* NOT_FOUND */
+    );
+  }
+  if ("response" in response && response.statusCode === 200) {
+    try {
+      return JSON.parse(response.response);
+    } catch (err) {
+      throw new DispatchHttpRequestError("HTTP_RESPONSE_UNAVAILABLE", { cause: err });
+    }
+  }
+  throw new DispatchHttpRequestError(
+    "HTTP_RESPONSE_UNAVAILABLE"
+    /* HTTP_RESPONSE_UNAVAILABLE */
+  );
+}
+function isDebugMode() {
+  return Boolean(localStorage.getItem("debugDispatchHttpRequestEnabled"));
+}
+function debugLog(...log) {
+  if (!isDebugMode()) {
+    return;
+  }
+  console.log("debugLog", ...log);
+}
+function setDebugDispatchHttpRequestEnabled(enabled) {
+  if (enabled) {
+    localStorage.setItem("debugDispatchHttpRequestEnabled", "true");
+  } else {
+    localStorage.removeItem("debugDispatchHttpRequestEnabled");
+  }
+}
+globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
+
 // gen/front_end/core/host/AidaClient.js
 var Role = /* @__PURE__ */ ((Role2) => {
   Role2[Role2["ROLE_UNSPECIFIED"] = 0] = "ROLE_UNSPECIFIED";
@@ -913,6 +976,11 @@ var Reason = /* @__PURE__ */ ((Reason2) => {
   Reason2[Reason2["RELATED_FILE"] = 5] = "RELATED_FILE";
   return Reason2;
 })(Reason || {});
+var UseCase = /* @__PURE__ */ ((UseCase2) => {
+  UseCase2[UseCase2["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
+  UseCase2[UseCase2["CODE_GENERATION"] = 1] = "CODE_GENERATION";
+  return UseCase2;
+})(UseCase || {});
 var RecitationAction = /* @__PURE__ */ ((RecitationAction2) => {
   RecitationAction2["ACTION_UNSPECIFIED"] = "ACTION_UNSPECIFIED";
   RecitationAction2["CITE"] = "CITE";
@@ -972,6 +1040,7 @@ var AidaLanguageToMarkdown = {
   XML: "xml"
 };
 var CLIENT_NAME = "CHROME_DEVTOOLS";
+var SERVICE_NAME = "aidaService";
 var CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
 var AidaAbortError = class extends Error {
 };
@@ -1193,6 +1262,15 @@ var AidaClient = class {
     }
     return { generatedSamples, metadata };
   }
+  async generateCode(request) {
+    const response = await makeHttpRequest({
+      service: SERVICE_NAME,
+      path: "/v1/aida:generateCode",
+      method: "POST",
+      body: JSON.stringify(request)
+    });
+    return response;
+  }
 };
 function convertToUserTierEnum(userTier) {
   if (userTier) {
@@ -1261,7 +1339,6 @@ __export(GdpClient_exports, {
   EmailPreference: () => EmailPreference,
   GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK: () => GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK,
   GdpClient: () => GdpClient,
-  GdpErrorType: () => GdpErrorType,
   SubscriptionStatus: () => SubscriptionStatus,
   SubscriptionTier: () => SubscriptionTier,
   getGdpProfilesEnterprisePolicy: () => getGdpProfilesEnterprisePolicy,
@@ -1296,51 +1373,20 @@ var EmailPreference = /* @__PURE__ */ ((EmailPreference2) => {
   EmailPreference2["DISABLED"] = "DISABLED";
   return EmailPreference2;
 })(EmailPreference || {});
-var GdpErrorType = /* @__PURE__ */ ((GdpErrorType2) => {
-  GdpErrorType2["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
-  GdpErrorType2["NOT_FOUND"] = "NOT_FOUND";
-  return GdpErrorType2;
-})(GdpErrorType || {});
-var GdpError = class extends Error {
-  constructor(type, options) {
-    super(void 0, options);
-    this.type = type;
-  }
-};
 function normalizeBadgeName(name) {
   return name.replace(/profiles\/[^/]+\/awards\//, "profiles/me/awards/");
 }
 var GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profile/u/me";
-async function makeHttpRequest(request) {
+async function makeHttpRequest2(request) {
   if (!isGdpProfilesAvailable()) {
-    throw new GdpError(
-      "HTTP_RESPONSE_UNAVAILABLE"
-      /* HTTP_RESPONSE_UNAVAILABLE */
+    throw new DispatchHttpRequestError(
+      ErrorType.HTTP_RESPONSE_UNAVAILABLE
     );
   }
-  const response = await new Promise((resolve) => {
-    InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
-  });
-  debugLog({ request, response });
-  if (response.statusCode === 404) {
-    throw new GdpError(
-      "NOT_FOUND"
-      /* NOT_FOUND */
-    );
-  }
-  if ("response" in response && response.statusCode === 200) {
-    try {
-      return JSON.parse(response.response);
-    } catch (err) {
-      throw new GdpError("HTTP_RESPONSE_UNAVAILABLE", { cause: err });
-    }
-  }
-  throw new GdpError(
-    "HTTP_RESPONSE_UNAVAILABLE"
-    /* HTTP_RESPONSE_UNAVAILABLE */
-  );
+  const response = await makeHttpRequest(request);
+  return response;
 }
-var SERVICE_NAME = "gdpService";
+var SERVICE_NAME2 = "gdpService";
 var gdpClientInstance = null;
 var GdpClient = class _GdpClient {
   #cachedProfilePromise;
@@ -1371,7 +1417,7 @@ var GdpClient = class _GdpClient {
         isEligible: true
       };
     } catch (err) {
-      if (err instanceof GdpError && err.type === "HTTP_RESPONSE_UNAVAILABLE") {
+      if (err instanceof DispatchHttpRequestError && err.type === ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
         return null;
       }
     }
@@ -1390,8 +1436,8 @@ var GdpClient = class _GdpClient {
     if (this.#cachedProfilePromise) {
       return await this.#cachedProfilePromise;
     }
-    this.#cachedProfilePromise = makeHttpRequest({
-      service: SERVICE_NAME,
+    this.#cachedProfilePromise = makeHttpRequest2({
+      service: SERVICE_NAME2,
       path: "/v1beta1/profile:get",
       method: "GET"
     }).then((profile) => {
@@ -1407,7 +1453,7 @@ var GdpClient = class _GdpClient {
     if (this.#cachedEligibilityPromise) {
       return await this.#cachedEligibilityPromise;
     }
-    this.#cachedEligibilityPromise = makeHttpRequest({ service: SERVICE_NAME, path: "/v1beta1/eligibility:check", method: "GET" });
+    this.#cachedEligibilityPromise = makeHttpRequest2({ service: SERVICE_NAME2, path: "/v1beta1/eligibility:check", method: "GET" });
     return await this.#cachedEligibilityPromise;
   }
   /**
@@ -1415,8 +1461,8 @@ var GdpClient = class _GdpClient {
    */
   async getAwardedBadgeNames({ names }) {
     try {
-      const response = await makeHttpRequest({
-        service: SERVICE_NAME,
+      const response = await makeHttpRequest2({
+        service: SERVICE_NAME2,
         path: "/v1beta1/profiles/me/awards:batchGet",
         method: "GET",
         queryParams: {
@@ -1431,8 +1477,8 @@ var GdpClient = class _GdpClient {
   }
   async createProfile({ user, emailPreference }) {
     try {
-      const response = await makeHttpRequest({
-        service: SERVICE_NAME,
+      const response = await makeHttpRequest2({
+        service: SERVICE_NAME2,
         path: "/v1beta1/profiles",
         method: "POST",
         body: JSON.stringify({
@@ -1452,8 +1498,8 @@ var GdpClient = class _GdpClient {
   }
   async createAward({ name }) {
     try {
-      const response = await makeHttpRequest({
-        service: SERVICE_NAME,
+      const response = await makeHttpRequest2({
+        service: SERVICE_NAME2,
         path: "/v1beta1/profiles/me/awards",
         method: "POST",
         body: JSON.stringify({
@@ -1467,22 +1513,6 @@ var GdpClient = class _GdpClient {
     }
   }
 };
-function isDebugMode() {
-  return Boolean(localStorage.getItem("debugGdpIntegrationEnabled"));
-}
-function debugLog(...log) {
-  if (!isDebugMode()) {
-    return;
-  }
-  console.log("debugLog", ...log);
-}
-function setDebugGdpIntegrationEnabled(enabled) {
-  if (enabled) {
-    localStorage.setItem("debugGdpIntegrationEnabled", "true");
-  } else {
-    localStorage.removeItem("debugGdpIntegrationEnabled");
-  }
-}
 function isGdpProfilesAvailable() {
   const isBaseFeatureEnabled = Boolean(Root3.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
   const isBrandedBuild = Boolean(Root3.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
@@ -1501,7 +1531,6 @@ function isBadgesEnabled() {
 function isStarterBadgeEnabled() {
   return Boolean(Root3.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
 }
-globalThis.setDebugGdpIntegrationEnabled = setDebugGdpIntegrationEnabled;
 
 // gen/front_end/core/host/Platform.js
 var Platform_exports = {};
@@ -2905,6 +2934,7 @@ var BuiltInAiAvailability = /* @__PURE__ */ ((BuiltInAiAvailability2) => {
 var userMetrics = new UserMetrics();
 export {
   AidaClient_exports as AidaClient,
+  DispatchHttpRequestClient_exports as DispatchHttpRequestClient,
   GdpClient_exports as GdpClient,
   InspectorFrontendHost_exports as InspectorFrontendHost,
   InspectorFrontendHostAPI_exports as InspectorFrontendHostAPI,

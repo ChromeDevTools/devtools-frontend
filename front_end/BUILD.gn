@@ -305,5 +305,6 @@ group("docs") {
     "ui/components/spinners:docs",
     "ui/components/tooltips:docs",
     "ui/legacy:copy_stylesheets_for_server",
+    "ui/legacy:docs",
   ]
 }

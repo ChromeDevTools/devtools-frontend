@@ -33,7 +33,6 @@ group("docs") {
     "./panel_feedback",
     "./panel_introduction_steps",
     "./perf_piechart",
-    "./radio_button",
     "./recorder_control_button",
     "./recorder_recording_list_view",
     "./recorder_select_button",

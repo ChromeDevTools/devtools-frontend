@@ -5,7 +5,7 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
-import '../../../ui/components/tree_outline/tree_outline.js';
+import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -78,6 +78,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface BadgeData {
   badgeContent: string;
   style: 'error'|'success'|'secondary';
+  additionalClass?: string;
 }
 
 function createBadge(data: BadgeData): Adorners.Adorner.Adorner {
@@ -89,6 +90,9 @@ function createBadge(data: BadgeData): Adorners.Adorner.Adorner {
     content: adornerContent,
   };
   adorner.classList.add(`badge-${data.style}`);
+  if (data.additionalClass) {
+    adorner.classList.add(data.additionalClass);
+  }
   return adorner;
 }
 
@@ -103,48 +107,46 @@ type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
  **/
 export type OriginTrialTreeNodeData = Protocol.Page.OriginTrial|Protocol.Page.OriginTrialTokenWithStatus|string;
 
-function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeNode<OriginTrialTreeNodeData> {
-  return {
-    treeNodeData: originTrial,
-    id: 'OriginTrialTreeNode#' + originTrial.trialName,
-    children: async () => originTrial.tokensWithStatus.length > 1 ?
-        originTrial.tokensWithStatus.map(constructTokenNode) :
-        constructTokenDetailsNodes(originTrial.tokensWithStatus[0]),
-    renderer: (node: TreeNode<OriginTrialTreeNodeData>) => {
-      const trial = node.treeNodeData as Protocol.Page.OriginTrial;
-      const tokenCountBadge = createBadge({
-        badgeContent: i18nString(UIStrings.tokens, {PH1: trial.tokensWithStatus.length}),
-        style: 'secondary',
-      });
+function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): Lit.LitTemplate {
+  const tokenCountBadge = createBadge({
+    badgeContent: i18nString(UIStrings.tokens, {PH1: originTrial.tokensWithStatus.length}),
+    style: 'secondary',
+  });
 
-      return html`
-        ${trial.trialName}
-        <style>${badgeStyles}</style>
-        ${createBadge({
-        badgeContent: trial.status,
-        style: trial.status === Protocol.Page.OriginTrialStatus.Enabled ? 'success' : 'error',
+  // clang-format off
+  return html`
+    <li role="treeitem">
+      ${originTrial.trialName}
+      <style>${badgeStyles}</style>
+      ${createBadge({
+        badgeContent: originTrial.status,
+        style: originTrial.status === Protocol.Page.OriginTrialStatus.Enabled ? 'success' : 'error',
       })}
-        ${trial.tokensWithStatus.length > 1 ? tokenCountBadge : Lit.nothing}
-      `;
-    },
-  };
+      ${originTrial.tokensWithStatus.length > 1 ? tokenCountBadge : Lit.nothing}
+      <ul role="group" hidden>
+        ${originTrial.tokensWithStatus.length > 1 ?
+          originTrial.tokensWithStatus.map(constructTokenNode) :
+          constructTokenDetailsNodes(originTrial.tokensWithStatus[0])}
+      </ul>
+    </li>`;
+  // clang-format on
 }
 
-function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): TreeNode<OriginTrialTreeNodeData> {
-  return {
-    treeNodeData: token.status,
-    id: 'TokenNode#' + token.rawTokenText,
-    children: async () => constructTokenDetailsNodes(token),
-    renderer: (node: TreeNode<OriginTrialTreeNodeData>, state: {isExpanded: boolean}) => {
-      const tokenStatus = node.treeNodeData as string;
-      const statusBadge = createBadge({
-        badgeContent: tokenStatus,
-        style: tokenStatus === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
-      });
-      // Only display token status for convenience when the node is not expanded.
-      return html`${i18nString(UIStrings.token)} ${state.isExpanded ? Lit.nothing : statusBadge}`;
-    },
-  };
+function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Lit.LitTemplate {
+  const statusBadge = createBadge({
+    badgeContent: token.status,
+    style: token.status === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
+    additionalClass: 'token-status-badge',
+  });
+  // Only display token status for convenience when the node is not expanded.
+  // clang-format off
+  return html`
+    <li role="treeitem">
+      ${i18nString(UIStrings.token)} ${statusBadge}
+      <ul role="group" hidden>
+        ${constructTokenDetailsNodes(token)}
+      </ul>
+    </li>`;
 }
 
 interface TokenField {
@@ -152,46 +154,38 @@ interface TokenField {
   value: Lit.TemplateResult;
 }
 
-function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): Lit.TemplateResult {
+function renderTokenDetails(token: Protocol.Page.OriginTrialTokenWithStatus): Lit.TemplateResult {
   return html`
-    <devtools-resources-origin-trial-token-rows .data=${{node} as OriginTrialTokenRowsData}>
-    </devtools-resources-origin-trial-token-rows>
-    `;
+    <li role="treeitem">
+      <devtools-resources-origin-trial-token-rows .data=${token}>
+      </devtools-resources-origin-trial-token-rows>
+    </li>`;
 }
 
 function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithStatus):
-    Array<TreeNode<OriginTrialTreeNodeData>> {
-  return [
-    {
-      treeNodeData: token,
-      id: 'TokenDetailsNode#' + token.rawTokenText,
-      renderer: renderTokenDetails,
-    },
-    constructRawTokenTextNode(token.rawTokenText),
-  ];
+    Lit.LitTemplate {
+  // clang-format off
+  return html`
+    ${renderTokenDetails(token)}
+    ${constructRawTokenTextNode(token.rawTokenText)}
+  `;
+  // clang-format on
 }
 
-function constructRawTokenTextNode(tokenText: string): TreeNode<OriginTrialTreeNodeData> {
-  return {
-    treeNodeData: i18nString(UIStrings.rawTokenText),
-    id: 'TokenRawTextContainerNode#' + tokenText,
-    children: async () => [{
-      treeNodeData: tokenText,
-      id: 'TokenRawTextNode#' + tokenText,
-      renderer: (data: TreeNode<OriginTrialTreeNodeData>) => {
-        const tokenText = data.treeNodeData as string;
-        return html`
-        <div style="overflow-wrap: break-word;">
-          ${tokenText}
-        </div>
-        `;
-      },
-    }],
-  };
-}
-
-function defaultRenderer(node: TreeNode<OriginTrialTreeNodeData>): Lit.TemplateResult {
-  return html`${String(node.treeNodeData)}`;
+function constructRawTokenTextNode(tokenText: string): Lit.LitTemplate {
+  // clang-format off
+  return html`
+    <li role="treeitem">
+      ${i18nString(UIStrings.rawTokenText)}
+      <ul role="group" hidden>
+        <li role="treeitem">
+          <div style="overflow-wrap: break-word;">
+            ${tokenText}
+          </div>
+        </li>
+      </ul>
+    </li>`;
+  // clang-format on
 }
 
 export interface OriginTrialTokenRowsData {
@@ -207,13 +201,21 @@ export class OriginTrialTokenRows extends HTMLElement {
       {dateStyle: 'long', timeStyle: 'long'},
   );
 
-  set data(data: OriginTrialTokenRowsData) {
-    this.#tokenWithStatus = data.node.treeNodeData as Protocol.Page.OriginTrialTokenWithStatus;
+  set data(data: Protocol.Page.OriginTrialTokenWithStatus) {
+    this.#tokenWithStatus = data;
     this.#setTokenFields();
   }
 
   connectedCallback(): void {
     this.#render();
+  }
+
+  override cloneNode(): HTMLElement {
+    const clone = UI.UIUtils.cloneCustomElement(this);
+    if (this.#tokenWithStatus) {
+      clone.data = this.#tokenWithStatus;
+    }
+    return clone;
   }
 
   #renderTokenField = (fieldValue: string, hasError?: boolean): Lit.TemplateResult => html`
@@ -327,11 +329,12 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     <style>
       ${originTrialTreeViewStyles}
     </style>
-    <devtools-tree-outline .data=${{
-      tree: input.trials.map(constructOriginTrialTree),
-      defaultRenderer,
-    } as TreeOutline.TreeOutline.TreeOutlineData < OriginTrialTreeNodeData >}>
-    </devtools-tree-outline>
+    <devtools-tree .template=${html`
+      <ul role="tree">
+        ${input.trials.map(constructOriginTrialTree)}
+      </ul>
+    `}>
+    </devtools-tree>
   `, target);
   // clang-format on
 };

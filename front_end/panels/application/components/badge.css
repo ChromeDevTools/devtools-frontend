@@ -23,3 +23,11 @@
 :host devtools-adorner {
   font-family: var(--source-code-font-family);
 }
+
+.token-status-badge {
+  display: none;
+}
+
+[aria-expanded='false'] .token-status-badge {
+  display: inline-flex;
+}

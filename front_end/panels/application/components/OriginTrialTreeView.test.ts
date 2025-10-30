@@ -5,11 +5,10 @@
 import * as Protocol from '../../../generated/protocol.js';
 import {
   renderElementIntoDOM,
-  stripLitHtmlCommentNodes,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
 
 import * as ApplicationComponents from './components.js';
 
@@ -24,24 +23,20 @@ async function renderOriginTrialTreeView(
   return component;
 }
 
-type OriginTrialTreeOutline =
-    TreeOutline.TreeOutline.TreeOutline<ApplicationComponents.OriginTrialTreeView.OriginTrialTreeNodeData>;
-
 /**
  * Extract `TreeOutline` component from `OriginTrialTreeView` for inspection.
  */
 async function renderOriginTrialTreeViewTreeOutline(
     data: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeViewData,
     ): Promise<{
-  component: OriginTrialTreeOutline,
+  component: UI.TreeOutline.TreeElement,
   shadowRoot: ShadowRoot,
 }> {
   const component = await renderOriginTrialTreeView(data);
-  const treeOutline: OriginTrialTreeOutline =
-      component.contentElement.querySelector<OriginTrialTreeOutline>('devtools-tree-outline')!;
+  const treeOutline = component.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree')!;
   assert.isNotNull(treeOutline.shadowRoot);
   return {
-    component: treeOutline,
+    component: treeOutline.getInternalTreeOutlineForTest().rootElement(),
     shadowRoot: treeOutline.shadowRoot,
   };
 }
@@ -121,22 +116,16 @@ const trialWithUnparsableToken: Protocol.Page.OriginTrial = {
 };
 
 function extractBadgeTextFromTreeNode(node: HTMLLIElement): string[] {
-  return [...node.querySelectorAll('devtools-adorner')].map(adornerElement => {
-    const contentElement = adornerElement.firstElementChild;
-    assert.isNotNull(contentElement);
-    if (contentElement === null) {
-      return '';
-    }
-    return contentElement.innerHTML;
-  });
-}
-
-function nodeKeyInnerHTML(node: HTMLLIElement|ShadowRoot) {
-  const keyNode = node.querySelector('[data-node-key]');
-  if (!keyNode) {
-    throw new Error('Found tree node without a key within it.');
-  }
-  return stripLitHtmlCommentNodes(keyNode.innerHTML);
+  return [...node.querySelectorAll('devtools-adorner')]
+      .filter(adornerElement => adornerElement.checkVisibility())
+      .map(adornerElement => {
+        const contentElement = adornerElement.firstElementChild;
+        assert.isNotNull(contentElement);
+        if (contentElement === null) {
+          return '';
+        }
+        return contentElement.deepInnerText();
+      });
 }
 
 interface VisibleTreeNodeFromDOM {
@@ -157,7 +146,7 @@ function visibleNodesToTree(shadowRoot: ShadowRoot): VisibleTreeNodeFromDOM[] {
 
     if (node.getAttribute('aria-expanded') && node.getAttribute('aria-expanded') === 'true') {
       item.children = [];
-      const childNodes = node.querySelectorAll<HTMLLIElement>(':scope > ul[role="group"]>li');
+      const childNodes = node.nextElementSibling?.querySelectorAll<HTMLLIElement>(':scope > li') ?? [];
       for (const child of childNodes) {
         item.children.push(buildTreeNode(child));
       }
@@ -165,7 +154,7 @@ function visibleNodesToTree(shadowRoot: ShadowRoot): VisibleTreeNodeFromDOM[] {
 
     return item;
   }
-  const rootNodes = shadowRoot.querySelectorAll<HTMLLIElement>('ul[role="tree"]>li');
+  const rootNodes = shadowRoot.querySelectorAll<HTMLLIElement>('ol[role="tree"]>li');
   for (const root of rootNodes) {
     tree.push(buildTreeNode(root));
   }
@@ -178,7 +167,8 @@ function visibleNodesToTree(shadowRoot: ShadowRoot): VisibleTreeNodeFromDOM[] {
  * render coordinator's control.
  */
 async function waitForRenderedTreeNodeCount(shadowRoot: ShadowRoot, expectedNodeCount: number): Promise<void> {
-  const actualNodeCount = shadowRoot.querySelectorAll('li[role="treeitem"]').length;
+  const actualNodeCount =
+      shadowRoot.querySelectorAll('ol[role="tree"] > li[role="treeitem"], ol.expanded > li[role="treeitem"]').length;
   if (actualNodeCount === expectedNodeCount) {
     return;
   }
@@ -201,11 +191,12 @@ describeWithLocale('OriginTrialTreeView', () => {
       ],
     });
 
-    const visibleItems = shadowRoot.querySelectorAll<HTMLLIElement>('li[role="treeitem"]');
+    const visibleItems = shadowRoot.querySelectorAll<HTMLLIElement>(
+        'ol[role="tree"] > li[role="treeitem"], ol.expanded > li[role="treeitem"]');
     assert.lengthOf(visibleItems, 3);
-    assert.include(nodeKeyInnerHTML(visibleItems[0]), trialWithMultipleTokens.trialName);
-    assert.include(nodeKeyInnerHTML(visibleItems[1]), trialWithSingleToken.trialName);
-    assert.include(nodeKeyInnerHTML(visibleItems[2]), trialWithUnparsableToken.trialName);
+    assert.include(visibleItems[0].deepInnerText(), trialWithMultipleTokens.trialName);
+    assert.include(visibleItems[1].deepInnerText(), trialWithSingleToken.trialName);
+    assert.include(visibleItems[2].deepInnerText(), trialWithUnparsableToken.trialName);
   });
 
   it('renders token with status when there are more than 1 tokens', async () => {
@@ -215,7 +206,7 @@ describeWithLocale('OriginTrialTreeView', () => {
       ],
     });
 
-    await component.expandRecursively(/* maxDepth= */ 0);
+    await component.expandRecursively(/* maxDepth= */ 2);
     await waitForRenderedTreeNodeCount(shadowRoot, 4);
     const visibleTree = visibleNodesToTree(shadowRoot);
 
@@ -241,7 +232,7 @@ describeWithLocale('OriginTrialTreeView', () => {
         trialWithSingleToken,  // Node counts by level: 1/2/1
       ],
     });
-    await component.expandRecursively(/* maxDepth= */ 1);
+    await component.expandRecursively(/* maxDepth= */ 2);
     await waitForRenderedTreeNodeCount(shadowRoot, 3);
     const visibleTree = visibleNodesToTree(shadowRoot);
 
@@ -260,7 +251,7 @@ describeWithLocale('OriginTrialTreeView', () => {
         trialWithSingleToken,  // Node counts by level: 1/2/1
       ],
     });
-    await component.expandRecursively(/* maxDepth= */ 1);
+    await component.expandRecursively(/* maxDepth= */ 2);
     await waitForRenderedTreeNodeCount(shadowRoot, 3);
     const visibleTree = visibleNodesToTree(shadowRoot);
 
@@ -293,7 +284,7 @@ describeWithLocale('OriginTrialTreeView', () => {
         trialWithSingleToken,  // Node counts by level: 1/2/1
       ],
     });
-    await component.expandRecursively(/* maxDepth= */ 2);
+    await component.expandRecursively(/* maxDepth= */ 3);
     await waitForRenderedTreeNodeCount(shadowRoot, 4);
     const visibleTree = visibleNodesToTree(shadowRoot);
 
@@ -309,8 +300,8 @@ describeWithLocale('OriginTrialTreeView', () => {
       return;
     }
     assert.lengthOf(rawTokenNode.children, 1);
-    const innerHTML = nodeKeyInnerHTML(rawTokenNode.children[0].nodeElement);
-    assert.include(innerHTML, trialWithSingleToken.tokensWithStatus[0].rawTokenText);
+    const innerText = rawTokenNode.children[0].nodeElement.deepInnerText();
+    assert.include(innerText, trialWithSingleToken.tokensWithStatus[0].rawTokenText);
   });
 
   it('shows token count when there are more than 1 tokens in a trial', async () => {
@@ -349,7 +340,7 @@ describeWithLocale('OriginTrialTreeView', () => {
         trialWithMultipleTokens,  // Node counts by level: 1/3/6/3
       ],
     });
-    await component.expandRecursively(/* maxDepth= */ 0);
+    await component.expandRecursively(/* maxDepth= */ 2);
     await waitForRenderedTreeNodeCount(shadowRoot, 4);
 
     const visibleTree = visibleNodesToTree(shadowRoot);
@@ -367,14 +358,15 @@ describeWithLocale('OriginTrialTreeView', () => {
       assert.strictEqual(badges[0], trialWithMultipleTokens.tokensWithStatus[i].status);
     }
   });
+
   it('hide token status, when token with status node is expanded', async () => {
     const {component, shadowRoot} = await renderOriginTrialTreeViewTreeOutline({
       trials: [
         trialWithMultipleTokens,  // Node counts by level: 1/3/6/3
       ],
     });
-    await component.expandRecursively(/* maxDepth= */ 1);
-    await waitForRenderedTreeNodeCount(shadowRoot, 4);
+    await component.expandRecursively(/* maxDepth= */ 3);
+    await waitForRenderedTreeNodeCount(shadowRoot, 10);
 
     const visibleTree = visibleNodesToTree(shadowRoot);
     const trialNameNode = visibleTree[0];
@@ -411,7 +403,7 @@ describeWithLocale('OriginTrialTreeView', () => {
       ],
     });  // Node counts by level: 1/2/1
 
-    await component.expandRecursively(/* maxDepth= */ 1);
+    await component.expandRecursively(/* maxDepth= */ 2);
     await waitForRenderedTreeNodeCount(shadowRoot, 3);
     const visibleTree = visibleNodesToTree(shadowRoot);
 

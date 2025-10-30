@@ -393,7 +393,8 @@ ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, ca
   ElementsTestRunner.selectNodeAndWaitForStyles(idValue, onSidebarRendered);
 
   async function onSidebarRendered(node) {
-    await ElementsTestRunner.computedStyleWidget().doUpdate().then(callback.bind(null, node));
+    ElementsTestRunner.computedStyleWidget().requestUpdate();
+    await ElementsTestRunner.computedStyleWidget().updateComplete.then(callback.bind(null, node));
   }
 };
 
@@ -603,7 +604,8 @@ ElementsTestRunner.showEventListenersWidget = function() {
  */
 ElementsTestRunner.showComputedStyles = function() {
   Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('computed', true);
-  return ElementsTestRunner.computedStyleWidget().doUpdate();
+  ElementsTestRunner.computedStyleWidget().requestUpdate();
+  return ElementsTestRunner.computedStyleWidget().updateComplete;
 };
 
 ElementsTestRunner.expandAndDumpSelectedElementEventListeners = function(callback, force) {

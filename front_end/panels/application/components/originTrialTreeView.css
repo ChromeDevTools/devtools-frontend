@@ -4,12 +4,42 @@
  * found in the LICENSE file.
  */
 
-.status-badge {
-  border-radius: 4px;
-  padding: 4px;
-  background: var(--sys-color-neutral-container);
+:host {
+  .status-badge {
+    border-radius: 4px;
+    padding: 4px;
+    background: var(--sys-color-neutral-container);
 
-  & > devtools-icon {
-    vertical-align: sub;
+    & > devtools-icon {
+      vertical-align: sub;
+    }
+  }
+
+  .badge-error {
+    --override-adorner-text-color: var(--sys-color-error-bright);
+    --override-adorner-border-color: var(--sys-color-error-bright);
+  }
+
+  .badge-success {
+    --override-adorner-text-color: var(--sys-color-tertiary);
+    --override-adorner-border-color: var(--sys-color-tertiary);
+  }
+
+  .badge-secondary {
+    --override-adorner-text-color: var(--sys-color-token-subtle);
+    --override-adorner-border-color: var(--sys-color-token-subtle);
+  }
+
+  /* Use mono-space source code font to assist reading of adorner content */
+  devtools-adorner {
+    font-family: var(--source-code-font-family);
+  }
+
+  .token-status-badge {
+    display: none;
+  }
+
+  [aria-expanded='false'] .token-status-badge {
+    display: inline-flex;
   }
 }

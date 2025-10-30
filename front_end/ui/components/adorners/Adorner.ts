@@ -50,6 +50,7 @@ export class Adorner extends HTMLElement {
     if (this.#jslogContext && !this.getAttribute('jslog')) {
       this.setAttribute('jslog', `${VisualElements.adorner(this.#jslogContext)}`);
     }
+    this.#render();
   }
 
   isActive(): boolean {

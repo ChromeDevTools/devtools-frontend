@@ -1,20 +1,19 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/legacy/legacy.js';
+import '../../../ui/components/adorners/adorners.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
-import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import badgeStyles from './badge.css.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
@@ -75,27 +74,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/OriginTrialTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface BadgeData {
-  badgeContent: string;
-  style: 'error'|'success'|'secondary';
-  additionalClass?: string;
-}
-
-function createBadge(data: BadgeData): Adorners.Adorner.Adorner {
-  const adorner = new Adorners.Adorner.Adorner();
-  const adornerContent = document.createElement('span');
-  adornerContent.textContent = data.badgeContent;
-  adorner.data = {
-    name: 'badge',
-    content: adornerContent,
-  };
-  adorner.classList.add(`badge-${data.style}`);
-  if (data.additionalClass) {
-    adorner.classList.add(data.additionalClass);
-  }
-  return adorner;
-}
-
 type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
 
 /**
@@ -108,21 +86,19 @@ type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
 export type OriginTrialTreeNodeData = Protocol.Page.OriginTrial|Protocol.Page.OriginTrialTokenWithStatus|string;
 
 function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): Lit.LitTemplate {
-  const tokenCountBadge = createBadge({
-    badgeContent: i18nString(UIStrings.tokens, {PH1: originTrial.tokensWithStatus.length}),
-    style: 'secondary',
-  });
-
+  const success = originTrial.status === Protocol.Page.OriginTrialStatus.Enabled;
   // clang-format off
   return html`
     <li role="treeitem">
       ${originTrial.trialName}
-      <style>${badgeStyles}</style>
-      ${createBadge({
-        badgeContent: originTrial.status,
-        style: originTrial.status === Protocol.Page.OriginTrialStatus.Enabled ? 'success' : 'error',
-      })}
-      ${originTrial.tokensWithStatus.length > 1 ? tokenCountBadge : Lit.nothing}
+      <devtools-adorner class="badge-${success ? 'success' : 'error'}">
+        ${originTrial.status}
+      </devtools-adorner>
+      ${originTrial.tokensWithStatus.length > 1 ?  html`
+        <devtools-adorner class="badge-secondary">
+          ${i18nString(UIStrings.tokens, {PH1: originTrial.tokensWithStatus.length})}
+        </devtools-adorner>`
+        : Lit.nothing}
       <ul role="group" hidden>
         ${originTrial.tokensWithStatus.length > 1 ?
           originTrial.tokensWithStatus.map(constructTokenNode) :
@@ -133,16 +109,15 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): Lit.L
 }
 
 function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Lit.LitTemplate {
-  const statusBadge = createBadge({
-    badgeContent: token.status,
-    style: token.status === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
-    additionalClass: 'token-status-badge',
-  });
+  const success = token.status === Protocol.Page.OriginTrialTokenStatus.Success;
   // Only display token status for convenience when the node is not expanded.
   // clang-format off
   return html`
     <li role="treeitem">
-      ${i18nString(UIStrings.token)} ${statusBadge}
+      ${i18nString(UIStrings.token)}
+      <devtools-adorner class="token-status-badge badge-${success ? 'success' : 'error'}">
+        ${token.status}
+      </devtools-adorner>
       <ul role="group" hidden>
         ${constructTokenDetailsNodes(token)}
       </ul>
@@ -270,15 +245,14 @@ export class OriginTrialTokenRows extends HTMLElement {
       return;
     }
 
+    const success = this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success;
     const tokenDetails: TokenField[] = [
       {
         name: i18nString(UIStrings.status),
         value: html`
-          <style>${badgeStyles}</style>
-          ${createBadge({
-          badgeContent: this.#tokenWithStatus.status,
-          style: this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
-        })}`,
+          <devtools-adorner class="badge-${success ? 'success' : 'error'}">
+            ${this.#tokenWithStatus.status}
+          </devtools-adorner>`,
       },
       ...this.#parsedTokenDetails,
     ];
@@ -294,6 +268,7 @@ export class OriginTrialTokenRows extends HTMLElement {
         html`
       <style>
         ${originTrialTokenRowsStyles}
+        ${originTrialTreeViewStyles}
       </style>
       <div class="content">
         ${tokenDetailRows}
@@ -315,7 +290,6 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
   if (!input.trials.length) {
     // clang-format off
     Lit.render(html`
-      <style>${originTrialTreeViewStyles}</style>
       <span class="status-badge">
         <devtools-icon class="medium" name="clear"></devtools-icon>
         <span>${i18nString(UIStrings.noTrialTokens)}</span>
@@ -326,10 +300,9 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
 
   // clang-format off
   Lit.render(html`
-    <style>
-      ${originTrialTreeViewStyles}
-    </style>
+    <style>${originTrialTreeViewStyles}</style>
     <devtools-tree .template=${html`
+      <style>${originTrialTreeViewStyles}</style>
       <ul role="tree">
         ${input.trials.map(constructOriginTrialTree)}
       </ul>

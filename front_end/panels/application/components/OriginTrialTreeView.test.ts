@@ -119,12 +119,7 @@ function extractBadgeTextFromTreeNode(node: HTMLLIElement): string[] {
   return [...node.querySelectorAll('devtools-adorner')]
       .filter(adornerElement => adornerElement.checkVisibility())
       .map(adornerElement => {
-        const contentElement = adornerElement.firstElementChild;
-        assert.isNotNull(contentElement);
-        if (contentElement === null) {
-          return '';
-        }
-        return contentElement.deepInnerText();
+        return adornerElement.deepInnerText();
       });
 }
 

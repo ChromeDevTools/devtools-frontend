@@ -214,6 +214,9 @@ devtools_ui_module("unittests") {
 }
 
 component_doc("docs") {
-  sources = [ "RadioButton.docs.ts" ]
+  sources = [
+    "RadioButton.docs.ts",
+    "SelectMenu.docs.ts",
+  ]
   deps = [ ":bundle" ]
 }

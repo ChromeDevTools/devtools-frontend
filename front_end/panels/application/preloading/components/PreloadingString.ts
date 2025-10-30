@@ -741,6 +741,33 @@ export function capitalizedAction(action: Protocol.Preload.SpeculationAction): C
   }
 }
 
+export function sortOrder(attempt: SDK.PreloadingModel.PreloadingAttempt): number {
+  switch (attempt.status) {
+    case SDK.PreloadingModel.PreloadingStatus.NOT_TRIGGERED:
+      return 0;
+    case SDK.PreloadingModel.PreloadingStatus.NOT_SUPPORTED:
+      return 1;
+    case SDK.PreloadingModel.PreloadingStatus.PENDING:
+      return 2;
+    case SDK.PreloadingModel.PreloadingStatus.RUNNING:
+      return 3;
+    case SDK.PreloadingModel.PreloadingStatus.READY:
+      return 4;
+    case SDK.PreloadingModel.PreloadingStatus.SUCCESS:
+      return 5;
+    case SDK.PreloadingModel.PreloadingStatus.FAILURE: {
+      switch (attempt.action) {
+        case Protocol.Preload.SpeculationAction.Prefetch:
+          return 6;
+        case Protocol.Preload.SpeculationAction.Prerender:
+          return 7;
+        case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
+          return 8;
+      }
+    }
+  }
+}
+
 export function status(status: SDK.PreloadingModel.PreloadingStatus): string {
   // See content/public/browser/preloading.h PreloadingAttemptOutcome.
   switch (status) {

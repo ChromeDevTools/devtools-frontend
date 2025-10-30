@@ -1,4 +1,4 @@
-versions = {"beta": "7444", "stable": "7390", "extended": "7339"}
+versions = {"beta": "7499", "stable": "7444", "extended": "7444"}
 
 # Define the last branch that needs to use an old recipe and the cipd version
 # of that recipe that the branch will use.

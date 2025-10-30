@@ -8,12 +8,18 @@ import * as path from 'path';
 import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
+import { ENV, getEnvString } from './env-utils.mjs';
+
 const argv = yargs(process.argv.slice(2))
   .parserConfiguration({
     'strip-aliased': true,
   })
   .command('$0 [script]')
-  .option('target', { alias: 't', type: 'string', default: 'Default' })
+  .option('target', {
+    alias: 't',
+    type: 'string',
+    default: getEnvString(ENV.TARGET, 'Default')
+  })
   .help(false)
   .version(false)
   .parseSync();

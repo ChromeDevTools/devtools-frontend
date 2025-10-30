@@ -12,19 +12,9 @@ import {
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {getMainFrame, navigate, setMockResourceTree} from '../../../testing/ResourceTreeHelpers.js';
-import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 
 import * as ApplicationComponents from './components.js';
-
-interface NodeData {
-  text: string;
-  iconName?: string;
-}
-
-interface Node {
-  treeNodeData: NodeData;
-  children?: Node[];
-}
 
 async function renderBackForwardCacheView(): Promise<ApplicationComponents.BackForwardCacheView.BackForwardCacheView> {
   const component = new ApplicationComponents.BackForwardCacheView.BackForwardCacheView();
@@ -32,15 +22,6 @@ async function renderBackForwardCacheView(): Promise<ApplicationComponents.BackF
   component.requestUpdate();
   await component.updateComplete;
   return component;
-}
-
-async function unpromisify(node: TreeOutline.TreeOutlineUtils.TreeNode<NodeData>): Promise<Node> {
-  const result: Node = {treeNodeData: node.treeNodeData};
-  if (node.children) {
-    const children = await node.children();
-    result.children = await Promise.all(children.map(child => unpromisify(child)));
-  }
-  return result;
 }
 
 describeWithMockConnection('BackForwardCacheView', () => {
@@ -151,49 +132,33 @@ describeWithMockConnection('BackForwardCacheView', () => {
         ],
       },
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
-    const component = await renderBackForwardCacheView();
-    const treeOutline = component.contentElement.querySelector('devtools-tree-outline');
-    assert.instanceOf(treeOutline, TreeOutline.TreeOutline.TreeOutline);
-    assert.isNotNull(treeOutline.shadowRoot);
+    const view = createViewFunctionStub(ApplicationComponents.BackForwardCacheView.BackForwardCacheView);
+    new ApplicationComponents.BackForwardCacheView.BackForwardCacheView(view);
 
-    const treeData = await Promise.all(
-        treeOutline.data.tree.map(node => unpromisify(node as TreeOutline.TreeOutlineUtils.TreeNode<NodeData>)));
+    const treeData = (await view.nextInput).frameTreeData;
 
-    const expected = [
-      {
-        treeNodeData: {
-          text: '2 issues found in 2 frames.',
-        },
+    const expected = {
+      frameCount: 2,
+      issueCount: 2,
+      node: {
+        text: '(2) https://www.example.com',
+        iconName: 'frame',
         children: [
           {
-            treeNodeData: {
-              text: '(2) https://www.example.com',
-              iconName: 'frame',
-            },
+            text: 'WebLocks',
+          },
+          {
+            text: '(1) https://www.example.com/frame.html',
+            iconName: 'iframe',
             children: [
               {
-                treeNodeData: {
-                  text: 'WebLocks',
-                },
-              },
-              {
-                treeNodeData: {
-                  text: '(1) https://www.example.com/frame.html',
-                  iconName: 'iframe',
-                },
-                children: [
-                  {
-                    treeNodeData: {
-                      text: 'MainResourceHasCacheControlNoStore',
-                    },
-                  },
-                ],
+                text: 'MainResourceHasCacheControlNoStore',
               },
             ],
           },
         ],
       },
-    ];
+    };
 
     assert.deepEqual(treeData, expected);
   });

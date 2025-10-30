@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+devtools-report-value {
+  overflow: hidden;
+}
+
 .inline-icon {
   vertical-align: sub;
 }

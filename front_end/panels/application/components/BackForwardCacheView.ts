@@ -5,7 +5,7 @@
 import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/expandable_list/expandable_list.js';
 import '../../../ui/components/report_view/report_view.js';
-import '../../../ui/components/tree_outline/tree_outline.js';
+import '../../../ui/legacy/legacy.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -15,7 +15,6 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
-import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
@@ -213,22 +212,23 @@ function maybeRenderFrameTree(
     return nothing;
   }
 
-  function treeNodeRenderer(node: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>): TemplateResult {
+  function renderFrameTreeNode(node: FrameTreeNodeData): TemplateResult {
     // clang-format off
     return html`
-      <div class="text-ellipsis">
-        ${node.treeNodeData.iconName ? html`
-          <devtools-icon class="inline-icon extra-large" .name=${node.treeNodeData.iconName} style="margin-bottom: -3px;">
+      <li role="treeitem" class="text-ellipsis">
+        ${node.iconName ? html`
+          <devtools-icon class="inline-icon extra-large" .name=${node.iconName} style="margin-bottom: -3px;">
           </devtools-icon>
         ` : nothing}
-        ${node.treeNodeData.text}
-      </div>`;
+        ${node.text}
+        ${node.children?.length ? html`
+          <ul role="group" hidden>
+            ${node.children.map(child => renderFrameTreeNode(child))}
+          </ul>` : nothing}
+      </li>`;
     // clang-format on
   }
 
-  const frameTreeNode = buildFrameTree(frameTreeData.node);
-  // Override the icon for the outermost frame.
-  frameTreeNode.treeNodeData.iconName = 'frame';
   let title = '';
   // The translation pipeline does not support nested plurals. We avoid this
   // here by pulling out the logic for one of the plurals into code instead.
@@ -237,41 +237,23 @@ function maybeRenderFrameTree(
   } else {
     title = i18nString(UIStrings.issuesInMultipleFrames, {n: frameTreeData.issueCount, m: frameTreeData.frameCount});
   }
-  const root: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData> = {
-    treeNodeData: {
-      text: title,
-    },
-    id: 'root',
-    children: () => Promise.resolve([frameTreeNode]),
-  };
-
   // clang-format off
   return html`
     <devtools-report-key jslog=${VisualLogging.section('frames')}>${i18nString(UIStrings.framesTitle)}</devtools-report-key>
     <devtools-report-value>
-      <devtools-tree-outline .data=${{
-        tree: [root],
-        defaultRenderer: treeNodeRenderer,
-        compact: true,
-      } as TreeOutline.TreeOutline.TreeOutlineData<FrameTreeNodeData>}>
-      </devtools-tree-outline>
+      <devtools-tree .template=${html`
+        <ul role="tree">
+          <li role="treeitem" class="text-ellipsis">
+            ${title}
+            <ul role="group">
+              ${renderFrameTreeNode(frameTreeData.node)}
+            </ul>
+          </li>
+        </ul>
+      `}>
+      </devtools-tree>
     </devtools-report-value>`;
   // clang-format on
-}
-
-let nextNodeId = 0;
-
-function buildFrameTree(data: FrameTreeNodeData): TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData> {
-  const children = data.children;
-  const node = {
-    treeNodeData: {
-      text: data.text,
-      ...(data.iconName ? {iconName: data.iconName} : {}),
-    },
-    ...(children?.length ? {children: () => Promise.resolve(children.map(child => buildFrameTree(child)))} : {}),
-    id: String(nextNodeId++),
-  };
-  return node;
 }
 
 function renderBackForwardCacheStatus(status: boolean|undefined): TemplateResult {
@@ -279,7 +261,7 @@ function renderBackForwardCacheStatus(status: boolean|undefined): TemplateResult
     case true:
       // clang-format off
       return html`
-        <devtools-report-section class="cache-status-section" tabindex="-1">
+        <devtools-report-section autofocus tabindex="-1">
           <div class="status extra-large">
             <devtools-icon class="inline-icon extra-large" name="check-circle" style="color: var(--icon-checkmark-green);">
             </devtools-icon>
@@ -290,7 +272,7 @@ function renderBackForwardCacheStatus(status: boolean|undefined): TemplateResult
     case false:
       // clang-format off
       return html`
-        <devtools-report-section class="cache-status-section" tabindex="-1">
+        <devtools-report-section autofocus tabindex="-1">
           <div class="status">
             <devtools-icon class="inline-icon extra-large" name="clear">
             </devtools-icon>
@@ -301,7 +283,7 @@ function renderBackForwardCacheStatus(status: boolean|undefined): TemplateResult
   }
   // clang-format off
   return html`
-    <devtools-report-section class="cache-status-section" tabindex="-1">
+    <devtools-report-section autofocus tabindex="-1">
       ${i18nString(UIStrings.unknown)}
     </devtools-report-section>`;
   // clang-format on
@@ -477,7 +459,7 @@ export class BackForwardCacheView extends UI.Widget.Widget {
   #view: View;
 
   constructor(view = DEFAULT_VIEW) {
-    super({useShadowDom: true});
+    super({useShadowDom: true, delegatesFocus: true});
     this.#view = view;
     this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.requestUpdate, this);
@@ -497,13 +479,17 @@ export class BackForwardCacheView extends UI.Widget.Widget {
 
   override async performUpdate(): Promise<void> {
     const reasonToFramesMap = new Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>();
-    const explanationTree = this.#getMainFrame()?.backForwardCacheDetails?.explanationsTree;
+    const frame = this.#getMainFrame();
+    const explanationTree = frame?.backForwardCacheDetails?.explanationsTree;
     if (explanationTree) {
       this.#buildReasonToFramesMap(explanationTree, {blankCount: 1}, reasonToFramesMap);
     }
+    const frameTreeData = this.#buildFrameTreeDataRecursive(explanationTree, {blankCount: 1});
+    // Override the icon for the outermost frame.
+    frameTreeData.node.iconName = 'frame';
     const viewInput: ViewInput = {
-      frame: this.#getMainFrame(),
-      frameTreeData: this.#buildFrameTreeDataRecursive(explanationTree, {blankCount: 1}),
+      frame,
+      frameTreeData,
       reasonToFramesMap,
       screenStatus: this.#screenStatus,
       navigateAwayAndBack: this.#navigateAwayAndBack.bind(this),
@@ -519,10 +505,7 @@ export class BackForwardCacheView extends UI.Widget.Widget {
     this.requestUpdate();
     void this.updateComplete.then(() => {
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.testCompleted));
-      const resultsSection = this.contentElement?.querySelector('.cache-status-section') as HTMLElement;
-      if (resultsSection) {
-        resultsSection.focus();
-      }
+      this.contentElement.focus();
     });
   }
 

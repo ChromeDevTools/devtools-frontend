@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../../scripts/build/ninja/component_doc.gni")
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
@@ -26,4 +27,9 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = default_components_visibility
+}
+
+component_doc("docs") {
+  sources = [ "Spinners.docs.ts" ]
+  deps = [ ":bundle" ]
 }

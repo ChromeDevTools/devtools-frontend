@@ -43,7 +43,6 @@ group("docs") {
     "./select_menu",
     "./slider",
     "./snackbars",
-    "./spinners",
     "./style_property_editor",
     "./survey_link",
     "./switch",

@@ -4,7 +4,7 @@
 
 import type * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
@@ -743,28 +743,30 @@ export function capitalizedAction(action: Protocol.Preload.SpeculationAction): C
 
 export function sortOrder(attempt: SDK.PreloadingModel.PreloadingAttempt): number {
   switch (attempt.status) {
-    case SDK.PreloadingModel.PreloadingStatus.NOT_TRIGGERED:
-      return 0;
     case SDK.PreloadingModel.PreloadingStatus.NOT_SUPPORTED:
-      return 1;
+      return 0;
     case SDK.PreloadingModel.PreloadingStatus.PENDING:
-      return 2;
+      return 1;
     case SDK.PreloadingModel.PreloadingStatus.RUNNING:
-      return 3;
+      return 2;
     case SDK.PreloadingModel.PreloadingStatus.READY:
-      return 4;
+      return 3;
     case SDK.PreloadingModel.PreloadingStatus.SUCCESS:
-      return 5;
+      return 4;
     case SDK.PreloadingModel.PreloadingStatus.FAILURE: {
       switch (attempt.action) {
         case Protocol.Preload.SpeculationAction.Prefetch:
-          return 6;
+          return 5;
         case Protocol.Preload.SpeculationAction.Prerender:
-          return 7;
+          return 6;
         case Protocol.Preload.SpeculationAction.PrerenderUntilScript:
-          return 8;
+          return 7;
       }
     }
+    case SDK.PreloadingModel.PreloadingStatus.NOT_TRIGGERED:
+      return 8;
+    default:
+      Platform.assertNever(attempt.status, 'Unknown Preloading attempt status');
   }
 }
 

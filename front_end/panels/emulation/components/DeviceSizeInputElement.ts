@@ -121,6 +121,7 @@ export class SizeInputElement extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('device-mode-emulation-size-input', SizeInputElement);
 
 declare global {

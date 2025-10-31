@@ -60,7 +60,7 @@ export default defineConfig([
     'scripts/deps/tests/fixtures',
     'test/**/fixtures/',
     'test/e2e/**/*.js',
-    'test/shared/**/*.js',
+    'test/shared/**/*.js'
   ]),
   {
     name: 'JavaScript files',
@@ -71,20 +71,20 @@ export default defineConfig([
       mocha: mochaPlugin,
       '@devtools': devToolsPlugin,
       import: importPlugin,
-      jsdoc: jsdocPlugin,
+      jsdoc: jsdocPlugin
     },
 
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
-        ...globals.browser,
-      },
+        ...globals.browser
+      }
     },
 
     linterOptions: {
       reportUnusedDisableDirectives: 'error',
-      reportUnusedInlineConfigs: 'error',
+      reportUnusedInlineConfigs: 'error'
     },
 
     rules: {
@@ -94,8 +94,8 @@ export default defineConfig([
         'single',
         {
           avoidEscape: true,
-          allowTemplateLiterals: 'always',
-        },
+          allowTemplateLiterals: 'always'
+        }
       ],
 
       '@stylistic/semi': 'error',
@@ -107,8 +107,8 @@ export default defineConfig([
         'error',
         'always',
         {
-          markers: ['*'],
-        },
+          markers: ['*']
+        }
       ],
 
       eqeqeq: 'error',
@@ -117,8 +117,8 @@ export default defineConfig([
         'error',
         {
           getWithoutSet: false,
-          setWithoutGet: false,
-        },
+          setWithoutGet: false
+        }
       ],
 
       curly: 'error',
@@ -144,9 +144,9 @@ export default defineConfig([
             'timeStamp',
             'time',
             'timeEnd',
-            'warn',
-          ],
-        },
+            'warn'
+          ]
+        }
       ],
 
       'no-debugger': 'error',
@@ -156,15 +156,15 @@ export default defineConfig([
       'no-else-return': [
         'error',
         {
-          allowElseIf: false,
-        },
+          allowElseIf: false
+        }
       ],
 
       'no-empty': [
         'error',
         {
-          allowEmptyCatch: true,
-        },
+          allowEmptyCatch: true
+        }
       ],
       'no-lonely-if': 'error',
 
@@ -184,8 +184,8 @@ export default defineConfig([
         'error',
         {
           args: 'none',
-          vars: 'local',
-        },
+          vars: 'local'
+        }
       ],
 
       'no-var': 'error',
@@ -206,8 +206,8 @@ export default defineConfig([
       '@stylistic/no-multiple-empty-lines': [
         'error',
         {
-          max: 1,
-        },
+          max: 1
+        }
       ],
       '@stylistic/no-mixed-spaces-and-tabs': 'error',
       '@stylistic/no-trailing-spaces': 'error',
@@ -222,10 +222,10 @@ export default defineConfig([
         {
           SwitchCase: 1,
           CallExpression: {
-            arguments: 2,
+            arguments: 2
           },
-          MemberExpression: 2,
-        },
+          MemberExpression: 2
+        }
       ],
 
       // brace-style is disabled, as eslint cannot enforce 1tbs as default, but allman for functions
@@ -233,8 +233,8 @@ export default defineConfig([
         'off',
         'allman',
         {
-          allowSingleLine: true,
-        },
+          allowSingleLine: true
+        }
       ],
 
       // key-spacing is disabled, as some objects use value-aligned spacing, some not.
@@ -243,8 +243,8 @@ export default defineConfig([
         {
           beforeColon: false,
           afterColon: true,
-          align: 'value',
-        },
+          align: 'value'
+        }
       ],
 
       '@stylistic/quote-props': ['error', 'as-needed'],
@@ -278,9 +278,9 @@ export default defineConfig([
           named: false,
           alphabetize: {
             order: 'asc',
-            caseInsensitive: true,
-          },
-        },
+            caseInsensitive: true
+          }
+        }
       ],
       // Try to spot '// console.log()' left over from debugging
       '@devtools/no-commented-out-console': 'error',
@@ -296,9 +296,9 @@ export default defineConfig([
         {
           definedTags: [
             'attribute', // @attribute is used by lit-analyzer (through web-component-analyzer)
-            'meaning', // @meaning is used by localization
-          ],
-        },
+            'meaning' // @meaning is used by localization
+          ]
+        }
       ],
       'jsdoc/empty-tags': 'error',
       'jsdoc/multiline-blocks': 'error',
@@ -306,14 +306,14 @@ export default defineConfig([
       'jsdoc/no-blank-blocks': [
         'error',
         {
-          enableFixer: true,
-        },
+          enableFixer: true
+        }
       ],
       'jsdoc/require-asterisk-prefix': 'error',
       'jsdoc/require-param-name': 'error',
       'jsdoc/require-hyphen-before-param-description': ['error', 'never'],
-      'jsdoc/sort-tags': 'error',
-    },
+      'jsdoc/sort-tags': 'error'
+    }
   },
   {
     name: 'TypeScript files',
@@ -330,30 +330,30 @@ export default defineConfig([
           import.meta.dirname,
           'config',
           'typescript',
-          'tsconfig.eslint.json',
-        ),
-      },
+          'tsconfig.eslint.json'
+        )
+      }
     },
 
     rules: {
       '@typescript-eslint/array-type': [
         'error',
         {
-          default: 'array-simple',
-        },
+          default: 'array-simple'
+        }
       ],
       '@typescript-eslint/no-explicit-any': [
         'error',
         {
-          ignoreRestArgs: true,
-        },
+          ignoreRestArgs: true
+        }
       ],
 
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
         {
-          accessibility: 'no-public',
-        },
+          accessibility: 'no-public'
+        }
       ],
 
       // run just the TypeScript unused-vars rule, else we get duplicate errors
@@ -361,8 +361,8 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          argsIgnorePattern: '^_',
-        },
+          argsIgnorePattern: '^_'
+        }
       ],
 
       '@stylistic/member-delimiter-style': [
@@ -370,47 +370,47 @@ export default defineConfig([
         {
           multiline: {
             delimiter: 'semi',
-            requireLast: true,
+            requireLast: true
           },
 
           singleline: {
             delimiter: 'comma',
-            requireLast: false,
+            requireLast: false
           },
 
           overrides: {
             interface: {
               singleline: {
                 delimiter: 'semi',
-                requireLast: false,
+                requireLast: false
               },
 
               multiline: {
                 delimiter: 'semi',
-                requireLast: true,
-              },
+                requireLast: true
+              }
             },
 
             typeLiteral: {
               singleline: {
                 delimiter: 'comma',
-                requireLast: false,
+                requireLast: false
               },
 
               multiline: {
                 delimiter: 'comma',
-                requireLast: true,
-              },
-            },
-          },
-        },
+                requireLast: true
+              }
+            }
+          }
+        }
       ],
 
       '@typescript-eslint/no-floating-promises': [
         'error',
         {
-          ignoreVoid: true,
-        },
+          ignoreVoid: true
+        }
       ],
 
       /**
@@ -434,8 +434,8 @@ export default defineConfig([
 
           custom: {
             regex: '^I[A-Z]',
-            match: false,
-          },
+            match: false
+          }
         },
         {
           selector: [
@@ -443,9 +443,9 @@ export default defineConfig([
             'accessor',
             'method',
             'property',
-            'parameterProperty',
+            'parameterProperty'
           ],
-          format: ['camelCase'],
+          format: ['camelCase']
         },
         {
           selector: 'variable',
@@ -453,10 +453,10 @@ export default defineConfig([
           filter: {
             // Ignore localization variables.
             regex: '^(UIStrings|str_)$',
-            match: false,
+            match: false
           },
 
-          format: ['camelCase'],
+          format: ['camelCase']
         },
         {
           // We are using camelCase, PascalCase and UPPER_CASE for top-level constants, allow the for now.
@@ -465,54 +465,54 @@ export default defineConfig([
           filter: {
             // Ignore localization variables.
             regex: '^(UIStrings|str_)$',
-            match: false,
+            match: false
           },
 
-          format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+          format: ['camelCase', 'UPPER_CASE', 'PascalCase']
         },
         {
           selector: 'classProperty',
           modifiers: ['static', 'readonly'],
-          format: ['UPPER_CASE', 'camelCase'],
+          format: ['UPPER_CASE', 'camelCase']
         },
         {
           selector: 'enumMember',
-          format: ['UPPER_CASE'],
+          format: ['UPPER_CASE']
         },
         {
           selector: ['typeLike'],
-          format: ['PascalCase'],
+          format: ['PascalCase']
         },
         {
           selector: 'parameter',
           format: ['camelCase'],
-          leadingUnderscore: 'allow',
+          leadingUnderscore: 'allow'
         },
         {
           // Public methods are currently in transition and may still have leading underscores.
           selector: 'method',
           modifiers: ['public'],
           format: ['camelCase'],
-          leadingUnderscore: 'allow',
+          leadingUnderscore: 'allow'
         },
         {
           selector: 'property',
           modifiers: ['public'],
           format: ['camelCase'],
-          leadingUnderscore: 'allow',
+          leadingUnderscore: 'allow'
         },
         {
           // Object literals may be constructed as arguments to external libraries which follow different styles.
           selector: ['objectLiteralMethod', 'objectLiteralProperty'],
           modifiers: ['public'],
-          format: null,
+          format: null
         },
         {
           // Ignore type properties that require quotes
           selector: 'typeProperty',
           format: null,
-          modifiers: ['requiresQuotes'],
-        },
+          modifiers: ['requiresQuotes']
+        }
       ],
 
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
@@ -529,7 +529,7 @@ export default defineConfig([
 
       '@typescript-eslint/consistent-generic-constructors': [
         'error',
-        'constructor',
+        'constructor'
       ],
 
       // This is more performant
@@ -545,8 +545,8 @@ export default defineConfig([
           'ts-check': false,
           'ts-expect-error': 'allow-with-description',
           'ts-ignore': true,
-          'ts-nocheck': true,
-        },
+          'ts-nocheck': true
+        }
       ],
 
       '@typescript-eslint/prefer-optional-chain': 'error',
@@ -556,8 +556,8 @@ export default defineConfig([
       '@typescript-eslint/no-empty-object-type': [
         'error',
         {
-          allowInterfaces: 'with-single-extends',
-        },
+          allowInterfaces: 'with-single-extends'
+        }
       ],
 
       'no-array-constructor': 'off',
@@ -580,10 +580,10 @@ export default defineConfig([
             'front_end',
             'models',
             'trace',
-            'trace.js',
+            'trace.js'
           ),
-          importName: 'Trace',
-        },
+          importName: 'Trace'
+        }
       ],
 
       '@devtools/validate-timing-types': 'error',
@@ -591,8 +591,8 @@ export default defineConfig([
       // Disallow redundant (and potentially conflicting) type information
       // within JSDoc comments.
       'jsdoc/no-types': 'error',
-      'jsdoc/require-returns-description': 'error',
-    },
+      'jsdoc/require-returns-description': 'error'
+    }
   },
   {
     name: 'Scripts files',
@@ -600,8 +600,8 @@ export default defineConfig([
     rules: {
       'no-console': 'off',
       '@devtools/es-modules-import': 'off',
-      'import/no-default-export': 'off',
-    },
+      'import/no-default-export': 'off'
+    }
   },
   {
     name: 'Front-end files',
@@ -611,15 +611,15 @@ export default defineConfig([
       '@devtools/l10n-filename-matches': [
         'error',
         {
-          rootFrontendDirectory: join(import.meta.dirname, 'front_end'),
-        },
+          rootFrontendDirectory: join(import.meta.dirname, 'front_end')
+        }
       ],
       '@devtools/l10n-i18nString-call-only-with-uistrings': 'error',
       '@devtools/l10n-no-i18nString-calls-module-instantiation': 'error',
       '@devtools/l10n-no-locked-or-placeholder-only-phrase': 'error',
       '@devtools/l10n-no-uistrings-export': 'error',
-      '@devtools/l10n-no-unused-message': 'error',
-    },
+      '@devtools/l10n-no-unused-message': 'error'
+    }
   },
   {
     name: 'Front-end TypeScript files',
@@ -630,8 +630,8 @@ export default defineConfig([
         {
           allowExpressions: true,
           allowConciseArrowFunctionExpressionsStartingWithVoid: true,
-          allowIIFEs: true,
-        },
+          allowIIFEs: true
+        }
       ],
       '@devtools/no-imperative-dom-api': 'error',
       '@devtools/no-lit-render-outside-of-view': 'error',
@@ -650,8 +650,8 @@ export default defineConfig([
       '@devtools/require-super-calls-in-overridden-methods': [
         'error',
         {
-          methodNames: ['wasShown', 'willHide'],
-        },
+          methodNames: ['wasShown', 'willHide']
+        }
       ],
       '@devtools/static-custom-event-names': 'error',
       '@devtools/lit-no-attribute-quotes': 'error',
@@ -663,12 +663,13 @@ export default defineConfig([
       '@devtools/enforce-custom-element-definitions-location': [
         'error',
         {
-          rootFrontendDirectory: join(import.meta.dirname, 'front_end'),
-        },
+          rootFrontendDirectory: join(import.meta.dirname, 'front_end')
+        }
       ],
       '@devtools/enforce-ui-strings-as-const': 'error',
       '@devtools/no-new-lit-element-components': 'error',
-    },
+      '@devtools/enforce-custom-element-prefix': 'error'
+    }
   },
   {
     name: 'Front-end meta files',
@@ -679,10 +680,10 @@ export default defineConfig([
         {
           selector: 'parameter',
           format: ['camelCase', 'PascalCase'],
-          leadingUnderscore: 'allow',
-        },
-      ],
-    },
+          leadingUnderscore: 'allow'
+        }
+      ]
+    }
   },
   {
     name: 'TypeScript test files',
@@ -693,7 +694,7 @@ export default defineConfig([
       'test/**/*.ts',
       '**/testing/*.ts',
       'scripts/eslint_rules/test/**/*',
-      'extensions/cxx_debugging/e2e/**',
+      'extensions/cxx_debugging/e2e/**'
     ],
 
     rules: {
@@ -715,10 +716,10 @@ export default defineConfig([
               // Chai AssertionError does not extend Error
               from: 'package',
               package: 'chai',
-              name: ['AssertionError'],
-            },
-          ],
-        },
+              name: ['AssertionError']
+            }
+          ]
+        }
       ],
 
       '@devtools/check-test-definitions': 'error',
@@ -738,6 +739,7 @@ export default defineConfig([
       '@devtools/trace-engine-test-timeouts': 'error',
       '@devtools/no-document-body-mutation': 'error',
       '@devtools/enforce-custom-element-definitions-location': 'off',
+      '@devtools/enforce-custom-element-prefix': 'off'
     },
 
     settings: {
@@ -745,69 +747,69 @@ export default defineConfig([
         {
           name: 'describeWithDevtoolsExtension',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interfaces: ['BDD', 'TDD']
         },
         {
           name: 'describeWithEnvironment',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interfaces: ['BDD', 'TDD']
         },
         {
           name: 'describeWithLocale',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interfaces: ['BDD', 'TDD']
         },
         {
           name: 'describeWithMockConnection',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
-        },
-      ],
-    },
+          interfaces: ['BDD', 'TDD']
+        }
+      ]
+    }
   },
   {
     name: 'Use private class members rule',
     files: [
       'front_end/panels/**/components/*.ts',
       'front_end/ui/components/**/*.ts',
-      'front_end/entrypoints/**/*.ts',
+      'front_end/entrypoints/**/*.ts'
     ],
 
     rules: {
-      '@devtools/prefer-private-class-members': 'error',
-    },
+      '@devtools/prefer-private-class-members': 'error'
+    }
   },
   {
     name: 'Ignore private class members rule',
     files: [
       'front_end/panels/recorder/**/*.ts',
-      'front_end/ui/components/suggestion_input/*.ts',
+      'front_end/ui/components/suggestion_input/*.ts'
     ],
     rules: {
       // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
-      '@devtools/prefer-private-class-members': 'off',
-    },
+      '@devtools/prefer-private-class-members': 'off'
+    }
   },
   {
     name: 'Supported CSS properties rules',
     files: ['front_end/generated/SupportedCSSProperties.js'],
     rules: {
-      '@devtools/jslog-context-list': 'error',
-    },
+      '@devtools/jslog-context-list': 'error'
+    }
   },
   {
     name: 'EsLint rules test',
     files: ['scripts/eslint_rules/tests/**/*'],
     rules: {
-      '@eslint-plugin/no-only-tests': 'error',
-    },
+      '@eslint-plugin/no-only-tests': 'error'
+    }
   },
   {
     name: 'Legacy test runner',
     files: ['front_end/legacy_test_runner/**/*'],
     rules: {
-      '@devtools/es-modules-import': 'off',
-    },
+      '@devtools/es-modules-import': 'off'
+    }
   },
   {
     name: 'Front-end component docs',
@@ -821,8 +823,8 @@ export default defineConfig([
       // {host: this} as often the `this` is the window.
       '@devtools/lit-host-this': 'off',
       '@devtools/no-imperative-dom-api': 'off',
-      '@devtools/no-lit-render-outside-of-view': 'off',
-    },
+      '@devtools/no-lit-render-outside-of-view': 'off'
+    }
   },
   {
     name: 'Keep models/trace isolated',
@@ -839,22 +841,22 @@ export default defineConfig([
                 'front_end',
                 'core',
                 'sdk',
-                'sdk.js',
+                'sdk.js'
               ),
-              allowTypeImports: true,
-            },
-          ],
-        },
-      ],
-    },
+              allowTypeImports: true
+            }
+          ]
+        }
+      ]
+    }
   },
   {
     name: 'Recorder injected code',
     files: ['front_end/panels/recorder/injected/**/*.ts'],
     rules: {
       // The code is rolled up and tree-shaken independently from the regular entrypoints.
-      '@devtools/es-modules-import': 'off',
-    },
+      '@devtools/es-modules-import': 'off'
+    }
   },
   {
     name: 'Performance panel file',
@@ -865,8 +867,8 @@ export default defineConfig([
       // enabled in this folder because it is an
       // expensive rule to run and we do not need it
       // for any code that doesn't use Canvas.
-      '@devtools/canvas-context-tracking': 'error',
-    },
+      '@devtools/canvas-context-tracking': 'error'
+    }
   },
   {
     name: 'TypeScript type-definitions',
@@ -874,8 +876,8 @@ export default defineConfig([
     rules: {
       // Not a useful rule for .d.ts files where we are
       // representing an existing module.
-      'import/no-default-export': 'off',
-    },
+      'import/no-default-export': 'off'
+    }
   },
   {
     name: 'Config files',
@@ -883,7 +885,7 @@ export default defineConfig([
     rules: {
       // The config operate on the default export
       // So allow it for them
-      'import/no-default-export': 'off',
-    },
-  },
+      'import/no-default-export': 'off'
+    }
+  }
 ]);

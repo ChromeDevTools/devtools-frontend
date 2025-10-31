@@ -602,4 +602,5 @@ declare global {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('brick-breaker', BrickBreaker);

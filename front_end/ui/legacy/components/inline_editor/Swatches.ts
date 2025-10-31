@@ -38,6 +38,7 @@ export class CSSShadowSwatch extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('css-shadow-swatch', CSSShadowSwatch);
 
 declare global {

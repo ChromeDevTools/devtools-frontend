@@ -1480,6 +1480,7 @@ export class DevToolsIconLabel extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-icon-label', DevToolsIconLabel);
 
 export class DevToolsSmallBubble extends HTMLElement {
@@ -1498,6 +1499,7 @@ export class DevToolsSmallBubble extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-small-bubble', DevToolsSmallBubble);
 
 export class DevToolsCloseButton extends HTMLElement {
@@ -1536,6 +1538,7 @@ export class DevToolsCloseButton extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-close-button', DevToolsCloseButton);
 
 export function bindInput(

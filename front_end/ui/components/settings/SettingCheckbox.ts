@@ -176,6 +176,7 @@ export class SettingCheckbox extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('setting-checkbox', SettingCheckbox);
 
 declare global {

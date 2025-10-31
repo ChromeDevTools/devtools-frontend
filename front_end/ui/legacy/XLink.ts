@@ -153,4 +153,5 @@ export class ContextMenuProvider implements Provider<Node> {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('x-link', XLink);

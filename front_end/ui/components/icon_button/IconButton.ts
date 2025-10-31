@@ -93,6 +93,7 @@ export class IconButton extends HTMLElement {
   }
 }
 
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('icon-button', IconButton);
 
 declare global {

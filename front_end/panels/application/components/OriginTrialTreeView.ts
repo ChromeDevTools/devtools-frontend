@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/legacy/legacy.js';
 import '../../../ui/components/adorners/adorners.js';
@@ -17,7 +15,8 @@ import {Directives, html, type LitTemplate, nothing, render, type TemplateResult
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
-const {ifDefined} = Directives;
+const {classMap} = Directives;
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -126,14 +125,14 @@ function renderTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): LitTe
 
 interface TokenField {
   name: string;
-  value: TemplateResult;
+  value: {text: string, hasError?: boolean};
 }
 
 function renderTokenDetails(token: Protocol.Page.OriginTrialTokenWithStatus): TemplateResult {
   return html`
     <li role="treeitem">
-      <devtools-resources-origin-trial-token-rows .data=${token}>
-      </devtools-resources-origin-trial-token-rows>
+      <devtools-widget .widgetConfig=${widgetConfig(OriginTrialTokenRows, {data: token})}>
+      </devtools-widget>
     </li>`;
 }
 
@@ -167,8 +166,42 @@ export interface OriginTrialTokenRowsData {
   node: TreeNode<OriginTrialTreeNodeData>;
 }
 
-export class OriginTrialTokenRows extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+interface RowsViewInput {
+  tokenWithStatus: Protocol.Page.OriginTrialTokenWithStatus;
+  parsedTokenDetails: TokenField[];
+}
+
+type RowsView = (input: RowsViewInput, output: undefined, target: HTMLElement) => void;
+
+const ROWS_DEFAULT_VIEW: RowsView = (input, _output, target) => {
+  const success = input.tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success;
+  // clang-format off
+  render(html`
+    <style>
+      ${originTrialTokenRowsStyles}
+      ${originTrialTreeViewStyles}
+    </style>
+    <div class="content">
+      <div class="key">${i18nString(UIStrings.status)}</div>
+      <div class="value">
+        <devtools-adorner class="badge-${success ? 'success' : 'error'}">
+          ${input.tokenWithStatus.status}
+        </devtools-adorner>
+      </div>
+      ${input.parsedTokenDetails.map((field: TokenField) => html`
+        <div class="key">${field.name}</div>
+        <div class="value">
+          <div class=${classMap({'error-text': Boolean(field.value.hasError)})}>
+            ${field.value.text}
+          </div>
+        </div>
+      `)}
+    </div>`, target);
+  // clang-format on
+};
+
+export class OriginTrialTokenRows extends UI.Widget.Widget {
+  #view: RowsView;
   #tokenWithStatus: Protocol.Page.OriginTrialTokenWithStatus|null = null;
   #parsedTokenDetails: TokenField[] = [];
   #dateFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
@@ -176,27 +209,19 @@ export class OriginTrialTokenRows extends HTMLElement {
       {dateStyle: 'long', timeStyle: 'long'},
   );
 
+  constructor(element?: HTMLElement, view: RowsView = ROWS_DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+  }
+
   set data(data: Protocol.Page.OriginTrialTokenWithStatus) {
     this.#tokenWithStatus = data;
     this.#setTokenFields();
   }
 
   connectedCallback(): void {
-    this.#render();
+    this.requestUpdate();
   }
-
-  override cloneNode(): HTMLElement {
-    const clone = UI.UIUtils.cloneCustomElement(this);
-    if (this.#tokenWithStatus) {
-      clone.data = this.#tokenWithStatus;
-    }
-    return clone;
-  }
-
-  #renderTokenField = (fieldValue: string, hasError?: boolean): TemplateResult => html`
-        <div class=${ifDefined(hasError ? 'error-text' : undefined)}>
-          ${fieldValue}
-        </div>`;
 
   #setTokenFields(): void {
     if (!this.#tokenWithStatus?.parsedToken) {
@@ -205,27 +230,29 @@ export class OriginTrialTokenRows extends HTMLElement {
     this.#parsedTokenDetails = [
       {
         name: i18nString(UIStrings.origin),
-        value: this.#renderTokenField(
-            this.#tokenWithStatus.parsedToken.origin,
-            this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.WrongOrigin),
+        value: {
+          text: this.#tokenWithStatus.parsedToken.origin,
+          hasError: this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.WrongOrigin,
+        },
       },
       {
         name: i18nString(UIStrings.expiryTime),
-        value: this.#renderTokenField(
-            this.#dateFormatter.format(this.#tokenWithStatus.parsedToken.expiryTime * 1000),
-            this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Expired),
+        value: {
+          text: this.#dateFormatter.format(this.#tokenWithStatus.parsedToken.expiryTime * 1000),
+          hasError: this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Expired
+        },
       },
       {
         name: i18nString(UIStrings.usageRestriction),
-        value: this.#renderTokenField(this.#tokenWithStatus.parsedToken.usageRestriction),
+        value: {text: this.#tokenWithStatus.parsedToken.usageRestriction},
       },
       {
         name: i18nString(UIStrings.isThirdParty),
-        value: this.#renderTokenField(this.#tokenWithStatus.parsedToken.isThirdParty.toString()),
+        value: {text: this.#tokenWithStatus.parsedToken.isThirdParty.toString()},
       },
       {
         name: i18nString(UIStrings.matchSubDomains),
-        value: this.#renderTokenField(this.#tokenWithStatus.parsedToken.matchSubDomains.toString()),
+        value: {text: this.#tokenWithStatus.parsedToken.matchSubDomains.toString()},
       },
     ];
 
@@ -233,52 +260,26 @@ export class OriginTrialTokenRows extends HTMLElement {
       this.#parsedTokenDetails = [
         {
           name: i18nString(UIStrings.trialName),
-          value: this.#renderTokenField(this.#tokenWithStatus.parsedToken.trialName),
+          value: {text: this.#tokenWithStatus.parsedToken.trialName},
         },
         ...this.#parsedTokenDetails,
       ];
     }
+    this.requestUpdate();
   }
 
-  #render(): void {
+  override performUpdate(): void {
     if (!this.#tokenWithStatus) {
       return;
     }
 
-    const success = this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success;
-    const tokenDetails: TokenField[] = [
-      {
-        name: i18nString(UIStrings.status),
-        value: html`
-          <devtools-adorner class="badge-${success ? 'success' : 'error'}">
-            ${this.#tokenWithStatus.status}
-          </devtools-adorner>`,
-      },
-      ...this.#parsedTokenDetails,
-    ];
-
-    const tokenDetailRows = tokenDetails.map((field: TokenField) => {
-      return html`
-          <div class="key">${field.name}</div>
-          <div class="value">${field.value}</div>
-          `;
-    });
-
-    render(
-        html`
-      <style>
-        ${originTrialTokenRowsStyles}
-        ${originTrialTreeViewStyles}
-      </style>
-      <div class="content">
-        ${tokenDetailRows}
-      </div>
-    `,
-        this.#shadow, {host: this});
+    const viewInput: RowsViewInput = {
+      tokenWithStatus: this.#tokenWithStatus,
+      parsedTokenDetails: this.#parsedTokenDetails,
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }
-
-customElements.define('devtools-resources-origin-trial-token-rows', OriginTrialTokenRows);
 
 export interface OriginTrialTreeViewData {
   trials: Protocol.Page.OriginTrial[];
@@ -328,11 +329,5 @@ export class OriginTrialTreeView extends UI.Widget.Widget {
 
   override performUpdate(): void {
     this.#view(this.#data, undefined, this.contentElement);
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-origin-trial-token-rows': OriginTrialTokenRows;
   }
 }

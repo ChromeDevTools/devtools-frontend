@@ -342,6 +342,7 @@ export interface AidaRegisterClientEvent {
   disable_user_content_logging: boolean;
   do_conversation_client_event?: DoConversationClientEvent;
   complete_code_client_event?: {user_acceptance: UserAcceptance}|{user_impression: UserImpression};
+  generate_code_client_event?: {user_acceptance: UserAcceptance}|{user_impression: UserImpression};
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

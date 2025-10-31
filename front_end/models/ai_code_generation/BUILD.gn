@@ -1,0 +1,46 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_module("ai_code_generation") {
+  sources = [
+    "AiCodeGeneration.ts",
+    "debug.ts",
+  ]
+
+  deps = [
+    "../../core/host:bundle",
+    "../../core/root:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "ai_code_generation.ts"
+
+  deps = [ ":ai_code_generation" ]
+
+  visibility = [
+    ":*",
+    "../../panels/console/*",
+    "../../panels/sources/*",
+    "../../ui/components/text_editor/*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "AiCodeGeneration.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

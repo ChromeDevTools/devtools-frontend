@@ -422,6 +422,13 @@ export interface HostConfigAiCodeCompletion {
   userTier: string;
 }
 
+export interface HostConfigAiCodeGeneration {
+  modelId: string;
+  temperature: number;
+  enabled: boolean;
+  userTier: string;
+}
+
 export interface HostConfigDeepLinksViaExtensibilityApi {
   enabled: boolean;
 }
@@ -556,6 +563,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent,
   devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
   devToolsAiCodeCompletion: HostConfigAiCodeCompletion,
+  devToolsAiCodeGeneration: HostConfigAiCodeGeneration,
   devToolsVeLogging: HostConfigVeLogging,
   devToolsWellKnown: HostConfigWellKnown,
   devToolsPrivacyUI: HostConfigPrivacyUI,

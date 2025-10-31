@@ -75,6 +75,7 @@ interface ResponseWithError {
 interface CallbackWithDebugInfo {
   resolve: (response: ResponseWithError) => void;
   method: string;
+  sessionId: string;
 }
 
 export class InspectorBackend {
@@ -204,10 +205,10 @@ export class SessionRouter {
   readonly #pendingLongPollingMessageIds = new Set<number>();
   readonly #sessions = new Map<string, {
     target: TargetBase,
-    callbacks: Map<number, CallbackWithDebugInfo>,
     proxyConnection: ConnectionTransport|undefined|null,
   }>();
   #pendingScripts: Array<() => void> = [];
+  readonly #callbacks = new Map<number, CallbackWithDebugInfo>();
 
   constructor(connection: ConnectionTransport) {
     this.#connection = connection;
@@ -237,7 +238,7 @@ export class SessionRouter {
       }
     }
 
-    this.#sessions.set(sessionId, {target, callbacks: new Map(), proxyConnection});
+    this.#sessions.set(sessionId, {target, proxyConnection});
   }
 
   unregisterSession(sessionId: string): void {
@@ -245,7 +246,10 @@ export class SessionRouter {
     if (!session) {
       return;
     }
-    for (const {resolve, method} of session.callbacks.values()) {
+    for (const {resolve, method, sessionId: callbackSessionId} of this.#callbacks.values()) {
+      if (sessionId !== callbackSessionId) {
+        continue;
+      }
       resolve({
         result: null,
         error: {
@@ -295,13 +299,8 @@ export class SessionRouter {
       this.#pendingLongPollingMessageIds.add(messageId);
     }
 
-    const session = this.#sessions.get(sessionId);
-    if (!session) {
-      return Promise.resolve({error: null, result: null});
-    }
-
     return new Promise(resolve => {
-      session.callbacks.set(messageId, {resolve, method});
+      this.#callbacks.set(messageId, {resolve, method, sessionId});
       this.#connection.sendRawMessage(JSON.stringify(messageObject));
     });
   }
@@ -325,7 +324,6 @@ export class SessionRouter {
     const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as Message;
 
     // Send all messages to proxy connections.
-    let suppressUnknownMessageErrors = false;
     for (const session of this.#sessions.values()) {
       if (!session.proxyConnection) {
         continue;
@@ -338,37 +336,25 @@ export class SessionRouter {
       }
 
       session.proxyConnection.onMessage(messageObject);
-      suppressUnknownMessageErrors = true;
     }
 
     const sessionId = messageObject.sessionId || '';
     const session = this.#sessions.get(sessionId);
-    if (!session) {
-      // In the DevTools MCP case, we may share the transport with puppeteer so we silently
-      // ignore unknown sessions.
-      return;
-    }
 
     // If this message is directly for the target controlled by the proxy connection, don't handle it.
-    if (session.proxyConnection) {
+    if (session?.proxyConnection) {
       return;
     }
 
-    if (session.target.getNeedsNodeJSPatching()) {
+    if (session?.target.getNeedsNodeJSPatching()) {
       NodeURL.patch(messageObject);
     }
 
     if (messageObject.id !== undefined) {  // just a response for some request
-      const callback = session.callbacks.get(messageObject.id);
-      session.callbacks.delete(messageObject.id);
+      const callback = this.#callbacks.get(messageObject.id);
+      this.#callbacks.delete(messageObject.id);
       if (!callback) {
-        if (messageObject.error?.code === ConnectionClosedErrorCode) {
-          // Ignore the errors that are sent as responses after the session closes.
-          return;
-        }
-        if (!suppressUnknownMessageErrors) {
-          InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
-        }
+        // Ignore messages with unknown IDs, we might see puppeteer proxied messages here.
         return;
       }
 
@@ -386,7 +372,7 @@ export class SessionRouter {
       }
       // This cast is justified as we just checked for the presence of messageObject.method.
       const eventMessage = messageObject as EventMessage;
-      session.target.dispatch(eventMessage);
+      session?.target.dispatch(eventMessage);
     }
   }
 

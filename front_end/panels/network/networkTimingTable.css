@@ -78,8 +78,8 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 .network-timing-bar {
   position: absolute;
   min-width: 1px;
-  top: 0;
-  bottom: 0;
+  inset: 0 attr(data-right %) 0 attr(data-left %); /* stylelint-disable-line declaration-property-value-no-unknown */
+  background-color: attr(data-background <color>); /* stylelint-disable-line declaration-property-value-no-unknown */
 }
 
 .network-timing-bar-title {
@@ -145,6 +145,16 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   left: -12px;
 }
 
+tr:has([aria-checked="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+tr:has([aria-checked="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+  display: none;
+}
+
+tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+  display: block;
+}
+
 .network-fetch-timing-bar-clickable:focus-visible {
   background-color: var(--sys-color-state-focus-highlight);
 }
@@ -179,6 +189,16 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 .network-timing-bar.waiting,
 .-theme-preserve {
   background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
+.throttled devtools-icon {
+  vertical-align: middle;
+  margin-right: var(--sys-size-3);
+  color: var(--sys-color-yellow);
+}
+
+td.throttled {
+  color: var(--sys-color-yellow);
 }
 
 .network-timing-bar.receiving,

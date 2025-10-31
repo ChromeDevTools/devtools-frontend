@@ -232,7 +232,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
     this.appendTab(
         NetworkForward.UIRequestLocation.UIRequestTabs.TIMING, i18nString(UIStrings.timing),
-        new RequestTimingView(request, calculator), i18nString(UIStrings.requestAndResponseTimeline));
+        RequestTimingView.create(request, calculator), i18nString(UIStrings.requestAndResponseTimeline));
 
     if (request.trustTokenParams()) {
       this.appendTab(

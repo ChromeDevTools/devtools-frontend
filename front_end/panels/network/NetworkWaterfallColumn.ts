@@ -13,7 +13,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
-import networkingTimingTableStyles from './networkTimingTable.css.js';
 import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 import {RequestTimingView} from './RequestTimingView.js';
 
@@ -288,11 +287,11 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     return {
       box: anchorBox,
-      show: (popover: UI.GlassPane.GlassPane) => {
-        const content = RequestTimingView.createTimingTable((request), this.calculator);
-        popover.registerRequiredCSS(networkingTimingTableStyles);
-        popover.contentElement.appendChild(content);
-        return Promise.resolve(true);
+      show: async (popover: UI.GlassPane.GlassPane) => {
+        const content = RequestTimingView.create(request, this.calculator);
+        await content.updateComplete;
+        content.show(popover.contentElement);
+        return true;
       },
       hide: undefined,
     };

@@ -456,12 +456,12 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#overlays.addEventListener(Overlays.Overlays.EventReferenceClick.eventName, event => {
       const eventRef = (event as Overlays.Overlays.EventReferenceClick);
       const fromTraceEvent = selectionFromEvent(eventRef.event);
-      this.openSelectionDetailsView(fromTraceEvent);
+      void this.openSelectionDetailsView(fromTraceEvent);
     });
 
     // This is for the detail view of layout shift.
     this.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
-      this.setSelectionAndReveal(selectionFromEvent(event.event));
+      void this.setSelectionAndReveal(selectionFromEvent(event.event));
     });
 
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
@@ -1469,7 +1469,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     }
   }
 
-  setSelectionAndReveal(selection: TimelineSelection|null): void {
+  async setSelectionAndReveal(selection: TimelineSelection|null): Promise<void> {
     if (selection && this.#currentSelection && selectionsEqual(selection, this.#currentSelection)) {
       return;
     }
@@ -1507,8 +1507,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.networkFlameChart.setSelectedEntry(networkIndex);
 
     if (this.detailsView) {
-      // TODO(crbug.com/1459265):  Change to await after migration work.
-      void this.detailsView.setSelection(selection);
+      await this.detailsView.setSelection(selection);
     }
 
     // Create the entry selected overlay if the selection represents a trace event
@@ -1552,9 +1551,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   // Only opens the details view of a selection. This is used for Timing Markers. Timing markers replace
   // their entry with a new UI. Because of that, their entries can no longer be "selected" in the timings track,
   // so if clicked, we only open their details view.
-  openSelectionDetailsView(selection: TimelineSelection|null): void {
+  async openSelectionDetailsView(selection: TimelineSelection|null): Promise<void> {
     if (this.detailsView) {
-      void this.detailsView.setSelection(selection);
+      await this.detailsView.setSelection(selection);
     }
   }
 
@@ -1611,12 +1610,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.mainFlameChart.showAllGroups();
   }
 
-  private onAddEntryLabelAnnotation(
+  private async onAddEntryLabelAnnotation(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
-      event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>): void {
+      event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>):
+      Promise<void> {
     const selection = dataProvider.createSelection(event.data.entryIndex);
     if (selectionIsEvent(selection)) {
-      this.setSelectionAndReveal(selection);
+      await this.setSelectionAndReveal(selection);
       ModificationsManager.activeManager()?.createAnnotation(
           {
             type: 'ENTRY_LABEL',

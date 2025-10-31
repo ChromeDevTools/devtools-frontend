@@ -2130,7 +2130,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.flameChart.setModel(parsedTrace, this.#eventToRelatedInsights);
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.
-    this.flameChart.setSelectionAndReveal(null);
+    void this.flameChart.setSelectionAndReveal(null);
     this.#sideBar.setParsedTrace(parsedTrace);
 
     this.#searchableView.showWidget();
@@ -2964,7 +2964,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   select(selection: TimelineSelection|null): void {
     this.#announceSelectionToAria(this.selection, selection);
     this.selection = selection;
-    this.flameChart.setSelectionAndReveal(selection);
+    void this.flameChart.setSelectionAndReveal(selection);
   }
 
   selectEntryAtTime(events: Trace.Types.Events.Event[]|null, time: number): void {
@@ -3044,7 +3044,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #openSummaryTab(): void {
     // If we have a selection, we should remove it.
-    this.flameChart.setSelectionAndReveal(null);
+    void this.flameChart.setSelectionAndReveal(null);
     this.flameChart.selectDetailsViewTab(Tab.Details, null);
   }
 

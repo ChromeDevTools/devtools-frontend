@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/spinners/spinners.js';
@@ -9,7 +9,6 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
@@ -19,7 +18,6 @@ import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
-import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -32,46 +30,9 @@ const {html, Directives: {ifDefined, ref}} = Lit;
 
 const UIStrings = {
   /**
-   * @description The error message when the user is not logged in into Chrome.
-   */
-  notLoggedIn: 'This feature is only available when you are signed into Chrome with your Google account',
-  /**
-   * @description Message shown when the user is offline.
-   */
-  offline: 'Check your internet connection and try again',
-  /**
-   * @description Text for a link to Chrome DevTools Settings.
-   */
-  settingsLink: 'AI assistance in Settings',
-  /**
-   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   * @example {AI assistance in Settings} PH1
-   */
-  turnOnForStyles: 'Turn on {PH1} to get help with understanding CSS styles',
-  /**
-   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   * @example {AI assistance in Settings} PH1
-   */
-  turnOnForStylesAndRequests: 'Turn on {PH1} to get help with styles and network requests',
-  /**
-   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   * @example {AI assistance in Settings} PH1
-   */
-  turnOnForStylesRequestsAndFiles: 'Turn on {PH1} to get help with styles, network requests, and files',
-  /**
-   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   * @example {AI assistance in Settings} PH1
-   */
-  turnOnForStylesRequestsPerformanceAndFiles:
-      'Turn on {PH1} to get help with styles, network requests, performance, and files',
-  /**
    * @description The footer disclaimer that links to more information about the AI feature.
    */
   learnAbout: 'Learn about AI in DevTools',
-  /**
-   * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
-   */
-  notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
 
   /**
    * @description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
@@ -259,12 +220,6 @@ export interface ModelChatMessage {
 
 export type ChatMessage = UserChatMessage|ModelChatMessage;
 
-export const enum State {
-  DISABLED_VIEW = 'disabled-view',
-  CHAT_VIEW = 'chat-view',
-  EXPLORE_VIEW = 'explore-view'
-}
-
 export interface Props {
   onTextSubmit:
       (text: string, imageInput?: Host.AidaClient.Part,
@@ -281,7 +236,6 @@ export interface Props {
   onLoadImage?: (file: File) => Promise<void>;
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
-  state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
@@ -513,10 +467,6 @@ export class ChatView extends HTMLElement {
 
   #render(): void {
     const renderFooter = (): Lit.LitTemplate => {
-      if (this.#props.state !== State.CHAT_VIEW) {
-        return Lit.nothing;
-      }
-
       const classes = Lit.Directives.classMap({
         'chat-view-footer': true,
         'has-conversation': !!this.#props.conversationType,
@@ -538,10 +488,6 @@ export class ChatView extends HTMLElement {
     };
 
     const renderInputOrReadOnlySection = (): Lit.LitTemplate => {
-      if (this.#props.state !== State.CHAT_VIEW) {
-        return Lit.nothing;
-      }
-
       if (this.#props.conversationType && this.#props.isReadOnly) {
         return renderReadOnlySection({
           conversationType: this.#props.conversationType,
@@ -582,8 +528,6 @@ export class ChatView extends HTMLElement {
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
           ${renderMainContents({
-            state: this.#props.state,
-            aidaAvailability: this.#props.aidaAvailability,
             messages: this.#props.messages,
             isLoading: this.#props.isLoading,
             isReadOnly: this.#props.isReadOnly,
@@ -1504,75 +1448,7 @@ function renderChatInput({
   // clang-format on
 }
 
-function renderAidaUnavailableContents(
-    aidaAvailability:
-        Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>):
-    Lit.TemplateResult {
-  switch (aidaAvailability) {
-    case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
-    case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED: {
-      return html`${i18nString(UIStrings.notLoggedIn)}`;
-    }
-    case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET: {
-      return html`${i18nString(UIStrings.offline)}`;
-    }
-  }
-}
-
-function renderConsentViewContents(): Lit.TemplateResult {
-  const settingsLink = document.createElement('span');
-  settingsLink.textContent = i18nString(UIStrings.settingsLink);
-  settingsLink.classList.add('link');
-  UI.ARIAUtils.markAsLink(settingsLink);
-  settingsLink.addEventListener('click', () => {
-    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-  });
-  settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
-
-  let consentViewContents: HTMLSpanElement;
-  // TODO(ergunsh): Should this `view` access `hostConfig` at all?
-  const config = Root.Runtime.hostConfig;
-  if (config.isOffTheRecord) {
-    return html`${i18nString(UIStrings.notAvailableInIncognitoMode)}`;
-  }
-  if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(
-        str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, {PH1: settingsLink});
-  } else if (config.devToolsAiAssistanceFileAgent?.enabled) {
-    consentViewContents =
-        uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsAndFiles, {PH1: settingsLink});
-  } else if (config.devToolsAiAssistanceNetworkAgent?.enabled) {
-    consentViewContents =
-        uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink});
-  } else {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink});
-  }
-
-  return html`${consentViewContents}`;
-}
-
-function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
-  // clang-format off
-  return html`
-    <div class="empty-state-container">
-      <div class="disabled-view">
-        <div class="disabled-view-icon-container">
-          <devtools-icon
-            name="smart-assistant"
-          ></devtools-icon>
-        </div>
-        <div>
-          ${contents}
-        </div>
-      </div>
-    </div>
-  `;
-  // clang-format on
-}
-
 function renderMainContents({
-  state,
-  aidaAvailability,
   messages,
   isLoading,
   isReadOnly,
@@ -1589,8 +1465,6 @@ function renderMainContents({
   onCopyResponseClick,
   onMessageContainerRef,
 }: {
-  state: State,
-  aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
   messages: ChatMessage[],
   isLoading: boolean,
   isReadOnly: boolean,
@@ -1607,13 +1481,6 @@ function renderMainContents({
   conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
   changeSummary?: string,
 }): Lit.LitTemplate {
-  if (state === State.DISABLED_VIEW) {
-    if (aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
-      return renderDisabledState(renderConsentViewContents());
-    }
-    return renderDisabledState(renderAidaUnavailableContents(aidaAvailability));
-  }
-
   if (!conversationType) {
     return Lit.nothing;
   }

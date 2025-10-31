@@ -32,9 +32,9 @@ import {
   type ImageInputData,
   type ModelChatMessage,
   type Props as ChatViewProps,
-  State as ChatViewState,
   type Step
 } from './components/ChatView.js';
+import {DisabledWidget} from './components/DisabledWidget.js';
 import {ExploreWidget} from './components/ExploreWidget.js';
 import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCodeBlock.js';
 import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
@@ -296,7 +296,17 @@ interface ToolbarViewInput {
   showActiveConversationActions: boolean;
 }
 
-export type ViewInput = ChatViewProps&ToolbarViewInput;
+export const enum ViewState {
+  DISABLED_VIEW = 'disabled-view',
+  CHAT_VIEW = 'chat-view',
+  EXPLORE_VIEW = 'explore-view'
+}
+
+interface PanelViewProps {
+  state: ViewState;
+}
+
+export type ViewInput = ChatViewProps&ToolbarViewInput&PanelViewProps;
 export interface PanelViewOutput {
   chatView?: ChatView;
 }
@@ -375,28 +385,41 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
 
 function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElement): void {
   // clang-format off
+  function renderState(): Lit.TemplateResult {
+    switch (input.state) {
+      case ViewState.CHAT_VIEW:
+        return html`<devtools-ai-chat-view
+          .props=${input}
+          ${Lit.Directives.ref((el: Element | undefined) => {
+            if (!el || !(el instanceof ChatView)) {
+              return;
+            }
+
+            output.chatView = el;
+          })}
+        ></devtools-ai-chat-view>`;
+      case ViewState.EXPLORE_VIEW:
+        return html`<devtools-widget
+          class="fill-panel"
+          .widgetConfig=${UI.Widget.widgetConfig(ExploreWidget)}
+        ></devtools-widget>`;
+
+      case ViewState.DISABLED_VIEW:
+        return html`<devtools-widget
+          class="fill-panel"
+          .widgetConfig=${UI.Widget.widgetConfig(DisabledWidget, {
+            aidaAvailability: input.aidaAvailability,
+          })}
+        ></devtools-widget>`;
+    }
+  }
+
   Lit.render(
     html`
       ${toolbarView(input)}
-      <div class="ai-assistance-view-container">
-        ${input.state !== ChatViewState.EXPLORE_VIEW
-          ? html` <devtools-ai-chat-view
-              .props=${input}
-              ${Lit.Directives.ref((el: Element | undefined) => {
-                if (!el || !(el instanceof ChatView)) {
-                  return;
-                }
-
-                output.chatView = el;
-              })}
-            ></devtools-ai-chat-view>`
-          : html`<devtools-widget
-              class="explore"
-              .widgetConfig=${UI.Widget.widgetConfig(ExploreWidget)}
-            ></devtools-widget>`}
-      </div>
+      <div class="ai-assistance-view-container">${renderState()}</div>
     `,
-    target,
+    target
   );
   // clang-format on
 }
@@ -528,19 +551,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
   }
 
-  #getChatUiState(): ChatViewState {
+  #getChatUiState(): ViewState {
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
 
     if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE ||
         !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
-      return ChatViewState.DISABLED_VIEW;
+      return ViewState.DISABLED_VIEW;
     }
 
     if (this.#conversation?.type) {
-      return ChatViewState.CHAT_VIEW;
+      return ViewState.CHAT_VIEW;
     }
 
-    return ChatViewState.EXPLORE_VIEW;
+    return ViewState.EXPLORE_VIEW;
   }
 
   #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
@@ -982,7 +1005,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #getChatInputPlaceholder(): Platform.UIString.LocalizedString {
     const state = this.#getChatUiState();
-    if (state === ChatViewState.DISABLED_VIEW || !this.#conversation) {
+    if (state === ViewState.DISABLED_VIEW || !this.#conversation) {
       return i18nString(UIStrings.followTheSteps);
     }
 
@@ -1015,7 +1038,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #getDisclaimerText(): Platform.UIString.LocalizedString {
     const state = this.#getChatUiState();
-    if (state === ChatViewState.DISABLED_VIEW || !this.#conversation || this.#conversation.isReadOnly) {
+    if (state === ViewState.DISABLED_VIEW || !this.#conversation || this.#conversation.isReadOnly) {
       return i18nString(UIStrings.inputDisclaimerForEmptyState);
     }
 

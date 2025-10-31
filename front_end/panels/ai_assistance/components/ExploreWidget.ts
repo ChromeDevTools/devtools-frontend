@@ -111,10 +111,10 @@ export const DEFAULT_VIEW = (
 export type View = typeof DEFAULT_VIEW;
 
 export class ExploreWidget extends UI.Widget.Widget {
-  view: View;
-  constructor(element?: HTMLElement, view?: View) {
+  #view: View;
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element);
-    this.view = view ?? DEFAULT_VIEW;
+    this.#view = view;
   }
 
   override wasShown(): void {
@@ -183,7 +183,7 @@ export class ExploreWidget extends UI.Widget.Widget {
       });
     }
 
-    this.view(
+    this.#view(
         {
           featureCards,
         },

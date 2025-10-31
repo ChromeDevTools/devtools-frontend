@@ -76,44 +76,44 @@ describeWithMockConnection('AI Assistance Panel', () => {
     it('should render disabled view when no account email', async () => {
       const {view} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
     });
 
     it('should render disabled view when sync paused', async () => {
       const {view} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED});
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
     });
 
     it('should render disabled view when no internet', async () => {
       const {view} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET});
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
     });
 
     it('should render disabled view when the consent is not given before', async () => {
       const {view} = await createAiAssistancePanel();
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
     });
 
     it('should switch from disabled view to empty state when enabling setting', async () => {
       const {view} = await createAiAssistancePanel();
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      assert.strictEqual((await view.nextInput).state, AiAssistancePanel.State.EXPLORE_VIEW);
+      assert.strictEqual((await view.nextInput).state, AiAssistancePanel.ViewState.EXPLORE_VIEW);
     });
 
     it('should render empty state when the consent is given before', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       const {view} = await createAiAssistancePanel();
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.EXPLORE_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.EXPLORE_VIEW);
     });
 
     it('should render the disabled view when the setting is disabled', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
       const {view} = await createAiAssistancePanel();
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
     });
 
@@ -128,7 +128,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
       const {view} = await createAiAssistancePanel();
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
     });
 
     it('updates when the user logs in', async () => {
@@ -137,7 +137,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {view, stubAidaCheckAccessPreconditions} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
 
-      assert.strictEqual(view.input.state, AiAssistancePanel.State.DISABLED_VIEW);
+      assert.strictEqual(view.input.state, AiAssistancePanel.ViewState.DISABLED_VIEW);
       assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
 
       stubAidaCheckAccessPreconditions(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
@@ -145,7 +145,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
           Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
 
-      assert.strictEqual((await view.nextInput).state, AiAssistancePanel.State.EXPLORE_VIEW);
+      assert.strictEqual((await view.nextInput).state, AiAssistancePanel.ViewState.EXPLORE_VIEW);
       assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     });
   });

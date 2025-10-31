@@ -27,7 +27,6 @@ describeWithEnvironment('ChatView', () => {
       onTextInputChange: noop,
       changeManager: new AiAssistanceModel.ChangeManager.ChangeManager(),
       inspectElementToggled: false,
-      state: AiAssistancePanel.State.CHAT_VIEW,
       conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       messages,
@@ -75,30 +74,6 @@ describeWithEnvironment('ChatView', () => {
 
       const sideEffect = chat.shadowRoot!.querySelector('.side-effect-confirmation');
       assert.exists(sideEffect);
-    });
-
-    it('shows the disabled view when the state is DISABLED_VIEW', async () => {
-      const props = getProp({
-        state: AiAssistancePanel.State.DISABLED_VIEW,
-      });
-      const chat = new AiAssistancePanel.ChatView(props);
-      renderElementIntoDOM(chat);
-
-      const optIn = chat.shadowRoot?.querySelector('.disabled-view');
-      assert.strictEqual(
-          optIn?.textContent?.trim(), 'Turn on AI assistance in Settings to get help with understanding CSS styles');
-    });
-
-    it('shows the disabled view when the AIDA is not available', async () => {
-      const props = getProp({
-        state: AiAssistancePanel.State.DISABLED_VIEW,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET,
-      });
-      const chat = new AiAssistancePanel.ChatView(props);
-      renderElementIntoDOM(chat);
-
-      const optIn = chat.shadowRoot?.querySelector('.disabled-view');
-      assert.strictEqual(optIn?.textContent?.trim(), 'Check your internet connection and try again');
     });
   });
 });

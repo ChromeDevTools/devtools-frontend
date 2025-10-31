@@ -9,7 +9,7 @@ export class ProfileNode {
     id;
     parent;
     children;
-    functionName;
+    originalFunctionName = null;
     depth;
     deoptReason;
     constructor(callFrame) {
@@ -18,7 +18,6 @@ export class ProfileNode {
         this.self = 0;
         this.total = 0;
         this.id = 0;
-        this.functionName = callFrame.functionName;
         this.parent = null;
         this.children = [];
     }
@@ -34,11 +33,11 @@ export class ProfileNode {
     get columnNumber() {
         return this.callFrame.columnNumber;
     }
-    setFunctionName(name) {
-        if (name === null) {
-            return;
-        }
-        this.functionName = name;
+    get functionName() {
+        return this.originalFunctionName ?? this.callFrame.functionName;
+    }
+    setOriginalFunctionName(name) {
+        this.originalFunctionName = name;
     }
 }
 export class ProfileTreeModel {

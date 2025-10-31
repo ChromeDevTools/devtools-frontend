@@ -132,18 +132,22 @@ export interface SettingRegistration {
         experiment?: string;
     };
     /**
-     * Optional information to learn more about the setting. If provided, a `(?)` icon will show next to the setting
-     * in the Settings panel with a link to learn more, and the `tooltip` will be presented to the user when hovering
-     * the `(?)` icon.
+     * See {@link LearnMore} for more info.
      */
     learnMore?: LearnMore;
 }
 /**
- * Metadata to learn more about a setting. The `url` will be used to construct
- * a `(?)` icon link and the `tooltip` will be shown when hovering the icon.
+ * Optional information to learn more about the setting.
+ *
+ * If tooltip is provided creates a (i) icon with rich tooltip with said tooltip
+ *
+ * If url is provided creates a (?) icon with a link to said url
+ *
+ * If both tooltip is provided creates a (i) icon with rich tooltip
+ * and a link inside the rich tool tip with text `Learn more`
  */
 export interface LearnMore {
-    tooltip: () => Platform.UIString.LocalizedString;
+    tooltip?: () => Platform.UIString.LocalizedString;
     url?: Platform.DevToolsPath.UrlString;
 }
 interface LocalizedSettingExtensionOption {

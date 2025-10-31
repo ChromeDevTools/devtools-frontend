@@ -64,7 +64,6 @@
     "../../../../../../front_end/ui/legacy/ResizerWidget.ts",
     "../../../../../../front_end/ui/legacy/RootView.ts",
     "../../../../../../front_end/ui/legacy/SearchableView.ts",
-    "../../../../../../front_end/ui/legacy/SettingsUI.ts",
     "../../../../../../front_end/ui/legacy/ShortcutRegistry.ts",
     "../../../../../../front_end/ui/legacy/SoftContextMenu.ts",
     "../../../../../../front_end/ui/legacy/SoftDropDown.ts",
@@ -130,9 +129,6 @@
     },
     {
       "path": "../components/icon_button/bundle-tsconfig.json"
-    },
-    {
-      "path": "../components/settings/bundle-tsconfig.json"
     },
     {
       "path": "../lit/bundle-tsconfig.json"

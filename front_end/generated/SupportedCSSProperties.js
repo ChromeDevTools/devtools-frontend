@@ -518,6 +518,7 @@ export const generatedProperties = [
             "inset-block-start",
             "inset-inline-end",
             "inset-inline-start",
+            "interactivity",
             "interest-delay-end",
             "interest-delay-start",
             "interpolate-size",

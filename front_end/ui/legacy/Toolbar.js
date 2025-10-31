@@ -13,11 +13,10 @@ import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { ContextMenu } from './ContextMenu.js';
 import { GlassPane } from './GlassPane.js';
-import { bindCheckbox } from './SettingsUI.js';
 import { TextPrompt } from './TextPrompt.js';
 import toolbarStyles from './toolbar.css.js';
 import { Tooltip } from './Tooltip.js';
-import { CheckboxLabel, LongClickController } from './UIUtils.js';
+import { bindCheckbox, CheckboxLabel, LongClickController } from './UIUtils.js';
 const UIStrings = {
     /**
      * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.

@@ -104,6 +104,9 @@ export declare class Setting<V> {
     category(): SettingCategory | null;
     tags(): string | null;
     order(): number | null;
+    /**
+     * See {@link LearnMore} for more info
+     */
     learnMore(): LearnMore | null;
     get deprecation(): Deprecation | null;
     private printSettingsSavingError;

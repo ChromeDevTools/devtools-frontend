@@ -1,4 +1,6 @@
 import './Toolbar.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -343,4 +345,19 @@ export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
  */
 export declare function copyTextToClipboard(text: string, alert?: string): void;
 export declare function getDevToolsBoundingElement(): HTMLElement;
+/**
+ * @deprecated Prefer {@link bindToSetting} as this function leaks the checkbox via the setting listener.
+ */
+export declare const bindCheckbox: (input: CheckboxLabel, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions) => void;
+export declare const bindCheckboxImpl: (input: CheckboxLabel, apply: (value: boolean) => void, metric?: UserMetricOptions) => (value: boolean) => void;
+export declare const bindToSetting: (settingOrName: string | Common.Settings.Setting<boolean | string> | Common.Settings.RegExpSetting, stringValidator?: (newSettingValue: string) => boolean) => ReturnType<typeof Directives.ref>;
+/**
+ * Track toggle action as a whole or
+ * track on and off action separately.
+ */
+export interface UserMetricOptions {
+    toggle?: Host.UserMetrics.Action;
+    enable?: Host.UserMetrics.Action;
+    disable?: Host.UserMetrics.Action;
+}
 export {};

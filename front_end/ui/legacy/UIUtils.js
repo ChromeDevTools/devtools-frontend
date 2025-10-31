@@ -33,6 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import './Toolbar.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -1994,4 +1995,87 @@ export function copyTextToClipboard(text, alert) {
 export function getDevToolsBoundingElement() {
     return InspectorView.maybeGetInspectorViewInstance()?.element || document.body;
 }
+/**
+ * @deprecated Prefer {@link bindToSetting} as this function leaks the checkbox via the setting listener.
+ */
+export const bindCheckbox = function (input, setting, metric) {
+    const setValue = bindCheckboxImpl(input, setting.set.bind(setting), metric);
+    setting.addChangeListener(event => setValue(event.data));
+    setValue(setting.get());
+};
+export const bindCheckboxImpl = function (input, apply, metric) {
+    input.addEventListener('change', onInputChanged, false);
+    function onInputChanged() {
+        apply(input.checked);
+        if (input.checked && metric?.enable) {
+            Host.userMetrics.actionTaken(metric.enable);
+        }
+        if (!input.checked && metric?.disable) {
+            Host.userMetrics.actionTaken(metric.disable);
+        }
+        if (metric?.toggle) {
+            Host.userMetrics.actionTaken(metric.toggle);
+        }
+    }
+    return function setValue(value) {
+        if (value !== input.checked) {
+            input.checked = value;
+        }
+    };
+};
+export const bindToSetting = (settingOrName, stringValidator) => {
+    const setting = typeof settingOrName === 'string' ?
+        Common.Settings.Settings.instance().moduleSetting(settingOrName) :
+        settingOrName;
+    // We can't use `setValue` as the change listener directly, otherwise we won't
+    // be able to remove it again.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let setValue;
+    function settingChanged() {
+        setValue(setting.get());
+    }
+    if (setting.type() === "boolean" /* Common.Settings.SettingType.BOOLEAN */ || typeof setting.defaultValue === 'boolean') {
+        return Directives.ref(e => {
+            if (e === undefined) {
+                setting.removeChangeListener(settingChanged);
+                return;
+            }
+            setting.addChangeListener(settingChanged);
+            setValue =
+                bindCheckboxImpl(e, setting.set.bind(setting));
+            setValue(setting.get());
+        });
+    }
+    if (setting.type() === "regex" /* Common.Settings.SettingType.REGEX */ || setting instanceof Common.Settings.RegExpSetting) {
+        return Directives.ref(e => {
+            if (e === undefined) {
+                setting.removeChangeListener(settingChanged);
+                return;
+            }
+            setting.addChangeListener(settingChanged);
+            setValue = bindInput(e, setting.set.bind(setting), (value) => {
+                try {
+                    new RegExp(value);
+                    return true;
+                }
+                catch {
+                    return false;
+                }
+            }, /* numeric */ false);
+            setValue(setting.get());
+        });
+    }
+    if (typeof setting.defaultValue === 'string') {
+        return Directives.ref(e => {
+            if (e === undefined) {
+                setting.removeChangeListener(settingChanged);
+                return;
+            }
+            setting.addChangeListener(settingChanged);
+            setValue = bindInput(e, setting.set.bind(setting), stringValidator ?? (() => true), /* numeric */ false);
+            setValue(setting.get());
+        });
+    }
+    throw new Error(`Cannot infer type for setting  '${setting.name}'`);
+};
 //# sourceMappingURL=UIUtils.js.map

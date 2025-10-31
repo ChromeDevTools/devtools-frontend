@@ -191,7 +191,7 @@ export declare class Widget {
      *          updating, the value is `true` if there are no more pending updates,
      *          and `false` if the update cycle triggered another update.
      */
-    get updateComplete(): Promise<boolean>;
+    get updateComplete(): Promise<void>;
 }
 export declare class VBox extends Widget {
     /**

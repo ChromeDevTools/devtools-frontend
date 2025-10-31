@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowUmdGlobalAccess": true,
     "checkJs": true,
     "composite": true,
     "declaration": true,
@@ -24,27 +25,33 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": ".",
+    "rootDir": "../../../../../../front_end/ui/legacy",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "devtools_entrypoint-bundle-tsconfig-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
+    "tsBuildInfoFile": "docs_ts-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../node_modules/@types"
+    ],
+    "types": [
+      "mocha",
+      "chai",
+      "sinon",
+      "karma-chai-sinon"
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "settings.prebundle.ts",
-    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
-    "../../../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../front_end/ui/legacy/RadioButton.docs.ts",
+    "../../../../../../front_end/ui/legacy/SelectMenu.docs.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "./css_files-tsconfig.json"
-    },
-    {
-      "path": "./settings-tsconfig.json"
+      "path": "./bundle-tsconfig.json"
     }
   ]
 }

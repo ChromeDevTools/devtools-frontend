@@ -4,6 +4,8 @@
 'Icon': () => import('../../front_end/ui/components/icon_button/Icon.docs.js'),
 'Spinners': () => import('../../front_end/ui/components/spinners/Spinners.docs.js'),
 'Tooltip': () => import('../../front_end/ui/components/tooltips/Tooltip.docs.js'),
+'RadioButton': () => import('../../front_end/ui/legacy/RadioButton.docs.js'),
+'SelectMenu': () => import('../../front_end/ui/legacy/SelectMenu.docs.js'),
     };
 
     const mainContent = document.querySelector('.main-content');

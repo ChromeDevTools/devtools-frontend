@@ -8,7 +8,7 @@ export declare class ProfileNode {
     id: number;
     parent: ProfileNode | null;
     children: this[];
-    functionName: string;
+    originalFunctionName: string | null;
     depth: number;
     deoptReason: string | null;
     constructor(callFrame: Protocol.Runtime.CallFrame);
@@ -16,7 +16,8 @@ export declare class ProfileNode {
     get url(): Platform.DevToolsPath.UrlString;
     get lineNumber(): number;
     get columnNumber(): number;
-    setFunctionName(name: string | null): void;
+    get functionName(): string;
+    setOriginalFunctionName(name: string | null): void;
 }
 export declare class ProfileTreeModel {
     root: ProfileNode;

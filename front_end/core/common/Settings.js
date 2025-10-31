@@ -473,6 +473,9 @@ export class Setting {
         }
         return null;
     }
+    /**
+     * See {@link LearnMore} for more info
+     */
     learnMore() {
         return this.#registration?.learnMore ?? null;
     }

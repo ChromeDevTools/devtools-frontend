@@ -1362,6 +1362,17 @@ function getTreeNodes(nodeList) {
     })
         .toArray();
 }
+function getStyleElements(nodes) {
+    return [...nodes].flatMap(node => {
+        if (node instanceof HTMLStyleElement) {
+            return [node];
+        }
+        if (node instanceof HTMLElement) {
+            return [...node.querySelectorAll('style')];
+        }
+        return [];
+    });
+}
 /**
  * A tree element that can be used as progressive enhancement over a <ul> element. A `template` IDL attribute allows
  * additionally to insert the <ul> into a <template>, avoiding rendering anything into light DOM, which is recommended.
@@ -1516,6 +1527,9 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
             if (parent.expanded) {
                 parent.treeElement.expand();
             }
+        }
+        for (const element of getStyleElements(nodes)) {
+            this.#treeOutline.shadowRoot.appendChild(element.cloneNode(true));
         }
     }
     removeNodes(nodes) {

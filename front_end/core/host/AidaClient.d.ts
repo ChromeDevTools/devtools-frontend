@@ -239,6 +239,11 @@ export interface AidaRegisterClientEvent {
     } | {
         user_impression: UserImpression;
     };
+    generate_code_client_event?: {
+        user_acceptance: UserAcceptance;
+    } | {
+        user_impression: UserImpression;
+    };
 }
 export declare enum RecitationAction {
     ACTION_UNSPECIFIED = "ACTION_UNSPECIFIED",

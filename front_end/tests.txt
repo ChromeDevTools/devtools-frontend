@@ -133,6 +133,7 @@ models/ai_assistance/agents/StylingAgent.test.js
 models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIQueries.test.js
 models/ai_code_completion/AiCodeCompletion.test.js
+models/ai_code_generation/AiCodeGeneration.test.js
 models/autofill_manager/AutofillManager.test.js
 models/badges/AiExplorerBadge.test.js
 models/badges/Badge.test.js
@@ -560,6 +561,7 @@ panels/timeline/components/LayoutShiftDetails.test.js
 panels/timeline/components/LiveMetricsView.test.js
 panels/timeline/components/MetricCard.test.js
 panels/timeline/components/NetworkRequestDetails.test.js
+panels/timeline/components/NetworkRequestTooltip.test.js
 panels/timeline/components/NetworkThrottlingSelector.test.js
 panels/timeline/components/OriginMap.test.js
 panels/timeline/components/RelatedInsightChips.test.js

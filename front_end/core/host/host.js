@@ -1999,7 +1999,9 @@ var Action;
   Action2[Action2["InsightTeaserGenerationCompleted"] = 192] = "InsightTeaserGenerationCompleted";
   Action2[Action2["InsightTeaserGenerationAborted"] = 193] = "InsightTeaserGenerationAborted";
   Action2[Action2["InsightTeaserGenerationErrored"] = 194] = "InsightTeaserGenerationErrored";
-  Action2[Action2["MAX_VALUE"] = 195] = "MAX_VALUE";
+  Action2[Action2["AiCodeGenerationSuggestionDisplayed"] = 195] = "AiCodeGenerationSuggestionDisplayed";
+  Action2[Action2["AiCodeGenerationSuggestionAccepted"] = 196] = "AiCodeGenerationSuggestionAccepted";
+  Action2[Action2["MAX_VALUE"] = 197] = "MAX_VALUE";
 })(Action || (Action = {}));
 var PanelCodes;
 (function(PanelCodes2) {

@@ -1269,6 +1269,7 @@ export class DevToolsIconLabel extends HTMLElement {
         }
     }
 }
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-icon-label', DevToolsIconLabel);
 export class DevToolsSmallBubble extends HTMLElement {
     textElement;
@@ -1283,6 +1284,7 @@ export class DevToolsSmallBubble extends HTMLElement {
         this.textElement.className = type;
     }
 }
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-small-bubble', DevToolsSmallBubble);
 export class DevToolsCloseButton extends HTMLElement {
     #button;
@@ -1315,6 +1317,7 @@ export class DevToolsCloseButton extends HTMLElement {
         this.#button.focus();
     }
 }
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-close-button', DevToolsCloseButton);
 export function bindInput(input, apply, validate, numeric, modifierMultiplier) {
     input.addEventListener('change', onChange, false);

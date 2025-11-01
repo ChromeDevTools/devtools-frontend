@@ -31,7 +31,7 @@ import '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
-import { createShadowRootWithCoreStyles } from './UIUtils.js';
+import { cloneCustomElement, createShadowRootWithCoreStyles } from './UIUtils.js';
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
 const originalAppendChild = Element.prototype.appendChild;
@@ -195,12 +195,14 @@ export class WidgetElement extends HTMLElement {
         super.removeChildren();
     }
     cloneNode(deep) {
-        const clone = super.cloneNode(deep);
+        const clone = cloneCustomElement(this, deep);
         if (!this.#widgetClass) {
             throw new Error('No widgetClass defined');
         }
-        clone.#widgetClass = this.#widgetClass;
-        clone.#widgetParams = this.#widgetParams;
+        clone.widgetConfig = {
+            widgetClass: this.#widgetClass,
+            widgetParams: this.#widgetParams,
+        };
         return clone;
     }
 }

@@ -130,5 +130,6 @@ export class ContextMenuProvider {
         }, { jslogContext: 'copy-link-address' });
     }
 }
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('x-link', XLink);
 //# sourceMappingURL=XLink.js.map

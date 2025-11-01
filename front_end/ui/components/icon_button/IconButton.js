@@ -64,5 +64,6 @@ export class IconButton extends HTMLElement {
         // clang-format on
     }
 }
+// eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('icon-button', IconButton);
 //# sourceMappingURL=IconButton.js.map

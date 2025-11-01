@@ -2483,12 +2483,14 @@ var WidgetElement = class extends HTMLElement {
     super.removeChildren();
   }
   cloneNode(deep) {
-    const clone = super.cloneNode(deep);
+    const clone = cloneCustomElement(this, deep);
     if (!this.#widgetClass) {
       throw new Error("No widgetClass defined");
     }
-    clone.#widgetClass = this.#widgetClass;
-    clone.#widgetParams = this.#widgetParams;
+    clone.widgetConfig = {
+      widgetClass: this.#widgetClass,
+      widgetParams: this.#widgetParams
+    };
     return clone;
   }
 };
@@ -18289,17 +18291,18 @@ var popover_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-.widget {
-  display: flex;
-  font: var(--sys-typescale-body4-regular);
-  box-shadow: var(--sys-elevation-level2);
-  color: var(--sys-color-on-surface);
-  background-color: var(--sys-color-base-container-elevated);
-  border-radius: var(--sys-shape-corner-small);
-  padding: var(--sys-size-4);
-  user-select: text;
-  overflow: auto;
+@scope to (.widget > *) {
+  .widget {
+    display: flex;
+    font: var(--sys-typescale-body4-regular);
+    box-shadow: var(--sys-elevation-level2);
+    color: var(--sys-color-on-surface);
+    background-color: var(--sys-color-base-container-elevated);
+    border-radius: var(--sys-shape-corner-small);
+    padding: var(--sys-size-4);
+    user-select: text;
+    overflow: auto;
+  }
 }
 
 .squiggles-content {
@@ -21978,6 +21981,17 @@ function getTreeNodes(nodeList) {
     return [];
   }).toArray();
 }
+function getStyleElements(nodes) {
+  return [...nodes].flatMap((node) => {
+    if (node instanceof HTMLStyleElement) {
+      return [node];
+    }
+    if (node instanceof HTMLElement) {
+      return [...node.querySelectorAll("style")];
+    }
+    return [];
+  });
+}
 var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemplate {
   static observedAttributes = ["navigation-variant", "hide-overflow"];
   #treeOutline = new TreeOutlineInShadow(void 0, this);
@@ -22066,6 +22080,9 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       if (parent.expanded) {
         parent.treeElement.expand();
       }
+    }
+    for (const element of getStyleElements(nodes)) {
+      this.#treeOutline.shadowRoot.appendChild(element.cloneNode(true));
     }
   }
   removeNodes(nodes) {

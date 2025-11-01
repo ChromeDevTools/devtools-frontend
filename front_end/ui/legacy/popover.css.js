@@ -8,17 +8,18 @@ export default `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-.widget {
-  display: flex;
-  font: var(--sys-typescale-body4-regular);
-  box-shadow: var(--sys-elevation-level2);
-  color: var(--sys-color-on-surface);
-  background-color: var(--sys-color-base-container-elevated);
-  border-radius: var(--sys-shape-corner-small);
-  padding: var(--sys-size-4);
-  user-select: text;
-  overflow: auto;
+@scope to (.widget > *) {
+  .widget {
+    display: flex;
+    font: var(--sys-typescale-body4-regular);
+    box-shadow: var(--sys-elevation-level2);
+    color: var(--sys-color-on-surface);
+    background-color: var(--sys-color-base-container-elevated);
+    border-radius: var(--sys-shape-corner-small);
+    padding: var(--sys-size-4);
+    user-select: text;
+    overflow: auto;
+  }
 }
 
 .squiggles-content {

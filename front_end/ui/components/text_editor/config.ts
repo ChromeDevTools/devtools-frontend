@@ -483,7 +483,7 @@ export function contentIncludingHint(view: CM.EditorView): string {
 
 export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestion|null>();
 
-interface ActiveSuggestion {
+export interface ActiveSuggestion {
   text: string;
   from: number;
   sampleId?: number;

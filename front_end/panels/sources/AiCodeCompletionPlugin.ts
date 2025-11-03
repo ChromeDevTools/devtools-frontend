@@ -22,6 +22,22 @@ const DISCLAIMER_TOOLTIP_ID = 'sources-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'sources-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'sources-ai-code-completion-citations-tooltip';
 
+function createCallbacks(editor: TextEditor.TextEditor.TextEditor): AiCodeCompletion.AiCodeCompletion.Callbacks {
+  return {
+    getSelectionHead: () => editor.editor.state.selection.main.head,
+    getCompletionHint: () => editor.editor.plugin(TextEditor.Config.showCompletionHint)?.currentHint,
+    setAiAutoCompletion: (args: {
+      text: string,
+      from: number,
+      startTime: number,
+      onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
+      clearCachedRequest: () => void,
+      rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+      sampleId?: number,
+    }|null) => editor.editor.dispatch({effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(args)}),
+  };
+}
+
 export class AiCodeCompletionPlugin extends Plugin {
   #aidaClient?: Host.AidaClient.AidaClient;
   #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
@@ -215,7 +231,7 @@ export class AiCodeCompletionPlugin extends Plugin {
           AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE :
           AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES;
       this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-          {aidaClient: this.#aidaClient}, this.#editor, contextFlavor);
+          {aidaClient: this.#aidaClient}, contextFlavor, createCallbacks(this.#editor));
       this.#aiCodeCompletion.addEventListener(
           AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
       this.#aiCodeCompletion.addEventListener(

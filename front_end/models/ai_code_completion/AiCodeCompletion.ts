@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import {debugLog} from './debug.js';
 
@@ -30,6 +29,20 @@ interface RequestOptions {
 interface CachedRequest {
   request: Host.AidaClient.CompletionRequest;
   response: Host.AidaClient.CompletionResponse;
+}
+
+export interface Callbacks {
+  getSelectionHead: () => number;
+  getCompletionHint: () => string | undefined | null;
+  setAiAutoCompletion: (args: {
+    text: string,
+    from: number,
+    startTime: number,
+    onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
+    clearCachedRequest: () => void,
+    rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+    sampleId?: number,
+  }|null) => void;
 }
 
 /* clang-format off */
@@ -141,24 +154,23 @@ const console = {
  *    the suggestion is displayed.
  */
 export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  #editor: TextEditor.TextEditor.TextEditor;
   #stopSequences: string[];
   #renderingTimeout?: number;
   #aidaRequestCache?: CachedRequest;
   #panel: ContextFlavor;
+  #callbacks?: Callbacks;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
   readonly #serverSideLoggingEnabled: boolean;
 
-  constructor(
-      opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, panel: ContextFlavor, stopSequences?: string[]) {
+  constructor(opts: AgentOptions, panel: ContextFlavor, callbacks?: Callbacks, stopSequences?: string[]) {
     super();
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-    this.#editor = editor;
     this.#panel = panel;
     this.#stopSequences = stopSequences ?? [];
+    this.#callbacks = callbacks;
   }
 
   #debouncedRequestAidaSuggestion = Common.Debouncer.debounce(
@@ -239,7 +251,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     // `currentHint` is the portion of a standard autocomplete suggestion that the user has not yet typed.
     // For example, if the user types `document.queryS` and the autocomplete suggests `document.querySelector`,
     // the `currentHint` is `elector`.
-    const currentHintInMenu = this.#editor.editor.plugin(TextEditor.Config.showCompletionHint)?.currentHint;
+    const currentHintInMenu = this.#callbacks?.getCompletionHint();
     // TODO(ergunsh): We should not do this check here. Instead, the AI code suggestions should be provided
     // as it is to the view plugin. The view plugin should choose which one to use based on the completion hint
     // and selected completion.
@@ -321,21 +333,19 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       } = sampleResponse;
       const remainingDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
       this.#renderingTimeout = window.setTimeout(() => {
-        const currentCursorPosition = this.#editor.editor.state.selection.main.head;
+        const currentCursorPosition = this.#callbacks?.getSelectionHead();
         if (currentCursorPosition !== cursorPositionAtRequest) {
           this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
           return;
         }
-        this.#editor.dispatch({
-          effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({
-            text: suggestionText,
-            from: cursorPositionAtRequest,
-            rpcGlobalId,
-            sampleId,
-            startTime,
-            onImpression: this.#registerUserImpression.bind(this),
-            clearCachedRequest: this.clearCachedRequest.bind(this),
-          })
+        this.#callbacks?.setAiAutoCompletion({
+          text: suggestionText,
+          from: cursorPositionAtRequest,
+          rpcGlobalId,
+          sampleId,
+          startTime,
+          onImpression: this.#registerUserImpression.bind(this),
+          clearCachedRequest: this.clearCachedRequest.bind(this),
         });
 
         if (fromCache) {
@@ -474,9 +484,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       clearTimeout(this.#renderingTimeout);
       this.#renderingTimeout = undefined;
     }
-    this.#editor.dispatch({
-      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
-    });
+    this.#callbacks?.setAiAutoCompletion(null);
   }
 }
 

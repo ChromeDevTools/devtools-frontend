@@ -17,7 +17,6 @@ devtools_module("ai_code_completion") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/root:bundle",
-    "../../ui/components/text_editor:bundle",
   ]
 }
 

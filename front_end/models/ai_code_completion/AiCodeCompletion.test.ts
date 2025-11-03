@@ -26,6 +26,22 @@ function makeState(doc: string, extensions: CodeMirror.Extension = []) {
   });
 }
 
+function createCallbacks(editor: TextEditor.TextEditor.TextEditor): AiCodeCompletion.AiCodeCompletion.Callbacks {
+  return {
+    getSelectionHead: () => editor.editor.state.selection.main.head,
+    getCompletionHint: () => editor.editor.plugin(TextEditor.Config.showCompletionHint)?.currentHint,
+    setAiAutoCompletion: (args: {
+      text: string,
+      from: number,
+      startTime: number,
+      onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
+      clearCachedRequest: () => void,
+      rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+      sampleId?: number,
+    }|null) => editor.dispatch({effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(args)}),
+  };
+}
+
 describeWithEnvironment('AiCodeCompletion', () => {
   let clock: sinon.SinonFakeTimers;
 
@@ -51,8 +67,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        sinon.createStubInstance(TextEditor.TextEditor.TextEditor),
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
         ['\n'],
     );
 
@@ -87,8 +103,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
 
     aiCodeCompletion.onTextChanged('prefix', '\n', DEFAULT_CURSOR_POSITION);
@@ -119,8 +135,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
 
     aiCodeCompletion.onTextChanged('console.log("', '");\n', DEFAULT_CURSOR_POSITION);
@@ -142,8 +158,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        sinon.createStubInstance(TextEditor.TextEditor.TextEditor),
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
     );
 
     aiCodeCompletion.onTextChanged('p', '', 1);
@@ -174,8 +190,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
     const dispatchEventSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
@@ -204,8 +220,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
     const dispatchEventSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
@@ -235,8 +251,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
     const dispatchEventSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
@@ -272,8 +288,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
     const dispatchSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
@@ -303,8 +319,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', DEFAULT_CURSOR_POSITION);
@@ -353,8 +369,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
 
     aiCodeCompletion.onTextChanged('prefix ', 'suffix', DEFAULT_CURSOR_POSITION);
@@ -394,8 +410,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', DEFAULT_CURSOR_POSITION);
@@ -421,8 +437,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        editor,
         AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(editor),
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', DEFAULT_CURSOR_POSITION);

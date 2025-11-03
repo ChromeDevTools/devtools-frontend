@@ -9,7 +9,7 @@ devtools_module("generated") {
   sources = [
     "ARIAProperties.js",
     "Deprecation.ts",
-    "InspectorBackendCommands.js",
+    "InspectorBackendCommands.ts",
     "SupportedCSSProperties.js",
     "protocol.ts",
   ]

@@ -63,12 +63,7 @@ export const qualifyName = (domain: string, name: UnqualifiedName): QualifiedNam
 type EventParameterNames = Map<QualifiedName, string[]>;
 type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
 
-interface CommandParameter {
-  name: string;
-  type: string;
-  optional: boolean;
-  description: string;
-}
+type CommandParameter = InspectorBackendCommands.CommandParameter;
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;
 interface ResponseWithError {
@@ -82,7 +77,7 @@ interface CallbackWithDebugInfo {
   sessionId: string;
 }
 
-export class InspectorBackend {
+export class InspectorBackend implements InspectorBackendCommands.InspectorBackendAPI {
   readonly agentPrototypes = new Map<ProtocolDomainName, AgentPrototype>();
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
   readonly typeMap = new Map<QualifiedName, CommandParameter[]>();

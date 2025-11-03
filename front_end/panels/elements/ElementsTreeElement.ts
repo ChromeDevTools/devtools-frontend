@@ -735,7 +735,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override async expandRecursively(): Promise<void> {
-    await this.nodeInternal.getSubtree(-1, true);
+    await this.nodeInternal.getSubtree(100, true);
     await super.expandRecursively(Number.MAX_VALUE);
   }
 

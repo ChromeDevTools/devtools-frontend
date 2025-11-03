@@ -632,6 +632,7 @@ export class DOMNode {
   }
 
   async getSubtree(depth: number, pierce: boolean): Promise<DOMNode[]|null> {
+    console.assert(depth > 0, 'Do not fetch an infinite subtree to avoid crashing the renderer for large documents');
     const response = await this.#agent.invoke_requestChildNodes({nodeId: this.id, depth, pierce});
     return response.getError() ? null : this.childrenInternal;
   }

@@ -456,7 +456,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
     } data-section-index=${
       input.sectionIndex
     } class=${Lit.Directives.classMap(stepClasses)}>
-      <svg slot="icon" width="24" height="24" height="100%" class="icon">
+      <svg slot="icon" width="24" height="24" class="icon">
         <circle class="circle-icon"/>
         <g class="error-icon">
           <path d="M1.5 1.5L6.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

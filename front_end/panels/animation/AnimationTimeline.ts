@@ -165,7 +165,7 @@ const DEFAULT_TOOLBAR_VIEW: ToolbarView = (input: ToolbarViewInput, output: unde
           const isSelected = input.selectedPlaybackRate === playbackRate;
           const textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) : i18nString(UIStrings.pause);
           return html`
-            <button class="animation-playback-rate-button" jslog=${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({
+            <button jslog=${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({
               click: true,
               keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight',
             })}

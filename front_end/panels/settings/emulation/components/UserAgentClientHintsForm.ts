@@ -662,9 +662,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
         change: true,
       })}
           />
-          <devtools-icon name="bin" class="medium"
+          <devtools-icon name="bin"
             title=${i18nString(UIStrings.brandUserAgentDelete)}
-            class="delete-icon"
+            class="medium delete-icon"
             tabindex="0"
             role="button"
             @click=${handleDeleteClick}
@@ -757,9 +757,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
         change: true,
       })}
           />
-          <devtools-icon name="bin" class="medium"
+          <devtools-icon name="bin" 
             title=${i18nString(UIStrings.brandFullVersionListDelete)}
-            class="delete-icon"
+            class="medium delete-icon"
             tabindex="0"
             role="button"
             @click=${handleDeleteClick}

@@ -204,7 +204,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
         @endiannesschanged=${input.onEndiannessChanged}
         @jumptopointeraddress=${input.onJumpToAddress}
         >
-      </devtools-linear-memory-inspector-interpreter/>
+      </devtools-linear-memory-inspector-interpreter>
     </div>`}
     `,
          target);

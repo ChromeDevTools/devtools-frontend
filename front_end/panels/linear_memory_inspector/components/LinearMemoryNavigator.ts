@@ -163,13 +163,20 @@ export class LinearMemoryNavigator extends HTMLElement {
       'address-input': true,
       invalid: !this.#valid,
     };
-    return html`
-      <input class=${Lit.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
-        jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
+    return html`<input
+      class=${Lit.Directives.classMap(classMap)}
+      data-input="true"
+      .value=${this.#address}
+      jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
       change: true,
     })}
-        title=${ifDefined(this.#valid ? i18nString(UIStrings.enterAddress) : this.#error)} @change=${
-        this.#onAddressChange.bind(this, Mode.SUBMITTED)} @input=${this.#onAddressChange.bind(this, Mode.EDIT)}/>`;
+      title=${
+        ifDefined(
+            this.#valid ? i18nString(UIStrings.enterAddress) : this.#error,
+            )}
+      @change=${this.#onAddressChange.bind(this, Mode.SUBMITTED)}
+      @input=${this.#onAddressChange.bind(this, Mode.EDIT)}
+    />`;
   }
 
   #onAddressChange(mode: Mode, event: Event): void {

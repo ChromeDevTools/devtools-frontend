@@ -13,7 +13,7 @@ import * as Lit from '../lit/lit.js';
 
 import * as UI from './legacy.js';
 
-const {html} = Lit;
+const {html, nothing} = Lit;
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -248,7 +248,7 @@ describe('UIUtils', () => {
       const {button, container, action} = setup();
       const spy = sinon.spy(action, 'removeEventListener');
 
-      Lit.render(html``, container);
+      Lit.render(nothing, container);
 
       assert.isFalse(button.isConnected);
       sinon.assert.calledWith(spy, UI.ActionRegistration.Events.ENABLED);
@@ -337,13 +337,11 @@ describe('UIUtils', () => {
           [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
 
       container.clear();
-      Lit.render(html``, container);
+      Lit.render(nothing, container);
       await raf();
       assert.deepEqual(nodeContents(container.additions), []);
       assert.deepEqual(nodeContents(container.removals), [{DIV: 'inner'}]);
-      assert.deepEqual(
-          container.updates,
-          [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
+      assert.deepEqual(container.updates, [{node: 'TEST-ELEMENT', attributeName: null}]);
     });
 
     it('observes its attributes for modifications', async () => {
@@ -392,8 +390,7 @@ describe('UIUtils', () => {
       Lit.render(
           html`
         <test-element
-          .template=${html`<button @click=${onClick}>button</button>`}
-        </test-element>`,
+          .template=${html`<button @click=${onClick}>button</button>`}></test-element>`,
           container);
 
       await raf();
@@ -520,7 +517,7 @@ describe('bindToSetting (string)', () => {
 
   it('removes the change listener when the input is removed from the DOM', () => {
     const {setting, input, container} = setup();
-    Lit.render(html``, container);
+    Lit.render(nothing, container);
 
     setting.set('new value via change listener');
 
@@ -571,7 +568,7 @@ describe('bindToSetting (boolean)', () => {
 
   it('removes the change listener when the input is removed from the DOM', () => {
     const {setting, input, container} = setup();
-    Lit.render(html``, container);
+    Lit.render(nothing, container);
 
     setting.set(false);
 

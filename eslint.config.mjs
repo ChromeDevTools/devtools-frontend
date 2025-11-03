@@ -30,7 +30,7 @@ export default defineConfig([
     // All of these scripts are auto-generated so don't lint them.
     'front_end/generated/ARIAProperties.js',
     'front_end/generated/Deprecation.ts',
-    'front_end/generated/InspectorBackendCommands.js',
+    'front_end/generated/InspectorBackendCommands.ts',
     'front_end/generated/protocol-mapping.d.ts',
     'front_end/generated/protocol-proxy-api.d.ts',
     'front_end/generated/protocol.ts',

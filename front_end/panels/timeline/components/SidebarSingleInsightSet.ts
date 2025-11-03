@@ -11,6 +11,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import {nothing} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {BaseInsightComponent} from './insights/BaseInsightComponent.js';
@@ -428,10 +429,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
             this.#data.activeCategory,
         );
 
-    const renderInsightComponent = (insightData: CategorizedInsightData): Lit.TemplateResult => {
+    const renderInsightComponent = (insightData: CategorizedInsightData): Lit.LitTemplate => {
       const {componentClass, model} = insightData;
       if (!this.#data.parsedTrace?.insights) {
-        return html``;
+        return nothing;
       }
 
       const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);

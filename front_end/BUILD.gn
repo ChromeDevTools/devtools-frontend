@@ -304,6 +304,7 @@ group("docs") {
     "ui/components/buttons:docs",
     "ui/components/icon_button:docs",
     "ui/components/spinners:docs",
+    "ui/components/switch:docs",
     "ui/components/tooltips:docs",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:docs",

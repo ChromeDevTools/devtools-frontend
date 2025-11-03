@@ -238,6 +238,9 @@ export function setupSettings(reset: boolean) {
     createSettingValue(
         Common.Settings.SettingCategory.ELEMENTS, 'show-event-listeners-for-ancestors', true,
         Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.ELEMENTS, 'highlight-node-on-hover-in-overlay', true,
+        Common.Settings.SettingType.BOOLEAN),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'global-ai-button-click-count', 0),
     createSettingValue(Common.Settings.SettingCategory.ACCOUNT, 'receive-gdp-badges', false),
     createSettingValue(Common.Settings.SettingCategory.GLOBAL, 'currentDockState', 'right'),

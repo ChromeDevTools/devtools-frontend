@@ -17,7 +17,7 @@ const ErrorLike_js_1 = require("../util/ErrorLike.js");
 class CdpCDPSession extends CDPSession_js_1.CDPSession {
     #sessionId;
     #targetType;
-    #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
+    #callbacks;
     #connection;
     #parentSessionId;
     #target;
@@ -30,6 +30,7 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
         super();
         this.#connection = connection;
         this.#targetType = targetType;
+        this.#callbacks = new CallbackRegistry_js_1.CallbackRegistry(connection._idGenerator);
         this.#sessionId = sessionId;
         this.#parentSessionId = parentSessionId;
         this.#rawErrors = rawErrors;

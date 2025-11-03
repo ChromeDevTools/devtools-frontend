@@ -20,7 +20,7 @@ export declare class CdpBrowserContext extends BrowserContext {
     constructor(connection: Connection, browser: CdpBrowser, contextId?: string);
     get id(): string | undefined;
     targets(): CdpTarget[];
-    pages(): Promise<Page[]>;
+    pages(includeAll?: boolean): Promise<Page[]>;
     overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
     clearPermissionOverrides(): Promise<void>;
     newPage(options?: CreatePageOptions): Promise<Page>;

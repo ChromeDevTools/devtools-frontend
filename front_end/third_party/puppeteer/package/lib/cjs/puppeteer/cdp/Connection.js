@@ -13,6 +13,7 @@ const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const incremental_id_generator_js_1 = require("../util/incremental-id-generator.js");
 const CdpSession_js_1 = require("./CdpSession.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:protocol:RECV ◀');
@@ -29,10 +30,12 @@ class Connection extends EventEmitter_js_1.EventEmitter {
     #manuallyAttached = new Set();
     #callbacks;
     #rawErrors = false;
-    constructor(url, transport, delay = 0, timeout, rawErrors = false) {
+    #idGenerator;
+    constructor(url, transport, delay = 0, timeout, rawErrors = false, idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)()) {
         super();
         this.#rawErrors = rawErrors;
-        this.#callbacks = new CallbackRegistry_js_1.CallbackRegistry();
+        this.#idGenerator = idGenerator;
+        this.#callbacks = new CallbackRegistry_js_1.CallbackRegistry(idGenerator);
         this.#url = url;
         this.#delay = delay;
         this.#timeout = timeout ?? 180_000;
@@ -57,6 +60,12 @@ class Connection extends EventEmitter_js_1.EventEmitter {
      */
     get _closed() {
         return this.#closed;
+    }
+    /**
+     * @internal
+     */
+    get _idGenerator() {
+        return this.#idGenerator;
     }
     /**
      * @internal

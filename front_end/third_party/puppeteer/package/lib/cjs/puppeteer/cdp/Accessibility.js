@@ -58,6 +58,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Accessibility = void 0;
+const util_js_1 = require("../common/util.js");
 /**
  * The Accessibility class provides methods for inspecting the browser's
  * accessibility tree. The accessibility tree is used by assistive technology
@@ -157,8 +158,14 @@ class Accessibility {
                     if (!frame) {
                         return;
                     }
-                    const iframeSnapshot = await frame.accessibility.snapshot(options);
-                    root.iframeSnapshot = iframeSnapshot ?? undefined;
+                    try {
+                        const iframeSnapshot = await frame.accessibility.snapshot(options);
+                        root.iframeSnapshot = iframeSnapshot ?? undefined;
+                    }
+                    catch (error) {
+                        // Frames can get detached at any time resulting in errors.
+                        (0, util_js_1.debugError)(error);
+                    }
                 }
                 catch (e_1) {
                     env_1.error = e_1;

@@ -83,11 +83,11 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
             return target.browserContext() === this;
         });
     }
-    async pages() {
+    async pages(includeAll = false) {
         const pages = await Promise.all(this.targets()
             .filter(target => {
             return (target.type() === 'page' ||
-                (target.type() === 'other' &&
+                ((target.type() === 'other' || includeAll) &&
                     this.#browser._getIsPageTargetCallback()?.(target)));
         })
             .map(target => {

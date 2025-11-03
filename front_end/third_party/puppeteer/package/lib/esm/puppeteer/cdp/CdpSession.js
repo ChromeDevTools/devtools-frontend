@@ -14,7 +14,7 @@ import { createProtocolErrorMessage } from '../util/ErrorLike.js';
 export class CdpCDPSession extends CDPSession {
     #sessionId;
     #targetType;
-    #callbacks = new CallbackRegistry();
+    #callbacks;
     #connection;
     #parentSessionId;
     #target;
@@ -27,6 +27,7 @@ export class CdpCDPSession extends CDPSession {
         super();
         this.#connection = connection;
         this.#targetType = targetType;
+        this.#callbacks = new CallbackRegistry(connection._idGenerator);
         this.#sessionId = sessionId;
         this.#parentSessionId = parentSessionId;
         this.#rawErrors = rawErrors;

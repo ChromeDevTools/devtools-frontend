@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
+import { createIncrementalIdGenerator } from '../util/incremental-id-generator.js';
 import { CdpBrowser } from './Browser.js';
 import { Connection } from './Connection.js';
 /**
@@ -13,8 +14,9 @@ import { Connection } from './Connection.js';
  * @internal
  */
 export async function _connectToCdpBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, handleDevToolsAsPage, } = options;
-    const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout);
+    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), } = options;
+    const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout, 
+    /* rawErrors */ false, idGenerator);
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
         return connection.send('Browser.close').catch(debugError);

@@ -291,10 +291,12 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * returns all {@link Page | pages} in all
      * {@link BrowserContext | browser contexts}.
      *
+     * @param includeAll - experimental, setting to true includes all kinds of pages.
+     *
      * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
      * will not be listed here. You can find them using {@link Target.page}.
      */
-    pages(): Promise<Page[]>;
+    pages(includeAll?: boolean): Promise<Page[]>;
     /**
      * Gets a string representing this {@link Browser | browser's} name and
      * version.
@@ -470,10 +472,12 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * Gets a list of all open {@link Page | pages} inside this
      * {@link BrowserContext | browser context}.
      *
+     * @param includeAll - experimental, setting to true includes all kinds of pages.
+     *
      * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
      * will not be listed here. You can find them using {@link Target.page}.
      */
-    abstract pages(): Promise<Page[]>;
+    abstract pages(includeAll?: boolean): Promise<Page[]>;
     /**
      * Grants this {@link BrowserContext | browser context} the given
      * `permissions` within the given `origin`.
@@ -984,10 +988,11 @@ connect: (options: Puppeteer_2.ConnectOptions) => Promise<Puppeteer_2.Browser>;
  */
 export declare class Connection extends EventEmitter<CDPSessionEvents> {
     #private;
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean);
+    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean, idGenerator?: () => number);
     static fromSession(session: CDPSession): Connection | undefined;
 
     get timeout(): number;
+
 
 
 
@@ -1103,6 +1108,7 @@ export declare interface ConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
+
     /**
      * Headers to use for the web socket connection.
      * @remarks

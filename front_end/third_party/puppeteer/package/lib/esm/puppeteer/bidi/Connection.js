@@ -20,13 +20,14 @@ export class BidiConnection extends EventEmitter {
     #delay;
     #timeout = 0;
     #closed = false;
-    #callbacks = new CallbackRegistry();
+    #callbacks;
     #emitters = [];
-    constructor(url, transport, delay = 0, timeout) {
+    constructor(url, transport, idGenerator, delay = 0, timeout) {
         super();
         this.#url = url;
         this.#delay = delay;
         this.#timeout = timeout ?? 180_000;
+        this.#callbacks = new CallbackRegistry(idGenerator);
         this.#transport = transport;
         this.#transport.onmessage = this.onMessage.bind(this);
         this.#transport.onclose = this.unbind.bind(this);

@@ -55,6 +55,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import { debugError } from '../common/util.js';
 /**
  * The Accessibility class provides methods for inspecting the browser's
  * accessibility tree. The accessibility tree is used by assistive technology
@@ -154,8 +155,14 @@ export class Accessibility {
                     if (!frame) {
                         return;
                     }
-                    const iframeSnapshot = await frame.accessibility.snapshot(options);
-                    root.iframeSnapshot = iframeSnapshot ?? undefined;
+                    try {
+                        const iframeSnapshot = await frame.accessibility.snapshot(options);
+                        root.iframeSnapshot = iframeSnapshot ?? undefined;
+                    }
+                    catch (error) {
+                        // Frames can get detached at any time resulting in errors.
+                        debugError(error);
+                    }
                 }
                 catch (e_1) {
                     env_1.error = e_1;

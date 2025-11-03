@@ -12,6 +12,7 @@ import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import { TimeoutError } from '../common/Errors.js';
 import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
+import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
 import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';
 /**
@@ -36,7 +37,7 @@ export class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, } = options;
+        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -93,6 +94,7 @@ export class BrowserLauncher {
                     defaultViewport,
                     acceptInsecureCerts,
                     networkEnabled,
+                    idGenerator,
                 });
             }
             else {
@@ -101,6 +103,7 @@ export class BrowserLauncher {
                         timeout,
                         protocolTimeout,
                         slowMo,
+                        idGenerator,
                     });
                 }
                 else {
@@ -108,6 +111,7 @@ export class BrowserLauncher {
                         timeout,
                         protocolTimeout,
                         slowMo,
+                        idGenerator,
                     });
                 }
                 if (protocol === 'webDriverBiDi') {
@@ -198,7 +202,8 @@ export class BrowserLauncher {
     async createCdpSocketConnection(browserProcess, opts) {
         const browserWSEndpoint = await browserProcess.waitForLineOutput(CDP_WEBSOCKET_ENDPOINT_REGEX, opts.timeout);
         const transport = await WebSocketTransport.create(browserWSEndpoint);
-        return new Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
+        return new Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout, 
+        /* rawErrors */ false, opts.idGenerator);
     }
     /**
      * @internal
@@ -208,7 +213,8 @@ export class BrowserLauncher {
         // 4th and 5th items to stdio array
         const { 3: pipeWrite, 4: pipeRead } = browserProcess.nodeProcess.stdio;
         const transport = new PipeTransport(pipeWrite, pipeRead);
-        return new Connection('', transport, opts.slowMo, opts.protocolTimeout);
+        return new Connection('', transport, opts.slowMo, opts.protocolTimeout, 
+        /* rawErrors */ false, opts.idGenerator);
     }
     /**
      * @internal
@@ -236,7 +242,7 @@ export class BrowserLauncher {
         const browserWSEndpoint = (await browserProcess.waitForLineOutput(WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, opts.timeout)) + '/session';
         const transport = await WebSocketTransport.create(browserWSEndpoint);
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
-        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
+        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.idGenerator, opts.slowMo, opts.protocolTimeout);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             closeCallback,

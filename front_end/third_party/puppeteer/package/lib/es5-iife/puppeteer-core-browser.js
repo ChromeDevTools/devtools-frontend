@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.27.0';
+  const packageVersion = '24.28.0';
   // x-release-please-end
 
   /**
@@ -3827,12 +3827,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * returns all {@link Page | pages} in all
      * {@link BrowserContext | browser contexts}.
      *
+     * @param includeAll - experimental, setting to true includes all kinds of pages.
+     *
      * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
      * will not be listed here. You can find them using {@link Target.page}.
      */
-    async pages() {
+    async pages(includeAll = false) {
       const contextPages = await Promise.all(this.browserContexts().map(context => {
-        return context.pages();
+        return context.pages(includeAll);
       }));
       // Flatten array.
       return contextPages.reduce((acc, x) => {
@@ -12709,8 +12711,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             if (!frame) {
               return;
             }
-            const iframeSnapshot = await frame.accessibility.snapshot(options);
-            root.iframeSnapshot = iframeSnapshot ?? undefined;
+            try {
+              const iframeSnapshot = await frame.accessibility.snapshot(options);
+              root.iframeSnapshot = iframeSnapshot ?? undefined;
+            } catch (error) {
+              // Frames can get detached at any time resulting in errors.
+              debugError(error);
+            }
           } catch (e_1) {
             env_1.error = e_1;
             env_1.hasError = true;
@@ -13404,7 +13411,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  const idGenerator = createIncrementalIdGenerator();
   /**
    * Manages callbacks and their IDs for the protocol request/response communication.
    *
@@ -13413,9 +13419,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _callbacks = /*#__PURE__*/new WeakMap();
   var _idGenerator = /*#__PURE__*/new WeakMap();
   class CallbackRegistry {
-    constructor() {
+    constructor(idGenerator) {
       _classPrivateFieldInitSpec(this, _callbacks, new Map());
-      _classPrivateFieldInitSpec(this, _idGenerator, idGenerator);
+      _classPrivateFieldInitSpec(this, _idGenerator, void 0);
+      _classPrivateFieldSet(_idGenerator, this, idGenerator);
     }
     create(label, timeout, request) {
       const callback = new Callback(_classPrivateFieldGet(_idGenerator, this).call(this), label, timeout);
@@ -13557,7 +13564,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       super();
       _classPrivateFieldInitSpec(this, _sessionId, void 0);
       _classPrivateFieldInitSpec(this, _targetType, void 0);
-      _classPrivateFieldInitSpec(this, _callbacks2, new CallbackRegistry());
+      _classPrivateFieldInitSpec(this, _callbacks2, void 0);
       _classPrivateFieldInitSpec(this, _connection, void 0);
       _classPrivateFieldInitSpec(this, _parentSessionId, void 0);
       _classPrivateFieldInitSpec(this, _target, void 0);
@@ -13565,6 +13572,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _detached, false);
       _classPrivateFieldSet(_connection, this, connection);
       _classPrivateFieldSet(_targetType, this, targetType);
+      _classPrivateFieldSet(_callbacks2, this, new CallbackRegistry(connection._idGenerator));
       _classPrivateFieldSet(_sessionId, this, sessionId);
       _classPrivateFieldSet(_parentSessionId, this, parentSessionId);
       _classPrivateFieldSet(_rawErrors, this, rawErrors);
@@ -13680,9 +13688,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _manuallyAttached = /*#__PURE__*/new WeakMap();
   var _callbacks3 = /*#__PURE__*/new WeakMap();
   var _rawErrors2 = /*#__PURE__*/new WeakMap();
+  var _idGenerator2 = /*#__PURE__*/new WeakMap();
   var _Connection_brand = /*#__PURE__*/new WeakSet();
   class Connection extends EventEmitter {
-    constructor(url, transport, delay = 0, timeout, rawErrors = false) {
+    constructor(url, transport, delay = 0, timeout, rawErrors = false, idGenerator = createIncrementalIdGenerator()) {
       super();
       _classPrivateMethodInitSpec(this, _Connection_brand);
       _classPrivateFieldInitSpec(this, _url2, void 0);
@@ -13694,8 +13703,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _manuallyAttached, new Set());
       _classPrivateFieldInitSpec(this, _callbacks3, void 0);
       _classPrivateFieldInitSpec(this, _rawErrors2, false);
+      _classPrivateFieldInitSpec(this, _idGenerator2, void 0);
       _classPrivateFieldSet(_rawErrors2, this, rawErrors);
-      _classPrivateFieldSet(_callbacks3, this, new CallbackRegistry());
+      _classPrivateFieldSet(_idGenerator2, this, idGenerator);
+      _classPrivateFieldSet(_callbacks3, this, new CallbackRegistry(idGenerator));
       _classPrivateFieldSet(_url2, this, url);
       _classPrivateFieldSet(_delay2, this, delay);
       _classPrivateFieldSet(_timeout2, this, timeout ?? 180_000);
@@ -13720,6 +13731,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     get _closed() {
       return _classPrivateFieldGet(_closed, this);
+    }
+    /**
+     * @internal
+     */
+    get _idGenerator() {
+      return _classPrivateFieldGet(_idGenerator2, this);
     }
     /**
      * @internal
@@ -21783,9 +21800,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         return target.browserContext() === this;
       });
     }
-    async pages() {
+    async pages(includeAll = false) {
       const pages = await Promise.all(this.targets().filter(target => {
-        return target.type() === 'page' || target.type() === 'other' && _classPrivateFieldGet(_browser, this)._getIsPageTargetCallback()?.(target);
+        return target.type() === 'page' || (target.type() === 'other' || includeAll) && _classPrivateFieldGet(_browser, this)._getIsPageTargetCallback()?.(target);
       }).map(target => {
         return target.page();
       }));
@@ -22719,9 +22736,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _isPageTarget: isPageTarget,
       slowMo = 0,
       protocolTimeout,
-      handleDevToolsAsPage
+      handleDevToolsAsPage,
+      idGenerator = createIncrementalIdGenerator()
     } = options;
-    const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout);
+    const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout, /* rawErrors */false, idGenerator);
     const {
       browserContextIds
     } = await connection.send('Target.getBrowserContexts');
@@ -24545,10 +24563,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     const BiDi = await Promise.resolve().then(() => _interopRequireWildcard(require(/* webpackIgnore: true */'./bidi/bidi.js')));
     const {
       slowMo = 0,
-      protocolTimeout
+      protocolTimeout,
+      idGenerator = createIncrementalIdGenerator()
     } = options;
     // Try pure BiDi first.
-    const pureBidiConnection = new BiDi.BidiConnection(url, connectionTransport, slowMo, protocolTimeout);
+    const pureBidiConnection = new BiDi.BidiConnection(url, connectionTransport, idGenerator, slowMo, protocolTimeout);
     try {
       const result = await pureBidiConnection.send('session.status', {});
       if ('type' in result && result.type === 'success') {
@@ -24569,7 +24588,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     // Unbind the connection to avoid memory leaks.
     pureBidiConnection.unbind();
     // Fall back to CDP over BiDi reusing the WS connection.
-    const cdpConnection = new Connection(url, connectionTransport, slowMo, protocolTimeout, /* rawErrors= */true);
+    const cdpConnection = new Connection(url, connectionTransport, slowMo, protocolTimeout, /* rawErrors= */true, idGenerator);
     const version = await cdpConnection.send('Browser.getVersion');
     if (version.product.toLowerCase().includes('firefox')) {
       throw new UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');

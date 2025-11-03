@@ -265,7 +265,7 @@ let BidiBrowserContext = (() => {
         browser() {
             return this.#browser;
         }
-        async pages() {
+        async pages(_includeAll = false) {
             return [...this.userContext.browsingContexts].map(context => {
                 return this.#pages.get(context);
             });

@@ -7,6 +7,7 @@ import type * as ChromiumBidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import type { EventsWithWildcard } from '../common/EventEmitter.js';
 import { EventEmitter } from '../common/EventEmitter.js';
+import type { GetIdFn } from '../util/incremental-id-generator.js';
 import type { BidiEvents, Commands as BidiCommands, Connection } from './core/Connection.js';
 export type CdpEvent = ChromiumBidi.Cdp.Event;
 /**
@@ -31,7 +32,7 @@ export interface Commands extends BidiCommands {
  */
 export declare class BidiConnection extends EventEmitter<BidiEvents> implements Connection {
     #private;
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number);
+    constructor(url: string, transport: ConnectionTransport, idGenerator: GetIdFn, delay?: number, timeout?: number);
     get closed(): boolean;
     get url(): string;
     pipeTo<Events extends BidiEvents>(emitter: EventEmitter<Events>): void;

@@ -3,6 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import type { GetIdFn } from '../util/incremental-id-generator.js';
 import { ProtocolError } from './Errors.js';
 /**
  * Manages callbacks and their IDs for the protocol request/response communication.
@@ -11,6 +12,7 @@ import { ProtocolError } from './Errors.js';
  */
 export declare class CallbackRegistry {
     #private;
+    constructor(idGenerator: GetIdFn);
     create(label: string, timeout: number | undefined, request: (id: number) => void): Promise<unknown>;
     reject(id: number, message: string, originalMessage?: string): void;
     rejectRaw(id: number, error: object): void;

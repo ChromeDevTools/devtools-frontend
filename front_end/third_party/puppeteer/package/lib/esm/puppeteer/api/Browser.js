@@ -99,12 +99,14 @@ export class Browser extends EventEmitter {
      * returns all {@link Page | pages} in all
      * {@link BrowserContext | browser contexts}.
      *
+     * @param includeAll - experimental, setting to true includes all kinds of pages.
+     *
      * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
      * will not be listed here. You can find them using {@link Target.page}.
      */
-    async pages() {
+    async pages(includeAll = false) {
         const contextPages = await Promise.all(this.browserContexts().map(context => {
-            return context.pages();
+            return context.pages(includeAll);
         }));
         // Flatten array.
         return contextPages.reduce((acc, x) => {

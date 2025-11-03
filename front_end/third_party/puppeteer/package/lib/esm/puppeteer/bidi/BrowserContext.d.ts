@@ -33,7 +33,7 @@ export declare class BidiBrowserContext extends BrowserContext {
     newPage(options?: CreatePageOptions): Promise<Page>;
     close(): Promise<void>;
     browser(): BidiBrowser;
-    pages(): Promise<BidiPage[]>;
+    pages(_includeAll?: boolean): Promise<BidiPage[]>;
     overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
     clearPermissionOverrides(): Promise<void>;
     get id(): string | undefined;

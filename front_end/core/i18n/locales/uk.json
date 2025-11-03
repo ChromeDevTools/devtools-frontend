@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Блок With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Блокувати"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Скасовано"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Закріпити праворуч"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "У DevTools надійшов зовнішній запит"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Перейти на сторінку"
   },
@@ -1275,13 +1281,13 @@
     "message": "Обробка даних: підтримку URL-адрес у SVGUseElement припинено, і в майбутньому цю функцію буде вилучено."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() і watchPosition() більше не працюють із незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток на захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() і watchPosition() більше не працюють із незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Щоб дізнатися більше, перегляньте сторінку https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() і watchPosition() з незахищених джерел не підтримуються. Щоб користуватися цією функцією, перенесіть свій додаток на захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() і watchPosition() з незахищених джерел не підтримуються. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Щоб дізнатися більше, перегляньте сторінку https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() більше не працює з незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток на захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+    "message": "getUserMedia() більше не працює з незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Щоб дізнатися більше, перегляньте сторінку https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate не підтримується. Натомість використовуйте RTCPeerConnectionIceErrorEvent.address або RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Навіть якщо в MIDIOptions не вказано значення SysEx, веб-сайти проситимуть дозвіл на використання MIDI."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Notification API більше не можна використовувати з незахищених джерел. Перенесіть свій додаток на захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+    "message": "Notification API більше не можна використовувати з незахищених джерел. Перенесіть свій додаток у захищене джерело, наприклад HTTPS. Щоб дізнатися більше, перегляньте сторінку https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Дозвіл на Notification API більше не можна запитувати з міждоменних елементів iframe. Запитайте дозвіл із фрейму верхнього рівня або відкрийте нове вікно."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Для розширень потрібно ввімкнути ізоляцію від міждоменних джерел, щоб і надалі використовувати SharedArrayBuffer. Докладніше читайте на сторінці https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "Метод BluetoothRemoteGATTCharacteristic.writeValue() не підтримується. Натомість використовуйте writeValueWithResponse() або writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 не підтримується відповіддю JSON у XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Ця функція доступна лише за наявності активного інтернет-з’єднання."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "У DevTools надійшов зовнішній запит"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Невідома помилка завантаження файлу"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Затримка: {PH1}, завантаження: {PH2} (усього: {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Укажіть шлях"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Укажіть унікальний шлях"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Виключені підпапки"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL-адреса"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Не вдалося завантажити великий двійковий об'єкт."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Не вдається додати файлову систему: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Відкрити папку з файлом"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Перевизначити контент"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "{PH1} – це вихідний зіставлений файл, який не можна замінити."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Натомість перевизначити \"{PH1}\"?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Зберегти як…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Не вдалося зберегти файл на диск."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Зберегти зображення"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Не вдалося зберегти модуль WASM на диску. Можливо, модуль завеликий."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Показати всі перевизначення"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Зв'язано з адресою {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Пов'язано з картою джерела: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem не вдається прочитати файли."
@@ -2157,7 +2118,7 @@
     "message": "Анімація"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Зміщення макета відбувається, коли елементи переміщуються без взаємодії з користувачем. [Дізнайтеся причини зміщення макета](https://web.dev/articles/optimize-cls), наприклад додавання або видалення елементів чи зміна шрифтів під час завантаження сторінки."
+    "message": "Зміщення макета відбувається, коли елементи переміщуються без взаємодії з користувачем. [Дізнайтеся причини зміщення макета](https://developer.chrome.com/docs/performance/insights/cls-culprit), наприклад додавання або видалення елементів чи зміна шрифтів під час завантаження сторінки."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Вставлено iframe"
@@ -2193,7 +2154,7 @@
     "message": "TTL кешу"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Якщо зберігати кеш за тривалий період часу, сторінки можуть завантажуватися швидше під час повторних відвідувань. [Докладніше.](https://web.dev/uses-long-cache-ttl/)"
+    "message": "Якщо зберігати кеш за тривалий період часу, сторінки можуть завантажуватися швидше під час повторних відвідувань. [Докладніше про кешування.](https://developer.chrome.com/docs/performance/insights/cache)"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Немає запитів із неефективними правилами кешування"
@@ -2208,7 +2169,7 @@
     "message": "Використовуйте ефективні значення TTL кешу"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Через велике дерево DOM обчислення стилів і перекомпонування макетів може тривати довше, що впливає на адаптивність сторінки. Крім того, у такому разі використовується більше пам’яті. [Дізнайтесь, як уникнути надмірного розміру DOM.](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+    "message": "Через велике дерево DOM обчислення стилів і перекомпонування макетів може тривати довше, що впливає на адаптивність сторінки. Крім того, у такому разі використовується більше пам’яті. [Дізнайтесь, як уникнути надмірного розміру DOM.](https://developer.chrome.com/docs/performance/insights/dom-size)"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Тривалість"
@@ -2244,7 +2205,7 @@
     "message": "Значення"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Перший запит мережі найважливіший.  Щоб зменшити його затримку, уникайте переспрямувань, забезпечте швидку відповідь сервера й увімкніть стиснення тексту."
+    "message": "Перший запит мережі найважливіший. Щоб [зменшити його затримку](https://developer.chrome.com/docs/performance/insights/document-latency), уникайте переспрямувань, забезпечте швидку відповідь сервера й увімкніть стиснення тексту."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Містить переспрямування ({PH1}, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Джерело"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Видаліть великі копії модулів JavaScript із пакетів, щоб зменшити кількість непотрібних байтів під час мережевої активності."
+    "message": "Видаліть великі [копії модулів JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) із пакетів, щоб зменшити кількість непотрібних байтів під час мережевої активності."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Повторювані джерела JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Щоб текст завжди був видимим, змініть значення властивості [font-display](https://developer.chrome.com/blog/font-display) на swap або optional. Щоб зменшити зміщення макета, можна додатково оптимізувати swap за допомогою [перевизначення показників шрифту](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Щоб текст завжди був видимим, змініть значення властивості [font-display](https://developer.chrome.com/docs/performance/insights/font-display) на swap або optional. Щоб зменшити зміщення макета, можна додатково оптимізувати swap за допомогою [перевизначення показників шрифту](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Шрифт"
@@ -2304,10 +2265,10 @@
     "message": "(анонімно)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Примусове перекомпонування відбувається, коли JavaScript запитує геометричні властивості (наприклад, offsetWidth) після того, як стилі стають недійсними через зміну стану DOM. Це може призвести до низької продуктивності. Докладніше про [примусове перекомпонування](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) й можливі способи його пом’якшення."
+    "message": "Примусове перекомпонування відбувається, коли JavaScript запитує геометричні властивості (наприклад, offsetWidth) після того, як стилі стають недійсними через зміну стану DOM. Це може призвести до низької продуктивності. Докладніше про [примусове перекомпонування](https://developer.chrome.com/docs/performance/insights/forced-reflow) й можливі способи його пом’якшення."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Трасування стека"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Викликати фрейми, які запускають перекомпонування"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Примусове перекомпонування"
@@ -2322,7 +2283,7 @@
     "message": "[не визначено]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Почніть аналіз із найдовшого підрозділу. [Затримки можна зменшити.](https://web.dev/articles/optimize-inp#optimize_interactions) Щоб скоротити час обробки, [оптимізуйте витрати основного потоку](https://web.dev/articles/optimize-long-tasks), часто JS."
+    "message": "Почніть аналізувати, [як покращити INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown), з найдовшого підрозділу."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Тривалість"
@@ -2346,7 +2307,7 @@
     "message": "Розподіл INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Зменшення часу завантаження зображень може прискорити візуалізацію сторінки й покращити показник LCP. [Докладніше про оптимізацію розміру зображень.](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Зменшення часу завантаження зображень може прискорити візуалізацію сторінки й покращити показник LCP. [Докладніше про оптимізацію розміру зображень.](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (приблизний розмір – {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Якщо використовувати відеоформати замість GIF, розмір завантаженого анімованого контенту може зменшитися."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Для кожного підрозділу [передбачено конкретні стратегії оптимізації](https://web.dev/articles/optimize-lcp#lcp-breakdown). В ідеалі більшість часу LCP має витрачатися на завантаження ресурсів, а не в межах затримок."
+    "message": "Для кожного підрозділу [передбачено конкретні стратегії оптимізації](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). В ідеалі більшість часу LCP має витрачатися на завантаження ресурсів, а не в межах затримок."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Тривалість"
@@ -2406,7 +2367,7 @@
     "message": "Розподіл LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Щоб оптимізувати показник LCP, зробіть зображення LCP [видимим](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) у HTML-коді відразу й [не використовуйте відкладене завантаження](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "Щоб [оптимізувати показник LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery), зробіть зображення LCP видимим у HTML-коді відразу й не використовуйте відкладене завантаження"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Застосовано параметр fetchpriority=high"
@@ -2439,13 +2400,13 @@
     "message": "Заощаджені байти"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Поліфіли й перетворення дають вебпереглядачам старіших версій змогу використовувати нові функції JavaScript. Однак багато з них не потрібні для сучасних вебпереглядачів. Змініть процес складання JavaScript, щоб не транспілювати функції [базового набору](https://web.dev/articles/baseline-and-polyfills), якщо вам не потрібно підтримувати вебпереглядачі старіших версій. [Дізнайтеся, чому більшість сайтів можуть розгортати код ES6+ без транспілювання](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Поліфіли й перетворення дають вебпереглядачам старіших версій змогу використовувати нові функції JavaScript. Однак багато з них не потрібні для сучасних вебпереглядачів. Змініть процес складання JavaScript, щоб не транспілювати функції [базового набору](https://web.dev/articles/baseline-and-polyfills), якщо вам не потрібно підтримувати вебпереглядачі старіших версій. [Дізнайтеся, чому більшість сайтів можуть розгортати код ES6+ без транспілювання](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Застарілі функції JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "Протоколи HTTP/2 й HTTP/3 мають низку переваг над HTTP/1.1, наприклад мультиплексування. [Докладніше про використання сучасного протоколу HTTP.](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+    "message": "Протоколи HTTP/2 й HTTP/3 мають низку переваг над HTTP/1.1, наприклад мультиплексування. [Докладніше про використання сучасного протоколу HTTP.](https://developer.chrome.com/docs/performance/insights/modern-http)"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Не було запитів із використанням протоколу HTTP/1.1 або його поточне використання не дає значних можливостей для оптимізації. Запити HTTP/1.1 позначаються лише в тому разі, якщо шість або більше статичних об’єктів походять з одного джерела й не обслуговуються в локальному середовищі розробки або стороннім джерелом."
@@ -2478,7 +2439,7 @@
     "message": "Невикористане джерело для попереднього підключення. Переконайтеся, що атрибут crossorigin використовується правильно."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Щоб уникнути утворення ланцюжків критичних запитів](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains), зменште довжину ланцюжків і розмір завантажень або відкладіть завантаження непотрібних ресурсів. Це допоможе пришвидшити завантаження сторінки."
+    "message": "[Щоб уникнути утворення ланцюжків критичних запитів](https://developer.chrome.com/docs/performance/insights/network-dependency-tree), зменште довжину ланцюжків і розмір завантажень або відкладіть завантаження непотрібних ресурсів. Це допоможе пришвидшити завантаження сторінки."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Додайте підказки [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) для найважливіших джерел (бажано використовувати щонайбільше 4)."
@@ -2517,7 +2478,7 @@
     "message": "Щоб уникнути утворення ланцюжків критичних запитів, зменште довжину ланцюжків і розмір завантажень або відкладіть завантаження непотрібних ресурсів. Це допоможе пришвидшити завантаження сторінки."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Запити блокують початкове відображення сторінки, що може викликати затримку завантаження елементів LCP. За допомогою [відкладання або вставки](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) можна усунути ці запити мережі з критичного шляху."
+    "message": "Запити блокують початкове відображення сторінки, що може викликати затримку завантаження елементів LCP. За допомогою [відкладання або вставки](https://developer.chrome.com/docs/performance/insights/render-blocking) можна усунути ці запити мережі з критичного шляху."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Тривалість"
@@ -2532,7 +2493,7 @@
     "message": "Запити, які блокують відображення"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Якщо витрати на повторне обчислення стилю залишаються високими, їх можна зменшити за допомогою оптимізації селектора. [Оптимізуйте селектори](https://developer.chrome.com/docs/devtools/performance/selector-stats), які мають і тривалий час виконання, і високий відсоток повільних шляхів. Щоб зменшити витрати на зіставлення, використовуйте менше селекторів, обирайте їх простіші варіанти, а також надавайте перевагу компактнішій і менш розгалуженій архітектурі інтерфейсу DOM."
+    "message": "Якщо витрати на повторне обчислення стилю залишаються високими, їх можна зменшити за допомогою оптимізації селектора. [Оптимізуйте селектори](https://developer.chrome.com/docs/performance/insights/slow-css-selector), які мають і тривалий час виконання, і високий відсоток повільних шляхів. Щоб зменшити витрати на зіставлення, використовуйте менше селекторів, обирайте їх простіші варіанти, а також надавайте перевагу компактнішій і менш розгалуженій архітектурі інтерфейсу DOM."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Минуло часу"
@@ -2571,7 +2532,7 @@
     "message": "Розмір передавання"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Сторонній код може значно погіршити швидкість завантаження. [Зменште обсяг стороннього коду й відкладіть його завантаження](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/), щоб надати пріоритет контенту сторінки."
+    "message": "Сторонній код може значно погіршити швидкість завантаження. [Зменште обсяг стороннього коду й відкладіть його завантаження](https://developer.chrome.com/docs/performance/insights/third-parties), щоб надати пріоритет контенту сторінки."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Сторонніх розробників не знайдено"
@@ -2580,7 +2541,7 @@
     "message": "Сторонній код"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Якщо область перегляду не оптимізовано для мобільних пристроїв, взаємодія за допомогою дотику може відбуватися із затримкою [до 300 мс](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Якщо область перегляду не оптимізовано для мобільних пристроїв, взаємодія за допомогою дотику може відбуватися із затримкою [до 300 мс](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Затримка натискання на мобільному пристрої"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Докладніше про ШІ в Інструментах розробника"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Допомога ШІ недоступна в анонімному режимі або режимі гостя"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Ця функція доступна, лише якщо ви ввійшли в Chrome за допомогою облікового запису Google"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Перевірте інтернет-з’єднання й повторіть спробу"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Показати вибраний контекстний об’єкт в Інструментах розробника"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "функцію \"Допомога від ШІ\" в налаштуваннях"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Щоб дізнатися більше про стилі CSS, увімкніть {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Щоб отримувати допомогу зі стилями й запитами мережі, увімкніть {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Щоб отримувати допомогу зі стилями, запитами мережі й файлами, увімкніть {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Щоб отримувати допомогу зі стилями, запитами мережі, ефективністю й файлами, увімкніть {PH1}"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "На цій сторінці можна переглядати й змінювати анімації."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Умови використання"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Зв'язано з адресою {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Пов'язано з картою джерела: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Дозволити"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Показати консоль"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Показувати короткі перекази від ШІ для повідомлень у консолі"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Показувати помилки CORS у консолі"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Перейти на панель \"Анімації\""
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Відкрийте палітру. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Додати ({PH1})"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Блокування"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Свій вибір"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Перегляд у форматі Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Додати шаблон блокування запитів мережі"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Додати шаблон"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Щоб додати шаблон блокування запитів мережі, натисніть кнопку \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "Заблоковано {PH1}"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Увімкнути блокування запитів мережі"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Пункт видалено"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Докладніше"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Немає заблокованих запитів мережі"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Шаблон уже існує."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Потрібно ввести дані шаблону."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Текстовий шаблон для блокування запитів; використовуйте * як символ підстановки"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Очистити все"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Не можна відобразити статус запиту, оскільки сторінку, яка його відправила, було вивантажено під час виконання запиту. На сторінці chrome://net-export можна записати журнал мережі та переглянути деталі запиту."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Інформація про підключення"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Блокувати URL-адресу запитів"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Блокувати запити"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Заблоковані запити"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Сторонні запити"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Обмежити домен запиту"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Обмежити URL-адресу запиту"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Обмежити запити"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Розблокувати {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Вимкнути обмеження для {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Ідентифікатор з'єднання"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL-адреса"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Додати шаблон блокування запитів мережі"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Додати шаблон"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Додати шаблон обмеження або блокування запитів мережі"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Щоб додати шаблон, натисніть кнопку \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "Заблоковано {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Зменшити пріоритет"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Увімкнути блокування й обмеження пропускної спроможності"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Увімкнути блокування запитів мережі"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Підвищити пріоритет"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Пункт видалено"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Докладніше"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Немає заблокованих запитів мережі"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Немає шаблонів обмеження або блокування запитів"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Шаблон уже існує."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Не вдалось обробити цей шаблон як URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Групи регулярних виразів заборонено"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Потрібно ввести дані шаблону."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Цей шаблон оновлено із сайту {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Текстовий шаблон для блокування або обмеження запитів. Використовуйте синтаксис URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Текстовий шаблон для блокування запитів; використовуйте * як символ підстановки"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Файли cookie, отримані із сервера в заголовку відповіді set-cookie"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Адресат запиту: ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Запит/відповідь"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Планування ресурсів"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Щоб скористатися цим ресурсом з іншого сайту, сервер може послабити конфігурацію Cross-Origin Resource Policy в заголовку відповіді:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Додати шаблон блокування запитів мережі або обмеження пропускної спроможності"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Додати шаблон блокування запитів мережі"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Блокування запитів мережі"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Умови запиту"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "зменшення пропускної спроможності мережі"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Записати журнал мережі"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Вилучити всі шаблони блокування або обмеження запитів мережі"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Вилучити всі шаблони блокування запитів мережі"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Показати блокування запитів мережі"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Показати умови запиту"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Показати пошук"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Об’єкти, що зберігаються у від’єднаних вузлах DOM"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Об’єкти, що зберігаються обробниками подій"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Інші об’єкти JS"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Коли функцію ввімкнено"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Укажіть шлях"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Укажіть унікальний шлях"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Виключені підпапки"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL-адреса"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Додайте правило регулярного виразу для URL-адреси скрипту"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Щоб переглянути символи, відкрийте файл JavaScript або CSS"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Відкрити папку з файлом"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Перевизначити контент"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "{PH1} – це вихідний зіставлений файл, який не можна замінити."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Натомість перевизначити \"{PH1}\"?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Зберегти як…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Не вдалося зберегти файл на диск."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Зберегти зображення"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Не вдалося зберегти модуль WASM на диску. Можливо, модуль завеликий."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Показати всі перевизначення"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "КБ"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Включити анотації"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Включити вміст скрипту"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Включити карти джерел скриптів"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Додаткова інформація:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Зберегти"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Включає контент усіх завантажених скриптів (крім розширень)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Стиснути за допомогою Gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Заголовки запиту перевизначено"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Файли cookie для цього запиту заблоковано через експериментальні параметри Chrome або конфігурацію вебпереглядача. Дізнайтеся більше на панелі \"Проблеми\"."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Використовувати регулярний вираз"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Принаймні одне налаштування змінено. Щоб зміни набули чинності, оновіть сторінку."
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Потрібне перезавантаження"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "вибрано"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Використати запропонований колір {PH1} для виправлення низької контрастності"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Значення цього кольору скориговано відповідно до цільової гами формату. Фактичний результат: {PH1}."
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Перехід на вузьку гаму призведе до зміщення кольорів"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Додати в палітру"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Файли cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Домен"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Файли cookie, які можна змінювати"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(непрозоро)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Сайт ключа розділення"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Шлях"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Пріоритет"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Безпечно"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Сеанс"

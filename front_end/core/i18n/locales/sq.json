@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Blloku With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Blloko"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Ndërprerë"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Poziciono djathtas"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools mori një kërkesë të jashtme"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Faqja e fokusit"
   },
@@ -1275,13 +1281,13 @@
     "message": "Mbështetja është zhvlerësuar dhe do të hiqet në të ardhmen për të dhënat: URL-të në SVGUseElement."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() dhe watchPosition() nuk funksionojnë më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p,.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
+    "message": "getCurrentPosition() dhe watchPosition() nuk funksionojnë më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p.sh. HTTPS. Shiko https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ për më shumë detaje."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() dhe watchPosition() janë zhvlerësuar në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p,.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
+    "message": "getCurrentPosition() dhe watchPosition() janë zhvlerësuar në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p.sh. HTTPS. Shiko https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ për më shumë detaje."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() nuk funksionon më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p,.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
+    "message": "getUserMedia() nuk funksionon më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p.sh. HTTPS. Shiko https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ për më shumë detaje."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate është zhvlerësuar. Përdor RTCPeerConnectionIceErrorEvent.address ose RTCPeerConnectionIceErrorEvent.port më mirë."
@@ -1311,7 +1317,7 @@
     "message": "MIDI për ueb do të kërkojë leje për përdorimin edhe nëse mesazhi sysex nuk është specifikuar në MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "API-ja e njoftimeve nuk mund të përdoret më për origjinat e pasigurta. Duhet të marrësh parasysh ta kalosh aplikacionin tënd në një origjinë të sigurt, si p.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
+    "message": "Notification API nuk mund të përdoret më për origjinat e pasigurta. Duhet të marrësh parasysh ta kalosh aplikacionin tënd në një origjinë të sigurt, si p.sh. HTTPS. Shiko https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ për më shumë detaje."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Leja për Notification API nuk mund të kërkohet më nga një kuadër iframe me origjinë të kryqëzuar. Duhet të marrësh në konsideratë të kërkosh leje nga një kuadër i nivelit më të lartë ose të hapësh një dritare të re më mirë."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Shtesat duhet të zgjedhin izolimin e origjinës së kryqëzuar për të vazhduar të përdoret SharedArrayBuffer. Shiko https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() është zhvlerësuar. Përdor writeValueWithResponse() ose writeValueWithoutResponse() më mirë."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 nuk mbështetet nga skedari json i përgjigjes në XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Kjo veçori ofrohet vetëm me një lidhje aktive interneti."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools mori një kërkesë të jashtme"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Gabim i panjohur me ngarkimin e skedarit"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} vonesë, {PH2} shkarkim ({PH3} në total)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Fut një shteg"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Fut një shteg unik"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Nëndosjet e përjashtuara"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "BLOB-i nuk mund të ngarkohej."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Nuk mund të shtohet sistemi i skedarëve: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Hape në dosjen që e përmban"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Anulo përmbajtjen"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" është një skedar i hartuar burimi dhe nuk mund të anulohet."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Të anulohet \"{PH1}\" më mirë?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Ruaj si…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Ruajtja e skedarit te disku dështoi."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Ruaj imazhin"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Moduli WASM nuk mund të ruhet te disku. Ka shumë mundësi që moduli të jetë shumë i madh."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Shfaq të gjitha anulimet"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Lidhur me {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Lidhur me hartën e burimit: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem nuk mund t'i lexojë skedarët."
@@ -2157,7 +2118,7 @@
     "message": "Animacion"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Zhvendosjet e strukturës ndodhin kur elementet zhvendosen pa asnjë ndërveprim të përdoruesit. [Heto shkaqet e zhvendosjeve të strukturës](https://web.dev/articles/optimize-cls), si p.sh. shtimi, heqja e elementeve ose ndryshimi i fonteve të tyre me ngarkimin e faqes."
+    "message": "Zhvendosjet e strukturës ndodhin kur elementet zhvendosen pa asnjë ndërveprim të përdoruesit. [Heto shkaqet e zhvendosjeve të strukturës](https://developer.chrome.com/docs/performance/insights/cls-culprit), si p.sh. shtimi, heqja e elementeve ose ndryshimi i fonteve të tyre me ngarkimin e faqes."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Kuadri iframe i injektuar"
@@ -2193,7 +2154,7 @@
     "message": "Periudha e jetëgjatësisë (TTL) e memories specifike"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Një periudhë e gjatë jetëgjatësie për memorien specifike mund t'i shpejtojë vizitat e përsëritura në faqen tënde. [Mëso më shumë](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Një periudhë e gjatë jetëgjatësie për memorien specifike mund t'i shpejtojë vizitat e përsëritura në faqen tënde. [Mëso më shumë rreth ruajtjes në memorien specifike](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Nuk ka asnjë kërkesë me politika të memories specifike joefikase"
@@ -2208,7 +2169,7 @@
     "message": "Përdor periudha efikase të jetëgjatësisë për memorien specifike"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Një DOM i madh mund të rritë kohëzgjatjen e llogaritjeve të stilit dhe të riparaqitjeve të strukturës, duke ndikuar në reagueshmërinë e faqeve. Një DOM i madh do të rritë gjithashtu përdorimin e memories. [Mëso se si të shmangësh një madhësi të tepërt të DOM-it](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Një DOM i madh mund të rritë kohëzgjatjen e llogaritjeve të stilit dhe të riparaqitjeve të strukturës, duke ndikuar në reagueshmërinë e faqeve. Një DOM i madh do të rritë gjithashtu përdorimin e memories. [Mëso se si të shmangësh një madhësi të tepërt të DOM-it](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Kohëzgjatja"
@@ -2244,7 +2205,7 @@
     "message": "Vlera"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Kërkesa jote e parë e rrjetit është më e rëndësishmja.  Zvogëlo vonesën duke shmangur ridrejtime, duke siguruar një përgjigje të shpejtë të serverit, si dhe duke aktivizuar ngjeshjen e tekstit."
+    "message": "Kërkesa jote e parë e rrjetit është më e rëndësishmja. [Zvogëlo vonesën](https://developer.chrome.com/docs/performance/insights/document-latency) duke shmangur ridrejtime, duke siguruar një përgjigje të shpejtë të serverit, si dhe duke aktivizuar ngjeshjen e tekstit."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Kishte ridrejtime ({PH1} ridrejtime, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Burimi"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Hiq modulet e mëdha dublikatë të JavaScript nga paketat për të reduktuar bajtet e konsumuara nga aktiviteti i rrjetit."
+    "message": "Hiq [modulet e mëdha dublikatë të JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) nga paketat për të reduktuar bajtet e konsumuara nga aktiviteti i rrjetit."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript i dublikuar"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Ki parasysh që të caktosh [font-display](https://developer.chrome.com/blog/font-display) në swap ose optional për t'u siguruar që teksti të jetë vazhdimisht i dukshëm. swap mund të optimizohet më tej për të minimizuar zhvendosjet e strukturës me [anulimet e metrikës së fonteve](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Ki parasysh që të caktosh [font-display](https://developer.chrome.com/docs/performance/insights/font-display) në swap ose optional për t'u siguruar që teksti të jetë vazhdimisht i dukshëm. swap mund të optimizohet më tej për të minimizuar zhvendosjet e strukturës me [anulimet e metrikës së fonteve](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fonti"
@@ -2304,10 +2265,10 @@
     "message": "(anonim)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Një riparaqitje e detyruar ndodh kur JavaScript kërkon karakteristikat gjeometrike (si p.sh. offsetWidth) pasi stilet janë zhvlerësuar nga një ndryshim në gjendjen e DOM-së. Kjo mund të rezultojë në performancë të dobët. Mëso më shumë rreth [riparaqitjeve të detyruara](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) dhe masave parandaluese të mundshme."
+    "message": "Një riparaqitje e detyruar ndodh kur JavaScript kërkon karakteristikat gjeometrike (si p.sh. offsetWidth) pasi stilet janë zhvlerësuar nga një ndryshim në gjendjen e DOM-së. Kjo mund të rezultojë në performancë të dobët. Mëso më shumë rreth [riparaqitjeve të detyruara](https://developer.chrome.com/docs/performance/insights/forced-reflow) dhe masave parandaluese të mundshme."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Gjurmimi i stivës"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Thirr kuadrot që aktivizojnë riparaqitjen"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Riparaqitje e detyruar"
@@ -2322,7 +2283,7 @@
     "message": "[pa atribut]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Fillo të hetosh me nënpjesën më të gjatë. [Vonesat mund të minimizohen](https://web.dev/articles/optimize-inp#optimize_interactions). Për të reduktuar kohëzgjatjen e përpunimit, [optimizo kostot e procesit kryesor](https://web.dev/articles/optimize-long-tasks), shpesh në JS."
+    "message": "Fillo të hetosh [se si të përmirësosh INP-në](https://developer.chrome.com/docs/performance/insights/inp-breakdown) duke parë nënpjesën më të gjatë."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Kohëzgjatja"
@@ -2346,7 +2307,7 @@
     "message": "Analiza e INP-së"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Zvogëlimi i kohës së shkarkimit të imazheve mund të përmirësojë kohën e perceptuar të ngarkimit për faqen dhe LCP-në. [Mëso më shumë për optimizimin e madhësisë së imazheve](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Zvogëlimi i kohës së shkarkimit të imazheve mund të përmirësojë kohën e perceptuar të ngarkimit për faqen dhe LCP-në. [Mëso më shumë për optimizimin e madhësisë së imazheve](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (përafërsisht {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Përdorimi i formateve të videove në vend të imazheve GIF mund të përmirësojë madhësinë e shkarkimit të përmbajtjes së animuar."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Çdo [nënpjesë ka strategji specifike për përmirësimin](https://web.dev/articles/optimize-lcp#lcp-breakdown). Në mënyrë ideale, pjesa më e madhe e kohës së LCP-së duhet të shpenzohet për ngarkimin e burimeve, jo te vonesat."
+    "message": "Çdo [nënpjesë ka strategji specifike për përmirësimin](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Në mënyrë ideale, pjesa më e madhe e kohës së LCP-së duhet të shpenzohet për ngarkimin e burimeve, jo te vonesat."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Kohëzgjatja"
@@ -2406,7 +2367,7 @@
     "message": "Analiza e LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimizo LCP-në duke e bërë imazhin e LCP-së menjëherë [të zbulueshëm](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) nga protokolli HTML dhe [duke shmangur ngarkimin e kursyer](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Optimizo LCP-në](https://developer.chrome.com/docs/performance/insights/lcp-discovery) duke e bërë imazhin e LCP-së menjëherë të zbulueshëm nga protokolli HTML dhe duke shmangur ngarkimin e kursyer"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=zbatuar në nivel të lartë"
@@ -2439,13 +2400,13 @@
     "message": "Bajtet e shpërdoruara"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Kodet polifil dhe transformimet bëjnë të mundur që shfletuesit më të vjetër të përdorin veçoritë e reja të JavaScript. Sidoqoftë, shumë prej tyre nuk janë të nevojshëm për shfletuesit modernë. Ki parasysh ta modifikosh procesin e ndërtimit të JavaScript që të mos transformohen veçoritë [bazë](https://web.dev/articles/baseline-and-polyfills), përveçse nëse e di që duhet të mbështeten shfletuesit më të vjetër. [Mëso se pse shumica e sajteve mund të përdorin kodin ES6+ pa kryer transformimin e gjuhës së programimit](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Kodet polifil dhe transformimet bëjnë të mundur që shfletuesit më të vjetër të përdorin veçoritë e reja të JavaScript. Sidoqoftë, shumë prej tyre nuk janë të nevojshëm për shfletuesit modernë. Ki parasysh ta modifikosh procesin e ndërtimit të JavaScript që të mos transformohen veçoritë [bazë](https://web.dev/articles/baseline-and-polyfills), përveçse nëse e di që duhet të mbështeten shfletuesit më të vjetër. [Mëso se pse shumica e sajteve mund të përdorin kodin ES6+ pa kryer transformimin e gjuhës së programimit](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Versioni i vjetër i JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 dhe HTTP/3 ofrojnë shumë përfitime në HTTP/1.1, si p.sh. transmetimi i shumanshëm. [Mëso më shumë rreth përdorimit të protokollit modern HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 dhe HTTP/3 ofrojnë shumë përfitime në HTTP/1.1, si p.sh. transmetimi i shumanshëm. [Mëso më shumë rreth përdorimit të protokollit modern HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Asnjë kërkesë nuk ka përdorur HTTP/1.1 ose përdorimi aktual i HTTP/1.1 nuk përfaqëson një mundësi të konsiderueshme optimizimi. Kërkesat e HTTP/1.1 raportohen vetëm nëse gjashtë se më shumë elemente statike kanë të njëjtën origjinë dhe nuk shërbehen nga një mjedis lokal zhvillimi apo një burim pale të tretë."
@@ -2478,7 +2439,7 @@
     "message": "Lidhja paraprake nuk u përdor. Kontrollo që atributi crossorigin të përdoret siç duhet."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Shmang kërkesat kritike në formë zinxhiri](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) duke zvogëluar gjatësinë e zinxhirëve, duke zvogëluar madhësinë e burimeve ose duke vonuar shkarkimin e burimeve të panevojshme për të përmirësuar ngarkimin e faqeve."
+    "message": "[Shmang kërkesat kritike në formë zinxhiri](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) duke zvogëluar gjatësinë e zinxhirëve, duke zvogëluar madhësinë e burimeve ose duke vonuar shkarkimin e burimeve të panevojshme për të përmirësuar ngarkimin e faqeve."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Shto sugjerime për [lidhjen paraprake](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) për origjinat më të rëndësishme, por përpiqu të përdorësh jo më shumë se 4."
@@ -2517,7 +2478,7 @@
     "message": "Shmang kërkesat kritike në formë zinxhiri duke zvogëluar gjatësinë e zinxhirëve, duke zvogëluar madhësinë e burimeve ose duke vonuar shkarkimin e burimeve të panevojshme për të përmirësuar ngarkimin e faqeve."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Kërkesat po bllokojnë paraqitjen fillestare të faqes, gjë që mund të vonojë LCP-në. [Shtyrja ose ndërfutja](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) mund t'i zhvendosë këto kërkesa të rrjetit jashtë shtegut kritik."
+    "message": "Kërkesat po bllokojnë paraqitjen fillestare të faqes, gjë që mund të vonojë LCP-në. [Shtyrja ose ndërfutja](https://developer.chrome.com/docs/performance/insights/render-blocking) mund t'i zhvendosë këto kërkesa të rrjetit jashtë shtegut kritik."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Kohëzgjatja"
@@ -2532,7 +2493,7 @@
     "message": "Kërkesat që bllokojnë paraqitjen"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Nëse kostot e rillogaritjes së stilit mbeten të larta, optimizimi i përzgjedhësit mund t'i zvogëlojë ato. [Optimizo përzgjedhësit](https://developer.chrome.com/docs/devtools/performance/selector-stats) me kohë të kaluar të lartë dhe përqindje të lartë të shtegut të ngadaltë. Përzgjedhësit më të thjeshtë, numri më i vogël i përzgjedhësve, një model më i vogël DOM dhe një model më pak i thellë DOM do të zvogëlojnë kostot e përputhjes."
+    "message": "Nëse kostot e rillogaritjes së stilit mbeten të larta, optimizimi i përzgjedhësit mund t'i zvogëlojë ato. [Optimizo përzgjedhësit](https://developer.chrome.com/docs/performance/insights/slow-css-selector) me kohë të kaluar të lartë dhe përqindje të lartë të shtegut të ngadaltë. Përzgjedhësit më të thjeshtë, numri më i vogël i përzgjedhësve, një model më i vogël DOM dhe një model më pak i thellë DOM do të zvogëlojnë kostot e përputhjes."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Koha e kaluar"
@@ -2571,7 +2532,7 @@
     "message": "Madhësia e transferimit"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Kodi i palës së tretë mund të ndikojë ndjeshëm në performancën e ngarkesës. [Zvogëlo dhe shtyje ngarkimin e kodit të palëve të treta](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) për t'i dhënë përparësi përmbajtjes së faqes sate."
+    "message": "Kodi i palës së tretë mund të ndikojë ndjeshëm në performancën e ngarkesës. [Zvogëlo dhe shtyje ngarkimin e kodit të palëve të treta](https://developer.chrome.com/docs/performance/insights/third-parties) për t'i dhënë përparësi përmbajtjes së faqes sate."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Nuk u gjetën palë të treta"
@@ -2580,7 +2541,7 @@
     "message": "Palët e treta"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Ndërveprimet me trokitje mund [të vonohen me deri në 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) nëse porta e shikimit nuk optimizohet për celular."
+    "message": "Ndërveprimet me trokitje mund [të vonohen me deri në 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) nëse porta e shikimit nuk optimizohet për celular."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Vonesa e trokitjes në celular"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Mëso rreth IA-së në DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Ndihma e IA-së nuk ofrohet në modalitetin \"I fshehtë\" ose në modalitetin \"Vizitor\""
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Kjo veçori ofrohet vetëm kur je identifikuar në Chrome me \"Llogarinë tënde të Google\"."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Kontrollo lidhjen e internetit dhe provo përsëri"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Zbulo artikullin e zgjedhur të kontekstit në DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Ndihma e IA-së te \"Cilësimet\""
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Aktivizo \"{PH1}\" për të marrë ndihmë për të kuptuar stilet e CSS-së"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Aktivizo {PH1} për të marrë ndihmë për stilet dhe kërkesat e rrjetit"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Aktivizo \"{PH1}\" për të marrë ndihmë për stilet, kërkesat e rrjetit dhe skedarët"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Aktivizo \"{PH1}\" për të marrë ndihmë për stilet, kërkesat e rrjetit, performancën dhe skedarët"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Në këtë faqe mund të inspektosh dhe modifikosh animacionet."
@@ -6033,7 +5970,7 @@
     "message": "Rrit aftësitë, ndërto me IA dhe fito distinktivë që mund t'i shfaqësh në profilin tënd të zhvilluesit"
   },
   "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
-    "message": "Dialogu i regjistrimit në \"Programin e zhvilluesve të Google\""
+    "message": "Dialogu i regjistrimit në \"Programin e zhvilluesit të Google\""
   },
   "panels/common/GdpSignUpDialog.ts | keepUpdated": {
     "message": "Më mbaj të përditësuar"
@@ -6045,7 +5982,7 @@
     "message": "Mëso më shumë"
   },
   "panels/common/GdpSignUpDialog.ts | learnMoreAccessibleText": {
-    "message": "Mëso më shumë rreth \"Programit të zhvilluesve të Google\""
+    "message": "Mëso më shumë rreth \"Programit të zhvilluesit të Google\""
   },
   "panels/common/GdpSignUpDialog.ts | privacyPolicy": {
     "message": "Politika e privatësisë"
@@ -6054,7 +5991,7 @@
     "message": "Regjistrohu"
   },
   "panels/common/GdpSignUpDialog.ts | signUpFailed": {
-    "message": "Profili yt i \"Programit të zhvilluesve të Google\" nuk mund të krijohej. Provo përsëri më vonë."
+    "message": "Profili yt i \"Programit të zhvilluesit të Google\" nuk mund të krijohej. Provo përsëri më vonë."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfile": {
     "message": "Personalizo profilin tënd"
@@ -6067,6 +6004,12 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Kushtet e shërbimit"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Lidhur me {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Lidhur me hartën e burimit: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "Lejo"
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Shfaq panelin"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Shfaq përmbledhjet nga IA-ja për mesazhet e konsolës"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Shfaq gabimet CORS në konsolë"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Kalo te paneli i \"Animacioneve\""
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Hap zgjedhësin e ngjyrës. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Shto {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Po bllokohet"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Personalizo"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Shikues Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Shto motivin e bllokimit të kërkesës së rrjetit"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Shto motiv"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Shto një motiv për të bllokuar kërkesat e rrjetit duke klikuar butonin \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} është bllokuar"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Aktivizo bllokimin e kërkesës së rrjetit"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Artikulli u fshi me sukses"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Mëso më shumë"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Nuk ka asnjë kërkesë të bllokuar të rrjetit"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Motivi ekziston tashmë."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Hyrja e motivit nuk mund të jetë bosh."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Motivi i tekstit për të bllokuar kërkesat që përputhen; përdor * për variabël"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Pastroji të gjitha"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Statusi i kërkesës nuk mund të shfaqet këtu pasi faqja që e lëshoi u shkarkua gjatë kohës që kërkesa ishte në proces. Mund të përdorësh chrome://net-export për të regjistruar një evidencë të rrjetit dhe për të parë të gjitha detajet e kërkesës."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informacionet e lidhjes"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Blloko URL-në e kërkesës"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Blloko kërkesat"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Kërkesat e bllokuara"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Kërkesat e palëve të 3-ta"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Kufizo domenin e kërkesës"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Kufizo URL-në e kërkesës"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Kufizo kërkesat"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Zhblloko {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Ndalo kufizimin e {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "ID-ja e lidhjes"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Shto motivin e bllokimit të kërkesës së rrjetit"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Shto motiv"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Shto motivin e kufizimit ose bllokimit të kërkesave të rrjetit"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Shto një motiv duke klikuar te butoni \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} është bllokuar"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Zvogëlo përparësinë"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Aktivizo bllokimin dhe kufizimin"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Aktivizo bllokimin e kërkesës së rrjetit"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Rrit përparësinë"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Artikulli u fshi me sukses"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Nuk ka asnjë kërkesë të bllokuar të rrjetit"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Nuk ka asnjë motiv për kufizimin apo bllokimin e motiveve"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Motivi ekziston tashmë."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Ky motiv nuk mund të analizohej si URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Grupet RegExp nuk lejohen"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Hyrja e motivit nuk mund të jetë bosh."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Ky motiv u përmirësua nga \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Motivi i tekstit për të bllokuar ose kufizuar kërkesat që përputhen; përdor sintaksën e URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Motivi i tekstit për të bllokuar kërkesat që përputhen; përdor * për variabël"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Kukit që u morën nga serveri në titullin \"set-cookie\" të përgjigjes"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Kërko te ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Kërkesë/Përgjigje"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Planifikimi i burimeve"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Për të përdorur këtë burim nga një sajt i ndryshëm, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të ndërthurur:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Shto motivin e bllokimit ose kufizimit të kërkesave të rrjetit"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Shto motivin e bllokimit të kërkesës së rrjetit"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Bllokimi i kërkesave të rrjetit"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Kushtet e kërkesës"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "përshpejtimi i rrjetit"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Regjistro evidencën e rrjetit"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Hiq të gjitha motivet e bllokimit ose kufizimit të kërkesave të rrjetit"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Hiq të gjitha motivet e bllokimit të kërkesës së rrjetit"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Shfaq bllokimin e kërkesës së \"Rrjetit\""
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Shfaq kushtet e kërkesës"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Shfaq \"Kërkimin\""
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Objektet e ruajtura nga nyjat e shkëputura të DOM-it"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Objektet e ruajtura nga përpunuesit e veprimeve"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Objekte të tjera JS"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Kur është aktive"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Fut një shteg"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Fut një shteg unik"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Nëndosjet e përjashtuara"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Shto një rregull të një shprehjeje të rregullt për URL-në e skriptit"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Hap një skedar JavaScript ose CSS për të parë simbolet"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Hape në dosjen që e përmban"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Anulo përmbajtjen"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" është një skedar i hartuar burimi dhe nuk mund të anulohet."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Të anulohet \"{PH1}\" më mirë?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Ruaj si…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Ruajtja e skedarit te disku dështoi."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Ruaj imazhin"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Moduli WASM nuk mund të ruhet te disku. Ka shumë mundësi që moduli të jetë shumë i madh."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Shfaq të gjitha anulimet"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Përfshi shënimet"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Përfshi përmbajtjen e skriptit"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Përfshi hartat e burimit të skriptit"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Informacione shtesë:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Ruaj"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Përfshin përmbajtjen e plotë të të gjitha skripteve të ngarkuara (përveç shtesave)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Ngjish me gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Kokat e kërkesave janë anuluar"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Kukit për këtë kërkesë janë bllokuar për shkak të flamujve të Chrome ose për shkak të konfigurimit të shfletuesit. Mëso më shumë në panelin \"Problemet\"."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Përdor shprehjen e rregullt"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Kërkon ringarkimin"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "u përzgjodh"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Përdor ngjyrën e sugjeruar {PH1}për të rregulluar kontrastin e ulët"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Kjo ngjyrë është nxjerrë për t'u përputhur me gamën e formatit. Rezultati aktual ishte {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Konvertimi në një gamë të ngushtë do të shkaktojë zhvendosje të ngjyrave"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Shtoje te paleta"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Kukit"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domeni"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Kuki të redaktueshme"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(e patejdukshme)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Sajti i çelësit të ndarjes"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Shtegu"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Përparësia"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "E sigurt"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sesioni"

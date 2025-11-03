@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-letiltás"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Letiltás"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Megszakítva"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Dokkolás jobbra"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "A DevTools külső kérelmet kapott"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fókuszálás az oldalra"
   },
@@ -1275,13 +1281,13 @@
     "message": "Adatok támogatása: az SVGUseElement elemben lévő URL-ek elavultak, és a jövőben el fogjuk távolítani őket."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "A getCurrentPosition() és watchPosition() függvények többé nem működnek nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+    "message": "A(z) getCurrentPosition() és a(z) watchPosition() többé nem működik nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "A következő függvényeket megszüntettük a nem biztonságos eredetek esetében: getCurrentPosition() és watchPosition(). A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+    "message": "A következő függvényeket megszüntettük a nem biztonságos eredetek esetében: getCurrentPosition() és watchPosition(). A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "A getUserMedia() függvény többé nem működik nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+    "message": "A(z) getUserMedia() függvény többé nem működik nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "A(z) RTCPeerConnectionIceErrorEvent.hostCandidate elemet megszüntettük. Használja helyette a következők valamelyikét: RTCPeerConnectionIceErrorEvent.address vagy RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "A webes MIDI még akkor is engedélyt kér a használatra, ha a SysEx nincs megadva itt: MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "A Notification API többé nem használható nem biztonságos helyek esetében. Fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+    "message": "A Notification API többé nem használható nem biztonságos helyek esetében. Fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "A Notification API-ra vonatkozó engedélyt többé nem lehet eredeteken átívelő iframe-ből kérelmezni. Helyette inkább egy legfelső szintű kerettől kérjen engedélyt, vagy nyisson meg egy új ablakot."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "A SharedArrayBuffer használatának folytatásához a bővítményeknél engedélyezni kell az eltérő eredetek elkülönítését. További információ: https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "A(z) BluetoothRemoteGATTCharacteristic.writeValue() metódust megszüntettük. Használja helyette a következők valamelyikét: writeValueWithResponse() vagy writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Az XMLHttpRequest esetében az UTF-16 kódolást nem támogatja a válasz-JSON."
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Ez a funkció csak aktív internetkapcsolat mellett használható."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "A DevTools külső kérelmet kapott"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ismeretlen hiba történt a fájl betöltése során"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} késés, {PH2} letöltés ({PH3} összesen)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Írjon be elérési utat"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Egyedi elérési utat adjon meg"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Kizárt almappák"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Nem sikerült a blob betöltése."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Nem adható hozzá fájlrendszer: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Megnyitás az elemet tartalmazó mappában"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Tartalom felülbírálása"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "A(z) „{PH1}” egy forráshoz társított fájl, ezért nem bírálható felül."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Felülbírálja inkább a következőt: „{PH1}”?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Mentés másként…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Nem sikerült menteni a fájlt a lemezre."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Kép mentése"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Nem sikerült a lemezre menteni a WASM-modult. A modul valószínűleg túl nagy."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Összes felülbírálás megjelenítése"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Összekapcsolva a következővel: {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "A következő forrás-hozzárendeléssel összekapcsolva: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "A(z) PlatformFileSystem nem tud beolvasni fájlokat."
@@ -2157,7 +2118,7 @@
     "message": "Animáció"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Az elrendezésmozgások akkor fordulnak elő, amikor az elemek bárminemű felhasználói interakció nélkül mozognak. [Vizsgálja meg a elrendezésmozgás okait](https://web.dev/articles/optimize-cls), például az elemeket hozzáadását, eltávolítását vagy az elrendezés betűtípusának változását az oldal betöltődésekor."
+    "message": "Az elrendezésmozgások akkor fordulnak elő, amikor az elemek bárminemű felhasználói interakció nélkül mozognak. [Vizsgálja meg a elrendezésmozgás okait](https://developer.chrome.com/docs/performance/insights/cls-culprit), például az elemeket hozzáadását, eltávolítását vagy az elrendezés betűtípusának változását az oldal betöltődésekor."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Iframe került beszúrásra"
@@ -2193,7 +2154,7 @@
     "message": "Gyorsítótár-TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Ha a gyorsítótárak élettartama hosszú, gyorsabbá válnak az oldal későbbi ismételt megnyitásai. [További információ](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Ha a gyorsítótárak élettartama hosszú, gyorsabbá válnak az oldal későbbi ismételt megnyitásai. [További információ a gyorsítótárazásról](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Nincsenek nem hatékony gyorsítótár-házirenddel rendelkező kérelmek"
@@ -2208,7 +2169,7 @@
     "message": "Hatékony gyorsítótár-élettartam használata"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "A nagy méretű DOM megnövelheti a stílusszámítások és az elrendezés-újraszámítások időtartamát, ami befolyásolja az oldal reagálóképességét. A nagy méretű DOM megnöveli a memóriahasználatot is. [További információ a túl nagy méretű DOM elkerüléséről](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "A nagy méretű DOM megnövelheti a stílusszámítások és az elrendezés-újraszámítások időtartamát, ami befolyásolja az oldal reagálóképességét. A nagy méretű DOM megnöveli a memóriahasználatot is. [További információ a túl nagy méretű DOM elkerüléséről](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Időtartam"
@@ -2244,7 +2205,7 @@
     "message": "Érték"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Az első hálózati kérelem a legfontosabb.  Csökkentse a várakozási idejét az átirányítások elkerülésével, gyors szerverválasz biztosításával és a szövegtömörítés engedélyezésével."
+    "message": "Az első hálózati kérelem a legfontosabb. [Csökkentse a várakozási idejét](https://developer.chrome.com/docs/performance/insights/document-latency) az átirányítások elkerülésével, gyors szerverválasz biztosításával és a szövegtömörítés engedélyezésével."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Voltak átirányítások ({PH1} átirányítás, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Forrás"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Távolítsa el a csomagjaiból a nagy méretű, ismétlődően előforduló JavaScript-modulokat, hogy kevesebb hálózati forgalmat okozzanak."
+    "message": "Távolítsa el a csomagjaiból a nagy méretű, [ismétlődően előforduló JavaScript-modulokat](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), hogy kevesebb hálózati tevékenységet okozzanak."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Ismétlődő JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "A szöveg következetes láthatóságának biztosítása érdekében fontolja meg a [font-display](https://developer.chrome.com/blog/font-display) beállítását a következők egyikére: swap vagy optional. A swap tovább optimalizálható az elrendezésmozgások mérséklése érdekében a [betűméretmutató-felülbírálásokkal](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "A szöveg következetes láthatóságának biztosítása érdekében fontolja meg a [font-display](https://developer.chrome.com/docs/performance/insights/font-display) beállítását a következők egyikére: swap vagy optional. A swap tovább optimalizálható az elrendezésmozgások mérséklése érdekében a [betűméretmutató-felülbírálásokkal](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Betűtípus"
@@ -2304,10 +2265,10 @@
     "message": "(névtelen)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Kényszerített újraszámítás akkor következik be, amikor a JavaScript geometriai tulajdonságokat (például offsetWidth) kér le, miután a DOM állapotának módosítása érvénytelenítette a stílusokat. Ez gyenge teljesítményhez vezethet. További információ az [kényszerített újraszámításról](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) és a lehetséges megoldásokról."
+    "message": "Kényszerített újraszámítás akkor következik be, amikor a JavaScript geometriai tulajdonságokat (például offsetWidth) kér le, miután a DOM állapotának módosítása érvénytelenítette a stílusokat. Ez gyenge teljesítményhez vezethet. További információ az [kényszerített újraszámításról](https://developer.chrome.com/docs/performance/insights/forced-reflow) és a lehetséges megoldásokról."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Veremkivonat"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Az újraszámítást kiváltó hívási keretek"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Kényszerített újraszámítás"
@@ -2322,7 +2283,7 @@
     "message": "[nem osztályozott]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "A leghosszabb alrésszel kezdje a vizsgálatot. [A késések minimalizálhatók](https://web.dev/articles/optimize-inp#optimize_interactions). A feldolgozási idő csökkentése érdekében [optimalizálja a fő szál költségeit](https://web.dev/articles/optimize-long-tasks), gyakran a JS-t."
+    "message": "A leghosszabb alrész megtekintésével kezdheti meg az [INP javításának](https://developer.chrome.com/docs/performance/insights/inp-breakdown) vizsgálatát."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Időtartam"
@@ -2346,7 +2307,7 @@
     "message": "INP-lebontás"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "A képek letöltési idejének csökkentésével javíthatja az oldal és az LCP észlelt betöltési idejét. [További információ a képméret optimalizálásáról](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "A képek letöltési idejének csökkentésével javíthatja az oldal és az LCP észlelt betöltési idejét. [További információ a képméret optimalizálásáról](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (becsült – {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Ha GIF-ek helyett videóformátumokat használ, azzal javíthatja az animált tartalom letöltési méretét."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Minden [alrésznek megvannak a maga specifikus javítási stratégiái](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideális esetben az LCP-idő nagy részét az erőforrások betöltésére kell fordítani, nem pedig késésekre."
+    "message": "Minden [alrésznek megvannak a maga specifikus javítási stratégiái](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideális esetben az LCP-idő nagy részét az erőforrások betöltésére kell fordítani, nem pedig késésekre."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Időtartam"
@@ -2406,7 +2367,7 @@
     "message": "LCP-lebontás"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimalizálja az LCP-t úgy, hogy az LCP-képet azonnal [felfedezhetővé](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) teszi a HTML-ben, és [elkerüli a késleltetett betöltést](https://web.dev/articles/lcp-lazy-loading)."
+    "message": "[Optimalizálja az LCP-t](https://developer.chrome.com/docs/performance/insights/lcp-discovery) úgy, hogy az LCP-képet azonnal felfedezhetővé teszi a HTML-ben, és elkerüli a késleltetett betöltést."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high alkalmazva"
@@ -2439,13 +2400,13 @@
     "message": "Elvesztegetett bájtok"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "A polyfillek és az átalakítások lehetővé teszik, hogy a régi böngészők is használhassák az újabb JavaScript-funkciókat. A modern böngészők esetében azonban sok polyfill és átalakítás szükségtelen. Fontolja meg a JavaScript-buildkészítési folyamat módosítását, hogy az ne alakítsa át a [Baseline](https://web.dev/articles/baseline-and-polyfills) funkciókat, kivéve, ha tudja, hogy támogatnia kell a régi böngészőket. [További információ arról, hogy a legtöbb webhely miért tud átalakítás nélkül ES6+ kódot telepíteni](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "A polyfillek és az átalakítások lehetővé teszik, hogy a régi böngészők is használhassák az újabb JavaScript-funkciókat. A modern böngészők esetében azonban sok polyfill és átalakítás szükségtelen. Fontolja meg a JavaScript-buildkészítési folyamat módosítását, hogy az ne alakítsa át a [Baseline](https://web.dev/articles/baseline-and-polyfills) funkciókat, kivéve, ha tudja, hogy támogatnia kell a régi böngészőket. [További információ arról, hogy a legtöbb webhely miért tud átalakítás nélkül ES6+ kódot telepíteni](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Régi JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "A HTTP/2 és a HTTP/3 számos előnyt nyújt a HTTP/1.1-hez képest (ilyen például a multiplexálás). [További információ a modern HTTP használatáról](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "A HTTP/2 és a HTTP/3 számos előnyt nyújt a HTTP/1.1-hez képest (ilyen például a multiplexálás). [További információ a modern HTTP használatáról](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Egy kérelem sem használta a HTTP/1.1 protokollt, vagy a HTTP/1.1 jelenlegi használata nem jelent jelentős optimalizálási lehetőséget. A HTTP/1.1-kérések csak akkor vannak megjelölve, ha hat vagy több statikus eszköz ugyanabból a forrásból származik, és nem helyi fejlesztői környezetből vagy harmadik fél forrásából jelenítik meg."
@@ -2478,7 +2439,7 @@
     "message": "Nem használt előzetes kapcsolat. Ellenőrizze, hogy megfelelően használja-e a crossorigin attribútumot."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Kerülje a kritikus kérések láncba fűzését](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) a láncok hosszának csökkentésével, a letöltött források méretének csökkentésével, vagy a felesleges források letöltésének késleltetésével, hogy javuljon az oldalbetöltés."
+    "message": "[Kerülje a kritikus kérések láncba fűzését](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) a láncok hosszának csökkentésével, a letöltött források méretének csökkentésével, vagy a felesleges források letöltésének késleltetésével, hogy javuljon az oldalbetöltés."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Adjon meg [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) tippeket a legfontosabb eredethelyekhez, de próbáljon meg négynél többet használni."
@@ -2517,7 +2478,7 @@
     "message": "Kerülje a kritikus kérések láncba fűzését a láncok hosszának csökkentésével, a letöltött források méretének csökkentésével, vagy a felesleges források letöltésének késleltetésével, hogy javuljon az oldalbetöltés."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Kérelmek blokkolják az oldal kezdeti megjelenítését, ami késleltetheti az LCP-t. [Elhalasztás vagy a beágyazás](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) segítségével ezeket a hálózati kérelmeket el lehet távolítani a kritikus útvonalról."
+    "message": "Kérelmek blokkolják az oldal kezdeti megjelenítését, ami késleltetheti az LCP-t. [Elhalasztás vagy a beágyazás](https://developer.chrome.com/docs/performance/insights/render-blocking) segítségével ezeket a hálózati kérelmeket el lehet távolítani a kritikus útvonalról."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Időtartam"
@@ -2532,7 +2493,7 @@
     "message": "Renderelést blokkoló kérelmek megjelenítése"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Ha a stílus-újraszámítási költségek magasak maradnak, a választó optimalizálása csökkentheti őket. [Optimalizálja azokat a választókat](https://developer.chrome.com/docs/devtools/performance/selector-stats), amelyek magas eltelt idővel és magas lassú útvonali százalékkal rendelkeznek. Az egyszerűbb választók, a kevesebb választó, a kisebb DOM és a sekélyebb DOM használata egyaránt csökkenti az egyezési költségeket."
+    "message": "Ha a stílus-újraszámítási költségek magasak maradnak, a választó optimalizálása csökkentheti őket. [Optimalizálja azokat a választókat](https://developer.chrome.com/docs/performance/insights/slow-css-selector), amelyek magas eltelt idővel és magas lassú útvonali százalékkal rendelkeznek. Az egyszerűbb választók, a kevesebb választó, a kisebb DOM és a sekélyebb DOM használata egyaránt csökkenti az egyezési költségeket."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Eltelt idő"
@@ -2571,7 +2532,7 @@
     "message": "Átviteli méret"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "A harmadik felektől származó kódok jelentős hatással lehetnek a betöltés teljesítményére. [Csökkentse és késleltesse a harmadik féltől származó kód betöltését](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) az oldal tartalmának előrébb sorolása érdekében."
+    "message": "A harmadik felektől származó kódok jelentős hatással lehetnek a betöltés teljesítményére. [Csökkentse és késleltesse a harmadik féltől származó kód betöltését](https://developer.chrome.com/docs/performance/insights/third-parties) az oldal tartalmának előrébb sorolása érdekében."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Nem található harmadik fél"
@@ -2580,7 +2541,7 @@
     "message": "Harmadik felek"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Ha a megjelenítési terület nincs optimalizálva mobilra, akkor a koppintási műveleteknél [akár 300 ms késés is jelentkezhet](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)"
+    "message": "Ha a megjelenítési terület nincs optimalizálva mobilra, akkor a koppintási műveleteknél [akár 300 ms késés is jelentkezhet](https://developer.chrome.com/docs/performance/insights/viewport)"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Mobilos koppintás késleltetése"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "További információ a DevToolsban használható AI-ról"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Az AI-támogatás nem áll rendelkezésre inkognitó módban vagy vendég módban"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Ez a funkció csak akkor áll rendelkezésre, ha be van jelentkezve a Chrome-ba a Google-fiókjával."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Ellenőrizze az internetkapcsolatot, majd próbálkozzon újra"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "A kiválasztott kontextuselem megjelenítése a DevToolsban"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "AI-támogatás a Beállításokban"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Ha szeretne segítséget kapni a CSS-stílusok értelmezéséhez, kapcsolja be a(z) {PH1} funkciót"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "A stílusokkal és a hálózati kérelmekkel kapcsolatos segítségért kapcsolja be a következőt: {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Ha szeretne segítséget kapni a stílusokkal, a hálózati kérelmekkel és a fájlokkal kapcsolatban, kapcsolja be a következőt: {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Ha szeretne segítséget kapni a stílusokkal, a hálózati kérelmekkel, a teljesítménnyel és a fájlokkal kapcsolatban, kapcsolja be a következőt: {PH1}"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Ezen az oldalon megtekintheti és módosíthatja az animációkat."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Általános Szerződési Feltételek"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Összekapcsolva a következővel: {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "A következő forrás-hozzárendeléssel összekapcsolva: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Engedélyezés"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "A konzol megjelenítése"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "AI-összefoglalók megjelenítése a konzolüzenetekhez"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Jelenjenek meg a(z) CORS-hibák a konzolon"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Ugrás az Animációk panelre"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Színválasztó megnyitása. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} hozzáadása"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Letiltás"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Egyéni"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex megtekintő"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Hálózatkérés-letiltás mintájának hozzáadása"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Minta hozzáadása"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "A hálózati kérések letiltásához adjon hozzá mintát a(z) „{PH1}” gombra kattintva."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} letiltva"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Hálózati kérések blokkolásának engedélyezése"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Elem sikeresen törölve"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "További információ"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Nincsenek letiltott hálózati kérelmek"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Ez a minta már létezik."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "A minta beviteli mezője nem lehet üres."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Az egyező kérések letiltására szolgáló szöveges minta; használja a * jelet helyettesítő karakterként."
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Összes törlése"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Nem lehetséges itt a kérelem állapotának megjelenítése, mert a kibocsátó oldal kiürült, miközben folyamatban volt a kérelem. A chrome://net-export segítségével készíthet hálózati naplót, és megtekintheti a kérelem összes részletét."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Kapcsolat adatai"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Kért URL blokkolása"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Kérelmek letiltása"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Letiltott kérelmek"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Harmadik féltől származó kérelmek"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Kérelem domainjének korlátozása"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Kérelem URL-jének korlátozása"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Kérelmek korlátozása"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} feloldása"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "A(z) {PH1} korlátozásának leállítása"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Kapcsolatazonosító"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Hálózatkérés-letiltás mintájának hozzáadása"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Minta hozzáadása"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Hálózati kérelemkorlátozási vagy -letiltási minta hozzáadása"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "A(z) „{PH1}” gombra kattintva adjon hozzá egy mintát."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} letiltva"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Prioritás csökkentése"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Letiltás és korlátozás engedélyezése"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Hálózati kérések blokkolásának engedélyezése"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Prioritás növelése"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Elem sikeresen törölve"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "További információ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Nincsenek letiltott hálózati kérelmek"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Nincsenek kérelemkorlátozási vagy -letiltási minták"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Ez a minta már létezik."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "A minta nem elemezhető a következőként: URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "A RegExp-csoportok nem engedélyezettek"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "A minta beviteli mezője nem lehet üres."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "A minta frissítve lett a következő webhelyről: „{PH1}”"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "A megfeleltetett kérések letiltására vagy korlátozására szolgáló szöveges minta; használja az URLPattern szintaxist."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Az egyező kérések letiltására szolgáló szöveges minta; használja a * jelet helyettesítő karakterként."
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "A szerverről érkező cookie-k a válasz „set-cookie” fejlécében"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Kérelem a következőnek: ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Kérelem/Válasz"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Forrásütemezés"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Az erőforrás eltérő webhelyről való használatához a szerver pihentetheti az eltérő eredetű kérelmekre vonatkozó házirend válasz fejlécét:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Hálózatkérés-letiltási vagy -korlátozási minta hozzáadása"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Hálózatkérés-letiltás mintájának hozzáadása"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Hálózati kérés letiltása"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Kérelemfeltételek"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "sávszélesség-korlátozás"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Hálózati napló rögzítése"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Az összes hálózati kérelmet letiltó vagy korlátozó minta eltávolítása"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Az összes hálózati kérést letiltó minta eltávolítása"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Hálózati kérés letiltása eszköz megjelenítése"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Kérelem feltételeinek megjelenítése"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Keresés megjelenítése"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Leválasztott DOM-csomópontok által fenntartott objektumok"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Eseménykezelők által fenntartott objektumok"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Egyéb JS-objektumok"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Amikor be van kapcsolva"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Írjon be elérési utat"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Egyedi elérési utat adjon meg"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Kizárt almappák"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Adjon meg egy reguláriskifejezés-szabályt a szkript URL-jéhez"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Nyisson meg egy JavaScript- vagy CSS-fájlt a szimbólumok megtekintéséhez"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Megnyitás az elemet tartalmazó mappában"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Tartalom felülbírálása"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "A(z) „{PH1}” egy forráshoz társított fájl, ezért nem bírálható felül."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Felülbírálja inkább a következőt: „{PH1}”?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Mentés másként…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Nem sikerült menteni a fájlt a lemezre."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Kép mentése"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Nem sikerült a lemezre menteni a WASM-modult. A modul valószínűleg túl nagy."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Összes felülbírálás megjelenítése"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Jelölések belefoglalása"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Szkripttartalom belefoglalása"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Szkriptforrás-hozzárendelések belefoglalása"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "További információ:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Mentés"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Tartalmazza az összes betöltött szkript teljes tartalmát (a bővítmények kivételével)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Tömörítés gzip használatával"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "A kérelmek fejlécei felül vannak bírálva"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Az ehhez a kéréshez tartozó cookie-k le vannak tiltva Chrome-jelzők vagy a böngésző konfigurációja miatt. További információkat a Problémák panelen talál."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Reguláris kifejezés használata"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Egy vagy több beállítás megváltozott, amelynek életbe lépéséhez újratöltés szükséges"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "* Újratöltés szükséges"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "bejelölve"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Használja a javasolt színt ({PH1}) az alacsony kontraszt javításához"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Ezt a színt a rendszer levágta a formátum színskálájának való megfelelés érdekében. A tényleges eredmény a következő volt: {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ A keskeny színskálára való konvertálás színeltolódást okoz"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Hozzáadás a palettához"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie-k"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domain"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Szerkeszthető cookie-k"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(átlátszatlan)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Partíciókulcs webhelye"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Útvonal"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioritás"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Biztonságos"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Munkamenet"

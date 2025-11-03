@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Withን አግድ"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "አግድ"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "ተቋርጧል"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ወደ ቀኝ ይትከሉ"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools ውጫዊ ጥያቄ ተቀብለዋል"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "የትኩረት ገፅ"
   },
@@ -1275,13 +1281,13 @@
     "message": "ለወሂብ ድጋፍ፦ በSVGUseElement ውስጥ ያሉ ዩአርኤሎች ተቋርጧል እና ወደፊትም ይወገዳል።"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() እና watchPosition() ከአሁን በኋላ ደህንነታቸው ባልተጠበቁ መነሻዎች ላይ አይሰሩም። ይህንን ባህሪ ለመጠቀም መተግበሪያዎን እንደ HTTPS ወዳለ ደህንነቱ የተጠበቀ ምንጭ ለመቀየር ያስቡበት። ለተጨማሪ ዝርዝሮች https://goo.gle/chrome-insecure-origins ን ይመልከቱ።"
+    "message": "getCurrentPosition() እና watchPosition() ከአሁን በኋላ ደኅንነታቸው ባልተጠበቁ መነሻዎች ላይ አይሰሩም። ይህን ባህሪ ለመጠቀም የእርስዎን መተግበሪያ እንደ ኤችቲቲፒኤስ ወዳለ ደኅንነቱ የተጠበቀ ምንጭ መቀየርን ከግምት ውስጥ ያስገቡ። ተጨማሪ ዝርዝሮችን ለማግኘት https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ የሚለውን ይመልከቱ።"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() እና watchPosition() አስተማማኝ ባልሆኑ መነሻዎች ላይ ተቋርጠዋል። ይህንን ባህሪ ለመጠቀም መተግበሪያዎን እንደ HTTPS ወዳለ ደህንነቱ የተጠበቀ ምንጭ ለመቀየር ያስቡበት። ለተጨማሪ ዝርዝሮች https://goo.gle/chrome-insecure-origins ን ይመልከቱ።"
+    "message": "getCurrentPosition() እና watchPosition() አስተማማኝ ባልሆኑ መነሻዎች ላይ ተቋርጠዋል። ይህን ባህሪ ለመጠቀም የእርስዎን መተግበሪያ እንደ ኤችቲቲፒኤስ ወዳለ ደኅንነቱ የተጠበቀ ምንጭ መቀየርን ከግምት ውስጥ ያስገቡ። ተጨማሪ ዝርዝሮችን ለማግኘት https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ የሚለውን ይመልከቱ።"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() ከአሁን በኋላ ደህንነታቸው ባልተጠበቁ መነሻዎች ላይ አይሰራም። ይህንን ባህሪ ለመጠቀም መተግበሪያዎን እንደ HTTPS ወዳለ ደህንነቱ የተጠበቀ ምንጭ ለመቀየር ያስቡበት። ለተጨማሪ ዝርዝሮች https://goo.gle/chrome-insecure-origins ን ይመልከቱ።"
+    "message": "getUserMedia() ከአሁን በኋላ ደኅንነታቸው ባልተጠበቁ መነሻዎች ላይ አይሠራም። ይህን ባህሪ ለመጠቀም የእርስዎን መተግበሪያ እንደ ኤችቲቲፒኤስ ወዳለ ደኅንነቱ የተጠበቀ ምንጭ መቀየርን ከግምት ውስጥ ያስገቡ። ተጨማሪ ዝርዝሮችን ለማግኘት https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ የሚለውን ይመልከቱ።"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ተቋርጧል። እባክዎ በምትኩ RTCPeerConnectionIceErrorEvent.addressን ወይም RTCPeerConnectionIceErrorEvent.portን ይጠቀሙ።"
@@ -1311,7 +1317,7 @@
     "message": "ድር ኤምአይዲአይ ስርአት ገዳቢው በMIDIOptions ውስጥ ባይገለጽም ለመጠቀም ፍቃድ ይጠይቃል።"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "የማሳወቂያ ኤፒአይ ደህንነታቸው ካልተጠበቁ ምንጮች ጥቅም ላይ ሊውል አይችልም። መተግበሪያዎን እንደ HTTPS ወዳለ አስተማማኝ መነሻ ለመቀየር ማሰብ አለብዎት። ለተጨማሪ ዝርዝሮች https://goo.gle/chrome-insecure-origins ን ይመልከቱ።"
+    "message": "የማሳወቂያ ኤፒአይ ከአሁን በኋላ ደኅንነታቸው ካልተጠበቁ ምንጮች ጥቅም ላይ ላይውል ይችላል። መተግበሪያዎን እንደ ኤችቲቲፒኤስ ወዳለ አስተማማኝ መነሻ መቀየርን ከግምት ውስጥ ማስገባት አለብዎት። ተጨማሪ ዝርዝሮችን ለማግኘት https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ የሚለውን ይመልከቱ።"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "የማሳወቂያ ኤፒአይ ፈቃድ ከአሁን በኋላ ከ መነሻ-ተሻጋሪ iframe ሊጠየቅ አይችልም። ከከፍተኛ ደረጃ ክፍለ ገጸ ድር ፈቃድ ለመጠየቅ ወይም በምትኩ አዲስ መስኮት መክፈትን ያስቡበት።"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "ቅጥያዎች SharedArrayBuffer መጠቀማቸውን ለመቀጠል ወደ መነሻ-ተሻጋሪ ማግለል መርጠው መግባት አለባቸው። https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ን ይመልከቱ።"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() ተቋርጧል። በምትኩ writeValueWithResponse() ወይም writeValueWithoutResponse() ይጠቀሙ።"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16፣ XMLHttpRequest ውስጥ በjson ምላሽ አይደገፍም"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "ይህ ባህሪ የሚገኘው ንቁ በሆነ የበይነመረብ ግንኙነት ብቻ ነው።"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools ውጫዊ ጥያቄ ተቀብለዋል"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ፋይል በመጫን ላይ ያልታወቀ ስህተት"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1}የስርዓተ ምላሽ ጊዜ፣ {PH2} ({PH3} ጠቅላል) አውርድ"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "ዱካ ያስገቡ"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "ልዩ ዱካ ያስገቡ"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "የተገለሉ ንዑስ-አቃፊዎች"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "ዩአርኤል"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "ብሎብ ሊጫን አልቻለም።"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "የፋይል ሥርዓትን ማከል አልተቻለም፦ {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "አሁን ባለበት አቃፊ ውስጥ ይክፈቱ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ይዘትን ሻር"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "«{PH1}» በምንጭ ፋይል ነው እና መሻር አይችልም።"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "በምትኩ «{PH1}» ይሻር?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "አስቀምጥ እንደ…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ፋይሉን ወደ ዲስክ ማስቀመጥ አልተሳካም።"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "ምስል አስቀምጥ"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "የWASM ሞዱልን ዲስክ ላይ ማስቀመጥ አልተቻለም። ሞዱሉ በጣም ትልቅ ሊሆን ይችላል።"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "ሁሉንም መሻሮች አሳይ"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "ከ{PH1} ጋር ተገናኝቷል"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "ከምንጭ ካርታ ጋር ተገናኝቷል፦ {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ፋይሎችን ማንበብ አይችልም።"
@@ -2157,7 +2118,7 @@
     "message": "እነማ"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "የአቀማመጥ መቀያየሮች የሚከሰቱት በማንኛውም የተጠቃሚ መስተጋብር ውስጥ አካላት ወደአለመኖር በሚንቀሳቀሱበት ጊዜ ነው። እንደ የአካላት መታከል፣ መወገድ ወይም ገፁ ሲጭን ቅርጸ-ቁምፊያቸው መለወጥን ጨምሮ [የአቀማመጥ መቀያየሮች ምክንያቶችን ይመርምሩ](https://web.dev/articles/optimize-cls)።"
+    "message": "የአቀማመጥ መቀያየሮች የሚከሰቱት በማንኛውም የተጠቃሚ መስተጋብር ውስጥ አካላት ወደአለመኖር በሚንቀሳቀሱበት ጊዜ ነው። እንደ የአካላት መታከል፣ መወገድ ወይም ገፁ ሲጭን ቅርጸ-ቁምፊያቸው መለወጥን ጨምሮ [የአቀማመጥ መቀያየሮች ምክንያቶችን ይመርምሩ](https://developer.chrome.com/docs/performance/insights/cls-culprit)።"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "የተከተተ iframe"
@@ -2193,7 +2154,7 @@
     "message": "የመሸጎጫ ቲቲኤል"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "ረጅም የመሸጎጫ የዕድሜ ዘመን ወደ ገጽዎ ተደጋጋሚ ጉብኝቶችን ሊያፋጥን ይችላል። [የበለጠ ለመረዳት](https://web.dev/uses-long-cache-ttl/)።"
+    "message": "ረጅም የመሸጎጫ የዕድሜ ዘመን ወደ ገጽዎ ተደጋጋሚ ጉብኝቶችን ሊያፋጥን ይችላል። [ስለ መሸጎጥ የበለጠ ይወቁ](https://developer.chrome.com/docs/performance/insights/cache)።"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "ውጤታማ ያልሆኑ የመሸጎጫ መመሪያዎች ጋር ምንም ጥያቄዎች የሉም"
@@ -2208,7 +2169,7 @@
     "message": "ብቁ የሆነ የዕድሜ ዘመን መሸጎጫ ይጠቀሙ"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "ትልቅ DOM የቅጥ ስሌቶችን እና የአቀማመጥ ዳግም ፍሰቶች የጊዜ ቆይታ ሊጨምር ይችላል ይህም የገፅ ምላሽ ሰጪነት ላይ ተጽዕኖ ያሳድራል። ትልቅ DOM የማህደረ ትውስታ አጠቃቀምን ይጨምራል። [ከልክ ያለፈ የDOM መጠንን ማስቀረት እንዴት እንደሚቻል ይወቁ](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)።"
+    "message": "ትልቅ DOM የቅጥ ስሌቶችን እና የአቀማመጥ ዳግም ፍሰቶች የጊዜ ቆይታ ሊጨምር ይችላል ይህም የገፅ ምላሽ ሰጪነት ላይ ተጽዕኖ ያሳድራል። ትልቅ DOM የማህደረ ትውስታ አጠቃቀምን ይጨምራል። [ከልክ ያለፈ የDOM መጠንን ማስቀረት እንዴት እንደሚቻል ይወቁ](https://developer.chrome.com/docs/performance/insights/dom-size)።"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "የቆይታ ጊዜ"
@@ -2244,7 +2205,7 @@
     "message": "ዋጋ"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "የመጀመሪያው የአውታረ መረብ ጥያቄዎ በጣም አስፈላጊው ነው።  አቅጣጫ ማዞርን በማስቀረት፣ ፈጣን የአገልጋይ ምላሽን በማረጋገጥ እና የጽሁፍ እመቃን በማንቃት የሥርዓተ ምላሽ ጊዜውን ይቀንሱ።"
+    "message": "የመጀመሪያው የአውታረ መረብ ጥያቄዎ በጣም አስፈላጊው ነው። አቅጣጫ ማዞርን በማስቀረት፣ ፈጣን የአገልጋይ ምላሽን በማረጋገጥ እና የጽሑፍ እመቃን በማንቃት [የሥርዓተ ምላሽ ጊዜውን ይቀንሱ](https://developer.chrome.com/docs/performance/insights/document-latency)።"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "አቅጣጫ ማዞሮች ነበሩት ({PH1} አቅጣጫ ማዞሮች፣ +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "ምንጭ"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "በአውታረ መረብ እንቅስቃሴ ጥቅም ላይ የሚውሉትን አላስፈላጊ ባይቶች ለመቀነስ ትልቅ፣ የተባዙ የጃቫስክሪፕት ሞጁሎችን ከቅርቅቦች ያስወግዱ።"
+    "message": "በአውታረ መረብ እንቅስቃሴ ጥቅም ላይ የሚውሉትን አላስፈላጊ ባይቶች ለመቀነስ ትልቅ፣ [የተባዙ የጃቫስክሪፕት ሞዱሎችን](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ከቅርቅቦች ያስወግዱ።"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ጃቫስክሪፕት ተባዝቷል"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "ጽሁፉ በቋሚነት መታየቱን ለማረጋገጥ [font-display](https://developer.chrome.com/blog/font-display) የሚለውን ወደ swap ወይም optional ማቀናበርን ያስቡበት። swap [ከቅርጸ-ቁምፊ መለኪያ መሻሮች](https://developer.chrome.com/blog/font-fallbacks) ጋር የአቀማመጥ መቀያየሪያዎችን ለመቀነስ ይበልጥ ሊተባ ይችላል።"
+    "message": "ጽሁፉ በቋሚነት መታየቱን ለማረጋገጥ [font-display](https://developer.chrome.com/docs/performance/insights/font-display) የሚለውን ወደ swap ወይም optional ማቀናበርን ያስቡበት። swap [ከቅርጸ-ቁምፊ መለኪያ መሻሮች](https://developer.chrome.com/blog/font-fallbacks) ጋር የአቀማመጥ መቀያየሪያዎችን ለመቀነስ ይበልጥ ሊተባ ይችላል።"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ቅርጸ-ቁምፊ"
@@ -2304,10 +2265,10 @@
     "message": "(ማንነቱ የተሰወረ)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "የግዳጅ ዳግም ፍሰት የሚከሰተው ጃቫስክሪፕት የጂኦሜትሪክ ንብረቶችን (ለምሳሌ offsetWidth) ሲጠይቅ በDOM ሁኔታ ለውጥ ምክንያት ቅጦች ከመከኑ በኋላ ነው። ይህ ደካማ አፈጻጸም ሊያስከትል ይችላል። ስለ [የግዳጅ ዳግም ፍሰቶች](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) እና ሊሆኑ ስለሚችሉ ቅነሳዎች የበለጠ ይወቁ።"
+    "message": "የግዳጅ ዳግም ፍሰት የሚከሰተው ጃቫስክሪፕት የጂኦሜትሪክ ንብረቶችን (ለምሳሌ offsetWidth) ሲጠይቅ በDOM ሁኔታ ለውጥ ምክንያት ቅጦች ከመከኑ በኋላ ነው። ይህ ደካማ አፈጻጸም ሊያስከትል ይችላል። ስለ [የግዳጅ ዳግም ፍሰቶች](https://developer.chrome.com/docs/performance/insights/forced-reflow) እና ሊሆኑ ስለሚችሉ ቅነሳዎች የበለጠ ይወቁ።"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "የመከታተያ ቁልል"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "ዳግም ፍሰት የሚያነሳሱ የጥሪ ክፈፎች"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "የተገደደ ዳግም ፍሰት"
@@ -2322,7 +2283,7 @@
     "message": "[እውቅና ያልተሰጠው]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "በረዥሙ ንዑስ ክፍል መመርመር ይጀምሩ። [መዘግየቶች ሊቀነሱ ይችላሉ](https://web.dev/articles/optimize-inp#optimize_interactions)። የሂደት የጊዜ ቆይታን ለመቀነስ [የዋና ተከታታይ ወጪዎችን ያትቡ](https://web.dev/articles/optimize-long-tasks)፣ በብዛት JS።"
+    "message": "ረጅሙን ንዑስ ክፍል በመመልከት [እንዴት INP ማሻሻል እንደሚቻል](https://developer.chrome.com/docs/performance/insights/inp-breakdown) መመርመር ይጀምሩ።"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "የቆይታ ጊዜ"
@@ -2346,7 +2307,7 @@
     "message": "የINP ትንተና"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "የምስሎችን የማውረድ ጊዜ መቀነስ የገፁ እና LCP የሚታሰብ የጭነት ጊዜን ማሻሻል ይችላል። [የምስል መጠንን ስለማትባት የበለጠ ይወቁ](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "የምስሎችን የማውረድ ጊዜ መቀነስ የገፁ እና LCP የሚታሰብ የጭነት ጊዜን ማሻሻል ይችላል። [የምስል መጠንን ስለማትባት የበለጠ ይወቁ](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (የሚገመት {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "ከGIFዎች ይልቅ የቪድዮ ቅርጸቶችን መጠቀም እነማ የተደረገ ይዘት የማውረድ መጠንን ሊያሻሽል ይችላል።"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "እያንዳንዱ [ንዑስ ክፍል የተወሰኑ የማሻሻያ ስልቶች አሉት](https://web.dev/articles/optimize-lcp#lcp-breakdown)። በሐሳብ ደረጃ አብዛኛው የLCP ጊዜ ንብረቶቹን በማዘግየቶች ውስጥ ሳይሆን በመጫን ላይ ማዋል አለበት።"
+    "message": "እያንዳንዱ [ንዑስ ክፍል የተወሰኑ የማሻሻያ ስልቶች አሉት](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)። በሐሳብ ደረጃ አብዛኛው የLCP ጊዜ ንብረቶቹን በማዘግየቶች ውስጥ ሳይሆን በመጫን ላይ ማዋል አለበት።"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "የቆይታ ጊዜ"
@@ -2406,7 +2367,7 @@
     "message": "የLCP ትንተና"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "የLCP ምስልን ከHTML ወዲያውኑ [እንዲገኝ](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) በማድረግ እና [ሰነፍ ጭነት](https://web.dev/articles/lcp-lazy-loading) እንዳይፈጠር በማስቀረት LCPን ያትቡ"
+    "message": "የLCP ምስልን ከHTML ወዲያውኑ እንዲገኝ በማድረግ እና ሰነፍ ጭነት እንዳይፈጠር በማስቀረት [LCPን ያትቡ](https://developer.chrome.com/docs/performance/insights/lcp-discovery)"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high applied"
@@ -2439,13 +2400,13 @@
     "message": "የባከኑ ባይቶች"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "ፖሊፊሎች እና ቅያሪዎች የቆዩ አሳሾች አዳዲስ የጃቫስክሪፕት ባህሪያትን እንዲጠቀሙ ያስችላሉ። ሆኖም ግን ብዙዎቹ ለዘመናዊ አሳሾች አስፈላጊ አይደሉም። የቆዩ አሳሾችን መደገፍ እንዳለብዎት ካላወቁ በስተቀር [የመነሻ ካስማ](https://web.dev/articles/baseline-and-polyfills) ባህሪያትን ኮዱን ወደ ሌላ ቋንቋ ላለመቀየር የእርስዎን ጃቫስክሪፕት ግንብ ሂደት ማስተካከልን ከግምት ውስጥ ያስገቡ። [አብዛኛዎቹ ጣቢያዎች ኮድን ወደ ሌላ ቋንቋ ሳይቀይሩ ለምን ES6+ ኮድ ማሰማራት እንደሚችሉ ይወቁ](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "ፖሊፊሎች እና ቅያሪዎች የቆዩ አሳሾች አዳዲስ የጃቫስክሪፕት ባህሪያትን እንዲጠቀሙ ያስችላሉ። ሆኖም ግን ብዙዎቹ ለዘመናዊ አሳሾች አስፈላጊ አይደሉም። የቆዩ አሳሾችን መደገፍ እንዳለብዎት ካላወቁ በስተቀር [የመነሻ ካስማ](https://web.dev/articles/baseline-and-polyfills) ባህሪያትን ኮዱን ወደ ሌላ ቋንቋ ላለመቀየር የእርስዎን ጃቫስክሪፕት ግንብ ሂደት ማስተካከልን ከግምት ውስጥ ያስገቡ። [አብዛኛዎቹ ጣቢያዎች ኮድን ወደ ሌላ ቋንቋ ሳይቀይሩ ለምን ES6+ ኮድ ማሰማራት እንደሚችሉ ይወቁ](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "የቆየ ጃቫስክሪፕት"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 እና HTTP/3 ከ HTTP/1.1 በላይ ብዙ ጥቅማጥቅሞችን ያቀርባሉ፣ ለምሳሌ ማባዛት። [ዘመናዊ HTTP ስለመጠቀም የበለጠ ይረዱ](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)።"
+    "message": "HTTP/2 እና HTTP/3 ከ HTTP/1.1 በላይ ብዙ ጥቅማጥቅሞችን ያቀርባሉ፣ ለምሳሌ ማባዛት። [ዘመናዊ HTTP ስለመጠቀም የበለጠ ይረዱ](https://developer.chrome.com/docs/performance/insights/modern-http)።"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "ምንም ጥያቄዎች HTTP/1.1 ጥቅም ላይ አላዋሉም ወይም አሁን ያለው HTTP/1.1 አጠቃቀሙ ጉልህ የሆነ የማትባት ዕድል አይሰጥም። የHTTP/1.1 ጥያቄዎች የሚጠቆሙት ስድስት ወይም ከዚያ በላይ የሆኑ የማይንቀሳቀሱ ንብረቶች ከተመሳሳይ ምንጭ የመጡ ከሆኑ እና ከአካባቢያዊ ልማት አካባቢ ወይም ከሦስተኛ ወገን ምንጭ የማይቀርቡ ከሆነ ብቻ ነው።"
@@ -2478,7 +2439,7 @@
     "message": "ጥቅም ላይ ያልዋለ አስቀድሞ ማገናኘት። የcrossorigin መገለጫ ባህሪ በትክክል ጥቅም ላይ እንደዋለ ይፈትሹ።"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "የትስስሮች ርዝማኔን በመቀነስ፣ የመርጃዎች የውርድ መጠንን በመቀነስ ወይም አላስፈላጊ መርጃዎች ማውረድን ለሌላ ጊዜ በማሳለፍ የገፅ ጭነትን ለማሻሻል [ወሳኝ ጥያቄዎችን ማስተሳሰርን ያስቀሩ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)።"
+    "message": "የትስስሮች ርዝማኔን በመቀነስ፣ የመርጃዎች የውርድ መጠንን በመቀነስ ወይም አላስፈላጊ መርጃዎች ማውረድን ለሌላ ጊዜ በማሳለፍ የገፅ ጭነትን ለማሻሻል [ወሳኝ ጥያቄዎችን ማስተሳሰርን ያስቀሩ](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)።"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "በጣም አስፈላጊ በሆኑት መነሻዎችዎ ላይ [አስቀድሞ ማገናኘት](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ፍንጮችን ያክሉ፣ ነገር ግን ከ4 በላይ ለመጠቀም ይሞክሩ።"
@@ -2517,7 +2478,7 @@
     "message": "የትስስሮች ርዝማኔን በመቀነስ፣ የመርጃዎች የውርድ መጠንን በመቀነስ ወይም አላስፈላጊ መርጃዎች ማውረድን ለሌላ ጊዜ በማሳለፍ የገፅ ጭነትን ለማሻሻል ወሳኝ ጥያቄዎችን ማስተሳሰርን ያስቀሩ።"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "ጥያቄዎች የገፁን የመጀመሪያ ምስል ሥራ እያገዱ ነው፣ ይህም LCPን ሊያዘገይ ይችላል። [ለሌላ ጊዜ ማሳለፍ ወይም ውስጠ መስመር ውስጥ ማስገባት](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) እነዚህን የአውታረ መረብ ጥያቄዎች ከወሳኙ ዱካ ማንቀሳቀስ ይችላል።"
+    "message": "ጥያቄዎች የገፁን የመጀመሪያ ምስል ሥራ እያገዱ ነው፣ ይህም LCPን ሊያዘገይ ይችላል። [ለሌላ ጊዜ ማሳለፍ ወይም ውስጠ መስመር ውስጥ ማስገባት](https://developer.chrome.com/docs/performance/insights/render-blocking) እነዚህን የአውታረ መረብ ጥያቄዎች ከወሳኙ ዱካ ማንቀሳቀስ ይችላል።"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "የቆይታ ጊዜ"
@@ -2532,7 +2493,7 @@
     "message": "የእገዳ ጥያቄዎችን ምስል ሥራ"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "የዳግም ማስላት ቅጥ ወጪዎች ከፍተኛ እንደሆኑ ከቆዩ የመራጭ ማመቻቸት እነሱን ሊቀንስ ይችላል። በሁለቱም ባለፈ ጊዜ እና በከፍተኛ የዝግታ ዱካ % [መራጮችን ያትቡ](https://developer.chrome.com/docs/devtools/performance/selector-stats)። ቀለል ያሉ መራጮች፣ ጥቂት መራጮች፣ ትናንሽ መራጮች፣ ትናንሽ DOM እና ጥልቀት ያለው DOM ሁሉም ተዛማጅ ወጪዎችን ይቀንሳሉ።"
+    "message": "የዳግም ማስላት ቅጥ ወጪዎች ከፍተኛ እንደሆኑ ከቆዩ የመራጭ ማመቻቸት እነሱን ሊቀንስ ይችላል። በሁለቱም ባለፈ ጊዜ እና በከፍተኛ የዝግታ ዱካ % [መራጮችን ያትቡ](https://developer.chrome.com/docs/performance/insights/slow-css-selector)። ቀለል ያሉ መራጮች፣ ጥቂት መራጮች፣ ትናንሽ መራጮች፣ ትናንሽ DOM እና ጥልቀት ያለው DOM ሁሉም ተዛማጅ ወጪዎችን ይቀንሳሉ።"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "ያለፈ ጊዜ"
@@ -2571,7 +2532,7 @@
     "message": "የዝውውር መጠን"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "የ3ኛ ወገን ኮድ በጭነት አፈጻጸም ላይ ከፍተኛ ተጽዕኖ ሊያሳድር ይችላል። ለገፅዎ ይዘት ቅድሚያ ለመስጠት [የ3ኛ ወገን ኮድ መጫንን ይቀንሱ እና ያስተላልፉ](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)።"
+    "message": "የ3ኛ ወገን ኮድ በጭነት አፈጻጸም ላይ ከፍተኛ ተጽዕኖ ሊያሳድር ይችላል። ለገፅዎ ይዘት ቅድሚያ ለመስጠት [የ3ኛ ወገን ኮድ መጫንን ይቀንሱ እና ያስተላልፉ](https://developer.chrome.com/docs/performance/insights/third-parties)።"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "ምንም ሦስተኛ ወገኖች አልተገኙም"
@@ -2580,7 +2541,7 @@
     "message": "3ኛ ወገኖች"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "መመልከቻው ለሞባይል ካልተባ መታ የማድረግ መስተጋብሮች [እስከ 300 ሚሰ ድረስ ሊዘገዩ](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ይችላሉ።"
+    "message": "መመልከቻው ለሞባይል ካልተባ መታ የማድረግ መስተጋብሮች [እስከ 300 ሚሰ ድረስ ሊዘገዩ](https://developer.chrome.com/docs/performance/insights/viewport) ይችላሉ።"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "የሞባይል መታ ማድረግ መዘግየት"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools ውስጥ ስለ ሰው ሠራሽ አስተውሎት ይወቁ"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "ሰው ሠራሽ አስተውሎት እርዳታ ማንነት የማያሳውቅ ሁነታ ወይም የእንግዳ ሁነታ ውስጥ አይገኝም"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "ይህ ባህሪ የሚገኘው በGoogle መለያዎ ወደ Chrome ሲገቡ ብቻ ነው"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "የበይነመረብ ግንኙነትዎን ይፈትሹ እና እንደገና ይሞክሩ"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "DevTools ውስጥ የተመረጠውን የዓውድ ንጥል ግለጥ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ቅንብሮች ውስጥ የሰው ሠራሽ አስተውሎት ረዳት"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "የሲኤስኤስ ቅጦችን በመረዳት ላይ እገዛ ለማግኘት {PH1} ያብሩ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "በቅጦች እና የአውታረ መረብ ጥያቄዎች ላይ እገዛ ለማግኘት {PH1} ያብሩ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "በቅጦች፣ የአውታረ መረብ ጥያቄዎች እና ፋይሎች ላይ እገዛ ለማግኘት {PH1} ያብሩ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "በቅጦች፣ የአውታረ መረብ ጥያቄዎች፣ አፈጻጸም እና ፋይሎች ላይ እገዛ ለማግኘት {PH1} ያብሩ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "በዚህ ገፅ ላይ እነማዎችን መመርመር እና ማስተካከል ይችላሉ።"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "የአገልግሎት ውል"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "ከ{PH1} ጋር ተገናኝቷል"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "ከምንጭ ካርታ ጋር ተገናኝቷል፦ {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "ፍቀድ"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "መሥሪያን አሳይ"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "ለኮንሶል መልዕክቶች የሰው ሠራሽ አስተውሎት ማጠቃለያዎችን አሳይ"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "በconsole ውስጥ CORS ስህተቶችን አሳይ"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "ወደ የእነማዎች ፓነል ይዝለሉ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "ቀለም መምረጫን ክፈት። {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} አክል"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "በማገድ ላይ"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "ብጁ"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex ተመልካች"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "የአውታረ መረብ ጥያቄ ማገጃ ስርዓተ-ጥለትን አክል"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "ስርዓተ ጥለት አክል"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "«{PH1}» አዝራር ላይ ጠቅ በማድረግ የአውታረ መረብ ጥያቄዎችን ለማገድ ሥርዓተ ጥለት ያክሉ።"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} ታግዷል"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "የአውታረ መረብ ጥያቄ ማገድን አንቃ"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "ንጥል በተሳካ ሁኔታ ተሰርዟል"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "የበለጠ ለመረዳት"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "ምንም የታገዱ የአውታረ መረብ ጥያቄዎች የሉም"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "ስርዓተ-ጥለት አስቀድሞ አለ።"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "የስርዓተ-ጥለት ግቤት ባዶ መሆን አይችልም።"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "ተዛማጅ ጥያቄዎችን ለማገድ የጽሑፍ ንድፍ፤ ለዱር ካርድ * ይጠቀሙ"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "ሁሉንም አጽዳ"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "የጥያቄው ሁኔታ እዚህ ሊታይ አይችልም ምክንያቱም ጥያቄው በበረራ ላይ እያለ ያቀረበው ገፅ ተራግፏል። የአውታረ መረብ ምዝግብ ማስታወሻ ለመያዝ እና ሁሉንም የጥያቄ ዝርዝሮች ለማየት chrome://net-exportን መጠቀም ይችላሉ።"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "የግንኙነት መረጃ"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "የአግድ ጥያቄ ዩ.አር.ኤል"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "ጥያቄዎችን ያስወግዱ"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "የታገዱ ጥያቄዎች"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "የ3ኛ-ወገን ጥያቄዎች"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "የጥያቄ ጎራን አፍን"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "የጥያቄ ዩአርኤልን ያፍኑ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "ጥያቄዎችን አፍን"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "የ{PH1} እገዳን አንሳ"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1}ን ማፈን አቁም"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "የግንኙነት መታወቂያ"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "ዩአርኤል"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "የአውታረ መረብ ጥያቄ ማገጃ ስርዓተ-ጥለትን አክል"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "ስርዓተ ጥለት አክል"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "የአውታረ መረብ ጥያቄን ማፈን ወይም የማገድ ሥርዓተ ጥለት ያክሉ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "«{PH1}» አዝራር ላይ ጠቅ በማድረግ ሥርዓተ ጥለት ያክሉ።"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} ታግዷል"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "ቅድሚያን ቀንስ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "ማገድ እና ማፈንን ያንቁ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "የአውታረ መረብ ጥያቄ ማገድን አንቃ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "ቅድሚያን ጨምር"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "ንጥል በተሳካ ሁኔታ ተሰርዟል"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "የበለጠ ለመረዳት"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "ምንም የታገዱ የአውታረ መረብ ጥያቄዎች የሉም"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "ምንም የጥያቄ ማፈን ወይም ማገድ ሥርዓተ ጥለቶች የሉም"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "ስርዓተ-ጥለት አስቀድሞ አለ።"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "ይህን ሥርዓተ ጥለት እንደ URLPattern መተንተን አልተሳካም"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp ቡድኖች አይፈቀዱም"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "የስርዓተ-ጥለት ግቤት ባዶ መሆን አይችልም።"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "ይህ ሥርዓተ ጥለት ከ«{PH1}» ወደ አዲስ ሥሪት ተዘምኗል"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "ተዛማጅ ጥያቄዎችን ለማገድ ወይም ለማፈን የጽሑፍ ንድፍ፤ የURLPattern አገባብን ይጠቀሙ።"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "ተዛማጅ ጥያቄዎችን ለማገድ የጽሑፍ ንድፍ፤ ለዱር ካርድ * ይጠቀሙ"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "በምላሹ የ«set-cookie» ራስጌ ውስጥ ከአገልጋዩ የመጡ ኩኪዎች"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ጥያቄ ወደ ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "ጥያቄ/ምላሽ"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "የንብረት መርሐግብር"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "ይህን ግብዓት ከተለየ ጣቢያ ለመጠቀም አገልጋዩ የምንጭ-ተሻጋሪ ግብዓት መመሪያውን ምላሽ ራስጌ ሊያላላው ይችላል፦"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "የአውታረ መረብ ጥያቄ ማገድ ወይም ማፈን ሥርዓተ ጥለት ያክሉ"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "የአውታረ መረብ ጥያቄ ማገጃ ስርዓተ-ጥለትን አክል"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "የአውታረ መረብ ጥያቄን ማገድ"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "የጥያቄ ሁኔታዎች"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "አውታረ መረብን ማፈን"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "የአውታረ መረብ መዝገብን ቅረጽ"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "ሁሉንም የአውታረ መረብ ጥያቄ ማገድ ወይም ሥርዓተ ጥለቶችን ማፈንን ያስወግዱ"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "ሁሉንም የአውታረ መረብ ጥያቄዎች እገዳ ቅጦችን ያስወግዱ"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "የአውታረ መረብ ጥያቄ ማገድን አሳይ"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "የጥያቄ ሁኔታዎችን አሳይ"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "ፍለጋን አሳይ"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "በተነጠሉ የDOM አንጓዎች የተያዙ ነገሮች"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "በክስተት ተቆጣጣሪዎች እንዲቆዩ የተደረጉ ነገሮች"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "ሌሎች የJS ነገሮች"
@@ -12426,7 +12438,7 @@
     "message": "SCT"
   },
   "panels/security/SecurityPanel.ts | secure": {
-    "message": "ደህንነቱ የተጠበቀ ነው"
+    "message": "ደኅንነቱ የተጠበቀ"
   },
   "panels/security/SecurityPanel.ts | secureConnectionSettings": {
     "message": "ደህንነቱ የተጠበቀ የግንኙነት ቅንብሮች"
@@ -12982,6 +12994,18 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "ሲበራ"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "ዱካ ያስገቡ"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "ልዩ ዱካ ያስገቡ"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "የተገለሉ ንዑስ-አቃፊዎች"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "ዩአርኤል"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ለስክሪፕቱ ዩአርኤል የሬጉላር ኤክስፕሬሽን ደንብ ያክሉ"
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "ምልክቶችን ለማየት ጃቫስክሪፕትን ወይም የሲኤስኤስ ፋይልን ይክፈቱ"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "አሁን ባለበት አቃፊ ውስጥ ይክፈቱ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ይዘትን ሻር"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "«{PH1}» በምንጭ ፋይል ነው እና መሻር አይችልም።"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "በምትኩ «{PH1}» ይሻር?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "አስቀምጥ እንደ…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ፋይሉን ወደ ዲስክ ማስቀመጥ አልተሳካም።"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "ምስል አስቀምጥ"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "የWASM ሞዱልን ዲስክ ላይ ማስቀመጥ አልተቻለም። ሞዱሉ በጣም ትልቅ ሊሆን ይችላል።"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "ሁሉንም መሻሮች አሳይ"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "ኪባ"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "ማብራሪያዎችን ያካትታል"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "ስክሪፕት ይዘት ያካትቱ"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "የስክሪፕት ምንጭ ካርታዎችን ያካትቱ"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "ተጨማሪ መረጃ፦"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "አስቀምጥ"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "የሁሉም የተጫኑ ስክሪፕቶች (ከቅጥያዎች በስተቀር) ሙሉ ይዘትን ያካትታል።"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "በgzip አምቅ"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "የጥያቄ ራስጌዎች ተሽረዋል"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "የዚህ ጥያቄ ኩኪዎች በChrome ጥቆማዎች ወይም በአሳሽ ውቅረት ምክንያት ታግደዋል። በችግሮች ፓነል ውስጥ የበለጠ ይወቁ።"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "ሬጉላር ኤክስፕሬሽን ይጠቀሙ"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "እንደገና እንዲጫን የሚፈልግ አንድ ወይም ከዚያ በላይ ቅንብሮች ተለውጠዋል"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*ዳግም መጫን ያስፈልገዋል"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ምልክት ተደርጎበታል"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ዝቅተኛ ንጽጽርን ለማስተካከል በአስተያየት የተጠቆመውን {PH1} ቀለም ይጠቀሙ"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ይህ ቀለም ከቅርጸቱ ክልል ጋር እንዲመሳሰል ተቀንጥቧል። ትክክለኛው ውጤት {PH1} ነበር"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ ወደ ጠባብ ጋሙት መቀየር የቀለም መቀያየሮችን ያስከትላል"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "ወደ ቤተ-ሥዕል አክል"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "ኩኪዎች"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ጎራ"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "አርትዕ ሊደረጉ የሚችሉ ኩኪዎች"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(ብርሃን ከል)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "የክፍልፋይ ቁልፍ ጣቢያ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "ዱካ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "ቅድሚያ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "ደኅንነቱ የተጠበቀ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "ክፍለ-ጊዜ"

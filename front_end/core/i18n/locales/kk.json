@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With блогы"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Блоктау"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Тоқтатылған"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Оң жаққа бекіту"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools сыртқы сұрау алды"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Ерекшелеу беті"
   },
@@ -1275,13 +1281,13 @@
     "message": "Деректер қолдауы: SVGUseElement элементіндегі URL мекенжайлары ескірген және болашақта өшіріледі."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() және watchPosition() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+    "message": "getCurrentPosition() және watchPosition() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толық мәлімет алу үшін https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ бетін қараңыз."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() және watchPosition() элементтері қауіпті дереккөздерде қолданыстан шығарылды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+    "message": "getCurrentPosition() және watchPosition() элементтері қауіпті дереккөздерде қолданыстан шығарылды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толық мәлімет алу үшін https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ бетін қараңыз."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+    "message": "getUserMedia() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толық мәлімет алу үшін https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ бетін қараңыз."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate қолданыстан шығарылды. Оның орнына RTCPeerConnectionIceErrorEvent.address немесе RTCPeerConnectionIceErrorEvent.port пайдаланыңыз."
@@ -1311,7 +1317,7 @@
     "message": "MIDIOptions нұсқасында sysex көрсетілмесе, Web MIDI пайдалану рұқсатын сұрайды."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Хабарландыру API-ын бұдан былай қауіпті дереккөздерден пайдалануға болмайды. Қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+    "message": "Notification API-ын бұдан былай қауіпті дереккөздерден пайдалануға болмайды. Қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толық мәлімет алу үшін https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ бетін қараңыз."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Хабарландыру API-ы бойынша рұқсатты бұдан былай дереккөзаралық iframe кадрынан сұрау мүмкін емес. Оның орнына жоғары деңгейлі кадрдан рұқсат сұрау немесе жаңа терезеде ашу нұсқаларын қарастырып көріңіз."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer элементін одан әрі пайдалану үшін кеңейтімдерде дереккөзаралық оқшаулау нұсқасы таңдалуы керек. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ бетін қараңыз."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() қолданыстан шығарылды. Оның орнына writeValueWithResponse() немесе writeValueWithoutResponse() әдісін пайдаланыңыз."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest сұрауының json жауабы бойынша UTF-16 қолжетімсіз."
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Бұл функция интернет байланысы қосулы болған кезде ғана қолжетімді."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools сыртқы сұрау алды"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Файлды жүктеу кезінде белгісіз қате шықты."
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} кідіріс, {PH2} жүктеп алу (барлығы {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Жолды енгізіңіз."
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Бірегей жолды енгізіңіз."
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Шығарылған ішкі қалталар"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Блоб жүктелмеді."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Файл жүйесін қосу мүмкін емес: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Сақталған қалтада ашу"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Контентті қайта анықтау"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" — бастапқы түрлендірілген файл, оны қайта анықтау мүмкін емес."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Оның орнына \"{PH1}\" қайта анықталсын ба?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Басқаша сақтау…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Файл дискіге сақталмады."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Кескінді сақтау"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Дискіге WASM модулін сақтау мүмкін болмады. Модуль тым үлкен сияқты."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Барлық қайта анықталған файлды көрсету"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Келесіге байланыстырылған: {PH1}."
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Түпнұсқа картамен байланыстырылған: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem файлдарды оқи алмайды."
@@ -2157,7 +2118,7 @@
     "message": "Анимация"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Формат өзгерістері элементтер пайдаланушы әрекетінсіз жылжытылғанда орын алады. Бет жүктелген кезде элементтерді қосу не жою немесе олардың қарпін өзгерту сияқты [формат өзгерістерінің себептерін зерттеңіз](https://web.dev/articles/optimize-cls)."
+    "message": "Формат өзгерістері элементтер пайдаланушы әрекетінсіз жылжытылғанда орын алады. Бет жүктелген кезде элементтерді қосу не жою немесе олардың қарпін өзгерту сияқты [формат өзгерістерінің себептерін зерттеңіз](https://developer.chrome.com/docs/performance/insights/cls-culprit)."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Ендірілген iframe"
@@ -2193,7 +2154,7 @@
     "message": "Кэштің қолданылу мерзімі"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Кэштің ұзақ қолданылу уақыты бетке қайта кіру жылдамдығын арттырады. [Толық ақпарат алыңыз](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Кэштің ұзақ қолданылу уақыты бетке қайта кіру жылдамдығын арттырады. [Кэштеу туралы толық ақпарат алыңыз](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Тиімсіз кэш саясаттарына қатысты сұраулар жоқ."
@@ -2208,7 +2169,7 @@
     "message": "Тиімді кэштің қолданылу мерзімдерін пайдалану"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM үлкен болса, стильдерді есептеу және форматты қайта есептеу ұзақтығы артып, беттің жауап беруіне әсер етеді. Қолданылатын жад та артады. [Шамадан тыс DOM өлшеміне жол бермеу әдісі туралы ақпарат алыңыз](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "DOM үлкен болса, стильдерді есептеу және форматты қайта есептеу ұзақтығы артып, беттің жауап беруіне әсер етеді. Қолданылатын жад та артады. [Шамадан тыс DOM өлшеміне жол бермеу әдісі туралы ақпарат алыңыз](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Ұзақтық"
@@ -2244,7 +2205,7 @@
     "message": "Мән"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Бірінші желі сұрауы өте маңызды.  Оның кідірісін басқа жаққа бағыттауға жол бермеу, сервердің жылдам жауап беруін қамтамасыз ету және мәтінді сығу функциясын қосу арқылы азайтыңыз."
+    "message": "Бірінші желі сұрауы өте маңызды. Басқа жаққа бағыттауға жол бермеу, сервердің жылдам жауап беруін қамтамасыз ету және мәтінді сығу функциясын қосу арқылы [оның кідірісін азайтыңыз](https://developer.chrome.com/docs/performance/insights/document-latency)."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Басқа жаққа бағыттау әрекеттері болды ({PH1} басқа жаққа бағыттау, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Дереккөз"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Желіні пайдалану дерегі тұтынатын қажетсіз байт санын азайту үшін пакеттерден үлкен, қайталанатын JavaScript модульдерін өшіріңіз."
+    "message": "Желіні пайдалану дерегі тұтынатын қажетсіз байт санын азайту үшін пакеттерден үлкен, [қайталанатын JavaScript модульдерін](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) өшіріңіз."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Қайталанатын JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Мәтін тұрақты көрініп тұруы үшін, [font-display](https://developer.chrome.com/blog/font-display) үзіндісін swap немесе optional мәніне орнатыңыз. Макет өзгерістерін азайту үшін [қаріп көрсеткішін қайта анықтау](https://developer.chrome.com/blog/font-fallbacks) арқылы swap үзіндісін әрі қарай оңтайландыруға болады."
+    "message": "Мәтін тұрақты көрініп тұруы үшін, [font-display](https://developer.chrome.com/docs/performance/insights/font-display) үзіндісін swap немесе optional мәніне орнатыңыз. Макет өзгерістерін азайту үшін [қаріп көрсеткішін қайта анықтау](https://developer.chrome.com/blog/font-fallbacks) арқылы swap үзіндісін әрі қарай оңтайландыруға болады."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Қаріп"
@@ -2304,10 +2265,10 @@
     "message": "(анонимді)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM күйіне өзгеріс енгізілгендіктен, стильдер жарамсыз деп танылғаннан кейін, JavaScript геометриялық сипаттарға (offsetWidth сияқты) сұрау жүргізген кезде, мәжбүрлеп қайта есептеу орын алады. Бұдан өнімділік нашарлауы мүмкін. [Мәжбүрлеп қайта есептеу](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) және шараларды жеңілдету туралы толық ақпарат алыңыз."
+    "message": "DOM күйіне өзгеріс енгізілгендіктен, стильдер жарамсыз деп танылғаннан кейін, JavaScript геометриялық сипаттарға (offsetWidth сияқты) сұрау жүргізген кезде, мәжбүрлеп қайта есептеу орын алады. Бұдан өнімділік нашарлауы мүмкін. [Мәжбүрлеп қайта есептеу](https://developer.chrome.com/docs/performance/insights/forced-reflow) және шараларды жеңілдету туралы толық ақпарат алыңыз."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Стэкті трассалау"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Қайта есептеуді іске қосатын қоңырау кадрлары"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Қайта есептеуге мәжбүрлеу"
@@ -2322,7 +2283,7 @@
     "message": "[қолтаңбасыз]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Ең ұзақ ішкі бөлікпен зерттеуді бастаңыз. [Кідірістерді азайтуға болады](https://web.dev/articles/optimize-inp#optimize_interactions). Өңдеу уақытын қысқарту үшін [негізгі тізбек шығындарын](https://web.dev/articles/optimize-long-tasks), жиі JS-ті оңтайландырыңыз."
+    "message": "Ең ұзақ ішкі бөлікті қарап, [INP мәнін жақсарту жолын](https://developer.chrome.com/docs/performance/insights/inp-breakdown) зерттеуді бастаңыз."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Ұзақтық"
@@ -2346,7 +2307,7 @@
     "message": "INP бөлінісі"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Суреттерді жүктеп алу уақыты азайса, бет пен LCP-ді қабылданған жүктеу уақыты азаяды. [Сурет өлшемін оңтайландыру туралы толық ақпарат](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Суреттерді жүктеп алу уақыты азайса, бет пен LCP-ді қабылданған жүктеу уақыты азаяды. [Сурет өлшемін оңтайландыру туралы толық ақпарат](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (шамамен {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIF орнына бейне форматтары қолданылса, анимациялық контенттің жүктеп алынатын өлшемі азаяды."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Әрбір [ішкі бөлімнің жақсарту стратегиялары өзгеше](https://web.dev/articles/optimize-lcp#lcp-breakdown). LCP уақытының көп бөлігі кідірістермен емес, ресурстарды жүктеумен өтуі керек."
+    "message": "Әрбір [ішкі бөлімнің жақсарту стратегиялары өзгеше](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). LCP уақытының көп бөлігі кідірістермен емес, ресурстарды жүктеумен өтуі керек."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Ұзақтық"
@@ -2406,7 +2367,7 @@
     "message": "LCP бөлінісі"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "LCP суреті HTML-ден бірден [табылатындай](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) қылып, LCP көрсеткішін оңтайландырыңыз және [кейінге қалдырылған жүктеуге](https://web.dev/articles/lcp-lazy-loading) жол бермеңіз."
+    "message": "LCP суреті HTML-ден бірден табылатындай қылып, [LCP көрсеткішін оңтайландырыңыз](https://developer.chrome.com/docs/performance/insights/lcp-discovery) және кейінге қалдырылған жүктеуге жол бермеңіз."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high қолданылды"
@@ -2439,13 +2400,13 @@
     "message": "Пайдаланылмаған байттар"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Полифилдер мен түрлендіру параметрлері ескі браузерлерде жаңа JavaScript функцияларын пайдалануға мүмкіндік береді. Дегенмен олардың көпшілігі заманауи браузерлер үшін қажет емес. Ескі браузерлердің қолдауын қалдырғыңыз келмесе, JavaScript құру процесін [негізгі](https://web.dev/articles/baseline-and-polyfills) функцияларға компиляция жасамайтындай етіп өзгертуге кеңес береміз. [Көптеген сайтқа ES6+ кодын қолдану үшін неліктен компиляция жасау керек еместігі туралы ақпарат алыңыз.](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Полифилдер мен түрлендіру параметрлері ескі браузерлерде жаңа JavaScript функцияларын пайдалануға мүмкіндік береді. Дегенмен олардың көпшілігі заманауи браузерлер үшін қажет емес. Ескі браузерлердің қолдауын қалдырғыңыз келмесе, JavaScript құру процесін [негізгі](https://web.dev/articles/baseline-and-polyfills) функцияларға компиляция жасамайтындай етіп өзгертуге кеңес береміз. [Көптеген сайтқа ES6+ кодын қолдану үшін неліктен компиляция жасау керек еместігі туралы ақпарат алыңыз.](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Ескірген JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 және HTTP/3 протоколдары HTTP/1.1 протоколына қарағанда көбірек артықшылықты (мысалы, мультиплекстеу) ұсынады. [Заманауи HTTP протоколын пайдалану туралы толық ақпарат алыңыз](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 және HTTP/3 протоколдары HTTP/1.1 протоколына қарағанда көбірек артықшылықты (мысалы, мультиплекстеу) ұсынады. [Заманауи HTTP протоколын пайдалану туралы толық ақпарат алыңыз](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "HTTP/1.1-ді ешқандай сұрау қолданбады немесе оның қазіргі HTTP/1.1 қолданысы оңтайландыруға айтарлықтай мүмкіндік бермейді. Алты немесе одан да көп статикалық актив бір шығу көзінен шықса және олар жергілікті әзірлеу ортасынан немесе үшінші тарап дереккөзінен көрсетілмесе ғана, HTTP/1.1 сұраулары белгіленеді."
@@ -2478,7 +2439,7 @@
     "message": "Алдын ала байланыстырылған дереккөздер қолданылмады. crossorigin төлсипатының дұрыс қолданылғанын тексеріңіз."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "Беттің жүктелуін жақсарту үшін тізбектерді қысқарту, ресурстардың жүктеп алынатын өлшемін азайту немесе қажетсіз ресурстарды жүктеп алуды кейінге қалдыру арқылы [маңызды сұраулар тізбегінің құрылуына жол бермеңіз](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
+    "message": "Беттің жүктелуін жақсарту үшін тізбектерді қысқарту, ресурстардың жүктеп алынатын өлшемін азайту немесе қажетсіз ресурстарды жүктеп алуды кейінге қалдыру арқылы [маңызды сұраулар тізбегінің құрылуына жол бермеңіз](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Ең маңызды дереккөздерге [алдын ала байланыстыру](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) тұспалдарын қосыңыз. Бірақ 4-тен асырмай пайдалануға тырысыңыз."
@@ -2517,7 +2478,7 @@
     "message": "Беттің жүктелуін жақсарту үшін тізбектерді қысқарту, ресурстардың жүктеп алынатын өлшемін азайту немесе қажетсіз ресурстарды жүктеп алуды кейінге қалдыру арқылы маңызды сұраулар тізбегінің құрылуына жол бермеңіз."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Сұраулар LCP кідірістерін тудыруы мүмкін беттің бастапқы рендерингісін блоктап жатыр. [Кейінге қалдыру немесе ендіру](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) нәтижесінде бұл желі сұраулары маңызды жолдан тыс жылжытылуы мүмкін."
+    "message": "Сұраулар LCP кідірістерін тудыруы мүмкін беттің бастапқы рендерингісін блоктап жатыр. [Кейінге қалдыру немесе ендіру](https://developer.chrome.com/docs/performance/insights/render-blocking) нәтижесінде бұл желі сұраулары маңызды жолдан тыс жылжытылуы мүмкін."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Ұзақтық"
@@ -2532,7 +2493,7 @@
     "message": "Рендерингіні блоктау сұраулары"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Стильді қайта есептеу шығындары жоғары болып қалса, таңдау құралын оңтайландыру арқылы оларды азайтуға болады. Өткен уақыт пен баяу жол %-ын жоғары қылып, [таңдау құралдарын оңтайландырыңыз](https://developer.chrome.com/docs/devtools/performance/selector-stats). Таңдау құралдары қарапайым және аз болса, DOM шағын және жеңіл болса, сәйкестендіру шығындары азаяды."
+    "message": "Стильді қайта есептеу шығындары жоғары болып қалса, таңдау құралын оңтайландыру арқылы оларды азайтуға болады. Өткен уақыт пен баяу жол %-ын жоғары қылып, [таңдау құралдарын оңтайландырыңыз](https://developer.chrome.com/docs/performance/insights/slow-css-selector). Таңдау құралдары қарапайым және аз болса, DOM шағын және жеңіл болса, сәйкестендіру шығындары азаяды."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Өткен уақыт"
@@ -2571,7 +2532,7 @@
     "message": "Тасымалданатын дерек өлшемі"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Үшінші тарап коды жүктеу өнімділігіне едәуір әсер етуі мүмкін. Бет контентіне басымдық беру үшін [үшінші тарап кодын жүктеуді азайтыңыз және кейінге қалдырыңыз](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "Үшінші тарап коды жүктеу өнімділігіне едәуір әсер етуі мүмкін. Бет контентіне басымдық беру үшін [үшінші тарап кодын жүктеуді азайтыңыз және кейінге қалдырыңыз](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Үшінші тараптар табылмады"
@@ -2580,7 +2541,7 @@
     "message": "Үшінші тараптар"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Қарау терезесі мобильдік құрылғы үшін оңтайландырылмаса, түрту әрекеттері [300 мс-қа дейін кідіруі](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) мүмкін."
+    "message": "Қарау терезесі мобильдік құрылғы үшін оңтайландырылмаса, түрту әрекеттері [300 мс-қа дейін кідіруі](https://developer.chrome.com/docs/performance/insights/viewport) мүмкін."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Мобильдік құрылғыны түрту кідірісі"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Әзірлеуші құралдарындағы жасанды интеллект туралы ақпарат"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "AI көмекшісі Инкогнито немесе қонақ режимінде жұмыс істемейді."
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Бұл функция Chrome-ға Google аккаунтымен кірген кезде ғана қолжетімді."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Интернет байланысын тексеріп, әрекетті қайталаңыз."
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Таңдалған контекст элементін әзірлеуші құралдарында көрсету"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "параметрлердегі жасанды интеллектіге негізделген көмек"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS стильдерін түсіну бойынша анықтама алу үшін {PH1} функциясын қосыңыз."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Стильдер және желі сұраулары бойынша анықтама алу үшін {PH1} функциясын қосыңыз."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Стильдер, желі сұраулары және файлдар туралы анықтама алу үшін {PH1} функциясын қосыңыз."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Стильдер, желі сұраулары, өнімділік және файлдар туралы анықтама алу үшін {PH1} функциясын қосыңыз."
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Бұл бетте анимацияларды тексеруге және өзгертуге болады."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Қызмет көрсету шарттары"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Келесіге байланыстырылған: {PH1}."
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Түпнұсқа картамен байланыстырылған: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Рұқсат беру"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Консольді көрсету"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Консоль хабарларының AI арқылы жасалған қысқаша мазмұндарын көрсету"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "CORS қателерін консольде көрсету"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "\"Анимациялар\" панеліне өту"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Түс палитрасын ашыңыз. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} қосу"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Блоктау"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Арнаулы"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex көру құралы"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Желі сұрауын блоктау өрнегін қосу"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Үлгі қосу"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" түймесін басу арқылы желі сұрауларын блоктау үшін өрнек қосыңыз."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} блокталған"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Желі сұрауын бөгеуді қосу"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Элемент жойылды."
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Толық ақпарат"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Блокталған желі сұраулары жоқ"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Өрнек бұрыннан бар."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Өрнек кірісі бос болмауы керек."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Сәйкес келетін сұрауларды блоктауға арналған мәтін үлгісі; алмастырғыш таңба үшін \"*\" қолданыңыз"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Барлығын өшіру"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Сұрау күйін бұл жерде көрсету мүмкін емес, себебі оны жіберген бет сұрау жасалып жатқанда босатылды. Желі журналын жазып алу немесе сұраудың барлық мәліметін көру үшін chrome://net-export пайдалануға болады."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Байланыс ақпараты"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Сұраудың URL мекенжайын бөгеу"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Сұрауларды блоктау"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Блокталған сұраулар"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Үшінші тарап сұраулары"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Сұрау доменін шектеу"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Сұраудың URL мекенжайын шектеу"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Сұрауларды шектеу"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Келесінің бөгеуін алу: {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} сайтын шектеуді тоқтату"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Байланыс идентификаторы"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Желі сұрауын блоктау өрнегін қосу"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Үлгі қосу"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Желі сұрауын шектейтін немесе блоктайтын үлгі қосу"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" түймесін басып, үлгі қосыңыз."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} блокталған"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Басымдықты азайту"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Блоктау және шектеу мүмкіндігін қосу"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Желі сұрауын бөгеуді қосу"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Басымдықты арттыру"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Элемент жойылды."
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Толық ақпарат"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Блокталған желі сұраулары жоқ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Сұрауды шектейтін немесе блоктайтын үлгілер жоқ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Өрнек бұрыннан бар."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Бұл үлгі URL үлгісі ретінде талданбады."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp топтарына рұқсат етілмейді."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Өрнек кірісі бос болмауы керек."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Бұл үлгі \"{PH1}\" сайтынан жаңартылды."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Сәйкес келетін сұрауларды блоктайтын немесе шектейтін мәтін үлгісі; URL үлгісінің синтаксисін пайдаланыңыз."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Сәйкес келетін сұрауларды блоктауға арналған мәтін үлгісі; алмастырғыш таңба үшін \"*\" қолданыңыз"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Тақырыбы \"set-cookie\" болған жауап арқылы серверден алынған cookie файлдары."
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker файлын сұрау"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Сұрау/жауап"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Ресурсты жоспарлау"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Осы ресурсты басқа сайттан пайдалану үшін сервер түрлі түпнұсқалы ресурс саясаты жауабының тақырыбын босатуы мүмкін:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Желі сұрауын блоктайтын немесе шектейтін үлгі қосу"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Желі сұрауын блоктау өрнегін қосу"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Желі сұрауын блоктау"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Сұрау шарттары"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "желі реттеуі"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Желі журналын жазу"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Желі сұрауын блоктайтын немесе шектейтін барлық үлгіні өшіру"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Желі сұрауын блоктайтын барлық өрнекті өшіру"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Желі сұрауын блоктау құралын көрсету"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Сұрау шарттарын көрсету"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Іздеу құралын көрсету"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Ажыратылған DOM түйіндері ұстап қалған нысандар"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Оқиға өңдегіштері ұстап қалған нысандар"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Басқа JS нысандары"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Қосулы кезде"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Жолды енгізіңіз."
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Бірегей жолды енгізіңіз."
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Шығарылған ішкі қалталар"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Скриптінің URL мекенжайы үшін тұрақты өрнек ережесін қосу"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Таңбаларды көру үшін JavaScript немесе CSS файлын ашу"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Сақталған қалтада ашу"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Контентті қайта анықтау"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" — бастапқы түрлендірілген файл, оны қайта анықтау мүмкін емес."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Оның орнына \"{PH1}\" қайта анықталсын ба?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Басқаша сақтау…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Файл дискіге сақталмады."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Кескінді сақтау"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Дискіге WASM модулін сақтау мүмкін болмады. Модуль тым үлкен сияқты."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Барлық қайта анықталған файлды көрсету"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "КБ"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Аннотацияларды қосу"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Скрипт контентін қосу"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Скриптінің бастапқы код карталарын қосу"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Қосымша ақпарат:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Сақтау"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Барлық жүктелген скриптінің толық контентін қамтиды (кеңейтімдерді қоспайды)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip көмегімен сығу"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Сұрау тақырыптары қайта анықталған"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Бұл сұрауға арналған cookie файлдары Chrome жалаушаларына немесе браузер конфигурациясына байланысты блокталады. Толық ақпарат \"Ақаулар\" панелінде берілген."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Тұрақты өрнекті қолдану"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Бір немесе бірнеше параметр өзгертілді. Өзгертулер күшіне енуі үшін, қайта жүктеу қажет."
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Қайта жүктеу керек."
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "белгіленген"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Төмен контраст мәселесін шешу үшін ұсынылған түсті ({PH1}) пайдаланыңыз."
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Бұл түс формат гаммасына сәйкес келуі үшін кесілген. Нақты нәтиже {PH1} болды"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Түстері аз гаммаға түрлендірілсе, түстер өзгереді."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Палитраға қосу"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie файлдары"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Домен"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Өзгермелі cookie файлдары"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(анық емес)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Бөлік кілтінің сайты"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Жол"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Басымдық"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Қауіпсіз"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Сеанс"

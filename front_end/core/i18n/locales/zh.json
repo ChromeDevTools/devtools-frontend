@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With 代码块"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "屏蔽"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "已取消"
   },
@@ -936,7 +939,7 @@
     "message": "显示图层边框（橙色/橄榄色）和图块（青色）。"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
-    "message": "为弹出式窗口自动打开 DevTools"
+    "message": "为弹出式窗口自动打开开发者工具"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | blockAds": {
     "message": "屏蔽此网站上的广告"
@@ -954,7 +957,7 @@
     "message": "停用已暂停的状态叠加层"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
-    "message": "不为弹出式窗口自动打开 DevTools"
+    "message": "不为弹出式窗口自动打开开发者工具"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "在此网站上强制屏蔽广告"
@@ -1018,6 +1021,9 @@
   },
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "停靠至右侧"
+  },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools收到了外部请求"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "焦点页面"
@@ -1275,13 +1281,13 @@
     "message": "对 SVGUseElement 中 data: URL 的支持已被弃用，日后将被移除。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+    "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+    "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+    "message": "getUserMedia() 不再适用于不安全的源。若要使用此功能，您应考虑将应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate 已被弃用。请改用 RTCPeerConnectionIceErrorEvent.address 或 RTCPeerConnectionIceErrorEvent.port。"
@@ -1311,7 +1317,7 @@
     "message": "即使 MIDIOptions 中未指定 sysex，Web MIDI 也会请求获得使用许可。"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "无法再从不安全的源使用 Notification API。您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+    "message": "无法再从不安全的源使用 Notification API。您应考虑将应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "无法再从跨源 iframe 中请求 Notification API 权限。您应考虑改为从顶级框架中请求权限，或者打开一个新窗口。"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "扩展程序应选择启用跨域隔离，以便继续使用 SharedArrayBuffer。请参阅 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() 已被弃用。请改为使用 writeValueWithResponse() 或 writeValueWithoutResponse()。"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest 中的响应 JSON 不再支持 UTF-16"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "此功能仅在连接到网络时可用。"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools收到了外部请求"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "加载文件时发生未知错误"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} 延迟时间，{PH2} 下载时间（总计 {PH3}）"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "输入路径"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "请输入唯一路径"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "已排除子文件夹"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "网址"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "无法加载 blob。"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "无法添加文件系统：{PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "在包含此文件的文件夹中打开"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "替换内容"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "“{PH1}”是源代码映射文件，无法替换。"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "改为替换“{PH1}”？"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "另存为…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "未能将文件保存到磁盘。"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "保存图片"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "无法将 WASM 模块保存到磁盘。很可能是模块太大。"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "显示所有替换项"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "已链接到 {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "已链接到来源映射的网址：{PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem 无法读取文件。"
@@ -2157,7 +2118,7 @@
     "message": "动画"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "当元素在没有任何用户互动的情况下移动时，就会发生布局偏移。[调查布局偏移的原因](https://web.dev/articles/optimize-cls)，例如在网页加载时添加、移除元素或元素字体发生了变化。"
+    "message": "当元素在没有任何用户互动的情况下移动时，就会发生布局偏移。[调查布局偏移的原因](https://developer.chrome.com/docs/performance/insights/cls-culprit)，例如在网页加载时添加、移除元素或元素字体发生了变化。"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "注入的 iframe"
@@ -2193,7 +2154,7 @@
     "message": "缓存 TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "延长缓存生命周期可加快重访您网页的速度。[了解详情](https://web.dev/uses-long-cache-ttl/)。"
+    "message": "延长缓存生命周期可加快网页重访速度。[详细了解缓存](https://developer.chrome.com/docs/performance/insights/cache)。"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "没有任何请求使用效率低下的缓存政策"
@@ -2208,7 +2169,7 @@
     "message": "使用高效的缓存生命周期"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "大型 DOM 可能会增加样式计算和布局自动重排的用时，从而影响网页响应速度。大型 DOM 也会增加内存用量。[了解如何避免 DOM 规模过大](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)。"
+    "message": "大型 DOM 可能会增加样式计算和布局自动重排的用时，从而影响网页响应速度。大型 DOM 也会增加内存用量。[了解如何避免 DOM 规模过大](https://developer.chrome.com/docs/performance/insights/dom-size)。"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "时长"
@@ -2244,7 +2205,7 @@
     "message": "值"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "您的第一个网络请求最为重要。您可通过避免重定向、确保服务器快速响应以及启用文本压缩，缩短其延迟时间。"
+    "message": "您的第一个网络请求最为重要。您可通过避免重定向、确保服务器快速响应以及启用文本压缩来[缩短其延迟时间](https://developer.chrome.com/docs/performance/insights/document-latency)。"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "有重定向 ({PH1} 次重定向，+{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "来源"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "从软件包中移除重复的大型 JavaScript 模块，即可避免网络活动带来不必要的字节消耗。"
+    "message": "从软件包中移除[重复的大型 JavaScript 模块](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)，即可避免网络活动带来不必要的字节消耗。"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "重复的 JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "建议您将 [font-display](https://developer.chrome.com/blog/font-display) 设为 swap 或 optional，确保文本始终可见。通过[替换字体指标](https://developer.chrome.com/blog/font-fallbacks)可进一步优化 swap，缓解布局偏移。"
+    "message": "建议您将 [font-display](https://developer.chrome.com/docs/performance/insights/font-display) 设为 swap 或 optional，确保文本始终可见。通过[替换字体指标](https://developer.chrome.com/blog/font-fallbacks)可进一步优化 swap，缓解布局偏移。"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "字体"
@@ -2304,10 +2265,10 @@
     "message": "（匿名）"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "当 DOM 状态发生更改导致样式失效后，如果 JavaScript 查询几何属性（例如 offsetWidth），会引发强制自动重排。这可能会导致效果不佳。详细了解[强制自动重排](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)及可能的缓解措施。"
+    "message": "当 DOM 状态发生更改导致样式失效后，如果 JavaScript 查询几何属性（例如 offsetWidth），会引发强制自动重排。这可能会导致效果不佳。详细了解[强制自动重排](https://developer.chrome.com/docs/performance/insights/forced-reflow)及可能的缓解措施。"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "堆栈轨迹"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "触发自动重排的调用帧"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "强制自动重排"
@@ -2322,7 +2283,7 @@
     "message": "[未归因]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "请从持续时间最长的子部分开始检查。[几处延迟可降到最低](https://web.dev/articles/optimize-inp#optimize_interactions)。如需缩短处理时长，请[优化主线程（通常是 JS）成本](https://web.dev/articles/optimize-long-tasks)。"
+    "message": "请从持续时间最长的子部分开始检查，了解[如何改进 INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown)。"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "时长"
@@ -2346,7 +2307,7 @@
     "message": "INP 细分"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "缩短图片下载时间可优化网页的感知加载时间和 LCP。[详细了解图片大小优化](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "缩短图片下载时间可优化网页的感知加载时间和 LCP。[详细了解图片大小优化](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1}（预计 {PH2}）"
@@ -2376,7 +2337,7 @@
     "message": "使用视频格式而非 GIF 格式可以优化动画内容的下载大小。"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "每个[子部分都有特定的改进策略](https://web.dev/articles/optimize-lcp#lcp-breakdown)。理想情况下，LCP 的大部分时间应该用于加载资源，而不是消耗在延迟上。"
+    "message": "每个[子部分都有特定的改进策略](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)。理想情况下，LCP 的大部分时间应该用于加载资源，而不是消耗在延迟上。"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "时长"
@@ -2406,7 +2367,7 @@
     "message": "LCP 细分"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "使 LCP 图像能够立即从 HTML 中[被发现](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)，并[避免延迟加载](https://web.dev/articles/lcp-lazy-loading)，以此优化 LCP"
+    "message": "使 LCP 图像能够立即从 HTML 中被发现，并避免延迟加载，以此[优化 LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery)"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "已应用 fetchpriority 的 high 属性值"
@@ -2439,13 +2400,13 @@
     "message": "浪费的字节数"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对现代浏览器而言并不是必需的。请考虑修改 JavaScript 构建流程，以便不转译 [Baseline](https://web.dev/articles/baseline-and-polyfills) 功能，除非您知道必须支持旧版浏览器。[了解为什么大多数网站可以部署 ES6+ 代码而无需转译](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对现代浏览器而言并不是必需的。请考虑修改 JavaScript 构建流程，以便不转译 [Baseline](https://web.dev/articles/baseline-and-polyfills) 功能，除非您知道必须支持旧版浏览器。[了解为什么大多数网站可以部署 ES6+ 代码而无需转译](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "旧版 JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 和 HTTP/3 拥有许多 HTTP/1.1 没有的优势，例如多路复用。[详细了解如何使用现代 HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)。"
+    "message": "HTTP/2 和 HTTP/3 拥有许多 HTTP/1.1 没有的优势，例如多路复用。[详细了解如何使用现代 HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)。"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "没有请求使用 HTTP/1.1，或者请求当前对 HTTP/1.1 的使用不存在显著的优化空间。只有当同一来源的静态资源达到六个或更多，且这些资源并非来自本地开发环境或第三方来源时，HTTP/1.1 请求才会被标记。"
@@ -2478,7 +2439,7 @@
     "message": "未使用的 preconnect。请检查并确保正确使用了 crossorigin 属性。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[避免链接关键请求](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)，方法是缩短链长、缩减资源的下载文件大小，或者推迟下载不必要的资源，从而提高网页加载速度。"
+    "message": "[避免链接关键请求](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)，方法是缩短链长、缩减资源的下载文件大小，或者推迟下载不必要的资源，从而提高网页加载速度。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "为最重要的源添加 [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 提示，但请尽量不要超过 4 个。"
@@ -2517,7 +2478,7 @@
     "message": "避免链接关键请求，方法是缩短链长、缩减资源的下载文件大小，或者推迟下载不必要的资源，从而提高网页加载速度。"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "请求正在屏蔽网页的初始渲染，这可能会延迟 LCP。[延迟或内嵌](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)可以将这些网络请求移出关键路径。"
+    "message": "请求正在屏蔽网页的初始渲染，这可能会延迟 LCP。[延迟或内嵌](https://developer.chrome.com/docs/performance/insights/render-blocking)可以将这些网络请求移出关键路径。"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "时长"
@@ -2532,7 +2493,7 @@
     "message": "渲染屏蔽请求"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "如果“重新计算样式”的成本仍然很高，优化选择器可以降低此成本。请对用时较长及慢路径所占百分比较高的[选择器进行优化](https://developer.chrome.com/docs/devtools/performance/selector-stats)。选择器越简单、数量越少，DOM 的规模越小、结构越简单，越能降低匹配成本。"
+    "message": "如果“重新计算样式”的成本仍然很高，优化选择器可以降低此成本。请对用时较长及慢路径所占百分比较高的[选择器进行优化](https://developer.chrome.com/docs/performance/insights/slow-css-selector)。选择器越简单、数量越少，DOM 的规模越小、结构越简单，越能降低匹配成本。"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "用时"
@@ -2571,7 +2532,7 @@
     "message": "传输大小"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "第三方代码可能会显著影响加载性能。[请减少并推迟加载第三方代码](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)，以优先渲染您的网页内容。"
+    "message": "第三方代码可能会显著影响加载性能。[请减少并推迟加载第三方代码](https://developer.chrome.com/docs/performance/insights/third-parties)，以优先渲染您的网页内容。"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "未找到第三方内容"
@@ -2580,7 +2541,7 @@
     "message": "第三方"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "如果视口未针对移动设备进行优化，点按互动可能会[延迟最多 300 毫秒](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+    "message": "如果视口未针对移动设备进行优化，点按互动可能会[延迟最多 300 毫秒](https://developer.chrome.com/docs/performance/insights/viewport)。"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "移动设备点按延迟"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "了解开发者工具中的 AI 功能"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "在无痕模式或访客模式下无法使用 AI 辅助功能"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "只有当您使用 Google 账号登录 Chrome 时，此功能才可用"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "请检查网络连接，然后重试"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "在开发者工具中显示所选上下文项"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "“设置”中的 AI 助理"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "开启{PH1}即可获取有关理解 CSS 样式的帮助"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "开启{PH1}即可获取有关样式和网络请求的帮助"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "开启{PH1}即可获取有关样式、网络请求和文件的帮助"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "开启{PH1}即可获取有关样式、网络请求、性能和文件的帮助"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "您可以在此页面上检查和修改动画。"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "服务条款"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "已链接到 {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "已链接到来源映射的网址：{PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "允许"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "显示控制台"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "显示控制台消息的 AI 摘要"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "在控制台中显示CORS错误"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "跳转到“动画”面板"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "打开颜色选择器。{PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "添加{PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "屏蔽"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "自定义"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex查看器"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "添加网络请求屏蔽模式"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "添加模式"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "点击“{PH1}”按钮即可添加网络请求屏蔽模式。"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "已屏蔽 {PH1} 个"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "启用网络请求屏蔽功能"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "已成功删除此列表项"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "了解详情"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "没有被屏蔽的网络请求"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "模式已经存在。"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "模式输入不能为空。"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "用于屏蔽匹配请求的文本模式；请使用 * 作为通配符"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "全部清除"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "无法在此处显示该请求的状态，因为发出该请求的网页在传输该请求的过程中被卸载了。您可以使用 chrome://net-export 来捕获网络日志并查看所有请求详情。"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "连接信息"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "屏蔽请求网址"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "屏蔽请求"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "被屏蔽的请求"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "第三方请求"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "限制请求网域"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "限制请求网址"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "限制请求"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "取消屏蔽 {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "停止限制 {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "连接 ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "网址"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "添加网络请求屏蔽模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "添加模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "添加用于限制或屏蔽网络请求的模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "点击“{PH1}”按钮即可添加模式。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "已屏蔽 {PH1} 个"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "降低优先级"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "启用屏蔽和限制模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "启用网络请求屏蔽功能"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "提高优先级"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "已成功删除此列表项"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "了解详情"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "没有被屏蔽的网络请求"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "没有用于限制或屏蔽请求的模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "模式已经存在。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "此模式无法解析为 URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "不允许使用正则表达式组"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "模式输入不能为空。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "此模式已从“{PH1}”升级"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "用于屏蔽或限制匹配请求的文本模式；请使用 URLPattern 语法。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "用于屏蔽匹配请求的文本模式；请使用 * 作为通配符"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "通过响应的“set-cookie”标头从服务器接收的 Cookie"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "向 ServiceWorker 发送的请求"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "请求/响应"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "资源调度"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "为了从其他网站使用此资源，服务器可能会放宽跨域资源政策响应标头："
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "添加用于屏蔽或限制网络请求的模式"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "添加网络请求屏蔽模式"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "屏蔽网络请求"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "请求条件"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "网络节流"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "录制网络日志"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "移除所有用于屏蔽或限制网络请求的模式"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "移除所有网络请求屏蔽模式"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "显示“网络请求屏蔽”"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "显示请求条件"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "显示“搜索”工具"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "由已分离的 DOM 节点保留的对象"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "由事件处理脚本保留的对象"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "其他 JS 对象"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "处于开启状态时"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "输入路径"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "请输入唯一路径"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "已排除子文件夹"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "网址"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "为脚本的网址添加正则表达式规则"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "打开 JavaScript 或 CSS 文件即可查看符号"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "在包含此文件的文件夹中打开"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "替换内容"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "“{PH1}”是源代码映射文件，无法替换。"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "改为替换“{PH1}”？"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "另存为…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "未能将文件保存到磁盘。"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "保存图片"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "无法将 WASM 模块保存到磁盘。很可能是模块太大。"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "显示所有替换项"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "包含注释"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "包含脚本内容"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "包含脚本源代码映射"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "其他信息："
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "保存"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "包含所有已加载脚本（扩展程序除外）的完整内容。"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "使用 gzip 压缩"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "请求标头已被替换"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "此请求的 Cookie 因 Chrome flag 或浏览器配置而被屏蔽。如需了解详情，请前往“问题”面板。"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "使用正则表达式"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "一项或多项设置已更改，需要重新加载才能生效"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*需要重新加载"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "已勾选"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "使用建议的颜色 {PH1} 修正低对比度问题"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "为了与格式的色域匹配，系统移除了此颜色。实际结果为 {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ 转换为窄色域会导致颜色偏移"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "添加到调色板"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "网域"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "可修改的 Cookie"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "（不透明）"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "分区密钥网站"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "路径"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "优先级"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "安全"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "会话"

@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "קטע קוד With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "חסימה"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "הפעולה בוטלה"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "הצמדה לימין"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "‫DevTools קיבלו בקשה חיצונית"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "התמקדות בדף הנוכחי"
   },
@@ -1140,7 +1146,7 @@
     "message": "ימין"
   },
   "entrypoints/main/main-meta.ts | saveSettings": {
-    "message": "שמירה של DevTools הגדרות בחשבון Google"
+    "message": "שמירה של הגדרות DevTools בחשבון Google"
   },
   "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
     "message": "הפעלת החיפוש בזמן ההקלדה"
@@ -1275,13 +1281,13 @@
     "message": "התמיכה בהקצאת כתובות URL מסוג data:‎ ב-SVGUseElement הוצאה משימוש ותוסר בעתיד."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "האפשרויות getCurrentPosition() ו-watchPosition() לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+    "message": "האפשרויות getCurrentPosition() ו-watchPosition() לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "האפשרויות getCurrentPosition() ו-watchPosition() הוצאו משימוש במקורות שאינם מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+    "message": "האפשרויות getCurrentPosition() ו-watchPosition() הוצאו משימוש במקורות שאינם מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "האפשרות getUserMedia() לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+    "message": "האפשרות getUserMedia() לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "האפשרות RTCPeerConnectionIceErrorEvent.hostCandidate הוצאה משימוש. במקומה יש להשתמש באפשרות RTCPeerConnectionIceErrorEvent.address או באפשרות RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "תתקבל מ-Web MIDI בקשת הרשאה לשימוש גם אם לא צוין sysex ב-MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "אי אפשר יותר להשתמש ב-Notification API ממקורות לא מאובטחים. כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+    "message": "אי אפשר יותר להשתמש ב-Notification API ממקורות לא מאובטחים. כדאי לך להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "לא ניתן יותר לבקש הרשאה ל-Notification API מ-iframe ממקורות שונים. במקום זאת, כדאי לבקש הרשאה ממסגרת ברמה עליונה או לפתוח חלון חדש."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "כדי להמשיך להשתמש ב-SharedArrayBuffer, צריך לאשר חסימה לגישה מדומיינים אחרים בתוספים. הסבר זמין בכתובת https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "האפשרות BluetoothRemoteGATTCharacteristic.writeValue() הוצאה משימוש. במקומה צריך להשתמש ב-writeValueWithResponse() או ב-writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "אין תמיכה ב-UTF-16 ב-JSON של התגובה ב-XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "התכונה הזו זמינה רק כשיש חיבור פעיל לאינטרנט."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "‫DevTools קיבלו בקשה חיצונית"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "אירעה שגיאה לא מזוהה בזמן טעינת הקובץ"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} זמן אחזור, {PH2} הורדה (סה\"כ {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "יש להזין נתיב"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "יש להזין נתיב ייחודי"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "תיקיות משנה שלא נכללו"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "כתובת URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "לא הצלחנו לטעון את Blob."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "לא הצלחנו להוסיף מערכת קבצים: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "פתיחה בתיקייה מכילה"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "שינוי התוכן"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "'{PH1}' הוא קובץ שממופה למקור ולא ניתן לשנות אותו."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "לשנות את '{PH1}' במקום זאת?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "שמירה בשם…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "הניסיון לשמור את הקובץ בדיסק נכשל."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "שמירת תמונה"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "אי אפשר לשמור את מודול WASM בדיסק. סביר להניח שהמודול גדול מדי."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "הצגת כל השינויים מברירת המחדל"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "מקושר אל {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "מקושר למפת מקור: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "לא ניתן לקרוא קבצים באמצעות PlatformFileSystem."
@@ -2157,7 +2118,7 @@
     "message": "אנימציה"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "שינויים בפריסה מתרחשים כשרכיבים נעים ללא פעולה של המשתמש. [צריך לבדוק את הסיבות לשינויים בפריסה](https://web.dev/articles/optimize-cls), כמו רכיבים שנוספו או הוסרו, או גופנים שהשתנו בזמן טעינת הדף."
+    "message": "שינויים בפריסה מתרחשים כשרכיבים נעים ללא פעולה של המשתמש. [צריך לבדוק את הסיבות לשינויים בפריסה](https://developer.chrome.com/docs/performance/insights/cls-culprit), כמו רכיבים שנוספו או הוסרו, או גופנים שהשתנו בזמן טעינת הדף."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "החדרת iframe"
@@ -2193,7 +2154,7 @@
     "message": "אורך חיים (TTL) של מטמון"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "מטמון בעל משך חיים ארוך יכול לאפשר לדף להיטען מהר יותר בביקורים חוזרים. [למידע נוסף](https://web.dev/uses-long-cache-ttl/)"
+    "message": "אם יש למטמון משך חיים ארוך, הדף יוכל להיטען מהר יותר בביקורים חוזרים. [מידע נוסף על שמירה במטמון](https://developer.chrome.com/docs/performance/insights/cache)"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "אין בקשות עם מדיניות מטמון לא יעילה"
@@ -2208,7 +2169,7 @@
     "message": "שימוש בזמני אחסון יעילים במטמון"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "נפח DOM גדול יכול להאריך את משך הזמן של חישובי סגנונות ולהוביל להזרמה חוזרת של פריסות, מה שמשפיע על הרספונסיביות של הדף. נפח DOM גדול מגביר את מידת השימוש בזיכרון. [כאן מוסבר איך להימנע מנפח DOM גדול מדי](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "נפח DOM גדול יכול להאריך את משך הזמן של חישובי סגנונות ולהוביל להזרמה חוזרת של פריסות, מה שמשפיע על הרספונסיביות של הדף. נפח DOM גדול מגביר את מידת השימוש בזיכרון. [כאן מוסבר איך להימנע מנפח DOM גדול מדי](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "משך"
@@ -2244,7 +2205,7 @@
     "message": "ערך"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "בקשת הרשת הראשונה היא החשובה ביותר.  אפשר להפחית את זמן האחזור של הבקשה על ידי הימנעות מהפניות לכתובות URL אחרות, וכך להבטיח תגובה מהירה של השרת ולהפעיל דחיסת טקסט."
+    "message": "בקשת הרשת הראשונה היא החשובה ביותר. כדי [להפחית את זמן הטעינה של הבקשה](https://developer.chrome.com/docs/performance/insights/document-latency), כדאי לך להימנע מהפניות לכתובות URL אחרות, לוודא תגובה מהירה של השרת ולהפעיל דחיסת נתונים."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "היו הפניות אוטומטיות ({PH1} הפניות אוטומטיות, ‎+{PH2}‎)"
@@ -2283,13 +2244,13 @@
     "message": "מקור"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "אם קיימים מודולים משוכפלים גדולים בחבילות JavaScript, צריך להסיר אותם מהחבילות האלה כדי לצמצם צריכה של בייטים מיותרים על ידי הפעילות ברשת."
+    "message": "אם קיימים [מודולים כפולים גדולים בחבילות JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), צריך להסיר אותם מהחבילות האלה כדי לצמצם צריכה של בייטים מיותרים על ידי הפעילות ברשת."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "‫JavaScript כפול"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "כדאי לשקול להגדיר את [font-display](https://developer.chrome.com/blog/font-display) לערך swap או optional כדי לוודא שהטקסט גלוי באופן עקבי. אפשר להמשיך לשפר את האופטימיזציה של swap כדי לצמצם את השינויים בפריסה באמצעות [שינויים של מדדי הגופן מברירות המחדל](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "כדאי לשקול להגדיר את [font-display](https://developer.chrome.com/docs/performance/insights/font-display) לערך swap או optional כדי לוודא שהטקסט גלוי באופן עקבי. אפשר להמשיך לשפר את האופטימיזציה של swap כדי לצמצם את השינויים בפריסה באמצעות [שינויים של מדדי הגופן מברירות המחדל](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "גופן"
@@ -2304,10 +2265,10 @@
     "message": "(אנונימית)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "הזרמה חוזרת מאולצת מתרחשת כשקוד JavaScript מבצע שאילתות לגבי מאפיינים גיאומטריים (כמו offsetWidth) אחרי שמצב ה-DOM השתנה והסגנונות הפסיקו להיות תקפים. התוצאה יכולה להיות ביצועים נמוכים. [כאן אפשר לקרוא מידע נוסף](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) על הזרמות חוזרות מאולצות ועל דרכים להתמודד איתן."
+    "message": "הזרמה חוזרת מאולצת מתרחשת כשקוד JavaScript מבצע שאילתות לגבי מאפיינים גיאומטריים (כמו offsetWidth) אחרי שמצב ה-DOM השתנה והסגנונות הפסיקו להיות תקפים. התוצאה יכולה להיות ביצועים נמוכים. [כאן אפשר לקרוא מידע נוסף](https://developer.chrome.com/docs/performance/insights/forced-reflow) על הזרמות חוזרות מאולצות ועל דרכים להתמודד איתן."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "דוח קריסות"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "מסגרות של שיחות שמפעילות הזרמה חוזרת של הפריסה"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "אילוץ של הזרמה חוזרת"
@@ -2322,7 +2283,7 @@
     "message": "[ללא שיוך]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "כדאי להתחיל את החקירה עם החלק המשני הארוך ביותר. [כך ניתן להימנע מעיכובים גדולים](https://web.dev/articles/optimize-inp#optimize_interactions). כדי לקצר את זמן העיבוד, מומלץ [לבצע אופטימיזציה בעלויות של ה-Thread הראשי](https://web.dev/articles/optimize-long-tasks) (לרוב מדובר ב-JS)."
+    "message": "כדאי להתחיל לבדוק [איך לשפר את מדד INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) על ידי עיון בחלק המשני הארוך ביותר."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "משך"
@@ -2346,7 +2307,7 @@
     "message": "פירוט של INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "צמצום זמן ההורדה של תמונות יכול לשפר את זמן הטעינה של הדף ואת ה-LCP. [מידע נוסף על אופטימיזציה של גודל התמונה](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "צמצום זמן ההורדה של תמונות יכול לשפר את זמן הטעינה של הדף ואת ה-LCP. [מידע נוסף על אופטימיזציה של גודל התמונה](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "‫{PH1} (גודל משוער של {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "שימוש בפורמטים של וידאו במקום ב-GIF יכול להקטין את קובץ ההורדה של תוכן אנימציה."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "‫[לכל חלק משני יש אסטרטגיות שיפור ספציפיות](https://web.dev/articles/optimize-lcp#lcp-breakdown). באופן אידיאלי, רוב זמן ה-LCP צריך להיות מוקדש לטעינה של המשאבים, ולא לעיכובים."
+    "message": "‫[לכל חלק משני יש אסטרטגיות שיפור ספציפיות](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). באופן אידיאלי, רוב זמן ה-LCP צריך להיות מוקדש לטעינה של המשאבים, ולא לעיכובים."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "משך"
@@ -2406,7 +2367,7 @@
     "message": "פירוט של LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "כדי לייעל את ה-LCP, צריך להפוך את תמונת ה-LCP ל[גלויה](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) ב-HTML באופן מיידי, ו[להימנע מטעינה מדורגת](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "כדי [לייעל את ה-LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery), צריך להפוך את תמונת ה-LCP לגלויה ב-HTML באופן מיידי, ולהימנע מטעינה מדורגת"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "אחזור בעדיפות גבוהה הוחל"
@@ -2439,13 +2400,13 @@
     "message": "בייטים מבוזבזים"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "רכיבי Polyfill וטרנספורמציות מאפשרים לדפדפנים ישנים יותר להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מודרניים. כדאי לשקול לשנות את תהליך ה-build של JavaScript כדי לא לבצע טרנספילציה של [תכונות בסיסיות](https://web.dev/articles/baseline-and-polyfills), אלא אם ידוע לך שנדרשת תמיכה בדפדפנים ישנים יותר. [למה רוב האתרים יכולים לפרוס קוד ES6+‎ ללא טרנספילציה](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "רכיבי Polyfill וטרנספורמציות מאפשרים לדפדפנים ישנים יותר להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מודרניים. כדאי לשקול לשנות את תהליך ה-build של JavaScript כדי לא לבצע טרנספילציה של [תכונות בסיסיות](https://web.dev/articles/baseline-and-polyfills), אלא אם ידוע לך שנדרשת תמיכה בדפדפנים ישנים יותר. [למה רוב האתרים יכולים לפרוס קוד ES6+‎ ללא טרנספילציה](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "‫JavaScript מדור קודם"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "ל-HTTP/2 ו-HTTP/3 יש הרבה יתרונות לעומת HTTP/1.1, כמו multiplexing. [מידע נוסף על השימוש ב-HTTP מודרני](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+    "message": "ל-HTTP/2 ו-HTTP/3 יש הרבה יתרונות לעומת HTTP/1.1, כמו multiplexing. [מידע נוסף על השימוש ב-HTTP מודרני](https://developer.chrome.com/docs/performance/insights/modern-http)"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "לא נמצאו בקשות שנעשה בהן שימוש ב-HTTP/1.1, או שהשימוש הנוכחי ב-HTTP/1.1 לא מייצג הזדמנות משמעותית לאופטימיזציה. בקשות HTTP/1.1 מסומנות רק אם שישה נכסים סטטיים או יותר מגיעים מאותו מקור. סביבות פיתוח מקומיות או מקורות צד שלישי לא ממלאים בקשות כאלה."
@@ -2478,7 +2439,7 @@
     "message": "קישור מקדים שלא נוצל. צריך לוודא שהשימוש במאפיין crossorigin נעשה בצורה נכונה."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[כדאי להימנע משרשראות של בקשות קריטיות](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains). מומלץ לקצר את השרשראות, להקטין את גודל ההורדה של משאבים או לעכב את ההורדה של משאבים לא נחוצים כדי לשפר את מהירות טעינת הדף."
+    "message": "[כדאי להימנע משרשראות של בקשות קריטיות](https://developer.chrome.com/docs/performance/insights/network-dependency-tree). מומלץ לקצר את השרשראות, להקטין את גודל ההורדה של משאבים או לעכב את ההורדה של משאבים לא נחוצים כדי לשפר את מהירות טעינת הדף."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "אפשר להוסיף רמזים [לקישורים מקדימים](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) למקורות החשובים ביותר, אבל כדאי להשתמש ב-4 רמזים לכל היותר."
@@ -2517,7 +2478,7 @@
     "message": "כדי לטעון דפים מהר יותר, כדאי להימנע משרשראות של בקשות קריטיות. מומלץ לקצר את השרשראות, להקטין את נפח ההורדה של המשאבים או לדחות את ההורדה של משאבים לא נחוצים."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "יש בקשות שחוסמות את העיבוד הראשוני של הדף, מה שעלול לגרום לעיכוב של ה-LCP. [דחייה או שילוב בקוד](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) יכולים להוציא את בקשות הרשת האלה מהנתיב הקריטי."
+    "message": "יש בקשות שחוסמות את העיבוד הראשוני של הדף, מה שעלול לגרום לעיכוב של ה-LCP. [דחייה או שילוב בקוד](https://developer.chrome.com/docs/performance/insights/render-blocking) יכולים להוציא את בקשות הרשת האלה מהנתיב הקריטי."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "משך"
@@ -2532,7 +2493,7 @@
     "message": "עיבוד של בקשות חסימה"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "אם העלויות של 'חישוב מחדש של הסגנון' עדיין גבוהות, אפשר להפחית אותן באמצעות אופטימיזציה של הסלקטור. כדאי לבצע [אופטימיזציה לסלקטורים](https://developer.chrome.com/docs/devtools/performance/selector-stats) עם זמן חולף ואחוז של נתיב איטי (slow-path) גבוהים. שימוש בסלקטורים פשוטים יותר, בפחות סלקטורים, ב-DOM קטן יותר וב-DOM נמוך יותר יפחית את עלויות ההתאמה."
+    "message": "אם העלויות של 'חישוב מחדש של הסגנון' עדיין גבוהות, אפשר להפחית אותן באמצעות אופטימיזציה של הסלקטור. כדאי לבצע [אופטימיזציה לסלקטורים](https://developer.chrome.com/docs/performance/insights/slow-css-selector) עם זמן חולף ואחוז של נתיב איטי (slow-path) גבוהים. שימוש בסלקטורים פשוטים יותר, בפחות סלקטורים, ב-DOM קטן יותר וב-DOM נמוך יותר יפחית את עלויות ההתאמה."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "הזמן שחלף"
@@ -2571,7 +2532,7 @@
     "message": "גודל ההעברה"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "קוד של צד שלישי עשוי להשפיע בצורה משמעותית על ביצועי הטעינה. כדי לתעדף את תוכן הדף שלך, צריך [לצמצם ולדחות טעינת קוד של צד שלישי](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "קוד של צד שלישי עשוי להשפיע בצורה משמעותית על ביצועי הטעינה. כדי לתעדף את תוכן הדף שלך, צריך [לצמצם ולדחות טעינת קוד של צד שלישי](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "לא נמצאו צדדים שלישיים"
@@ -2580,7 +2541,7 @@
     "message": "צדדים שלישיים"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "יכול להיות שאינטראקציות של לחיצה [יעוכבו בעד 300 אלפיות השנייה](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) אם אזור התצוגה לא עבר אופטימיזציה לנייד."
+    "message": "יכול להיות שאינטראקציות של לחיצה [יעוכבו בעד 300 אלפיות השנייה](https://developer.chrome.com/docs/performance/insights/viewport) אם אזור התצוגה לא עבר אופטימיזציה לנייד."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "עיכוב בלחיצה על הנייד"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "מידע נוסף על AI בכלי הפיתוח"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "אי אפשר להשתמש בכלים מבוססי-AI במצב פרטי או במצב אורח"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "התכונה הזו זמינה רק כשנכנסים לחשבון Google ב-Chrome."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "מומלץ לבדוק את החיבור לאינטרנט ולנסות שוב"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "הצגת פריט ההקשר שנבחר בכלי הפיתוח"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "סיוע מבוסס-AI בהגדרות"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "כדי לקבל עזרה בהבנת סגנונות CSS, צריך להפעיל את {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "כדי לקבל עזרה לגבי עיצובים ובקשות רשת, אפשר להפעיל את {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "כדי לקבל עזרה לגבי עיצובים, בקשות רשת וקבצים, אפשר להפעיל את {PH1}"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "כדי לקבל עזרה לגבי עיצובים, בקשות רשת, ביצועים וקבצים, אפשר להפעיל את {PH1}"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "בדף הזה אפשר לבדוק ולשנות אנימציות."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "תנאים והגבלות"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "מקושר אל {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "מקושר למפת מקור: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "אישור"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "הצגת מסוף"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "הצגת סיכומים מבוססי-AI של הודעות במסוף"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "הצגת שגיאות CORS במסוף"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "מעבר לחלונית האנימציות"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "פתיחת בוחר הצבעים. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "הוספה של {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "חסימה"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "בהתאמה אישית"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "הכלי להצגת Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "הוספת דפוס חוסם של בקשת רשת"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "הוספת דפוס"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "כדי להוסיף תבנית לחסימת בקשות רשת, לוחצים על הכפתור \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "חסומות: {PH1}"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "הפעלת חסימה של בקשת הרשת"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "הפריט נמחק בהצלחה"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "מידע נוסף"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "אין בקשות רשת חסומות"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "הדפוס כבר קיים."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "קלט הדפוס אינו יכול להיות ריק."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "דפוס טקסט לחסימת בקשות התאמה; יש להשתמש בסימן * כתו כללי לחיפוש"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "ניקוי הכול"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "לא ניתן להציג כאן את סטטוס הבקשה כי הדף שרשם אותו הסיר את הנתונים שנטענו כשהבקשה הייתה באוויר. ניתן להשתמש ב-chrome://net-export כדי לתעד יומן רשת ולראות את כל פרטי הבקשות."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "פרטי החיבור"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "חסימת כתובת ה-URL של הבקשה"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "בקשות חסימה"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "בקשות חסומות"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "בקשות של צד שלישי"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "הגבלת מספר הבקשות לדומיין"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "הגבלת מספר הבקשות לכתובת URL"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "ויסות נתונים (throttle) של בקשות"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "ביטול החסימה של {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "הפסקת ויסות הנתונים של {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "מזהה החיבור"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "כתובת URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "הוספת דפוס חוסם של בקשת רשת"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "הוספת דפוס"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "הוספת תבנית לוויסות או לחסימה של בקשות רשת"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "כדי להוסיף תבנית, לוחצים על הכפתור \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "חסומות: {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "הורדת העדיפות"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "הפעלת חסימה וויסות נתונים (throttle)"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "הפעלת חסימה של בקשת הרשת"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "העלאת העדיפות"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "הפריט נמחק בהצלחה"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "אין בקשות רשת חסומות"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "אין דפוסים של ויסות בקשות או חסימת בקשות"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "הדפוס כבר קיים."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "לא ניתן לנתח את התבנית הזו כ-URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "אסור להשתמש בקבוצות RegExp"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "קלט הדפוס אינו יכול להיות ריק."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "התבנית הזו שודרגה מ-\"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "דפוס טקסט לחסימה או לוויסות של בקשות תואמות; צריך להשתמש בתחביר של URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "דפוס טקסט לחסימת בקשות התאמה; יש להשתמש בסימן * כתו כללי לחיפוש"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "קובצי cookie שהתקבלו מהשרת בכותרת 'set-cookie' של התגובה"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "בקשה אל ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "בקשה/תגובה"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "תזמון משאב"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "כדי להשתמש במשאב הזה מאתר אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "הוספת דפוס חסימה של בקשת רשת או ויסות נתונים (throttle)"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "הוספת דפוס חוסם של בקשת רשת"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "חסימה של בקשות רשת"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "תנאי הבקשה"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "הגבלת רוחב פס"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "הקלטת יומן הרישום של הרשת"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "הסרת כל הדפוסים שחוסמים או מווסתים בקשות רשת"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "הסרת כל הדפוסים שחוסמים בקשות רשת"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "הצגת הכלי 'חסימת בקשות רשת'"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "הצגת תנאי הבקשה"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "הצגת החיפוש"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "אובייקטים שנשמרו על ידי צומתי DOM מנותקים"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "אובייקטים שנשמרו על ידי גורמים שמטפלים באירועים"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "אובייקטים אחרים של JS"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "במצב מופעל"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "יש להזין נתיב"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "יש להזין נתיב ייחודי"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "תיקיות משנה שלא נכללו"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "כתובת URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "הוספת כלל של ביטוי רגולרי לכתובת ה-URL של הסקריפט"
   },
@@ -13161,7 +13185,7 @@
     "message": "לא התחברת לחשבון ב-Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "קודם צריך להפעיל את השמירה של הגדרות Chrome בחשבון Google."
+    "message": "קודם צריך לאשר שמירה של הגדרות Chrome בחשבון Google."
   },
   "panels/settings/components/SyncSection.ts | relevantData": {
     "message": "נתונים רלוונטיים"
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "יש לפתוח קובץ JavaScript או CSS כדי לראות סמלים"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "פתיחה בתיקייה מכילה"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "שינוי התוכן"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "'{PH1}' הוא קובץ שממופה למקור ולא ניתן לשנות אותו."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "לשנות את '{PH1}' במקום זאת?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "שמירה בשם…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "הניסיון לשמור את הקובץ בדיסק נכשל."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "שמירת תמונה"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "אי אפשר לשמור את מודול WASM בדיסק. סביר להניח שהמודול גדול מדי."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "הצגת כל השינויים מברירת המחדל"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "כולל הערות"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "כולל תוכן הסקריפט"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "כולל מפות מקור של סקריפטים"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "פרטים נוספים:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "שמירה"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "כולל את כל התוכן של כל הסקריפטים שנטענו (חוץ מתוספים)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "דחיסת הנתונים באמצעות gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "כותרות הבקשות בוטלו"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "קובצי ה-Cookie לבקשה הזו חסומים בגלל תכונות ניסיוניות של Chrome או הגדרת הדפדפן. מידע נוסף זמין בחלונית 'בעיות'."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "שימוש בביטוי רגולרי"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "הגדרה אחת לפחות השתנתה ולכן יש צורך בטעינה מחדש"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*נדרשת טעינה מחדש"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "מסומן"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "שימוש בצבע המוצע {PH1}לתיקון יחס הניגודיות הנמוך"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ערכי הקוד של הצבע מונמכים כדי להתאים ללוח הצבעים של הפורמט. התוצאה בפועל הייתה {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "‫⚠️ המרה למרחב צבעים צר תגרום לשינויים בצבע"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "הוספה ללוח התצוגות"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "קובצי cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "דומיין"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "קובצי cookie ניתנים לעריכה"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(אטום)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "אתר מפתח המחיצה"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "נתיב"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "עדיפות"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "מאובטח"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "סשן"

@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With బ్లాక్"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "బ్లాక్ చేయండి"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "రద్దయింది"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "కుడివైపునకు డాక్ చేయండి"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools ఎక్స్‌టర్నల్ రిక్వెస్ట్‌ను అందుకున్నాయి"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ఫోకస్ పేజీ"
   },
@@ -1275,13 +1281,13 @@
     "message": "డేటాకు సపోర్ట్: SVGUseElementలోని URLలు విస్మరించబడ్డాయి, భవిష్యత్తులో అవి తీసివేయబడతాయి."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition(), watchPosition() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయవు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+    "message": "getCurrentPosition(), watchPosition() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయవు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చడం గురించి మీరు పరిశీలించండి. మరిన్ని వివరాల కోసం https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/‌ను చూడండి."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "సురక్షితం కాని ఆరిజిన్‌లలో getCurrentPosition(), watchPosition() విస్మరించబడ్డాయి. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+    "message": "సురక్షితం కాని ఆరిజిన్‌లలో getCurrentPosition(), watchPosition() విస్మరించబడ్డాయి. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చడం గురించి మీరు పరిశీలించండి. మరిన్ని వివరాల కోసం https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/‌ను చూడండి."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయదు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+    "message": "getUserMedia() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయదు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చడం గురించి మీరు పరిశీలించండి. మరిన్ని వివరాల కోసం https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/‌ను చూడండి."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate విస్మరించబడింది. బదులుగా దయచేసి RTCPeerConnectionIceErrorEvent.address లేదా RTCPeerConnectionIceErrorEvent.port ఉపయోగించండి."
@@ -1311,7 +1317,7 @@
     "message": "MIDIOptions‌లో sysex పేర్కొనబడనప్పటికీ, ఉపయోగించడానికి వెబ్ MIDI అనుమతిని అడుగుతుంది."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "నోటిఫికేషన్ API ఇకపై సురక్షితం కాని ఆరిజిన్‌ల నుండి ఉపయోగించబడకపోవచ్చు. మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+    "message": "నోటిఫికేషన్ APIని ఇకపై సురక్షితం కాని ఆరిజిన్‌ల నుండి ఉపయోగించడం వీలు కాకపోవచ్చు. మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చడం గురించి మీరు పరిశీలించండి. మరిన్ని వివరాల కోసం https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/‌ను చూడండి."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "నోటిఫికేషన్ APIకి అనుమతిని ఇకపై క్రాస్-ఆరిజిన్ iframe నుండి రిక్వెస్ట్ చేయలేకపోవచ్చు. టాప్ లెవెల్ ఫ్రేమ్ నుండి అనుమతిని రిక్వెస్ట్ చేయడాన్ని, లేదా బదులుగా కొత్త విండోను తెరవడాన్ని పరిగణించండి."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer‌ను ఉపయోగించడం కొనసాగించడానికి, ఎక్స్‌టెన్షన్‌లు క్రాస్-ఆరిజిన్ ఐసోలేషన్‌ను ఎంపిక చేసుకోవాలి. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ లింక్‌ను చూడండి."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() విస్మరించబడింది. బదులుగా writeValueWithResponse() లేదా writeValueWithoutResponse()‌ను ఉపయోగించండి."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest‌లోని JSON ప్రతిస్పందన ద్వారా UTF-16 సపోర్ట్ చేయబడదు"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "యాక్టివ్ ఇంటర్నెట్ కనెక్షన్‌తో మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools ఎక్స్‌టర్నల్ రిక్వెస్ట్‌ను అందుకున్నాయి"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ఫైల్‌ను లోడ్ చేయడంలో తెలియని ఎర్రర్ ఏర్పడింది"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} ప్రతిస్పందన సమయం, {PH2} డౌన్‌లోడ్ ({PH3} మొత్తం)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "పాత్‌ను ఎంటర్ చేయండి"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "ప్రత్యేకమైన పాత్‌ను ఎంటర్ చేయండి"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "మినహాయించబడిన సబ్-ఫోల్డర్‌లు"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blobను లోడ్ చేయడం సాధ్యపడలేదు."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ఫైల్‌సిస్టమ్‌ను జోడించడం సాధ్యం కాలేదు: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "ఉన్న ఫోల్డర్‌లో తెరవండి"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ఓవర్‌రైడ్ కంటెంట్"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ మాప్ చేయబడిన సోర్స్ ఫైల్, దీన్ని ఓవర్‌రైడ్ చేయడం సాధ్యం కాదు."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "బదులుగా {PH1}‌ను ఓవర్‌రైడ్ చేయాలా?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "ఇలా సేవ్ చేయాలి…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ఫైల్‌ను డిస్క్‌కు సేవ్ చేయడంలో విఫలమైంది."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "ఇమేజ్‌ను సేవ్ చేయండి"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM మాడ్యూల్‌ను డిస్క్‌కు సేవ్ చేయడం సాధ్యపడలేదు. మాడ్యూల్ చాలా పెద్దదిగా ఉండటం దీనికి కారణం కావచ్చు."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "ఓవర్‌రైడ్‌లు అన్నిటినీ చూడండి"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1}కి లింక్ చేయబడింది"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "సోర్స్ మ్యాప్‌కు లింక్ చేయబడింది: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ఫైళ్లను చదవలేదు."
@@ -2157,7 +2118,7 @@
     "message": "యానిమేషన్"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "ఎలిమెంట్‌లు ఏవైనా యూజర్ ఇంటరాక్షన్‌కు దూరంగా ఉన్నప్పుడు లేఅవుట్ షిఫ్ట్‌లు సంభవిస్తాయి. [లేఅవుట్ షిఫ్ట్‌ల కారణాలను పరిశోధించండి](https://web.dev/articles/optimize-cls), ఉదాహరణకు ఎలిమెంట్స్ జోడించబడటం, తీసివేయబడటం లేదా పేజీ లోడ్ అవుతున్న కొద్దీ వాటి ఫాంట్‌లు మారడం వంటివి."
+    "message": "ఎలిమెంట్‌లు ఏవైనా యూజర్ ఇంటరాక్షన్‌కు దూరంగా ఉన్నప్పుడు లేఅవుట్ షిఫ్ట్‌లు సంభవిస్తాయి. [లేఅవుట్ షిఫ్ట్‌ల కారణాలను పరిశోధించండి](https://developer.chrome.com/docs/performance/insights/cls-culprit), ఉదాహరణకు ఎలిమెంట్స్ జోడించబడటం, తీసివేయబడటం లేదా పేజీ లోడ్ అవుతున్న కొద్దీ వాటి ఫాంట్‌లు మారడం వంటివి."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "iframe ఇంజెక్ట్ చేయబడింది"
@@ -2193,7 +2154,7 @@
     "message": "కాష్ TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "కాష్ జీవిత కాలం ఎక్కువ ఉంటే, మీ పేజీకి రిపీట్‌గా వచ్చే సందర్శనల సంఖ్యలో వేగం పుంజుకుంటుంది. [మరింత తెలుసుకోండి](https://web.dev/uses-long-cache-ttl/)."
+    "message": "కాష్ జీవిత కాలం ఎక్కువ ఉంటే, మీ పేజీకి రిపీట్‌గా వచ్చే సందర్శనల సంఖ్య పెరిగే అవకాశం ఉంది. [క్యాషింగ్ గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "అసమర్థమైన కాష్ పాలసీలతో రిక్వెస్ట్‌లు ఏవీ లేవు"
@@ -2208,7 +2169,7 @@
     "message": "సమర్థవంతమైన కాష్ జీవితకాలాలను ఉపయోగించండి"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "పెద్ద DOM వలన, స్టయిల్ కాలిక్యులేషన్‌ల వ్యవధి, లేఅవుట్ రీఫ్లోలను పెంచుతుంది, ఇది పేజీ ప్రతిస్పందనను ప్రభావితం చేస్తుంది. పెద్ద DOM మెమరీ వినియోగాన్ని కూడా పెంచుతుంది. [అధిక DOM సైజ్‌ను ఎలా నివారించాలో తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "పెద్ద DOM వలన, స్టయిల్ కాలిక్యులేషన్‌ల వ్యవధి, లేఅవుట్ రీఫ్లోలను పెంచుతుంది, ఇది పేజీ ప్రతిస్పందనను ప్రభావితం చేస్తుంది. పెద్ద DOM మెమరీ వినియోగాన్ని కూడా పెంచుతుంది. [అధిక DOM సైజ్‌ను ఎలా నివారించాలో తెలుసుకోండి](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "వ్యవధి"
@@ -2244,7 +2205,7 @@
     "message": "వాల్యూ"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "మీ మొదటి నెట్‌వర్క్ రిక్వెస్ట్ చాలా ముఖ్యమైనది.  మళ్లింపు‌లను నివారించడం, సర్వర్ ప్రతిస్పందన వేగంగా ఉండేలా చూసుకోవడం, అలాగే టెక్స్ట్ కంప్రెషన్‌ను ఎనేబుల్ చేయడం ద్వారా దాని ల్యాగ్‌ను తగ్గించండి."
+    "message": "మీ మొదటి నెట్‌వర్క్ రిక్వెస్ట్ చాలా ముఖ్యమైనది. మళ్లింపు‌లను నివారించడం, సర్వర్ ప్రతిస్పందన వేగంగా ఉండేలా చూసుకోవడం, అలాగే టెక్స్ట్ కంప్రెషన్‌ను ఎనేబుల్ చేయడం ద్వారా [దాని ల్యాగ్‌ను తగ్గించండి](https://developer.chrome.com/docs/performance/insights/document-latency)."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "మళ్లింపులు ఉన్నాయి ({PH1} మళ్లింపులు, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "సోర్స్"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "నెట్‌వర్క్ యాక్టివిటీలో అనవసరమైన బైట్‌ల వినియోగం తగ్గించడానికి బండిల్స్ నుండి పెద్దగా ఉండే, డూప్లికేట్ JavaScript మాడ్యూల్స్‌ను తీసివేయండి."
+    "message": "నెట్‌వర్క్ యాక్టివిటీలో అనవసరమైన బైట్‌ల వినియోగం తగ్గించడానికి బండిల్స్ నుండి పెద్దగా ఉండే, [డూప్లికేట్ JavaScript మాడ్యూల్స్](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)‌ను తీసివేయండి."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "డూప్లికేట్ చేయబడిన JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "టెక్స్ట్ స్థిరంగా కనిపించేలా చూడడానికి [font-display](https://developer.chrome.com/blog/font-display)ని swap లేదా optional సెట్ చేసి చూడండి. [ఫాంట్ మెట్రిక్ ఓవర్‌రైడ్‌ల](https://developer.chrome.com/blog/font-fallbacks)తో లేఅవుట్ షిఫ్ట్‌లను తగ్గించడానికి swapను మరింత ఆప్టిమైజ్ చేయవచ్చు."
+    "message": "టెక్స్ట్ స్థిరంగా కనిపించేలా చూడడానికి [font-display](https://developer.chrome.com/docs/performance/insights/font-display)ని swap లేదా optional సెట్ చేసి చూడండి. [ఫాంట్ మెట్రిక్ ఓవర్‌రైడ్‌ల](https://developer.chrome.com/blog/font-fallbacks)తో లేఅవుట్ షిఫ్ట్‌లను తగ్గించడానికి swapను మరింత ఆప్టిమైజ్ చేయవచ్చు."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ఫాంట్"
@@ -2304,10 +2265,10 @@
     "message": "(అజ్ఞాతం)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM స్టేట్‌కు మారడం వలన స్టయిల్స్ ఇన్‌వ్యాలిడేట్ అయ్యాక, జామెట్రీక్ ప్రాపర్టీల (ఉదాహరణకు, offsetWidth) గురించి JavaScript క్వెరీ చేసినప్పుడు ఫోర్స్డ్ రీఫ్లో జరుగుతుంది. దీని వలన పనితీరుపై ప్రతికూల ప్రభావం పడవచ్చు. [ఫోర్స్డ్ రీఫ్లోల](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) గురించి, వీటిని ఎలా తగ్గించవచ్చు అనే దాని గురించి మరింత తెలుసుకోండి."
+    "message": "DOM స్టేట్‌కు మారడం వలన స్టయిల్స్ ఇన్‌వ్యాలిడేట్ అయ్యాక, జామెట్రీక్ ప్రాపర్టీల (ఉదాహరణకు, offsetWidth) గురించి JavaScript క్వెరీ చేసినప్పుడు ఫోర్స్డ్ రీఫ్లో జరుగుతుంది. దీని వలన పనితీరుపై ప్రతికూల ప్రభావం పడవచ్చు. [ఫోర్స్డ్ రీఫ్లోల](https://developer.chrome.com/docs/performance/insights/forced-reflow) గురించి, వీటిని ఎలా తగ్గించవచ్చు అనే దాని గురించి మరింత తెలుసుకోండి."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "స్టాక్ ట్రేస్"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "రీఫ్లోను ట్రిగ్గర్ చేసే కాల్ ఫ్రేమ్‌లు"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "ఫోర్స్ చేయబడిన రీఫ్లో"
@@ -2322,7 +2283,7 @@
     "message": "[unattributed]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "అత్యంత పొడవైన సబ్‌పార్ట్‌తో పరిశోధన ప్రారంభించండి. [ఆలస్యాలను తగ్గించుకోవచ్చు](https://web.dev/articles/optimize-inp#optimize_interactions). ప్రాసెసింగ్ వ్యవధిని తగ్గించడానికి, [మెయిన్ థ్రెడ్ ఖర్చులను ఆప్టిమైజ్ చేయండి](https://web.dev/articles/optimize-long-tasks), ఇవి సాధారణంగా JSకి చెందినవి అయి ఉంటాయి."
+    "message": "అత్యంత పొడవైన సబ్‌పార్ట్‌ను చూసి [INPని ఎలా మెరుగుపరచాలి](https://developer.chrome.com/docs/performance/insights/inp-breakdown) అనే దాన్ని విచారించడం ప్రారంభించండి."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "వ్యవధి"
@@ -2346,7 +2307,7 @@
     "message": "INP కేటగిరీలు"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "ఇమేజ్‌ల డౌన్‌లోడ్ సమయాన్ని తగ్గించడం ద్వారా పేజీ, LCP లోడ్ సమయాన్ని మెరుగుపరచవచ్చు. [ఇమేజ్ సైజ్‌ను ఆప్టిమైజ్ చేయడం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "ఇమేజ్‌ల డౌన్‌లోడ్ సమయాన్ని తగ్గించడం ద్వారా పేజీ, LCP లోడ్ సమయాన్ని మెరుగుపరచవచ్చు. [ఇమేజ్ సైజ్‌ను ఆప్టిమైజ్ చేయడం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (అంచనా {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIFలకు బదులుగా వీడియో ఫార్మాట్‌లను ఉపయోగించడం ద్వారా యానిమేటెడ్ కంటెంట్ డౌన్‌లోడ్ సైజ్‌ను మెరుగుపరచవచ్చు."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "ప్రతి [సబ్‌పార్ట్‌లో నిర్దిష్ట మెరుగుదల వ్యూహాలు ఉంటాయి](https://web.dev/articles/optimize-lcp#lcp-breakdown). ముఖ్యంగా, LCP సమయాన్ని ఎక్కువ భాగం రిసోర్స్‌లను లోడ్ చేయడంలో వెచ్చించాలి, ఆలస్యంలో కాదు."
+    "message": "ప్రతి [సబ్‌పార్ట్‌లో నిర్దిష్ట మెరుగుదల వ్యూహాలు ఉంటాయి](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). ముఖ్యంగా, LCP సమయాన్ని ఎక్కువ భాగం రిసోర్స్‌లను లోడ్ చేయడంలో వెచ్చించాలి, ఆలస్యంలో కాదు."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "వ్యవధి"
@@ -2406,7 +2367,7 @@
     "message": "LCP కేటగిరీలు"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "HTML నుంచి LCP ఇమేజ్‌ను తక్షణమే [కనిపించగలిగేలా](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) చేయడం, అలాగే [ప్రాధాన్యతను బట్టి లోడింగ్‌ పద్దతిని నివారించడం ](https://web.dev/articles/lcp-lazy-loading) ద్వారా LCPని ఆప్టిమైజ్ చేయండి"
+    "message": "HTML నుంచి LCP ఇమేజ్‌ను తక్షణమే కనిపించగలిగేలా చేయడం, అలాగే ప్రాధాన్యతను బట్టి లోడింగ్ పద్దతిని నివారించడం ద్వారా [LCPని ఆప్టిమైజ్ చేయండి](https://developer.chrome.com/docs/performance/insights/lcp-discovery)"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high applied"
@@ -2439,13 +2400,13 @@
     "message": "వృధా బైట్‌లు"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా పాత బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. మీరు మరింత పాత బ్రౌజర్‌లకు సపోర్ట్ అందించాలని మీకు ఖచ్చితంగా తెలిస్తే తప్ప, [బేస్‌లైన్](https://web.dev/articles/baseline-and-polyfills) ఫీచర్‌లను ట్రాన్స్‌పైల్ చేయకుండా మీ JavaScript బిల్డ్ ప్రాసెస్‌ను సవరించేలా పరిగణించండి. [చాలా సైట్‌లు ట్రాన్స్‌పైలింగ్ లేకుండా ES6+ కోడ్‌ను ఎందుకు అమలు చేయగలవో తెలుసుకోండి](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా పాత బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. మీరు మరింత పాత బ్రౌజర్‌లకు సపోర్ట్ అందించాలని మీకు ఖచ్చితంగా తెలిస్తే తప్ప, [బేస్‌లైన్](https://web.dev/articles/baseline-and-polyfills) ఫీచర్‌లను ట్రాన్స్‌పైల్ చేయకుండా మీ JavaScript బిల్డ్ ప్రాసెస్‌ను సవరించేలా పరిగణించండి. [చాలా సైట్‌లు ట్రాన్స్‌పైలింగ్ లేకుండా ES6+ కోడ్‌ను ఎందుకు అమలు చేయగలవో తెలుసుకోండి](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "లెగసీ JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/1.1 కంటే HTTP/2, HTTP/3లు, మల్టీప్లెక్సింగ్ వంటి అనేక ప్రయోజనాలను అందిస్తాయి. [ఆధునిక HTTP వినియోగం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/1.1 కంటే HTTP/2, HTTP/3లు, మల్టీప్లెక్సింగ్ వంటి అనేక ప్రయోజనాలను అందిస్తాయి. [ఆధునిక HTTP వినియోగం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "ఒక్క రిక్వెస్ట్‌ కూడా HTTP/1.1ను ఉపయోగించలేదు, లేదా అవి ప్రస్తుతం HTTP/1.1ను, ఆప్టిమైజేషన్‌కు పెద్దగా అవకాశం లేని విధంగా ఉపయోగిస్తూ ఉన్నాయి. ఆరు లేదా అంతకంటే ఎక్కువ స్టాటిక్ అస్సెట్లు ఒకే సోర్స్ నుండి వచ్చి ఉండి, అవి లోకల్ డెవలప్‌మెంట్ ఎన్విరాన్‌మెంట్ లేదా థర్డ్-పార్టీ సోర్స్ నుండి అందనప్పుడు మాత్రమే HTTP/1.1 రిక్వెస్ట్‌లను ఫ్లాగ్ చేయడం జరుగుతుంది."
@@ -2478,7 +2439,7 @@
     "message": "వినియోగించని ప్రీకనెక్ట్. crossorigin అట్రిబ్యూట్‌ను సరిగ్గా ఉపయోగించారో లేదో చెక్ చేయండి."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "పేజీ లోడ్‌ను మెరుగుపరచడానికి చెయిన్‌ల పొడవును తగ్గించడం, రిసోర్స్‌ల డౌన్‌లోడ్ సైజును తగ్గించడం, లేదా అనవసరమైన రిసోర్స్‌లను డౌన్‌లోడ్ చేయడాన్ని వాయిదా వేయడం వంటివి చేయడం ద్వారా [అతి ముఖ్యమైన రిక్వెస్ట్‌ల చైనింగ్‌ను నివారించండి](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
+    "message": "పేజీ లోడ్‌ను మెరుగుపరచడానికి చెయిన్‌ల పొడవును తగ్గించడం, రిసోర్స్‌ల డౌన్‌లోడ్ సైజును తగ్గించడం, లేదా అనవసరమైన రిసోర్స్‌లను డౌన్‌లోడ్ చేయడాన్ని వాయిదా వేయడం వంటివి చేయడం ద్వారా [అతి ముఖ్యమైన రిక్వెస్ట్‌ల చైనింగ్‌ను నివారించండి](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "అత్యంత ముఖ్యమైన మీ ఆరిజిన్‌లకు [ప్రీకనెక్ట్](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) సూచనలను జోడించండి, కానీ 4 కంటే ఎక్కువ ఉపయోగించకుండా ట్రై చేయండి."
@@ -2517,7 +2478,7 @@
     "message": "పేజీ లోడ్‌ను మెరుగుపరచడానికి చెయిన్‌ల పొడవును తగ్గించడం, రిసోర్స్‌ల డౌన్‌లోడ్ సైజును తగ్గించడం, లేదా అనవసరమైన రిసోర్స్‌లను డౌన్‌లోడ్ చేయడాన్ని వాయిదా వేయడం వంటివి చేయడం ద్వారా అతి ముఖ్యమైన రిక్వెస్ట్‌ల చైనింగ్‌ను నివారించండి."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "రిక్వెస్ట్‌లు పేజీకి సంబంధించిన ప్రారంభ రెండర్‌ను బ్లాక్ చేస్తున్నాయి, దీని వలన LCP ఆలస్యం కావచ్చు. [వాయిదా వేయడం లేదా ఇన్‌లైన్ చేయడం](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ఈ నెట్‌వర్క్ రిక్వెస్ట్‌లను క్లిష్టమైన మార్గం నుండి తరలించగలదు."
+    "message": "రిక్వెస్ట్‌లు పేజీకి సంబంధించిన ప్రారంభ రెండర్‌ను బ్లాక్ చేస్తున్నాయి, దీని వలన LCP ఆలస్యం కావచ్చు. [వాయిదా వేయడం లేదా ఇన్‌లైన్ చేయడం](https://developer.chrome.com/docs/performance/insights/render-blocking) ఈ నెట్‌వర్క్ రిక్వెస్ట్‌లను క్లిష్టమైన మార్గం నుండి తరలించగలదు."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "వ్యవధి"
@@ -2532,7 +2493,7 @@
     "message": "బ్లాకింగ్ రిక్వెస్ట్‌లను రెండర్ చేయండి"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "స్టయిల్‌ను తిరిగి లెక్కించడానికి అయ్యే ఖర్చు ఎక్కువగా ఉంటే, ఎంపిక సాధనం ఆప్టిమైజేషన్ దాన్ని తగ్గిస్తుంది. అధిక గడిచిన సమయం, అలాగే స్లో-పాత్‌ % రెండింటితో [ఎంపిక సాధనాలను ఆప్టిమైజ్ చేయండి](https://developer.chrome.com/docs/devtools/performance/selector-stats). సులభమైన ఎంపిక సాధనాలు, అతి తక్కువ ఎంపిక సాధనాలు, చిన్న DOM, అలాగే షాలో సైజ్ DOM ఇవన్నీ మ్యాచింగ్ ఖర్చులను తగ్గిస్తాయి."
+    "message": "స్టయిల్‌ను తిరిగి లెక్కించడానికి అయ్యే ఖర్చు ఎక్కువగా ఉంటే, ఎంపిక సాధనం ఆప్టిమైజేషన్ దాన్ని తగ్గిస్తుంది. అధిక గడిచిన సమయం, అలాగే స్లో-పాత్‌ % రెండింటితో [ఎంపిక సాధనాలను ఆప్టిమైజ్ చేయండి](https://developer.chrome.com/docs/performance/insights/slow-css-selector). సులభమైన ఎంపిక సాధనాలు, అతి తక్కువ ఎంపిక సాధనాలు, చిన్న DOM, అలాగే షాలో సైజ్ DOM ఇవన్నీ మ్యాచింగ్ ఖర్చులను తగ్గిస్తాయి."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "గడిచిన సమయం"
@@ -2571,7 +2532,7 @@
     "message": "బదిలీ సైజ్"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "3వ-పార్టీ కోడ్ గణనీయమైన స్థాయిలో లోడ్ పనితీరుపై ప్రభావం చూపవచ్చు. మీ పేజీకి సంబంధించిన కంటెంట్‌కు ప్రాధాన్యత ఇవ్వడానికి[3వ-పార్టీ కోడ్‌ను తగ్గించండి, అలాగే లోడ్ చేయడం మినహాయించండి](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "3వ-పార్టీ కోడ్ గణనీయమైన స్థాయిలో లోడ్ పనితీరుపై ప్రభావం చూపవచ్చు. మీ పేజీకి సంబంధించిన కంటెంట్‌కు ప్రాధాన్యత ఇవ్వడానికి[3వ-పార్టీ కోడ్‌ను తగ్గించండి, అలాగే లోడ్ చేయడం మినహాయించండి](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "థర్డ్-పార్టీ‌లు ఏవీ లేవు"
@@ -2580,7 +2541,7 @@
     "message": "3వ పార్టీలు"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "మొబైల్ కోసం వీక్షణ పోర్ట్‌ను ఆప్టిమైజ్ చేయనట్లయితే ట్యాప్ ఇంటరాక్షన్‌లు [గరిష్ఠంగా 300 మి.సె. వరకు ఆలస్యం కావచ్చు](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "మొబైల్ కోసం వీక్షణ పోర్ట్‌ను ఆప్టిమైజ్ చేయనట్లయితే ట్యాప్ ఇంటరాక్షన్‌లు [గరిష్ఠంగా 300 మి.సె. వరకు ఆలస్యం కావచ్చు](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "మొబైల్ ట్యాప్‌లో ఆలస్యం"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "AI DevTools గురించి తెలుసుకోండి"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "అజ్ఞాత మోడ్ లేదా గెస్ట్ మోడ్‌లో AI సహాయం అందుబాటులో లేదు"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "మీరు మీ Google ఖాతాతో Chromeకు సైన్ ఇన్ చేసినట్లయితే మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "మీ ఇంటర్నెట్ కనెక్షన్‌ను చెక్ చేసి, మళ్ళీ ట్రై చేయండి"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "DevToolsలో ఎంచుకున్న సందర్భోచిత ఐటెమ్‌ను డిస్‌ప్లే చేయండి"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "సెట్టింగ్‌లలో AI సహాయం"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS స్టయిల్స్‌ను అర్థం చేసుకోవడానికి {PH1}ను ఆన్ చేయండి"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "స్టయిల్స్, నెట్‌వర్క్ రిక్వెస్ట్‌లతో సహాయం పొందడానికి {PH1}ను ఆన్ చేయండి"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "స్టయిల్స్, నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఇంకా ఫైల్స్‌తో సహాయం పొందడానికి {PH1}‌ను ఆన్ చేయండి"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "స్టయిల్స్, నెట్‌వర్క్ రిక్వెస్ట్‌లు, పనితీరు, ఇంకా ఫైల్స్‌తో సహాయం పొందడానికి {PH1}‌ను ఆన్ చేయండి"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ఈ పేజీలో మీరు యానిమేషన్‌లను పరిశీలించవచ్చు, మార్చవచ్చు."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "సర్వీస్ నియమాలు"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1}కి లింక్ చేయబడింది"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "సోర్స్ మ్యాప్‌కు లింక్ చేయబడింది: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "అనుమతించండి"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "కన్సోల్‌ను చూపించు"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "కన్సోల్ మెసేజ్‌లకు సంబంధించిన AI సారాంశాలను చూడండి"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "కన్సోల్‌లో CORS ఎర్రర్‌లను చూపండి"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "యానిమేషన్స్ ప్యానెల్‌కు వెళ్లండి"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "రంగు ఎంపికను తెరవండి. {PH1}"
@@ -9063,7 +9012,7 @@
     "message": "CPU కాలిబ్రేషన్ రన్ అవుతోంది, దయచేసి ఈ ట్యాబ్ నుండి నిష్క్రమించకండి లేదా DevToolsను మూసివేయండి."
   },
   "panels/mobile_throttling/MobileThrottlingSelector.ts | advanced": {
-    "message": "అధునాతనం"
+    "message": "అడ్వాన్స్‌డ్"
   },
   "panels/mobile_throttling/MobileThrottlingSelector.ts | disabled": {
     "message": "డిజేబుల్ చేయబడింది"
@@ -9088,6 +9037,9 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1}‌ను జోడించండి"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "బ్లాక్ చేస్తోంది"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "అనుకూలం"
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex వ్యూయర్"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "నెట్‌వర్క్ రిక్వెస్ట్‌ను బ్లాక్ చేసే ఆకృతిని జోడించండి"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "ఆకృతిని జోడించండి"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "నెట్‌వర్క్ రిక్వెస్ట్‌లను బ్లాక్ చేయడానికి \"{PH1}\" బటన్‌పై క్లిక్ చేయడం ద్వారా ఒక ఆకృతిని జోడించండి."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} బ్లాక్ చేయబడింది"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్‌ను ఎనేబుల్ చేయండి"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "ఐటెమ్ విజయవంతంగా తొలగించబడింది"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "మరింత తెలుసుకోండి"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "బ్లాక్ చేయబడిన నెట్‌వర్క్ రిక్వెస్ట్‌లు ఏవీ లేవు"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "ఆకృతి ఇప్పటికే ఉంది."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "ఆకృతి ఇన్‌పుట్ ఖాళీగా ఉండకూడదు."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "మ్యాచ్ అయిన రిక్వెస్ట్‌లను బ్లాక్ చేయడానికి టెక్స్ట్ ఆకృతి; వైల్డ్ కార్డ్ కోసం *ను ఉపయోగించండి"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "అన్నింటినీ క్లియర్ చేయండి"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "రిక్వెస్ట్ స్టేటస్‌ను ఇక్కడ చూపించడం సాధ్యం కాదు, ఎందుకంటే ఆ రిక్వెస్ట్ ఫ్లయిట్‌లో ఉన్నప్పుడు దానిని జారీ చేసిన పేజీ లోడ్ అవ్వలేదు. నెట్‌వర్క్ లాగ్‍ను క్యాప్చర్ చేయడానికి, ఇంకా అన్ని రిక్వెస్ట్ వివరాలను చూడటానికి మీరు chrome://net-exportను ఉపయోగించవచ్చు."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "కనెక్షన్ సమాచారం"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "రిక్వెస్ట్ URLను బ్లాక్ చేయండి"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "రిక్వెస్ట్‌లను బ్లాక్ చేయండి"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "బ్లాక్ చేయబడిన రిక్వెస్ట్‌లు"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "3వ-పార్టీ రిక్వెస్ట్‌లు"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "రిక్వెస్ట్ డొమైన్‌ను త్రోటిల్ చేయండి"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "రిక్వెస్ట్ URLను త్రోటిల్ చేయండి"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "త్రోటిల్ రిక్వెస్ట్‌లు"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1}ని అన్‌బ్లాక్ చేయి"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} త్రోట్లింగ్‌ను ఆపివేయండి"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "కనెక్షన్ ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "నెట్‌వర్క్ రిక్వెస్ట్‌ను బ్లాక్ చేసే ఆకృతిని జోడించండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "ఆకృతిని జోడించండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "నెట్‌వర్క్ రిక్వెస్ట్ త్రాట్లింగ్ లేదా బ్లాకింగ్ ఆకృతిని జోడించండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" బటన్‌ను క్లిక్ చేసి ఒక ఆకృతిని జోడించండి."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} బ్లాక్ చేయబడింది"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "ప్రాధాన్యతను తగ్గించండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "బ్లాకింగ్, త్రోట్లింగ్‌ను ఎనేబుల్ చేయండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్‌ను ఎనేబుల్ చేయండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "ప్రాధాన్యతను పెంచండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "ఐటెమ్ విజయవంతంగా తొలగించబడింది"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "మరింత తెలుసుకోండి"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "బ్లాక్ చేయబడిన నెట్‌వర్క్ రిక్వెస్ట్‌లు ఏవీ లేవు"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "రిక్వెస్ట్ త్రోట్లింగ్ లేదా బ్లాకింగ్ ఆకృతులు ఏవీ లేవు"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "ఆకృతి ఇప్పటికే ఉంది."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "ఈ ఆకృతి URLPatternగా పార్స్ చేయడంలో విఫలమైంది"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp గ్రూప్‌లకు అనుమతి లేదు"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "ఆకృతి ఇన్‌పుట్ ఖాళీగా ఉండకూడదు."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "ఈ ఆకృతి \"{PH1}\" నుండి అప్‌గ్రేడ్ చేయబడింది"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "మ్యాచ్ అయిన రిక్వెస్ట్‌లను బ్లాక్ చేయడానికి లేదా త్రోటిల్ చేయడానికి టెక్స్ట్ ఆకృతి; URLPattern సింటాక్స్‌ను ఉపయోగించండి."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "మ్యాచ్ అయిన రిక్వెస్ట్‌లను బ్లాక్ చేయడానికి టెక్స్ట్ ఆకృతి; వైల్డ్ కార్డ్ కోసం *ను ఉపయోగించండి"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ప్రతిస్పందనలోని 'set-cookie' హెడర్‌లో సర్వర్‌ నుండి స్వీకరించిన కుక్కీలు"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorkerకు రిక్వెస్ట్"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "రిక్వెస్ట్/ప్రతిస్పందన"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "రిసోర్స్ షెడ్యూలింగ్"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "ఈ రిసోర్స్‌ను వేరే సైట్ నుండి ఉపయోగించడానికి, క్రాస్-ఆరిజిన్ రిసోర్స్ పాలసీ ప్రతిస్పందన హెడర్‌ను సర్వర్ సడలించవచ్చు:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్ లేదా త్రోట్లింగ్ ఆకృతిని జోడించండి"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "నెట్‌వర్క్ రిక్వెస్ట్‌ను బ్లాక్ చేసే ఆకృతిని జోడించండి"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "రిక్వెస్ట్ కండిషన్‌లు"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "నెట్‌వర్క్ త్రోట్లింగ్"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "నెట్‌వర్క్ లాగ్‌ను రికార్డ్ చేయండి"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్ లేదా త్రోట్లింగ్ ఆకృతులన్నింటినీ తీసివేయండి"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "అన్ని నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్ ఆకృతులను తీసివేయండి"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్‌ను చూపు"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "రిక్వెస్ట్ కండిషన్‌లను చూడండి"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "సెర్చ్‌ను చూపండి"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "డిటాచ్ అయిన DOM నోడ్స్ ద్వారా స్టోర్ చేయబడిన ఆబ్జెక్ట్‌లు"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "ఈవెంట్ హ్యాండ్లర్‌ల ద్వారా స్టోర్ చేసిన ఆబ్జెక్ట్‌లు"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "ఇతర JS ఆబ్జెక్ట్‌లు"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "ఆన్‌లో ఉన్నప్పుడు"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "పాత్‌ను ఎంటర్ చేయండి"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "ప్రత్యేకమైన పాత్‌ను ఎంటర్ చేయండి"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "మినహాయించబడిన సబ్-ఫోల్డర్‌లు"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "స్క్రిప్ట్ URL కోసం రెగ్యులర్ ఎక్స్‌ప్రెషన్ నియమాన్ని జోడించండి"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "చిహ్నాలను చూడటానికి JavaScript లేదా CSS ఫైల్‌ను తెరవండి"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "ఉన్న ఫోల్డర్‌లో తెరవండి"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ఓవర్‌రైడ్ కంటెంట్"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ మాప్ చేయబడిన సోర్స్ ఫైల్, దీన్ని ఓవర్‌రైడ్ చేయడం సాధ్యం కాదు."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "బదులుగా {PH1}‌ను ఓవర్‌రైడ్ చేయాలా?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "ఇలా సేవ్ చేయాలి…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ఫైల్‌ను డిస్క్‌కు సేవ్ చేయడంలో విఫలమైంది."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "ఇమేజ్‌ను సేవ్ చేయండి"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM మాడ్యూల్‌ను డిస్క్‌కు సేవ్ చేయడం సాధ్యపడలేదు. మాడ్యూల్ చాలా పెద్దదిగా ఉండటం దీనికి కారణం కావచ్చు."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "ఓవర్‌రైడ్‌లు అన్నిటినీ చూడండి"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "అదనపు గమనికలను చేర్చండి"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "స్క్రిప్ట్ కంటెంట్‌ను చేర్చండి"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "స్క్రిప్ట్ సోర్స్ మ్యాప్‌లను చేర్చండి"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "అదనపు సమాచారం:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "సేవ్ చేయండి"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "లోడ్ అయిన అన్ని స్క్రిప్ట్‌ల (ఎక్స్‌టెన్షన్‌లు మినహా) పూర్తి కంటెంట్ ఉంటుంది."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip ద్వారా కుదించండి"
@@ -15507,7 +15561,7 @@
     "message": "అందుబాటులో ఉన్న సోర్స్ మ్యాప్‌లు ఉంటాయి, ఇవి ప్రామాణీకరించిన కోడ్‌ను బహిర్గతం చేసే అవకాశం ఉంది."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
-    "message": "అధునాతనం"
+    "message": "అడ్వాన్స్‌డ్"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "రద్దు చేయండి"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "రిక్వెస్ట్ హెడర్‌లు ఓవర్‌రైడ్ చేయబడ్డాయి"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome ఫ్లాగ్‌లు లేదా బ్రౌజర్ కాన్ఫిగరేషన్ కారణంగా ఈ రిక్వెస్ట్ కోసం కుక్కీలు బ్లాక్ చేయబడ్డాయి. సమస్యల ప్యానెల్‌లో మరింత తెలుసుకోండి."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "రెగ్యులర్ ఎక్స్‌ప్రెషన్‌ను ఉపయోగించండి"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ఒకటి లేదా అంతకంటే ఎక్కువ సెట్టింగ్‌లు మారాయి, ఈ మార్పులు అమలు అవ్వడానికి పేజీని రీలోడ్ చేయాలి"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*రీలోడ్ అవసరం"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ఎంచుకోబడింది"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "తక్కువ కాంట్రాస్ట్ సమస్యను పరిష్కరించడానికి సూచించిన రంగు {PH1}ను ఉపయోగించండి"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ఫార్మాట్ పరిధికి మ్యాచ్ అవ్వడం కోసం ఈ రంగు క్లిప్ చేయబడింది. అసలు ఫలితం {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ పరిధిని తగ్గించడం వలన రంగులు తగ్గుతాయి"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "పాలెట్‌కు జోడిస్తుంది"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "కుక్కీలు"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "డొమైన్"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "ఎడిట్ చేయదగిన కుక్కీలు"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(అపారదర్శకం)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "పార్టిషన్ కీ సైట్"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "పాత్"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "ప్రాధాన్యత"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "సురక్షితం"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "సెషన్"

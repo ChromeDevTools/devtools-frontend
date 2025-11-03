@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ブロック"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "ブロック"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "中断"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "右に固定"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools が外部リクエストを受信しました"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ページにフォーカス"
   },
@@ -1275,13 +1281,13 @@
     "message": "データのサポート: SVGUseElement の URL は非推奨となり、今後削除される予定です。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() と watchPosition() は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+    "message": "getCurrentPosition() と watchPosition() は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ をご覧ください。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() と watchPosition() は、保護されていないオリジンでは非推奨となっています。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+    "message": "getCurrentPosition() と watchPosition() は、保護されていないオリジンでは非推奨となっています。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ をご覧ください。"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+    "message": "getUserMedia() は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ をご覧ください。"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate のサポートは終了しました。代わりに RTCPeerConnectionIceErrorEvent.address または RTCPeerConnectionIceErrorEvent.port を使用してください。"
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI は、MIDIOptions で SysEx が指定されていない場合でも使用許可を要求します。"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "通知 API は保護されていないオリジンから使用できなくなっている可能性があります。アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+    "message": "Notification API は保護されていないオリジンから使用できなくなっている可能性があります。アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ をご覧ください。"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "通知 API の権限は、クロスオリジンの iframe からリクエストできなくなっている可能性があります。最上位フレームからの権限をリクエストするか、代わりに新しいウィンドウを開くことを検討してください。"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "拡張機能で引き続き SharedArrayBuffer を使用するは、クロスオリジン分離を有効にする必要があります。https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ をご覧ください。"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() は非推奨になりました。代わりに writeValueWithResponse() または writeValueWithoutResponse() を使用してください。"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 は、XMLHttpRequest のレスポンス JSON ではサポートされていません。"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "この機能は、インターネットに接続されている場合にのみご利用いただけます。"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools が外部リクエストを受信しました"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ファイルの読み込み中に不明なエラーが発生しました"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} レイテンシ、{PH2} ダウンロード（合計 {PH3}）"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "パスを入力"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "一意のパスを入力してください"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "除外されたサブフォルダ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "blob を読み込めませんでした。"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ファイルシステムを追加できません: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "フォルダで開く"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "コンテンツをオーバーライド"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "「{PH1}」はソースマップ ファイルであり、オーバーライドできません。"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "代わりに「{PH1}」をオーバーライドしますか？"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "名前を付けて保存..."
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ファイルをディスクに保存できませんでした。"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "画像を保存"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM モジュールをディスクに保存できません。モジュールが大きすぎる可能性があります。"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "すべてのオーバーライドを表示"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1} にリンク"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "ソースマップにリンク: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem がファイルを読み取れません。"
@@ -2157,7 +2118,7 @@
     "message": "アニメーション"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "レイアウト シフトは、ユーザーの操作なしで要素が移動する場合に発生します。[レイアウト シフトの原因を調査](https://web.dev/articles/optimize-cls)してください。たとえば、ページの読み込み時に要素が追加、削除される、フォントが変更されるなどの原因が考えられます。"
+    "message": "レイアウト シフトは、ユーザーの操作なしで要素が移動する場合に発生します。[レイアウト シフトの原因を調査](https://developer.chrome.com/docs/performance/insights/cls-culprit)してください。たとえば、ページの読み込み時に要素が追加、削除される、フォントが変更されるなどの原因が考えられます。"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "挿入された iframe"
@@ -2193,7 +2154,7 @@
     "message": "キャッシュの TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "キャッシュの有効期間を長くすると、再訪問したユーザーへのページの読み込み速度を向上できます。[詳細](https://web.dev/uses-long-cache-ttl/)"
+    "message": "キャッシュの有効期間を長くすると、再訪問したユーザーへのページの読み込み速度を向上できます。[キャッシュについて](https://developer.chrome.com/docs/performance/insights/cache)"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "非効率的キャッシュ ポリシーの対象となるリクエストはありません"
@@ -2208,7 +2169,7 @@
     "message": "効率的なキャッシュ保存期間を使用する"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM サイズが大きいと、スタイルの計算とレイアウトのリフローに時間がかかり、ページの応答性に影響する可能性があります。DOM サイズが大きいと、メモリ使用量も増加します。[過度な DOM サイズの回避方法の詳細](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+    "message": "DOM サイズが大きいと、スタイルの計算とレイアウトのリフローに時間がかかり、ページの応答性に影響する可能性があります。DOM サイズが大きいと、メモリ使用量も増加します。[過度な DOM サイズの回避方法の詳細](https://developer.chrome.com/docs/performance/insights/dom-size)"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "所要時間"
@@ -2244,7 +2205,7 @@
     "message": "値"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "最初のネットワーク リクエストは最も重要です。リダイレクトを回避し、サーバー応答を高速に保ち、テキスト圧縮を有効にして、レイテンシを削減します。"
+    "message": "最初のネットワーク リクエストは最も重要です。リダイレクトを回避し、サーバー応答を高速に保ち、テキスト圧縮を有効にして、[レイテンシを削減](https://developer.chrome.com/docs/performance/insights/document-latency)します。"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "リダイレクトあり（{PH1} 件のリダイレクト、+ {PH2}）"
@@ -2283,13 +2244,13 @@
     "message": "ソース"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "重複する大きい JavaScript モジュールをバンドルから削除すると、ネットワーク アクティビティで不必要に消費されるデータ量を減らすことができます。"
+    "message": "大きい[重複する JavaScript モジュール](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)をバンドルから削除すると、ネットワーク アクティビティで不必要に消費されるデータ量を減らすことができます。"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "重複する JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "テキストの表示を統一するため、[font-display](https://developer.chrome.com/blog/font-display) を swap または optional に設定することを検討してください。swap をさらに最適化して、[フォント指標のオーバーライド](https://developer.chrome.com/blog/font-fallbacks)でレイアウト シフトを軽減できます。"
+    "message": "テキストの表示を統一するため、[font-display](https://developer.chrome.com/docs/performance/insights/font-display) を swap または optional に設定することを検討してください。swap をさらに最適化して、[フォント指標のオーバーライド](https://developer.chrome.com/blog/font-fallbacks)でレイアウト シフトを軽減できます。"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "フォント"
@@ -2304,10 +2265,10 @@
     "message": "（匿名）"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "強制リフローは、DOM の状態の変更によってスタイルが無効化された後に JavaScript が幾何学的プロパティ（offsetWidth など）をクエリしたときに発生します。これにより、パフォーマンスが低下する可能性があります。詳しくは、[強制リフロー](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)とその緩和策をご覧ください。"
+    "message": "強制リフローは、DOM の状態の変更によってスタイルが無効化された後に JavaScript が幾何学的プロパティ（offsetWidth など）をクエリしたときに発生します。これにより、パフォーマンスが低下する可能性があります。詳しくは、[強制リフロー](https://developer.chrome.com/docs/performance/insights/forced-reflow)とその緩和策をご覧ください。"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "スタック トレース"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "リフローをトリガーする呼び出しフレーム"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "強制リフロー"
@@ -2322,7 +2283,7 @@
     "message": "[ソース不明]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "最も長いサブパートから調査を開始します。[遅延を最小限に抑えることができます](https://web.dev/articles/optimize-inp#optimize_interactions)。処理期間を削減するには、[メインスレッドのコスト（通常は JS）を最適化](https://web.dev/articles/optimize-long-tasks)します。"
+    "message": "[INP を改善する方法](https://developer.chrome.com/docs/performance/insights/inp-breakdown)を調べるには、まず最初に最も長いサブパートを確認します。"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "所要時間"
@@ -2346,7 +2307,7 @@
     "message": "INP の内訳"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "画像のダウンロード時間を短縮すると、ページ読み込みの体感時間と LCP を改善できます。[画像サイズの最適化に関する詳細](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "画像のダウンロード時間を短縮すると、ページ読み込みの体感時間と LCP を改善できます。[画像サイズの最適化に関する詳細](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1}（推定 {PH2}）"
@@ -2376,7 +2337,7 @@
     "message": "GIF ではなく動画形式を使用すると、アニメーション コンテンツのダウンロード サイズが改善する可能性があります。"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "各[サブパートには、それに適した改善戦略があります](https://web.dev/articles/optimize-lcp#lcp-breakdown)。理想的なのは、LCP 時間のほとんどがリソースの読み込みに使われ、遅延に費やされないことです。"
+    "message": "各[サブパートには、それに適した改善戦略があります](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)。理想的なのは、LCP 時間のほとんどがリソースの読み込みに使われ、遅延に費やされないことです。"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "所要時間"
@@ -2406,7 +2367,7 @@
     "message": "LCP の内訳"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "LCP 画像を HTML からすぐに[検出できる](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)ようにし、[遅延読み込みを回避](https://web.dev/articles/lcp-lazy-loading)して、LCP を最適化します"
+    "message": "LCP 画像を HTML からすぐに検出できるようにし、遅延読み込みを回避して、[LCP を最適化](https://developer.chrome.com/docs/performance/insights/lcp-discovery)します"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "「fetchpriority=high」が適用されました"
@@ -2439,13 +2400,13 @@
     "message": "不要なバイト"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "ポリフィルと変換を使用すると、従来のブラウザで新しい JavaScript 機能を使用できるようになります。ただし、その機能の多くは最新ブラウザでは必要ありません。従来のブラウザをサポートする必要がある場合を除き、[Baseline](https://web.dev/articles/baseline-and-polyfills) の機能をトランスパイルしないように JavaScript ビルドプロセスを変更することを検討してください。[ほとんどのサイトでトランスパイルせずに ES6+ コードをデプロイできる理由](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "ポリフィルと変換を使用すると、従来のブラウザで新しい JavaScript 機能を使用できるようになります。ただし、その機能の多くは最新ブラウザでは必要ありません。従来のブラウザをサポートする必要がある場合を除き、[Baseline](https://web.dev/articles/baseline-and-polyfills) の機能をトランスパイルしないように JavaScript ビルドプロセスを変更することを検討してください。[ほとんどのサイトでトランスパイルせずに ES6+ コードをデプロイできる理由](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "以前の JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 と HTTP/3 には、多重化など、HTTP/1.1 と比べて多くのメリットがあります。[最新の HTTP の使用について](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+    "message": "HTTP/2 と HTTP/3 には、多重化など、HTTP/1.1 と比べて多くのメリットがあります。[最新の HTTP の使用について](https://developer.chrome.com/docs/performance/insights/modern-http)"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "HTTP/1.1 を使用したリクエストはありません。もしくは、HTTP/1.1 を使用していても、大きく最適化できる部分はありません。HTTP/1.1 リクエストは、6 つ以上の静的アセットが同じオリジンから提供され、ローカルの開発環境またはサードパーティのソースから提供されていない場合にのみフラグが立てられます。"
@@ -2478,7 +2439,7 @@
     "message": "未使用の事前接続。crossorigin 属性が適切に使用されていることを確認してください。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "チェーンの長さを縮小する、リソースのダウンロード サイズを抑える、不要なリソースのダウンロードを遅らせるなどしてページの読み込み速度を改善し、[クリティカル リクエスト チェーンを回避](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)してください。"
+    "message": "チェーンの長さを縮小する、リソースのダウンロード サイズを抑える、不要なリソースのダウンロードを遅らせるなどしてページの読み込み速度を改善し、[クリティカル リクエスト チェーンを回避](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)してください。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "最も重要なオリジンに[事前接続](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)のヒントを追加します。ヒントを追加するオリジンは 4 つ以下にすることをおすすめします。"
@@ -2517,7 +2478,7 @@
     "message": "チェーンの長さを縮小する、リソースのダウンロード サイズを抑える、不要なリソースのダウンロードを遅らせるなどしてページの読み込み速度を改善し、クリティカル リクエスト チェーンを回避してください。"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "リクエストがページの最初のレンダリングをブロックしているため、LCP が遅れる可能性があります。これらのネットワーク リクエストを[遅らせるかインライン化](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)すると、クリティカル パスから移動できます。"
+    "message": "リクエストがページの最初のレンダリングをブロックしているため、LCP が遅れる可能性があります。これらのネットワーク リクエストを[遅らせるかインライン化](https://developer.chrome.com/docs/performance/insights/render-blocking)すると、クリティカル パスから移動できます。"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "所要時間"
@@ -2532,7 +2493,7 @@
     "message": "レンダリングをブロックしているリクエスト"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "スタイルの再計算のコストが引き続き高い場合は、セレクタの最適化によってコストを削減できます。経過時間が長く、遅いパスの割合（%）が高い[セレクタを最適化](https://developer.chrome.com/docs/devtools/performance/selector-stats)します。セレクタの複雑さや数、DOM のサイズや深さを抑えて、一致コストを削減します。"
+    "message": "スタイルの再計算のコストが引き続き高い場合は、セレクタの最適化によってコストを削減できます。経過時間が長く、遅いパスの割合（%）が高い[セレクタを最適化](https://developer.chrome.com/docs/performance/insights/slow-css-selector)します。セレクタの複雑さや数、DOM のサイズや深さを抑えて、一致コストを削減します。"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "経過時間"
@@ -2571,7 +2532,7 @@
     "message": "転送サイズ"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "サードパーティのコードによって、読み込み速度が著しく低下する可能性があります。ページのコンテンツを優先させるには、[サードパーティのコードの読み込みを減らして遅らせ](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)ます。"
+    "message": "サードパーティのコードによって、読み込み速度が著しく低下する可能性があります。ページのコンテンツを優先させるには、[サードパーティのコードの読み込みを減らして遅らせ](https://developer.chrome.com/docs/performance/insights/third-parties)ます。"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "サードパーティのコンテンツは見つかりませんでした"
@@ -2580,7 +2541,7 @@
     "message": "サードパーティ"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "ビューポートがモバイル向けに最適化されていない場合、タップ操作が[最大 300 ミリ秒遅延](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)する可能性があります。"
+    "message": "ビューポートがモバイル向けに最適化されていない場合、タップ操作が[最大 300 ミリ秒遅延](https://developer.chrome.com/docs/performance/insights/viewport)する可能性があります。"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "モバイルタップの遅延"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools の AI の詳細"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "AI アシスタンスはシークレット モードまたはゲストモードでは使用できません"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "この機能は、Google アカウントで Chrome にログインしている場合にのみご利用いただけます。"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "インターネット接続を確認してもう一度お試しください"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "DevTools で選択したコンテキスト アイテムを表示します"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "[設定] の AI アシスタンス"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS スタイルの解釈のサポートを利用するには、{PH1} をオンにしてください"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "スタイルとネットワーク リクエストの解釈についてサポートを利用するには、{PH1} をオンにしてください"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "スタイル、ネットワーク リクエスト、ファイルについてサポートを利用するには、{PH1} をオンにしてください"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "スタイル、ネットワーク リクエスト、パフォーマンス、ファイルについてサポートを利用するには、{PH1} をオンにしてください"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "このページでは、アニメーションを検証して変更できます。"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "利用規約"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1} にリンク"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "ソースマップにリンク: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "許可"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "コンソールを表示"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "コンソール メッセージの AI 要約を表示する"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "コンソールに CORS エラーを表示する"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "アニメーション パネルに移動"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "カラー選択ツールを開く（{PH1}）"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} を追加"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "ブロック"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "カスタム"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex ビューア"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "ネットワーク リクエストのブロック パターンを追加"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "パターンを追加"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "[{PH1}] ボタンをクリックして、ネットワーク リクエストをブロックするパターンを追加します。"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} をブロックしました"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "ネットワーク リクエストのブロックを有効にする"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "アイテムを削除しました"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "詳細"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "ブロックされたネットワーク リクエストはありません"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "パターンがすでに存在します。"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "パターン入力は空白にできません。"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "一致したリクエストをブロックするテキスト パターン。ワイルドカードとして * を使用してください"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "すべてクリア"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "リクエスト中に発行元のページが読み込まれなかったため、リクエストのステータスを表示できません。chrome://net-export を使用してネットワーク ログを取得し、すべてのリクエストの詳細を確認できます。"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "接続情報"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "ブロック リクエストの URL"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "リクエストをブロック"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ブロックされたリクエスト"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "サードパーティのリクエスト"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "リクエスト ドメインをスロットリング"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "リクエスト URL をスロットリング"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "リクエストをスロットリング"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} のブロックを解除"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} のスロットリングを停止"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "接続 ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "ネットワーク リクエストのブロック パターンを追加"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "パターンを追加"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "ネットワーク リクエストのスロットリングまたはブロックのパターンを追加"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "[{PH1}] ボタンをクリックして、パターンを追加します。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} をブロックしました"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "優先度を下げる"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "ブロックとスロットリングを有効にする"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "ネットワーク リクエストのブロックを有効にする"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "優先度を上げる"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "アイテムを削除しました"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "詳細"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "ブロックされたネットワーク リクエストはありません"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "リクエストのスロットリングまたはブロックのパターンはありません"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "パターンがすでに存在します。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "このパターンを URLPattern として解析できませんでした"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp グループは使用できません"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "パターン入力は空白にできません。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "このパターンは「{PH1}」からアップグレードされました"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "一致したリクエストをブロックまたはスロットリングするテキスト パターン。URLPattern 構文を使用します。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "一致したリクエストをブロックするテキスト パターン。ワイルドカードとして * を使用してください"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "レスポンスの「set-cookie」ヘッダーでサーバーから受信した Cookie です"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker へのリクエスト"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "リクエスト / レスポンス"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "リソースのスケジュール設定"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "このリソースを別のサイトから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "ネットワーク リクエストのブロックまたはスロットリングのパターンを追加する"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "ネットワーク リクエストのブロック パターンを追加"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "ネットワーク リクエストのブロック"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "リクエストの条件"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ネットワーク スロットリング"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "ネットワーク ログを記録"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "ネットワーク リクエストのブロックまたはスロットリングのパターンをすべて削除する"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "ネットワーク リクエストのすべてのブロック パターンを削除する"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "ネットワーク リクエストのブロックを表示"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "リクエストの条件を表示"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "検索を表示"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "デタッチされた DOM ノードで保持されているオブジェクト"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "イベント ハンドラで保持されているオブジェクト"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "その他の JS オブジェクト"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "オンにした場合"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "パスを入力"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "一意のパスを入力してください"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "除外されたサブフォルダ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "スクリプトの URL の正規表現ルールを追加"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "記号を確認するには、JavaScript ファイルまたは CSS ファイルを開いてください"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "フォルダで開く"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "コンテンツをオーバーライド"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "「{PH1}」はソースマップ ファイルであり、オーバーライドできません。"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "代わりに「{PH1}」をオーバーライドしますか？"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "名前を付けて保存..."
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ファイルをディスクに保存できませんでした。"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "画像を保存"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM モジュールをディスクに保存できません。モジュールが大きすぎる可能性があります。"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "すべてのオーバーライドを表示"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "KB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "アノテーションを含める"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "スクリプト コンテンツを含める"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "スクリプトのソースマップを含める"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "その他の情報:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "保存"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "読み込まれたすべてのスクリプト（拡張機能を除く）のコンテンツ全体を含めます。"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip で圧縮する"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "リクエスト ヘッダーはオーバーライドされています"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "このリクエストの Cookie は、Chrome フラグまたはブラウザの設定によりブロックされました。詳しくは、[問題] パネルをご覧ください。"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "正規表現を使用"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "1 つ以上の設定が変更されました。変更を有効にするには再読み込みが必要です"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "* 再読み込みが必要"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "オン"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "色候補 {PH1} を使用して低コントラストを修正"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "フォーマットの色域に合わせて、この色はクリップされました。実際の結果は {PH1} でした"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ 狭い色域に変換すると、カラーシフトが発生します"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "パレットに追加"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ドメイン"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "編集可能な Cookie"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "（不透明）"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "パーティション キー サイト"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "パス"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "優先度"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "安全"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "セッション"

@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Bloco With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Bloqueio"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Cancelada"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Fixar à direita"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools recebeu uma solicitação externa"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Página de foco"
   },
@@ -1275,13 +1281,13 @@
     "message": "Suporte para dados: os URLs em SVGUseElement foram descontinuados e serão removidos no futuro."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() e watchPosition() não funcionam mais em origens não seguras. Para usar esse recurso, considere trocar a origem do seu aplicativo para uma segura, como HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
+    "message": "getCurrentPosition() e watchPosition() não funcionam mais em origens não seguras. Para usar esse recurso, troque a origem do seu aplicativo por outra que seja segura, por exemplo, HTTPS. Consulte mais detalhes em https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ (em inglês)."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "O uso de getCurrentPosition() e watchPosition() foi descontinuado em origens não seguras. Para usar esse recurso, considere trocar a origem do seu aplicativo para uma segura, como HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
+    "message": "O uso de getCurrentPosition() e watchPosition() foi descontinuado em origens não seguras. Para usar esse recurso, troque a origem do seu aplicativo por outra que seja segura, por exemplo, HTTPS. Consulte mais detalhes em https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ (em inglês)."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() não funciona mais em origens não seguras. Para usar esse recurso, considere trocar a origem do seu aplicativo para uma segura, como HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
+    "message": "getUserMedia() não funciona mais em origens não seguras. Para usar esse recurso, troque a origem do seu aplicativo por outra que seja segura, por exemplo, HTTPS. Consulte mais detalhes em https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ (em inglês)."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "O uso de RTCPeerConnectionIceErrorEvent.hostCandidate foi descontinuado. Use RTCPeerConnectionIceErrorEvent.address ou RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "A Web MIDI pede permissão de uso mesmo que o sysex não esteja especificado em MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "A API Notification não pode mais ser usada em origens não seguras. Considere trocar a origem do seu aplicativo para uma segura, como HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
+    "message": "A API Notification não pode mais ser usada em origens não seguras. Troque a origem do seu aplicativo para uma que seja segura, como HTTPS. Consulte mais detalhes em https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ (em inglês)."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "A permissão para a API Notification não pode mais ser solicitada em um iframe entre origens. Considere solicitar a permissão em um frame de nível superior ou abrir uma nova janela."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "As extensões precisam ativar o isolamento entre origens para continuar usando o recurso SharedArrayBuffer. Consulte https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ (link em inglês)."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "O uso de BluetoothRemoteGATTCharacteristic.writeValue() foi descontinuado. Use writeValueWithResponse() ou writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Não há suporte da resposta JSON para UTF-16 no XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Esse recurso só está disponível com uma conexão de Internet ativa."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools recebeu uma solicitação externa"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Erro desconhecido ao carregar o arquivo"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} de latência, {PH2} de download ({PH3} no total)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Insira um caminho"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Insira um caminho exclusivo"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Subpastas excluídas"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Não foi possível carregar o blob."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Não foi possível adicionar o sistema de arquivos: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Abrir na pasta do conteúdo"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Substituir conteúdo"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" é um arquivo mapeado de origem e não pode ser substituído."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Em vez disso, quer substituir {PH1}?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Salvar como…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Falha ao salvar o arquivo no disco."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Salvar imagem"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Não foi possível salvar o módulo WASM no disco. Provavelmente ele é muito grande."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Mostrar todas as substituições"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Vinculado a {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Vinculado ao mapa de origem: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem não consegue ler os arquivos."
@@ -2157,7 +2118,7 @@
     "message": "Animação"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "As mudanças de layout ocorrem quando os elementos se movem sem qualquer interação do usuário. [Investigue as causas de mudanças no layout](https://web.dev/articles/optimize-cls), como elementos adicionados, removidos ou com fontes alteradas durante o carregamento da página."
+    "message": "As mudanças de layout ocorrem quando os elementos se movem sem qualquer interação do usuário. [Investigue as causas de mudanças no layout](https://developer.chrome.com/docs/performance/insights/cls-culprit), como elementos adicionados, removidos ou com fontes alteradas durante o carregamento da página."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "iframe injetado"
@@ -2193,7 +2154,7 @@
     "message": "TTL do cache"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Um cache com ciclo de vida longo pode acelerar visitas repetidas à sua página. [Saiba mais](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Um cache com ciclo de vida longo pode acelerar visitas repetidas à sua página. [Saiba mais sobre o armazenamento em cache](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Nenhum pedido com políticas de cache ineficazes"
@@ -2208,7 +2169,7 @@
     "message": "Use ciclos de vida eficientes de cache"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Um DOM grande pode aumentar a duração dos cálculos de estilo e reflows de layout, o que afeta a capacidade de resposta da página. Um DOM grande também aumenta o uso da memória. [Aprenda a evitar que o tamanho do DOM seja grande demais](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Um DOM grande pode aumentar a duração dos cálculos de estilo e reflows de layout, o que afeta a capacidade de resposta da página. Um DOM grande também aumenta o uso da memória. [Aprenda a evitar que o tamanho do DOM seja grande demais](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Duração"
@@ -2244,7 +2205,7 @@
     "message": "Valor"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "A primeira solicitação de rede é a mais importante.  Reduza a latência dela evitando redirecionamentos, garantindo uma resposta rápida do servidor e ativando a compactação de texto."
+    "message": "A primeira solicitação de rede é a mais importante. [Reduza a latência](https://developer.chrome.com/docs/performance/insights/document-latency) evitando redirecionamentos, garantindo uma resposta rápida do servidor e ativando a compactação de texto."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Tinha redirecionamentos ({PH1}, mais de {PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Origem"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Remover módulos JavaScript grandes e duplicados de pacotes para reduzir bytes desnecessários consumidos por atividades da rede."
+    "message": "Remover [módulos JavaScript grandes e duplicados](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) de pacotes para reduzir bytes desnecessários consumidos por atividades da rede."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript duplicado"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Defina [font-display](https://developer.chrome.com/blog/font-display) como swap ou optional para garantir que o texto fique visível de forma consistente. O atributo swap pode ser otimizado ainda mais para reduzir as trocas de layout com [substituições de métrica de fonte](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Defina [font-display](https://developer.chrome.com/docs/performance/insights/font-display) como swap ou optional para garantir que o texto fique visível de forma consistente. O atributo swap pode ser otimizado ainda mais para reduzir as trocas de layout com [substituições de métrica de fonte](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fonte"
@@ -2304,10 +2265,10 @@
     "message": "(anônimo)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Um reflow forçado ocorre quando o JavaScript consulta propriedades geométricas (como offsetWidth) depois que os estilos são invalidados por uma mudança no estado do DOM. Isso pode resultar em desempenho ruim. Saiba mais sobre [reflows forçados](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) e possíveis reduções de risco."
+    "message": "Um reflow forçado ocorre quando o JavaScript consulta propriedades geométricas (como offsetWidth) depois que os estilos são invalidados por uma mudança no estado do DOM. Isso pode resultar em desempenho ruim. Saiba mais sobre [reflows forçados](https://developer.chrome.com/docs/performance/insights/forced-reflow) e possíveis reduções de risco."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Stack trace"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Frames de chamada que acionam o reflow"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Reflow forçado"
@@ -2322,7 +2283,7 @@
     "message": "[sem atribuição]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Comece a investigação pela subparte mais longa. [Os atrasos podem ser minimizados.](https://web.dev/articles/optimize-inp#optimize_interactions) Para reduzir a duração do processamento, [otimize os custos da linha de execução principal](https://web.dev/articles/optimize-long-tasks), geralmente JS."
+    "message": "Comece a investigar [como melhorar a INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) analisando a subparte mais longa."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Duração"
@@ -2346,7 +2307,7 @@
     "message": "Detalhamento da INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Reduzir o tempo de download das imagens pode melhorar o tempo de carregamento percebido da página e a LCP. [Saiba mais sobre como otimizar o tamanho da imagem](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Reduzir o tempo de download das imagens pode melhorar o tempo de carregamento percebido da página e a LCP. [Saiba mais sobre como otimizar o tamanho da imagem](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Estimativa: {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Usar formatos de vídeo em vez de GIFs pode aprimorar o tamanho de download de conteúdo animado."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Cada [subparte tem estratégias de melhoria específicas](https://web.dev/articles/optimize-lcp#lcp-breakdown). O ideal é que a maior parte do tempo de LCP seja gasto no carregamento dos recursos, não em atrasos."
+    "message": "Cada [subparte tem estratégias de melhoria específicas](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). O ideal é que a maior parte do tempo de LCP seja gasto no carregamento dos recursos, não em atrasos."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Duração"
@@ -2406,7 +2367,7 @@
     "message": "Detalhamento da LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Otimize a LCP tornando a imagem LCP [detectável](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) no HTML imediatamente e [evitando o carregamento lento](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Otimize a LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) tornando a imagem LCP detectável no HTML imediatamente e evitando o carregamento lento"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Propriedade fetchpriority=high aplicada"
@@ -2439,13 +2400,13 @@
     "message": "Bytes desperdiçados"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfills e transformações permitem que navegadores mais antigos usem novos recursos do JavaScript. No entanto, muitos não são necessários para navegadores mais recentes. Considere mudar seu processo de criação do JavaScript para não transpilar os recursos [de referência](https://web.dev/articles/baseline-and-polyfills), a menos que você precise da compatibilidade com navegadores mais antigos. [Entenda por que a maioria dos sites pode implantar código ES6+ sem transpilação](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfills e transformações permitem que navegadores mais antigos usem novos recursos do JavaScript. No entanto, muitos não são necessários para navegadores mais recentes. Considere mudar seu processo de criação do JavaScript para não transpilar os recursos [de referência](https://web.dev/articles/baseline-and-polyfills), a menos que você precise da compatibilidade com navegadores mais antigos. [Entenda por que a maioria dos sites pode implantar código ES6+ sem transpilação](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript legado"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 e HTTP/3 oferecem muitos benefícios em relação ao HTTP/1.1, como multiplexação. [Saiba mais sobre o uso de HTTP moderno](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 e HTTP/3 oferecem muitos benefícios em relação ao HTTP/1.1, como multiplexação. [Saiba mais sobre o uso de HTTP moderno](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Nenhuma solicitação usou HTTP/1.1 ou o uso atual de HTTP/1.1 não apresenta uma oportunidade de otimização significativa. As solicitações HTTP/1.1 só são sinalizadas se seis ou mais recursos estáticos tiverem a mesma origem e não forem disponibilizados por um ambiente de desenvolvimento local ou uma fonte de terceiros."
@@ -2478,7 +2439,7 @@
     "message": "Pré-conexão não usada. Confira se o atributo crossorigin está sendo usado corretamente."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Evite encadear solicitações críticas](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) reduzindo o tamanho das cadeias, o tamanho do download de recursos ou adiando o download de recursos desnecessários para melhorar o carregamento da página."
+    "message": "[Evite encadear solicitações críticas](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) reduzindo o tamanho das cadeias, o tamanho do download de recursos ou adiando o download de recursos desnecessários para melhorar o carregamento da página."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Adicione dicas de [pré-conexão](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) às suas origens mais importantes, mas tente não usar mais que 4."
@@ -2517,7 +2478,7 @@
     "message": "Evite encadear solicitações críticas reduzindo o tamanho das cadeias, diminuindo o tamanho do download de recursos ou adiando o download de recursos desnecessários para melhorar o carregamento da página."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "As solicitações estão bloqueando a renderização inicial da página, o que pode atrasar a LCP. Essas solicitações de rede podem ser [deferidas ou colocadas inline](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) para que fiquem fora do caminho crítico."
+    "message": "As solicitações estão bloqueando a renderização inicial da página, o que pode atrasar a LCP. Essas solicitações de rede podem ser [deferidas ou colocadas inline](https://developer.chrome.com/docs/performance/insights/render-blocking) para que fiquem fora do caminho crítico."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Duração"
@@ -2532,7 +2493,7 @@
     "message": "Renderizar solicitações de bloqueio"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Se os custos de \"Recalcular estilo\" permanecerem altos, a otimização do seletor poderá reduzir esse valor. [Otimize os seletores](https://developer.chrome.com/docs/devtools/performance/selector-stats) com muito tempo decorrido e porcentagem alta de caminhos lentos. Seletores mais simples, menos seletores, um DOM menor e um DOM com menos níveis reduzem os custos correspondentes."
+    "message": "Se os custos de \"Recalcular estilo\" permanecerem altos, a otimização do seletor poderá reduzir esse valor. [Otimize os seletores](https://developer.chrome.com/docs/performance/insights/slow-css-selector) com muito tempo decorrido e porcentagem alta de caminhos lentos. Seletores mais simples, menos seletores, um DOM menor e um DOM com menos níveis reduzem os custos correspondentes."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Tempo decorrido"
@@ -2571,7 +2532,7 @@
     "message": "Tamanho da transferência"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Código de terceiros pode afetar significativamente a performance de carregamento. [Reduza e adie o carregamento de código de terceiros](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) para priorizar o conteúdo da sua página."
+    "message": "Código de terceiros pode afetar significativamente a performance de carregamento. [Reduza e adie o carregamento de código de terceiros](https://developer.chrome.com/docs/performance/insights/third-parties) para priorizar o conteúdo da sua página."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Nenhum terceiro encontrado"
@@ -2580,7 +2541,7 @@
     "message": "Terceiros"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "As interações por toque podem [atrasar em até 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) se a janela de visualização não for otimizada para dispositivos móveis."
+    "message": "As interações por toque podem [atrasar em até 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) se a janela de visualização não for otimizada para dispositivos móveis."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Atraso de toque em dispositivo móvel"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Saiba mais sobre a IA no DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "A Assistência de IA no Chrome DevTools não está disponível no modo de navegação anônima nem no modo convidado"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Esse recurso só estará disponível se você tiver feito login no Chrome com sua Conta do Google"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Confira sua conexão de Internet e tente de novo"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Exibir o item de contexto selecionado no DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Assistência de IA nas Configurações"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Ative a {PH1} para entender melhor os estilos CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Ative a {PH1} para receber ajuda com estilos e solicitações de rede"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Ative a {PH1} para receber ajuda com estilos, solicitações de rede e arquivos"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Ative a {PH1} para receber ajuda com estilos, solicitações de rede, desempenho e arquivos"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Nesta página, você pode inspecionar e modificar animações."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Termos de Serviço"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Vinculado a {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Vinculado ao mapa de origem: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Permitir"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Mostrar console"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Mostrar resumos de IA para mensagens do console"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Mostrar erros CORS no console"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Ir para o painel Animações"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Abrir seletor de cores. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Adicionar {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Bloqueio"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Personalizado"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Visualizador de Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Adicionar um padrão de bloqueio para solicitações de rede"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Adicionar padrão"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Clique no botão {PH1} para adicionar um padrão de bloqueio de solicitações de rede."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} bloqueados"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Ativar bloqueio de solicitação de rede"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "O item foi excluído"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Saiba mais"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Nenhuma solicitação de rede bloqueada"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "O padrão já existe."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "A entrada padrão não pode estar vazia."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Padrão de texto para bloquear solicitações correspondentes. Use * como caractere curinga"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Remover tudo"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "O status da solicitação não é exibido aqui porque a página que a emitiu foi descarregada enquanto a solicitação estava no período de veiculação. Use chrome://net-export para capturar um registro de rede e ver todos os detalhes da solicitação."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informações da conexão"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "URL de solicitação de bloqueio"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Bloquear solicitações"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Solicitações bloqueadas"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Solicitações de terceiros"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Limitar domínio de solicitação"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "URL da solicitação de limitação"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Limitar solicitações"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Desbloquear {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Parar de limitar {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Código da conexão"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Adicionar um padrão de bloqueio para solicitações de rede"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Adicionar padrão"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Adicionar padrão de bloqueio ou limitação de solicitações de rede"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Clique no botão \"{PH1}\" para adicionar um padrão."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} bloqueados"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Diminuir prioridade"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Ativar bloqueio e limitação"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Ativar bloqueio de solicitação de rede"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Aumentar prioridade"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "O item foi excluído"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Saiba mais"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Nenhuma solicitação de rede bloqueada"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Nenhum padrão de bloqueio ou limitação de solicitações"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "O padrão já existe."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Falha ao analisar este padrão como um URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Grupos de RegExp não são permitidos"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "A entrada padrão não pode estar vazia."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Este padrão foi atualizado de \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Padrão de texto para bloquear ou limitar solicitações correspondentes. Use a sintaxe URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Padrão de texto para bloquear solicitações correspondentes. Use * como caractere curinga"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies que foram recebidos do servidor no cabeçalho set-cookie da resposta"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Solicitação para ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Solicitação/Resposta"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Cronograma de recursos"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Para usar esse recurso em um site diferente, o servidor pode flexibilizar o cabeçalho de resposta da política de recurso entre origens:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Adicionar um padrão de bloqueio ou limitação de solicitações de rede"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Adicionar um padrão de bloqueio para solicitações de rede"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Bloqueios de solicitação de rede"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Condições de solicitação"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "limitação de rede"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Gravar registro de rede"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Remover todos os padrões de bloqueio ou limitação de solicitações de rede"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Remover todos os padrões de bloqueio de solicitações de rede"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Mostrar bloqueios de solicitação de rede"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Mostrar condições de solicitação"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Mostrar a Pesquisa"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Objetos retidos por nós DOM removidos"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Objetos retidos por manipuladores de eventos"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Outros objetos de JS"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Quando ativado"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Insira um caminho"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Insira um caminho exclusivo"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Subpastas excluídas"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Adicionar uma regra de expressão regular para o URL do script"
   },
@@ -13143,7 +13167,7 @@
     "message": "Espaço de trabalho"
   },
   "panels/settings/components/SyncSection.ts | dataDisclaimer": {
-    "message": "(o Google recebe {PH1})"
+    "message": "(o Google recebe os {PH1})"
   },
   "panels/settings/components/SyncSection.ts | gdpPremiumSubscription": {
     "message": "Premium"
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Abrir um arquivo CSS ou JavaScript para ver os símbolos"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Abrir na pasta do conteúdo"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Substituir conteúdo"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" é um arquivo mapeado de origem e não pode ser substituído."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Em vez disso, quer substituir {PH1}?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Salvar como…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Falha ao salvar o arquivo no disco."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Salvar imagem"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Não foi possível salvar o módulo WASM no disco. Provavelmente ele é muito grande."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Mostrar todas as substituições"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "KB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Incluir anotações"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Incluir conteúdo do script"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Incluir mapas de origem do script"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Informações adicionais:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Salvar"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Inclui o conteúdo completo de todos os scripts carregados (exceto extensões)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Compactar com gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Os cabeçalhos da solicitação foram substituídos"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Os cookies desta solicitação foram bloqueados devido a Chrome flags ou à configuração do navegador. Saiba mais no painel \"Issues\"."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Usar expressão regular"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Uma ou mais configurações foram mudadas. Então, atualize para que isso entre em vigor"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Exige a atualização da página"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "marcado"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Usar a cor sugerida {PH1} para corrigir o contraste baixo"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Essa cor foi adaptada para corresponder à gama do formato. O resultado real foi {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ A conversão para uma gama estreita vai causar mudanças de cor"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Adicionar à paleta"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domínio"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Cookies editáveis"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(opaca)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Site da chave de partição"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Caminho"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioridade"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Seguro"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sessão"

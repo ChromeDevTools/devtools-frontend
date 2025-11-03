@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "บล็อก With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "บล็อก"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "ล้มเลิกแล้ว"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ตรึงไว้ทางขวา"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools ได้รับคำขอจากภายนอก"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "โฟกัสหน้า"
   },
@@ -1275,13 +1281,13 @@
     "message": "การรองรับข้อมูล: URL ใน SVGUseElement เลิกใช้งานแล้วและจะนำออกในอนาคต"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() และ watchPosition() ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+    "message": "getCurrentPosition() และ watchPosition() ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() และ watchPosition() เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+    "message": "getCurrentPosition() และ watchPosition() เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+    "message": "getUserMedia() ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate เลิกใช้งานแล้ว โปรดใช้ RTCPeerConnectionIceErrorEvent.address หรือ RTCPeerConnectionIceErrorEvent.port แทน"
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน MIDIOptions ก็ตาม"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+    "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "iframe แบบข้ามต้นทางอาจไม่ขอสิทธิ์สำหรับ Notification API อีกต่อไป คุณควรพิจารณาขอสิทธิ์จากเฟรมระดับบนสุดหรือเปิดหน้าต่างใหม่แทน"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "ส่วนขยายควรเลือกใช้การแยกแบบข้ามต้นทางเพื่อใช้ SharedArrayBuffer ต่อ ดู https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() เลิกใช้งานแล้ว โปรดใช้ writeValueWithResponse() หรือ writeValueWithoutResponse() แทน"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "ฟีเจอร์นี้ใช้ได้เมื่อเชื่อมต่ออินเทอร์เน็ตอยู่เท่านั้น"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools ได้รับคำขอจากภายนอก"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "เกิดข้อผิดพลาดที่ไม่รู้จักขณะโหลดไฟล์"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "เวลาในการตอบสนอง {PH1} ดาวน์โหลด {PH2} (รวม {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "ป้อนเส้นทาง"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "ป้อนเส้นทางที่ไม่ซ้ำ"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "โฟลเดอร์ย่อยที่ยกเว้น"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "โหลด BLOB ไม่ได้"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "เพิ่มระบบไฟล์ไม่ได้: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "เปิดในโฟลเดอร์ที่เก็บ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ลบล้างเนื้อหา"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" เป็นไฟล์ที่แมปแหล่งที่มาและลบล้างไม่ได้"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "ลบล้าง \"{PH1}\" แทนใช่ไหม"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "บันทึกเป็น…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "บันทึกไฟล์ไปยังดิสก์ไม่สำเร็จ"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "บันทึกรูปภาพ"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "บันทึกโมดูล WASM ลงในดิสก์ไม่ได้ เป็นไปได้ว่าโมดูลมีขนาดใหญ่เกินไป"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "แสดงการลบล้างทั้งหมด"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "ลิงก์กับ {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "ลิงก์กับการแมปแหล่งที่มา: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem อ่านไฟล์ไม่ได้"
@@ -2157,7 +2118,7 @@
     "message": "ภาพเคลื่อนไหว"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "การเปลี่ยนแปลงเลย์เอาต์เกิดขึ้นเมื่อองค์ประกอบต่างๆ เคลื่อนที่โดยไม่มีการโต้ตอบของผู้ใช้ [ตรวจสอบสาเหตุของการเปลี่ยนแปลงเลย์เอาต์](https://web.dev/articles/optimize-cls) เช่น การเพิ่ม การนำออก หรือการเปลี่ยนแบบอักษรขององค์ประกอบต่างๆ เมื่อโหลดหน้าเว็บ"
+    "message": "การเปลี่ยนแปลงเลย์เอาต์เกิดขึ้นเมื่อองค์ประกอบต่างๆ เคลื่อนที่โดยไม่มีการโต้ตอบของผู้ใช้ [ตรวจสอบสาเหตุของการเปลี่ยนแปลงเลย์เอาต์](https://developer.chrome.com/docs/performance/insights/cls-culprit) เช่น การเพิ่ม การนำออก หรือการเปลี่ยนแบบอักษรขององค์ประกอบต่างๆ เมื่อโหลดหน้าเว็บ"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "มีการแทรก iframe"
@@ -2193,7 +2154,7 @@
     "message": "TTL ของแคช"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "อายุการใช้งานแคชที่ยาวนานช่วยเพิ่มการเข้าชมหน้าเว็บซ้ำได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-long-cache-ttl/)"
+    "message": "อายุการใช้งานแคชที่ยาวนานช่วยเพิ่มการเข้าชมหน้าเว็บซ้ำได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการแคช](https://developer.chrome.com/docs/performance/insights/cache)"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "ไม่มีคำขอที่มีนโยบายแคชที่ไม่มีประสิทธิภาพ"
@@ -2208,7 +2169,7 @@
     "message": "ใช้อายุการใช้งานแคชที่มีประสิทธิภาพ"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM ที่มีขนาดใหญ่จะใช้เวลานานขึ้นในการคำนวณสไตล์และการจัดเรียงเลย์เอาต์ใหม่ ซึ่งส่งผลต่อการตอบสนองของหน้าเว็บ นอกจากนี้ DOM ที่มีขนาดใหญ่จะใช้หน่วยความจำเพิ่มขึ้นด้วย [ดูวิธีหลีกเลี่ยง DOM ที่มีขนาดใหญ่เกินไป](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+    "message": "DOM ที่มีขนาดใหญ่จะใช้เวลานานขึ้นในการคำนวณสไตล์และการจัดเรียงเลย์เอาต์ใหม่ ซึ่งส่งผลต่อการตอบสนองของหน้าเว็บ นอกจากนี้ DOM ที่มีขนาดใหญ่จะใช้หน่วยความจำเพิ่มขึ้นด้วย [ดูวิธีหลีกเลี่ยง DOM ที่มีขนาดใหญ่เกินไป](https://developer.chrome.com/docs/performance/insights/dom-size)"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "ระยะเวลา"
@@ -2244,7 +2205,7 @@
     "message": "ค่า"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "คำขอเครือข่ายครั้งแรกเป็นสิ่งสำคัญที่สุด  ลดเวลาในการตอบสนองโดยหลีกเลี่ยงการเปลี่ยนเส้นทาง ตรวจสอบการตอบกลับของเซิร์ฟเวอร์ที่รวดเร็ว และเปิดใช้การบีบอัดข้อความ"
+    "message": "คำขอเครือข่ายครั้งแรกเป็นสิ่งสำคัญที่สุด [ลดเวลาในการตอบสนอง](https://developer.chrome.com/docs/performance/insights/document-latency)โดยหลีกเลี่ยงการเปลี่ยนเส้นทาง ตรวจสอบการตอบกลับของเซิร์ฟเวอร์ที่รวดเร็ว และเปิดใช้การบีบอัดข้อความ"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "มีการเปลี่ยนเส้นทาง (เปลี่ยนเส้นทาง {PH1} +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "แหล่งที่มา"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "นำโมดูล JavaScript ขนาดใหญ่ที่ซ้ำกันออกจากแพ็กเกจเพื่อลดจำนวนไบต์ที่ไม่จำเป็นที่กิจกรรมเครือข่ายใช้"
+    "message": "นำ[โมดูล JavaScript ที่ซ้ำกัน](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)และขนาดใหญ่ออกจากแพ็กเกจเพื่อลดจำนวนไบต์ที่ไม่จำเป็นที่กิจกรรมเครือข่ายใช้"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript ที่ซ้ำกัน"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "ลองตั้งค่า [font-display](https://developer.chrome.com/blog/font-display) เป็น swap หรือ optional เพื่อให้ผู้ใช้มองเห็นข้อความได้เสมอ swap สามารถเพิ่มประสิทธิภาพเพิ่มเติมเพื่อลดการเปลี่ยนแปลงเลย์เอาต์ด้วย[การลบล้างเมตริกแบบอักษร](https://developer.chrome.com/blog/font-fallbacks)"
+    "message": "ลองตั้งค่า [font-display](https://developer.chrome.com/docs/performance/insights/font-display) เป็น swap หรือ optional เพื่อให้ผู้ใช้มองเห็นข้อความได้เสมอ swap สามารถเพิ่มประสิทธิภาพเพิ่มเติมเพื่อลดการเปลี่ยนแปลงเลย์เอาต์ด้วย[การลบล้างเมตริกแบบอักษร](https://developer.chrome.com/blog/font-fallbacks)"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "แบบอักษร"
@@ -2304,10 +2265,10 @@
     "message": "(ไม่ระบุชื่อ)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "การบังคับให้จัดเรียงใหม่เกิดขึ้นเมื่อ JavaScript ค้นหาพร็อพเพอร์ตี้ทางเรขาคณิต (เช่น offsetWidth) หลังจากที่รูปแบบไม่ถูกต้องเนื่องจากการเปลี่ยนแปลงสถานะ DOM ซึ่งอาจส่งผลให้ประสิทธิภาพไม่ดี ดูข้อมูลเพิ่มเติมเกี่ยวกับ[การบังคับให้จัดเรียงใหม่](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)และการลดผลกระทบที่อาจเกิดขึ้น"
+    "message": "การบังคับให้จัดเรียงใหม่เกิดขึ้นเมื่อ JavaScript ค้นหาพร็อพเพอร์ตี้ทางเรขาคณิต (เช่น offsetWidth) หลังจากที่รูปแบบไม่ถูกต้องเนื่องจากการเปลี่ยนแปลงสถานะ DOM ซึ่งอาจส่งผลให้ประสิทธิภาพไม่ดี ดูข้อมูลเพิ่มเติมเกี่ยวกับ[การบังคับให้จัดเรียงใหม่](https://developer.chrome.com/docs/performance/insights/forced-reflow)และการลดผลกระทบที่อาจเกิดขึ้น"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "สแต็กเทรซ"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "เฟรมการโทรที่ทริกเกอร์การปรับเลย์เอาต์ใหม่"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "การบังคับให้จัดเรียงใหม่"
@@ -2322,7 +2283,7 @@
     "message": "[ไม่มีการระบุแหล่งที่มา]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "เริ่มการตรวจสอบจากส่วนย่อยที่ใช้เวลานานที่สุด [ลดการหน่วงเวลาให้น้อยที่สุด](https://web.dev/articles/optimize-inp#optimize_interactions) หากต้องการลดระยะเวลาในการประมวลผล ให้[เพิ่มประสิทธิภาพการทำงานของเทรดหลัก](https://web.dev/articles/optimize-long-tasks) ซึ่งมักจะเป็นส่วนของ JS"
+    "message": "เริ่มตรวจสอบ[วิธีปรับปรุง INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) โดยดูส่วนย่อยที่ใช้เวลานานที่สุด"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "ระยะเวลา"
@@ -2346,7 +2307,7 @@
     "message": "รายละเอียด INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "การลดเวลาดาวน์โหลดรูปภาพจะช่วยปรับปรุงเวลาที่ใช้ในการโหลดที่รับรู้ของหน้าเว็บและ LCP ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการเพิ่มประสิทธิภาพขนาดรูปภาพ](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "การลดเวลาดาวน์โหลดรูปภาพจะช่วยปรับปรุงเวลาที่ใช้ในการโหลดที่รับรู้ของหน้าเว็บและ LCP ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการเพิ่มประสิทธิภาพขนาดรูปภาพ](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (ประมาณ {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "การใช้รูปแบบวิดีโอแทน GIF จะช่วยปรับปรุงขนาดการดาวน์โหลดเนื้อหาที่เป็นภาพเคลื่อนไหวได้"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "แต่ละ[ส่วนย่อยมีกลยุทธ์การปรับปรุงเฉพาะ](https://web.dev/articles/optimize-lcp#lcp-breakdown) โดยปกติแล้ว เวลาส่วนใหญ่ของ LCP ควรใช้ไปกับการโหลดทรัพยากร ไม่ใช่การหน่วงเวลา"
+    "message": "แต่ละ[ส่วนย่อยมีกลยุทธ์การปรับปรุงเฉพาะ](https://developer.chrome.com/docs/performance/insights/lcp-breakdown) โดยปกติแล้ว เวลาส่วนใหญ่ของ LCP ควรใช้ไปกับการโหลดทรัพยากร ไม่ใช่การหน่วงเวลา"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "ระยะเวลา"
@@ -2406,7 +2367,7 @@
     "message": "รายละเอียด LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "เพิ่มประสิทธิภาพ LCP โดยทำให้รูปภาพ LCP [ค้นพบได้](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)จาก HTML ทันที และ[หลีกเลี่ยงการโหลดแบบ Lazy Loading](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[เพิ่มประสิทธิภาพ LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) โดยทำให้รูปภาพ LCP ค้นพบได้จาก HTML ทันที และหลีกเลี่ยงการโหลดแบบ Lazy Loading"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "ใช้ลำดับความสำคัญในการดึงข้อมูล=สูงอยู่"
@@ -2439,13 +2400,13 @@
     "message": "ไบต์ที่เสียไป"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย ลองแก้ไขกระบวนการบิลด์ JavaScript เพื่อไม่ให้ทำการ Transpile ฟีเจอร์ [Baseline](https://web.dev/articles/baseline-and-polyfills) เว้นแต่คุณจะรู้ว่าต้องรองรับเบราว์เซอร์เดิม [ดูสาเหตุที่เว็บไซต์ส่วนใหญ่สามารถติดตั้งใช้งานโค้ด ES6+ ได้โดยไม่ต้องทำการ Transpile](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย ลองแก้ไขกระบวนการบิลด์ JavaScript เพื่อไม่ให้ทำการ Transpile ฟีเจอร์ [Baseline](https://web.dev/articles/baseline-and-polyfills) เว้นแต่คุณจะรู้ว่าต้องรองรับเบราว์เซอร์เดิม [ดูสาเหตุที่เว็บไซต์ส่วนใหญ่สามารถติดตั้งใช้งานโค้ด ES6+ ได้โดยไม่ต้องทำการ Transpile](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript เดิม"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 และ HTTP/3 มีประโยชน์มากกว่า HTTP/1.1 หลายประการ เช่น ในด้านการมัลติเพล็กซ์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการใช้ HTTP ที่ทันสมัย](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+    "message": "HTTP/2 และ HTTP/3 มีประโยชน์มากกว่า HTTP/1.1 หลายประการ เช่น ในด้านการมัลติเพล็กซ์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการใช้ HTTP ที่ทันสมัย](https://developer.chrome.com/docs/performance/insights/modern-http)"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "ไม่มีคำขอที่ใช้ HTTP/1.1 หรือการใช้ HTTP/1.1 ในปัจจุบันไม่ได้แสดงโอกาสในการเพิ่มประสิทธิภาพอย่างมีนัยสำคัญ ระบบจะระบุคำขอ HTTP/1.1 เฉพาะในกรณีที่มีชิ้นงานแบบคงที่ 6 รายการขึ้นไปมาจากต้นทางเดียวกัน และไม่ได้แสดงจากสภาพแวดล้อมในการพัฒนาซอฟต์แวร์ในเครื่องหรือจากแหล่งที่มาของบุคคลที่สาม"
@@ -2478,7 +2439,7 @@
     "message": "การเชื่อมต่อล่วงหน้าที่ไม่ได้ใช้ โปรดตรวจสอบว่าใช้แอตทริบิวต์ crossorigin อย่างถูกต้องแล้ว"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[หลีกเลี่ยงการเชนคำขอที่สำคัญ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)โดยลดความยาวของเชน ลดขนาดการดาวน์โหลดของทรัพยากร หรือเลื่อนเวลาการดาวน์โหลดทรัพยากรที่ไม่จำเป็นเพื่อปรับปรุงการโหลดหน้าเว็บ"
+    "message": "[หลีกเลี่ยงการเชนคำขอที่สำคัญ](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)โดยลดความยาวของเชน ลดขนาดการดาวน์โหลดของทรัพยากร หรือเลื่อนเวลาการดาวน์โหลดทรัพยากรที่ไม่จำเป็นเพื่อปรับปรุงการโหลดหน้าเว็บ"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "เพิ่มคำแนะนำ[การเชื่อมต่อล่วงหน้า](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ไปยังต้นทางที่สำคัญที่สุด แต่พยายามใช้ไม่เกิน 4"
@@ -2517,7 +2478,7 @@
     "message": "หลีกเลี่ยงการเชนคำขอที่สำคัญโดยลดความยาวของเชน ลดขนาดการดาวน์โหลดของทรัพยากร หรือเลื่อนเวลาการดาวน์โหลดทรัพยากรที่ไม่จำเป็นเพื่อปรับปรุงการโหลดหน้าเว็บ"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "คำขอกำลังบล็อกการแสดงผลเริ่มต้นของหน้าเว็บ ซึ่งอาจทำให้ LCP ล่าช้า [การเลื่อนเวลาหรือแทรกในหน้า](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)สามารถย้ายคำขอเครือข่ายเหล่านี้ออกจากเส้นทางที่สำคัญได้"
+    "message": "คำขอกำลังบล็อกการแสดงผลเริ่มต้นของหน้าเว็บ ซึ่งอาจทำให้ LCP ล่าช้า [การเลื่อนเวลาหรือแทรกในหน้า](https://developer.chrome.com/docs/performance/insights/render-blocking)สามารถย้ายคำขอเครือข่ายเหล่านี้ออกจากเส้นทางที่สำคัญได้"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "ระยะเวลา"
@@ -2532,7 +2493,7 @@
     "message": "แสดงผลคำขอบล็อก"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "หากต้นทุนในการคำนวณรูปแบบอีกครั้งยังคงสูงอยู่ การเพิ่มประสิทธิภาพตัวเลือกจะลดต้นทุนได้ [เพิ่มประสิทธิภาพตัวเลือก](https://developer.chrome.com/docs/devtools/performance/selector-stats)ด้วยทั้งเวลาที่ผ่านไปนานและ % ของเส้นทางที่ช้าที่สูง ตัวเลือกที่เรียบง่ายขึ้น, ตัวเลือกที่น้อยลง, DOM ที่เล็กลง และ DOM ที่ตื้นขึ้นจะช่วยลดต้นทุนการจับคู่ได้ทั้งหมด"
+    "message": "หากต้นทุนในการคำนวณรูปแบบอีกครั้งยังคงสูงอยู่ การเพิ่มประสิทธิภาพตัวเลือกจะลดต้นทุนได้ [เพิ่มประสิทธิภาพตัวเลือก](https://developer.chrome.com/docs/performance/insights/slow-css-selector)ด้วยทั้งเวลาที่ผ่านไปนานและ % ของเส้นทางที่ช้าที่สูง ตัวเลือกที่เรียบง่ายขึ้น, ตัวเลือกที่น้อยลง, DOM ที่เล็กลง และ DOM ที่ตื้นขึ้นจะช่วยลดต้นทุนการจับคู่ได้ทั้งหมด"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "เวลาที่ผ่านไป"
@@ -2571,7 +2532,7 @@
     "message": "ขนาดการโอน"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "โค้ดของบุคคลที่สามอาจส่งผลกระทบที่สำคัญต่อประสิทธิภาพการโหลด [ลดและเลื่อนการโหลดโค้ดของบุคคลที่สามออกไป](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)เพื่อจัดลำดับความสำคัญของเนื้อหาในหน้าเว็บ"
+    "message": "โค้ดของบุคคลที่สามอาจส่งผลกระทบที่สำคัญต่อประสิทธิภาพการโหลด [ลดและเลื่อนการโหลดโค้ดของบุคคลที่สามออกไป](https://developer.chrome.com/docs/performance/insights/third-parties)เพื่อจัดลำดับความสำคัญของเนื้อหาในหน้าเว็บ"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "ไม่พบบุคคลที่สาม"
@@ -2580,7 +2541,7 @@
     "message": "บุคคลที่สาม"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "การโต้ตอบด้วยการแตะอาจ[มีการหน่วงเวลาสูงสุด 300 มิลลิวินาที](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)หากวิวพอร์ตไม่เหมาะกับมือถือ"
+    "message": "การโต้ตอบด้วยการแตะอาจ[มีการหน่วงเวลาสูงสุด 300 มิลลิวินาที](https://developer.chrome.com/docs/performance/insights/viewport)หากวิวพอร์ตไม่เหมาะกับมือถือ"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "การหน่วงเวลาการแตะบนมือถือ"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "ดูข้อมูลเกี่ยวกับ AI ในเครื่องมือสำหรับนักพัฒนาเว็บ"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "ความช่วยเหลือจาก AI ไม่พร้อมใช้งานในโหมดไม่ระบุตัวตนหรือโหมดผู้มาเยือน"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "ฟีเจอร์นี้จะใช้งานได้เมื่อคุณลงชื่อเข้าใช้ Chrome ด้วยบัญชี Google เท่านั้น"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "แสดงรายการตามบริบทที่เลือกในเครื่องมือสำหรับนักพัฒนาเว็บ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ความช่วยเหลือจาก AI ในการตั้งค่า"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "เปิด{PH1}เพื่อรับความช่วยเหลือในการทำความเข้าใจรูปแบบ CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "เปิด{PH1}เพื่อรับความช่วยเหลือเกี่ยวกับรูปแบบและคำขอเครือข่าย"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "เปิด{PH1}เพื่อรับความช่วยเหลือเกี่ยวกับรูปแบบ คำขอเครือข่าย และไฟล์"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "เปิด{PH1}เพื่อรับความช่วยเหลือเกี่ยวกับรูปแบบ คำขอเครือข่าย ประสิทธิภาพ และไฟล์"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ในหน้านี้ คุณจะตรวจสอบและแก้ไขภาพเคลื่อนไหวได้"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "ข้อกำหนดในการให้บริการ"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "ลิงก์กับ {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "ลิงก์กับการแมปแหล่งที่มา: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "อนุญาต"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "แสดงคอนโซล"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "แสดงข้อมูลสรุปโดย AI สำหรับข้อความในคอนโซล"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "แสดงข้อผิดพลาด CORS ในคอนโซล"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "ข้ามไปยังแผงภาพเคลื่อนไหว"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "เปิดเครื่องมือแก้ไข masonry"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "เปิดตัวเลือกสี {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "เพิ่ม {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "การบล็อก"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "กำหนดเอง"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "ผู้ดู Hex คน"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "เพิ่มรูปแบบการบล็อกคำขอเครือข่าย"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "เพิ่มรูปแบบ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "เพิ่มรูปแบบเพื่อบล็อกคำขอจากเครือข่ายโดยคลิกปุ่ม \"{PH1}\""
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "ถูกบล็อก {PH1} รายการ"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "เปิดใช้การบล็อกคำขอเครือข่าย"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "ลบรายการเรียบร้อยแล้ว"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "ดูข้อมูลเพิ่มเติม"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "ไม่มีคำขอจากเครือข่ายที่ถูกบล็อก"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "มีรูปแบบอยู่แล้ว"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "ต้องระบุอินพุตรูปแบบ"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "รูปแบบข้อความที่จะบล็อกคำขอที่ตรงกัน ใช้ * เป็นไวลด์การ์ด"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "ล้างทั้งหมด"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "แสดงสถานะคำขอที่นี่ไม่ได้เพราะหน้าเว็บที่ออกคำขอยกเลิกการโหลดขณะกำลังดำเนินการ คุณสามารถใช้ chrome://net-export เพื่อเก็บข้อมูลจากบันทึกเครือข่ายและดูรายละเอียดคำขอทั้งหมด"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "คำขอถูกควบคุม ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "ข้อมูลการเชื่อมต่อ"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "บล็อก URL คำขอ"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "บล็อกคำขอ"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "คำขอที่ถูกบล็อก"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "คำขอจากบุคคลที่สาม"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "ควบคุมโดเมนคำขอ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "ควบคุม URL คำขอ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "คำขอควบคุม"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "เลิกบล็อก {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "หยุดการควบคุม {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "รหัสการเชื่อมต่อ"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "เพิ่มรูปแบบการบล็อกคำขอเครือข่าย"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "เพิ่มรูปแบบ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "เพิ่มรูปแบบการควบคุมปริมาณหรือการบล็อกคำขอเครือข่าย"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "เพิ่มรูปแบบโดยคลิกปุ่ม \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} รายการที่ได้รับผลกระทบ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "ถูกบล็อก {PH1} รายการ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "ลดลำดับความสำคัญ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "เปิดใช้การบล็อกและการควบคุม"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "เปิดใช้การบล็อกคำขอเครือข่าย"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "เพิ่มลำดับความสำคัญ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "ลบรายการเรียบร้อยแล้ว"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "ไม่มีคำขอจากเครือข่ายที่ถูกบล็อก"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "ไม่มีรูปแบบการควบคุมหรือการบล็อกคำขอ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "มีรูปแบบอยู่แล้ว"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "รูปแบบนี้แยกวิเคราะห์เป็น URLPattern ไม่สำเร็จ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "ไม่อนุญาตให้ใช้กลุ่ม RegExp"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "ต้องระบุอินพุตรูปแบบ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "รูปแบบนี้ได้รับการอัปเกรดจาก \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "รูปแบบข้อความที่จะบล็อกหรือควบคุมคำขอที่ตรงกัน ใช้ไวยากรณ์ URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "รูปแบบข้อความที่จะบล็อกคำขอที่ตรงกัน ใช้ * เป็นไวลด์การ์ด"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "คุกกี้ที่ได้รับจากเซิร์ฟเวอร์ในส่วนหัว \"set-cookie\" ของการตอบกลับ"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ขอไปยัง ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "คำขอ/การตอบกลับ"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "การกำหนดเวลาทรัพยากร"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "หากต้องการใช้ทรัพยากรนี้จากเว็บไซต์อื่น เซิร์ฟเวอร์อาจคลายส่วนหัวการตอบกลับของนโยบายทรัพยากรแบบข้ามต้นทาง"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "เพิ่มรูปแบบการบล็อกหรือการควบคุมคำขอเครือข่าย"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "เพิ่มรูปแบบการบล็อกคำขอเครือข่าย"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "การบล็อกคำขอจากเครือข่าย"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "เงื่อนไขคำขอ"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "การควบคุมเครือข่าย"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "เก็บบันทึกเครือข่าย"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "นำรูปแบบการบล็อกหรือควบคุมปริมาณการใช้เครือข่ายทั้งหมดออก"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "นำรูปแบบการบล็อกคำขอเครือข่ายทั้งหมดออก"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "แสดงการบล็อกคำขอจากเครือข่าย"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "แสดงเงื่อนไขคำขอ"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "แสดง Search"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "ออบเจ็กต์ที่เก็บไว้โดยโหนด DOM ที่ถูกปลดออก"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "ออบเจ็กต์ที่เก็บไว้โดยตัวแฮนเดิลเหตุการณ์"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "ออบเจ็กต์ JS อื่นๆ"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "เมื่อเปิด"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "ป้อนเส้นทาง"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "ป้อนเส้นทางที่ไม่ซ้ำ"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "โฟลเดอร์ย่อยที่ยกเว้น"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "เพิ่มกฎนิพจน์ทั่วไปสำหรับ URL ของสคริปต์"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "เปิดไฟล์ JavaScript หรือ CSS เพื่อดูสัญลักษณ์"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "เปิดในโฟลเดอร์ที่เก็บ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ลบล้างเนื้อหา"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" เป็นไฟล์ที่แมปแหล่งที่มาและลบล้างไม่ได้"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "ลบล้าง \"{PH1}\" แทนใช่ไหม"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "บันทึกเป็น…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "บันทึกไฟล์ไปยังดิสก์ไม่สำเร็จ"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "บันทึกรูปภาพ"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "บันทึกโมดูล WASM ลงในดิสก์ไม่ได้ เป็นไปได้ว่าโมดูลมีขนาดใหญ่เกินไป"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "แสดงการลบล้างทั้งหมด"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "รวมคำอธิบายประกอบ"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "รวมเนื้อหาสคริปต์"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "รวมเนื้อหาทรัพยากร"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "รวมการแมปแหล่งที่มาของสคริปต์"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "ข้อมูลเพิ่มเติม:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "รวมเนื้อหาทั้งหมดของทุก HTML, CSS และสคริปต์ที่โหลด (ยกเว้นส่วนขยาย)"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "บันทึก"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "รวมเนื้อหาทั้งหมดของทุกสคริปต์ที่โหลด (ยกเว้นส่วนขยาย)"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "บีบอัดด้วย gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "ส่วนหัวของคำขอถูกลบล้าง"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (ถูกควบคุมให้เป็น {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "คุกกี้สําหรับคําขอนี้ถูกบล็อกเนื่องจาก Chrome Flag หรือการกำหนดค่าเบราว์เซอร์ ดูข้อมูลเพิ่มเติมในแผง \"ปัญหา\""
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "ใช้นิพจน์ทั่วไป"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "มีการเปลี่ยนการตั้งค่าอย่างน้อย 1 รายการซึ่งจะต้องโหลดซ้ำจึงจะมีผล"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*ต้องโหลดซ้ำ"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "เลือกไว้"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ใช้สีที่แนะนำ {PH1} เพื่อแก้ไขความคมชัดต่ำ"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "สีนี้ถูกตัดเพื่อให้ตรงกับขอบเขตของรูปแบบ ผลที่ได้จริงคือ {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ การแปลงเป็นขอบเขตแคบจะทำให้สีเปลี่ยนไป"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "เพิ่มไปยังพาเล็ต"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "คุกกี้"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "โดเมน"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "คุกกี้ที่แก้ไขได้"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(ไม่ชัดเจน)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "เว็บไซต์คีย์พาร์ติชัน"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "เส้นทาง"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "ลำดับความสำคัญ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "ปลอดภัย"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "เซสชัน"

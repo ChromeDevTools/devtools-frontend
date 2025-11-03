@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Bloc With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Blochează"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Abandonată"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Andochează la dreapta"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools a primit o solicitare externă"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Focalizează pe pagină"
   },
@@ -1275,13 +1281,13 @@
     "message": "Compatibilitate cu datele: adresele URL din SVGUseElement sunt învechite și vor fi eliminate pe viitor."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() și watchPosition() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+    "message": "getCurrentPosition() și watchPosition() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Accesează https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ pentru mai multe detalii."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() și watchPosition() sunt învechite, având origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+    "message": "getCurrentPosition() și watchPosition() sunt învechite pentru originile nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Accesează https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ pentru mai multe detalii."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+    "message": "getUserMedia() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Accesează https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ pentru mai multe detalii."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate s-a învechit. Folosește RTCPeerConnectionIceErrorEvent.address sau RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI va solicita o permisiune de folosit chiar dacă sysex nu este specificat în MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "API-ul Notification nu mai poate fi folosit din origini nesigure. Îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+    "message": "API-ul Notification nu mai poate fi folosit din origini nesigure. Îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Accesează https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ pentru mai multe detalii."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Este posibil ca permisiunea pentru API-ul Notification să nu mai fie solicitată dintr-un iframe cu origini diferite. Îți recomandăm să soliciți permisiunea dintr-un cadru de nivel superior sau să deschizi o fereastră nouă."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensiile trebuie să aibă blocarea accesului de la mai multe surse activată pentru a folosi în continuare SharedArrayBuffer. Consultă https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() s-a învechit. Folosește writeValueWithResponse() sau writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Fișierul JSON de răspuns din XMLHttpRequest nu acceptă UTF-16"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Această funcție este disponibilă numai cu o conexiune la internet activă."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools a primit o solicitare externă"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Eroare necunoscută la încărcarea fișierului"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Latență de {PH1}, descărcare în {PH2} (în total {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Introdu o cale"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Introdu o cale unică"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Subdosare excluse"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "Adresa URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blobul nu a putut fi încărcat."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Nu se poate adăuga filesystem: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Deschide în dosarul care îl include"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Modifică respectivul conținut"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "{PH1} este un fișier mapat sursă și nu poate fi înlocuit."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Înlocuiești {PH1}?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Salvează ca…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Fișierul nu a putut fi salvat pe disc."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Salvează imaginea"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Nu se poate salva modulul WASM pe disc. Cel mai probabil, modulul este prea mare."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Afișează toate modificările"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "S-a conectat la {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Legat la harta sursă: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem nu poate citi fișierele."
@@ -2157,7 +2118,7 @@
     "message": "Animație"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Schimbările de aspect apar atunci când elementele se mișcă fără nicio interacțiune a utilizatorului. [Investighează cauzele schimbărilor de aspect](https://web.dev/articles/optimize-cls), cum ar fi adăugarea, eliminarea elementelor sau schimbarea fonturilor pe măsură ce se încarcă pagina."
+    "message": "Schimbările de aspect apar atunci când elementele se mișcă fără nicio interacțiune a utilizatorului. [Investighează cauzele schimbărilor de aspect](https://developer.chrome.com/docs/performance/insights/cls-culprit), cum ar fi adăugarea, eliminarea elementelor sau schimbarea fonturilor pe măsură ce se încarcă pagina."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "S-a injectat un iframe"
@@ -2193,7 +2154,7 @@
     "message": "TTL cache"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "O durată lungă a memoriei cache poate grăbi accesările repetate ale paginii. [Află mai multe](https://web.dev/uses-long-cache-ttl/)."
+    "message": "O durată lungă a memoriei cache poate grăbi accesările repetate ale paginii. [Află mai multe despre stocarea în memoria cache](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Nu există solicitări cu politici privind memoria cache ineficientă"
@@ -2208,7 +2169,7 @@
     "message": "Folosește perioade eficiente ale memoriei cache"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Un DOM mare poate crește durata calculelor de stil și a rearanjărilor aspectului, afectând receptivitatea paginii. Un DOM mare va crește și folosirea memoriei. [Află cum să eviți o dimensiune DOM excesivă](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Un DOM mare poate crește durata calculelor de stil și a rearanjărilor aspectului, afectând receptivitatea paginii. Un DOM mare va crește și folosirea memoriei. [Află cum să eviți o dimensiune DOM excesivă](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Durată"
@@ -2244,7 +2205,7 @@
     "message": "Valoare"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Prima solicitare din rețea este cea mai importantă.  Redu latența acesteia evitând redirecționările, asigurând un răspuns rapid al serverului și activând comprimarea textului."
+    "message": "Prima solicitare din rețea este cea mai importantă. [Redu latența acesteia](https://developer.chrome.com/docs/performance/insights/document-latency) evitând redirecționările, asigurând un răspuns rapid al serverului și activând comprimarea textului."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "A avut redirecționări ({PH1} redirecționări, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Sursă"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Elimină modulele JavaScript dublate și mari din grupuri pentru a reduce consumul inutil de byți prin activitatea din rețea."
+    "message": "Elimină [modulele JavaScript dublate](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) și mari din grupuri pentru a reduce consumul inutil de byți prin activitatea din rețea."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript dublură"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Îți recomandăm să setezi [font-display](https://developer.chrome.com/blog/font-display) la swap sau optional pentru a te asigura că textul este vizibil în mod constant. swap poate fi optimizat în continuare pentru a reduce schimbările de aspect prin [modificări ale valorii fontului](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Îți recomandăm să setezi [font-display](https://developer.chrome.com/docs/performance/insights/font-display) la swap sau optional pentru a te asigura că textul este vizibil în mod constant. swap poate fi optimizat în continuare pentru a reduce schimbările de aspect prin [modificări ale valorii fontului](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
@@ -2304,10 +2265,10 @@
     "message": "(anonim)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Rearanjarea forțată are loc atunci când JavaScript interoghează proprietăți geometrice (cum ar fi offsetWidth) după ce stilurile au fost invalidate de o modificare a stării DOM. Acest lucru poate duce la performanțe slabe. Află mai multe despre [rearanjările forțate](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) și despre posibilele măsuri de atenuare."
+    "message": "Rearanjarea forțată are loc atunci când JavaScript interoghează proprietăți geometrice (cum ar fi offsetWidth) după ce stilurile au fost invalidate de o modificare a stării DOM. Acest lucru poate duce la performanțe slabe. Află mai multe despre [rearanjările forțate](https://developer.chrome.com/docs/performance/insights/forced-reflow) și despre posibilele măsuri de atenuare."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Urmărirea stivei"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Cadre de apel care declanșează rearanjarea"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Rearanjare forțată"
@@ -2322,7 +2283,7 @@
     "message": "[neatribuit]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Începe investigația cu cea mai lungă secțiune. [Poți să minimizezi întârzierile](https://web.dev/articles/optimize-inp#optimize_interactions). Pentru a reduce durata procesării, [optimizează costurile asociate cu firul principal](https://web.dev/articles/optimize-long-tasks), de obicei JS."
+    "message": "Începe să investighezi [cum să îmbunătățești INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) analizând cea mai lungă secțiune."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Durată"
@@ -2346,7 +2307,7 @@
     "message": "Detalierea valorii INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Reducerea duratei de descărcare a imaginilor poate îmbunătăți durata de încărcare percepută a paginii și LCP. [Află mai multe despre optimizarea dimensiunii imaginii](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Reducerea duratei de descărcare a imaginilor poate îmbunătăți durata de încărcare percepută a paginii și LCP. [Află mai multe despre optimizarea dimensiunii imaginii](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (est. {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Folosirea formatelor video în locul GIF-urilor poate îmbunătăți dimensiunea descărcării conținutului animat."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Fiecare [secțiune are strategii de îmbunătățire specifice](https://web.dev/articles/optimize-lcp#lcp-breakdown). În mod ideal, majoritatea timpului LCP ar trebui să fie petrecut cu încărcarea resurselor, nu cu întârzieri."
+    "message": "Fiecare [secțiune are strategii de îmbunătățire specifice](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). În mod ideal, majoritatea timpului LCP ar trebui să fie petrecut cu încărcarea resurselor, nu cu întârzieri."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Durată"
@@ -2406,7 +2367,7 @@
     "message": "Detalierea valorii LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimizează LCP făcând imediat imaginea LCP [vizibilă](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) din HTML și [evitând încărcarea asincronă](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Optimizează LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) făcând imediat imaginea LCP vizibilă din HTML și evitând încărcarea asincronă"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Valoarea fetchpriority=high a fost aplicată"
@@ -2439,13 +2400,13 @@
     "message": "Byți inutili"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Codurile polyfill și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Poți să modifici procesul versiunii JavaScript astfel încât să nu transpileze funcțiile [Baseline](https://web.dev/articles/baseline-and-polyfills), cu excepția cazului în care știi că trebuie să accepti browserele mai vechi. [Află de ce majoritatea site-urilor pot implementa cod ES6+ fără transpilare](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Codurile polyfill și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Poți să modifici procesul versiunii JavaScript astfel încât să nu transpileze funcțiile [Baseline](https://web.dev/articles/baseline-and-polyfills), cu excepția cazului în care știi că trebuie să accepti browserele mai vechi. [Află de ce majoritatea site-urilor pot implementa cod ES6+ fără transpilare](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript vechi"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 și HTTP/3 oferă multe beneficii față de HTTP/1.1, cum ar fi multiplexingul. [Află mai multe despre folosirea protocolului HTTP modern](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 și HTTP/3 oferă multe beneficii față de HTTP/1.1, cum ar fi multiplexingul. [Află mai multe despre folosirea protocolului HTTP modern](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Nicio solicitare nu a folosit HTTP/1.1 sau utilizarea actuală pentru HTTP/1.1 nu prezintă o oportunitate semnificativă de optimizare. Solicitările HTTP/1.1 sunt semnalate numai dacă șase sau mai multe elemente statice au aceeași origine și nu sunt difuzate dintr-un mediu de dezvoltare local sau o sursă terță."
@@ -2478,7 +2439,7 @@
     "message": "Preconectare nefolosită. Verifică dacă folosești corect atributul crossorigin."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Evită să legi solicitări critice](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) reducând lungimea lanțurilor, reducând dimensiunea de descărcare a resurselor sau amânând descărcarea de resurse inutile pentru a îmbunătăți încărcarea paginilor."
+    "message": "[Evită să legi solicitări critice](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) reducând lungimea lanțurilor, reducând dimensiunea de descărcare a resurselor sau amânând descărcarea de resurse inutile pentru a îmbunătăți încărcarea paginilor."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Adaugă indicii de [preconectare](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) pentru cele mai importante origini, dar încearcă să nu folosești mai mult de patru."
@@ -2517,7 +2478,7 @@
     "message": "Evită să legi solicitări critice reducând lungimea lanțurilor, reducând dimensiunea de descărcare a resurselor sau amânând descărcarea de resurse inutile pentru a îmbunătăți încărcarea paginilor."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Solicitările blochează redarea inițială a paginii, ceea ce poate întârzia LCP. [Amânarea sau încorporarea](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) poate să mute aceste solicitări de rețea în afara căii critice."
+    "message": "Solicitările blochează redarea inițială a paginii, ceea ce poate întârzia LCP. [Amânarea sau încorporarea](https://developer.chrome.com/docs/performance/insights/render-blocking) poate să mute aceste solicitări de rețea în afara căii critice."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Durată"
@@ -2532,7 +2493,7 @@
     "message": "Solicitări de blocare a redării"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "În cazul în care costurile pentru recalcularea stilului rămân ridicate, optimizarea selectorilor le poate scădea. [Optimizează selectorii](https://developer.chrome.com/docs/devtools/performance/selector-stats) cu un interval mare de timp scurs și un procentaj mare al căii lente. Selectorii mai simpli, numărul mai mic de selectori, un DOM mai mic și un DOM mai simplu vor scădea costurile de potrivire."
+    "message": "În cazul în care costurile pentru recalcularea stilului rămân ridicate, optimizarea selectorilor le poate scădea. [Optimizează selectorii](https://developer.chrome.com/docs/performance/insights/slow-css-selector) cu un interval mare de timp scurs și un procentaj mare al căii lente. Selectorii mai simpli, numărul mai mic de selectori, un DOM mai mic și un DOM mai simplu vor scădea costurile de potrivire."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Timp scurs"
@@ -2571,7 +2532,7 @@
     "message": "Dimensiunea transferului"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Codul terță parte poate influența semnificativ performanța de încărcare. [Redu și amână încărcarea codului terță parte](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) pentru a acorda prioritate conținutului din pagină."
+    "message": "Codul terță parte poate influența semnificativ performanța de încărcare. [Redu și amână încărcarea codului terță parte](https://developer.chrome.com/docs/performance/insights/third-parties) pentru a acorda prioritate conținutului din pagină."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Nu s-au găsit terțe părți"
@@ -2580,7 +2541,7 @@
     "message": "Terțe părți"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Interacțiunile prin atingere pot fi [întârziate cu până la 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) dacă aria vizibilă nu este optimizată pentru mobil."
+    "message": "Interacțiunile prin atingere pot fi [întârziate cu până la 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) dacă aria vizibilă nu este optimizată pentru mobil."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Întârziere la atingerea pe mobil"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Află despre AI în DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Asistența AI nu este disponibilă în modul incognito sau în modul pentru invitați"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Această funcție este disponibilă numai dacă te-ai conectat la Chrome cu Contul Google"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Verifică-ți conexiunea la internet și încearcă din nou"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Afișează elementul contextual selectat în DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Asistență AI în Setări"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Activează {PH1} pentru ajutor la înțelegerea stilurilor CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Activează {PH1} pentru ajutor cu stilurile și solicitările din rețea"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Activează {PH1} pentru ajutor cu stilurile, solicitările din rețea și fișierele"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Activează {PH1} pentru ajutor cu stilurile, solicitările de rețea, performanța și fișierele"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "În această pagină, poți să inspectezi și să modifici animațiile."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Termeni și condiții"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "S-a conectat la {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Legat la harta sursă: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Permite"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Afișează consola"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Afișează rezumatele AI pentru mesajele din consolă"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Afișează CORS erori în consolă"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Accesează panoul cu animații"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Deschide selectorul de culoare: {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Adaugă {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Blocarea"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Personalizat"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Vizualizator Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Adaugă un model de blocare pentru solicitările din rețea"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Adaugă modelul"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Adaugă un model pentru a bloca solicitările din rețea dând clic pe butonul {PH1}."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} blocate"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Activează blocarea solicitărilor din rețea"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Elementul a fost șters"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Află mai multe"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Nu există solicitări din rețea blocate"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Șablonul există deja."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Datele de intrare pentru șablon trebuie completate."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Model de text pentru blocarea solicitărilor corespunzătoare; folosește * pentru metacaracter"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Șterge tot"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Starea solicitării nu poate fi afișată aici deoarece pagina care a difuzat-o s-a descărcat în timp ce solicitarea se afla în perioada de difuzare sporadică. Poți să folosești chrome://net-export pentru a captura un jurnal de rețea și a vedea toate detaliile solicitării."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informații despre conexiune"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Blochează adresa URL a solicitării"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Blochează solicitările"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Solicitări blocate"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Solicitări terțe părți"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Limitează domeniul solicitării"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Limitează adresa URL a solicitării"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Limitează solicitările"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Deblochează {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Nu mai limita {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "ID-ul conexiunii"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "Adresa URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Adaugă un model de blocare pentru solicitările din rețea"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Adaugă modelul"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Adaugă un model de limitare sau de blocare a solicitărilor din rețea"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Adaugă un model dând clic pe butonul {PH1}."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} blocate"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Scade prioritatea"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Activează blocarea și limitarea"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Activează blocarea solicitărilor din rețea"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Crește prioritatea"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Elementul a fost șters"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Află mai multe"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Nu există solicitări din rețea blocate"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Nu există modele de limitare sau de blocare a solicitărilor"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Șablonul există deja."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Acest model nu a putut fi analizat ca URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Grupurile RegExp nu sunt permise"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Datele de intrare pentru șablon trebuie completate."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Acest model a fost actualizat de la {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Model de text pentru blocarea sau limitarea solicitărilor corespunzătoare; folosește sintaxa URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Model de text pentru blocarea solicitărilor corespunzătoare; folosește * pentru metacaracter"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookie-uri primite de la server în antetul set-cookie al răspunsului"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Solicitare către ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Solicitare / Răspuns"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Programarea resurselor"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Pentru a folosi această resursă din alt site, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Adaugă un model de blocare sau de limitare a solicitărilor din rețea"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Adaugă un model de blocare pentru solicitările din rețea"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Blocarea solicitărilor din rețea"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Condițiile solicitării"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "limitarea rețelei"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Jurnalul de rețea al înregistrării"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Elimină toate modelele de blocare sau de limitare a solicitărilor din rețea"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Elimină toate modelele de blocare pentru solicitările din rețea"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Afișează Blocarea solicitărilor din rețea"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Afișează condițiile solicitării"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Afișează Căutarea"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Obiecte păstrate de nodurile DOM detașate"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Obiecte păstrate de handlerele de evenimente"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Alte obiecte JS"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Când opțiunea este activată"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Introdu o cale"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Introdu o cale unică"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Subdosare excluse"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "Adresa URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Adaugă o regulă cu expresie regulată pentru adresa URL a scriptului"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Deschide un fișier JavaScript sau CSS pentru a vedea simbolurile"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Deschide în dosarul care îl include"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Modifică respectivul conținut"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "{PH1} este un fișier mapat sursă și nu poate fi înlocuit."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Înlocuiești {PH1}?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Salvează ca…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Fișierul nu a putut fi salvat pe disc."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Salvează imaginea"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Nu se poate salva modulul WASM pe disc. Cel mai probabil, modulul este prea mare."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Afișează toate modificările"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Include adnotări"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Include conținutul scriptului"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Include hărți pentru sursele de scripturi"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Informații suplimentare:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Salvează"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Include conținutul complet al tuturor scripturilor încărcate (cu excepția extensiilor)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Comprimă cu gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Anteturile solicitărilor au fost modificate"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Cookie-urile pentru această solicitare sunt blocate din cauza funcțiilor experimentale Chrome sau a configurației browserului. Află mai multe din panoul Probleme."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Folosește o expresie regulată"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Una sau mai multe setări au fost modificate și pentru aplicarea acestora este necesară reîncărcarea"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Necesită reîncărcarea"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "bifate"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Folosește culoarea sugerată {PH1}pentru a remedia contrastul scăzut"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Această culoare a fost decupată pentru a se potrivi cu gama formatului. Rezultatul real a fost {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Conversia la o gamă îngustă va cauza schimbări de culoare"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Adaugă la paletă"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie-uri"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domeniu"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Cookie-uri care se pot edita"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(opacă)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Site-ul cheii de partiționare"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Cale"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioritate"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Securizat"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sesiune"

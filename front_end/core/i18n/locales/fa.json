@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "قطعه With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "مسدود کردن"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "لغو شد"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "اتصال به راست"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "‫DevTools یک درخواست خارجی دریافت کرد"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "صفحه تمرکز"
   },
@@ -1275,13 +1281,13 @@
     "message": "پشتیبانی از داده‌ها: نشانی‌های وب موجود در SVGUseElement منسوخ شده است و در آینده برداشته خواهد شد."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() و watchPosition() دیگر در مبدأهای ناامن کار نمی‌کنند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+    "message": "‫getCurrentPosition() و watchPosition() دیگر در مبدأهای ناامن کار نمی‌کنند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ مراجعه کنید."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() و watchPosition() در مبدأهای ناامن منسوخ شده‌اند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+    "message": "getCurrentPosition() و watchPosition() در مبدأهای ناامن منسوخ شده‌اند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ مراجعه کنید."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() دیگر در مبدأهای ناامن کار نمی‌کند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+    "message": "‫getUserMedia() دیگر در مبدأهای ناامن کار نمی‌کند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ مراجعه کنید."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate منسوخ شده است. لطفاً درعوض از RTCPeerConnectionIceErrorEvent.address یا RTCPeerConnectionIceErrorEvent.port استفاده کنید."
@@ -1311,7 +1317,7 @@
     "message": "حتی اگر sysex در MIDIOptions مشخص نشده باشد، Web MIDI برای استفاده اجازه خواهد خواست."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "ممکن است دیگر از میانای برنامه‌سازی کاربردی «اعلان» برگرفته از مبدأهای ناامن استفاده نشود. توصیه می‌کنیم برنامه‌تان را به منبعی امن، مثل HTTPS، منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+    "message": "ممکن است دیگر از میانای برنامه‌سازی کاربردی «اعلان» برگرفته از مبدأهای ناامن استفاده نشود. توصیه می‌کنیم برنامه‌تان را به منبعی امن، مثل HTTPS، منتقل کنید. برای جزئیات بیشتر، به https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ مراجعه کنید."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "اجازه برای میانای برنامه‌سازی کاربردی «اعلان» ممکن است دیگر از iframe بین‌مبدائی درخواست نشود. توصیه می‌کنیم اجازه را درعوض از قاب سطح بالا درخواست کنید یا پنجره جدیدی باز کنید."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "برای ادامه استفاده از SharedArrayBuffer، افزونه‌ها باید در جداسازی بین‌مبدائی فعال شوند. به https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎ مراجعه کنید."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "‫BluetoothRemoteGATTCharacteristic.writeValue() منسوخ شده است. درعوض از writeValueWithResponse() یا writeValueWithoutResponse() استفاده کنید."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "پاسخ json در XMLHttpRequest از UTF-16 پشتیبانی نمی‌کند."
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "این ویژگی فقط با اتصال اینترنت فعال دردسترس است."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "‫DevTools یک درخواست خارجی دریافت کرد"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "خطای ناشناخته هنگام بار کردن فایل"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} تأخیر، {PH2} بارگیری (در کل {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "مسیری را وارد کنید"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "مسیری غیرتکراری وارد کنید"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "زیرپوشه‌های مستثنی"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "نشانی وب"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "شیء دودویی بزرگ بار نشد."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "سیستم فایل اضافه نشد: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "باز کردن در پوشه حاوی"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ملغی کردن محتوا"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "«{PH1}» یک فایل نگاشت‌شده منبع است و نمی‌تواند ملغی شود."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "«{PH1}» ملغی شود؟"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "ذخیره به‌عنوان…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ذخیره فایل در دیسک انجام نشد."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "ذخیره تصویر"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "واحد WASM در دیسک ذخیره نشد. به احتمال زیاد واحد بسیار بزرگ است."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "نمایش همه موارد ملغی‌شده"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "پیوند داده‌شده با {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "پیوندشده به نقشه منبع: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem نمی‌تواند فایل‌ها را بخواند."
@@ -2157,7 +2118,7 @@
     "message": "پویانمایی"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "تغییرات چیدمان زمانی اتفاق می‌افتد که عناصر بدون تعامل کاربر حرکت می‌کنند. [دلایل این تغییرات در چیدمان را بررسی کنید](https://web.dev/articles/optimize-cls)، مثلاً اضافه شدن یا برداشته شدن عناصر یا تغییر کردن قلم آن‌ها وقتی صفحه بار می‌شود."
+    "message": "تغییرات چیدمان زمانی اتفاق می‌افتد که عناصر بدون تعامل کاربر حرکت می‌کنند. [دلایل این تغییرات در چیدمان را بررسی کنید](https://developer.chrome.com/docs/performance/insights/cls-culprit)، مثلاً اضافه شدن یا برداشته شدن عناصر یا تغییر کردن قلم آن‌ها وقتی صفحه بار می‌شود."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "‫iframe تزریق‌شده"
@@ -2193,7 +2154,7 @@
     "message": "طول عمر حافظه نهان"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "طول عمر بلند حافظه نهان می‌تواند سرعت بازدیدهای تکراری از صفحه شما را افزایش دهد. [بیشتر بدانید](https://web.dev/uses-long-cache-ttl/)."
+    "message": "طول عمر بلند حافظه نهان می‌تواند سرعت بازدیدهای تکراری از صفحه شما را افزایش دهد. [درباره ذخیره کردن در حافظه نهان بیشتر بدانید](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "درخواستی با خط‌مشی‌های ناکارآمد حافظه نهان وجود ندارد"
@@ -2208,7 +2169,7 @@
     "message": "استفاده کردن از طول عمرهای کارآمد حافظه نهان"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "‫DOM بزرگ می‌تواند مدت زمان محاسبه سبک و آرایش مجدد لایه‌ها را افزایش دهد و بر پاسخ‌گویی صفحه تأثیر بگذارد. DOM بزرگ باعث می‌شود استفاده از حافظه هم افزایش یابد. [ببینید چگونه می‌توانید از افزایش بیش‌ازحد اندازه DOM جلوگیری کنید](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "‫DOM بزرگ می‌تواند مدت زمان محاسبه سبک و آرایش مجدد لایه‌ها را افزایش دهد و بر پاسخ‌گویی صفحه تأثیر بگذارد. DOM بزرگ باعث می‌شود استفاده از حافظه هم افزایش یابد. [ببینید چگونه می‌توانید از افزایش بیش‌ازحد اندازه DOM جلوگیری کنید](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "مدت"
@@ -2244,7 +2205,7 @@
     "message": "مقدار"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "نخستین درخواست شبکه شما مهم‌ترین درخواست است.  با اجتناب کردن از هدایت‌های مجدد، مطمئن شدن از پاسخ سریع سرور، و فعال کردن فشرده‌سازی نوشتار، تأخیر آن را کاهش دهید."
+    "message": "نخستین درخواست شبکه شما مهم‌ترین درخواست است. با اجتناب کردن از هدایت‌ها، مطمئن شدن از پاسخ سریع سرور، و فعال کردن فشرده‌سازی نوشتار، [تأخیر آن را کاهش دهید](https://developer.chrome.com/docs/performance/insights/document-latency)."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "هدایت‌های مجدد داشت ({PH1} هدایت، ‎+{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "منبع"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "واحدهای بزرگ و تکراری جاوا اسکریپت را از بسته‌ها حذف کنید تا بایت‌های غیرضروری مصرف‌شده توسط فعالیت شبکه کاهش پیدا کند."
+    "message": "[واحدهای جاوا اسکریپت تکراری](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) و بزرگ را از بسته‌ها حذف کنید تا بایت‌های غیرضروری مصرف‌شده توسط فعالیت شبکه کاهش پیدا کند."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "جاوا اسکریپت تکراری"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "برای اطمینان از اینکه نوشتار به‌طور پیوسته نمایان است، بهتر است [font-display](https://developer.chrome.com/blog/font-display) را روی swap یا optional تنظیم کنید. برای کاهش تغییرات چیدمان، می‌توان swap را با [لغو سنجه قلم](https://developer.chrome.com/blog/font-fallbacks) بیشتر بهینه‌سازی کرد."
+    "message": "برای اطمینان از اینکه نوشتار به‌طور پیوسته نمایان است، بهتر است [font-display](https://developer.chrome.com/docs/performance/insights/font-display) را روی swap یا optional تنظیم کنید. برای کاهش تغییرات چیدمان، می‌توان swap را با [لغو سنجه قلم](https://developer.chrome.com/blog/font-fallbacks) بیشتر بهینه‌سازی کرد."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "قلم"
@@ -2304,10 +2265,10 @@
     "message": "(ناشناس)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "یک بازآرایی اجباری زمانی رخ می‌دهد که جاوا اسکریپت پس‌از نامعتبر شدن سبک‌ها به‌دنبال تغییر در وضعیت DOM، از ویژگی‌های هندسی (مانند offsetWidth) پرس‌وجو می‌کند. می‌تواند منجر به عملکرد ضعیف شود. درباره [بازآرایی اجباری](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) و روش‌های ممکن برای کاهش آن بیشتر بدانید."
+    "message": "یک بازآرایی اجباری زمانی رخ می‌دهد که جاوا اسکریپت پس‌از نامعتبر شدن سبک‌ها به‌دنبال تغییر در وضعیت DOM، از ویژگی‌های هندسی (مانند offsetWidth) پرس‌وجو می‌کند. می‌تواند منجر به عملکرد ضعیف شود. درباره [بازآرایی اجباری](https://developer.chrome.com/docs/performance/insights/forced-reflow) و روش‌های ممکن برای کاهش آن بیشتر بدانید."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "ردیابی پشته‌ای"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "قاب‌هایی فراخوانی که باعث بازآرایی می‌شوند"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "بازآرایی اجباری"
@@ -2322,7 +2283,7 @@
     "message": "[بدون نسبت]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "بازرسی را با طولانی‌ترین بخش فرعی شروع کنید. [می‌توان میزان تأخیرها را به‌حداقل رساند](https://web.dev/articles/optimize-inp#optimize_interactions). برای کاهش مدت پردازش، [هزینه‌های رشته اصلی را بهینه کنید](https://web.dev/articles/optimize-long-tasks) (رشته اصلی اغلب جاوا اسکریپت است)."
+    "message": "با بررسی طولانی‌ترین بخش فرعی، بازرسی [نحوه بهبود «تأخیر در تعامل‌ها» (INP)](https://developer.chrome.com/docs/performance/insights/inp-breakdown) را شروع کنید."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "مدت"
@@ -2346,7 +2307,7 @@
     "message": "تفکیک INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "کاهش زمان بارگیری تصاویر می‌تواند مدت زمان احساس‌شده برای بار کردن صفحه و LCP را بهبود بخشد. [درباره بهینه‌سازی اندازه تصویر بیشتر بدانید](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "کاهش زمان بارگیری تصاویر می‌تواند مدت زمان احساس‌شده برای بار کردن صفحه و LCP را بهبود بخشد. [درباره بهینه‌سازی اندازه تصویر بیشتر بدانید](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (به‌طور تخمینی {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "استفاده از قالب‌های ویدیو به‌جای گیف می‌تواند اندازه بارگیری محتوای متحرک را بهبود ببخشد."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "هر [بخش فرعی استراتژی‌های بهبود مشخصی دارد](https://web.dev/articles/optimize-lcp#lcp-breakdown). در حالت ایده‌آل، اکثر زمان LCP باید صرف بار کردن منابع شود، نه اینکه با تأخیر هدر برود."
+    "message": "هر [بخش فرعی استراتژی‌های بهبود مشخصی دارد](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). در حالت ایده‌آل، اکثر زمان LCP باید صرف بار کردن منابع شود، نه اینکه با تأخیر هدر برود."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "مدت"
@@ -2406,7 +2367,7 @@
     "message": "تفکیک LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "با [یافتنی کردن](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) تصویر LCP مستقیماً از HTML، و اجتناب از [بارگیری کُند](https://web.dev/articles/lcp-lazy-loading) تصویر LCP را بهینه کنید."
+    "message": "با یافتنی کردن تصویر LCP مستقیماً از HTML، و اجتناب از بارگیری کُند [تصویر LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) را بهینه‌سازی کنید."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "اولویت واکشی = «بالا» اعمال شد"
@@ -2439,13 +2400,13 @@
     "message": "بایت‌های هدررفته"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "تبدیل‌ها و شبیه‌سازهای مرورگر به مرورگرهای قدیمی امکان می‌دهند از ویژگی‌های جدید جاوا اسکریپت استفاده کنند. بااین‌حال، بسیاری از آن‌ها برای مرورگرهای نو ضروری نیستند. بهتر است فرایند ساخت جاوا اسکریپت خود را اصلاح کنید تا ویژگی‌های [Baseline](https://web.dev/articles/baseline-and-polyfills) را ترجمه مبدأ به مبدأ نکند، مگراینکه بدانید که حتماً باید از مرورگرهای قدیمی پشتیبانی کنید. [با دلیل اینکه چرا اکثر سایت‌ها می‌توانند کد ES6+‎ را بدون ترجمه مبدأ به مبدأ پیاده‌سازی کنند آشنا شوید](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "تبدیل‌ها و شبیه‌سازهای مرورگر به مرورگرهای قدیمی امکان می‌دهند از ویژگی‌های جدید جاوا اسکریپت استفاده کنند. بااین‌حال، بسیاری از آن‌ها برای مرورگرهای نو ضروری نیستند. بهتر است فرایند ساخت جاوا اسکریپت خود را اصلاح کنید تا ویژگی‌های [Baseline](https://web.dev/articles/baseline-and-polyfills) را ترجمه مبدأ به مبدأ نکند، مگراینکه بدانید که حتماً باید از مرورگرهای قدیمی پشتیبانی کنید. [با دلیل اینکه چرا اکثر سایت‌ها می‌توانند کد ES6+‎ را بدون ترجمه مبدأ به مبدأ پیاده‌سازی کنند آشنا شوید](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "جاوا اسکریپت قدیمی"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "‫HTTP/2 و HTTP/3 مزایای زیادی نسبت‌به HTTP/1.1 ارائه می‌دهند، مثل هم‌تافتگری. [درباره استفاده از HTTP مدرن بیشتر بدانید](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "‫HTTP/2 و HTTP/3 مزایای زیادی نسبت‌به HTTP/1.1 ارائه می‌دهند، مثل هم‌تافتگری. [درباره استفاده از HTTP مدرن بیشتر بدانید](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "هیچ درخواستی از HTTP/1.1 استفاده نکرده است، یا استفاده فعلی از HTTP/1.1 فرصت بهینه‌سازی قابل توجهی ایجاد نمی‌کند. درخواست‌های HTTP/1.1 تنها زمانی پرچم‌گذاری می‌شوند که حداقل شش منبع ایستا از یک مبدأ یکسان باشند و از محیط توسعه نرم‌افزار محلی یا منابع طرف سوم نباشند."
@@ -2478,7 +2439,7 @@
     "message": "از پیش‌اتصال استفاده نشده است. بررسی کنید مشخصه crossorigin به‌درستی استفاده شده باشد."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "با کاهش دادن طول زنجیره‌ها، کاهش دادن حجم بارگیری منابع، یا به‌تعویق انداختن بارگیری منابع غیرضروری برای بهبود بارگیری صفحه، [از زنجیر کردن درخواست‌های ضروری اجتناب کنید.](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)"
+    "message": "با کاهش دادن طول زنجیره‌ها، کاهش دادن حجم بارگیری منابع، یا به‌تعویق انداختن بارگیری منابع غیرضروری برای بهبود بارگیری صفحه، [از زنجیر کردن درخواست‌های ضروری اجتناب کنید.](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "راهنمایی‌های [پیش‌اتصال](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) را به مهم‌ترین مبدأهای خود اضافه کنید، اما سعی کنید از بیش از ۴ مورد استفاده نکنید."
@@ -2517,7 +2478,7 @@
     "message": "با کاهش دادن طول زنجیره‌ها، کاهش دادن حجم بارگیری منابع، یا به‌تعویق انداختن بارگیری منابع غیرضروری برای بهبود بارگیری صفحه، از زنجیر کردن درخواست‌های ضروری اجتناب کنید."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "درخواست‌ها پرداز اولیه صفحه‌ را مسدود می‌کنند. این کار ممکن است LCP را به‌تأخیر بیندازد. [به‌تعویق انداختن یا به‌خط کردن](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) می‌تواند این درخواست‌های شبکه را از مسیر اصلی خارج کند."
+    "message": "درخواست‌ها پرداز اولیه صفحه‌ را مسدود می‌کنند. این کار ممکن است LCP را به‌تأخیر بیندازد. [به‌تعویق انداختن یا به‌خط کردن](https://developer.chrome.com/docs/performance/insights/render-blocking) می‌تواند این درخواست‌های شبکه را از مسیر اصلی خارج کند."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "مدت"
@@ -2532,7 +2493,7 @@
     "message": "درخواست‌های مسدود کردن پرداز زدن"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "اگر هزینه‌های «محاسبه مجدد سبک» همچنان بالا است، بهینه‌سازی گزینشگر می‌تواند آن‌ها را کاهش دهد. گزینشگرهایی را که هم زمان سپری‌شده بالا و هم درصد مسیر آهسته بالایی دارند [بهینه کنید](https://developer.chrome.com/docs/devtools/performance/selector-stats). گزینشگرهای ساده‌تر، گزینشگرهای کمتر، DOM کوچک‌تر، و DOM سطحی‌تر همه باعث کاهش هزینه‌های مطابقت می‌شوند."
+    "message": "اگر هزینه‌های «محاسبه مجدد سبک» همچنان بالا است، بهینه‌سازی گزینشگر می‌تواند آن‌ها را کاهش دهد. گزینشگرهایی را که هم زمان سپری‌شده بالا و هم درصد مسیر آهسته بالایی دارند [بهینه کنید](https://developer.chrome.com/docs/performance/insights/slow-css-selector). گزینشگرهای ساده‌تر، گزینشگرهای کمتر، DOM کوچک‌تر، و DOM سطحی‌تر همه باعث کاهش هزینه‌های مطابقت می‌شوند."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "زمان سپری‌شده"
@@ -2571,7 +2532,7 @@
     "message": "حجم انتقال"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "کد طرف سوم می‌تواند به‌طور قابل‌توجهی بر عملکرد بار کردن تأثیر بگذارد. برای در اولویت قرار دادن محتوای صفحه، [بار کردن کد طرف سوم را کاهش دهید و به‌تعویق بیندازید](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "کد طرف سوم می‌تواند به‌طور قابل‌توجهی بر عملکرد بار کردن تأثیر بگذارد. برای در اولویت قرار دادن محتوای صفحه، [بار کردن کد طرف سوم را کاهش دهید و به‌تعویق بیندازید](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "طرف سومی پیدا نشد"
@@ -2580,7 +2541,7 @@
     "message": "طرف‌های سوم"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "اگر ناحیه نمایش برای تلفن همراه بهینه نشده باشد، تعامل‌ها ممکن است [تا ۳۰۰ میلی‌ثانیه تأخیر داشته باشد](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "اگر ناحیه نمایش برای تلفن همراه بهینه نشده باشد، تعامل‌ها ممکن است [تا ۳۰۰ میلی‌ثانیه تأخیر داشته باشد](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "تأخیر در تک‌ضرب زدن در تلفن همراه"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "با هوش مصنوعی در DevTools آشنا شوید"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "دستیاری هوش مصنوعی در «حالت ناشناس» یا «حالت مهمان» دردسترس نیست"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "این ویژگی تنها زمانی دردسترس است که با حساب Google خود به سیستم Chrome وارد شده باشید"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "اتصال اینترنت را بررسی و سپس دوباره امتحان کنید"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "نشان دادن مورد انتخاب‌شده از بافت در DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "دستیاری هوش مصنوعی در «تنظیمات»"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "برای دریافت کمک در درک سبک‌های CSS، {PH1} را روشن کنید"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "برای دریافت کمک درباره درخواست‌های شبکه و سبک‌ها، {PH1} را روشن کنید."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "برای دریافت راهنمایی درباره سبک‌ها، درخواست‌های شبکه، و فایل‌ها، {PH1} را روشن کنید"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "برای دریافت راهنمایی درخصوص سبک‌ها، درخواست‌های شبکه، عملکرد، و فایل‌ها، {PH1} را روشن کنید"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "در این صفحه می‌توانید پویانمایی‌ها را بازرسی و اصلاح کنید."
@@ -5415,7 +5352,7 @@
     "message": "از واکشی اولیه استفاده نشد زیرا واکشی اولیه از نوع بین‌سایتی یود، و هنگامی‌که واکشی اولیه درحال انجام بود کوکی‌هایی برای آن نشانی وب اضافه شد، بنابراین پاسخ واکشی اولیه‌شده اکنون قدیمی است."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
-    "message": "واکشی اولیه را «رساننده خدمات اینترنتی» یا سرپرست شبکه مسدود کرده است."
+    "message": "واکشی اولیه را «فراهم‌ساز خدمات اینترنتی» یا سرپرست شبکه مسدود کرده است."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "هنگام برقرار کردن اتصال به پراکسی واکشی اولیه خطای شبکه روی داد."
@@ -6060,13 +5997,19 @@
     "message": "نمایه‌تان را سفارشی‌سازی کنید"
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
-    "message": "نام «حساب Google» شما و علایقتان برای «نمایه توسعه‌دهندگان Google» شما استفاده خواهد شد. نامتان هرکجا همیاری کنید ظاهر می‌شود و هرزمان بخواهید می‌توانید آن را تغییر دهید."
+    "message": "نام «حساب Google» شما و علایقتان برای «نمایه توسعه‌دهندگان Google» شما استفاده خواهد شد. نامتان هرکجا همیاری کنید ظاهر می‌شود و هر زمان‌که بخواهید می‌توانید آن را تغییر دهید."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
     "message": "با ایجاد کردن «نمایه توسعه‌دهندگان»، با {PH1} موافقت می‌کنید. «{PH2}» و «{PH3}» Google بر استفاده شما از این سرویس اعمال می‌شود."
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "شرایط خدمات"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "پیوند داده‌شده با {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "پیوندشده به نقشه منبع: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "اجازه دادن"
@@ -6444,7 +6387,10 @@
     "message": "فقط بافت انتخاب‌شده"
   },
   "panels/console/console-meta.ts | showConsole": {
-    "message": "نمایش کنسول"
+    "message": "نشان دادن کنسول"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "نمایش خلاصه هوش مصنوعی برای پیام‌های کنسول"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "نمایش خطاهای CORS در کنسول"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "رفتن به پانل «پویانمایی»"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "باز کردن انتخاب‌گر رنگ. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "افزودن {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "مسدودسازی"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "سفارشی"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex بیننده"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "افزودن الگوی انسداد درخواست شبکه"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "افزودن الگو"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "با کلیک کردن روی دکمه «{PH1}»، الگویی برای مسدود کردن درخواست‌های شبکه اضافه کنید."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} مسدود شد"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "فعال کردن مسدودسازی درخواست شبکه"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "مورد باموفقیت حذف شد"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "بیشتر بدانید"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "درخواست شبکه مسدودشده‌ای وجود ندارد"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "الگو ازقبل وجود دارد."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "ورودی الگو نباید خالی باشد."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "الگوی نوشتار برای مسدود کردن درخواست‌های منطبق؛ برای نویسه عام از * استفاده کنید"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "پاک کردن همه"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "وضعیت درخواست را نمی‌توان در اینجا نشان داد زیرا صفحه‌ای که آن را صادر کرده است هنگامی‌که درخواست درحال پرواز بود تخلیه کرد. برای ضبط گزارش شبکه و دیدن همه جزئیات درخواست، می‌توانید از chrome://net-export استفاده کنید."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "اطلاعات اتصال"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "مسدود کردن نشانی وب درخواست"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "مسدود کردن درخواست‌ها"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "درخواست‌های مسدودشده"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "درخواست‌های شخص ثالث"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "محدود کردن دامنه درخواست"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "محدود کردن نشانی وب درخواست"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "محدود کردن درخواست‌ها"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "گشودن {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "توقف محدودسازی شبکه {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "شناسه اتصال"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "نشانی وب"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "افزودن الگوی انسداد درخواست شبکه"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "افزودن الگو"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "افزودن الگوی محدودسازی یا مسدودسازی درخواست شبکه"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "با کلیک کردن روی دکمه «{PH1}»، الگویی اضافه کنید."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} مسدود شد"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "کاهش اولویت"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "فعال کردن مسدودسازی و محدودسازی"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "فعال کردن مسدودسازی درخواست شبکه"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "افزایش اولویت"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "مورد باموفقیت حذف شد"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "درخواست شبکه مسدودشده‌ای وجود ندارد"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "هیچ الگویی برای محدودسازی یا مسدودسازی درخواست وجود ندارد"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "الگو ازقبل وجود دارد."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "این الگو به‌عنوان URLPattern تجزیه نشد"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "گروه‌های RegExp مجاز نیستند"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "ورودی الگو نباید خالی باشد."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "این الگو از «{PH1}» ارتقا یافته است"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "الگوی نوشتاری برای مسدود یا محدود کردن درخواست‌های منطبق؛ از نحو URLPattern استفاده کنید."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "الگوی نوشتار برای مسدود کردن درخواست‌های منطبق؛ برای نویسه عام از * استفاده کنید"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "کوکی‌هایی که در سرصفحه «set-cookie» پاسخ از سرور دریافت شده‌اند"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "درخواست برای ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "درخواست/ پاسخ"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "زمان‌بندی منبع"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "برای استفاده از این منبع از سایتی دیگر، سرور ممکن است سرصفحه پاسخ خط‌مشی منبع بین‌مبدائی را رها کند:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "افزودن الگوی مسدودسازی یا محدودسازی درخواست شبکه"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "افزودن الگوی انسداد درخواست شبکه"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "مسدودسازی درخواست شبکه"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "شرایط درخواست"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "محدودکردن شبکه"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "ضبط گزارش شبکه"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "برداشتن همه الگوهای مسدودسازی یا محدودسازی درخواست شبکه"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "برداشتن همه الگوهای انسداد درخواست شبکه"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "نمایش «مسدودسازی درخواست شبکه»"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "نمایش شرایط درخواست"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "نمایش جستجو"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "اشیای حفظ‌شده توسط گره‌های جداشده DOM"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "اشیای حفظ‌شده توسط «مدیران رویداد»"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "دیگر اشیای جاوااسکریپت"
@@ -12102,7 +12114,7 @@
     "message": "تبلیغات"
   },
   "panels/security/CookieReportView.ts | allowed": {
-    "message": "مجاز"
+    "message": "اجازه داشتن"
   },
   "panels/security/CookieReportView.ts | allowedByException": {
     "message": "مجاز به‌دلیل مستثنی شدن"
@@ -12426,7 +12438,7 @@
     "message": "SCT"
   },
   "panels/security/SecurityPanel.ts | secure": {
-    "message": "ایمن"
+    "message": "امن"
   },
   "panels/security/SecurityPanel.ts | secureConnectionSettings": {
     "message": "تنظیمات اتصال ایمن"
@@ -12612,7 +12624,7 @@
     "message": "نمایش «امنیت»"
   },
   "panels/sensors/LocationsSettingsTab.ts | accuracy": {
-    "message": "دقت"
+    "message": "درستی"
   },
   "panels/sensors/LocationsSettingsTab.ts | accuracyMustBeANumber": {
     "message": "دقت باید یک عدد باشد"
@@ -12678,7 +12690,7 @@
     "message": "شناسه منطقه زمانی باید حاوی نویسه‌های الفبایی باشد"
   },
   "panels/sensors/SensorsView.ts | accuracy": {
-    "message": "دقت"
+    "message": "درستی"
   },
   "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "تنظیم با چرخ موشواره یا کلیدهای بالا/ پایین. {PH1}: ±۱۰،‏ Shift:‏ ±۱، Alt:‏ ±۰٫۰۱"
@@ -12982,6 +12994,18 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "وقتی روشن است"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "مسیری را وارد کنید"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "مسیری غیرتکراری وارد کنید"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "زیرپوشه‌های مستثنی"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "نشانی وب"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "یک قانون عبارت باقاعده برای نشانی وب این دستورگان اضافه کنید"
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "برای دیدن نمادها، فایل CSS یا جاوا اسکریپت را باز کنید"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "باز کردن در پوشه حاوی"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ملغی کردن محتوا"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "«{PH1}» یک فایل نگاشت‌شده منبع است و نمی‌تواند ملغی شود."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "«{PH1}» ملغی شود؟"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "ذخیره به‌عنوان…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ذخیره فایل در دیسک انجام نشد."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "ذخیره تصویر"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "واحد WASM در دیسک ذخیره نشد. به احتمال زیاد واحد بسیار بزرگ است."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "نمایش همه موارد ملغی‌شده"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "کیلوبایت"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "گنجاندن حاشیه‌نویسی‌ها"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "گنجاندن محتوای دستورگان"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "گنجاندن نقشه‌های منبع دستورگان"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "اطلاعات بیشتر:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "ذخیره"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "محتوای کامل همه دستورگان بارشده را شامل می‌شود (به‌جز افزونه‌ها)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "فشرده کردن با gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "سرصفحه‌های درخواست ملغی می‌شود"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "کوکی‌های این درخواست به‌دلیل پرچم‌های Chrome یا پیکربندی مرورگر مسدود شده است. در پانل «مشکلات»، اطلاعات بیشتری کسب کنید."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "استفاده کردن از عبارت باقاعده"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به مجدد بار کردن نیاز دارند"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*به بار کردن مجدد نیاز دارد"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "علامت زده شد"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "برای برطرف کردن کنتراست، از رنگ پیشنهادی {PH1} استفاده کنید"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "شدت این رنگ تغییر کرد تا با طیف قالب مطابقت یابد. نتیجه واقعی {PH1} بود"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ تبدیل به گستره رنگی محدود باعث تغییر رنگ می‌شود"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "افزودن به پالت"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "کوکی‌ها"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "دامنه"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "کوکی‌های قابل‌ویرایش"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(مبهم)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "سایت کلید پارتیشن"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "مسیر"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "اولویت"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "امن"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "جلسه"

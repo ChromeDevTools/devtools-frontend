@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With 區塊"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "封鎖"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "已取消"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "固定在右側"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools收到外部要求"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "焦點頁面"
   },
@@ -1275,13 +1281,13 @@
     "message": "SVGUseElement 不再支援「data: 網址」，並將於日後移除。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() 和 watchPosition() 不再適用於不安全的來源。如要使用這個功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+    "message": "getCurrentPosition() 和 watchPosition() 不再適用於不安全的來源。如要使用這項功能，建議將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "不安全來源上的 getCurrentPosition() 和 watchPosition() 已遭淘汰。如要使用這個功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+    "message": "在不安全來源上使用 getCurrentPosition() 和 watchPosition() 的做法已淘汰。如要使用這項功能，建議將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() 不再適用於不安全的來源。如要使用這個功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+    "message": "getUserMedia() 不再適用於不安全的來源。如要使用這項功能，建議將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate 已淘汰，請改用 RTCPeerConnectionIceErrorEvent.address 或 RTCPeerConnectionIceErrorEvent.port。"
@@ -1311,7 +1317,7 @@
     "message": "即使在 MIDIOptions 中未指定系統專用 (SysEx) 訊息，Web MIDI 也會要求使用權限。"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "系統不再允許透過不安全的來源使用 Notification API。請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+    "message": "系統不再允許透過不安全的來源使用 Notification API。建議將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "系統已不再允許透過跨來源 iframe 要求 Notification API。請考慮透過頂層頁框要求權限，或改為開啟新視窗。"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "擴充功能應選擇啟用跨來源隔離功能，以便繼續使用 SharedArrayBuffer。詳情請參閱 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() 已淘汰，請改用 writeValueWithResponse() 或 writeValueWithoutResponse()。"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest 中的 JSON 回應不支援 UTF-16"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "必須連上網際網路才能使用這項功能。"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools收到外部要求"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "載入檔案時發生不明錯誤"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "延遲時間：{PH1}，下載時間：{PH2} (總計 {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "輸入路徑"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "請輸入專屬路徑"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "已排除的子資料夾"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "網址"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "無法載入 blob。"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "無法新增檔案系統：{PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "開啟所屬的資料夾"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "覆寫內容"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "「{PH1}」是來源對應檔案且無法覆寫。"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "要改為覆寫「{PH1}」嗎？"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "另存新檔…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "檔案無法儲存到磁碟。"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "儲存圖片"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "無法將 WASM 模組存到磁碟，最有可能的原因是模組過大。"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "顯示所有覆寫檔案"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "已連結 {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "已連結到來源對應：{PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem 無法讀取檔案。"
@@ -2157,7 +2118,7 @@
     "message": "動畫"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "版面配置位移是指元素在使用者未進行任何互動時移動。[調查版面配置位移的原因](https://web.dev/articles/optimize-cls)，例如在網頁載入期間新增、移除元素，或變更字型。"
+    "message": "版面配置位移是指元素在使用者未進行任何互動時移動。[調查版面配置位移的原因](https://developer.chrome.com/docs/performance/insights/cls-culprit)，例如在網頁載入期間新增、移除元素，或變更字型。"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "插入了 iframe"
@@ -2193,7 +2154,7 @@
     "message": "快取存留時間"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "延長快取生命週期可以加快使用者再次造訪網頁的速度。[瞭解詳情](https://web.dev/uses-long-cache-ttl/)。"
+    "message": "延長快取生命週期可以加快使用者再次造訪網頁的速度。[進一步瞭解快取](https://developer.chrome.com/docs/performance/insights/cache)。"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "沒有任何要求採用效率不佳的快取政策"
@@ -2208,7 +2169,7 @@
     "message": "使用有效的快取生命週期"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "大型 DOM 可能會增加樣式運算和版面配置自動重排的時間，影響網頁的回應速度。大型 DOM 也會增加記憶體用量。[瞭解如何避免 DOM 過大](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)。"
+    "message": "大型 DOM 可能會增加樣式運算和版面配置自動重排的時間，影響網頁的回應速度。大型 DOM 也會增加記憶體用量。[瞭解如何避免 DOM 過大](https://developer.chrome.com/docs/performance/insights/dom-size)。"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "時間長度"
@@ -2244,7 +2205,7 @@
     "message": "值"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "第一個網路要求最為重要。避免重新導向、確保伺服器快速回應，並啟用文字壓縮功能，即可縮短延遲時間。"
+    "message": "第一個網路要求最為重要。避免重新導向、確保伺服器快速回應，並啟用文字壓縮功能，即可[縮短延遲時間](https://developer.chrome.com/docs/performance/insights/document-latency)。"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "有重新導向 ({PH1} 次重新導向，+{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "來源"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "從套件中移除重複的大型 JavaScript 模組，降低網路活動產生的不必要流量。"
+    "message": "從套件中移除大型的[重複 JavaScript 模組](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)，減少網路活動消耗的非必要頻寬。"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "重複的 JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "建議將 [font-display](https://developer.chrome.com/blog/font-display) 設為 swap 或 optional，確保文字始終可見。swap 可透過[字型指標覆寫](https://developer.chrome.com/blog/font-fallbacks)，進一步減少版面配置位移。"
+    "message": "建議將 [font-display](https://developer.chrome.com/docs/performance/insights/font-display) 設為 swap 或 optional，確保文字始終可見。swap 可透過[字型指標覆寫](https://developer.chrome.com/blog/font-fallbacks)，進一步減少版面配置位移。"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "字型"
@@ -2304,10 +2265,10 @@
     "message": "(匿名)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "如果 JavaScript 在樣式因 DOM 狀態變更而失效後查詢幾何屬性 (例如 offsetWidth)，就會強制自動重排。這可能會導致效能不佳。進一步瞭解[強制自動重排](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)和可能的因應措施。"
+    "message": "如果 JavaScript 在樣式因 DOM 狀態變更而失效後查詢幾何屬性 (例如 offsetWidth)，就會強制自動重排。這可能會導致效能不佳。進一步瞭解[強制自動重排](https://developer.chrome.com/docs/performance/insights/forced-reflow)和可能的因應措施。"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "堆疊追蹤"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "呼叫可觸發自動重排的頁框"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "強制自動重排"
@@ -2322,7 +2283,7 @@
     "message": "[找不到出處]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "從最長的子部分開始調查，[可盡量縮短延遲時間](https://web.dev/articles/optimize-inp#optimize_interactions)。如要縮短處理時間，請[盡量降低主執行緒的成本](https://web.dev/articles/optimize-long-tasks)，通常是針對 JavaScript。"
+    "message": "查看最長的子部分，開始調查 [INP 的改善方式](https://developer.chrome.com/docs/performance/insights/inp-breakdown)。"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "時間長度"
@@ -2346,7 +2307,7 @@
     "message": "INP 細目"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "縮短圖片下載時間，可縮減使用者感知的網頁載入時間，並提升 LCP 指標的表現。[進一步瞭解如何最佳化圖片大小](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "縮短圖片下載時間，可縮減使用者感知的網頁載入時間，並提升 LCP 指標的表現。[進一步瞭解如何最佳化圖片大小](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (預估大小為 {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "建議使用影片格式 (而非 GIF)，可縮減動畫內容的下載大小。"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "每個[子部分都有特定改善策略](https://web.dev/articles/optimize-lcp#lcp-breakdown)。理想狀態下，大部分的 LCP 時間應該用於載入資源，而非延遲。"
+    "message": "每個[子部分都有特定改善策略](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)。理想狀態下，大部分的 LCP 時間應該用於載入資源，而非延遲。"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "時間長度"
@@ -2406,7 +2367,7 @@
     "message": "LCP 細目"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "如要提升 LCP，請讓 LCP 圖片立即[顯示](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)在 HTML 中，[避免延遲載入](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "如要[提升 LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery)，建議讓系統能立即偵測到 HTML 中的 LCP 圖片，並避免延遲載入"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "已套用 fetchpriority=high"
@@ -2439,13 +2400,13 @@
     "message": "浪費的位元組數"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill 和轉換作業可讓舊版瀏覽器使用新版 JavaScript 的功能，但對新式瀏覽器來說，很多都是不需要的功能。除非你認為必須支援舊版瀏覽器，否則建議修改 JavaScript 建構程序，不要轉譯[基準](https://web.dev/articles/baseline-and-polyfills)功能。[瞭解為何大多數網站不需要轉譯，就能部署 ES6+ 程式碼](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill 和轉換作業可讓舊版瀏覽器使用新版 JavaScript 的功能，但對新式瀏覽器來說，很多都是不需要的功能。除非你認為必須支援舊版瀏覽器，否則建議修改 JavaScript 建構程序，不要轉譯[基準](https://web.dev/articles/baseline-and-polyfills)功能。[瞭解為何大多數網站不需要轉譯，就能部署 ES6+ 程式碼](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "舊版 JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 和 HTTP/3 擁有許多 HTTP/1.1 沒有的優點，例如多工處理。[進一步瞭解如何使用新式 HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)。"
+    "message": "HTTP/2 和 HTTP/3 擁有許多 HTTP/1.1 沒有的優點，例如多工處理。[進一步瞭解如何使用新式 HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)。"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "沒有任何要求使用 HTTP/1.1，或是目前使用 HTTP/1.1 的情況沒有顯著的最佳化空間。只有當六項以上的靜態素材資源來自相同來源，且並非從本機開發環境或第三方來源提供時，系統才會標記 HTTP/1.1 要求。"
@@ -2478,7 +2439,7 @@
     "message": "這是未使用的預先連結。請檢查 crossorigin 屬性的設定是否正確。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "如要[避免鏈結關鍵要求](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)，可以縮短鏈結長度、降低資源的下載大小或延後下載非必要資源，提高頁面載入速度。"
+    "message": "如要[避免鏈結關鍵要求](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)，可以縮短鏈結長度、降低資源的下載大小或延後下載非必要資源，提高頁面載入速度。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "請新增最重要來源的 [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 提示，但盡量不要超過 4 個。"
@@ -2517,7 +2478,7 @@
     "message": "如要避免鏈結關鍵要求，可以縮短鏈結長度、降低資源的下載大小或延後下載非必要資源，提高頁面載入速度。"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "要求會阻礙網頁的初始轉譯作業，進而導致 LCP 延遲。你可以透過[延後或內嵌](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)的方式，將這些網路要求移出關鍵路徑。"
+    "message": "要求會阻礙網頁的初始轉譯作業，進而導致 LCP 延遲。你可以透過[延後或內嵌](https://developer.chrome.com/docs/performance/insights/render-blocking)的方式，將這些網路要求移出關鍵路徑。"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "時間長度"
@@ -2532,7 +2493,7 @@
     "message": "轉譯封鎖要求"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "如果「重新計算樣式」的成本仍然偏高，可以使用選取器最佳化功能降低成本。針對經過時間偏長及慢速路徑百分比偏高的[選取器進行最佳化](https://developer.chrome.com/docs/devtools/performance/selector-stats)。選取器越簡單、數量越少，DOM 的規模越小、結構越單純，越能降低比對成本。"
+    "message": "如果「重新計算樣式」的成本仍然偏高，可以使用選取器最佳化功能降低成本。針對經過時間偏長及慢速路徑百分比偏高的[選取器進行最佳化](https://developer.chrome.com/docs/performance/insights/slow-css-selector)。選取器越簡單、數量越少，DOM 的規模越小、結構越單純，越能降低比對成本。"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "經過時間"
@@ -2571,7 +2532,7 @@
     "message": "傳輸大小"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "第三方程式碼可能會嚴重影響載入效能。請[減少第三方程式碼並延遲載入](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)，優先載入網頁內容。"
+    "message": "第三方程式碼可能會嚴重影響載入效能。請[減少第三方程式碼並延遲載入](https://developer.chrome.com/docs/performance/insights/third-parties)，優先載入網頁內容。"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "找不到任何第三方"
@@ -2580,7 +2541,7 @@
     "message": "第三方"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "如果可視區域未針對行動裝置進行最佳化調整，輕觸互動可能會[延遲最多 300 毫秒](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+    "message": "如果可視區域未針對行動裝置進行最佳化調整，輕觸互動可能會[延遲最多 300 毫秒](https://developer.chrome.com/docs/performance/insights/viewport)。"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "行動裝置輕觸延遲"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "瞭解開發人員工具的 AI 功能"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "無痕模式或訪客模式下無法使用 AI 輔助工具"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "必須使用 Google 帳戶登入 Chrome，才能使用這項功能。"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "請檢查網路連線，然後再試一次"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "在開發人員工具中顯示所選內容項目"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "「設定」中的 AI 輔助功能"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "開啟{PH1}，取得瞭解 CSS 樣式的相關協助"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "開啟{PH1}，取得樣式和網路要求相關協助"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "開啟{PH1}，取得樣式、網路要求和檔案的相關協助"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "開啟{PH1}，取得樣式、網路要求、效能和檔案相關協助"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "在這個頁面中，你可以檢查及修改動畫。"
@@ -5994,7 +5931,7 @@
     "message": "管理設定"
   },
   "panels/common/BadgeNotification.ts | receiveBadges": {
-    "message": "開啟徽章"
+    "message": "開啟徽章功能"
   },
   "panels/common/BadgeNotification.ts | remindMeLater": {
     "message": "稍後提醒我"
@@ -6003,7 +5940,7 @@
     "message": "恭喜你獲得「{PH2}」的「{PH1}」徽章！如要領取徽章，請建立設定檔。"
   },
   "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
-    "message": "恭喜你獲得「{PH2}」的「{PH1}」徽章！開啟徽章即可領取。"
+    "message": "恭喜你獲得「{PH2}」的「{PH1}」徽章！開啟徽章功能即可領取。"
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "查看設定檔"
@@ -6030,7 +5967,7 @@
     "message": "全力協助你成功開發"
   },
   "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
-    "message": "精進技能、運用 AI 技術開發，並獲得可在開發人員設定檔中展示的徽章"
+    "message": "精進技能、運用 AI 技術建構專案，還能在開發人員設定檔中展示入手的徽章"
   },
   "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
     "message": "Google Developer Program 註冊對話方塊"
@@ -6067,6 +6004,12 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "服務條款"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "已連結 {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "已連結到來源對應：{PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "允許"
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "顯示主控台"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "顯示控制台訊息的 AI 摘要"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "在主控台中顯示 CORS 錯誤"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "跳到「動畫」面板"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "開啟顏色挑選器。{PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "新增「{PH1}」"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "封鎖"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "自訂"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex檢視器"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "新增網路要求封鎖模式"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "新增格式"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "按一下「{PH1}」按鈕，即可新增封鎖網路要求的模式。"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "已封鎖 {PH1} 個"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "啟用網路要求封鎖功能"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "已成功刪除項目"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "瞭解詳情"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "沒有任何已封鎖的網路要求"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "已有相同的模式。"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "模式輸入不得留空。"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "封鎖與這個文字格式相符的請求；使用 * 作為萬用字元"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "全部清除"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "此處無法顯示要求狀態，因為發出要求的頁面在要求傳送時已卸載。你可以使用 chrome://net-export 來擷取網路記錄，並查看所有要求詳細資料。"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "連線資訊"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "封鎖要求網址"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "封鎖要求"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "已封鎖的要求"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "第三方要求"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "節流要求網域"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "節流要求網址"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "節流要求"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "解除封鎖 {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "停止節流「{PH1}」"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "連線 ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "網址"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "新增網路要求封鎖模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "新增格式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "新增網路要求的節流或封鎖模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "按一下「{PH1}」按鈕，即可新增模式。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "已封鎖 {PH1} 個"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "降低優先順序"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "啟用封鎖和節流功能"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "啟用網路要求封鎖功能"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "提高優先順序"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "已成功刪除項目"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "瞭解詳情"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "沒有任何已封鎖的網路要求"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "未設定網路要求的節流或封鎖模式"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "已有相同的模式。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "無法將這個模式剖析為 URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "不允許使用 RegExp 群組"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "模式輸入不得留空。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "這個模式是從「{PH1}」升級而來"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "設定文字模式，以封鎖或節流相符的要求；請使用 URLPattern 語法。"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "封鎖與這個文字格式相符的請求；使用 * 作為萬用字元"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "在回應的「set-cookie」標頭中伺服器接收到的 Cookie"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "要求 ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "要求/回應"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "資源排程"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "為了從不同網站使用這項資源，伺服器可能會放寬跨來源資源政策回應標頭："
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "新增網路要求封鎖或節流模式"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "新增網路要求封鎖模式"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "網路要求封鎖"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "要求條件"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "網路節流"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "製作網路記錄"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "移除網路要求的所有封鎖或節流模式"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "移除所有網路要求封鎖模式"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "顯示網路要求封鎖"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "顯示要求條件"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "顯示「搜尋」工具"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "卸離的 DOM 節點所保留的物件"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "事件處理常式保留的物件"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "其他 JS 物件"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "開啟時"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "輸入路徑"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "請輸入專屬路徑"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "已排除的子資料夾"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "網址"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "新增指令碼網址的規則運算式規則"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "開啟 JavaScript 或 CSS 檔案即可查看符號"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "開啟所屬的資料夾"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "覆寫內容"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "「{PH1}」是來源對應檔案且無法覆寫。"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "要改為覆寫「{PH1}」嗎？"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "另存新檔…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "檔案無法儲存到磁碟。"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "儲存圖片"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "無法將 WASM 模組存到磁碟，最有可能的原因是模組過大。"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "顯示所有覆寫檔案"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "KB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "加入註解"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "加入指令碼內容"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "加入指令碼來源對應"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "其他資訊："
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "儲存"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "包括所有已載入指令碼的完整內容 (擴充功能除外)。"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "使用 gzip 壓縮"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "已覆寫要求標頭"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "系統已封鎖用於這項要求的 Cookie，原因可能是 Chrome 旗標或瀏覽器設定。詳情請參閱「問題」面板。"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "使用規則運算式"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "一或多項設定有變動，必須重新載入才能生效"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*需要重新載入"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "已勾選"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "使用建議的顏色「{PH1}」修正低對比問題"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "為配合格式的色域，系統移除了這個顏色。實際結果為 {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ 轉換為窄色域會導致色彩偏移"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "新增至調色盤"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "網域"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "可編輯 Cookie"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(不透明)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "分區索引鍵網站"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "路徑"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "優先順序"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "安全"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "工作階段"

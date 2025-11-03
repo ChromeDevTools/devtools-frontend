@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ब्लक"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "ब्लक गर्नुहोस्"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "रद्द गरिएको"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "दायाँतिर डक गर्नुहोस्"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools ले बाह्य अनुरोध प्राप्त गरेको छ"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "फोकस पेज"
   },
@@ -1275,13 +1281,13 @@
     "message": "डेटासम्बन्धी सहायता: SVGUseElement मा भएका URL चल्तीबाट हटाइँदै छन् र तिनलाई चाँडै नै सदाका लागि हटाइने छन्।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() र watchPosition() ले अब उप्रान्त असुरक्षित ओरिजिनहरूमा काम गर्ने छैनन्। तपाईं यो सुविधा प्रयोग गर्न चाहनुहुन्छ भने तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। तपाईं यस सम्बन्धमा थप जानकारी प्राप्त गर्न चाहनुहुन्छ भने https://goo.gle/chrome-insecure-origins हेर्नुहोस्।"
+    "message": "getCurrentPosition() र watchPosition() ले अबदेखि असुरक्षित ओरिजिनहरूमा काम गर्ने छैनन्। यो सुविधा प्रयोग गर्न तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। यस सम्बन्धमा थप विवरणहरू प्राप्त गर्न https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ मा जानुहोस्।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "असुरक्षित ओरिजिनहरूमा getCurrentPosition() र watchPosition() चल्तीबाट हटाइएका छन्। तपाईं यो सुविधा प्रयोग गर्न चाहनुहुन्छ भने तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। तपाईं यस सम्बन्धमा थप जानकारी प्राप्त गर्न चाहनुहुन्छ भने https://goo.gle/chrome-insecure-origins हेर्नुहोस्।"
+    "message": "असुरक्षित ओरिजिनहरूमा getCurrentPosition() र watchPosition() चल्तीबाट हटाइएका छन्। यो सुविधा प्रयोग गर्न तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। यस सम्बन्धमा थप विवरणहरू प्राप्त गर्न https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ मा जानुहोस्।"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() ले अबदेखि असुरक्षित ओरिजिनहरूमा काम गर्ने छैनन्। यो सुविधा प्रयोग गर्न तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। यस सम्बन्धमा थप विवरणहरू प्राप्त गर्न https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ मा जानुहोस्।"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate चल्तीबाट हटाइएको छ। कृपया यसको साटो RTCPeerConnectionIceErrorEvent.address वा RTCPeerConnectionIceErrorEvent.port प्रयोग गर्नुहोस्।"
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "अब उप्रान्त असुरक्षित ओरिजिनबाट Notification API प्रयोग गर्न सकिँदैन। तपाईंलाई आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्न सिफारिस गरिन्छ। तपाईं यस सम्बन्धमा थप जानकारी प्राप्त गर्न चाहनुहुन्छ भने https://goo.gle/chrome-insecure-origins हेर्नुहोस्।"
+    "message": "अबदेखि असुरक्षित ओरिजिनहरूबाट Notification API प्रयोग गर्न सकिँदैन। तपाईंलाई आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्न सिफारिस गरिन्छ। यस सम्बन्धमा थप विवरणहरू प्राप्त गर्न https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ मा जानुहोस्।"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "अब उप्रान्त क्रस ओरिजिन iframe बाट Notification API प्रयोग गर्ने अनुमति माग्न सकिँदैन। तपाईंलाई शीर्ष स्तरको फ्रेमबाट अनुमति माग्न वा यसको साटो नयाँ विन्डो खोल्न सिफारिस गरिन्छ।"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() चल्तीबाट हटाइएको छ। यसको साटो writeValueWithResponse() वा writeValueWithoutResponse() प्रयोग गर्नुहोस्।"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "यो सुविधा इन्टरनेट कनेक्सन सक्रिय हुँदा मात्र उपलब्ध हुन्छ।"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools ले बाह्य अनुरोध प्राप्त गरेको छ"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "फाइल लोड गर्ने क्रममा कुनै अज्ञात त्रुटि भयो"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} विलम्बता, डाउनलोड गर्न {PH2} (कुल {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "पथ प्रविष्टि गर्नुहोस्"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "कुनै अद्वितीय पथ प्रविष्टि गर्नुहोस्"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "समावेश नगरिएका सबफोल्डरहरू"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "ब्लब लोड गर्न सकिएन।"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "निम्न फाइल प्रणाली थप्न सकिएन: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "यसको फोल्डरमा खोल्नुहोस्"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "सामग्री ओभरराइड गर्नुहोस्"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ भनेको सोर्स म्याप गरिएको फाइल हो र यो फाइल ओभरराइड गर्न मिल्दैन।"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "बरु ‘{PH1}’ ओभरराइड गर्ने हो?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "यसका रूपमा सेभ गर्नुहोस्…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "डिस्कमा फाइल सेभ गर्न सकिएन।"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "फोटो सेभ गर्नुहोस्"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM मोड्युल डिस्कमा सेभ गर्न सकिएन। यो मोड्युल धेरै ठुलो भएकाले यसो भएको हुन सक्छ।"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "सबै ओभरराइडहरू देखाउनुहोस्"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1} सँग लिंक गरिएको"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "सोर्स म्यापमा लिंक गरियो: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ले फाइल रिड गर्न सक्दैन।"
@@ -2157,7 +2118,7 @@
     "message": "एनिमेसन"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "प्रयोगकर्ताले कुनै अन्तर्क्रिया नगरिकनै एलिमेन्टहरू सर्दा लेआउट सिफ्ट हुन्छ। पेज लोड हुने क्रममा एलिमेन्टहरू हालिएको, हटाइएको वा तिनको फन्ट परिवर्तन गरिएको जस्ता [लेआउट सिफ्ट हुनुका कारणहरूका बारेमा अनुसन्धान गर्नुहोस्](https://web.dev/articles/optimize-cls)।"
+    "message": "प्रयोगकर्ताले कुनै अन्तर्क्रिया नगरिकनै एलिमेन्टहरू सर्दा लेआउट सिफ्ट हुन्छ। पेज लोड हुने क्रममा एलिमेन्टहरू हालिएको, हटाइएको वा तिनको फन्ट परिवर्तन गरिएको जस्ता [लेआउट सिफ्ट हुनुका कारणहरूका बारेमा अनुसन्धान गर्नुहोस्](https://developer.chrome.com/docs/performance/insights/cls-culprit)।"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "इन्जेक्ट गरिएको iframe"
@@ -2193,7 +2154,7 @@
     "message": "क्यास TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "लामो समयसम्म क्यास गरिराख्ने सुविधाले मान्छेहरूले तपाईंको पेज घरिघरि हेर्दा उक्त पेज छिटो लोड गर्छ। [थप जान्नुहोस्](https://web.dev/uses-long-cache-ttl/)।"
+    "message": "लामो समयसम्म क्यास गरिराख्ने सुविधाले मान्छेहरूले तपाईंको पेज घरिघरि हेर्दा उक्त पेज छिटो लोड गर्छ। [क्यास गर्ने प्रक्रियाका बारेमा थप जान्नुहोस्](https://developer.chrome.com/docs/performance/insights/cache)।"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "क्यास गर्नु पर्ने कुनै पनि अनुरोध भेटिएन"
@@ -2208,7 +2169,7 @@
     "message": "सामग्री लामो समयसम्म क्यास गरिराख्ने सुविधा प्रयोग गर्नुहोस्"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM को आकार ठुलो भयो भने शैलीको गणना गर्न र लेआउटको रिफ्लो गर्न अझ बढी समय लाग्न सक्छ र यिनका कारणले पेजको रेस्पोन्सिभनेस प्रभावित हुन्छ। DOM को आकार ठुलो भयो भने मेमोरी पनि बढी प्रयोग हुने छ। [DOM को आकार अत्यधिक ठुलो हुन नदिने तरिका सिक्नुहोस्](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)।"
+    "message": "DOM को आकार ठुलो भयो भने शैलीको गणना गर्न र लेआउटको रिफ्लो गर्न अझ बढी समय लाग्न सक्छ र यिनका कारणले पेजको रेस्पोन्सिभनेस प्रभावित हुन्छ। DOM को आकार ठुलो भयो भने मेमोरी पनि बढी प्रयोग हुने छ। [DOM को आकार अत्यधिक ठुलो हुन नदिने तरिका सिक्नुहोस्](https://developer.chrome.com/docs/performance/insights/dom-size)।"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "अवधि"
@@ -2244,7 +2205,7 @@
     "message": "मान"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "नेटवर्कसम्बन्धी तपाईंको पहिलो अनुरोध सबैभन्दा महत्त्वपूर्ण हुन्छ।  रिडिरेक्ट गर्न रोक लगाएर, सर्भरबाट छिटो जवाफ प्राप्त हुने कुरा सुनिश्चित गरेर र टेक्स्ट कम्प्रेस गर्ने सुविधा अन गरेर यसको विलम्बता घटाउनुहोस्।"
+    "message": "नेटवर्कसम्बन्धी तपाईंको पहिलो अनुरोध सबैभन्दा महत्त्वपूर्ण हुन्छ। रिडिरेक्ट गर्न रोक लगाएर, सर्भरबाट छिटो जवाफ प्राप्त हुने कुरा सुनिश्चित गरेर र टेक्स्ट कम्प्रेस गर्ने सुविधा अन गरेर [यसको विलम्बता घटाउनुहोस्](https://developer.chrome.com/docs/performance/insights/document-latency)।"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "रिडिरेक्टहरू ({PH1} वटा रिडिरेक्ट, +{PH2}) छन्"
@@ -2283,13 +2244,13 @@
     "message": "स्रोत"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "नेटवर्कसम्बन्धी गतिविधिले प्रयोग गर्ने अनावश्यक बाइटहरूको सङ्ख्या कम गर्न बन्डलहरूबाट ठुला डुप्लिकेट JavaScript मोड्युलहरू हटाउनुहोस्।"
+    "message": "नेटवर्कसम्बन्धी गतिविधिले प्रयोग गर्ने अनावश्यक बाइटहरूको सङ्ख्या कम गर्न बन्डलहरूबाट ठुला [डुप्लिकेट JavaScript मोड्युलहरू](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) हटाउनुहोस्।"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "दोहोरिएको JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "टेक्स्ट एकनासको देखिन्छ भन्ने कुरा सुनिश्चित गर्न [font-display](https://developer.chrome.com/blog/font-display) सेट गरी swap वा optional बनाउनुहोस्। [फन्ट मेट्रिक ओभरराइडहरू](https://developer.chrome.com/blog/font-fallbacks) प्रयोग गरी लेआउट सिफ्टहरू न्यूनीकरण गर्न swap लाई थप अप्टिमाइज गर्न सकिन्छ।"
+    "message": "टेक्स्ट एकनासको देखिन्छ भन्ने कुरा सुनिश्चित गर्न [font-display](https://developer.chrome.com/docs/performance/insights/font-display) सेट गरी swap वा optional बनाउनुहोस्। [फन्ट मेट्रिक ओभरराइडहरू](https://developer.chrome.com/blog/font-fallbacks) प्रयोग गरी लेआउट सिफ्टहरू न्यूनीकरण गर्न swap लाई थप अप्टिमाइज गर्न सकिन्छ।"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "फन्ट"
@@ -2304,10 +2265,10 @@
     "message": "(बेनामी)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM को स्थितिमा परिवर्तन गर्दा स्टाइलहरू अवैध भएपछि JavaScript का क्वेरीमा भएका जियोमेट्रिक प्रोपर्टीहरू (जस्तै, offsetWidth) मा फोर्स्ड रिफ्लो देखिन्छ। यसले पर्फर्मेन्समा नराम्रो प्रभाव पार्न सक्छ। [फोर्स्ड रिफ्लो](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) र यसका सम्भावित मिटिगेसनका बारेमा थप जान्नुहोस्।"
+    "message": "DOM को स्थितिमा परिवर्तन गर्दा स्टाइलहरू अवैध भएपछि JavaScript का क्वेरीमा भएका जियोमेट्रिक प्रोपर्टीहरू (जस्तै, offsetWidth) मा फोर्स्ड रिफ्लो देखिन्छ। यसले पर्फर्मेन्समा नराम्रो प्रभाव पार्न सक्छ। [फोर्स्ड रिफ्लो](https://developer.chrome.com/docs/performance/insights/forced-reflow) र यसका सम्भावित मिटिगेसनका बारेमा थप जान्नुहोस्।"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "स्ट्याक ट्रेस"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "रिफ्लो ट्रिगर गर्ने कल फ्रेमहरू"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "फोर्स्ड रिफ्लो"
@@ -2322,7 +2283,7 @@
     "message": "[unattributed]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "सबैभन्दा लामो उप-खण्ड प्रयोग गरी अनुसन्धान गर्न थाल्नुहोस्। [ढिलाइ न्यूनीकरण गर्न सकिन्छ](https://web.dev/articles/optimize-inp#optimize_interactions)। प्रोसेस गर्ने अवधि घटाउन प्रायः JS सँग सम्बन्धित [मुख्य थ्रेडको लागत अप्टिमाइज गर्नुहोस्](https://web.dev/articles/optimize-long-tasks)।"
+    "message": "सबैभन्दा लामो उप-खण्ड हेरेर [INP को गुणस्तर सुधार गर्ने तरिका](https://developer.chrome.com/docs/performance/insights/inp-breakdown)का बारेमा अनुसन्धान गर्न थाल्नुहोस्।"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "अवधि"
@@ -2346,7 +2307,7 @@
     "message": "INP ब्रेकडाउन"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "तपाईंले फोटोहरू डाउनलोड गर्न लाग्ने समय घटाउनुभयो भने पेज र LCP लोड गर्न लाग्ने समय घट्न सक्छ। [फोटोको आकार अप्टिमाइज गर्ने बारेमा थप जान्नुहोस्](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "तपाईंले फोटोहरू डाउनलोड गर्न लाग्ने समय घटाउनुभयो भने पेज र LCP लोड गर्न लाग्ने समय घट्न सक्छ। [फोटोको आकार अप्टिमाइज गर्ने बारेमा थप जान्नुहोस्](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (अनुमानित: {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "तपाईंले GIF का साटो भिडियो फर्म्याटहरू प्रयोग गर्नुभयो भने डाउनलोड गरिने एनिमेसन गरिएका सामग्रीको आकार घट्न सक्छ।"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "हरेक [उप-खण्डमा सुधारका निश्चित रणनीतिहरू](https://web.dev/articles/optimize-lcp#lcp-breakdown) छन्। सामान्यतया LCP को अधिकांश समय ढिलाइमा नभई स्रोतहरू लोड गर्ने प्रक्रियामा खर्च गरिनु पर्छ।"
+    "message": "हरेक [उप-खण्डमा सुधारका निश्चित रणनीतिहरू](https://developer.chrome.com/docs/performance/insights/lcp-breakdown) छन्। सामान्यतया LCP को अधिकांश समय ढिलाइमा नभई स्रोतहरू लोड गर्ने प्रक्रियामा खर्च गरिनु पर्छ।"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "अवधि"
@@ -2406,7 +2367,7 @@
     "message": "LCP ब्रेकडाउन"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "HTML बाट LCP को फोटो तुरुन्तै [भेट्टाउन सकिने](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) बनाएर र [लेजी लोडिङ प्रयोग गर्न रोक लगाएर](https://web.dev/articles/lcp-lazy-loading) LCP अप्टिमाइज गर्नुहोस्"
+    "message": "HTML बाट LCP को फोटो तुरुन्तै भेट्टाउन सकिने बनाएर र लेजी लोडिङ प्रयोग गर्न रोक लगाएर [LCP अप्टिमाइज गर्नुहोस्](https://developer.chrome.com/docs/performance/insights/lcp-discovery)"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high लागू गरियो"
@@ -2439,13 +2400,13 @@
     "message": "खेर गएका बाइट"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "पोलिफिल र ट्रान्सफर्मले पुराना ब्राउजरहरूलाई JavaScript का नयाँ सुविधाहरू प्रयोग गर्न दिन्छन्। तर आधुनिक ब्राउजरहरूलाई यीमध्ये धेरै सुविधाहरू चाहिँदैन। तपाईंलाई आफूले पुराना ब्राउजरहरू प्रयोग गर्नु पर्छ भन्ने कुरा थाहा नभएसम्म [Baseline](https://web.dev/articles/baseline-and-polyfills) का सुविधाहरू ट्रान्स्पाइल नगर्नका निम्ति आफ्नो JavaScript बिल्ड प्रोसेस परिमार्जन गर्नुहोस्। [अधिकांश साइटहरूले ट्रान्स्पाइल नगरिकनै ES6+ कोड डिप्लोई गर्न सक्नुको कारणका बारेमा जान्नुहोस्](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "पोलिफिल र ट्रान्सफर्मले पुराना ब्राउजरहरूलाई JavaScript का नयाँ सुविधाहरू प्रयोग गर्न दिन्छन्। तर आधुनिक ब्राउजरहरूलाई यीमध्ये धेरै सुविधाहरू चाहिँदैन। तपाईंलाई आफूले पुराना ब्राउजरहरू प्रयोग गर्नु पर्छ भन्ने कुरा थाहा नभएसम्म [Baseline](https://web.dev/articles/baseline-and-polyfills) का सुविधाहरू ट्रान्स्पाइल नगर्नका निम्ति आफ्नो JavaScript बिल्ड प्रोसेस परिमार्जन गर्नुहोस्। [अधिकांश साइटहरूले ट्रान्स्पाइल नगरिकनै ES6+ कोड डिप्लोई गर्न सक्नुको कारणका बारेमा जान्नुहोस्](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "लिगेसी JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 र HTTP/3 ले मल्टिप्लेक्सिङ जस्ता HTTP/1.1 भन्दा धेरै लाभहरू प्रदान गर्छ। [आधुनिक HTTP प्रयोग गर्ने तरिकाका बारेमा थप जान्नुहोस्](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)।"
+    "message": "HTTP/2 र HTTP/3 ले मल्टिप्लेक्सिङ जस्ता HTTP/1.1 भन्दा धेरै लाभहरू प्रदान गर्छ। [आधुनिक HTTP प्रयोग गर्ने तरिकाका बारेमा थप जान्नुहोस्](https://developer.chrome.com/docs/performance/insights/modern-http)।"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "कुनै पनि अनुरोधमा HTTP/1.1 प्रयोग गरिएको छैन वा अहिले HTTP/1.1 प्रयोग गर्दैमा यसले पर्फर्मेन्स अप्टिमाइज गर्ने अवसर प्राप्त हुँदैन। छ वा सोभन्दा बढी स्ट्याटिक एसेटहरू उही मूल स्रोतबाट लिइएका खण्डमा तथा लोकल डेभलपमेन्ट इन्भारोमेन्ट वा तेस्रो पक्षीय स्रोतबाट उपलब्ध नगराइएका खण्डमा मात्र HTTP/1.1 सम्बन्धी अनुरोधहरू फ्ल्याग गरिन्छन्।"
@@ -2478,7 +2439,7 @@
     "message": "प्रयोग नगरिएको प्रिकनेक्ट। crossorigin विशेषता सही तरिकाले प्रयोग गरिएको छ कि छैन भन्ने कुरा जाँच्नुहोस्।"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "पेज लोडको गुणस्तर सुधार गर्ने प्रयोजनका लागि चेनहरूको लम्बाइ वा डाउनलोड गरिने स्रोतहरूको आकार घटाएर वा अनावश्यक स्रोतहरू डाउनलोड गर्ने कार्य स्थगित गरेर [महत्त्वपूर्ण अनुरोधहरूको चेन बनाउन नदिनुहोस्](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)।"
+    "message": "पेज लोडको गुणस्तर सुधार गर्ने प्रयोजनका लागि चेनहरूको लम्बाइ वा डाउनलोड गरिने स्रोतहरूको आकार घटाएर वा अनावश्यक स्रोतहरू डाउनलोड गर्ने कार्य स्थगित गरेर [महत्त्वपूर्ण अनुरोधहरूको चेन बनाउन नदिनुहोस्](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)।"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "आफ्ना डेटाका सबैभन्दा महत्त्वपूर्ण स्रोतमा [अग्रिम रूपमा कनेक्ट हुने डेटाका स्रोत](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)सम्बन्धी सङ्केतहरू हाल्नुहोस् तर ४ वटाभन्दा बढी सङ्केत प्रयोग गर्ने प्रयास नगर्नुहोस्।"
@@ -2517,7 +2478,7 @@
     "message": "पेज अझ छिटो लोड गर्ने प्रयोजनका लागि चेनहरूको लम्बाइ वा डाउनलोड गरिने स्रोतहरूको आकार घटाएर वा अनावश्यक स्रोतहरू डाउनलोड गर्ने कार्य स्थगित गरेर महत्त्वपूर्ण अनुरोधहरूको चेन बनाउन नदिनुहोस्।"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "अनुरोधहरूले पेजको सुरुवाती रेन्डर ब्लक गरिरहेका छन् र यसले गर्दा LCP मा ढिलाइ हुन सक्छ। [केही समयका लागि स्थगित वा इनलाइनिङ गरेर](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) नेटवर्कसम्बन्धी यी अनुरोधहरूलाई महत्त्वपूर्ण पथबाट सार्न सकिन्छ।"
+    "message": "अनुरोधहरूले पेजको सुरुवाती रेन्डर ब्लक गरिरहेका छन् र यसले गर्दा LCP मा ढिलाइ हुन सक्छ। [केही समयका लागि स्थगित वा इनलाइनिङ गरेर](https://developer.chrome.com/docs/performance/insights/render-blocking) नेटवर्कसम्बन्धी यी अनुरोधहरूलाई महत्त्वपूर्ण पथबाट सार्न सकिन्छ।"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "अवधि"
@@ -2532,7 +2493,7 @@
     "message": "ब्लक गर्ने अनुरोधहरू ब्लक गर्नुहोस्"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "स्टाइल रिक्यालकुलेट गर्दा निकै समय लाग्ने भएका खण्डमा सेलेक्टर अप्टिमाइज गर्दा उक्त समय घट्न सक्छ। लागेको सबैभन्दा बढी समय र ढिलो पथको सबैभन्दा बढी % दुवै कुरा प्रयोग गरेर [सेलेक्टरहरू अप्टिमाइज गर्नुहोस्](https://developer.chrome.com/docs/devtools/performance/selector-stats)। अझ सरल सेलेक्टर, अझ थोरै सेलेक्टर, अझ सानो DOM र अझ थोरै काम गर्ने DOM जस्ता सबै कुराले गर्दा मिलाउने समय घट्ने छ।"
+    "message": "स्टाइल रिक्यालकुलेट गर्दा निकै समय लाग्ने भएका खण्डमा सेलेक्टर अप्टिमाइज गर्दा उक्त समय घट्न सक्छ। लागेको सबैभन्दा बढी समय र ढिलो पथको सबैभन्दा बढी % दुवै कुरा प्रयोग गरेर [सेलेक्टरहरू अप्टिमाइज गर्नुहोस्](https://developer.chrome.com/docs/performance/insights/slow-css-selector)। अझ सरल सेलेक्टर, अझ थोरै सेलेक्टर, अझ सानो DOM र अझ थोरै काम गर्ने DOM जस्ता सबै कुराले गर्दा मिलाउने समय घट्ने छ।"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "लागेको समय"
@@ -2571,7 +2532,7 @@
     "message": "ट्रान्स्फर गरिने डेटाको आकार"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "तेसो पक्षीय कोडले लोड पर्फर्मेन्समा उल्लेख्य रूपमा प्रभाव पार्न सक्छ। आफ्नो पेजमा भएका सामग्रीलाई प्राथमिकतामा राख्न [तेस्रो पक्षीय कोड लोड हुने समय घटाउनुहोस् र डिफर गर्नुहोस्](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)।"
+    "message": "तेसो पक्षीय कोडले लोड पर्फर्मेन्समा उल्लेख्य रूपमा प्रभाव पार्न सक्छ। आफ्नो पेजमा भएका सामग्रीलाई प्राथमिकतामा राख्न [तेस्रो पक्षीय कोड लोड हुने समय घटाउनुहोस् र डिफर गर्नुहोस्](https://developer.chrome.com/docs/performance/insights/third-parties)।"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "कुनै पनि तेस्रो पक्षीय सामग्री भेटिएन"
@@ -2580,7 +2541,7 @@
     "message": "तेस्रो पक्षहरू"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "मोबाइलमा भ्युपोर्ट अप्टिमाइज गरिएको छैन भने ट्याप गरी गरिने अन्तर्क्रिया [बढीमा ३०० मिलिसेकेन्ड](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ढिलो हुन सक्छ।"
+    "message": "मोबाइलमा भ्युपोर्ट अप्टिमाइज गरिएको छैन भने ट्याप गरी गरिने अन्तर्क्रिया [बढीमा ३०० मिलिसेकेन्ड](https://developer.chrome.com/docs/performance/insights/viewport) ढिलो हुन सक्छ।"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "मोबाइलमा ट्याप गरी कारबाही गर्न ढिलो भयो"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "विकासकर्ताका टुलहरूमा उपलब्ध AI सुविधाहरूका बारेमा जान्नुहोस्"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "AI सहायता इन्कोग्निटो मोड वा गेस्ट मोडमा उपलब्ध हुँदैन"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "तपाईंले आफ्नो Google खातामार्फत Chrome मा साइन इन गर्नुभएको बेलामा मात्र यो सुविधा उपलब्ध हुन्छ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "इन्टरनेट कनेक्सन जाँच्नुहोस् र फेरि प्रयास गर्नुहोस्"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "विकासकर्ताका टुलहरूमा चयन गरिएको सन्दर्भ सामग्री देखाउनुहोस्"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "सेटिङमा रहेको AI सहायता"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS का शैलीहरू बुझ्ने कुरामा मद्दत प्राप्त गर्न {PH1} अन गर्नुहोस्"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "शैली तथा नेटवर्कसम्बन्धी अनुरोधहरूका बारेमा मद्दत प्राप्त गर्न {PH1} अन गर्नुहोस्"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "शैली, नेटवर्कसम्बन्धी अनुरोध र फाइलहरूका सम्बन्धमा मद्दत प्राप्त गर्न {PH1} अन गर्नुहोस्"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "शैली, नेटवर्कसम्बन्धी अनुरोध, पर्फर्मेन्स र फाइलहरूका सम्बन्धमा मद्दत प्राप्त गर्न {PH1} अन गर्नुहोस्"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "तपाईं यो पेजमा एनिमेसन जाँच्न र परिमार्जन गर्न सक्नुहुन्छ।"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "सेवाका सर्तहरू"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1} सँग लिंक गरिएको"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "सोर्स म्यापमा लिंक गरियो: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "अनुमति दिनुहोस्"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "कन्सोल देखाउनुहोस्"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "कन्सोल म्यासेजहरूका AI सारांश देखाउनुहोस्"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "कन्सोलमा CORS सम्बन्धी त्रुटि देखाउनुहोस्"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "एनिमेसन प्यानलमा जानुहोस्"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "कलर पिकर खोल्नुहोस्। {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} हाल्नुहोस्"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "ब्लक गरिँदै छ"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "रोजाइअनुसारको"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex भ्यूअर"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने प्याटर्न हाल्नुहोस्"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "प्याटर्न हाल्नुहोस्"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" बटनमा क्लिक गरेर नेटवर्कसम्बन्धी अनुरोधहरू ब्लक गर्न प्याटर्न हाल्नुहोस्।"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} वटा URL ब्लक गरिएको छ"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने सुविधा अन गर्नुहोस्"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "वस्तु सफलतापूर्वक मेटाइयो"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "थप जान्नुहोस्"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "नेटवर्कसम्बन्धी कुनै पनि अनुरोध ब्लक गरिएको छैन"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "यो प्याटर्न पहिलेदेखि नै विद्यमान छ।"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "प्याटर्न इनपुट खाली हुनु हुँदैन।"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "मिल्दाजुल्दा अनुरोधहरू ब्लक गर्न प्रयोग गरिने टेक्स्ट प्याटर्न; वाइल्डकार्डका रूपमा * प्रयोग गर्नुहोस्"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "सबै हटाउनुहोस्"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "यो अनुरोध पेस गर्दा गर्दै यो अनुरोध जारी गर्ने पेजको डेटा मेमोरीबाट हटाइएको हुनाले यहाँ यो अनुरोधको स्थिति देखाउन सकिँदैन। तपाईं नेटवर्क लग क्याप्चर गर्न र अनुरोधसम्बन्धी सबै विवरण हेर्न chrome://net-export प्रयोग गर्न सक्नुहुन्छ।"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "कनेक्सनसम्बन्धी जानकारी"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "अनुरोध गरिएको URL ब्लक गर्नुहोस्"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "अनुरोधहरू ब्लक गर्नुहोस्"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ब्लक गरिएका अनुरोधहरू"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "तेस्रो पक्षले गरेका अनुरोधहरू"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "डोमेनका लागि अनुरोध गर्ने सुविधा थ्रोटल गर्नुहोस्"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "अनुरोध गरिएको URL थ्रोटल गर्नुहोस्"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "अनुरोधहरू थ्रोटल गर्नुहोस्"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} अनब्लक गर्नुहोस्"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} थ्रोटल गर्न छाड्नुहोस्"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "कनेक्सन ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने प्याटर्न हाल्नुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "प्याटर्न हाल्नुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "नेटवर्कसम्बन्धी अनुरोध थ्रोटल गर्ने वा ब्लक गर्ने प्याटर्न हाल्नुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" बटनमा क्लिक गरेर प्याटर्न हाल्नुहोस्।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} वटा URL ब्लक गरिएको छ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "प्राथमिकता घटाउनुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "ब्लक गर्ने र थ्रोटल गर्ने सुविधा अन गर्नुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने सुविधा अन गर्नुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "प्राथमिकता बढाउनुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "वस्तु सफलतापूर्वक मेटाइयो"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "थप जान्नुहोस्"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "नेटवर्कसम्बन्धी कुनै पनि अनुरोध ब्लक गरिएको छैन"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "अनुरोध थ्रोटल गर्ने वा ब्लक गर्ने कुनै पनि प्याटर्न छैन"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "यो प्याटर्न पहिलेदेखि नै विद्यमान छ।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "यो प्याटर्नलाई URLPattern का रूपमा पार्स गर्न सकिएन"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp समूहहरू प्रयोग गर्न पाइँदैन"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "प्याटर्न इनपुट खाली हुनु हुँदैन।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "यो प्याटर्न \"{PH1}\" बाट अपग्रेड गरिएको हो"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "मिल्दाजुल्दा अनुरोधहरू ब्लक वा थ्रोटल गर्न प्रयोग गरिने टेक्स्ट प्याटर्न; URLPattern सिन्ट्याक्स प्रयोग गर्नुहोस्।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "मिल्दाजुल्दा अनुरोधहरू ब्लक गर्न प्रयोग गरिने टेक्स्ट प्याटर्न; वाइल्डकार्डका रूपमा * प्रयोग गर्नुहोस्"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "रिस्पन्सको 'set-cookie' नामक हेडरअन्तर्गत रहेका सर्भरबाट प्राप्त भएका कुकीहरू"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker लाई गरिएको अनुरोध"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "अनुरोध/जवाफ"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "रिसोर्सको खटनपटन"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "फरक साइटको यो रिसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरमा फरक ओरिजिनको रिसोर्सको प्रयोगसम्बन्धी नीतिको कार्यान्वयन खुकुलो पार्न सक्छ:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने वा थ्रोटल गर्ने प्याटर्न हाल्नुहोस्"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने प्याटर्न हाल्नुहोस्"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने टुल"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "अनुरोधका सर्तहरू"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "नेटवर्क थ्रोटलिङ"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "नेटवर्क लगको रेकर्ड राख्नुहोस्"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने वा थ्रोटल गर्ने सबै प्याटर्न हटाउनुहोस्"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने सबै प्याटर्न हटाउनुहोस्"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने टुल देखाउनुहोस्"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "अनुरोधका सर्तहरू देखाउनुहोस्"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "खोज देखाउनुहोस्"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "डिट्याच गरिएका DOM नोडमार्फत सेभ गरिएका अब्जेक्टहरू"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "इभेन्ट ह्यान्डलरहरूले भण्डारण गरेर राखेका अब्जेक्टहरू"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "JS का अन्य अब्जेक्टहरू"
@@ -12426,7 +12438,7 @@
     "message": "SCT"
   },
   "panels/security/SecurityPanel.ts | secure": {
-    "message": "सुरक्षित छ"
+    "message": "सुरक्षित"
   },
   "panels/security/SecurityPanel.ts | secureConnectionSettings": {
     "message": "सुरक्षित कनेक्सनसम्बन्धी सेटिङ"
@@ -12982,6 +12994,18 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "अन गरिएका बेला"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "पथ प्रविष्टि गर्नुहोस्"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "कुनै अद्वितीय पथ प्रविष्टि गर्नुहोस्"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "समावेश नगरिएका सबफोल्डरहरू"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "यो स्क्रिप्टको URL मा रेगुलर एक्स्प्रेसन नियम हाल्नुहोस्"
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "सिम्बोलहरू हेर्न JavaScript वा CSS फाइल खोल्नुहोस्"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "यसको फोल्डरमा खोल्नुहोस्"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "सामग्री ओभरराइड गर्नुहोस्"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ भनेको सोर्स म्याप गरिएको फाइल हो र यो फाइल ओभरराइड गर्न मिल्दैन।"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "बरु ‘{PH1}’ ओभरराइड गर्ने हो?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "यसका रूपमा सेभ गर्नुहोस्…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "डिस्कमा फाइल सेभ गर्न सकिएन।"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "फोटो सेभ गर्नुहोस्"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM मोड्युल डिस्कमा सेभ गर्न सकिएन। यो मोड्युल धेरै ठुलो भएकाले यसो भएको हुन सक्छ।"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "सबै ओभरराइडहरू देखाउनुहोस्"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "के.बि."
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "एनोटेसनहरू समावेश गर्नुहोस्"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "स्क्रिप्टको कन्टेन्ट समावेश गर्नुहोस्"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "स्क्रिप्ट सोर्स म्यापहरू समावेश गर्नुहोस्"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "थप जानकारी:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "सेभ गर्नुहोस्"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "यसमा लोड गरिएका सबै स्क्रिप्टहरूको पूरा कन्टेन्ट समावेश हुन्छ (एक्स्टेन्सनबाहेक)।"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip प्रयोग गरी कम्प्रेस गर्नुहोस्"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "अनुरोधका हेडरहरू ओभरराइड गरिएका छन्"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome फ्ल्याग वा ब्राउजरसम्बन्धी कन्फिगुरेसनका कारण यो अनुरोधका कुकी ब्लक गरिएका छन्। समस्यासम्बन्धी प्यानलमा गई थप जान्नुहोस्।"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "रेगुलर एक्स्प्रेसन प्रयोग गर्नुहोस्"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "एउटा वा सोभन्दा बढी सेटिङ परिवर्तन गरिएका छन्। ती सेटिङ लागू गर्न विकासकर्ताका टुलहरू रिलोड गर्नु पर्ने हुन्छ"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*रिलोड गर्नु पर्ने हुन्छ"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "चिन्ह लगाइएको"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "लो कन्ट्रास्ट ठिक गर्न सिफारिस गरिएको रङ {PH1} प्रयोग गर्नुहोस्"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "यो फर्म्याटको ग्यामटसँग मिल्दो बनाउन यो रङ क्लिप गरिएको थियो। वास्तविक परिणाम {PH1} थियो"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ न्यारो ग्यामटमा रूपान्तरण गर्दा रङ परिवर्तन हुने छ"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "प्यालेटमा हाल्नुहोस्"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "कुकीहरू"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "डोमेन"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "सम्पादन गर्न सकिने कुकीहरू"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(अपारदर्शी)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "पार्टिसन की साइट"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "पाथ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "प्राथमिकता"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "सुरक्षित"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "सत्र"

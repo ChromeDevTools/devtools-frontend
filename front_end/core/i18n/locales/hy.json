@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-ի բլոկ"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Արգելափակել"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Ընդհատված է"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Ամրացնել աջ կողմում"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevToolsն արտաքին հարցում են ստացել"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Նշել էջը"
   },
@@ -1275,13 +1281,13 @@
     "message": "SVGUseElement տարրի URL-ներն այլևս չեն աջակցվում և հետագայում կհեռացվեն։"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "Այս մեթոդները (getCurrentPosition() և watchPosition()) այլևս չեն աշխատում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Մանրամասների համար անցեք https://goo.gle/chrome-insecure-origins էջ։"
+    "message": "getCurrentPosition()-ը և watchPosition()-ը այլևս չեն աշխատում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Ավելին իմանալու համար անցեք https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ էջ։"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Այս getCurrentPosition() և watchPosition() մեթոդներն այլևս չեն աջակցվում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Մանրամասների համար անցեք https://goo.gle/chrome-insecure-origins էջ։"
+    "message": "getCurrentPosition()-ն ու watchPosition()-ն այլևս չեն աջակցվում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Ավելին իմանալու համար անցեք https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ էջ։"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "Այս մեթոդը (getUserMedia()) այլևս չի աշխատում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Մանրամասների համար անցեք https://goo.gle/chrome-insecure-origins էջ։"
+    "message": "getUserMedia()-ն այլևս չի աշխատում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Ավելին իմանալու համար անցեք https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ էջ։"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate-ն այլևս չի աջակցվում։ Դրա փոխարեն օգտագործեք RTCPeerConnectionIceErrorEvent.address կամ RTCPeerConnectionIceErrorEvent.port։"
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI-ն կհայցի օգտագործման թույլտվություն, նույնիսկ եթե MIDIOptions-ում նշված չէ sysex պարամետրը։"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Notification API-ն այլևս չի կարելի օգտագործել ոչ անվտանգ աղբյուրներից։ Որպեսզի այն օգտագործեք, ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Մանրամասների համար անցեք https://goo.gle/chrome-insecure-origins էջ։"
+    "message": "Notification API-ն այլևս չի կարելի օգտագործել ոչ անվտանգ աղբյուրներից։ Որպեսզի այն օգտագործեք, ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Ավելին իմանալու համար անցեք https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ էջ։"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Այլ աղբյուրների iframe պատուհաններից այլևս հնարավոր չէ Notification API-ի օգտագործման թույլտվություն հայցել։ Հայցեք թույլտվություն վերին մակարդակի շրջանակից կամ նոր պատուհան բացեք։"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Ընդլայնումներում անհրաժեշտ է միացնել տարբեր աղբյուրների մեկուսացումը, որպեսզի շարունակեք օգտագործել SharedArrayBuffer օբյեկտը։ Մանրամասների համար անցեք https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ էջ։"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue()-ն այլևս չի աջակցվում։ Փոխարենն օգտագործեք writeValueWithResponse()-ը կամ writeValueWithoutResponse()-ը։"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16-ը չի աջակցվում JSON պատասխանի կողմից XMLHttpRequest-ում"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Այս գործառույթը հասանելի է միայն ինտերնետ կապի առկայության դեպքում։"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevToolsն արտաքին հարցում են ստացել"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ֆայլը բեռնելիս անհայտ սխալ առաջացավ"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} հապաղում, {PH2} ներբեռնում (ընդհանուր՝ {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Նշեք ուղին"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Նշեք եզակի ուղի"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Բացառված ենթապանակներ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Չհաջողվեց բեռնել BLOB-ը։"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Հնարավոր չէ ավելացնել ֆայլային համակարգը՝ {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Բացել ֆայլով պանակը"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Փոխարինել բովանդակությունը"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "«{PH1}» ֆայլը փոխակերպված աղբյուրի կոդով ֆայլ է, որը հնարավոր չէ փոխարինել։"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Փոխարինե՞լ «{PH1}» սկրիպտի կանոնները"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Պահել որպես…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Չհաջողվեց ֆայլը պահել սկավառակում։"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Պահել պատկերը"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Հնարավոր չէ WASM մոդուլը պահել սկավառակում։ Ամենայն հավանականությամբ մոդուլը շատ մեծ է:"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Ցույց տալ բոլոր փոխարինումները"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Կապված է {PH1}-ի հետ"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Կապված է աղբյուրի քարտեզի հետ՝ {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem համակարգը չի կարողանում կարդալ ֆայլերը։"
@@ -2157,7 +2118,7 @@
     "message": "Շարժապատկեր"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Դասավորության շեղումները լինում են այն ժամանակ, երբ տարրերը տեղաշարժվում են առանց օգտատիրոջ փոխազդեցության։ [Պարզեք դասավորության շեղումների պատճառները](https://web.dev/articles/optimize-cls), օրինակ՝ տարրերի ավելացում, հեռացում կամ դրանց տառատեսակների փոփոխում էջի բեռնման ժամանակ։"
+    "message": "Դասավորության շեղումները լինում են այն ժամանակ, երբ տարրերը տեղաշարժվում են առանց օգտատիրոջ փոխազդեցության։ [Պարզեք դասավորության շեղումների պատճառները](https://developer.chrome.com/docs/performance/insights/cls-culprit), օրինակ՝ տարրերի ավելացում, հեռացում կամ դրանց տառատեսակների փոփոխում էջի բեռնման ժամանակ։"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "iframe-ի զետեղում"
@@ -2193,7 +2154,7 @@
     "message": "Քեշի կենսաժամանակը"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Քեշի պահման երկար ժամանակի շնորհիվ էջը կարող է ավելի արագ բեռնվել, երբ այն նորից այցելեք։ [Իմանալ ավելին](https://web.dev/uses-long-cache-ttl/)։"
+    "message": "Քեշի պահման երկար ժամանակի շնորհիվ էջը կարող է ավելի արագ բեռնվել, երբ այն նորից այցելեք։ [Իմանալ ավելին քեշավորման մասին](https://developer.chrome.com/docs/performance/insights/cache)։"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Քեշավորման անարդյունավետ կանոններով հարցումներ չկան"
@@ -2208,7 +2169,7 @@
     "message": "Ընտրեք քեշի պահման արդյունավետ ժամակաշրջան"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM-ի մեծ չափսի պատճառով ոճերի հաշվարկը կարող է դանդաղել, իսկ փաթեթի վերադասավորման ծախսերը՝ ավելանալ, ինչը կազդի էջի արձագանքման վրա։ DOM-ի մեծ չափսի պատճառով նաև ավելի շատ հիշողություն է օգտագործվում։ [Իմանալ, թե ինչպես խուսափել DOM-ի մեծ չափսից](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)։"
+    "message": "DOM-ի մեծ չափսի պատճառով ոճերի հաշվարկը կարող է դանդաղել, իսկ փաթեթի վերադասավորման ծախսերը՝ ավելանալ, ինչը կազդի էջի արձագանքման վրա։ DOM-ի մեծ չափսի պատճառով նաև ավելի շատ հիշողություն է օգտագործվում։ [Իմանալ, թե ինչպես խուսափել DOM-ի մեծ չափսից](https://developer.chrome.com/docs/performance/insights/dom-size)։"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Տևողություն"
@@ -2244,7 +2205,7 @@
     "message": "Արժեք"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Ձեր առաջին ցանցային հարցումը ամենակարևորն է։  Կրճատեք հապաղումը՝ խուսափելով վերաուղղորդումներից, արագացնելով սերվերի պատասխանը և օգտագործելով տեքստի սեղմումը։"
+    "message": "Ձեր առաջին ցանցային հարցումը ամենակարևորն է։ [Կրճատեք հապաղումը](https://developer.chrome.com/docs/performance/insights/document-latency)՝ խուսափելով վերաուղղորդումներից, արագացնելով սերվերի պատասխանը և օգտագործելով տեքստի սեղմումը։"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Եղել են վերաուղղորդումներ ({PH1} վերաուղղորդում +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Աղբյուր"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Հեռացրեք խոշոր, կրկնօրինակված JavaScript մոդուլները փաթեթներից՝ ցանցային ակտիվության կողմից սպառվող ավելորդ բայթերը նվազեցնելու համար։"
+    "message": "Հեռացրեք մեծ [կրկնվող JavaScript մոդուլները](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) հավաքածուներից՝ ցանցային ակտիվության ժամանակ ավելորդ բայթերի ծախսը նվազեցնելու համար։"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Կրկնվող JavaScript կոդ"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Խորհուրդ ենք տալիս [font-display](https://developer.chrome.com/blog/font-display) պարամետրի համար սահմանել swap կամ optional արժեքը, որպեսզի ամբողջ տեքստը հավասարապես տեսանելի լինի։ Դասավորության շեղումները նվազեցնելու համար կարելի է լրացուցիչ օպտիմալացնել swap արժեքը [տառատեսակի ցուցանիշի փոխարինումների](https://developer.chrome.com/blog/font-fallbacks) միջոցով։"
+    "message": "Խորհուրդ ենք տալիս [font-display](https://developer.chrome.com/docs/performance/insights/font-display) պարամետրի համար սահմանել swap կամ optional արժեքը, որպեսզի ամբողջ տեքստը հավասարապես տեսանելի լինի։ Դասավորության շեղումները նվազեցնելու համար կարելի է լրացուցիչ օպտիմալացնել swap արժեքը [տառատեսակի ցուցանիշի փոխարինումների](https://developer.chrome.com/blog/font-fallbacks) միջոցով։"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Տառատեսակ"
@@ -2304,10 +2265,10 @@
     "message": "(անանուն)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Հարկադրված վերադասավորում տեղի է ունենում, երբ JavaScript-ը հայցում է երկրաչափական հատկություններ (օրինակ՝ offsetWidth) այն բանից հետո, երբ ոճերը DOM-ի վիճակի փոփոխության պատճառով անվավեր են ճանաչվում։ Սա կարող է հանգեցնել արտադրողականության վատթարացման։ Իմացեք ավելին [հարկադրված վերադասավորումների](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) և միջոցների հնարավոր մեղմացման մասին։"
+    "message": "Հարկադրված վերադասավորում տեղի է ունենում, երբ JavaScript-ը հայցում է երկրաչափական հատկություններ (օրինակ՝ offsetWidth) այն բանից հետո, երբ ոճերը DOM-ի վիճակի փոփոխության պատճառով անվավեր են ճանաչվում։ Սա կարող է հանգեցնել արտադրողականության վատթարացման։ Իմացեք ավելին [հարկադրված վերադասավորումների](https://developer.chrome.com/docs/performance/insights/forced-reflow) և միջոցների հնարավոր մեղմացման մասին։"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Սթեքի ժամանակագրություն"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Զանգի շրջանակներ, որոնք գործարկում են վերադասավորումը"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Հարկադրված վերադասավորում"
@@ -2322,7 +2283,7 @@
     "message": "[առանց հատկանշման]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Սկսեք վերլուծությունն ամենաերկար ենթամասից։ [Հետաձգումները կարելի է կրճատել](https://web.dev/articles/optimize-inp#optimize_interactions)։ Մշակման տևողությունը կրճատելու համար [օպտիմալացրեք հիմնական հոսքի ծախսերը](https://web.dev/articles/optimize-long-tasks)։ Դրանք սովորաբար վերաբերում են JS-ին։"
+    "message": "Սկսեք վերլուծությունն ամենաերկար ենթամասից՝ իմանալու, թե [ինչպես բարելավել INP-ն](https://developer.chrome.com/docs/performance/insights/inp-breakdown)։"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Տևողություն"
@@ -2346,7 +2307,7 @@
     "message": "INP վերլուծություն"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Պատկերների ներբեռնման ժամանակի կրճատումը կարող է բարելավել էջի բեռնման ժամանակը և LCP-ի արժեքը։ [Իմանալ ավելին պատկերի չափսի օպտիմալացման մասին](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Պատկերների ներբեռնման ժամանակի կրճատումը կարող է բարելավել էջի բեռնման ժամանակը և LCP-ի արժեքը։ [Իմանալ ավելին պատկերի չափսի օպտիմալացման մասին](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (մոտ {PH2})։"
@@ -2376,7 +2337,7 @@
     "message": "GIF-երի փոխարեն վիդեո ձևաչափերի օգտագործումը կարող է բարելավել շարժանկարային բովանդակության ներբեռնման չափսը"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Յուրաքանչյուր [ենթամասի համար բարելավման ռազմավարություններ կան](https://web.dev/articles/optimize-lcp#lcp-breakdown)։ Ցանկալի է, որ LCP-ի ժամանակի մեծ մասը ծախսվի ռեսուրսների բեռնման, այլ ոչ թե հետաձգումների վրա։"
+    "message": "Յուրաքանչյուր [ենթամասի համար բարելավման ռազմավարություններ կան](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)։ Ցանկալի է, որ LCP-ի ժամանակի մեծ մասը ծախսվի ռեսուրսների բեռնման, այլ ոչ թե հետաձգումների վրա։"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Տևողություն"
@@ -2406,7 +2367,7 @@
     "message": "LCP վերլուծություն"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "LCP ցուցանիշն օպտիմալացնելու համար LCP պատկերը [հայտնաբերելի](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) դարձրեք անմիջապես HTML կոդում և [մի օգտագործեք հետաձգված բեռնում](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[LCP ցուցանիշն օպտիմալացնելու](https://developer.chrome.com/docs/performance/insights/lcp-discovery) համար LCP պատկերը հայտնաբերելի դարձրեք անմիջապես HTML կոդում և մի օգտագործեք հետաձգված բեռնում"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Կիրառվեց fetchpriority=high հատկությունը"
@@ -2439,13 +2400,13 @@
     "message": "Վատնած բայթեր"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Պոլիֆիլները և փոխակերպումները թույլ են տալիս հնացած դիտարկիչներին օգտագործել JavaScript-ի նոր գործառույթներ։ Այնուամենայնիվ, շատ պոլիֆիլներ և փոխակերպումներ պետք չեն արդիական դիտարկիչների համար։ Եթե ձեզ անհրաժեշտ չէ աջակցել հնացած դիտարկիչները, խորհուրդ ենք տալիս փոխել JavaScript-ի կառուցման գործընթացը, որպեսզի [Baseline](https://web.dev/articles/baseline-and-polyfills) գործառույթները տրանսպիլյացիայի ենթարկելու կարիք չլինի։ [Ինչու կայքերի մեծամասնությունը կարող է օգտագործել ES6+ կոդն առանց տրանսպիլյացիայի](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Պոլիֆիլները և փոխակերպումները թույլ են տալիս հնացած դիտարկիչներին օգտագործել JavaScript-ի նոր գործառույթներ։ Այնուամենայնիվ, շատ պոլիֆիլներ և փոխակերպումներ պետք չեն արդիական դիտարկիչների համար։ Եթե ձեզ անհրաժեշտ չէ աջակցել հնացած դիտարկիչները, խորհուրդ ենք տալիս փոխել JavaScript-ի կառուցման գործընթացը, որպեսզի [Baseline](https://web.dev/articles/baseline-and-polyfills) գործառույթները տրանսպիլյացիայի ենթարկելու կարիք չլինի։ [Ինչու կայքերի մեծամասնությունը կարող է օգտագործել ES6+ կոդն առանց տրանսպիլյացիայի](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript-ի հնացած կոդ"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2-ը և HTTP/3-ը շատ առավելություններ ունեն՝ համեմատած HTTP/1.1-ի հետ, օրինակ՝ մուլտիպլեքսավորումը։ [Իմանալ ավելին HTTP-ի ժամանակակից տարբերակի օգտագործման մասին](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)։"
+    "message": "HTTP/2-ը և HTTP/3-ը շատ առավելություններ ունեն՝ համեմատած HTTP/1.1-ի հետ, օրինակ՝ մուլտիպլեքսավորումը։ [Իմանալ ավելին HTTP-ի ժամանակակից տարբերակի օգտագործման մասին](https://developer.chrome.com/docs/performance/insights/modern-http)։"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Ոչ մի հարցում HTTP/1.1 հաղորդակարգ չի օգտագործել, կամ HTTP/1.1 հաղորդակարգի ներկայիս օգտագործումը էական օպտիմալացման հնարավորություն չի ընձեռում։ HTTP/1.1 հարցումները նշվում են միայն այն դեպքում, եթե վեց կամ ավելի ստատիկ օբյեկտներ նույն աղբյուրից են, և դրանք չեն սպասարկվում տեղական մշակման միջավայրից կամ երրորդ կողմի աղբյուրից։"
@@ -2478,7 +2439,7 @@
     "message": "Չօգտագործված նախնական միացում։ Համոզվեք, որ crossorigin հատկանիշը ճիշտ է օգտագործվում։"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Խուսափեք կրիտիկական հարցումների շղթաներից](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)՝ կրճատելով շղթաների երկարությունը, նվազեցնելով ռեսուրսների ներբեռնման չափսը կամ հետաձգելով ոչ անհրաժեշտ ռեսուրսների ներբեռնումը, որպեսզի էջի բեռնումը բարելավվի։"
+    "message": "[Խուսափեք կրիտիկական հարցումների շղթաներից](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)՝ կրճատելով շղթաների երկարությունը, նվազեցնելով ռեսուրսների ներբեռնման չափսը կամ հետաձգելով ոչ անհրաժեշտ ռեսուրսների ներբեռնումը, որպեսզի էջի բեռնումը բարելավվի։"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Ավելացրեք [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) հուշումներն ամենակարևոր աղբյուրների համար, սակայն փորձեք օգտագործել ոչ ավել քան 4-ը։"
@@ -2517,7 +2478,7 @@
     "message": "Խուսափեք կրիտիկական հարցումների շղթաներից՝ կրճատելով շղթաների երկարությունը, նվազեցնելով ռեսուրսների ներբեռնման չափսը կամ հետաձգելով ոչ անհրաժեշտ ռեսուրսների ներբեռնումը, որպեսզի էջի բեռնումը բարելավվի։"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Հարցումներն արգելափակում են էջի նախնական արտապատկերումը, ինչը կարող է առաջացնել LCP-ի հապաղում։ [Հետաձգումը կամ տեղադրումը](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) կարող է ազատել այս ցանցային հարցումների բացասական ազդեցությունից։"
+    "message": "Հարցումներն արգելափակում են էջի նախնական արտապատկերումը, ինչը կարող է առաջացնել LCP-ի հապաղում։ [Հետաձգումը կամ տեղադրումը](https://developer.chrome.com/docs/performance/insights/render-blocking) կարող է ազատել այս ցանցային հարցումների բացասական ազդեցությունից։"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Տևողություն"
@@ -2532,7 +2493,7 @@
     "message": "Արտապատկերումն արգելափակող հարցումներ"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Եթե ոճի վերահաշվարկի ծախսերը բարձր են մնում, դրանք կարող է նվազեցնել ընտրիչի օպտիմալացումը։ [Օպտիմալացրեք ընտրիչները՝](https://developer.chrome.com/docs/devtools/performance/selector-stats) կատարման երկար ժամանակով և դանդաղ ուղու բարձր տոկոսով։ Համադրման ծախսերը կարելի է նվազեցնել՝ օգտագործելով ավելի պարզ ընտրիչներ և նվազեցնելով դրանց քանակը, ինչպես նաև DOM-ի ավելի կոմպակտ կառուցվածքի հաշվին։"
+    "message": "Եթե ոճի վերահաշվարկի ծախսերը բարձր են մնում, դրանք կարող է նվազեցնել ընտրիչի օպտիմալացումը։ [Օպտիմալացրեք ընտրիչները՝](https://developer.chrome.com/docs/performance/insights/slow-css-selector) կատարման երկար ժամանակով և դանդաղ ուղու բարձր տոկոսով։ Համադրման ծախսերը կարելի է նվազեցնել՝ օգտագործելով ավելի պարզ ընտրիչներ և նվազեցնելով դրանց քանակը, ինչպես նաև DOM-ի ավելի կոմպակտ կառուցվածքի հաշվին։"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Անցած ժամանակը"
@@ -2571,7 +2532,7 @@
     "message": "Տեղափոխված տվյալների ծավալը"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Երրորդ կողմի կոդը կարող է զգալիորեն ազդել բեռնման արդյունավետության վրա։ [Կրճատեք և հետաձգեք երրորդ կողմի կոդի բեռնումը](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/), որպեսզի արագացնեք ձեր էջի բովանդակության ցուցադրումը։"
+    "message": "Երրորդ կողմի կոդը կարող է զգալիորեն ազդել բեռնման արդյունավետության վրա։ [Կրճատեք և հետաձգեք երրորդ կողմի կոդի բեռնումը](https://developer.chrome.com/docs/performance/insights/third-parties), որպեսզի արագացնեք ձեր էջի բովանդակության ցուցադրումը։"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Երրորդ կողմեր չեն գտնվել"
@@ -2580,7 +2541,7 @@
     "message": "Երրորդ կողմեր"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Եթե բջջային սարքերի համար դիտման շրջանն օպտիմալացված չէ, էկրանին հպելիս հնարավոր է [մինչև 300 մվ տևողությամբ հապաղում](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)։"
+    "message": "Եթե բջջային սարքերի համար դիտման շրջանն օպտիմալացված չէ, էկրանին հպելիս հնարավոր է [մինչև 300 մվ տևողությամբ հապաղում](https://developer.chrome.com/docs/performance/insights/viewport)։"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Հպման հապաղում բջջային սարքում"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Իմանալ ավելին ԱԲ-ի մասին ծրագրավորողի գործիքներում"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "ԱԲ օգնությունը հասանելի չէ ինկոգնիտո ռեժիմում կամ հյուրի ռեժիմում"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Այս գործառույթը հասանելի է միայն այն դեպքում, երբ մուտք եք գործել Chrome ձեր Google հաշվով։"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Ստուգեք ձեր ինտերնետ կապը և նորից փորձեք"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Ցույց տալ ընտրված կոնտեքստային տարրը ծրագրավորողի գործիքներում"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ԱԲ օգնությունը Կարգավորումներում"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Միացրեք {PH1}ը, որպեսզի օգնություն ստանաք CSS-ի ոճերի մասին պատկերացում կազմելու հետ կապված"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Միացրեք {PH1}՝ ոճերի և ցանցի հարցումների հետ կապված օգնություն ստանալու համար"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Միացրեք {PH1}՝ ոճերի, ցանցի հարցումների և ֆայլերի հետ կապված օգնություն ստանալու համար"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Միացրեք {PH1}՝ ոճերի, ցանցի հարցումների, արտադրողականության և ֆայլերի հետ կապված օգնություն ստանալու համար"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Այս էջում կարող եք ստուգել և փոփոխել շարժանկարները։"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Օգտագործման պայմանները"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Կապված է {PH1}-ի հետ"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Կապված է աղբյուրի քարտեզի հետ՝ {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Թույլատրել"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Ցույց տալ վահանակը"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Ցույց տալ վահանակում հայտնվող հաղորդագրությունների համար ԱԲ ամփոփագրերը"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Ցույց տալ CORS սխալները վահանակում"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Անցնել «Շարժանկարներ» վահանակ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Բացել գույնի ընտրիչը՝ {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Ավելացնել {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Արգելափակում"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Հատուկ"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex դիտող"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Ավելացնել ցանցային հարցումների արգելափակման ձևանմուշ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Ավելացնել ձևանմուշ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Ավելացրեք օրինաչափություն՝ արգելափակելու ցանցային հարցումները՝ սեղմելով «{PH1}» կոճակը։"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} արգելափակված"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Միացնել ցանցի հարցման արգելափակումը"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Տարրը ջնջվեց"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Իմանալ ավելին"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Արգելափակված ցանցի հարցումներ չկան"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Ձևանմուշն արդեն գոյություն ունի։"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Ձևանմուշը չի կարող դատարկ լինել։"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Տեքստային ձևանմուշ՝ համընկնող հարցումներն արգելափակելու համար․ որպես փոխարինման նշան օգտագործեք *"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Ջնջել բոլորը"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Հարցման կարգավիճակը չի կարող ցուցադրվել այստեղ, քանի որ այն հրապարակած էջը ապաբեռնվել է, երբ հարցումն ուղարկման փուլում էր։ Ցանցի մատյան վարելու և հարցման բոլոր մանրամասները տեսնելու համար անցեք chrome://net-export էջ։"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Կապի մասին տեղեկություններ"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Արգելափակել հարցման URL-ը"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Արգելափակել հարցումները"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Արգելափակված հարցումներ"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Կողմնակի հարցումներ"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Սահմանափակել հարցման տիրույթը"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Սահմանափակել հարցման URL-ը"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Սահմանափակել հարցումները"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Արգելաբացել {PH1} տիրույթը"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Կանգնեցնել {PH1} կայքի սահմանափակումը"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Միացման կոդ"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Ավելացնել ցանցային հարցումների արգելափակման ձևանմուշ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Ավելացնել ձևանմուշ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Ավելացնել ցանցային հարցումների սահմանափակման կամ արգելափակման ձևանմուշ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Ավելացրեք ձևանմուշ՝ սեղմելով «{PH1}» կոճակը։"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} արգելափակված"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Իջեցնել առաջնահերթությունը"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Միացնել արգելափակումը և սահմանափակումը"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Միացնել ցանցի հարցման արգելափակումը"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Բարձրացնել առաջնահերթությունը"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Տարրը ջնջվեց"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Իմանալ ավելին"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Արգելափակված ցանցի հարցումներ չկան"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Հարցումների սահմանափակման կամ արգելափակման ձևանմուշներ չկան"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Ձևանմուշն արդեն գոյություն ունի։"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Չհաջողվեց վերլուծել այս ձևանմուշը որպես URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Կանոնավոր արտահայտությունների խմբերը թույլատրված չեն"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Ձևանմուշը չի կարող դատարկ լինել։"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Այս ձևանմուշն արդիացվել է {PH1} կայքի համար ձևանմուշի հիման վրա"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Տեքստային ձևանմուշ՝ համընկնող հարցումներն արգելափակելու կամ սահմանափակելու համար․ օգտագործեք URLPattern շարահյուսությունը։"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Տեքստային ձևանմուշ՝ համընկնող հարցումներն արգելափակելու համար․ որպես փոխարինման նշան օգտագործեք *"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Քուքիներ, որոնք ստացվել են սերվերից՝ set-cookie պատասխանի գլխագրում"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Հարցում ServiceWorker-ին"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Հարցում/պատասխան"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Ռեսուրսների պլանավորում"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Այլ կայքից այս ռեսուրսն օգտագործելու համար սերվերը կարող է օգտագործել պատասխանի գլխագիրը տարբեր աղբյուրներով ռեսուրսների կանոններում՝"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Ավելացնել ցանցային հարցումների արգելափակման կամ սահմանափակման ձևանմուշ"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Ավելացնել ցանցային հարցումների արգելափակման ձևանմուշ"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Ցանցային հարցումների արգելափակում"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Հարցման պայմաններ"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ցանցի թողունակության սահմանափակում"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Ցանցային մատյանի գրանցված տվյալներ"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Հեռացնել ցանցի հարցումների արգելափակման կամ սահմանափակման բոլոր ձևանմուշները"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Հեռացնել ցանցի հարցումների արգելափակման բոլոր ձևանմուշները"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Ցուցադրել «Ցանցային հարցումների արգելափակում» գործիքը"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Ցույց տալ հարցման պայմանները"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Ցուցադրել Որոնումը"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Օբյեկտներ, որոնք պահվել են առանձնացող DOM հանգույցների կողմից"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Օբյեկտներ, որոնք պահվել են իրադարձությունների մշակիչների կողմից"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "JS-ին վերաբերող այլ օբյեկտներ"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Երբ գործառույթը միացված է"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Նշեք ուղին"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Նշեք եզակի ուղի"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Բացառված ենթապանակներ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Կանոնավոր արտահայտության կանոն ավելացնել սկրիպտի URL-ի համար"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Բացեք JavaScript կամ CSS ֆայլը՝ նշանները տեսնելու համար"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Բացել ֆայլով պանակը"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Փոխարինել բովանդակությունը"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "«{PH1}» ֆայլը փոխակերպված աղբյուրի կոդով ֆայլ է, որը հնարավոր չէ փոխարինել։"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Փոխարինե՞լ «{PH1}» սկրիպտի կանոնները"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Պահել որպես…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Չհաջողվեց ֆայլը պահել սկավառակում։"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Պահել պատկերը"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Հնարավոր չէ WASM մոդուլը պահել սկավառակում։ Ամենայն հավանականությամբ մոդուլը շատ մեծ է:"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Ցույց տալ բոլոր փոխարինումները"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "կԲ"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Ներառել ծանոթագրություններ"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Ներառել սկրիպտի բովանդակությունը"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Ավելացնել սկրիպտների սկզբնական կոդերի քարտեզները"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Լրացուցիչ տեղեկություններ՝"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Պահել"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Ներառում է բոլոր բեռնված սկրիպտների (բացառությամբ ընդլայնումների) ամբողջ բովանդակությունը։"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Սեղմեք GZIP-ի միջոցով"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Հարցումների վերնագրերը փոխարինվել են"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Այս հարցման քուքիներն արգելափակված են Chrome-ի փորձնական գործառույթների կամ դիտարկիչի կազմաձևման պատճառով։ Իմացեք ավելին «Խնդիրներ» վահանակում։"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Օգտագործել կանոնավոր արտահայտություն"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Մեկ կամ մի քանի կարգավորումներ փոխվել են, և դրանց կիրառման համար անհրաժեշտ է վերաբեռնել մշակողի գործիքները"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Պահանջվում է վերաբեռնում"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "նշված է"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Օգտագործել առաջարկվող գույնը {PH1}կոնտրաստն ավելացնելու համար"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Գունային արժեքները սեղմվել են՝ ձևաչափի գունային գամմային համապատասխանելու համար։ Փաստացի արդյունքը՝ {PH1}։"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Սահմանափակ գունային գամային անցումը կհանգեցնի գույների տեղաշարժի"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Ավելացնել պնակին"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Քուքիներ"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Տիրույթ"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Խմբագրելի քուքիներ"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(որոշված չէ)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Բաժնի բանալու կայքը"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Ուղի"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Առաջնահերթություն"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Անվտանգ է"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Աշխատաշրջան"

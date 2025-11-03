@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-eining"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Útiloka"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Hætt við"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Festa til hægri"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools barst utanaðkomandi beiðni"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fókusa á síðu"
   },
@@ -1275,13 +1281,13 @@
     "message": "Stuðningur fyrir gögn: Vefslóðir í SVGUseElement er úrelt og verður fjarlægð í framtíðinni."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() og watchPosition() virka ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() og watchPosition() virka ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar er að finna á https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() og watchPosition() eru úrelt í ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() og watchPosition() eru úrelt í ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar er að finna á https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() virkar ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+    "message": "getUserMedia() virkar ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar er að finna á https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er úrelt. Nota skal RTCPeerConnectionIceErrorEvent.address eða RTCPeerConnectionIceErrorEvent.port í staðinn."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Ekki má lengur nota forritaskil tilkynninga frá ótraustum uppruna. Íhugaðu að færa forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+    "message": "Ekki er lengur leyfilegt að nota forritaskil tilkynninga af ótraustum uppruna. Íhugaðu að færa forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar er að finna á https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Óvíst er að beðið verði um heimild fyrir forritaskilum tilkynninga frá iframe þvert á uppruna. Íhugaðu að biðja um heimild frá ramma á efsta stigi eða opna nýjan glugga í staðinn."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() er úrelt. Notaðu writeValueWithResponse() eða writeValueWithoutResponse() í staðinn."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Þessi eiginleiki er aðeins í boði þegar virk nettenging er til staðar."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools barst utanaðkomandi beiðni"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Óþekkt villa kom upp við að hlaða skránni"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} töf, {PH2} niðurhal ({PH3} samtals)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Sláðu inn slóð"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Sláðu inn einkvæma slóð"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Útilokaðar undirmöppur"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "Vefslóð"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Ekki var hægt að hlaða gagnahlut."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Ekki er hægt að bæta við skráakerfi: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Opna í möppu"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Hnekkja efni"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "„{PH1}“ er skrá sem er varpað í uppruna og er ekki hægt að hnekkja."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Hnekkja „{PH1}“ í staðinn?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Vista sem…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Ekki tókst að vista skrá á disk."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Vista mynd"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Tókst ekki að vista WASM-einingu á disk. Líklegast er einingin of stór"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Sýna allar hnekkingar"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Tengt við {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Tengt við kóðavörpun: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem getur ekki lesið skrár."
@@ -2157,7 +2118,7 @@
     "message": "Hreyfimynd"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Uppsetningarhliðranir eiga sér stað þegar einingar hreyfast án inngrips notanda. [Kannaðu orsakir uppsetningarhliðrana](https://web.dev/articles/optimize-cls), eins og hvort einingum hefur verið bætt við, þær fjarlægðar eða hvort leturgerð hefur breyst við hleðslu síðunnar."
+    "message": "Uppsetningarhliðranir eiga sér stað þegar einingar hreyfast án inngrips notanda. [Kannaðu orsakir uppsetningarhliðrana](https://developer.chrome.com/docs/performance/insights/cls-culprit), eins og hvort einingum hefur verið bætt við, þær fjarlægðar eða hvort leturgerð hefur breyst við hleðslu síðunnar."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Innfærður iframe"
@@ -2193,7 +2154,7 @@
     "message": "TTL í skyndiminni"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Langur líftími skyndiminnis getur hraðað endurteknum heimsóknum á síðuna. [Nánar](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Langur líftími skyndiminnis getur flýtt fyrir endurteknum heimsóknum á síðuna þína. [Nánar um skyndiminni](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Engar beiðnir með óskilvirkum skyndiminnisreglum"
@@ -2208,7 +2169,7 @@
     "message": "Nota skilvirkan skyndiminnislíftíma"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Stórt DOM-tré getur lengt útreikninga á endurröðun stíla og uppsetninga og þar af leiðandi haft áhrif á aðlögunarhæfni síðu. Stórt DOM-tré mun einnig auka minnisnotkun. [Kynntu þér hvernig þú kemur í veg fyrir að vera með of stórt DOM-tré](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Stórt DOM-tré getur lengt útreikninga á endurröðun stíla og uppsetninga og þar af leiðandi haft áhrif á aðlögunarhæfni síðu. Stórt DOM-tré mun einnig auka minnisnotkun. [Kynntu þér hvernig þú kemur í veg fyrir að vera með of stórt DOM-tré](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Lengd"
@@ -2244,7 +2205,7 @@
     "message": "Gildi"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Fyrsta netkerfisbeiðnin þín er sú mikilvægasta.  Styttu biðtíma hennar til að forðast framsendingar, tryggja hraða svörun þjóns og virkja textaþjöppun."
+    "message": "Fyrsta netkerfisbeiðnin þín er sú mikilvægasta. [Styttu biðtíma hennar](https://developer.chrome.com/docs/performance/insights/document-latency) til að forðast framsendingar, tryggja hraða svörun þjóns og virkja textaþjöppun."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Var framsend ({PH1} framsendingar, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Uppruni"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Fjarlægðu stórar og endurteknar JavaScript-einingar úr pökkum til að minnka óþarfa bætanotkun vegna netvirkni."
+    "message": "Fjarlægðu stórar [tvíteknar JavaScript-einingar](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) úr pökkum til að draga úr óþarfa bætanotkun vegna netvirkni."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Afritað JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Reyndu að stilla [font-display](https://developer.chrome.com/blog/font-display) á swap eða optional til að tryggja að textinn sé ávallt sýnilegur. Hægt er að fínstilla swap enn frekar til að draga úr uppsetningarhliðrunum með því að [hnekkja mæligildum leturgerða](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Reyndu að stilla [font-display](https://developer.chrome.com/docs/performance/insights/font-display) á swap eða optional til að tryggja að textinn sé ávallt sýnilegur. Hægt er að fínstilla swap enn frekar til að draga úr uppsetningarhliðrunum með því að [hnekkja mæligildum leturgerða](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Letur"
@@ -2304,10 +2265,10 @@
     "message": "(nafnlaus)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Þvinguð endurröðun á sér stað þegar JavaScript-beiðnir óska eftir rúmfræðieiginleikum (t.d. offsetWidth) eftir að stílar hafa verið ógiltir með breytingu á DOM-stöðunni. Þetta getur valdið lélegum afköstum. Nánar um [þvingaða endurröðun](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) og hugsanleg úrræði."
+    "message": "Þvinguð endurröðun á sér stað þegar JavaScript-beiðnir óska eftir rúmfræðieiginleikum (t.d. offsetWidth) eftir að stílar hafa verið ógiltir með breytingu á DOM-stöðunni. Þetta getur valdið lélegum afköstum. Nánar um [þvingaða endurröðun](https://developer.chrome.com/docs/performance/insights/forced-reflow) og hugsanleg úrræði."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Staflaröð"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Rammar símtala sem virkja endurflæði"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Þvinguð endurröðun"
@@ -2322,7 +2283,7 @@
     "message": "[án tilvísunar]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Notaðu lengsta undirhlutann til að kafa dýpra. [Hægt er að lágmarka tafir](https://web.dev/articles/optimize-inp#optimize_interactions). [Fínstilltu kostnað við aðalþráðinn](https://web.dev/articles/optimize-long-tasks), oft JS, til að draga úr úrvinnslutíma."
+    "message": "Byrjaðu að kynna þér [hvernig hægt er að bæta INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) með því að skoða lengsta undirhlutann."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Lengd"
@@ -2346,7 +2307,7 @@
     "message": "INP-sundurliðun"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Að minnka niðurhalstíma mynda getur bætt hleðslutíma síðunnar og LCP. [Nánar um fínstillingu myndstærða](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Að minnka niðurhalstíma mynda getur bætt hleðslutíma síðunnar og LCP. [Nánar um fínstillingu myndstærða](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Áætl. {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Hægt er að bæta niðurhalsstærð hreyfimyndaefnis með því að nota vídeósnið í stað GIF."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Hver [undirhluti er með sérstakar endurbætingaraðferðir](https://web.dev/articles/optimize-lcp#lcp-breakdown). Helst ætti mestum hluta LCP-tímans að vera varið í hleðslu gagna, ekki í tafir."
+    "message": "Hver [undirhluti er með sérstakar endurbætingaraðferðir](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Helst ætti mestum hluta LCP-tímans að vera varið í hleðslu gagna, ekki í tafir."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Lengd"
@@ -2406,7 +2367,7 @@
     "message": "LCP-sundurliðun"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Fínstilltu LCP með því að gera LCP-myndina [sýnilega](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) beint úr HTML og [forðast þannig tafir á hleðslu](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Fínstilltu LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) með því að gera LCP-myndina sýnilega beint úr HTML og forðast þannig tafir á hleðslu"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority = hátt"
@@ -2439,13 +2400,13 @@
     "message": "Eydd bæti"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill-kóðar og umbreytingar gera eldri vöfrum kleift að nota nýja JavaScript-eiginleika. Hins vegar þurfa nútímavafrar yfirleitt ekki á þeim að halda. Íhugaðu að breyta JavaScript-kóðunarferlinu þínu þannig að þú umbreytir ekki og vistþýðir eiginleika á [grunnlínunni](https://web.dev/articles/baseline-and-polyfills) nema þú vitir að þú munir þurfa að styðja eldri vafra. [Kynntu þér hvers vegna flest vefsvæði geta notað ES6+ kóða án umbreytingar og vistþýðingar](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill-kóðar og umbreytingar gera eldri vöfrum kleift að nota nýja JavaScript-eiginleika. Hins vegar þurfa nútímavafrar yfirleitt ekki á þeim að halda. Íhugaðu að breyta JavaScript-kóðunarferlinu þínu þannig að þú umbreytir ekki og vistþýðir eiginleika á [grunnlínunni](https://web.dev/articles/baseline-and-polyfills) nema þú vitir að þú munir þurfa að styðja eldri vafra. [Kynntu þér hvers vegna flest vefsvæði geta notað ES6+ kóða án umbreytingar og vistþýðingar](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Eldra JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 og HTTP/3 bjóða upp á margs konar fríðindi fram yfir HTTP/1.1, eins og multiplexing. [Nánar um að nota nútímalegt HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 og HTTP/3 bjóða upp á margs konar fríðindi fram yfir HTTP/1.1, eins og multiplexing. [Nánar um að nota nútímalegt HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Engar beiðnir notuðu HTTP/1.1 eða núverandi notkun á HTTP/1.1 felur ekki í sér möguleika á umtalsverðri fínstillingu. Beiðnir sem nota HTTP/1.1 eru aðeins flaggaðar ef sex eða fleiri fastar eignir koma frá sama upprunastað og ef þær eru ekki birtar úr staðbundnu þróunarumhverfi eða þriðja aðila efnisveitu."
@@ -2478,7 +2439,7 @@
     "message": "Ónotuð fortenging. Gakktu úr skugga um að crossorigin-eigindin sé rétt notuð."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Forðastu að tengja mikilvægar beiðnir saman](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) með því að stytta keðjur, minnka stærð niðurhals á tilföngum eða fresta niðurhali ónauðsynlegra tilfanga til að bæta síðuhleðslu."
+    "message": "[Forðastu að tengja mikilvægar beiðnir saman](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) með því að stytta keðjur, minnka stærð niðurhals á tilföngum eða fresta niðurhali ónauðsynlegra tilfanga til að bæta síðuhleðslu."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Bættu [fortengdum](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) leiðréttingum við mikilvægasta upprunann en reyndu að nota ekki fleiri en fjórar."
@@ -2517,7 +2478,7 @@
     "message": "Forðastu að tengja mikilvægar beiðnir saman með því að stytta keðjur, minnka stærð niðurhals á tilföngum eða fresta niðurhali ónauðsynlegra tilfanga til að bæta síðuhleðslu."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Beiðnir loka á upphaflega hleðslu síðu sem kann að valda töfum á LCP. [Frestun eða innfelling](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) getur fært þessar netkerfisbeiðnir út fyrir nauðsynlega slóð."
+    "message": "Beiðnir loka á upphaflega hleðslu síðu sem kann að valda töfum á LCP. [Frestun eða innfelling](https://developer.chrome.com/docs/performance/insights/render-blocking) getur fært þessar netkerfisbeiðnir út fyrir nauðsynlega slóð."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Lengd"
@@ -2532,7 +2493,7 @@
     "message": "Birta lokunarbeiðnir"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Ef kostnaður við endurreikning stíls er hár getur fínstilling vals dregið úr honum. [Fínstilltu valið](https://developer.chrome.com/docs/devtools/performance/selector-stats) með bæði löngum gangtíma og hárri % hægslóðar. Einfaldara val, færri valkostir, smærra DOM og grynnra DOM munu draga úr samsvarandi kostnaði."
+    "message": "Ef kostnaður við endurreikning stíls er hár getur fínstilling vals dregið úr honum. [Fínstilltu valið](https://developer.chrome.com/docs/performance/insights/slow-css-selector) með bæði löngum gangtíma og hárri % hægslóðar. Einfaldara val, færri valkostir, smærra DOM og grynnra DOM munu draga úr samsvarandi kostnaði."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Liðinn tími"
@@ -2571,7 +2532,7 @@
     "message": "Flutningsstærð"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Kóði þriðja aðila getur haft veruleg áhrif á hleðslu. [Styttu kóða þriðja aðila og frestaðu hleðslu hans](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) til að setja efni síðunnar þinnar í forgang."
+    "message": "Kóði þriðja aðila getur haft veruleg áhrif á hleðslu. [Styttu kóða þriðja aðila og frestaðu hleðslu hans](https://developer.chrome.com/docs/performance/insights/third-parties) til að setja efni síðunnar þinnar í forgang."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Ekkert efni frá þriðju aðilum fannst"
@@ -2580,7 +2541,7 @@
     "message": "Þriðju aðilar"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Smelligagnvirkni gæti [tafist um allt að 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ef glugginn er ekki fínstilltur fyrir snjalltæki."
+    "message": "Smelligagnvirkni gæti [tafist um allt að 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) ef glugginn er ekki fínstilltur fyrir snjalltæki."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Seinkun í snjalltækjaviðbragði"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Kynntu þér gervigreind í DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Gervigreindarhjálp er ekki í boði í huliðsstillingu eða gestastillingu"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Þessi eiginleiki er aðeins tiltækur þegar þú ert skráð(ur) inn á Chrome með Google-reikningnum þínum"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Athugaðu nettenginguna og reyndu aftur"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Afhjúpa valið samhengisatriði í DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Gervigreindarhjálpari í stillingum"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Kveiktu á {PH1} til að fá hjálp við að átta sig á CSS-stílum"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Kveiktu á {PH1} til að fá hjálp með stíla og netbeiðnir"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Kveiktu á {PH1} til að fá hjálp með stíla, netbeiðnir og skrár"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Kveiktu á {PH1} til að fá hjálp með stíla, netbeiðnir, afköst og skrár"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Á þessari síðu geturðu skoðað og breytt hreyfimyndum."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Þjónustuskilmálar"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Tengt við {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Tengt við kóðavörpun: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Leyfa"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Sýna stjórnborð"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Sýna samantektir gervigreindar á stjórnborðsskilaboðum"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Sýna CORS villur á stjórnborði"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Hoppa yfir í hreyfimyndasvæði"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Opna litaval. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Bæta {PH1} við"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Útilokar"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Sérsniðið"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex áhorfandi"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Bæta við lokunarmynstri fyrir netbeiðnir"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Bæta við mynstri"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Bættu mynstri við til að loka á netkerfisbeiðnir með því að smella á hnappinn „{PH1}“."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} útilokað"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Kveikja á útilokun netbeiðna"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Atriði var eytt"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Nánar"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Engar netkerfisbeiðnir á bannlista"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Mynstrið er þegar til."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Reitur fyrir mynstur má ekki vera auður."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Textamynstur til að útiloka samsvarandi beiðnir. Notaðu * sem algildisstaf"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Hreinsa allt"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Ekki er hægt að sýna stöðu beiðnarinnar hér vegna þess að síðan sem gaf hana út hætti að hlaða á meðan beiðnin var send. Þú getur notað chrome://net-export til að ná í netannál og skoða frekari upplýsingar um beiðnina."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Tengingarupplýsingar"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Loka á vefslóð beiðni"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Loka á beiðnir"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Útilokaðar beiðnir"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Beiðnir frá þriðja aðila"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Takmarka lén beiðni"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Takmarka vefslóð beiðni"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Takmarka beiðnir"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Hætta að útiloka {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Hætta að takmarka {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Auðkenni tengingar"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "Vefslóð"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Bæta við lokunarmynstri fyrir netbeiðnir"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Bæta við mynstri"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Bæta útilokunar- eða takmörkunarmynstri við fyrir netbeiðnir"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Bættu mynstri við með því að smella á hnappinn „{PH1}“."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} útilokað"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Lækka forgang"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Virkja útilokun og takmörkun"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Kveikja á útilokun netbeiðna"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Hækka forgang"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Atriði var eytt"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Nánar"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Engar netkerfisbeiðnir á bannlista"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Engin beiðni um takmörkunar- eða útilokunarmynstur"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Mynstrið er þegar til."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Ekki tókst að þátta þetta mynstur sem vefslóðarmynstur"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "„RegExp“-hópar eru ekki leyfðir"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Reitur fyrir mynstur má ekki vera auður."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Þetta mynstur var uppfært úr „{PH1}“"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Textamynstur sem lokar á eða takmarkar samsvarandi beiðnir; notaðu málskipan vefslóðarmynsturs."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Textamynstur til að útiloka samsvarandi beiðnir. Notaðu * sem algildisstaf"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Fótspor sem þjónninn tók á móti í „set-cookie“ haus svarsins"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Beiðni til ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Beiðni/svar"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Tilfangaáætlun"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Til að geta notað þetta efni af öðru vefsvæði kann þjónninn að slaka á reglum um tilföng þvert á uppruna í haus svarsins:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Bæta útilokunar- eða takmörkunarmynstri við fyrir netbeiðnir"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Bæta við lokunarmynstri fyrir netbeiðnir"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Útilokun netbeiðna"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Skilyrði beiðni"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "bandvíddartakmörkun"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Taka upp netannál"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Fjarlægja öll útilokunar- eða takmörkunarmynstur fyrir netbeiðnir"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Fjarlægja öll lokunarmynstur fyrir netbeiðnir"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Sýna útilokun netbeiðna"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Sýna skilyrði beiðni"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Sýna leit"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Hlutir sem lausar DOM-nóður halda eftir"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Hlutir sem viðbragðsaðgerðir halda eftir"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Aðrir JS-hlutir"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Þegar kveikt er á eiginleikanum"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Sláðu inn slóð"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Sláðu inn einkvæma slóð"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Útilokaðar undirmöppur"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "Vefslóð"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Bættu við reglu um reglulega segð fyrir vefslóð handritsins"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Opna JavaScript eða CSS-skrá til að sjá tákn"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Opna í möppu"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Hnekkja efni"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "„{PH1}“ er skrá sem er varpað í uppruna og er ekki hægt að hnekkja."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Hnekkja „{PH1}“ í staðinn?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Vista sem…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Ekki tókst að vista skrá á disk."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Vista mynd"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Tókst ekki að vista WASM-einingu á disk. Líklegast er einingin of stór"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Sýna allar hnekkingar"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Hafa textaskýringar með"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Hafa skriftuefni með"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Hafa skriftuuppsprettukort með"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Viðbótarupplýsingar:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Vista"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Inniheldur allt efni allra hlaðinna skrifta (fyrir utan viðbætur)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Þjappa með gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Beiðnihausum er hnekkt"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Lokað er á fótspor fyrir þessa beiðni vegna Chrome-flagga eða vafrastillingar. Frekari upplýsingar má nálgast á svæðinu „Vandamál“."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Nota reglulega segð"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Endurhlaða þarf til að breytingar á einni eða fleiri stillingum taki gildi"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Verður að endurhlaða"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "valið"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Nota litatillöguna {PH1} til að bæta léleg birtuskil"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Þessi litur var styttur í samræmi við litaskala sniðsins. Raunveruleg niðurstaða var {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Umbreyting í þröngt litasvið mun valda litabreytingum"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Bæta við litaspjald"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Fótspor"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Lén"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Fótspor sem hægt er að breyta"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(óljós)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Vefsvæði deildarlykla"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Slóð"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Forgangur"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Öruggt"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Lota"

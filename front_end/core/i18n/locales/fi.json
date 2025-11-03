@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Lohko: With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Estä"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Keskeytetty"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Kiinnitä oikealle"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools sai ulkoisen pyynnön"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Kohdista sivuun"
   },
@@ -1275,13 +1281,13 @@
     "message": "Datatuki: URL-osoitteet SVGUseElement-elementissä on poistettu käytöstä, ja se poistetaan tulevaisuudessa."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() ja watchPosition() eivät enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() ja watchPosition() eivät enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() ja watchPosition() on poistettu käytöstä suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() ja watchPosition() on poistettu käytöstä suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() ei enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+    "message": "getUserMedia() ei enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate on poistettu käytöstä. Valitse sen sijaan RTCPeerConnectionIceErrorEvent.address tai RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI pyytää käyttölupaa, vaikka MIDIOptions ei ole määrittänyt sysexiä."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Notification APIa ei saa enää käyttää suojaamattomista alkuperistä. Suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+    "message": "Notification APIa ei saa enää käyttää suojaamattomista alkuperistä. Suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Notification APIn lupaa ei välttämättä enää pyydetä eri lähteistä peräisin olevalta iframelta. Suosittelemme sen sijaan pyytämään lupaa ylätason kehykseltä tai avaamaan uuden ikkunan."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Laajennusten pitäisi ottaa muista lähteistä eristäminen käyttöön, jotta ne voivat jatkaa tämän käyttöä: SharedArrayBuffer. Lue lisää osoitteesta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() on poistettu käytöstä. Käytä sen sijaan writeValueWithResponse()- tai writeValueWithoutResponse()-menetelmää."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Vastaus-JSON ei tue UTF-16:ta kohteessa XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Ominaisuus on käytettävissä vain aktiivisella internetyhteydellä."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools sai ulkoisen pyynnön"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Tuntematon virhe ladattaessa tiedostoa"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Viive: {PH1}, lataus: {PH2} (yhteensä: {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Lisää polku"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Lisää yksilöllinen polku"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Poissuljetut alihakemistot"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL-osoite"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blobia ei voitu ladata."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Tiedostojärjestelmän lisääminen ei onnistu: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Avaa kansiosijainti"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Ohita sisältö"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "{PH1} on lähdemäpätty tiedosto, eikä sitä voi ohittaa."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Ohitetaanko {PH1}?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Tallenna nimellä…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Tiedoston tallentaminen levylle epäonnistui."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Tallenna kuva"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM-moduulia ei voi tallentaa levylle. Moduuli on todennäköisesti liian suuri."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Näytä kaikki ohitukset"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Linkitetty kohteeseen {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Linkitetty lähdekarttaan {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ei voi lukea tiedostoja."
@@ -2157,7 +2118,7 @@
     "message": "Animaatio"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Asettelun muutoksia tapahtuu, kun elementit liikkuvat ilman käyttäjän interaktioita. [Tutki asettelun muutosten syitä](https://web.dev/articles/optimize-cls), kuten elementtien lisäämistä, poistamista tai fonttien vaihtumista sivun latauksen aikana."
+    "message": "Asettelun muutoksia tapahtuu, kun elementit liikkuvat ilman käyttäjän interaktioita. [Tutki asettelun muutosten syitä](https://developer.chrome.com/docs/performance/insights/cls-culprit), kuten elementtien lisäämistä, poistamista tai fonttien vaihtumista sivun latauksen aikana."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Lisätty iframe"
@@ -2193,7 +2154,7 @@
     "message": "Välimuistin käyttöikä"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Pitkä välimuistin käyttöikä voi nopeuttaa sivun lataamista, kun käyttäjä avaa sen uudelleen. [Lue lisää](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Pitkä välimuistin käyttöikä voi nopeuttaa sivun lataamista, kun käyttäjä avaa sen uudelleen. [Lue lisää välimuistiin tallentamisesta](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Ei pyyntöjä, joissa on tehottomat välimuistikäytännöt"
@@ -2208,7 +2169,7 @@
     "message": "Käytä tehokasta välimuistin käyttöikää"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Suuri DOM voi pidentää tyylilaskelmien ja asettelun uudelleenjuoksutusten kestoa, mikä vaikuttaa sivun responsiivisuuteen. Suuri DOM lisää myös muistin käyttöä. [Katso, miten voit välttää liian suuren DOM:n](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Suuri DOM voi pidentää tyylilaskelmien ja asettelun uudelleenjuoksutusten kestoa, mikä vaikuttaa sivun responsiivisuuteen. Suuri DOM lisää myös muistin käyttöä. [Katso, miten voit välttää liian suuren DOM:n](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Kesto"
@@ -2244,7 +2205,7 @@
     "message": "Arvo"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Ensimmäinen verkkopyyntö on tärkein.  Vähennä viivettä välttämällä uudelleenohjauksia, varmistamalla nopea palvelimen vaste ja ottamalla tekstin pakkaus käyttöön."
+    "message": "Ensimmäinen verkkopyyntö on tärkein. [Vähennä viivettä](https://developer.chrome.com/docs/performance/insights/document-latency) välttämällä uudelleenohjauksia, varmistamalla nopea palvelimen vaste ja ottamalla tekstin pakkaus käyttöön."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Uudelleenohjauksia ({PH1} uudelleenohjausta, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Lähde"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Poista suuret, kopioidut JavaScript-moduulit paketeista pienentääksesi verkkotoiminnan tarpeetonta tavunkulutusta."
+    "message": "Poista suuret, [kopioidut JavaScript-moduulit](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) paketeista pienentääksesi verkkotoiminnan tarpeetonta tavunkulutusta."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Päällekkäinen JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Harkitse asettavasi [font-display](https://developer.chrome.com/blog/font-display) arvoon swap tai optional, niin varmistat, että teksti on aina näkyvissä. Optimointia (swap) voidaan lisätä, jotta asettelumuutoksia voidaan vähentää [fonttimittarin ohitusarvojen](https://developer.chrome.com/blog/font-fallbacks) avulla."
+    "message": "Harkitse asettavasi [font-display](https://developer.chrome.com/docs/performance/insights/font-display) arvoon swap tai optional, niin varmistat, että teksti on aina näkyvissä. Optimointia (swap) voidaan lisätä, jotta asettelumuutoksia voidaan vähentää [fonttimittarin ohitusarvojen](https://developer.chrome.com/blog/font-fallbacks) avulla."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fontti"
@@ -2304,10 +2265,10 @@
     "message": "(nimettömät)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Pakotettu uudelleenlaskenta tapahtuu, kun JavaScript kysyy geometrisiä ominaisuuksia (esim. offsetWidth) sen jälkeen, kun DOM-tilan muutos on mitätöinyt tyylit. Tämä voi johtaa huonoihin tuloksiin. Lue lisää [pakotetuista uudelleenlaskemisista](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) ja mahdollisista torjuntakeinoista."
+    "message": "Pakotettu uudelleenlaskenta tapahtuu, kun JavaScript kysyy geometrisiä ominaisuuksia (esim. offsetWidth) sen jälkeen, kun DOM-tilan muutos on mitätöinyt tyylit. Tämä voi johtaa huonoihin tuloksiin. Lue lisää [pakotetuista uudelleenlaskemisista](https://developer.chrome.com/docs/performance/insights/forced-reflow) ja mahdollisista torjuntakeinoista."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Jäljityslista"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Kutsukehykset, jotka käynnistävät uudelleenlaskennan"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Pakotettu uudelleenlaskeminen"
@@ -2322,7 +2283,7 @@
     "message": "[määrittämätön]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Aloita tutkinta pisimmästä osasta. [Viiveet voidaan minimoida](https://web.dev/articles/optimize-inp#optimize_interactions). Voit lyhentää käsittelyaikaa [optimoimalla pääsäikeen kustannukset](https://web.dev/articles/optimize-long-tasks), usein JS:n."
+    "message": "Aloita tutkinta [INP:n parantamisesta](https://developer.chrome.com/docs/performance/insights/inp-breakdown) katsomalla pisintä osaa."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Kesto"
@@ -2346,7 +2307,7 @@
     "message": "INP-erittely"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Kuvien latausajan lyhentäminen voi parantaa sivun havaittua latausaikaa ja LCP:tä. [Lue lisää kuvakoon optimoinnista](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Kuvien latausajan lyhentäminen voi parantaa sivun havaittua latausaikaa ja LCP:tä. [Lue lisää kuvakoon optimoinnista](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (arvio: {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Videomuotojen käyttö GIF-tiedostojen sijaan voi parantaa animoidun sisällön latauskokoa."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Kullakin [osavaiheella on omat parantamisen strategiat](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ihanteellisesti suurin osa LCP-ajasta pitäisi käyttää resurssien lataamiseen, ei viivästyksiin."
+    "message": "Kullakin [osavaiheella on omat parantamisen strategiat](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ihanteellisesti suurin osa LCP-ajasta pitäisi käyttää resurssien lataamiseen, ei viivästyksiin."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Kesto"
@@ -2406,7 +2367,7 @@
     "message": "LCP-erittely"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimoi LCP tekemällä LCP-kuvasta [löydettävä](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) HTML:stä heti ja [välttämällä laiskaa latautumista](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Optimoi LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) tekemällä LCP-kuvasta löydettävä HTML:stä heti ja välttämällä laiskaa latautumista"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high applied"
@@ -2439,13 +2400,13 @@
     "message": "Hukatut tavut"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill- ja transform-merkintöjen avulla vanhemmat selaimet voivat käyttää uusia JavaScript-ominaisuuksia. Monia ei kuitenkaan tarvita nykyaikaisissa selaimissa. Harkitse JavaScript-käännösprosessin muuttamista niin, että [Baseline](https://web.dev/articles/baseline-and-polyfills)-ominaisuuksien ohjelmkointikoodin kieltä ei käännetä, ellet tiedä, että sinun on tuettava vanhempia selaimia. [Lue lisää siitä, miksi useimmat sivustot voivat ottaa käyttöön ES6+-koodin ilman ohjelmointikoodin kielen kääntämistä](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill- ja transform-merkintöjen avulla vanhemmat selaimet voivat käyttää uusia JavaScript-ominaisuuksia. Monia ei kuitenkaan tarvita nykyaikaisissa selaimissa. Harkitse JavaScript-käännösprosessin muuttamista niin, että [Baseline](https://web.dev/articles/baseline-and-polyfills)-ominaisuuksien ohjelmkointikoodin kieltä ei käännetä, ellet tiedä, että sinun on tuettava vanhempia selaimia. [Lue lisää siitä, miksi useimmat sivustot voivat ottaa käyttöön ES6+-koodin ilman ohjelmointikoodin kielen kääntämistä](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Vanha JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 ja HTTP/3 tarjoavat monia etuja HTTP/1.1:een verrattuna, esimerkiksi kanavoinnin. [Lue lisää modernin HTTP:n käytöstä](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 ja HTTP/3 tarjoavat monia etuja HTTP/1.1:een verrattuna, esimerkiksi kanavoinnin. [Lue lisää modernin HTTP:n käytöstä](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "HTTP/1.1 ei ollut käytössä millään pyynnöllä, tai sen nykyinen käyttö ei tarjoa merkittävää optimointimahdollisuutta. HTTP/1.1-pyynnöt merkitään vain, jos kuusi tai useampi staattinen elementti on peräisin samasta alkuperästä eikä niitä tarjota paikallisesta kehitysympäristöstä tai kolmannen osapuolen lähteestä."
@@ -2478,7 +2439,7 @@
     "message": "Käyttämätön ennakkoyhteys. Varmista, että crossorigin-määritettä käytetään oikein."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Vältä kriittisten pyyntöjen ketjuttamista](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) lyhentämällä ketjuja, pienentämällä resurssien latauskokoa ja lykkäämällä tarpeettomien resurssien lataamista."
+    "message": "[Vältä kriittisten pyyntöjen ketjuttamista](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) lyhentämällä ketjuja, pienentämällä resurssien latauskokoa ja lykkäämällä tarpeettomien resurssien lataamista."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Lisää [ennakkoyhdistämisen](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) vihjeitä tärkeimpiin alkuperiin, mutta pyri käyttämään enintään neljää."
@@ -2517,7 +2478,7 @@
     "message": "Vältä kriittisten pyyntöjen ketjuttamista lyhentämällä ketjuja, pienentämällä resurssien latauskokoa ja lykkäämällä tarpeettomien resurssien lataamista sivun latausajan parantamiseksi."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Pyynnöt estävät sivun ensimmäisen renderöinnin, joten LCP:ssä voi olla viiveitä. [Siirtäminen myöhemmäksi tai sisällyttäminen](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) voi poistaa nämä verkkopyynnöt kriittiseltä polulta."
+    "message": "Pyynnöt estävät sivun ensimmäisen renderöinnin, joten LCP:ssä voi olla viiveitä. [Siirtäminen myöhemmäksi tai sisällyttäminen](https://developer.chrome.com/docs/performance/insights/render-blocking) voi poistaa nämä verkkopyynnöt kriittiseltä polulta."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Kesto"
@@ -2532,7 +2493,7 @@
     "message": "Renderöinnin estopyyntö"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Jos \"Laske tyyli uudelleen\" ‑kustannukset ovat edelleen korkeita, valitsimen optimointi voi alentaa niitä. [Optimoi valitsimet](https://developer.chrome.com/docs/devtools/performance/selector-stats), kun sekä kulunut aika että hidas polku ovat korkeita. Yksinkertaiset valitsimet, vähemmän valitsimia, pienempi DOM ja matalampi DOM vähentävät vastaavuuskustannuksia."
+    "message": "Jos \"Laske tyyli uudelleen\" ‑kustannukset ovat edelleen korkeita, valitsimen optimointi voi alentaa niitä. [Optimoi valitsimet](https://developer.chrome.com/docs/performance/insights/slow-css-selector), kun sekä kulunut aika että hidas polku ovat korkeita. Yksinkertaiset valitsimet, vähemmän valitsimia, pienempi DOM ja matalampi DOM vähentävät vastaavuuskustannuksia."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Kulunut aika"
@@ -2571,7 +2532,7 @@
     "message": "Siirron koko"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Kolmannen osapuolen koodi voi vaikuttaa lataustehokkuuteen merkittävästi. [Vähennä ja lykkää kolmannen osapuolen koodin lataamista](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) sivun sisällön priorisoimiseksi."
+    "message": "Kolmannen osapuolen koodi voi vaikuttaa lataustehokkuuteen merkittävästi. [Vähennä ja lykkää kolmannen osapuolen koodin lataamista](https://developer.chrome.com/docs/performance/insights/third-parties) sivun sisällön priorisoimiseksi."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Kolmansia osapuolia ei löytynyt"
@@ -2580,7 +2541,7 @@
     "message": "Kolmannet osapuolet"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Napautusinteraktiot voivat [viivästyä jopa 300 ms:lla](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), jos näkymää ei ole optimoitu mobiililaitteille."
+    "message": "Napautusinteraktiot voivat [viivästyä jopa 300 ms:lla](https://developer.chrome.com/docs/performance/insights/viewport), jos näkymää ei ole optimoitu mobiililaitteille."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Mobiililaitteen napautuksen viive"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Lue lisää tekoälystä DevToolsissa"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Tekoälyavustaja ei ole käytettävissä incognito- tai vierastilassa"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Tämä ominaisuus on käytettävissä vain, jos olet kirjautuneena Chromeen Google-tilillä"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Tarkista internetyhteytesi ja yritä uudelleen"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Näytä valittu kontekstikohta DevToolsissa"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Tekoälyavustaja asetuksissa"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Laita {PH1} päälle, niin saat apua CSS-tyylien ymmärtämiseen"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Laita {PH1} päälle, niin saat apua tyylien ja verkkopyyntöjen kanssa"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Laita {PH1} päälle, niin saat apua tyylien, verkkopyyntöjen ja tiedostojen kanssa"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Laita {PH1} päälle, niin saat apua tyylien, verkkopyyntöjen, suorituskyvyn ja tiedostojen kanssa"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Tällä sivulla voit tarkastella ja muokata animaatioita."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Käyttöehdot"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Linkitetty kohteeseen {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Linkitetty lähdekarttaan {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Salli"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Näytä konsoli"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Näytä AI-yhteenvedot konsoliviesteistä"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Näytä nämä virheet konsolissa: CORS"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Siirry Animaatiot-paneeliin"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Avaa värinvalitsin. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Lisää {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Estäminen"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Oma"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex-katseluohjelma"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Lisää verkkopyynnön estomalli"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Lisää kuvio"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Lisää verkkopyyntöjen estomalli klikkaamalla {PH1}-painiketta."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} estetty"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Ota käyttöön verkkopyyntöjen esto"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Kohteen poisto onnistui"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Lue lisää"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Ei estettyjä verkkopyyntöjä"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Malli on jo olemassa."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Mallin syöte ei voi olla tyhjä."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Tekstimalli, jolla estetään osuvia pyyntöjä – * toimii jokerimerkkinä"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Poista kaikki"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Pyynnön tilaa ei voi näyttää täällä, koska sen määrittänyt sivu tyhjeni pyynnön ollessa kesken. Voit ottaa kuvakaappauksen verkon lokista ja nähdä kaikki pyynnön tiedot tällä: chrome://net-export."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Yhteyden tiedot"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Estä pyynnön URL-osoite"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Estä pyynnöt"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Estetyt pyynnöt"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Kolmannen osapuolen pyynnöt"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Rajoita pyynnön verkkotunnusta"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Rajoita pyynnön URL-osoitetta"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Rajoita pyyntöjä"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Kumoa esto: {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Lopeta rajoittaminen: {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Yhteyden tunnus"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL-osoite"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Lisää verkkopyynnön estomalli"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Lisää kuvio"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Lisää verkkopyyntöjen rajoitus- tai estomalli"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Lisää malli klikkaamalla {PH1}-painiketta."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} estetty"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Pienennä prioriteettia"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Ota esto ja rajoitus käyttöön"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Ota käyttöön verkkopyyntöjen esto"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Lisää prioriteettia"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Kohteen poisto onnistui"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Lue lisää"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Ei estettyjä verkkopyyntöjä"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Ei pyyntöjen rajoitus- tai estomalleja"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Malli on jo olemassa."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Mallia ei voitu jäsentää URL-malliksi"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp-ryhmiä ei sallita"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Mallin syöte ei voi olla tyhjä."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Tämä malli on päivitetty versiosta \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Tekstimalli, jolla estetään tai rajoitetaan osuvia pyyntöjä. Käytä URLPattern-syntaksia."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Tekstimalli, jolla estetään osuvia pyyntöjä – * toimii jokerimerkkinä"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Evästeet, jotka vastaanotettiin palvelimelta vastauksen otsikossa set-cookie"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Pyynnön saaja: ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Pyyntö/vastaus"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Resurssin ajoittaminen"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Käyttääkseen tätä toisen sivuston resurssia palvelin voi lieventää vastauksen otsikkoa, joka kuuluu eri lähteestä tulevan resurssin käytäntöön:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Lisää verkkopyynnön esto- tai rajoitusmalli"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Lisää verkkopyynnön estomalli"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Verkkopyyntöjen esto"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Pyyntöehdot"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "verkon hidastaminen"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Tee kirjauksia verkkolokiin"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Poista kaikki verkkopyyntöjen esto- tai rajoitusmallit"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Poista kaikki verkkopyyntöjen estomallit"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Näytä verkkopyyntöjen esto"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Näytä pyyntöehdot"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Näytä haku"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Irrotettujen DOM-solmujen säilyttämät objektit"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Tapahtumakäsittelijöiden säilyttämät objektit"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Muut JS-objektit"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Ominaisuuden ollessa päällä"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Lisää polku"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Lisää yksilöllinen polku"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Poissuljetut alihakemistot"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL-osoite"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Lisää säännöllisen lausekkeen sääntö skriptin URL-osoitteelle"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Avaa JavaScript- tai CSS-tiedosto, niin näet merkit"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Avaa kansiosijainti"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Ohita sisältö"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "{PH1} on lähdemäpätty tiedosto, eikä sitä voi ohittaa."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Ohitetaanko {PH1}?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Tallenna nimellä…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Tiedoston tallentaminen levylle epäonnistui."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Tallenna kuva"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM-moduulia ei voi tallentaa levylle. Moduuli on todennäköisesti liian suuri."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Näytä kaikki ohitukset"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kt"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Sisällytä merkinnät"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Sisällytä skriptin sisältö"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Sisällytä skriptin lähdekartat"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Lisätietoja:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Tallenna"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Sisältää kaiken ladattujen skriptien sisällön (paitsi laajennukset)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Pakkaa gzipillä"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Pyynnön otsikot ohitetaan"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Tämän pyynnön evästeet on estetty joko Chrome-ilmoitusten tai selaimen määritysten takia. Lue lisää Ongelmat-paneelista."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Käytä säännöllistä lauseketta"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Ainakin yhtä asetusta on muutettu. Voimaantulo edellyttää päivitystä."
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "* Edellyttää uudelleenlatausta"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "valittu"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Käytä väriehdotusta {PH1}heikon kontrastin korjaamiseen"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Tämä väri on leikattu muodon väriskaalan mukaisesti. Todellinen tulos oli {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Kapeaan väriasteikon muuntaminen aiheuttaa värien muutoksia"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Lisää palettiin"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Evästeet"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Verkkotunnus"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Muokattavat evästeet"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(läpinäkymätön)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Osioavaimen sivusto"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Polku"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioriteetti"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Turvallinen"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Käyttökerta"

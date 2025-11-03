@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Block ng With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "I-block"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Na-abort"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "I-dock sa kanan"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "Nakatanggap ang DevTools ng external na request"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Focus page"
   },
@@ -1275,13 +1281,13 @@
     "message": "Suporta para sa data: Hindi na ginagamit ang mga URL sa SVGUseElement at aalisin na ito sa hinaharap."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "Hindi na gumagana ang getCurrentPosition() at watchPosition() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong isaalang-alang ang paglipat ng iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+    "message": "Hindi na gumagana ang getCurrentPosition() at watchPosition() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ para sa higit pang detalye."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Hindi na ginagamit ang getCurrentPosition() at watchPosition() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong isaalang-alang ang paglipat ng iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+    "message": "Hindi na ginagamit ang getCurrentPosition() at watchPosition() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ para sa higit pang detalye."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "Hindi na gumagana ang getUserMedia() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong isaalang-alang ang paglipat ng iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+    "message": "Hindi na gumagana ang getUserMedia() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ para sa higit pang detalye."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "Hindi na ginagamit ang RTCPeerConnectionIceErrorEvent.hostCandidate. RTCPeerConnectionIceErrorEvent.address o RTCPeerConnectionIceErrorEvent.port na lang ang gamitin."
@@ -1311,7 +1317,7 @@
     "message": "Hihingi ng pahintulot ang Web MIDI sa paggamit kahit na hindi tinukoy ang sysex sa MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Posibleng hindi na magamit ang Notification API mula sa mga hindi secure na origin. Dapat mong isaalang-alang ang paglipat ng iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+    "message": "Posibleng hindi na magamit ang Notification API mula sa mga hindi secure na origin. Pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ para sa higit pang detalye."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Posibleng hindi na humiling ng pahintulot para sa Notification API mula sa isang cross-origin na iframe. Dapat mong isaalang-alang ang paghiling ng pahintulot mula sa isang top-level na frame o sa halip ay magbukas ng bagong window."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Dapat mag-opt in ang mga extension sa mga pag-isolate ng cross-origin para patuloy na magamit ang SharedArrayBuffer. Tingnan ang https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "Hindi na ginagamit ang BluetoothRemoteGATTCharacteristic.writeValue(). Gamitin na lang ang writeValueWithResponse() o writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Hindi sinusuportahan ang UTF-16 ng sagot na json sa XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Available lang ang feature na ito kapag may aktibong koneksyon sa internet."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "Nakatanggap ang DevTools ng external na request"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Hindi kilalang error sa pag-load ng file"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} na latency, {PH2} na pag-download ({PH3} sa kabuuan)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Maglagay ng path"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Maglagay ng natatanging path"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Mga ibinukod na sub-folder"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Hindi ma-load ang blob."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Hindi maidagdag ang filesystem: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Buksan sa pinaglagyang folder"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "I-override ang content"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "Ang ‘{PH1}’ ay isang namapang file ng source at hindi ito mao-override."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "I-override na lang ang ‘{PH1}’?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "I-save bilang…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Hindi na-save ang file sa disk."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "I-save ang larawan"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Hindi ma-save ang WASM module sa disk. Posibleng masyadong malaki ang module."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Ipakita ang lahat ng override"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Naka-link sa {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Naka-link sa mapa ng source: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "Hindi mabasa ng PlatformFileSystem ang mga file."
@@ -2157,7 +2118,7 @@
     "message": "Animation"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Nangyayari ang mga pagbabago sa layout kapag gumagalaw ang mga element nang walang anumang interaction ng user. [Siyasatin ang mga dahilan ng pagbabago sa layout](https://web.dev/articles/optimize-cls), tulad ng mga pagdaragdag ng mga element, pag-alis, o pagbabago ng mga font nito kapag naglo-load ang page."
+    "message": "Nangyayari ang mga pagbabago sa layout kapag gumagalaw ang mga element nang walang anumang interaction ng user. [Siyasatin ang mga dahilan ng pagbabago sa layout](https://developer.chrome.com/docs/performance/insights/cls-culprit), tulad ng mga pagdaragdag ng mga element, pag-alis, o pagbabago ng mga font nito kapag naglo-load ang page."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Na-inject na iframe"
@@ -2193,7 +2154,7 @@
     "message": "TTL ng Cache"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Puwedeng mapabilis ng mahabang lifetime ng cache ang mga umuulit na pagbisita sa iyong page. [Matuto pa](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Puwedeng mapabilis ng mahabang lifetime ng cache ang mga umuulit na pagbisita sa iyong page. [Matuto pa tungkol sa pag-cache](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Walang request na may mga hindi mahusay na patakaran sa cache"
@@ -2208,7 +2169,7 @@
     "message": "Gumamit ng mahuhusay na lifetime ng cache"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Kapag malaki ang DOM, puwedeng tumaas ang tagal ng pagkalkula ng istilo at mga reflow ng layout, na nakakaapekto sa pagiging responsive ng page. Madaragdagan din ng malaking DOM ang paggamit ng memory. [Alamin kung paano iwasan ang masyadong malaking DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Kapag malaki ang DOM, puwedeng tumaas ang tagal ng pagkalkula ng istilo at mga reflow ng layout, na nakakaapekto sa pagiging responsive ng page. Madaragdagan din ng malaking DOM ang paggamit ng memory. [Alamin kung paano iwasan ang masyadong malaking DOM](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Tagal"
@@ -2244,7 +2205,7 @@
     "message": "Value"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Pinakamahalaga ang iyong unang request sa network.  Bawasan ang latency nito sa pamamagitan ng pag-iwas sa mga pag-redirect, na tumitiyak sa mabilis na pagtugon ng server, at nagbibigay-daan sa pag-compress ng text."
+    "message": "Pinakamahalaga ang iyong unang request sa network. [Bawasan ang latency nito](https://developer.chrome.com/docs/performance/insights/document-latency) sa pamamagitan ng pag-iwas sa mga pag-redirect, pagtiyak sa mabilis na sagot ng server, at pag-enable sa pag-compress ng text."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Nagkaroon ng mga pag-redirect ({PH1} (na) pag-redirect, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Source"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Alisin ang mga malaki at duplicate na module ng JavaScript sa mga bundle para mabawasan ang mga hindi kinakailangang byte na nakokonsumo ng aktibidad ng network."
+    "message": "Alisin ang malalaking [duplicate na module ng JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) sa mga bundle para mabawasan ang mga hindi kinakailangang byte na nakokonsumo ng aktibidad ng network."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Na-duplicate na JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Pag-isipang itakda ang [font-display](https://developer.chrome.com/blog/font-display) sa swap o optional para tiyaking patuloy na makikita ang text. Puwede pang i-optimize ang swap para mabawasan ang mga pagbabago sa layout gamit ang [mga override sa sukatan ng font](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Pag-isipang itakda ang [font-display](https://developer.chrome.com/docs/performance/insights/font-display) sa swap o optional para tiyaking patuloy na makikita ang text. Puwede pang i-optimize ang swap para mabawasan ang mga pagbabago sa layout gamit ang [mga override sa sukatan ng font](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
@@ -2304,10 +2265,10 @@
     "message": "(anonymous)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Nagkakaroon ng sapilitang pag-reflow kapag nag-query ang JavaScript ng mga geometric na property (gaya ng offsetWidth) pagkatapos ma-invalidate ang mga istilo sa pamamagitan ng pagbabago sa status ng DOM. Puwede itong magresulta sa hindi magandang performance. Matuto pa tungkol sa [mga sapilitang pag-reflow](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) at posibleng pag-mitigate."
+    "message": "Nagkakaroon ng sapilitang pag-reflow kapag nag-query ang JavaScript ng mga geometric na property (gaya ng offsetWidth) pagkatapos ma-invalidate ang mga istilo sa pamamagitan ng pagbabago sa status ng DOM. Puwede itong magresulta sa hindi magandang performance. Matuto pa tungkol sa [mga sapilitang pag-reflow](https://developer.chrome.com/docs/performance/insights/forced-reflow) at posibleng pag-mitigate."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Stack trace"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Mga call frame na nagti-trigger ng reflow"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Sapilitang reflow"
@@ -2322,7 +2283,7 @@
     "message": "[hindi na-attribute]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Simulan ang pagsisiyasat sa pinakamahabang subpart. [Puwedeng mabawasan ang mga pagkaantala](https://web.dev/articles/optimize-inp#optimize_interactions). Para paikliin ang tagal ng pagproseso, [i-optimize ang mga main-thread cost](https://web.dev/articles/optimize-long-tasks), na madalas ay JS."
+    "message": "Simulan ang pagsisiyasat sa kung [paano pahusayin ang INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) sa pamamagitan ng pagtingin sa pinakamahabang subpart."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Tagal"
@@ -2346,7 +2307,7 @@
     "message": "Breakdown ng INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Kapag binawasan ang tagal ng pag-download ng mga larawan, posibleng mapahusay ang natukoy na oras ng pag-load ng page at LCP. [Matuto pa tungkol sa pag-optimize ng laki ng larawan](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Kapag binawasan ang tagal ng pag-download ng mga larawan, posibleng mapahusay ang natukoy na oras ng pag-load ng page at LCP. [Matuto pa tungkol sa pag-optimize ng laki ng larawan](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Tinatayang {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Kapag gumamit ng mga format ng video sa halip na mga GIF, posibleng mapahusay ang laki ng download ng animated na content."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Ang bawat [subpart ay may mga partikular na strategy sa pagpapahusay](https://web.dev/articles/optimize-lcp#lcp-breakdown). Mainam kung gugugulin ang malaking bahagi ng tagal ng LCP sa pag-load ng mga resource, at hindi sa mga pagkaantala."
+    "message": "Ang bawat [subpart ay may mga partikular na strategy sa pagpapahusay](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Mainam kung gugugulin ang malaking bahagi ng tagal ng LCP sa pag-load ng mga resource, at hindi sa mga pagkaantala."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Tagal"
@@ -2406,7 +2367,7 @@
     "message": "Breakdown ng LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Gawing [nahahanap](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) kaagad ang larawan para sa LCP mula sa HTML para ma-optimize ang LCP, at [maiwasan ang mabagal na pag-load](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "Gawing nahahanap kaagad ang larawan ng LCP mula sa HTML para [ma-optimize ang LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery), at maiwasan ang mabagal na pag-load"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "In-apply ang fetchpriority=high"
@@ -2439,13 +2400,13 @@
     "message": "Mga nasayang na byte"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga mas lumang browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Pag-isipang baguhin ang iyong proseso ng pagbuo sa JavaScript para hindi ma-transpile ang mga [Baseline](https://web.dev/articles/baseline-and-polyfills) na feature, maliban kung alam mong dapat mong masuportahan ang mga mas lumang browser. [Alamin kung bakit puwedeng mag-deploy ang karamihan ng mga site ng ES6+ na code nang hindi nagta-transpile](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga mas lumang browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Pag-isipang baguhin ang iyong proseso ng pagbuo sa JavaScript para hindi ma-transpile ang mga [Baseline](https://web.dev/articles/baseline-and-polyfills) na feature, maliban kung alam mong dapat mong masuportahan ang mga mas lumang browser. [Alamin kung bakit puwedeng mag-deploy ang karamihan ng mga site ng ES6+ na code nang hindi nagta-transpile](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Legacy na JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "Nag-aalok ang HTTP/2 at HTTP/3 ng maraming benepisyo kumpara sa HTTP/1.1, tulad ng multiplexing. [Matuto pa tungkol sa paggamit ng modernong HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "Nag-aalok ang HTTP/2 at HTTP/3 ng maraming benepisyo kumpara sa HTTP/1.1, tulad ng multiplexing. [Matuto pa tungkol sa paggamit ng modernong HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Walang request na gumamit ng HTTP/1.1, o hindi nagpapakita ang kasalukuyang paggamit nito ng HTTP/1.1 ng makabuluhang pagkakataon sa pag-optimize. Fina-flag lang ang mga HTTP/1.1 request kung nagmumula ang anim o higit pang static na asset sa parehong origin, at hindi inihahatid ang mga ito mula sa lokal na environment sa pag-develop o third-party na source."
@@ -2478,7 +2439,7 @@
     "message": "Hindi nagamit na pag-preconnect. Tingnan kung ginagamit nang maayos ang attribute na crossorigin."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Iwasan ang pag-chain ng mahahalagang request](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) sa pamamagitan ng pagbabawas sa haba ng mga chain, pagbabawas sa laki ng mga dina-download na resource, o pagpapaliban sa pag-download ng mga hindi kinakailangang resource para mapabilis ang pag-load ng page."
+    "message": "[Iwasan ang pag-chain ng mahahalagang request](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) sa pamamagitan ng pagbabawas sa haba ng mga chain, pagbabawas sa laki ng mga dina-download na resource, o pagpapaliban sa pag-download ng mga hindi kinakailangang resource para mapabilis ang pag-load ng page."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Magdagdag ng mga hint sa [pag-preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) sa mga pinakamahalagang origin mo, pero subukang gumamit ng hindi lalampas sa 4."
@@ -2517,7 +2478,7 @@
     "message": "Iwasan ang pag-chain ng mahahalagang request sa pamamagitan ng pagbabawas sa haba ng mga chain, pagbabawas sa laki ng mga dina-download na resource, o pagpapaliban sa pag-download ng mga hindi kinakailangang resource para mapabilis ang pag-load ng page."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Bina-block ng mga request ang unang pag-render ng page, na posibleng makaantala sa LCP. Puwedeng alisin ng [pagpapaliban o pag-inline](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ang mga request sa network na ito sa critical path."
+    "message": "Bina-block ng mga request ang unang pag-render ng page, na posibleng makaantala sa LCP. Puwedeng alisin ng [pagpapaliban o pag-inline](https://developer.chrome.com/docs/performance/insights/render-blocking) ang mga request sa network na ito sa critical path."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Tagal"
@@ -2532,7 +2493,7 @@
     "message": "Mag-render ng mga request sa pag-block"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Kung mananatiling mataas ang mga gastos sa Kalkulahin Ulit ang Istilo, mapapababa ito ng pag-optimize ng selector. [I-optimize ang mga selector](https://developer.chrome.com/docs/devtools/performance/selector-stats) gamit ang matagal na lumipas na oras at mataas na % ng slow-path. Mapapaliit ng mga mas simpleng selector, mga mas kaunting selector, mas maliit na DOM, at mas mababaw na DOM ang mga tumutugmang gastos."
+    "message": "Kung mananatiling mataas ang mga gastos sa Kalkulahin Ulit ang Istilo, mapapababa ito ng pag-optimize ng selector. [I-optimize ang mga selector](https://developer.chrome.com/docs/performance/insights/slow-css-selector) gamit ang matagal na lumipas na oras at mataas na % ng slow-path. Mapapaliit ng mga mas simpleng selector, mga mas kaunting selector, mas maliit na DOM, at mas mababaw na DOM ang mga tumutugmang gastos."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Lumipas na oras"
@@ -2571,7 +2532,7 @@
     "message": "Laki ng paglipat"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Puwedeng lubos na makaapekto ang code ng 3rd party sa performance ng pag-load. [Bawasan at ipagpaliban ang pag-load ng code ng 3rd party](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) para isapriyoridad ang content ng iyong page."
+    "message": "Puwedeng lubos na makaapekto ang code ng 3rd party sa performance ng pag-load. [Bawasan at ipagpaliban ang pag-load ng code ng 3rd party](https://developer.chrome.com/docs/performance/insights/third-parties) para isapriyoridad ang content ng iyong page."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Walang nakitang third party"
@@ -2580,7 +2541,7 @@
     "message": "Mga 3rd party"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Posibleng [maantala nang hanggang 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ang mga interaction sa pag-tap kung hindi na-optimize para sa mobile ang viewport."
+    "message": "Posibleng [maantala nang hanggang 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) ang mga interaction sa pag-tap kung hindi na-optimize para sa mobile ang viewport."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Pagkaantala sa pag-tap sa mobile"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Alamin ang tungkol sa AI sa DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Hindi available ang tulong ng AI sa Incognito mode o Guest mode"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Available lang ang feature na ito kapag naka-sign in ka sa Chrome gamit ang iyong Google account"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Tingnan ang iyong koneksyon sa internet at subukan ulit"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Ipakita ang napiling item ng konteksto sa DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Tulong ng AI sa Mga Setting"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "I-on ang {PH1} para makakuha ng tulong sa pag-unawa sa mga CSS style"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "I-on ang {PH1} para makakuha ng tulong sa mga istilo at request sa network"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "I-on ang {PH1} para makakuha ng tulong sa mga istilo, request sa network, at file"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "I-on ang {PH1} para makakuha ng tulong sa mga istilo, request sa network, performance, at file"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Sa page na ito, puwede mong siyasatin at baguhin ang mga animation."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Naka-link sa {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Naka-link sa mapa ng source: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Payagan"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Ipakita ang Console"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Ipakita ang mga AI summary para sa mga mensahe sa console"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Ipakita ang mga error sa CORS sa console"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Pumunta sa Animations panel"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Buksan ang tagapili ng kulay. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Idagdag ang {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Pag-block"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Custom"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Viewer ng Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Magdagdag ng pattern sa pag-block ng request sa network"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Magdagdag ng pattern"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Magdagdag ng pattern para i-block ang mga request sa network sa pamamagitan ng pag-click sa button na \"{PH1}.\""
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "Naka-block ang {PH1}"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "I-enable ang pag-block ng kahilingan sa network"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Matagumpay na na-delete ang item"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Matuto pa"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Walang na-block na request sa network"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "May ganito nang pattern."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Hindi puwedeng walang laman ang input ng pattern."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Pattern ng text para i-block ang mga tugmang kahilingan; gumamit ng * para sa wildcard"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "I-clear lahat"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Hindi puwedeng ipakita rito ang status ng kahilingan dahil nag-unload ang page na nagbigay nito habang in flight ang kahilingan. Puwede mong gamitin ang chrome://net-export para mag-capture ng log ng network at tingnan ang lahat ng detalye ng kahilingan."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Impormasyon ng Koneksyon"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "I-block ang URL ng kahilingan"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Mag-block ng mga request"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Mga naka-block na request"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Mga kahilingan ng 3rd-party"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "I-throttle ang domain ng request"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "I-throttle ang URL ng request"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Mga request sa pag-throttle"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "I-unblock ang {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Ihinto ang pag-throttle sa {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Connection ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Magdagdag ng pattern sa pag-block ng request sa network"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Magdagdag ng pattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Magdagdag ng pattern sa pag-throttle o pag-block ng request sa network"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Magdagdag ng pattern sa pamamagitan ng pag-click sa button na \"{PH1}.\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "Naka-block ang {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Babaan ang priyoridad"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "I-enable ang pag-block at pag-throttle"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "I-enable ang pag-block ng kahilingan sa network"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Taasan ang priyoridad"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Matagumpay na na-delete ang item"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Matuto pa"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Walang na-block na request sa network"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Walang pattern sa pag-throttle o pag-block ng request"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "May ganito nang pattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Hindi na-parse ang pattern na ito bilang URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Hindi pinapayagan ang mga grupo ng RegExp"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Hindi puwedeng walang laman ang input ng pattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Na-upgrade ang pattern na ito mula sa \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Pattern ng text para i-block o i-throttle ang mga tumutugmang request; gumamit ng URLPattern syntax."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Pattern ng text para i-block ang mga tugmang kahilingan; gumamit ng * para sa wildcard"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies na natanggap mula sa server sa 'set-cookie' na header ng sagot"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Kahilingan sa ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Kahilingan/Sagot"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Pag-iiskedyul ng Resource"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Para magamit ang resource na ito mula sa ibang site, posibleng i-relax ng server ang header ng sagot ng patakaran sa cross-origin resource:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Magdagdag ng pattern sa pag-block o pag-throttle ng request sa network"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Magdagdag ng pattern sa pag-block ng request sa network"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Pag-block ng request sa network"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Mga kundisyon ng request"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "pag-throttle ng network"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "I-record ang log ng network"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Alisin ang lahat ng pattern sa pag-block o pag-throttle ng request sa network"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Alisin ang lahat ng pattern sa pag-block ng request sa network"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Ipakita ang pag-block ng kahilingan sa Network"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Ipakita ang mga kundisyon ng Request"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Ipakita ang Paghahanap"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Mga object na pinapanatili ng mga naka-detach na node ng DOM"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Mga object na pinapanatili ng Mga Event Handler"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Iba pang object ng JS"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Kapag naka-on"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Maglagay ng path"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Maglagay ng natatanging path"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Mga ibinukod na sub-folder"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Magdagdag ng panuntunan ng karaniwang expression para sa URL ng script"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Magbukas ng JavaScript o CSS file para makita ang mga simbolo"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Buksan sa pinaglagyang folder"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "I-override ang content"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "Ang ‘{PH1}’ ay isang namapang file ng source at hindi ito mao-override."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "I-override na lang ang ‘{PH1}’?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "I-save bilang…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Hindi na-save ang file sa disk."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "I-save ang larawan"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Hindi ma-save ang WASM module sa disk. Posibleng masyadong malaki ang module."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Ipakita ang lahat ng override"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Isama ang mga anotasyon"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Isama ang content ng script"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Isama ang mga source map ng script"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Karagdagang impormasyon:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "I-save"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Kasama ang buong content ng lahat ng naka-load na script (maliban sa mga extension)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "I-compress gamit ang gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Na-override ang mga header ng request"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Naka-block ang cookies para sa request na ito dahil sa mga pag-flag ng Chrome o pag-configure ng browser. Matuto pa sa panel na Mga Isyu."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Gumamit ng karaniwang expression"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "May nagbagong isa o higit pang setting na nagre-require ng pag-reload para magkaroon ng bisa"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Nangangailangan ng pag-reload"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "na-check"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Gamitin ang iminumungkahing kulay na {PH1} para ayusin ang mababang contrast"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Na-clip ang kulay na ito para tumugma sa gamut ng format. {PH1} ang aktwal na resulta"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Magdudulot ng mga pagbabago sa kulay ang pag-convert sa makitid na gamut"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Idagdag sa palette"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domain"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Nae-edit na Cookies"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(opaque)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Site ng Partition Key"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Path"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Priyoridad"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Secure"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Session"

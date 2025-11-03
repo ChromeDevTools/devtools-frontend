@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ব্লক"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "অৱৰোধ কৰক"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "বাতিল কৰা হৈছে"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "সোঁফাললৈ ড’ক কৰক"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevToolsএ এটা বাহ্যিক অনুৰোধ লাভ কৰিছে"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ফ’কাছ পৃষ্ঠা"
   },
@@ -1275,13 +1281,13 @@
     "message": "ডেটাৰ বাবে সমৰ্থন: SVGUseElementত থকা URLসমূহ অপ্ৰচলিত আৰু এয়া ভৱিষ্যতে আঁতৰোৱা হ’ব।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() আৰু watchPosition()এ আৰু অসুৰক্ষিত উৎসত কাম নকৰে। এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://goo.gle/chrome-insecure-origins চাওক।"
+    "message": "getCurrentPosition() আৰু watchPosition()এ আৰু অসুৰক্ষিত উৎসত কাম নকৰে। এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ চাওক।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() আৰু watchPosition() অসুৰক্ষিত উৎসত অপ্ৰচলিত। এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://goo.gle/chrome-insecure-origins চাওক।"
+    "message": "getCurrentPosition() আৰু watchPosition() অসুৰক্ষিত উৎসত অপ্ৰচলিত। এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ চাওক।"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia()এ আৰু অসুৰক্ষিত উৎসত কাম নকৰে। এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://goo.gle/chrome-insecure-origins চাওক।"
+    "message": "getUserMedia()এ আৰু অসুৰক্ষিত উৎসত কাম নকৰে। এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ চাওক।"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate অপ্ৰচলিত। তাৰ পৰিৱৰ্তে অনুগ্ৰহ কৰি RTCPeerConnectionIceErrorEvent.address অথবা RTCPeerConnectionIceErrorEvent.port ব্যৱহাৰ কৰক।"
@@ -1311,7 +1317,7 @@
     "message": "MIDIOptionsত sysex নিৰ্দিষ্ট কৰা নহ’লেও ৱেব MIDIএ ব্যৱহাৰ কৰাৰ বাবে অনুমতি বিচাৰিব।"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "অসুৰক্ষিত উৎসৰ পৰা হয়তো Notification API আৰু ব্যৱহাৰ কৰা নহ’ব। আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://goo.gle/chrome-insecure-origins চাওক।"
+    "message": "অসুৰক্ষিত উৎসৰ পৰা হয়তো Notification API আৰু ব্যৱহাৰ কৰা নহ’ব। আপুনি আপোনাৰ এপ্লিকেশ্বনটো HTTPSৰ দৰে এটা সুৰক্ষিত উৎসলৈ সলনি কৰাৰ কথা বিবেচনা কৰা উচিত। অধিক সবিশেষৰ বাবে https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ চাওক।"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "ক্ৰছ-অৰিজিন আইফ্ৰে’মৰ পৰা হয়তো Notification APIৰ অনুমতিৰ বাবে আৰু অনুৰোধ জনোৱা নহ’বও পাৰে। তাৰ পৰিৱৰ্তে আপুনি এটা শীৰ্ষ-স্তৰৰ ফ্ৰে’মৰ পৰা অনুমতি বিচৰা অথবা এখন নতুন ৱিণ্ড’ খোলাৰ কথা বিবেচনা কৰ উচিত।"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer ব্যৱহাৰ কৰি থাকিবলৈ ক্ৰছ-অৰিজিন পৃথকীকৰণত এক্সটেনশ্বনসমূহ অপ্ট ইন কৰিব লাগে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ চাওক।"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() অপ্ৰচলিত। ইয়াৰ পৰিৱৰ্তে writeValueWithResponse() বা writeValueWithoutResponse() ব্যৱহাৰ কৰক।"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequestত json সঁহাৰিয়ে UTF-16 সমৰ্থন নকৰে"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "এই সুবিধাটো কেৱল এটা সক্ৰিয় ইণ্টাৰনেট সংযোগৰ জৰিয়তে উপলব্ধ।"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevToolsএ এটা বাহ্যিক অনুৰোধ লাভ কৰিছে"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ফাইল ল’ড কৰোঁতে অজ্ঞাত আসোঁৱাহ হৈছে"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} টা বিলম্ব, {PH2} টা ডাউনল'ড (মুঠ {PH3} টা)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "এটা পথ দিয়ক"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "এটা অদ্বিতীয় পথ দিয়ক"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "বহিৰ্ভূত হোৱা উপ-ফ’ল্ডাৰ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "ব্ল’ব ল’ড কৰিব পৰা নগ’ল।"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ফাইলছিষ্টেম যোগ দিব পৰা নগ’ল: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "অন্তৰ্ভুক্ত ফ’ল্ডাৰত খোলক"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "সমল অ’ভাৰৰাইড কৰক"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ হৈছে এটা উৎসৰ মেপ সৃষ্টি কৰা ফাইল আৰু ইয়াক অ'ভাৰৰাইড কৰিব নোৱাৰি।"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "ইয়াৰ সলনি ‘{PH1}’ অ'ভাৰৰাইড কৰিবনে?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "এই হিচাপে ছেভ কৰক…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ফাইলটো ডিস্কত ছেভ কৰিব পৰা নগ’ল।"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "প্ৰতিচ্ছবি ছেভ কৰক"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "ডিস্কত WASM মডিউল ছেভ কৰিব পৰা নগ’ল। সম্ভৱতঃ মডিউলটো বহুত ডাঙৰ।"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "আটাইবোৰ অ’ভাৰৰাইড দেখুৱাওক"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1}ৰ সৈতে লিংক কৰা হ’ল"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "উৎসৰ মেপৰ সৈতে লিংক কৰা হৈছে: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystemএ ফাইল পঢ়িব নোৱাৰে।"
@@ -2157,7 +2118,7 @@
     "message": "এনিমেশ্বন"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "ব্যৱহাৰকাৰীয়ে কোনো ভাব-বিনিময় নকৰাকৈয়ে উপাদানৰ ঠাই সলনি হ’লে লে’আউট স্থানান্তৰণ হয়। [লে’আউট স্থানান্তৰণৰ কাৰণ অনুসন্ধান কৰক](https://web.dev/articles/optimize-cls), যেনে- উপাদান যোগ দিয়া, আঁতৰোৱা বা পৃষ্ঠা ল’ড হওঁতে সেইসমূহৰ ফণ্ট সলনি হোৱা।"
+    "message": "ব্যৱহাৰকাৰীয়ে কোনো ভাব-বিনিময় নকৰাকৈয়ে উপাদানৰ ঠাই সলনি হ’লে লে’আউট স্থানান্তৰণ হয়। [লে’আউট স্থানান্তৰণৰ কাৰণ অনুসন্ধান কৰক](https://developer.chrome.com/docs/performance/insights/cls-culprit), যেনে- উপাদান যোগ দিয়া, আঁতৰোৱা বা পৃষ্ঠা ল’ড হওঁতে সেইসমূহৰ ফণ্ট সলনি হোৱা।"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "ইনজেক্ট কৰা আইফ্ৰে’ম"
@@ -2193,7 +2154,7 @@
     "message": "কেশ্বৰ TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "এটা দীঘলীয়া কেশ্বৰ জীৱনকালে আপোনাৰ পৃষ্ঠাখন পুনৰ চোৱাটো দ্ৰুত কৰি তুলিব পাৰে। [অধিক জানক](https://web.dev/uses-long-cache-ttl/)।"
+    "message": "এটা দীঘলীয়া কেশ্বৰ জীৱনকালে আপোনাৰ পৃষ্ঠাখন পুনৰ চোৱাটো দ্ৰুত কৰি তুলিব পাৰে। [কেশ্ব কৰাৰ বিষয়ে অধিক জানক](https://developer.chrome.com/docs/performance/insights/cache)।"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "কাৰ্যক্ষম নোহোৱা কেশ্বৰ নীতি থকা কোনো অনুৰোধ নাই"
@@ -2208,7 +2169,7 @@
     "message": "কাৰ্যক্ষম কেশ্বৰ জীৱনকাল ব্যৱহাৰ কৰক"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "এটা বৃহৎ DOMএ শৈলীৰ গণনা আৰু লে’আউট ৰিফ্ল’ৰ সময় অৱধি বৃদ্ধি কৰিব পাৰে, যি পৃষ্ঠাৰ সঁহাৰি প্ৰভাৱিত কৰিব পাৰে। এটা বৃহৎ DOMএ মেম’ৰীৰ ব্যৱহাৰো বঢ়াব। [অত্যধিক DOMৰ আকাৰ কেনেকৈ পৰিহাৰ কৰিব পাৰি জানক](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)।"
+    "message": "এটা বৃহৎ DOMএ শৈলীৰ গণনা আৰু লে’আউট ৰিফ্ল’ৰ সময় অৱধি বৃদ্ধি কৰিব পাৰে, যি পৃষ্ঠাৰ সঁহাৰি প্ৰভাৱিত কৰিব পাৰে। এটা বৃহৎ DOMএ মেম’ৰীৰ ব্যৱহাৰো বঢ়াব। [অত্যধিক DOMৰ আকাৰ কেনেকৈ পৰিহাৰ কৰিব পাৰি জানক](https://developer.chrome.com/docs/performance/insights/dom-size)।"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "সময় অৱধি"
@@ -2244,7 +2205,7 @@
     "message": "মান"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "আপোনাৰ প্ৰথম নেটৱৰ্কৰ অনুৰোধ আটাইতকৈ বেছি গুৰুত্বপূৰ্ণ।  ৰিডাইৰেক্ট এৰি চলি ইয়াৰ বিলম্বতা হ্ৰাস কৰক, দ্ৰুত ছাৰ্ভাৰৰ সঁহাৰি আৰু পাঠৰ সংকোচন নিশ্চিত কৰি।"
+    "message": "আপোনাৰ প্ৰথম নেটৱৰ্কৰ অনুৰোধ আটাইতকৈ বেছি গুৰুত্বপূৰ্ণ। দ্ৰুত ছাৰ্ভাৰৰ সঁহাৰি আৰু পাঠৰ সংকোচন নিশ্চিত কৰি, ৰিডাইৰেক্ট এৰাই চলি [ইয়াৰ বিলম্বতা হ্ৰাস কৰক](https://developer.chrome.com/docs/performance/insights/document-latency)।"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "ৰিডাইৰেক্ট আছিল ({PH1} টা ৰিডাইৰেক্ট, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "উৎস"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "নেটৱৰ্কৰ কাৰ্যকলাপে অপ্ৰয়োজনীয়ভাৱে ব্যৱহাৰ কৰা বাইট কমাবৰ বাবে বাণ্ডলৰ পৰা ডাঙৰ, ডুপ্লিকেট JavaScript মডিউল আঁতৰাওক।"
+    "message": "নেটৱৰ্কৰ কাৰ্যকলাপে অপ্ৰয়োজনীয়ভাৱে ব্যৱহাৰ কৰা বাইট কমাবৰ বাবে বাণ্ডলৰ পৰা ডাঙৰ, [ডুপ্লিকেট JavaScript মডিউল](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) আঁতৰাওক।"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ডুপ্লিকেট কৰা JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "পাঠখিনি একেৰাহে দৃশ্যমান হৈ থকাটো নিশ্চিত কৰিবলৈ swap বা optionalৰ [font-display](https://developer.chrome.com/blog/font-display) ছেটিঙৰ বিষয়ে বিবেচনা কৰক। [ফণ্টৰ মেট্ৰিক অ’ভাৰৰাইড](https://developer.chrome.com/blog/font-fallbacks) কৰাৰ জৰিয়তে লে’আউট স্থানান্তৰণ কম কৰিবলৈ swap আৰু অপ্টিমাইজ কৰিব পাৰি।"
+    "message": "পাঠখিনি একেৰাহে দৃশ্যমান হৈ থকাটো নিশ্চিত কৰিবলৈ swap বা optionalৰ [font-display](https://developer.chrome.com/docs/performance/insights/font-display) ছেটিঙৰ বিষয়ে বিবেচনা কৰক। [ফণ্টৰ মেট্ৰিক অ’ভাৰৰাইড](https://developer.chrome.com/blog/font-fallbacks) কৰাৰ জৰিয়তে লে’আউট স্থানান্তৰণ কম কৰিবলৈ swap আৰু অপ্টিমাইজ কৰিব পাৰি।"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ফণ্ট"
@@ -2304,10 +2265,10 @@
     "message": "(বেনামী)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM স্থিতিত কৰা এটা সালসলনিৰ দ্বাৰা শৈলী অমান্য কৰাৰ পাছত JavaScriptএ জ্যামিতিক বৈশিষ্ট্যৰ (যেনে- offsetWidth) কুৱেৰী কৰিলে এটা বলপূৰ্বক ৰিফ্ল’ৰ সৃষ্টি হয়। ইয়াৰ ফলত পাৰদৰ্শিতা নিম্নমানৰ হ’ব পাৰে। [বলপূৰ্বক ৰিফ্ল’](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) আৰু সম্ভাব্য প্ৰশমনৰ বিষয়ে অধিক জানক।"
+    "message": "DOM স্থিতিত কৰা এটা সালসলনিৰ দ্বাৰা শৈলী অমান্য কৰাৰ পাছত JavaScriptএ জ্যামিতিক বৈশিষ্ট্যৰ (যেনে- offsetWidth) কুৱেৰী কৰিলে এটা বলপূৰ্বক ৰিফ্ল’ৰ সৃষ্টি হয়। ইয়াৰ ফলত পাৰদৰ্শিতা নিম্নমানৰ হ’ব পাৰে। [বলপূৰ্বক ৰিফ্ল’](https://developer.chrome.com/docs/performance/insights/forced-reflow) আৰু সম্ভাব্য প্ৰশমনৰ বিষয়ে অধিক জানক।"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "ষ্টেক ট্ৰে’চ"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "ৰিফ্ল’ ট্ৰিগাৰ কৰা কল ফ্ৰে’ম"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "বলপূৰ্বকভাৱে চলোৱা ৰিফ্ল’"
@@ -2322,7 +2283,7 @@
     "message": "[unattributed]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "আটাইতকৈ দীঘলীয়া উপ-অংশৰ জৰিয়তে অনুসন্ধান আৰম্ভ কৰক। [বিলম্বতা একেবাৰে কম কৰিব পাৰি](https://web.dev/articles/optimize-inp#optimize_interactions)। প্ৰক্ৰিয়াকৰণৰ সময় অৱধি কম কৰিবলৈ, [প্ৰধান থ্ৰেডৰ ব্যয় অপ্টিমাইজ কৰক](https://web.dev/articles/optimize-long-tasks), প্ৰায়েই JS।"
+    "message": "আটাইতকৈ দীঘলীয়া উপ-অংশটো চাই [INP কেনেকৈ উন্নত কৰিব পাৰি](https://developer.chrome.com/docs/performance/insights/inp-breakdown) সেইটো অনুসন্ধান কৰিবলৈ আৰম্ভ কৰক।"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "সময় অৱধি"
@@ -2346,7 +2307,7 @@
     "message": "INPৰ বিৱৰণ"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "প্ৰতিচ্ছবিৰ ডাউনল’ডৰ সময় কমোৱাটোৱে পৃষ্ঠাখন আৰু LCP ল’ড হোৱাৰ লক্ষ্য কৰা সময় কমাব পাৰে। [প্ৰতিচ্ছবিৰ আকাৰ অপ্টিমাইজ কৰাৰ বিষয়ে অধিক জানক](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "প্ৰতিচ্ছবিৰ ডাউনল’ডৰ সময় কমোৱাটোৱে পৃষ্ঠাখন আৰু LCP ল’ড হোৱাৰ লক্ষ্য কৰা সময় কমাব পাৰে। [প্ৰতিচ্ছবিৰ আকাৰ অপ্টিমাইজ কৰাৰ বিষয়ে অধিক জানক](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (আনুমানিক {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIFৰ সলনি ভিডিঅ’ৰ ফৰ্মেট ব্যৱহাৰ কৰিলে এনিমেশ্বন কৰা সমলৰ ডাউনল’ডৰ আকাৰ উন্নত হ’ব পাৰে।"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "প্ৰতিটো [উপ-অংশ উন্নত কৰাৰ নিদিষ্ট ৰণনীতি থাকে](https://web.dev/articles/optimize-lcp#lcp-breakdown)। সাধাৰণতে, LCৰ বেছিভাগ সময় সম্পদসমূহ ল’ড কৰাত খৰচ কৰিব লাগে, বিলম্বৰ ভিতৰত নহয়।"
+    "message": "প্ৰতিটো [উপ-অংশ উন্নত কৰাৰ নিদিষ্ট ৰণনীতি থাকে](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)। সাধাৰণতে, LCৰ বেছিভাগ সময় সম্পদসমূহ ল’ড কৰাত খৰচ কৰিব লাগে, বিলম্বৰ ভিতৰত নহয়।"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "সময় অৱধি"
@@ -2406,7 +2367,7 @@
     "message": "LCPৰ বিৱৰণ"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "HTMLৰ পৰা তৎক্ষণাৎ LCP প্ৰতিচ্ছবি [আনে বিচাৰি পাব পৰা](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) কৰি তুলি আৰু [লেহেমীয়াকৈ ল’ড হোৱাটো এৰি চলি](https://web.dev/articles/lcp-lazy-loading) LCP অপ্টিমাইজ কৰক"
+    "message": "HTMLৰ পৰা তৎক্ষণাৎ LCP প্ৰতিচ্ছবি আনে বিচাৰি পাব পৰা কৰি তুলি আৰু লেহেমীয়াকৈ ল’ড হোৱাটো এৰাই চলি [LCP অপ্টিমাইজ কৰক](https://developer.chrome.com/docs/performance/insights/lcp-discovery)"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high প্ৰয়োগ কৰা হৈছে"
@@ -2439,13 +2400,13 @@
     "message": "অপচয় কৰা বাইট"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "পলিফিল আৰু ৰূপান্তৰণসমূহে পুৰণি ব্ৰাউজাৰক নতুন JavaScriptৰ সুবিধাসমূহ ব্যৱহাৰ কৰিবলৈ সক্ষম কৰি তোলে। অৱশ্যে, বেছিভাগেই আধুনিক ব্ৰাউজাৰৰ বাবে প্ৰয়োজনীয় নহয়। আপোনাৰ JavaScriptৰ বিল্ডৰ প্ৰক্ৰিয়া [বে’ছলাইন](https://web.dev/articles/baseline-and-polyfills) সুবিধাসমূহ ট্ৰেন্সপাইল নকৰিবলৈ সংশোধন কৰাৰ বিষয়ে বিবেচনা কৰক, যদিহে আপুনি পুৰণি ব্ৰাউজাৰসমূহ সমৰ্থন কৰিবই লাগিব বুলি নাজানে। [বেছিভাগ ছাইটে কিয় ট্ৰেন্সপাইল নকৰাকৈ ES6+ ক’ড ডিপ্ল’ই কৰিব পাৰে সেয়া জানক](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "পলিফিল আৰু ৰূপান্তৰণসমূহে পুৰণি ব্ৰাউজাৰক নতুন JavaScriptৰ সুবিধাসমূহ ব্যৱহাৰ কৰিবলৈ সক্ষম কৰি তোলে। অৱশ্যে, বেছিভাগেই আধুনিক ব্ৰাউজাৰৰ বাবে প্ৰয়োজনীয় নহয়। আপোনাৰ JavaScriptৰ বিল্ডৰ প্ৰক্ৰিয়া [বে’ছলাইন](https://web.dev/articles/baseline-and-polyfills) সুবিধাসমূহ ট্ৰেন্সপাইল নকৰিবলৈ সংশোধন কৰাৰ বিষয়ে বিবেচনা কৰক, যদিহে আপুনি পুৰণি ব্ৰাউজাৰসমূহ সমৰ্থন কৰিবই লাগিব বুলি নাজানে। [বেছিভাগ ছাইটে কিয় ট্ৰেন্সপাইল নকৰাকৈ ES6+ ক’ড ডিপ্ল’ই কৰিব পাৰে সেয়া জানক](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "লিগেচী JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 আৰু HTTP/3এ HTTP/1.1তকৈ বহুতো সুবিধা প্ৰদান কৰে, যেনে - মাল্টিপ্লেক্সিং। [আধুনিক HTTP ব্যৱহাৰ কৰাৰ বিষয়ে অধিক জানক](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)।"
+    "message": "HTTP/2 আৰু HTTP/3এ HTTP/1.1তকৈ বহুতো সুবিধা প্ৰদান কৰে, যেনে - মাল্টিপ্লেক্সিং। [আধুনিক HTTP ব্যৱহাৰ কৰাৰ বিষয়ে অধিক জানক](https://developer.chrome.com/docs/performance/insights/modern-http)।"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "কোনো অনুৰোধে HTTP/1.1 ব্যৱহাৰ কৰা নাই বা ই বৰ্তমান কৰা HTTP/1.1ৰ ব্যৱহাৰে উল্লেখযোগ্য অপ্টিমাইজেশ্বনৰ সুযোগ উপস্থাপন কৰা নাই। ছটা বা অধিক স্থিৰ সম্পদ একেটা উৎসৰ পৰা সৃষ্টি হ’লে আৰু সেইসমূহ এটা স্থানীয় বিকাশৰ পৰিৱেশ বা তৃতীয়-পক্ষৰ উৎসৰ পৰা প্ৰদান কৰা নহ’লেহে HTTP/1.1 অনুৰোধসমূহ ফ্লেগ কৰা হয়।"
@@ -2478,7 +2439,7 @@
     "message": "অব্যৱহৃত পূৰ্বৰ সংযোগ। crossorigin এট্ৰিবিউটটো সঠিকভাৱে ব্যৱহাৰ কৰা হৈছেনে নাই চাওক।"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "শৃংখলাৰ দৈৰ্ঘ্য হ্ৰাস কৰি, সম্পদৰ ডাউনল’ডৰ আকাৰ হ্ৰাস কৰি বা পৃষ্ঠাৰ ল’ড উন্নত কৰিবলৈ অপ্ৰয়োজনীয় সম্পদৰ ডাউনল’ড স্থগিত কৰি [গুৰুত্বপূৰ্ণ অনুৰোধবোৰৰ শৃংখলা সৃষ্টি কৰাৰ পৰা বিৰত থাকক](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)।"
+    "message": "শৃংখলাৰ দৈৰ্ঘ্য হ্ৰাস কৰি, সম্পদৰ ডাউনল’ডৰ আকাৰ হ্ৰাস কৰি বা পৃষ্ঠাৰ ল’ড উন্নত কৰিবলৈ অপ্ৰয়োজনীয় সম্পদৰ ডাউনল’ড স্থগিত কৰি [গুৰুত্বপূৰ্ণ অনুৰোধবোৰৰ শৃংখলা সৃষ্টি কৰাৰ পৰা বিৰত থাকক](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)।"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "আপোনাৰ আটাইতকৈ গুৰুত্বপূৰ্ণ উৎসসমূহৰ ক্ষেত্ৰত [আগতীয়া সংযোগ](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ৰ হিণ্ট যোগ দিয়ক, কিন্তু ৪ টাতকৈ বেছিকৈ ব্যৱহাৰ কৰিবলৈ চেষ্টা কৰক।"
@@ -2517,7 +2478,7 @@
     "message": "শৃংখলাৰ দৈৰ্ঘ্য হ্ৰাস কৰি, উৎসৰ ডাউনল’ডৰ আকাৰ হ্ৰাস কৰি বা পৃষ্ঠাৰ ল’ড উন্নত কৰিবলৈ অপ্ৰয়োজনীয় উৎসৰ ডাউনল’ড স্থগিত ৰাখি গুৰুত্বপূৰ্ণ অনুৰোধবোৰৰ শৃংখলা সৃষ্টি কৰাটো এৰাই চলক।"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "অনুৰোধসমূহে পৃষ্ঠাৰ প্ৰাৰম্ভিক ৰেণ্ডাৰ অৱৰোধ কৰি আছে, যিয়ে LCP বিলম্ব কৰিব পাৰে। [পিছুৱাই দিয়া বা ইনলাইন কৰা](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)টোৱে এই নে’টৱৰ্কৰ অনুৰোধসমূহক জটিল পথৰ বাহিৰলৈ লৈ যাব পাৰে।"
+    "message": "অনুৰোধসমূহে পৃষ্ঠাৰ প্ৰাৰম্ভিক ৰেণ্ডাৰ অৱৰোধ কৰি আছে, যিয়ে LCP বিলম্ব কৰিব পাৰে। [পিছুৱাই দিয়া বা ইনলাইন কৰা](https://developer.chrome.com/docs/performance/insights/render-blocking)টোৱে এই নে’টৱৰ্কৰ অনুৰোধসমূহক জটিল পথৰ বাহিৰলৈ লৈ যাব পাৰে।"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "সময় অৱধি"
@@ -2532,7 +2493,7 @@
     "message": "অনুৰোধ অৱৰোধ কৰাটো ৰেণ্ডাৰ কৰক"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "যদি শৈলী পুনৰ গণনাৰ মূল্য অধিক হৈয়ে থাকে, বাছনিকৰ্তা অপ্টিমাইজ কৰাটোৱে সেয়া কম কৰিব পাৰে। অধিক পাৰ হোৱা সময় আৰু উচ্চ শ্ল’-পাথৰৰ %ৰ জৰিয়তে [বাছনিকৰ্তা অপ্টিমাইজ কৰক](https://developer.chrome.com/docs/devtools/performance/selector-stats)। অধিক সহজ বাছনিকৰ্তা, কমসংখ্যক বাছনিকৰ্তা, এটা সৰু DOM আৰু এটা অগভীৰ DOMএ মিলি থকা মূল্য হ্ৰাস কৰিব।"
+    "message": "যদি শৈলী পুনৰ গণনাৰ মূল্য অধিক হৈয়ে থাকে, বাছনিকৰ্তা অপ্টিমাইজ কৰাটোৱে সেয়া কম কৰিব পাৰে। অধিক পাৰ হোৱা সময় আৰু উচ্চ শ্ল’-পাথৰৰ %ৰ জৰিয়তে [বাছনিকৰ্তা অপ্টিমাইজ কৰক](https://developer.chrome.com/docs/performance/insights/slow-css-selector)। অধিক সহজ বাছনিকৰ্তা, কমসংখ্যক বাছনিকৰ্তা, এটা সৰু DOM আৰু এটা অগভীৰ DOMএ মিলি থকা মূল্য হ্ৰাস কৰিব।"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "পাৰ হোৱা সময়"
@@ -2571,7 +2532,7 @@
     "message": "স্থানান্তৰণৰ আকাৰ"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "৩য় পক্ষৰ ক’ডে ল’ড সম্পৰ্কীয় কাৰ্যদক্ষতাৰ ওপৰত উল্লেখযোগ্য প্ৰভাৱ পেলাব পাৰে। আপোনাৰ পৃষ্ঠাৰ সমলক অগ্ৰাধিকাৰ দিবলৈ [৩য় পক্ষৰ ক’ড ল’ড কৰাটো কম কৰক আৰু পিছুৱাওক](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)।"
+    "message": "৩য় পক্ষৰ ক’ডে ল’ড সম্পৰ্কীয় কাৰ্যদক্ষতাৰ ওপৰত উল্লেখযোগ্য প্ৰভাৱ পেলাব পাৰে। আপোনাৰ পৃষ্ঠাৰ সমলক অগ্ৰাধিকাৰ দিবলৈ [৩য় পক্ষৰ ক’ড ল’ড কৰাটো কম কৰক আৰু পিছুৱাওক](https://developer.chrome.com/docs/performance/insights/third-parties)।"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "কোনো তৃতীয় পক্ষ বিচাৰি পোৱা নাই"
@@ -2580,7 +2541,7 @@
     "message": "৩য় পক্ষ"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "ভিউপ’ৰ্টটো ম’বাইলৰ বাবে অপ্টিমাইজ নকৰিলে টেব কৰাৰ কাৰ্যটো [৩০০ এমএছ পৰ্যন্ত বিলম্ব](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) হ’ব পাৰে।"
+    "message": "ভিউপ’ৰ্টটো ম’বাইলৰ বাবে অপ্টিমাইজ নকৰিলে টেব কৰাৰ কাৰ্যটো [৩০০ এমএছ পৰ্যন্ত বিলম্ব](https://developer.chrome.com/docs/performance/insights/viewport) হ’ব পাৰে।"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "ম’বাইলত টিপোঁতে হোৱা বিলম্ব"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "বিকাশকৰ্তাৰ সঁজুলিত AIৰ বিষয়ে জানক"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "AI সহায়ক ইনক’গনিট’ ম’ড বা অতিথি ম’ডত উপলব্ধ নহয়"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "আপুনি নিজৰ Google একাউণ্টটোৰ জৰিয়তে Chromeত ছাইন ইন কৰিলেহে এই সুবিধাটো উপলব্ধ হয়"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "আপোনাৰ ইণ্টাৰনেট সংযোগ পৰীক্ষা কৰক আৰু পুনৰ চেষ্টা কৰক"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "বিকাশকৰ্তাৰ সঁজুলিত নিৰ্বাচিত প্ৰসংগ বস্তু প্ৰকাশ কৰক"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ছেটিঙত AI সহায়ক"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSSৰ শৈলী বুজাৰ ক্ষেত্ৰত সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "শৈলী আৰু নেটৱৰ্কৰ অনুৰোধৰ ক্ষেত্ৰত সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ, কাৰ্যদক্ষতা আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "এই পৃষ্ঠাখনত আপুনি এনিমেশ্বনসমূহ পৰীক্ষা আৰু সংশোধন কৰিব পাৰিব।"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "সেৱাৰ চৰ্তাৱলী"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1}ৰ সৈতে লিংক কৰা হ’ল"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "উৎসৰ মেপৰ সৈতে লিংক কৰা হৈছে: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "অনুমতি দিয়ক"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "কনছ’ল দেখুৱাওক"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "কনছ’ল বাৰ্তাৰ বাবে AI সাৰাংশ দেখুৱাওক"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "কনছ'লত CORS আসোঁৱাহসমূহ দেখুৱাওক"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "এনিমেশ্বন পেনেললৈ পোনপটীয়াকৈ যাওক"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "masonry সম্পাদক খোলক"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "ৰং বাছনি কৰোঁতা খোলক. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} যোগ দিয়ক"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "অৱৰোধ কৰি থকা হৈছে"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "কাষ্টম"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex গৰাকী ভিউৱাৰ"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰাৰ আৰ্হি যোগ দিয়ক"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "আৰ্হি যোগ দিয়ক"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" বুটামত টিপি নেটৱৰ্কৰ বাবে অহা অনুৰোধ অৱৰোধ কৰিবলৈ এটা আৰ্হি যোগ দিয়ক।"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1}ক অৱৰোধ কৰা আছে"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰাটো সক্ষম কৰক"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "বস্তুটো সফলভাৱে মচা হ’ল"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "অধিক জানক"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "কোনো অৱৰোধিত নেটৱৰ্কৰ অনুৰোধ নাই"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "আৰ্হি ইতিমধ্যে আছে।"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "আৰ্হিৰ ইনপুট খালী হ’ব নোৱাৰে।"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "মিল থকা অনুৰোধসমূহ অৱৰোধ কৰিবলৈ পাঠৰ আৰ্হি; ৱাইল্ডকাৰ্ডৰ বাবে * ব্যৱহাৰ কৰক"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "আটাইবোৰ মচক"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "অনুৰোধৰ স্থিতিটো ইয়াত দেখুৱাব নোৱাৰি কাৰণ এইটো জাৰি কৰা পৃষ্ঠাখন অনুৰোধটো প্ৰক্ৰিয়াকৰণ হৈ থকাৰ সময়তে আনল’ড হৈছিল। আপুনি নেটৱৰ্ক লগ কেপচাৰ কৰিবলৈ আৰু অনুৰোধৰ আটাইবোৰ সবিশেষ চাবলৈ chrome://net-export ব্যৱহাৰ কৰিব পাৰে।"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "অনুৰোধ থ্ৰ’টল কৰা হৈছে ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "সংযোগৰ তথ্য"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "অনুৰোধৰ URL অৱৰোধ কৰক"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "অনুৰোধ অৱৰোধ কৰক"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "অৱৰোধ কৰা অনুৰোধ"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "তৃতীয় পক্ষৰ অনুৰোধ"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "অনুৰোধৰ ড’মেইন থ্ৰ’টল কৰক"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "অনুৰোধৰ URL থ্ৰ’টল কৰক"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "থ্ৰ’টলৰ অনুৰোধ"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1}ক অৱৰোধৰ পৰা আঁতৰাওক"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} থ্ৰ’টল কৰা বন্ধ কৰক"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "সংযোগ আইডি"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰাৰ আৰ্হি যোগ দিয়ক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "আৰ্হি যোগ দিয়ক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "নেটৱৰ্কৰ অনুৰোধ থ্ৰ’টলিং বা অৱৰোধ কৰাৰ আৰ্হি যোগ দিয়ক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" বুটামটোত ক্লিক কৰি এটা আৰ্হি যোগ দিয়ক।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} প্ৰভাৱিত হৈছে"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1}ক অৱৰোধ কৰা আছে"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "অগ্ৰাধিকাৰ কমাওক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "অৱৰোধ কৰা আৰু থ্ৰ’টলিং সক্ষম কৰক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰাটো সক্ষম কৰক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "অগ্ৰাধিকাৰ বৃদ্ধি কৰক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "বস্তুটো সফলভাৱে মচা হ’ল"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "অধিক জানক"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "কোনো অৱৰোধিত নেটৱৰ্কৰ অনুৰোধ নাই"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "কোনো অনুৰোধ থ্ৰ’টলিং বা অৱৰোধ কৰাৰ আৰ্হি নাই"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "আৰ্হি ইতিমধ্যে আছে।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "এই আৰ্হিটো URLPattern হিচাপে পাৰ্ছ কৰিব পৰা নগ’ল"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp গোটৰ অনুমতি নাই"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "আৰ্হিৰ ইনপুট খালী হ’ব নোৱাৰে।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "এই আৰ্হিটো \"{PH1}\"ৰ পৰা আপগ্ৰে’ড কৰা হৈছে"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "মিল থকা অনুৰোধসমূহ অৱৰোধ বা থ্ৰ’টল কৰিবলৈ পাঠৰ আৰ্হি; URLPatternৰ ছিণ্টেক্স ব্যৱহাৰ কৰক।"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "মিল থকা অনুৰোধসমূহ অৱৰোধ কৰিবলৈ পাঠৰ আৰ্হি; ৱাইল্ডকাৰ্ডৰ বাবে * ব্যৱহাৰ কৰক"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "সঁহাৰিৰ ‘set-cookie’ হে’ডাৰত থকা ছাৰ্ভাৰৰ পৰা লাভ কৰা কুকি"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorkerলৈ অনুৰোধ"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "অনুৰোধ/সঁহাৰি"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "সম্পদৰ সময়সূচী নিৰ্ধাৰণ কৰা"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "এই উৎসটো অন্য এটা ছাইটৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হে’ডাৰ শিথিল কৰিব পাৰে:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰা বা থ্ৰ’টলিঙৰ আৰ্হি যোগ দিয়ক"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰাৰ আৰ্হি যোগ দিয়ক"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰা"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "অনুৰোধৰ চৰ্তাৱলী"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "নেটৱৰ্ক থ্ৰ’টলিং"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "নেটৱৰ্ক লগ ৰেকৰ্ড কৰক"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰা বা থ্ৰ’টলিঙৰ আটাইবোৰ আৰ্হি আঁতৰাওক"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰা আটাইবোৰ আৰ্হি আঁতৰাওক"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰা দেখুৱাওক"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "অনুৰোধৰ চৰ্তাৱলী দেখুৱাওক"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "সন্ধানৰ সঁজুলি দেখুৱাওক"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "অসংলগ্ন DOM ন’ডৰ দ্বাৰা ৰখা বস্তুসমূহ"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "ইভেণ্ট হেণ্ডলাৰৰ দ্বাৰা ধৰি ৰখা বস্তু"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "আন JS বস্তু"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "অন কৰা থাকিলে"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "এটা পথ দিয়ক"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "এটা অদ্বিতীয় পথ দিয়ক"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "বহিৰ্ভূত হোৱা উপ-ফ’ল্ডাৰ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "স্ক্ৰিপ্টখনৰ URLৰ বাবে এটা স্বাভাৱিক অভিব্যক্তি যোগ দিয়ক"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "চিহ্নবোৰ চাবলৈ এটা JavaScript or CSS ফাইল খোলক"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "অন্তৰ্ভুক্ত ফ’ল্ডাৰত খোলক"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "সমল অ’ভাৰৰাইড কৰক"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ হৈছে এটা উৎসৰ মেপ সৃষ্টি কৰা ফাইল আৰু ইয়াক অ'ভাৰৰাইড কৰিব নোৱাৰি।"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "ইয়াৰ সলনি ‘{PH1}’ অ'ভাৰৰাইড কৰিবনে?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "এই হিচাপে ছেভ কৰক…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ফাইলটো ডিস্কত ছেভ কৰিব পৰা নগ’ল।"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "প্ৰতিচ্ছবি ছেভ কৰক"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "ডিস্কত WASM মডিউল ছেভ কৰিব পৰা নগ’ল। সম্ভৱতঃ মডিউলটো বহুত ডাঙৰ।"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "আটাইবোৰ অ’ভাৰৰাইড দেখুৱাওক"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "কেবি"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "এন’টেশ্বন অন্তৰ্ভুক্ত কৰক"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "স্ক্ৰিপ্টৰ সমল অন্তৰ্ভুক্ত কৰক"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "উৎসৰ সমল অন্তৰ্ভুক্ত কৰক"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "স্ক্ৰিপ্টৰ উৎসৰ মেপ অন্তৰ্ভুক্ত কৰক"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "অতিৰিক্ত তথ্য:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "ল’ড কৰা আটাইবোৰ HTML, CSS আৰু স্ক্ৰিপ্টৰ (এক্সটেনশ্বনক বাদ দি) সম্পূৰ্ণ সমল অন্তৰ্ভুক্ত কৰে।"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "ছেভ কৰক"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "ল’ড কৰা আটাইবোৰ স্ক্ৰিপ্টৰ (এক্সটেনশ্বনক বাদ দি) সম্পূৰ্ণ সমল অন্তৰ্ভুক্ত কৰে।"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzipৰ জৰিয়তে সংকোচন কৰক"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "অনুৰোধৰ হে’ডাৰ অ’ভাৰৰাইড কৰা হয়"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} ({PH2}লৈ থ্ৰ’টল কৰা হৈছে)"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "হয় Chromeৰ পতাকা নহয় ব্ৰাউজাৰৰ কনফিগাৰেশ্বনৰ কাৰণে এই অনুৰোধটোৰ বাবে কুকিসমূহ অৱৰোধ কৰা হৈছে। সমস্যাৰ পেনেলটোত অধিক জানক।"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "সাধাৰণ অভিব্যক্তি ব্যৱহাৰ কৰক"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "এটা বা একাধিক ছেটিং সলনি কৰা হৈছে, যিবোৰ কাৰ্যকৰী হ’বলৈ এবাৰ পুনৰ ল’ড কৰিব লাগিব"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*পুনৰ ল’ড কৰা প্ৰয়োজন"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "পৰীক্ষা কৰা হ’ল"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "কম কনট্ৰাষ্টৰ সমস্যা সমাধান কৰিলৈ পৰামৰ্শ হিচাপে আগবঢ়োৱা ৰং {PH1}ব্যৱহাৰ কৰক"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "এই ৰংটো ফৰ্মেটৰ পৰিসৰৰ সৈতে মিলাবলৈ ক্লিপ কৰা হৈছিল। প্ৰকৃত ফলাফলটো আছিল {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ এটা সংকীৰ্ণ পৰিসৰলৈ ৰূপান্তৰ কৰিলে ৰঙৰ সালসলনি হ’ব"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "পেলেটত যোগ দিয়ক"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "কুকি"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ড’মেইন"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "সম্পাদনা কৰিব পৰা কুকি"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(অস্বচ্ছ)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "পাৰ্টিশ্বন কী ছাইট"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "পথ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "অগ্ৰাধিকাৰ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "সুৰক্ষিত"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "ছেশ্বন"

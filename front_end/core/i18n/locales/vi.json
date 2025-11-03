@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Khối With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Chặn"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Đã huỷ"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Gắn vào bên phải"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools đã nhận được một yêu cầu bên ngoài"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Đặt tiêu điểm vào trang"
   },
@@ -1275,13 +1281,13 @@
     "message": "Hỗ trợ về dữ liệu: Các URL trong SVGUseElement không được dùng nữa và sẽ bị loại bỏ trong tương lai."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() và watchPosition() không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+    "message": "getCurrentPosition() và watchPosition() không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Truy cập https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ để biết thêm chi tiết."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() và watchPosition() không được dùng nữa trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+    "message": "getCurrentPosition() và watchPosition() không còn được dùng trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Truy cập https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ để biết thêm chi tiết."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+    "message": "getUserMedia() không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Truy cập https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ để biết thêm chi tiết."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate không còn hoạt động. Thay vào đó, hãy sử dụng RTCPeerConnectionIceErrorEvent.address hoặc RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI sẽ yêu cầu cấp quyền sử dụng ngay cả khi MIDIOptions không chỉ rõ sysex."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Có thể Notification API không được dùng nữa qua các nguồn gốc không an toàn. Bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+    "message": "Notification API có thể không còn được dùng qua các nguồn gốc không an toàn. Bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Truy cập https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ để biết thêm chi tiết."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Có thể quyền cho Notification API không còn được yêu cầu qua một iframe nhiều nguồn gốc nữa. Thay vào đó, bạn nên cân nhắc việc yêu cầu quyền qua một khung cấp cao hoặc mở một cửa sổ mới."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Các tiện ích phải chọn sử dụng chế độ tách biệt nhiều nguồn gốc đẻ có thể tiếp tục sử dụng SharedArrayBuffer. Xem https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() không được dùng nữa. Thay vào đó, hãy sử dụng writeValueWithResponse() hoặc writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "JSON phản hồi không hỗ trợ UTF-16 trong XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Bạn chỉ dùng được tính năng này khi đang kết nối Internet."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools đã nhận được một yêu cầu bên ngoài"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Lỗi không xác định khi tải tệp"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Độ trễ {PH1}, tải xuống {PH2} (tổng cộng là {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Nhập một đường dẫn"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Nhập một đường dẫn riêng biệt"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Thư mục con bị loại trừ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Không thể tải Blob."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Không thể thêm hệ thống tệp: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Mở trong thư mục chứa"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Ghi đè nội dung"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" là một tệp được ánh xạ nguồn và không ghi đè được."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Ghi đè \"{PH1}\" thay thế?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Lưu dưới dạng…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Không lưu được tệp vào ổ đĩa."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Lưu hình ảnh"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Không thể lưu mô-đun WASM vào ổ đĩa. Lý do rất có thể là vì mô-đun này quá lớn."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Hiển thị tất cả tệp đã ghi đè"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Đã liên kết với {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Đã liên kết với bản đồ nguồn: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem không thể đọc tệp."
@@ -2157,7 +2118,7 @@
     "message": "Ảnh động"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Bố cục thay đổi khi phần tử di chuyển mà không có sự tương tác của người dùng. [Hãy tìm hiểu nguyên nhân bố cục thay đổi](https://web.dev/articles/optimize-cls), chẳng hạn như phần tử được thêm, bị xoá hoặc phông chữ của phần tử thay đổi khi trang tải."
+    "message": "Bố cục thay đổi khi phần tử di chuyển mà không có sự tương tác của người dùng. [Hãy tìm hiểu nguyên nhân bố cục thay đổi](https://developer.chrome.com/docs/performance/insights/cls-culprit), chẳng hạn như phần tử được thêm, bị xoá hoặc phông chữ của phần tử thay đổi khi trang tải."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "iframe được chèn"
@@ -2193,7 +2154,7 @@
     "message": "Thời gian tồn tại (TTL) của bộ nhớ đệm"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Bộ nhớ đệm có thời gian hữu dụng dài có thể giúp tăng tốc số lượt truy cập lặp lại vào trang của bạn. [Tìm hiểu thêm](https://web.dev/uses-long-cache-ttl/)"
+    "message": "Bộ nhớ đệm có thời gian hữu dụng dài có thể giúp tăng tốc số lượt truy cập lặp lại vào trang của bạn. [Tìm hiểu thêm về bộ nhớ đệm](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Không yêu cầu nào có chính sách bộ nhớ đệm không hiệu quả"
@@ -2208,7 +2169,7 @@
     "message": "Sử dụng thời gian hữu dụng của bộ nhớ đệm hiệu quả"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM lớn có thể làm các phép tính về kiểu và quy trình trình bày lại bố cục dài hơn, ảnh hưởng đến tốc độ phản hồi của trang. DOM lớn cũng sẽ làm tăng mức sử dụng bộ nhớ. [Tìm hiểu cách tránh kích thước DOM quá lớn](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "DOM lớn có thể làm các phép tính về kiểu và quy trình trình bày lại bố cục dài hơn, ảnh hưởng đến tốc độ phản hồi của trang. DOM lớn cũng sẽ làm tăng mức sử dụng bộ nhớ. [Tìm hiểu cách tránh kích thước DOM quá lớn](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Thời lượng"
@@ -2244,7 +2205,7 @@
     "message": "Giá trị"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Yêu cầu mạng đầu tiên là quan trọng nhất.  Giảm độ trễ bằng cách tránh dùng đường liên kết chuyển hướng, đảm bảo máy chủ phản hồi nhanh và bật tính năng nén văn bản."
+    "message": "Yêu cầu kết nối mạng đầu tiên là quan trọng nhất. [Giảm độ trễ](https://developer.chrome.com/docs/performance/insights/document-latency) bằng cách tránh dùng đường liên kết chuyển hướng, đảm bảo máy chủ phản hồi nhanh và bật tính năng nén văn bản."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Có chuyển hướng ({PH1} chuyển hướng, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Nguồn"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Xoá các mô-đun JavaScript trùng lặp lớn khỏi gói để giảm số byte mà hoạt động mạng tiêu thụ không cần thiết."
+    "message": "Xoá [các mô-đun JavaScript trùng lặp](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), lớn khỏi gói để giảm số byte không cần thiết mà hoạt động mạng sử dụng."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript trùng lặp"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Hãy cân nhắc đặt [font-display](https://developer.chrome.com/blog/font-display) thành swap hoặc optional để đảm bảo văn bản hiển thị nhất quán. Có thể tối ưu hoá swap hơn nữa để giảm thiểu thay đổi bố cục bằng thuộc tính [ghi đè chỉ số phông chữ](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Hãy cân nhắc đặt [font-display](https://developer.chrome.com/docs/performance/insights/font-display) thành swap hoặc optional để đảm bảo văn bản hiển thị nhất quán. Có thể tối ưu hoá swap hơn nữa để giảm thiểu thay đổi bố cục bằng thuộc tính [ghi đè chỉ số phông chữ](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Phông chữ"
@@ -2304,10 +2265,10 @@
     "message": "(ẩn danh)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Chế độ buộc chỉnh lại luồng diễn ra khi JavaScript truy vấn các thuộc tính hình học (chẳng hạn như offsetWidth) sau khi các kiểu đã bị vô hiệu hoá do trạng thái DOM có thay đổi. Điều này có thể dẫn đến hiệu suất kém. Tìm hiểu thêm về [chế độ buộc chỉnh lại luồng](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) và các biện pháp giảm thiểu có thể áp dụng."
+    "message": "Chế độ buộc chỉnh lại luồng diễn ra khi JavaScript truy vấn các thuộc tính hình học (chẳng hạn như offsetWidth) sau khi các kiểu đã bị vô hiệu hoá do trạng thái DOM có thay đổi. Điều này có thể dẫn đến hiệu suất kém. Tìm hiểu thêm về [chế độ buộc chỉnh lại luồng](https://developer.chrome.com/docs/performance/insights/forced-reflow) và các biện pháp giảm thiểu có thể áp dụng."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Dấu vết ngăn xếp"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Khung lệnh gọi kích hoạt chỉnh lại luồng"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Buộc chỉnh lại luồng"
@@ -2322,7 +2283,7 @@
     "message": "[chưa được phân bổ]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Bắt đầu kiểm tra phần phụ dài nhất. [Có thể giảm thiểu sự chậm trễ](https://web.dev/articles/optimize-inp#optimize_interactions). Để giảm thời gian xử lý, [hãy tối ưu hoá hiệu suất của luồng chính](https://web.dev/articles/optimize-long-tasks), thường là JS."
+    "message": "Bắt đầu tìm hiểu [cách cải thiện INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) bằng cách xem phần phụ dài nhất."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Thời lượng"
@@ -2346,7 +2307,7 @@
     "message": "Bảng chi tiết về INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Việc giảm thời gian tải hình ảnh xuống có thể cải thiện thời gian tải trang và LCP được cảm nhận. [Tìm hiểu thêm về cách tối ưu hoá kích thước hình ảnh](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Việc giảm thời gian tải hình ảnh xuống có thể cải thiện thời gian tải trang và LCP được cảm nhận. [Tìm hiểu thêm về cách tối ưu hoá kích thước hình ảnh](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Ước tính là {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Việc sử dụng định dạng video thay vì GIF có thể cải thiện kích thước tải xuống của nội dung động."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Mỗi [phần phụ có một chiến lược cải thiện cụ thể](https://web.dev/articles/optimize-lcp#lcp-breakdown). Tốt nhất là thời gian hiển thị LCP (Nội dung lớn nhất hiển thị) nên được dùng để tải các tài nguyên thay vì bị chậm trễ."
+    "message": "Mỗi [phần phụ có một chiến lược cải thiện cụ thể](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Tốt nhất là thời gian hiển thị LCP (Nội dung lớn nhất hiển thị) nên được dùng để tải các tài nguyên thay vì bị chậm trễ."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Thời lượng"
@@ -2406,7 +2367,7 @@
     "message": "Bảng chi tiết về LCP (Nội dung lớn nhất hiển thị)"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Tối ưu hoá LCP (Nội dung lớn nhất hiển thị) bằng cách giúp trình duyệt [có thể tìm thấy](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) hình ảnh LCP dựa vào HTML ngay lập tức và [tránh tải từng phần](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Tối ưu hoá LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) (Nội dung lớn nhất hiển thị) bằng cách giúp trình duyệt có thể tìm thấy hình ảnh LCP dựa vào HTML ngay lập tức và tránh tải từng phần"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Đã áp dụng giá trị \"high\" của thuộc tính fetchpriority"
@@ -2439,13 +2400,13 @@
     "message": "Số byte bị lãng phí"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Mã Polyfill và Transform cho phép các trình duyệt cũ sử dụng những tính năng mới của JavaScript. Tuy nhiên, có nhiều tính năng không cần thiết cho trình duyệt hiện đại. Hãy cân nhắc sửa đổi quy trình xây dựng JavaScript để không chuyển đổi mã nguồn các tính năng [Đường cơ sở](https://web.dev/articles/baseline-and-polyfills), trừ phi bạn biết rằng mình phải hỗ trợ các trình duyệt cũ. [Tìm hiểu lý do hầu hết các trang web có thể triển khai mã ES6+ mà không cần chuyển đổi mã nguồn](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Mã Polyfill và Transform cho phép các trình duyệt cũ sử dụng những tính năng mới của JavaScript. Tuy nhiên, có nhiều tính năng không cần thiết cho trình duyệt hiện đại. Hãy cân nhắc sửa đổi quy trình xây dựng JavaScript để không chuyển đổi mã nguồn các tính năng [Đường cơ sở](https://web.dev/articles/baseline-and-polyfills), trừ phi bạn biết rằng mình phải hỗ trợ các trình duyệt cũ. [Tìm hiểu lý do hầu hết các trang web có thể triển khai mã ES6+ mà không cần chuyển đổi mã nguồn](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript cũ"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 và HTTP/3 mang lại nhiều lợi ích hơn HTTP/1.1, chẳng hạn như ghép kênh. [Tìm hiểu thêm về cách sử dụng HTTP hiện đại](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 và HTTP/3 mang lại nhiều lợi ích hơn HTTP/1.1, chẳng hạn như ghép kênh. [Tìm hiểu thêm về cách sử dụng HTTP hiện đại](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Không có yêu cầu nào sử dụng HTTP/1.1 hoặc việc sử dụng HTTP/1.1 hiện tại không mang lại cơ hội tối ưu hoá đáng kể. Yêu cầu HTTP/1.1 chỉ được gắn cờ nếu có từ 6 tài sản tĩnh cùng nguồn gốc trở lên và không được phân phát từ môi trường phát triển cục bộ hoặc nguồn của bên thứ ba."
@@ -2478,7 +2439,7 @@
     "message": "Kết nối trước chưa sử dụng. Hãy kiểm tra để đảm bảo thuộc tính crossorigin được sử dụng đúng cách."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Tránh tạo chuỗi các yêu cầu quan trọng](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) bằng cách giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang."
+    "message": "[Tránh tạo chuỗi các yêu cầu quan trọng](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) bằng cách giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Thêm gợi ý [kết nối trước](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) cho các nguồn gốc quan trọng nhất, nhưng hãy cố gắng sử dụng không quá 4 gợi ý."
@@ -2517,7 +2478,7 @@
     "message": "Tránh tạo chuỗi các yêu cầu quan trọng bằng cách giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Các yêu cầu đang chặn quá trình kết xuất ban đầu của trang, điều này có thể làm trễ LCP. [Việc hoãn hoặc dùng cùng dòng](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) có thể di chuyển các yêu cầu mạng này ra khỏi đường dẫn quan trọng."
+    "message": "Các yêu cầu đang chặn quá trình kết xuất ban đầu của trang, điều này có thể làm trễ LCP. [Việc hoãn hoặc dùng cùng dòng](https://developer.chrome.com/docs/performance/insights/render-blocking) có thể di chuyển các yêu cầu mạng này ra khỏi đường dẫn quan trọng."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Thời lượng"
@@ -2532,7 +2493,7 @@
     "message": "Yêu cầu chặn quá trình hiển thị"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Nếu thấy chi phí của Tính toán lại kiểu vẫn cao, bạn có thể tối ưu hoá bộ chọn để giảm chi phí. [Tối ưu hoá bộ chọn](https://developer.chrome.com/docs/devtools/performance/selector-stats) có tỷ lệ phần trăm đường dẫn chậm và thời gian trôi qua đều cao. Bộ chọn đơn giản hơn, số lượng bộ chọn ít hơn, DOM nhỏ hơn và DOM nông hơn sẽ giúp giảm chi phí khớp."
+    "message": "Nếu thấy chi phí của Tính toán lại kiểu vẫn cao, bạn có thể tối ưu hoá bộ chọn để giảm chi phí. [Tối ưu hoá bộ chọn](https://developer.chrome.com/docs/performance/insights/slow-css-selector) có tỷ lệ phần trăm đường dẫn chậm và thời gian trôi qua đều cao. Bộ chọn đơn giản hơn, số lượng bộ chọn ít hơn, DOM nhỏ hơn và DOM nông hơn sẽ giúp giảm chi phí khớp."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Thời gian đã trôi qua"
@@ -2571,7 +2532,7 @@
     "message": "Kích thước cần chuyển"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Mã của bên thứ ba có thể tác động đáng kể đến hiệu suất tải. [Giảm và trì hoãn việc tải mã của bên thứ ba](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) để ưu tiên nội dung trên trang của bạn."
+    "message": "Mã của bên thứ ba có thể tác động đáng kể đến hiệu suất tải. [Giảm và trì hoãn việc tải mã của bên thứ ba](https://developer.chrome.com/docs/performance/insights/third-parties) để ưu tiên nội dung trên trang của bạn."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Không tìm thấy bên thứ ba nào"
@@ -2580,7 +2541,7 @@
     "message": "bên thứ ba"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Hoạt động tương tác nhấn có thể [bị chậm tới 300 mili giây](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) nếu khung nhìn chưa được tối ưu hoá cho thiết bị di động."
+    "message": "Hoạt động tương tác nhấn có thể [bị chậm tới 300 mili giây](https://developer.chrome.com/docs/performance/insights/viewport) nếu khung nhìn chưa được tối ưu hoá cho thiết bị di động."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Độ trễ khi nhấn trên thiết bị di động"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Tìm hiểu về AI trong Công cụ cho nhà phát triển"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Không dùng được trợ giúp AI ở chế độ ẩn danh hoặc chế độ khách"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Bạn chỉ dùng được tính năng này khi đã đăng nhập vào Chrome bằng Tài khoản Google"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Hãy kiểm tra kết nối Internet rồi thử lại"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Hiện mục ngữ cảnh đã chọn trong Công cụ cho nhà phát triển"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Trợ lý AI trong phần Cài đặt"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Bật {PH1} để được trợ giúp tìm hiểu các kiểu CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Bật {PH1} để được trợ giúp về kiểu và các yêu cầu về mạng"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Bật {PH1} để được trợ giúp về kiểu, yêu cầu mạng và tệp"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Bật {PH1} để được trợ giúp về kiểu, yêu cầu mạng, hiệu suất và tệp"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Trên trang này, bạn có thể kiểm tra và sửa đổi ảnh động."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Đã liên kết với {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Đã liên kết với bản đồ nguồn: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Cho phép"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Hiện bảng điều khiển"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Hiển thị bản tóm tắt do AI tạo cho thông báo trên bảng điều khiển"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Hiện các lỗi CORS trong bảng điều khiển"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Chuyển đến bảng điều khiển Ảnh động"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Mở trình chỉnh sửa masonry"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Mở công cụ chọn màu. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Thêm {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Chặn"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Tùy chỉnh"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Trình xem Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Thêm mẫu chặn yêu cầu kết nối mạng"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Thêm mẫu"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Thêm một hình mở khoá để chặn các yêu cầu mạng bằng cách nhấp vào nút \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "Đã chặn {PH1}"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Bật tính năng chặn yêu cầu kết nối mạng"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Đã xóa thành công mục"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Tìm hiểu thêm"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Không có yêu cầu mạng bị chặn"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Mẫu đã tồn tại."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Không được để trống dữ liệu đầu vào của mẫu."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Mẫu văn bản dùng để chặn các yêu cầu trùng khớp; sử dụng * cho ký tự đại diện"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Xóa tất cả"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Hệ thống không hiển thị được trạng thái của yêu cầu vì trang phát hành yêu cầu đã hủy tải khi yêu cầu đang được thực hiện. Bạn có thể dùng chrome://net-export để thu thập nhật ký mạng và xem tất cả thông tin chi tiết về yêu cầu."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Yêu cầu đã được điều tiết ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Thông tin kết nối"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Chặn URL của yêu cầu"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Chặn yêu cầu"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Các yêu cầu bị chặn"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Các yêu cầu của bên thứ ba"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Điều tiết băng thông của miền yêu cầu"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Điều tiết băng thông của URL yêu cầu"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Điều tiết băng thông của yêu cầu"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Bỏ chặn {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Dừng điều tiết băng thông của {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Mã kết nối"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Thêm mẫu chặn yêu cầu kết nối mạng"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Thêm mẫu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Thêm mẫu điều tiết hoặc chặn yêu cầu kết nối mạng"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Thêm một mẫu bằng cách nhấp vào nút \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} đã bị ảnh hưởng"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "Đã chặn {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Giảm mức độ ưu tiên"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Bật tính năng chặn và điều tiết"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Bật tính năng chặn yêu cầu kết nối mạng"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Tăng mức độ ưu tiên"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Đã xóa thành công mục"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Tìm hiểu thêm"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Không có yêu cầu mạng bị chặn"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Không có mẫu điều tiết hoặc chặn yêu cầu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Mẫu đã tồn tại."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Không thể phân tích cú pháp của mẫu này dưới dạng URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Không cho phép nhóm RegExp"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Không được để trống dữ liệu đầu vào của mẫu."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Mẫu này đã được nâng cấp từ \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Mẫu văn bản dùng để chặn hoặc điều tiết băng thông của các yêu cầu trùng khớp; sử dụng cú pháp URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Mẫu văn bản dùng để chặn các yêu cầu trùng khớp; sử dụng * cho ký tự đại diện"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Các cookie nhận được từ máy chủ trong tiêu đề \"set-cookie\" của phản hồi"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Yêu cầu gửi đến ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Yêu cầu/Phản hồi"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Lên lịch tài nguyên"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Để sử dụng tài nguyên này trên một trang web khác, máy chủ có thể giảm bớt tiêu đề phản hồi của chính sách tài nguyên nhiều nguồn gốc:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Thêm mẫu điều tiết hoặc chặn yêu cầu kết nối mạng"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Thêm mẫu chặn yêu cầu kết nối mạng"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Chặn yêu cầu kết nối mạng"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Các điều kiện của yêu cầu"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "hạn chế băng thông mạng"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Ghi nhật ký mạng"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Xoá tất cả các mẫu điều tiết hoặc chặn yêu cầu kết nối mạng"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Xoá tất cả mẫu chặn yêu cầu kết nối mạng"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Hiển thị công cụ Chặn yêu cầu mạng"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Hiển thị các điều kiện của Yêu cầu"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Hiển thị công cụ tìm kiếm"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Các đối tượng được các nút DOM đã tách giữ lại"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Các đối tượng được Trình xử lý sự kiện giữ lại"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Các đối tượng JS khác"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Khi bật"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Nhập một đường dẫn"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Nhập một đường dẫn riêng biệt"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Thư mục con bị loại trừ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Thêm quy tắc biểu thức chính quy cho URL của tập lệnh"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Mở tệp JavaScript hoặc CSS để xem các biểu tượng"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Mở trong thư mục chứa"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Ghi đè nội dung"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" là một tệp được ánh xạ nguồn và không ghi đè được."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Ghi đè \"{PH1}\" thay thế?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Lưu dưới dạng…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Không lưu được tệp vào ổ đĩa."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Lưu hình ảnh"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Không thể lưu mô-đun WASM vào ổ đĩa. Lý do rất có thể là vì mô-đun này quá lớn."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Hiển thị tất cả tệp đã ghi đè"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Bao gồm chú thích"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Bao gồm nội dung tập lệnh"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Bao gồm nội dung tài nguyên"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Bao gồm bản đồ nguồn của tập lệnh"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Thông tin bổ sung:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Bao gồm toàn bộ nội dung của tất cả HTML, CSS và tập lệnh đã tải (ngoại trừ tiện ích)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Lưu"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Bao gồm toàn bộ nội dung của tất cả tập lệnh đã tải (ngoại trừ tiện ích)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Nén bằng gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Tiêu đề của yêu cầu sẽ bị ghi đè"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (được điều tiết xuống {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Cookie cho yêu cầu này bị chặn do các cờ Chrome hoặc do cấu hình trình duyệt. Tìm hiểu thêm trong bảng điều khiển Vấn đề."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Sử dụng biểu thức chính quy"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Một hoặc nhiều chế độ cài đặt đã thay đổi nên cần tải lại để các thay đổi này có hiệu lực"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Yêu cầu tải lại"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "đã chọn"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Sử dụng màu đề xuất {PH1} để khắc phục sự cố độ tương phản thấp"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Màu này đã được cắt bớt cho phù hợp với gam màu của định dạng. Kết quả thực tế là {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Việc chuyển đổi sang gam màu hẹp sẽ khiến màu sắc thay đổi"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Thêm vào bảng màu"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Miền"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Cookie có thể chỉnh sửa"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(không rõ ràng)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Trang web khoá phân vùng"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Đường dẫn"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Mức độ ưu tiên"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "An toàn"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Phiên"

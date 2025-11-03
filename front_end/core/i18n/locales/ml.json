@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ബ്ലോക്ക്"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "ബ്ലോക്ക് ചെയ്യുക"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "റദ്ദാക്കി"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "വലതുവശത്തേയ്‌ക്ക് ഡോക്ക് ചെയ്യുക"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools എന്നതിന് ഒരു ബാഹ്യ അഭ്യർത്ഥന ലഭിച്ചു"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ഫോക്കസ് പേജ്"
   },
@@ -1275,13 +1281,13 @@
     "message": "ഡാറ്റയ്ക്കുള്ള പിന്തുണ: SVGUseElement എലമെന്റിലെ URL-കൾ അവസാനിപ്പിച്ചു, ഭാവിയിൽ അവ നീക്കം ചെയ്യും."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getCurrentPosition(), watchPosition() എന്നിവ ഇനി പ്രവർത്തിക്കില്ല. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
+    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getCurrentPosition(), watchPosition() എന്നിവ ഇനി പ്രവർത്തിക്കില്ല. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ കാണുക."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getCurrentPosition(), watchPosition() എന്നിവ അവസാനിപ്പിച്ചു. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
+    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getCurrentPosition(), watchPosition() എന്നിവ അവസാനിപ്പിച്ചു. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ കാണുക."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getUserMedia() ഇനി പ്രവർത്തിക്കില്ല. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
+    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getUserMedia() ഇനി പ്രവർത്തിക്കില്ല. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ കാണുക."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate അവസാനിപ്പിച്ചു. പകരം RTCPeerConnectionIceErrorEvent.address അല്ലെങ്കിൽ RTCPeerConnectionIceErrorEvent.port ഉപയോഗിക്കുക."
@@ -1311,7 +1317,7 @@
     "message": "MIDIOptions എന്നതിൽ sysex വ്യക്തമാക്കിയിട്ടില്ലെങ്കിലും, ഉപയോഗത്തിനായി വെബ് MIDI അനുമതി ആവശ്യപ്പെടും."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ നിന്നുള്ള അറിയിപ്പ് API ഇനി ഉപയോഗിക്കാനാകില്ല. നിങ്ങളുടെ ആപ്പ്, HTTPS പോലുള്ള സുരക്ഷിത ഉറവിടത്തിലേക്ക് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
+    "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ നിന്നുള്ള അറിയിപ്പ് API ഇനി ഉപയോഗിക്കാനാകില്ല. നിങ്ങളുടെ ആപ്പ്, HTTPS പോലുള്ള സുരക്ഷിത ഉറവിടത്തിലേക്ക് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ കാണുക."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "അറിയിപ്പ് API-ക്കുള്ള അനുമതി ഇനി ഒരു ക്രോസ് ഒറിജിൻ iframe-ൽ നിന്ന് അഭ്യർത്ഥിക്കാനില്ല. ഒരു ടോപ്പ് ലെവൽ ഫ്രെയിമിൽ നിന്ന് അനുമതി അഭ്യർത്ഥിക്കുന്നതോ പുതിയൊരു വിൻഡോ തുറക്കുന്നതോ പരിഗണിക്കുക."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer തുടർന്നും ഉപയോഗിക്കണമെങ്കിൽ, വിപുലീകരണങ്ങൾക്ക് ക്രോസ് ഒറിജിൻ ഐസൊലേഷൻ തിരഞ്ഞെടുക്കണം. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ കാണുക."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() അവസാനിപ്പിച്ചു. പകരം writeValueWithResponse() അല്ലെങ്കിൽ writeValueWithoutResponse() ഉപയോഗിക്കുക."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest എന്നതിൽ UTF-16-നെ response json പിന്തുണയ്ക്കുന്നില്ല"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "സജീവമായ ഇന്റർനെറ്റ് കണക്ഷനിൽ മാത്രമേ ഈ ഫീച്ചർ ലഭ്യമാകൂ."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools എന്നതിന് ഒരു ബാഹ്യ അഭ്യർത്ഥന ലഭിച്ചു"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ഫയൽ ലോഡ് ചെയ്യുമ്പോൾ അജ്ഞാതമായ പിശകുണ്ടായി"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} പ്രതികരണ സമയം, {PH2} ഡൗൺലോഡ് (ആകെ {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "പാത നൽകുക"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "സവിശേഷമായ പാത നൽകുക"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "ഒഴിവാക്കിയ ഉപ ഫോൾഡറുകൾ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "ബ്ലോബ് ലോഡ് ചെയ്യാനായില്ല."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ഫയൽ സിസ്റ്റം ചേർക്കാനാകുന്നില്ല: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "അടങ്ങിയിരിക്കുന്ന ഫോൾഡറിൽ തുറക്കുക"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ഉള്ളടക്കം അസാധുവാക്കുക"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’, സോഴ്സ് മാപ്പ് ചെയ്ത ഫയലാണ്, അസാധുവാക്കാൻ കഴിയില്ല."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "പകരം ‘{PH1}’ അസാധുവാക്കണോ?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ഡിസ്ക്കിലേക്ക് ഫയൽ സംരക്ഷിക്കാനായില്ല."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "ചിത്രം സംരക്ഷിക്കുക"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "ഡിസ്‌ക്കിലേക്ക് WASM മൊഡ്യൂൾ സംരക്ഷിക്കാനായില്ല. മൊഡ്യൂൾ വളരെ വലുതായതിനാലാകാം ഇത്."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "എല്ലാ അസാധുവാക്കലുകളും കാണിക്കുക"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1} -മായി ലിങ്ക് ചെയ്തിരിക്കുന്നു"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "സോഴ്‌സ് മാപ്പുമായി ലിങ്ക് ചെയ്‌തിരിക്കുന്നു: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem എന്നതിന് ഫയലുകൾ വായിക്കാനാകുന്നില്ല."
@@ -2157,7 +2118,7 @@
     "message": "ആനിമേഷൻ"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "ഏതെങ്കിലും ഉപയോക്തൃ ഇടപെടൽ ഇല്ലാതെ ഘടകങ്ങൾ നീങ്ങുമ്പോൾ ലേഔട്ട് ഷിഫ്റ്റുകൾ സംഭവിക്കുന്നു. ഘടകങ്ങൾ ചേർക്കുന്നതും നീക്കം ചെയ്യുന്നതും പേജ് ലോഡ് ചെയ്യുമ്പോൾ അവയുടെ ഫോണ്ടുകൾ മാറുന്നതും പോലുള്ള [ലേഔട്ട് ഷിഫ്റ്റുകളുടെ കാരണങ്ങൾ അന്വേഷിക്കുക](https://web.dev/articles/optimize-cls)."
+    "message": "ഏതെങ്കിലും ഉപയോക്തൃ ഇടപെടൽ ഇല്ലാതെ ഘടകങ്ങൾ നീങ്ങുമ്പോൾ ലേഔട്ട് ഷിഫ്റ്റുകൾ സംഭവിക്കുന്നു. ഘടകങ്ങൾ ചേർക്കുന്നതും നീക്കം ചെയ്യുന്നതും പേജ് ലോഡ് ചെയ്യുമ്പോൾ അവയുടെ ഫോണ്ടുകൾ മാറുന്നതും പോലുള്ള [ലേഔട്ട് ഷിഫ്റ്റുകളുടെ കാരണങ്ങൾ അന്വേഷിക്കുക](https://developer.chrome.com/docs/performance/insights/cls-culprit)."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "ഇഞ്ചക്റ്റ് ചെയ്ത iframe"
@@ -2193,7 +2154,7 @@
     "message": "കാഷെ TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "ഡാറ്റ കാഷെയിൽ കൂടുതൽ സമയം സൂക്ഷിക്കുന്നത്, നിങ്ങളുടെ പേജിലേക്ക് വേഗത്തിൽ മടങ്ങാൻ ആളുകളെ സഹായിക്കും. [കൂടുതലറിയുക](https://web.dev/uses-long-cache-ttl/)."
+    "message": "ഡാറ്റ കാഷെയിൽ കൂടുതൽ സമയം സൂക്ഷിക്കുന്നത്, നിങ്ങളുടെ പേജിലേക്ക് വേഗത്തിൽ മടങ്ങാൻ ആളുകളെ സഹായിക്കും. [കാഷെ ചെയ്യുന്നതിനെ കുറിച്ച് കൂടുതലറിയുക](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "കാര്യക്ഷമമല്ലാത്ത കാഷെ നയങ്ങളുമായി ബന്ധപ്പെട്ട അഭ്യർത്ഥനകൾ ഒന്നുമില്ല"
@@ -2208,7 +2169,7 @@
     "message": "കാഷെ കാലയളവ് കാര്യക്ഷമമായി ഉപയോഗിക്കുക"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "ഒരു വലിയ DOM-ന് സ്റ്റൈൽ കാൽക്കുലേഷനുകളുടെയും ലേഔട്ട് റീഫ്ലോകളുടെയും ദൈർഘ്യം വർദ്ധിപ്പിക്കാൻ കഴിയും, ഇത് പേജ് റെസ്പോൺസീവ്നെസിനെ സ്വാധീനിക്കും. വലിയ DOM, മെമ്മറി ഉപയോഗം വർദ്ധിപ്പിക്കുകയും ചെയ്യുന്നു. [അമിതമായ DOM വലുപ്പം ഒഴിവാക്കുന്നത് എങ്ങനെയെന്ന് അറിയുക](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "ഒരു വലിയ DOM-ന് സ്റ്റൈൽ കാൽക്കുലേഷനുകളുടെയും ലേഔട്ട് റീഫ്ലോകളുടെയും ദൈർഘ്യം വർദ്ധിപ്പിക്കാൻ കഴിയും, ഇത് പേജ് റെസ്പോൺസീവ്നെസിനെ സ്വാധീനിക്കും. വലിയ DOM, മെമ്മറി ഉപയോഗം വർദ്ധിപ്പിക്കുകയും ചെയ്യുന്നു. [അമിതമായ DOM വലുപ്പം ഒഴിവാക്കുന്നത് എങ്ങനെയെന്ന് അറിയുക](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "സമയ ദൈർഘ്യം"
@@ -2244,7 +2205,7 @@
     "message": "മൂല്യം"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "നിങ്ങളുടെ ആദ്യ നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയാണ് ഏറ്റവും പ്രധാനപ്പെട്ടത്.  റീഡയറക്‌ടുകൾ ഒഴിവാക്കിയും വേഗത്തിലുള്ള സെർവർ പ്രതികരണം ഉറപ്പാക്കിയും ടെക്‌സ്‌റ്റ് കംപ്രഷൻ പ്രവർത്തനക്ഷമമാക്കിയും അതിന്റെ ലാറ്റൻസി കുറയ്ക്കുക."
+    "message": "നിങ്ങളുടെ ആദ്യ നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയാണ് ഏറ്റവും പ്രധാനപ്പെട്ടത്. [റീഡയറക്‌റ്റുകൾ ഒഴിവാക്കിയും](https://developer.chrome.com/docs/performance/insights/document-latency) വേഗത്തിലുള്ള സെർവർ പ്രതികരണം ഉറപ്പാക്കിയും ടെക്‌സ്‌റ്റ് കംപ്രഷൻ പ്രവർത്തനക്ഷമമാക്കിയും അതിന്റെ ലാറ്റൻസി കുറയ്ക്കുക."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "റീഡയറക്റ്റുകൾ ഉണ്ടായിരുന്നു ({PH1} റീഡയറക്റ്റുകൾ, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "ഉറവിടം"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "നെറ്റ്‌വർക്ക് ആക്റ്റിവിറ്റി ഉപയോഗിക്കുന്ന അനാവശ്യ ബൈറ്റുകൾ കുറയ്ക്കുന്നതിന് ബണ്ടിലുകളിൽ നിന്ന് വലുതും ഡ്യൂപ്ലിക്കേറ്റുമായ JavaScript മൊഡ്യൂളുകൾ നീക്കം ചെയ്യുക."
+    "message": "നെറ്റ്‌വർക്ക് ആക്റ്റിവിറ്റി ഉപയോഗിക്കുന്ന അനാവശ്യ ബൈറ്റുകൾ കുറയ്ക്കുന്നതിന് ബണ്ടിലുകളിൽ നിന്ന് വലുതും, [ഡ്യൂപ്ലിക്കേറ്റുമായ JavaScript മൊഡ്യൂളുകൾ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) നീക്കം ചെയ്യുക."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ഡ്യൂപ്ലിക്കേറ്റ് ചെയ്ത JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "ടെക്സ്റ്റ് സ്ഥിരമായി ദൃശ്യമാകുന്നുവെന്ന് ഉറപ്പാക്കാൻ [font-display](https://developer.chrome.com/blog/font-display) എന്നത് swap അല്ലെങ്കിൽ optional ആയി സജ്ജീകരിക്കുന്നത് പരിഗണിക്കുക. ലേഔട്ട് ഷിഫ്‌റ്റുകൾ ലഘൂകരിക്കാൻ [ഫോണ്ട് മെട്രിക്ക് അസാധുവാക്കലുകൾ](https://developer.chrome.com/blog/font-fallbacks) ഉപയോഗിച്ച് swap കൂടുതലായി ഒപ്‌റ്റിമൈസ് ചെയ്യാം."
+    "message": "ടെക്സ്റ്റ് സ്ഥിരമായി ദൃശ്യമാകുന്നുവെന്ന് ഉറപ്പാക്കാൻ [font-display](https://developer.chrome.com/docs/performance/insights/font-display) എന്നത് swap അല്ലെങ്കിൽ optional ആയി സജ്ജീകരിക്കുന്നത് പരിഗണിക്കുക. ലേഔട്ട് ഷിഫ്‌റ്റുകൾ ലഘൂകരിക്കാൻ [ഫോണ്ട് മെട്രിക്ക് അസാധുവാക്കലുകൾ](https://developer.chrome.com/blog/font-fallbacks) ഉപയോഗിച്ച് swap കൂടുതലായി ഒപ്‌റ്റിമൈസ് ചെയ്യാം."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ഫോണ്ട്"
@@ -2304,10 +2265,10 @@
     "message": "(അജ്ഞാതം)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM നിലയിലേക്കുള്ള മാറ്റത്തിലൂടെ സ്റ്റൈലുകൾ അസാധുവാക്കിയതിന് ശേഷം, JavaScript ജ്യാമിതീയ പ്രോപ്പർട്ടികൾ (offsetWidth എന്നത് പോലെ) അന്വേഷിക്കുമ്പോൾ ഒരു നിർബന്ധിത റീഫ്ലോ സംഭവിക്കുന്നു. ഇത് മോശം പ്രകടനത്തിന് കാരണമാകും. [നിർബന്ധിത റീഫ്ലോകൾ](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts), സാധ്യതയുള്ള മിറ്റിഗേഷനുകൾ എന്നിവയെ കുറിച്ച് കൂടുതലറിയുക."
+    "message": "DOM നിലയിലേക്കുള്ള മാറ്റത്തിലൂടെ സ്റ്റൈലുകൾ അസാധുവാക്കിയതിന് ശേഷം, JavaScript ജ്യാമിതീയ പ്രോപ്പർട്ടികൾ (offsetWidth എന്നത് പോലെ) അന്വേഷിക്കുമ്പോൾ ഒരു നിർബന്ധിത റീഫ്ലോ സംഭവിക്കുന്നു. ഇത് മോശം പ്രകടനത്തിന് കാരണമാകും. [നിർബന്ധിത റീഫ്ലോകൾ](https://developer.chrome.com/docs/performance/insights/forced-reflow), സാധ്യതയുള്ള മിറ്റിഗേഷനുകൾ എന്നിവയെ കുറിച്ച് കൂടുതലറിയുക."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "സ്റ്റാക്ക് ട്രെയ്സ്"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "റീഫ്ലോ ട്രിഗർ ചെയ്യുന്ന കോൾ ഫ്രെയിമുകൾ"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "നിർബന്ധിത റീഫ്ലോ"
@@ -2322,7 +2283,7 @@
     "message": "[ആട്രിബ്യൂട്ട് ഇല്ല]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "ദൈർഘ്യമേറിയ ഉപഭാഗം ഉപയോഗിച്ച് അന്വേഷണം ആരംഭിക്കുക. [കാലതാമസം കുറയ്ക്കാം](https://web.dev/articles/optimize-inp#optimize_interactions). പ്രോസസ് ചെയ്യുന്ന കാലയളവ് കുറയ്ക്കാൻ, [പ്രധാന-ത്രെഡ് നിരക്കുകൾ ഒപ്റ്റിമൈസ് ചെയ്യുക](https://web.dev/articles/optimize-long-tasks) (മിക്കപ്പോഴും JS)."
+    "message": "ഏറ്റവും ദൈർഘ്യമേറിയ ഉപഭാഗം നോക്കി [INP എങ്ങനെ മെച്ചപ്പെടുത്താമെന്ന്](https://developer.chrome.com/docs/performance/insights/inp-breakdown) അന്വേഷിക്കാൻ ആരംഭിക്കുക."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "സമയ ദൈർഘ്യം"
@@ -2346,7 +2307,7 @@
     "message": "INP ബ്രേക്ക്ഡൗൺ"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "ചിത്രങ്ങളുടെ ഡൗൺലോഡ് സമയം കുറയ്ക്കുന്നത് പേജിന്റെയും LCP-യുടെയും കണക്കാക്കുന്ന ലോഡ് സമയം മെച്ചപ്പെടുത്താൻ സഹായിക്കും. [ചിത്രത്തിന്റെ വലുപ്പം ഒപ്റ്റിമൈസ് ചെയ്യുന്നതിനെക്കുറിച്ച് കൂടുതലറിയുക](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "ചിത്രങ്ങളുടെ ഡൗൺലോഡ് സമയം കുറയ്ക്കുന്നത് പേജിന്റെയും LCP-യുടെയും കണക്കാക്കുന്ന ലോഡ് സമയം മെച്ചപ്പെടുത്താൻ സഹായിക്കും. [ചിത്രത്തിന്റെ വലുപ്പം ഒപ്റ്റിമൈസ് ചെയ്യുന്നതിനെക്കുറിച്ച് കൂടുതലറിയുക](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (ഏകദേശം {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIF-കൾക്ക് പകരം വീഡിയോ ഫോർമാറ്റുകൾ ഉപയോഗിക്കുന്നത് ആനിമേറ്റ് ചെയ്ത ഉള്ളടക്കത്തിന്റെ ഡൗൺലോഡ് വലുപ്പം മെച്ചപ്പെടുത്തും."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "ഓരോ [ഉപഭാഗത്തിനും പ്രത്യേക മെച്ചപ്പെടുത്തൽ സ്ട്രാറ്റജികളുണ്ട്](https://web.dev/articles/optimize-lcp#lcp-breakdown). LCP സമയത്തിന്റെ ഭൂരിഭാഗവും ഉറവിടങ്ങൾ ലോഡ് ചെയ്യുന്നതിനാണ് ചെലവഴിക്കേണ്ടത്, കാലതാമസം സംബന്ധിച്ചല്ല."
+    "message": "ഓരോ [ഉപഭാഗത്തിനും പ്രത്യേക മെച്ചപ്പെടുത്തൽ സ്ട്രാറ്റജികളുണ്ട്](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). LCP സമയത്തിന്റെ ഭൂരിഭാഗവും ഉറവിടങ്ങൾ ലോഡ് ചെയ്യുന്നതിനാണ് ചെലവഴിക്കേണ്ടത്, കാലതാമസം സംബന്ധിച്ചല്ല."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "സമയ ദൈർഘ്യം"
@@ -2406,7 +2367,7 @@
     "message": "LCP ബ്രേക്ക്ഡൗൺ"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "LCP ചിത്രം HTML-ൽ നിന്ന് പെട്ടെന്ന് [കണ്ടെത്താനാകുന്നത്](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) ആക്കുന്നതിലൂടെയും [ലേസി ലോഡിംഗ് ഒഴിവാക്കുന്നതിലൂടെയും](https://web.dev/articles/lcp-lazy-loading) LCP ഒപ്റ്റിമൈസ് ചെയ്യുക"
+    "message": "LCP ചിത്രം HTML-ൽ നിന്ന് പെട്ടെന്ന് കണ്ടെത്താനാകുന്നത് ആക്കുന്നതിലൂടെയും ലേസി ലോഡിംഗ് ഒഴിവാക്കുന്നതിലൂടെയും [LCP ഒപ്റ്റിമൈസ് ചെയ്യുക](https://developer.chrome.com/docs/performance/insights/lcp-discovery)"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high ബാധകമാക്കി"
@@ -2439,13 +2400,13 @@
     "message": "പാഴാക്കിയ ബൈറ്റുകൾ"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill-കളും ട്രാൻസ്‌ഫോമുകളും, പുതിയ JavaScript ഫീച്ചറുകൾ ഉപയോഗിക്കാൻ പഴയ ബ്രൗസറുകളെ പ്രവർത്തനക്ഷമമാക്കുന്നു. എന്നിരുന്നാലും, ആധുനിക ബ്രൗസറുകൾക്ക് പല ഫീച്ചറുകളും ആവശ്യമില്ല. നിങ്ങൾക്ക് പഴയ ബ്രൗസറുകളെ പിന്തുണയ്ക്കണമെന്നറിയില്ലെങ്കിൽ [ബേസ്‌ലൈൻ](https://web.dev/articles/baseline-and-polyfills) ഫീച്ചറുകൾ ട്രാൻസ്‌പൈൽ ചെയ്യാതിരിക്കാൻ, 'JavaScript ബിൽഡ് പ്രോസസ്' പരിഷ്‌കരിക്കുന്നത് പരിഗണിക്കുക. [എന്തുകൊണ്ടാണ് മിക്ക സൈറ്റുകൾക്കും ട്രാൻസ്‌പൈൽ ചെയ്യാതെ തന്നെ ES6+ കോഡ് വിന്യസിക്കാൻ കഴിയുന്നതെന്ന് മനസ്സിലാക്കുക](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill-കളും ട്രാൻസ്‌ഫോമുകളും, പുതിയ JavaScript ഫീച്ചറുകൾ ഉപയോഗിക്കാൻ പഴയ ബ്രൗസറുകളെ പ്രവർത്തനക്ഷമമാക്കുന്നു. എന്നിരുന്നാലും, ആധുനിക ബ്രൗസറുകൾക്ക് പല ഫീച്ചറുകളും ആവശ്യമില്ല. നിങ്ങൾക്ക് പഴയ ബ്രൗസറുകളെ പിന്തുണയ്ക്കണമെന്നറിയില്ലെങ്കിൽ [ബേസ്‌ലൈൻ](https://web.dev/articles/baseline-and-polyfills) ഫീച്ചറുകൾ ട്രാൻസ്‌പൈൽ ചെയ്യാതിരിക്കാൻ, 'JavaScript ബിൽഡ് പ്രോസസ്' പരിഷ്‌കരിക്കുന്നത് പരിഗണിക്കുക. [എന്തുകൊണ്ടാണ് മിക്ക സൈറ്റുകൾക്കും ട്രാൻസ്‌പൈൽ ചെയ്യാതെ തന്നെ ES6+ കോഡ് വിന്യസിക്കാൻ കഴിയുന്നതെന്ന് മനസ്സിലാക്കുക](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ലെഗസി JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/1.1-നെ അപേക്ഷിച്ച് HTTP/2, HTTP/3 എന്നിവ, മൾട്ടിപ്ലെക്‌സിംഗ് പോലുള്ള നിരവധി ആനുകൂല്യങ്ങൾ ഓഫർ ചെയ്യുന്നു. [മോഡേൺ HTTP ഉപയോഗിക്കുന്നതിനെ കുറിച്ച് കൂടുതലറിയുക](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/1.1-നെ അപേക്ഷിച്ച് HTTP/2, HTTP/3 എന്നിവ, മൾട്ടിപ്ലെക്‌സിംഗ് പോലുള്ള നിരവധി ആനുകൂല്യങ്ങൾ ഓഫർ ചെയ്യുന്നു. [മോഡേൺ HTTP ഉപയോഗിക്കുന്നതിനെ കുറിച്ച് കൂടുതലറിയുക](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "HTTP/1.1 ഉപയോഗിച്ച അഭ്യർത്ഥനകളൊന്നുമില്ല, അല്ലെങ്കിൽ അതിന്റെ നിലവിലെ HTTP/1.1 ഉപയോഗം ഒരു പ്രധാന ഒപ്റ്റിമൈസേഷൻ അവസരം നൽകുന്നില്ല. ആറോ അതിലധികമോ സ്റ്റാറ്റിക് അസറ്റുകൾ ഒരേ ഉറവിടത്തിൽ നിന്ന് ഉത്ഭവിക്കുകയും അവ ഒരു ലോക്കൽ ഡെവലപ്പ്മെന്റ് എൻവയോൺമെന്റിൽ നിന്നോ മൂന്നാം കക്ഷി ഉറവിടത്തിൽ നിന്നോ നൽകാതിരിക്കുന്ന സാഹചര്യങ്ങളിൽ മാത്രമേ HTTP/1.1 അഭ്യർത്ഥനകൾ ഫ്ലാഗ് ചെയ്യപ്പെടൂ."
@@ -2478,7 +2439,7 @@
     "message": "ഉപയോഗിക്കാത്ത \"മുൻകൂട്ടി കണക്റ്റ് ചെയ്ത ലിങ്കുകൾ'. crossorigin ആട്രിബ്യൂട്ട് ശരിയായ രീതിയിൽ ഉപയോഗിക്കുന്നുണ്ടോയെന്ന് പരിശോധിക്കുക."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "അഭ്യർത്ഥന നൽകുന്നത് കുറയ്ക്കുക, ഉറവിടങ്ങളുടെ ഡൗൺലോഡ് വലുപ്പം കുറയ്ക്കുക, പേജ് ലോഡ് ചെയ്യുന്നത് മെച്ചപ്പെടുത്താൻ, അത്യാവശ്യമല്ലാത്ത ഉറവിടങ്ങളുടെ ഡൗൺലോഡ് വൈകിപ്പിക്കൽ എന്നിവ വഴി [നിരവധി നിർണ്ണായക അഭ്യർത്ഥനകൾ തുടർച്ചയായി നൽകുന്നത് ഒഴിവാക്കുക](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)"
+    "message": "അഭ്യർത്ഥന നൽകുന്നത് കുറയ്ക്കുക, ഉറവിടങ്ങളുടെ ഡൗൺലോഡ് വലുപ്പം കുറയ്ക്കുക, പേജ് ലോഡ് ചെയ്യുന്നത് മെച്ചപ്പെടുത്താൻ, അത്യാവശ്യമല്ലാത്ത ഉറവിടങ്ങളുടെ ഡൗൺലോഡ് വൈകിപ്പിക്കൽ എന്നിവ വഴി [നിരവധി നിർണ്ണായക അഭ്യർത്ഥനകൾ തുടർച്ചയായി നൽകുന്നത് ഒഴിവാക്കുക](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "നിങ്ങളുടെ ഏറ്റവും പ്രധാനപ്പെട്ട ഒറിജിനുകളിൽ [പ്രീകണക്റ്റ്](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ഹിന്റുകൾ ചേർക്കുക, എന്നാൽ 4 അല്ലെങ്കിൽ അതിൽ താഴെ മാത്രം ഉപയോഗിക്കാൻ ശ്രമിക്കുക."
@@ -2517,7 +2478,7 @@
     "message": "ചെയിനുകളുടെ ദൈർഘ്യം കുറച്ചുകൊണ്ടോ, റിസോഴ്‌സുകളുടെ ഡൗൺലോഡ് വലുപ്പം കുറച്ചുകൊണ്ടോ, പേജ് ലോഡ് മെച്ചപ്പെടുത്തുന്നതിന് അനാവശ്യ റിസോഴ്‌സുകളുടെ ഡൗൺലോഡ് മാറ്റിവച്ചുകൊണ്ടോ നിർണായക അഭ്യർത്ഥനകളെ ചെയിൻ ചെയ്യുന്നത് ഒഴിവാക്കുക."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "അഭ്യർത്ഥനകൾ പേജിന്റെ പ്രാരംഭ റെൻഡറിനെ തടയുന്നു, ഇത് LCP-യിൽ കാലതാമസം വരുത്തിയേക്കാം. [വൈകിപ്പിക്കൽ അല്ലെങ്കിൽ ഇൻലൈനിംഗിന്](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ഈ നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളെ പ്രധാന പാതയിൽ നിന്ന് നീക്കാൻ കഴിയും."
+    "message": "അഭ്യർത്ഥനകൾ പേജിന്റെ പ്രാരംഭ റെൻഡറിനെ തടയുന്നു, ഇത് LCP-യിൽ കാലതാമസം വരുത്തിയേക്കാം. [വൈകിപ്പിക്കൽ അല്ലെങ്കിൽ ഇൻലൈനിംഗിന്](https://developer.chrome.com/docs/performance/insights/render-blocking) ഈ നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളെ പ്രധാന പാതയിൽ നിന്ന് നീക്കാൻ കഴിയും."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "സമയ ദൈർഘ്യം"
@@ -2532,7 +2493,7 @@
     "message": "റെൻഡർ ബ്ലോക്കിംഗ് അഭ്യർത്ഥനകൾ"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "റീകാൽക്കുലേറ്റ് സ്റ്റൈൽ നിരക്കുകൾ ഉയർന്ന നിലയിൽ തുടരുകയാണെങ്കിൽ, സെലക്ടർ ഒപ്റ്റിമൈസേഷന് അവ കുറയ്ക്കാനാകും. ഉയർന്ന കാലഹരണപ്പെടൽ സമയം, ഉയർന്ന സ്ലോ-പാത്ത് % എന്നിവ ഉപയോഗിച്ച് [സെലക്ടറുകളെ ഒപ്റ്റിമൈസ് ചെയ്യുക](https://developer.chrome.com/docs/devtools/performance/selector-stats). ലളിതമായ സെലക്‌ടറുകൾ, കുറച്ച് സെലക്‌ടറുകൾ, ചെറിയ DOM, ഷാലോ DOM എന്നിവയെല്ലാം പൊരുത്തപ്പെടൽ നിരക്ക് കുറയ്ക്കും."
+    "message": "റീകാൽക്കുലേറ്റ് സ്റ്റൈൽ നിരക്കുകൾ ഉയർന്ന നിലയിൽ തുടരുകയാണെങ്കിൽ, സെലക്ടർ ഒപ്റ്റിമൈസേഷന് അവ കുറയ്ക്കാനാകും. ഉയർന്ന കാലഹരണപ്പെടൽ സമയം, ഉയർന്ന സ്ലോ-പാത്ത് % എന്നിവ ഉപയോഗിച്ച് [സെലക്ടറുകളെ ഒപ്റ്റിമൈസ് ചെയ്യുക](https://developer.chrome.com/docs/performance/insights/slow-css-selector). ലളിതമായ സെലക്‌ടറുകൾ, കുറച്ച് സെലക്‌ടറുകൾ, ചെറിയ DOM, ഷാലോ DOM എന്നിവയെല്ലാം പൊരുത്തപ്പെടൽ നിരക്ക് കുറയ്ക്കും."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "പ്രതികരണ സമയം"
@@ -2571,7 +2532,7 @@
     "message": "ട്രാൻസ്ഫർ വലുപ്പം"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "ലോഡിന്റെ പ്രകടനത്തെ മൂന്നാം കക്ഷി കോഡ് വലിയ രീതിയിൽ സ്വാധീനിക്കും. നിങ്ങളുടെ പേജിന്റെ ഉള്ളടക്കത്തിന് മുൻഗണന നൽകുന്നതിന് [മൂന്നാം കക്ഷി കോഡ് ലോഡ് ചെയ്യുന്നത് കുറയ്ക്കുകയും വൈകിപ്പിക്കുകയും ചെയ്യുക](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "ലോഡിന്റെ പ്രകടനത്തെ മൂന്നാം കക്ഷി കോഡ് വലിയ രീതിയിൽ സ്വാധീനിക്കും. നിങ്ങളുടെ പേജിന്റെ ഉള്ളടക്കത്തിന് മുൻഗണന നൽകുന്നതിന് [മൂന്നാം കക്ഷി കോഡ് ലോഡ് ചെയ്യുന്നത് കുറയ്ക്കുകയും വൈകിപ്പിക്കുകയും ചെയ്യുക](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "മൂന്നാം കക്ഷികളെയൊന്നും കണ്ടെത്തിയില്ല"
@@ -2580,7 +2541,7 @@
     "message": "മൂന്നാം കക്ഷികൾ"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "മൊബൈലിനായി വ്യൂപോർട്ട് ഒപ്റ്റിമൈസ് ചെയ്തിട്ടില്ലെങ്കിൽ, ടാപ്പ് ഇടപഴകലുകൾ [300 ms വരെ വൈകിയേക്കാം](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "മൊബൈലിനായി വ്യൂപോർട്ട് ഒപ്റ്റിമൈസ് ചെയ്തിട്ടില്ലെങ്കിൽ, ടാപ്പ് ഇടപഴകലുകൾ [300 ms വരെ വൈകിയേക്കാം](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "മൊബൈൽ ടാപ്പ് വൈകൽ"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools-ൽ AI-യെ കുറിച്ച് അറിയുക"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "അദൃശ്യ മോഡിലോ അതിഥി മോഡിലോ AI സഹായം ലഭ്യമല്ല"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "നിങ്ങളുടെ Google Account ഉപയോഗിച്ച് Chrome-ൽ സൈൻ ഇൻ ചെയ്യുമ്പോൾ മാത്രമേ ഈ ഫീച്ചർ ലഭ്യമാകൂ."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "DevTools-ൽ തിരഞ്ഞെടുത്ത സന്ദർഭ ഇനം വെളിപ്പെടുത്തുക"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ക്രമീകരണത്തിലെ AI സഹായം"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS സ്‌റ്റൈലുകൾ മനസ്സിലാക്കുന്നതിനുള്ള സഹായം ലഭിക്കുന്നതിന് {PH1} ഓണാക്കുക"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "സ്‌റ്റൈലുകളും നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളും സംബന്ധിച്ച് സഹായം ലഭിക്കുന്നതിന് {PH1} ഓണാക്കുക"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "സ്റ്റൈലുകൾ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ, ഫയലുകൾ എന്നിവ സംബന്ധിച്ച് സഹായം ലഭിക്കുന്നതിന് {PH1} ഓണാക്കുക"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "സ്റ്റൈലുകൾ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ, പ്രകടനം, ഫയലുകൾ എന്നിവ സംബന്ധിച്ച് സഹായം ലഭിക്കുന്നതിന് {PH1} ഓണാക്കുക"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ഈ പേജിൽ, നിങ്ങൾക്ക് ആനിമേഷനുകൾ പരിശോധിക്കുകയും പരിഷ്‌കരിക്കുകയും ചെയ്യാം."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "സേവന നിബന്ധനകൾ"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1} -മായി ലിങ്ക് ചെയ്തിരിക്കുന്നു"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "സോഴ്‌സ് മാപ്പുമായി ലിങ്ക് ചെയ്‌തിരിക്കുന്നു: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "അനുവദിക്കുക"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "കൺസോൾ കാണിക്കുക"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "കൺസോൾ സന്ദേശങ്ങൾക്കുള്ള AI സംഗ്രഹങ്ങൾ കാണിക്കുക"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "കൺസോളിൽ CORS പിശകുകൾ കാണിക്കുക"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "ആനിമേഷനുകളുടെ പാനലിലേക്ക് പോകുക"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "masonry എഡിറ്റർ തുറക്കുക"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "വർണ്ണ പിക്കർ തുറക്കുക. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} ചേർക്കുക"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "ബ്ലോക്കിംഗ്"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "ഇഷ്‍ടാനുസൃതം"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex വ്യൂവർ"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയുടെ ബ്ലോക്ക് ചെയ്യൽ പാറ്റേൺ ചേർക്കുക"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "പാറ്റേൺ ചേർക്കുക"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" ബട്ടണിൽ ക്ലിക്ക് ചെയ്ത് നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യുന്നതിന് ഒരു പാറ്റേൺ ചേർക്കുക."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} ബ്ലോക്ക് ചെയ്‌തു"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ പ്രവർത്തനക്ഷമമാക്കുക"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "ഇനം ഇല്ലാതാക്കി"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "കൂടുതലറിയുക"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "ബ്ലോക്ക് ചെയ്ത നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ ഒന്നുമില്ല"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "പാറ്റേൺ മുമ്പേ നിലവിലുണ്ട്."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "പാറ്റേൺ ഇൻപുട്ട് നൽകാതിരിക്കാനാകില്ല."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "പൊരുത്തപ്പെടുന്ന അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യാനുള്ള ടെക്‌സ്‌റ്റ് പാറ്റേൺ; വെെൽഡ്‌കാർഡിന് * ഉപയോഗിക്കുക"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "എല്ലാം മായ്‌ക്കുക"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "അഭ്യർത്ഥന ഫ്ലൈറ്റിൽ ആയിരിക്കുമ്പോൾ അത് നൽകിയ പേജ് അൺലോഡ് ചെയ്തതിനാൽ അഭ്യർത്ഥനാ നില ഇവിടെ കാണിക്കാനാകില്ല. ഒരു നെറ്റ്‌വർക്ക് ലോഗ് ക്യാപ്‌ചർ ചെയ്യാനും എല്ലാ അഭ്യർത്ഥന വിശദാംശങ്ങളും കാണാനും നിങ്ങൾക്ക് chrome://net-export ഉപയോഗിക്കാം."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "അഭ്യർത്ഥന ത്രോട്ടിൽ ചെയ്തു ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "കണക്ഷൻ വിവരം"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "അഭ്യർത്ഥനാ URL ബ്ലോക്ക് ചെയ്യുക"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യുക"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ബ്ലോക്ക് ചെയ്ത അഭ്യർത്ഥനകൾ"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "മൂന്നാം കക്ഷി അഭ്യർത്ഥനകൾ"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "അഭ്യർത്ഥനാ ഡൊമെയ്‌ൻ ത്രോട്ടിൽ ചെയ്യുക"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "അഭ്യർത്ഥനാ URL ത്രോട്ടിൽ ചെയ്യുക"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "അഭ്യർത്ഥനകൾ ത്രോട്ടിൽ ചെയ്യുക"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} അൺബ്ലോക്ക് ചെയ്യുക"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} ത്രോട്ടിലിംഗ് ചെയ്യുന്നത് നിർത്തുക"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "കണക്ഷൻ ഐഡി"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയുടെ ബ്ലോക്ക് ചെയ്യൽ പാറ്റേൺ ചേർക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "പാറ്റേൺ ചേർക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ത്രോട്ടിലിംഗ് അല്ലെങ്കിൽ ബ്ലോക്ക് ചെയ്യൽ പാറ്റേൺ ചേർക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" ബട്ടണിൽ ക്ലിക്ക് ചെയ്ത് ഒരു പാറ്റേൺ ചേർക്കുക."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} എണ്ണത്തെ ബാധിച്ചു"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} ബ്ലോക്ക് ചെയ്‌തു"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "മുൻഗണന കുറയ്ക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "ബ്ലോക്ക് ചെയ്യലും ത്രോട്ടിലിംഗും പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "മുൻഗണന വർദ്ധിപ്പിക്കുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "ഇനം ഇല്ലാതാക്കി"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "കൂടുതലറിയുക"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "ബ്ലോക്ക് ചെയ്ത നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ ഒന്നുമില്ല"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "അഭ്യർത്ഥനാ ത്രോട്ടിലിംഗോ ബ്ലോക്കിംഗ് പാറ്റേണുകളോ ഇല്ല"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "പാറ്റേൺ മുമ്പേ നിലവിലുണ്ട്."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "ഈ പാറ്റേൺ ഒരു URLPattern ആയി വിശകലനം ചെയ്യാനായില്ല"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp ഗ്രൂപ്പുകൾ അനുവദനീയമല്ല"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "പാറ്റേൺ ഇൻപുട്ട് നൽകാതിരിക്കാനാകില്ല."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "ഈ പാറ്റേൺ \"{PH1}\" എന്നതിൽ നിന്ന് അപ്ഗ്രേഡ് ചെയ്തതാണ്"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "പൊരുത്തപ്പെടുന്ന അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യാനോ ത്രോട്ടിൽ ചെയ്യാനോ ഉള്ള ടെക്സ്റ്റ് പാറ്റേൺ; URLPattern സിന്റാക്സ് ഉപയോഗിക്കുക."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "പൊരുത്തപ്പെടുന്ന അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യാനുള്ള ടെക്‌സ്‌റ്റ് പാറ്റേൺ; വെെൽഡ്‌കാർഡിന് * ഉപയോഗിക്കുക"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "പ്രതികരണത്തിന്റെ 'set-cookie' ഹെഡ്ഡറിലെ സെർവറിൽ നിന്ന് ലഭിച്ച കുക്കികൾ"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker എന്നതിനോട് അഭ്യർത്ഥിക്കുക"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "അഭ്യർത്ഥന/പ്രതികരണം"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "ഉറവിട ഷെഡ്യൂളിംഗ്"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "മറ്റൊരു സൈറ്റിൽ നിന്ന് ഈ ഉറവിടം ഉപയോഗിക്കാൻ, ക്രോസ്-ഒറിജിൻ ഉറവിട നയ പ്രതികരണ ഹെഡറിന് സെർവർ ഇളവ് നൽകിയേക്കാം:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ അല്ലെങ്കിൽ ത്രോട്ടിലിംഗ് പാറ്റേൺ ചേർക്കുക"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയുടെ ബ്ലോക്ക് ചെയ്യൽ പാറ്റേൺ ചേർക്കുക"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "അഭ്യർത്ഥനാ വ്യവസ്ഥകൾ"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "നെറ്റ്‌വർക്ക് ത്രോട്ടിലിംഗ്"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "നെറ്റ്‌വർക്ക് ലോഗ് റെക്കോർഡ് ചെയ്യുക"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനാ ബ്ലോക്കിംഗ് അല്ലെങ്കിൽ ത്രോട്ടിലിംഗ് പാറ്റേണുകളെല്ലാം നീക്കം ചെയ്യുക"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയുടെ ബ്ലോക്ക് ചെയ്യൽ പാറ്റേണുകളെല്ലാം നീക്കം ചെയ്യുക"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ കാണിക്കുക"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "അഭ്യർത്ഥനാ വ്യവസ്ഥകൾ കാണിക്കുക"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Search കാണിക്കുക"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "വേർപെടുത്തിയിരിക്കുന്ന DOM നോഡുകൾ നിലനിർത്തുന്ന ഒബ്‌ജക്റ്റുകൾ"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "ഇവന്റ് ഹാൻഡിലറുകൾ നിലനിർത്തുന്ന ഒബ്‌ജക്റ്റുകൾ"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "മറ്റ് JS ഒബ്‌ജക്റ്റുകൾ"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "ഓണായിരിക്കുമ്പോൾ"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "പാത നൽകുക"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "സവിശേഷമായ പാത നൽകുക"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "ഒഴിവാക്കിയ ഉപ ഫോൾഡറുകൾ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "സ്ക്രിപ്റ്റിന്റെ URL-നായി ഒരു റെഗുലര്‍ എക്‌സ്‌പ്രഷൻ നയം ചേർക്കുക"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "ചിഹ്നങ്ങൾ കാണുന്നതിന് ഒരു JavaScript അല്ലെങ്കിൽ CSS ഫയൽ തുറക്കുക"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "അടങ്ങിയിരിക്കുന്ന ഫോൾഡറിൽ തുറക്കുക"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ഉള്ളടക്കം അസാധുവാക്കുക"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’, സോഴ്സ് മാപ്പ് ചെയ്ത ഫയലാണ്, അസാധുവാക്കാൻ കഴിയില്ല."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "പകരം ‘{PH1}’ അസാധുവാക്കണോ?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ഡിസ്ക്കിലേക്ക് ഫയൽ സംരക്ഷിക്കാനായില്ല."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "ചിത്രം സംരക്ഷിക്കുക"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "ഡിസ്‌ക്കിലേക്ക് WASM മൊഡ്യൂൾ സംരക്ഷിക്കാനായില്ല. മൊഡ്യൂൾ വളരെ വലുതായതിനാലാകാം ഇത്."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "എല്ലാ അസാധുവാക്കലുകളും കാണിക്കുക"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "കുറിപ്പുകൾ ഉൾപ്പെടുത്തുക"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "സ്ക്രിപ്റ്റ് ഉള്ളടക്കം ഉൾപ്പെടുത്തുക"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "ഉറവിട ഉള്ളടക്കം ഉൾപ്പെടുത്തുക"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "സ്ക്രിപ്റ്റ് സോഴ്‌സ് മാപ്പുകൾ ഉൾപ്പെടുത്തുക"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "അധിക വിവരങ്ങൾ:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "ലോഡ് ചെയ്ത എല്ലാ HTML, CSS, സ്ക്രിപ്റ്റുകളുടെയും മുഴുവൻ ഉള്ളടക്കവും ഉൾപ്പെടുന്നു (വിപുലീകരണങ്ങൾ ഒഴികെ)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "സംരക്ഷിക്കുക"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "ലോഡ് ചെയ്ത എല്ലാ സ്ക്രിപ്റ്റുകളുടെയും മുഴുവൻ ഉള്ളടക്കവും ഉൾപ്പെടുന്നു (വിപുലീകരണങ്ങൾ ഒഴികെ)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip ഉപയോഗിച്ച് കംപ്രസ് ചെയ്യുക"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "അഭ്യർത്ഥനാ ഹെഡ്ഡറുകൾ അസാധുവാക്കി"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} ({PH2} എന്നതിലേക്ക് ത്രോട്ടിൽ ചെയ്തു)"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome ഫ്ലാഗുകൾ അല്ലെങ്കിൽ ബ്രൗസർ കോൺഫിഗറേഷൻ കാരണം ഈ അഭ്യർത്ഥനയ്ക്കുള്ള കുക്കികൾ ബ്ലോക്ക് ചെയ്തിരിക്കുന്നു. പ്രശ്നങ്ങളുടെ പാനലിൽ കൂടുതലറിയുക."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "റെഗുലർ എക്‌സ്‌പ്രഷൻ ഉപയോഗിക്കുക"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ഒന്നോ അതിലധികമോ ക്രമീകരണം മാറിയിരിക്കുന്നു, അത് പ്രാബല്യത്തിൽ വരാൻ റീലോഡ് ചെയ്യേണ്ടതുണ്ട്"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*റീലോഡ് ചെയ്യേണ്ടതുണ്ട്"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "പരിശോധിച്ചത്"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "കുറഞ്ഞ ദൃശ്യതീവ്രത പരിഹരിക്കാൻ, നിർദ്ദേശിക്കുന്ന {PH1} കളർ ഉപയോഗിക്കുക"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ഫോർമാറ്റിന്റെ gamut-മായി പൊരുത്തപ്പെടാൻ ഈ നിറം ക്ലിപ്പ് ചെയ്‌തു. യഥാർത്ഥ ഫലം {PH1} ആയിരുന്നു"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ ഇടുങ്ങിയ ഗാമറ്റിലേക്കുള്ള കൺവേർഷൻ, നിറങ്ങളിൽ മാറ്റങ്ങൾക്ക് കാരണമാകും"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "പാലെറ്റിലേക്ക് ചേർക്കുക"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "കുക്കികൾ"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ഡൊമെയ്ൻ"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "എഡിറ്റ് ചെയ്യാവുന്ന കുക്കികൾ"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(അതാര്യം)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "പാർട്ടീഷൻ കീ സൈറ്റ്"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "പാത"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "മുൻഗണന"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "സുരക്ഷിതം"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "സെഷൻ"

@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With блок"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Блоклох"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Тасалсан"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Баруун тийш суурилуулах"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools гаднын хүсэлт хүлээн авсан"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Хуудсыг сонгох"
   },
@@ -1275,13 +1281,13 @@
     "message": "Өгөгдлийн тусламж: SVGUseElement-н URL-уудыг зогсоосон бөгөөд үүнийг ирээдүйд хасна."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() болон watchPosition() цаашид аюултай эх дээр ажиллахаа больсон. Энэ онцлогийг ашиглахын тулд та аппликэйшнээ HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://goo.gle/chrome-insecure-origins дээрээс харна уу."
+    "message": "getCurrentPosition(), watchPosition() цаашид аюултай эх дээр ажиллахаа больсон. Энэ онцлогийг ашиглахын тулд та аппликейшнаа HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ дээрээс харна уу."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() болон watchPosition()-г аюултай эх дээр зогсоосон. Энэ онцлогийг ашиглахын тулд та аппликэйшнээ HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://goo.gle/chrome-insecure-origins дээрээс харна уу."
+    "message": "getCurrentPosition(), watchPosition()-г аюултай эх дээр зогсоосон. Энэ онцлогийг ашиглахын тулд та аппликейшнаа HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ дээрээс харна уу."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() нь цаашид аюултай эх дээр ажиллахаа больсон. Энэ онцлогийг ашиглахын тулд та аппликэйшнээ HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://goo.gle/chrome-insecure-origins дээрээс харна уу."
+    "message": "getUserMedia() нь цаашид аюултай эх дээр ажиллахаа больсон. Энэ онцлогийг ашиглахын тулд та аппликейшнаа HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ дээрээс харна уу."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate-г зогсоосон. Оронд нь RTCPeerConnectionIceErrorEvent.address эсвэл RTCPeerConnectionIceErrorEvent.port-г ашиглана уу."
@@ -1311,7 +1317,7 @@
     "message": "Sysex-г MIDIOptions-д заагаагүй байсан ч веб MIDI ашиглах зөвшөөрөл хүснэ."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Мэдэгдлийн API-г цаашид аюултай эхээс ашиглах боломжгүй болж магадгүй. Та аппликэйшнаа HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://goo.gle/chrome-insecure-origins дээрээс харна уу."
+    "message": "Notification API-г цаашид аюултай эхээс ашиглах боломжгүй болж болзошгүй. Та аппликейшнаа HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ дээрээс харна уу."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Мэдэгдлийн API-н зөвшөөрлийг цаашид хөндлөнгийн эхийн iframe-с хүсэх боломжгүй байж магадгүй. Та оронд нь дээд түвшиний фреймээс зөвшөөрөл хүсэх эсвэл шинэ цонх нээж үзэх талаар бодож үзэх хэрэгтэй."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer-г үргэлжүүлэн ашиглахын тулд өргөтгөлүүд хөндлөнгийн эхийн тусгаарлалтад нэгдэх хэрэгтэй. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/-г харна уу."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue()-г зогсоосон. Оронд нь writeValueWithResponse() эсвэл writeValueWithoutResponse()-г ашиглана уу."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16-г XMLHttpRequest-д хариуны json-с дэмждэггүй"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Энэ онцлог зөвхөн идэвхтэй интернэт холболтоор боломжтой."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools гаднын хүсэлт хүлээн авсан"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Файлыг ачаалах үед тодорхойгүй алдаа гарлаа"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} хоцролт, {PH2} таталт (нийт {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Зам оруулах"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Давтагдашгүй зам оруулна уу"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Хассан дэд фолдерууд"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Хоёртын том объектыг ачаалж чадсангүй."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Файлын систем нэмэх боломжгүй: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Агуулагч фолдерт нээх"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Контентыг дарах"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ нь эх сурвалжийг буулгасан файл бөгөөд дарах боломжгүй."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Оронд нь ‘{PH1}’-г дарах уу?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Дараах хэлбэрээр хадгалах…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Файлыг дискт хадгалж чадсангүй."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Зураг хадгалах"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM модулийг дискт хадгалах боломжгүй. Модуль хэт том байх магадлалтай."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Бүх даралтыг харуулах"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1}-тай холбогдсон"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Эх газрын зурагтай холбосон: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem файл унших боломжгүй."
@@ -2157,7 +2118,7 @@
     "message": "Анимаци"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Хэрэглэгчийн аливаа харилцан үйлдэлгүйгээр элемент шилжихэд бүдүүвчийн шилжилт тохиолддог. Элемент нэмэх, хасах, хуудас ачаалахад тухайн элементийн фонт өөрчлөгдөх зэрэг [бүдүүвчийн шилжилтийн шалтгааныг шалгана уу](https://web.dev/articles/optimize-cls)."
+    "message": "Хэрэглэгчийн аливаа харилцан үйлдэлгүйгээр элемент шилжихэд бүдүүвчийн шилжилт тохиолддог. Элемент нэмэх, хасах, хуудас ачаалахад тухайн элементийн фонт өөрчлөгдөх зэрэг [бүдүүвчийн шилжилтийн шалтгааныг шалгана уу](https://developer.chrome.com/docs/performance/insights/cls-culprit)."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Оруулсан iframe"
@@ -2193,7 +2154,7 @@
     "message": "Завсрын санах ойн TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Өгөгдлийг завсрын санах ойд удаан хугацаанд хадгалах нь таны хуудсанд давтан зочлохыг хурдасгах боломжтой. [Нэмэлт мэдээлэл авна уу](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Өгөгдлийг завсрын санах ойд удаан хугацаанд хадгалах нь таны хуудсанд давтан зочлохыг хурдасгах боломжтой. [Завсрын санах ойд хадгалах талаар нэмэлт мэдээлэл авна уу](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Үр ашиггүй завсрын санах ойн бодлоготой холбоотой ямар ч хүсэлт байхгүй"
@@ -2208,7 +2169,7 @@
     "message": "Завсрын санах ойд өгөгдөл хадгалах үр ашигтай хугацааг ашиглах"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Том DOM нь загварын тооцоолол, бүдүүвчийн дахин тооцооллын үргэлжлэх хугацааг нэмэгдүүлэх боломжтой ба хуудасны хариу үйлдэлт байдалд нөлөөлдөг. Том DOM нь мөн санах ойн ашиглалтыг нэмэгдүүлнэ. [DOM-н хэт том хэмжээнээс хэрхэн зайлсхийхийг мэдэж авна уу](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Том DOM нь загварын тооцоолол, бүдүүвчийн дахин тооцооллын үргэлжлэх хугацааг нэмэгдүүлэх боломжтой ба хуудасны хариу үйлдэлт байдалд нөлөөлдөг. Том DOM нь мөн санах ойн ашиглалтыг нэмэгдүүлнэ. [DOM-н хэт том хэмжээнээс хэрхэн зайлсхийхийг мэдэж авна уу](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Үргэлжлэх хугацаа"
@@ -2244,7 +2205,7 @@
     "message": "Утга"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Таны эхний сүлжээний хүсэлт хамгийн чухал юм.  Дахин чиглүүлэхээс зайлсхийж, серверийн хурдан хариултыг баталгаажуулж, текстийн шахалтыг идэвхжүүлснээр хоцролтыг нь багасгана уу."
+    "message": "Таны эхний сүлжээний хүсэлт хамгийн чухал юм. Дахин чиглүүлэхээс зайлсхийж, серверийн хурдан хариултыг баталгаажуулж, текстийн шахалтыг идэвхжүүлснээр [хоцролтыг нь багасгана уу](https://developer.chrome.com/docs/performance/insights/document-latency)."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Дахин чиглүүлэх хүсэлтүүдтэй ({PH1} дахин чиглүүлэх хүсэлт, +{PH2}) байсан"
@@ -2283,13 +2244,13 @@
     "message": "Эх сурвалж"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Сүлжээний үйл ажиллагаанаас зарцуулах шаардлагагүй байтыг багасгахын тулд том, хуулбар JavaScript-н модулийг багцаас хасна уу."
+    "message": "Сүлжээний үйл ажиллагаанаас зарцуулах шаардлагагүй байтыг багасгахын тулд том, [хуулбар JavaScript-н модулийг](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) багцаас хасна уу."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Давхардсан JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Текстийн тогтвортой харагдахыг баталгаажуулахын тулд [font-display](https://developer.chrome.com/blog/font-display)-г swap эсвэл optional болгон тохируулах талаар бодож үзнэ үү. swap-г [фонтын хэмжигдэхүүний дарах механизмаар](https://developer.chrome.com/blog/font-fallbacks) бүдүүвчийн шилжилтийг багасгахын тулд нэмж оновчлох боломжтой."
+    "message": "Текстийн тогтвортой харагдахыг баталгаажуулахын тулд [font-display](https://developer.chrome.com/docs/performance/insights/font-display)-г swap эсвэл optional болгон тохируулах талаар бодож үзнэ үү. swap-г [фонтын хэмжигдэхүүний дарах механизмаар](https://developer.chrome.com/blog/font-fallbacks) бүдүүвчийн шилжилтийг багасгахын тулд нэмж оновчлох боломжтой."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Фонт"
@@ -2304,10 +2265,10 @@
     "message": "(нэргүй)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Загварыг DOM-н төлөвийн өөрчлөлтөөс хүчингүй болгосны дараа JavaScript геометрийн өмчийг (offsetWidth зэрэг) асуусан үед хүчээр дахин тооцоолдог. Энэ нь гүйцэтгэлийг муу болгож болзошгүй. [Хүчээр дахин тооцоолох](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts), болзошгүй бууруулалтын талаар нэмэлт мэдээлэл авна уу."
+    "message": "Загварыг DOM-н төлөвийн өөрчлөлтөөс хүчингүй болгосны дараа JavaScript геометрийн өмчийг (offsetWidth зэрэг) асуусан үед хүчээр дахин тооцоолдог. Энэ нь гүйцэтгэлийг муу болгож болзошгүй. [Хүчээр дахин тооцоолох](https://developer.chrome.com/docs/performance/insights/forced-reflow), болзошгүй бууруулалтын талаар нэмэлт мэдээлэл авна уу."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Стекийн мөр"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Дахин тооцоолохыг идэвхжүүлдэг дуудлагын фрейм"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Хүчилсэн дахин тооцоолол"
@@ -2322,7 +2283,7 @@
     "message": "[хамааруулахаа больсон]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Хамгийн урт дэд хэсгээр шалгаж эхэлнэ үү. [Саатлыг багасгах боломжтой](https://web.dev/articles/optimize-inp#optimize_interactions). Боловсруулалтын үргэлжлэх хугацааг багасгахын тулд [үндсэн дэд процессын зардлыг оновчилно уу](https://web.dev/articles/optimize-long-tasks). Ихэвчлэн JS байдаг."
+    "message": "Хамгийн урт дэд хэсгийг харж [INP-г хэрхэн сайжруулахыг](https://developer.chrome.com/docs/performance/insights/inp-breakdown) шалгаж эхэлнэ үү."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Үргэлжлэх хугацаа"
@@ -2346,7 +2307,7 @@
     "message": "INP-н задаргаа"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Зургийн татах хугацааг багасгах нь хуудас, LCP-н илрүүлсэн ачаалах хугацааг сайжруулах боломжтой. [Зургийн хэмжээг оновчлох талаар нэмэлт мэдээлэл авах](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Зургийн татах хугацааг багасгах нь хуудас, LCP-н илрүүлсэн ачаалах хугацааг сайжруулах боломжтой. [Зургийн хэмжээг оновчлох талаар нэмэлт мэдээлэл авах](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (тооцоолсон: {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIF-н оронд видеоны форматыг ашиглах нь анимацижуулсан контентын татах хэмжээг сайжруулах боломжтой."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "[Дэд хэсэг бүрд сайжруулалтын тодорхой стратеги бий](https://web.dev/articles/optimize-lcp#lcp-breakdown). Хамгийн тохиромжтой нь LCP-н ихэнх цагийг саатал дотор бус нөөцийг ачаалахад зарцуулах ёстой."
+    "message": "[Дэд хэсэг бүрд сайжруулалтын тодорхой стратеги бий](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Хамгийн тохиромжтой нь LCP-н ихэнх цагийг саатал дотор бус нөөцийг ачаалахад зарцуулах ёстой."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Үргэлжлэх хугацаа"
@@ -2406,7 +2367,7 @@
     "message": "LCP-н задаргаа"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "LCP-н системийн хуулбарыг HTML-с тэр даруй [илрэх](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) болгосноор LCP-г оновчилж, [залхуу ачааллаас зайлсхийгээрэй](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "LCP-н системийн хуулбарыг HTML-с тэр даруй илрэх болгосноор [LCP-г оновчилж](https://developer.chrome.com/docs/performance/insights/lcp-discovery), залхуу ачааллаас зайлсхийгээрэй"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high applied"
@@ -2439,13 +2400,13 @@
     "message": "Үр дүнгүй байт"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill, хувиргалт нь хуучин хөтчид JavaScript-н шинэ онцлогуудыг ашиглах боломжийг олгодог. Гэсэн хэдий ч ихэнх нь орчин үеийн хөтчид шаардлагагүй. Та хуучин хөтчийг дэмжих ёстойг мэдэж байгаагаас бусад тохиолдолд JavaScript-н бүтээх процессоо [Суурь](https://web.dev/articles/baseline-and-polyfills) онцлогуудыг хөрвүүлэхгүй байхаар өөрчлөх талаар бодож үзнэ үү. [Ихэнх сайт яагаад ES6+ кодыг хөрвүүлэхгүйгээр түгээн байрлуулж чаддаг талаар мэдэж авах](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill, хувиргалт нь хуучин хөтчид JavaScript-н шинэ онцлогуудыг ашиглах боломжийг олгодог. Гэсэн хэдий ч ихэнх нь орчин үеийн хөтчид шаардлагагүй. Та хуучин хөтчийг дэмжих ёстойг мэдэж байгаагаас бусад тохиолдолд JavaScript-н бүтээх процессоо [Суурь](https://web.dev/articles/baseline-and-polyfills) онцлогуудыг хөрвүүлэхгүй байхаар өөрчлөх талаар бодож үзнэ үү. [Ихэнх сайт яагаад ES6+ кодыг хөрвүүлэхгүйгээр түгээн байрлуулж чаддаг талаар мэдэж авах](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Уламжлалт JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2, HTTP/3 нь HTTP/1.1-тэй харьцуулахад нягтруулга зэрэг олон үр өгөөжийг санал болгодог. [Орчин үеийн HTTP-г ашиглах талаар нэмэлт мэдээлэл авна уу](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2, HTTP/3 нь HTTP/1.1-тэй харьцуулахад нягтруулга зэрэг олон үр өгөөжийг санал болгодог. [Орчин үеийн HTTP-г ашиглах талаар нэмэлт мэдээлэл авна уу](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Ямар ч хүсэлт HTTP/1.1-ийг ашиглаагүй эсвэл үүний HTTP/1.1-ийн одоогийн ашиглалт оновчлох томоохон боломжийг олгоогүй. HTTP/1.1-ийн хүсэлтийг зөвхөн зургаа эсвэл түүнээс олон статик өмч ижил эхээс эх авсан тохиолдолд дарцагладаг бөгөөд статик өмчийг дотоод хөгжүүлэлтийн орчин, гуравдагч талын эх сурвалжаас олгодоггүй."
@@ -2478,7 +2439,7 @@
     "message": "Ашиглаагүй урьдчилан холболт. crossorigin атрибутыг зохих ёсоор ашигласан эсэхийг шалгана уу."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "Хуудасны ачааллыг сайжруулахын тулд хэлхээний уртыг багасгаж, нөөцийн татах хэмжээг багасгаж, шаардлагагүй нөөцийг татахыг хойшлуулж [чухал хүсэлтийн хэлхээ үүсгэхээс зайлсхийнэ үү](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
+    "message": "Хуудасны ачааллыг сайжруулахын тулд хэлхээний уртыг багасгаж, нөөцийн татах хэмжээг багасгаж, шаардлагагүй нөөцийг татахыг хойшлуулж [чухал хүсэлтийн хэлхээ үүсгэхээс зайлсхийнэ үү](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Хамгийн чухал эхдээ [урьдчилан холбох](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) заавар нэмнэ үү. Гэхдээ 4-өөс ихгүйг ашиглахаар оролдоно уу."
@@ -2517,7 +2478,7 @@
     "message": "Хуудасны ачааллыг сайжруулахын тулд хэлхээний уртыг багасгаж, нөөцийн татах хэмжээг багасгаж, шаардлагагүй нөөцийг татахыг хойшлуулж чухал хүсэлтийн хэлхээ үүсгэхээс зайлсхийнэ үү."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Хүсэлтүүд нь хуудасны анхны рэндэрийг блоклож байгаа бөгөөд энэ нь LCP-г саатуулж магадгүй. [Хойшлуулах эсвэл мөрд оруулах](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) нь эдгээр сүлжээний хүсэлтийг чухал замаас гаргах боломжтой."
+    "message": "Хүсэлтүүд нь хуудасны анхны рэндэрийг блоклож байгаа бөгөөд энэ нь LCP-г саатуулж магадгүй. [Хойшлуулах эсвэл мөрд оруулах](https://developer.chrome.com/docs/performance/insights/render-blocking) нь эдгээр сүлжээний хүсэлтийг чухал замаас гаргах боломжтой."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Үргэлжлэх хугацаа"
@@ -2532,7 +2493,7 @@
     "message": "Рэндэрлэхийг блоклох хүсэлт"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Хэрэв Дахин тооцоолох загварын зардал өндөр хэвээр байвал сонгогчийн оновчлол зардлыг багасгах боломжтой. Их хугацаа зарцуулсан болон удаан замын өндөр %-тай [сонгогчдыг оновчилно уу](https://developer.chrome.com/docs/devtools/performance/selector-stats). Илүү энгийн сонгогч, цөөн сонгогч, жижиг DOM, гүехэн DOM бүгд тааруулах зардлыг багасгана."
+    "message": "Хэрэв Дахин тооцоолох загварын зардал өндөр хэвээр байвал сонгогчийн оновчлол зардлыг багасгах боломжтой. Их хугацаа зарцуулсан болон удаан замын өндөр %-тай [сонгогчдыг оновчилно уу](https://developer.chrome.com/docs/performance/insights/slow-css-selector). Илүү энгийн сонгогч, цөөн сонгогч, жижиг DOM, гүехэн DOM бүгд тааруулах зардлыг багасгана."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Зарцуулсан хугацаа"
@@ -2571,7 +2532,7 @@
     "message": "Шилжүүлэх хэмжээ"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Гуравдагч талын код нь ачааллын гүйцэтгэлд нэлээд нөлөөлөх боломжтой. Хуудасныхаа контентыг чухалчлахын тулд [гуравдагч талын кодыг ачаалах хугацааг багасгаж, хойшлуулна уу](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "Гуравдагч талын код нь ачааллын гүйцэтгэлд нэлээд нөлөөлөх боломжтой. Хуудасныхаа контентыг чухалчлахын тулд [гуравдагч талын кодыг ачаалах хугацааг багасгаж, хойшлуулна уу](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Гуравдагч тал олдсонгүй"
@@ -2580,7 +2541,7 @@
     "message": "Гуравдагч тал"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Хэрэв харагдах хэсгийг гар утсанд зориулж оновчлоогүй бол товшилтын харилцан үйлдлийг [300 хүртэлх мс саатуулж](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) магадгүй."
+    "message": "Хэрэв харагдах хэсгийг гар утсанд зориулж оновчлоогүй бол товшилтын харилцан үйлдлийг [300 хүртэлх мс саатуулж](https://developer.chrome.com/docs/performance/insights/viewport) магадгүй."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Гар утасны товшилтын саатал"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools дахь ХОУ-ы талаар мэдэж авах"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "ХОУ-ы тусламжийг Нууцлалын горим, Зочны горимд ашиглах боломжгүй"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Энэ онцлог нь таныг Google бүртгэлээрээ Chrome-д нэвтэрсэн байхад л боломжтой."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Интернэт холболтоо шалгаад, дахин оролдоно уу"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "DevTools-н сонгосон хам сэдвийн зүйлийг ил болгох"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Тохиргоон дахь ХОУ-ы туслах"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS-н загварыг ойлгоход тусламж авахын тулд {PH1}-г асаана уу"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Загвар болон сүлжээний хүсэлттэй холбоотой тусламж авахын тулд {PH1}-г асаана уу"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Загвар, сүлжээний хүсэлт, файлуудтай холбоотой тусламж авахын тулд {PH1}-г асаана уу"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Загвар, сүлжээний хүсэлт, гүйцэтгэл, файлуудтай холбоотой тусламж авахын тулд {PH1}-г асаана уу"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Та энэ хуудсан дээр анимацийг шалгаж, өөрчлөх боломжтой."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Үйлчилгээний нөхцөл"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1}-тай холбогдсон"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Эх газрын зурагтай холбосон: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Зөвшөөрөх"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Консолыг харуулах"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Консолын мессежид зориулсан ХОУ-ы хураангуйг харуулах"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "CORS-н алдааг консолд харуул"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Анимацийн түр зуурын самбар луу очих"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Өнгө сонгогчийг нээнэ үү. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} нэмэх"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Блоклох"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Захиалгат"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex үзэгч"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Сүлжээний хүсэлт блоклох загвар нэмэх"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Загвар нэмэх"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" товчин дээр товшиж сүлжээний хүсэлтийг блоклох багц шүүлтүүр нэмнэ үү."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1}-г блоклосон"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Сүлжээний хүсэлт блоклохыг идэвхжүүлэх"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Зүйлийг амжилттай устгасан"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Нэмэлт мэдээлэл авах"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Ямар ч блоклосон сүлжээний хүсэлт байхгүй"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Загвар аль хэдийн байна."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Загварын оролт хоосон байх боломжгүй."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Тохирох хүсэлтийг блоклох текстийн загвар; төлөөлөх тэмдэгт *-г ашиглана уу"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Бүгдийг арилгах"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Хүсэлтийг гаргасан хуудас хүсэлтийг илгээж байх үед ачаалахаа больсон тул хүсэлтийн төлөвийг энд харуулах боломжгүй. Та сүлжээний логийг авч, хүсэлтийн бүх дэлгэрэнгүйг харахын тулд chrome://net-export-г ашиглах боломжтой."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Холболтын мэдээлэл"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Хүсэлтийн URL-г блоклох"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Хүсэлтийг блоклох"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Блоклосон хүсэлтүүд"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Гуравдагч талын хүсэлт"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Хүсэлтийн домэйнийг удаашруулах"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Хүсэлтийн URL-г удаашруулах"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Хүсэлтийг удаашруулах"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1}-г блокоос гаргах"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1}-г удаашруулахыг зогсоох"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Холболтын ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Сүлжээний хүсэлт блоклох загвар нэмэх"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Загвар нэмэх"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Сүлжээний хүсэлтийг удаашруулах, блоклох загвар нэмэх"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" товчин дээр товшиж загвар нэмнэ үү."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1}-г блоклосон"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Чухалчлалыг багасгах"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Блоклох, удаашруулахыг идэвхжүүлэх"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Сүлжээний хүсэлт блоклохыг идэвхжүүлэх"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Чухалчлалыг нэмэгдүүлэх"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Зүйлийг амжилттай устгасан"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Нэмэлт мэдээлэл авах"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Ямар ч блоклосон сүлжээний хүсэлт байхгүй"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Хүсэлтийн хурдыг удаашруулах, блоклох загвар байхгүй"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Загвар аль хэдийн байна."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Энэ загварыг URLPattern байдлаар шинжилж чадсангүй"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp бүлгүүдийг зөвшөөрдөггүй"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Загварын оролт хоосон байх боломжгүй."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Энэ загварыг \"{PH1}\"-с сайжруулсан"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Таарах хүсэлтийг блоклох, удаашруулах текстийн загвар; URLPattern синтаксыг ашиглана уу."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Тохирох хүсэлтийг блоклох текстийн загвар; төлөөлөх тэмдэгт *-г ашиглана уу"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Хариуны 'set-cookie' толгой хэсэг дэх серверээс хүлээн авсан күүки"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker-д хүсэлт тавих"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Хүсэлт/Хариу"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Нөөцийн хуваарь тохируулах"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Энэ нөөцийг өөр сайтаас ашиглахын тулд сервер хөндлөнгийн эхийн нөөцийн бодлогын хариуны толгой хэсгийг сулруулж болзошгүй:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Сүлжээний хүсэлтийг блоклох, удаашруулах загвар нэмэх"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Сүлжээний хүсэлт блоклох загвар нэмэх"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Сүлжээний хүсэлтийг блоклох"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Хүсэлтийн нөхцөл"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "сүлжээний удаашруулалт"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Сүлжээний логийг бичих"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Сүлжээний хүсэлтийг блоклох, удаашруулах бүх загварыг хасах"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Сүлжээний хүсэлтийг блоклох бүх загварыг хасах"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Сүлжээний хүсэлт блоклохыг харуулах"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Хүсэлтийн нөхцөлийг харуулах"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Хайлтыг харуулах"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Салгасан DOM-н зангилаанаас хадгалсан объект"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Үйл явдлын хариуцагчийн хадгалсан объект"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Бусад JS объект"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Асаалттай байхад"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Зам оруулах"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Давтагдашгүй зам оруулна уу"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Хассан дэд фолдерууд"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Скриптийн URL-д зориулж энгийн илэрхийллийн дүрэм нэмэх"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Тэмдгийг харахын тулд JavaScript эсвэл CSS файлыг нээх"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Агуулагч фолдерт нээх"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Контентыг дарах"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ нь эх сурвалжийг буулгасан файл бөгөөд дарах боломжгүй."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Оронд нь ‘{PH1}’-г дарах уу?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Дараах хэлбэрээр хадгалах…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Файлыг дискт хадгалж чадсангүй."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Зураг хадгалах"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM модулийг дискт хадгалах боломжгүй. Модуль хэт том байх магадлалтай."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Бүх даралтыг харуулах"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "килобайт"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Тэмдэглэгээ оруулах"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Скриптийн агуулга оруулах"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Скриптийн эх сурвалжийн газрын зургийг оруулах"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Нэмэлт мэдээлэл:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Хадгалах"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Ачаалсан бүх скриптийн бүтэн агуулга багтана (өргөтгөлөөс бусад)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Gzip-р шахах"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Хүсэлтийн толгой хэсгүүдийг дарсан"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome дарцаг эсвэл хөтчийн тохируулгын аль нэгний улмаас энэ хүсэлтэд күүкиг блоклосон. Асуудлуудын түр зуурын самбараас нэмэлт мэдээлэл авна уу."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Энгийн илэрхийлэл ашиглах"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Нэг эсвэл түүнээс олон тохиргоо өөрчлөгдсөн бөгөөд хэрэгжүүлэхийн тулд дахин ачаалахыг шаарддаг"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Дахин ачаалах шаардлагатай"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "тэмдэглэсэн"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Бага ялгарлыг засахын тулд {PH1} зөвлөсөн өнгийг ашиглана уу"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Энэ өнгийг форматын gamut-д тохируулан хайчилж авав. Бодит үр дүн нь {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Нарийн өнгөний хүрээ рүү хөрвүүлэх нь өнгийг шилжихэд хүргэнэ"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Өнгөний нийлүүрт нэмэх"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Күүки"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Домэйн"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Засах боломжтой күүки"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(тодорхой бус)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Хуваалтын түлхүүрийн сайт"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Зам"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Чухал"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Аюулгүй"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Харилцан үйлдэл"

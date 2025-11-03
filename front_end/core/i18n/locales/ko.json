@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With 차단"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "차단"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "취소됨"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "오른쪽에 고정"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools에서 외부 요청을 받았습니다."
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "페이지에 초점 맞추기"
   },
@@ -1275,13 +1281,13 @@
     "message": "데이터 지원: SVGUseElement의 URL은 지원 중단되며 향후 삭제될 예정입니다."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() 및 watchPosition()은 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+    "message": "getCurrentPosition() 및 watchPosition()은 안전하지 않은 출처에서 더 이상 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ 페이지를 참고하세요."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "안전하지 않은 출처의 getCurrentPosition() 및 watchPosition()은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+    "message": "안전하지 않은 출처의 getCurrentPosition() 및 watchPosition()은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ 페이지를 참고하세요."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia()는 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+    "message": "getUserMedia()는 안전하지 않은 출처에서 더 이상 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ 페이지를 참고하세요."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate는 지원 중단되었습니다. 대신 RTCPeerConnectionIceErrorEvent.address 또는 RTCPeerConnectionIceErrorEvent.port를 사용하세요."
@@ -1311,7 +1317,7 @@
     "message": "SysEx가 MIDIOptions에 지정되어 있지 않은 경우에도 사용할 수 있도록 웹 MIDI가 권한을 요청합니다."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "안전하지 않은 출처의 Notification API는 더 이상 사용할 수 없습니다. 애플리케이션을 HTTPS와 같이 안전한 출처로 전환해 보세요. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+    "message": "안전하지 않은 출처의 Notification API는 더 이상 사용할 수 없습니다. 애플리케이션을 HTTPS와 같이 안전한 출처로 전환해 보세요. 자세한 내용은 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ 페이지를 참고하세요."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "더 이상 교차 출처 iframe에서 Notification API 권한을 요청할 수 없습니다. 최상위 프레임에서 권한을 요청하거나 대신 새로운 창을 여는 방법을 고려해야 합니다."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer를 계속 사용하려면 확장 프로그램에서 교차 출처 분리를 사용해야 합니다. 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue()는 지원 중단되었습니다. 대신 writeValueWithResponse() 또는 writeValueWithoutResponse()를 사용하세요."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16은 XMLHttpRequest의 response.json에서 지원되지 않습니다."
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "이 기능은 인터넷에 연결되어 있을 때만 사용할 수 있습니다."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools에서 외부 요청을 받았습니다."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "알 수 없는 파일 로드 오류"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "지연 시간 {PH1}, 다운로드 {PH2}(총 {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "경로를 입력하세요."
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "고유한 경로를 입력하세요."
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "제외된 하위 폴더"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "blob을 로드할 수 없습니다."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "파일 시스템을 추가할 수 없습니다. {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "포함된 폴더에서 열기"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "콘텐츠 재정의"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’은(는) 소스 매핑 파일이며 재정의할 수 없습니다."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "대신 ‘{PH1}’을(를) 재정의하시겠습니까?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "다른 이름으로 저장…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "파일을 디스크에 저장할 수 없습니다."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "이미지 저장"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM 모듈을 디스크에 저장할 수 없습니다. 모듈이 너무 클 가능성이 큽니다."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "모든 재정의 표시"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "{PH1}에 연결됨"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "소스 맵에 연결됨: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem에서 파일을 읽을 수 없습니다."
@@ -2157,7 +2118,7 @@
     "message": "애니메이션"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "레이아웃 변경은 사용자 상호작용 없이 요소가 이동할 때 발생합니다. 페이지가 로드될 때 요소가 추가되거나 삭제되거나 글꼴이 변경되는 등 [레이아웃이 변경되는 이유를 조사](https://web.dev/articles/optimize-cls)하세요."
+    "message": "레이아웃 변경은 사용자 상호작용 없이 요소가 이동할 때 발생합니다. 페이지가 로드될 때 요소가 추가되거나 삭제되거나 글꼴이 변경되는 등 [레이아웃이 변경되는 이유를 조사](https://developer.chrome.com/docs/performance/insights/cls-culprit)하세요."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "삽입된 iframe"
@@ -2193,7 +2154,7 @@
     "message": "캐시 TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "캐시 수명이 길면 페이지를 반복해서 방문하는 속도가 빨라질 수 있습니다. [자세히 알아보기](https://web.dev/uses-long-cache-ttl/)"
+    "message": "캐시 수명이 길면 페이지를 반복해서 방문하는 속도가 빨라질 수 있습니다. [캐싱 자세히 알아보기](https://developer.chrome.com/docs/performance/insights/cache)"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "비효율적인 캐시 정책을 사용하는 요청 없음"
@@ -2208,7 +2169,7 @@
     "message": "효율적인 캐시 수명 사용"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM이 크면 스타일 계산 및 레이아웃 리플로우 시간이 길어져 페이지 반응성에 영향을 미칠 수 있습니다. DOM이 크면 메모리 사용량도 늘어납니다. [과도한 DOM 크기를 방지하는 방법 알아보기](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+    "message": "DOM이 크면 스타일 계산 및 레이아웃 리플로우 시간이 길어져 페이지 반응성에 영향을 미칠 수 있습니다. DOM이 크면 메모리 사용량도 늘어납니다. [과도한 DOM 크기를 방지하는 방법 알아보기](https://developer.chrome.com/docs/performance/insights/dom-size)"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "기간"
@@ -2244,7 +2205,7 @@
     "message": "값"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "첫 번째 네트워크 요청이 가장 중요합니다.  리디렉션을 방지하고 서버 응답 속도를 높이며 텍스트 압축을 사용 설정하여 지연 시간을 줄이세요."
+    "message": "첫 번째 네트워크 요청이 가장 중요합니다. 리디렉션을 방지하고 서버 응답 속도를 높이며 텍스트 압축을 사용 설정하여 [지연 시간을 줄이세요](https://developer.chrome.com/docs/performance/insights/document-latency)."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "리디렉션 있음(리디렉션 {PH1}개, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "소스"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "번들에서 크고 중복된 JavaScript 모듈을 삭제하여 네트워크 활동이 소비하는 불필요한 바이트 수를 줄입니다."
+    "message": "번들에서 크고 [중복된 JavaScript 모듈](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)을 삭제하여 네트워크 활동이 소비하는 불필요한 바이트 수를 줄입니다."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "중복된 JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "[font-display](https://developer.chrome.com/blog/font-display)를 swap 또는 optional로 설정하여 텍스트가 일관되게 표시되도록 하세요. swap은 [글꼴 측정항목 재정의](https://developer.chrome.com/blog/font-fallbacks)를 통해 레이아웃 변화를 완화하도록 추가로 최적화할 수 있습니다."
+    "message": "[font-display](https://developer.chrome.com/docs/performance/insights/font-display)를 swap 또는 optional로 설정하여 텍스트가 일관되게 표시되도록 하세요. swap은 [글꼴 측정항목 재정의](https://developer.chrome.com/blog/font-fallbacks)를 통해 레이아웃 변화를 완화하도록 추가로 최적화할 수 있습니다."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "글꼴"
@@ -2304,10 +2265,10 @@
     "message": "(익명)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM 상태 변경으로 인해 스타일이 무효화된 후 JavaScript가 기하학적 속성(예: offsetWidth)을 쿼리하면 강제 리플로우가 발생합니다. 이로 인해 성능이 저하될 수 있습니다. [강제 리플로우](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) 및 가능한 완화 조치에 관해 자세히 알아보세요."
+    "message": "DOM 상태 변경으로 인해 스타일이 무효화된 후 JavaScript가 기하학적 속성(예: offsetWidth)을 쿼리하면 강제 리플로우가 발생합니다. 이로 인해 성능이 저하될 수 있습니다. [강제 리플로우](https://developer.chrome.com/docs/performance/insights/forced-reflow) 및 가능한 완화 조치에 관해 자세히 알아보세요."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "스택 트레이스"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "리플로우를 트리거하는 호출 프레임"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "강제 실행된 리플로우"
@@ -2322,7 +2283,7 @@
     "message": "[출처 불명]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "가장 긴 하위 파트부터 조사를 시작하세요. [지연을 최소화할 수 있습니다](https://web.dev/articles/optimize-inp#optimize_interactions). 처리 시간을 줄이려면 [기본 스레드 비용(JS인 경우가 많음)을 최적화](https://web.dev/articles/optimize-long-tasks)하세요."
+    "message": "가장 긴 하위 파트를 살펴보고 [INP 개선 방법](https://developer.chrome.com/docs/performance/insights/inp-breakdown)을 조사해 보세요."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "기간"
@@ -2346,7 +2307,7 @@
     "message": "INP 분석"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "이미지의 다운로드 시간을 줄이면 페이지의 체감 로드 시간과 LCP를 개선할 수 있습니다. [이미지 크기 최적화에 대해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "이미지의 다운로드 시간을 줄이면 페이지의 체감 로드 시간과 LCP를 개선할 수 있습니다. [이미지 크기 최적화에 대해 자세히 알아보기](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1}(예상: {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIF 대신 동영상 형식을 사용하면 애니메이션 콘텐츠의 다운로드 크기를 개선할 수 있습니다."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "각 [하위 파트에는 해당 파트에 맞는 개선 전략이 있습니다](https://web.dev/articles/optimize-lcp#lcp-breakdown). 이상적으로는 대부분의 LCP 시간이 지연이 아닌 리소스 로드에 소요되어야 합니다."
+    "message": "각 [하위 파트에는 해당 파트에 맞는 개선 전략이 있습니다](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). 이상적으로는 대부분의 LCP 시간이 지연이 아닌 리소스 로드에 소요되어야 합니다."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "기간"
@@ -2406,7 +2367,7 @@
     "message": "LCP 분석"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "HTML에서 LCP 이미지를 즉시 [검색 가능](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)하게 만들고 [지연 로드](https://web.dev/articles/lcp-lazy-loading)를 방지하여 LCP를 최적화합니다."
+    "message": "HTML에서 LCP 이미지를 즉시 검색할 수 있게 만들고 지연 로드를 방지하여 [LCP를 최적화](https://developer.chrome.com/docs/performance/insights/lcp-discovery)하세요."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high 적용됨"
@@ -2439,13 +2400,13 @@
     "message": "낭비된 바이트"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "폴리필 및 변환을 통해 이전 브라우저에서 새로운 JavaScript 기능을 사용할 수 있습니다. 하지만 최신 브라우저에서는 대부분 필요하지 않습니다. 이전 브라우저를 지원해야 하는 경우가 아니라면 [Baseline](https://web.dev/articles/baseline-and-polyfills) 기능을 트랜스파일하지 않도록 JavaScript 빌드 프로세스를 수정해 보세요. [대부분의 사이트에서 트랜스파일링 없이 ES6+ 코드를 배포할 수 있는 이유 알아보기](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "폴리필 및 변환을 통해 이전 브라우저에서 새로운 JavaScript 기능을 사용할 수 있습니다. 하지만 최신 브라우저에서는 대부분 필요하지 않습니다. 이전 브라우저를 지원해야 하는 경우가 아니라면 [Baseline](https://web.dev/articles/baseline-and-polyfills) 기능을 트랜스파일하지 않도록 JavaScript 빌드 프로세스를 수정해 보세요. [대부분의 사이트에서 트랜스파일링 없이 ES6+ 코드를 배포할 수 있는 이유 알아보기](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "레거시 JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 및 HTTP/3은 HTTP/1.1에 비해 다중화와 같은 많은 이점을 제공합니다. [최신 HTTP 사용에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+    "message": "HTTP/2 및 HTTP/3은 HTTP/1.1에 비해 다중화와 같은 많은 이점을 제공합니다. [최신 HTTP 사용에 관해 자세히 알아보기](https://developer.chrome.com/docs/performance/insights/modern-http)"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "HTTP/1.1을 사용한 요청이 없거나, 현재 HTTP/1.1 사용이 상당한 최적화 기회를 제공하지 않습니다. HTTP/1.1 요청은 6개 이상의 정적 애셋이 동일한 출처에서 발생하고 로컬 개발 환경 또는 서드 파티 소스에서 제공되지 않는 경우에만 플래그가 지정됩니다."
@@ -2478,7 +2439,7 @@
     "message": "미사용 연결입니다. crossorigin 속성이 올바르게 사용되었는지 확인하세요."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "체인의 길이를 줄이고, 리소스의 다운로드 크기를 줄이거나 불필요한 리소스의 다운로드를 지연하여 페이지 로드 속도를 개선하는 방식으로 [크리티컬 요청 체이닝을 방지](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)합니다."
+    "message": "체인의 길이를 줄이고, 리소스의 다운로드 크기를 줄이거나 불필요한 리소스의 다운로드를 지연하여 페이지 로드 속도를 개선하는 방식으로 [크리티컬 요청 체이닝을 방지](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)합니다."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "가장 중요한 출처에 [사전 연결](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 힌트를 추가하되 4개 이하로 사용하세요."
@@ -2517,7 +2478,7 @@
     "message": "체인의 길이를 줄이고, 리소스의 다운로드 크기를 줄이거나 불필요한 리소스의 다운로드를 지연하여 페이지 로드 속도를 개선하는 방식으로 크리티컬 요청 체이닝을 방지합니다."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "요청으로 인해 페이지의 초기 렌더링이 차단되어 LCP가 지연될 수 있습니다. [지연 또는 인라인 처리](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)하면 이러한 네트워크 요청이 주요 경로에서 벗어날 수 있습니다."
+    "message": "요청으로 인해 페이지의 초기 렌더링이 차단되어 LCP가 지연될 수 있습니다. [지연 또는 인라인 처리](https://developer.chrome.com/docs/performance/insights/render-blocking)하면 이러한 네트워크 요청이 주요 경로에서 벗어날 수 있습니다."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "기간"
@@ -2532,7 +2493,7 @@
     "message": "렌더링 차단 요청"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "스타일 재계산 비용이 여전히 높다면 선택자 최적화를 통해 비용을 줄일 수 있습니다. 경과 시간이 길고 느린 경로 비율이 높은 경우 [선택자를 최적화](https://developer.chrome.com/docs/devtools/performance/selector-stats)하세요. 선택자가 간단하고 선택자 수가 적으며 DOM이 작고 DOM이 얕으면 일치 비용이 줄어듭니다."
+    "message": "스타일 재계산 비용이 여전히 높다면 선택자 최적화를 통해 비용을 줄일 수 있습니다. 경과 시간이 길고 느린 경로 비율이 높은 경우 [선택자를 최적화](https://developer.chrome.com/docs/performance/insights/slow-css-selector)하세요. 선택자가 간단하고 선택자 수가 적으며 DOM이 작고 DOM이 얕으면 일치 비용이 줄어듭니다."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "경과 시간"
@@ -2571,7 +2532,7 @@
     "message": "전송 크기"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "서드 파티 코드는 로드 성능에 크게 영향을 미칠 수 있습니다. [서드 파티 코드의 로드를 줄이고 연기](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)하여 페이지 콘텐츠에 우선순위를 지정하세요."
+    "message": "서드 파티 코드는 로드 성능에 크게 영향을 미칠 수 있습니다. [서드 파티 코드의 로드를 줄이고 연기](https://developer.chrome.com/docs/performance/insights/third-parties)하여 페이지 콘텐츠에 우선순위를 지정하세요."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "서드 파티를 찾을 수 없음"
@@ -2580,7 +2541,7 @@
     "message": "서드 파티"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "표시 영역이 모바일에 최적화되어 있지 않으면 탭 상호작용이 [최대 300밀리초 지연될 수 있습니다](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "표시 영역이 모바일에 최적화되어 있지 않으면 탭 상호작용이 [최대 300밀리초 지연될 수 있습니다](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "모바일 탭 지연"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools의 AI에 관해 알아보기"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "시크릿 모드 또는 게스트 모드에서는 AI 어시스턴스를 사용할 수 없습니다."
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "이 기능은 Google 계정으로 Chrome에 로그인한 경우에만 사용할 수 있습니다."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "인터넷 연결 상태를 확인하고 다시 시도해 주세요."
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "DevTools에서 선택한 컨텍스트 항목 표시"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "설정의 AI 지원"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "{PH1}을(를) 사용 설정하여 CSS 스타일을 이해하는 데 도움을 받으세요."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "{PH1}을(를) 사용 설정하여 스타일 및 네트워크 요청에 관한 도움을 받으세요."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "{PH1}를 사용 설정하여 스타일, 네트워크 요청, 파일에 관한 도움을 받으세요"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "{PH1}를 사용 설정하여 스타일, 네트워크 요청, 성능, 파일에 관한 도움을 받으세요."
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "이 페이지에서 애니메이션을 검사하고 수정할 수 있습니다."
@@ -6003,7 +5940,7 @@
     "message": "{PH2}에 대한 {PH1} 배지를 획득했습니다. 배지를 신청하려면 프로필을 만드세요."
   },
   "panels/common/BadgeNotification.ts | starterBadgeAwardMessageSettingDisabled": {
-    "message": "{PH2}에 대한 {PH1} 배지를 획득했습니다. 배지를 신청하려면 배지를 사용 설정하세요."
+    "message": "{PH2}에 대한 {PH1} 배지를 획득했습니다. 배지를 받으려면 배지를 사용 설정하세요."
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "프로필 보기"
@@ -6067,6 +6004,12 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "서비스 약관"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "{PH1}에 연결됨"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "소스 맵에 연결됨: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "허용"
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "콘솔 표시"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "콘솔 메시지의 AI 요약 표시"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "콘솔에 CORS 오류 표시"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "애니메이션 패널로 이동"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "색상 선택 도구를 엽니다. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} 추가"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "차단"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "맞춤"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex 뷰어"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "네트워크 요청 차단 패턴 추가"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "패턴 추가"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "'{PH1}' 버튼을 클릭하여 네트워크 요청을 차단할 패턴을 추가하세요."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} 차단됨"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "네트워크 요청 차단 사용 설정"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "항목 삭제 완료"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "자세히 알아보기"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "차단된 네트워크 요청이 없습니다."
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "패턴이 이미 존재합니다."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "패턴 입력은 비워 둘 수 없습니다."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "일치하는 요청을 차단하기 위한 텍스트 패턴, 와일드 카드로 * 사용"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "모두 지우기"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "요청을 발행한 페이지가 요청 전송 중에 로드 취소되었기 때문에 요청 상태를 여기에 표시할 수 없습니다. chrome://net-export를 사용하여 네트워크 로그를 캡처하고 모든 요청 세부사항을 확인할 수 있습니다."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "연결 정보"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "요청 URL 차단"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "요청 차단"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "차단된 요청"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "타사 요청"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "요청 도메인 제한"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "요청 URL 제한"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "요청 차단"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} 차단 해제"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} 제한 중지"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "연결 ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "네트워크 요청 차단 패턴 추가"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "패턴 추가"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "네트워크 요청 제한 또는 차단 패턴 추가"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" 버튼을 클릭하여 패턴을 추가하세요."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} 차단됨"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "우선순위 낮추기"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "차단 및 제한 사용 설정"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "네트워크 요청 차단 사용 설정"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "우선순위 높이기"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "항목 삭제 완료"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "자세히 알아보기"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "차단된 네트워크 요청이 없습니다."
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "요청 제한 또는 차단 패턴 없음"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "패턴이 이미 존재합니다."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "이 패턴을 URLPattern으로 파싱할 수 없습니다."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp 그룹은 허용되지 않습니다."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "패턴 입력은 비워 둘 수 없습니다."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "이 패턴은 \"{PH1}\"에서 업그레이드되었습니다."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "일치하는 요청을 차단하거나 제한하기 위한 텍스트 패턴입니다. URLPattern 문법을 사용하세요."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "일치하는 요청을 차단하기 위한 텍스트 패턴, 와일드 카드로 * 사용"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "응답의 'set-cookie' 헤더에서 서버로부터 수신한 쿠키"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker에 요청"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "요청/응답"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "리소스 예약"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "다른 사이트에서 가져온 이 리소스를 사용하기 위해 서버에서 교차 출처 리소스 정책 응답 헤더를 완화할 수 있습니다"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "네트워크 요청 차단 또는 제한 패턴 추가"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "네트워크 요청 차단 패턴 추가"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "네트워크 요청 차단"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "요청 조건"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "네트워크 제한"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "네트워크 로그 기록"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "모든 네트워크 요청 차단 또는 제한 패턴 삭제"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "모든 네트워크 요청 차단 패턴 삭제"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "네트워크 요청 차단 표시"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "요청 조건 표시"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "검색 표시"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "분리된 DOM 노드에서 보관된 객체"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "이벤트 핸들러가 유지 중인 객체"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "기타 JS 객체"
@@ -12426,7 +12438,7 @@
     "message": "SCT"
   },
   "panels/security/SecurityPanel.ts | secure": {
-    "message": "보안"
+    "message": "안전함"
   },
   "panels/security/SecurityPanel.ts | secureConnectionSettings": {
     "message": "보안 연결 설정"
@@ -12982,6 +12994,18 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "켜졌을 때"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "경로를 입력하세요."
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "고유한 경로를 입력하세요."
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "제외된 하위 폴더"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "스크립트 URL에 대한 정규 표현식 규칙 추가"
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "자바스크립트 또는 CSS 파일을 열어 기호 확인"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "포함된 폴더에서 열기"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "콘텐츠 재정의"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’은(는) 소스 매핑 파일이며 재정의할 수 없습니다."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "대신 ‘{PH1}’을(를) 재정의하시겠습니까?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "다른 이름으로 저장…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "파일을 디스크에 저장할 수 없습니다."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "이미지 저장"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM 모듈을 디스크에 저장할 수 없습니다. 모듈이 너무 클 가능성이 큽니다."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "모든 재정의 표시"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "KB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "주석 포함"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "스크립트 콘텐츠 포함"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "스크립트 소스 맵 포함"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "추가 정보:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "저장"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "로드된 모든 스크립트(확장 프로그램 제외)의 전체 콘텐츠가 포함됩니다."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip으로 압축"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "요청 헤더가 재정의됨"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome 플래그 또는 브라우저 구성으로 인해 이 요청의 쿠키가 차단되었습니다. 문제 패널에서 자세히 알아보세요."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "정규 표현식 사용"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "하나 이상의 설정이 변경되었으며 변경사항을 적용하려면 새로고침해야 합니다."
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*새로고침이 필요함"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "선택함"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "추천 색상({PH1})을 사용해 저대비 수정"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "이 색상은 형식의 색영역에 따라 고정되었습니다. 실제 결과는 {PH1}입니다."
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ 좁은 색 공간으로 변환하면 색상이 변경됩니다."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "팔레트에 추가"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "쿠키"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "도메인"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "편집 가능한 쿠키"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(불투명)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "파티션 키 사이트"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "경로"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "우선순위"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "보안"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "세션"

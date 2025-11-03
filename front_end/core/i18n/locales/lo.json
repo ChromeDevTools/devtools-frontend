@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "ບລັອກ With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "ບລັອກ"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "ຍົກເລີກແລ້ວ"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ຈອດໄວ້ຂວາ"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools ໄດ້ຮັບຄຳຮ້ອງຂໍຈາກພາຍນອກ"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ໂຟກັສໜ້າ"
   },
@@ -1275,13 +1281,13 @@
     "message": "ການສະໜັບສະໜູນຂໍ້ມູນ: URL ໃນ SVGUseElement ແມ່ນຈະເຊົາຖືກນຳໃຊ້ ແລະ ຈະຖືກລຶບອອກໃນອະນາຄົດ."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "ບໍ່ສາມາດໃຊ້ getCurrentPosition() ແລະ watchPosition() ຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພໄດ້ອີກຕໍ່ໄປ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາການສະຫຼັບແອັບພລິເຄຊັນຂອງທ່ານໄປເປັນຕົ້ນທາງທີ່ປອດໄພ, ເຊັ່ນ: HTTPS. ກະລຸນາອ່ານລາຍລະອຽດເພີ່ມເຕີມໃນ https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() ແລະ watchPosition() ບໍ່ເຮັດວຽກຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພອີກຕໍ່ໄປ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາປ່ຽນແອັບພລິເຄຊັນຂອງທ່ານໄປໃຊ້ຕົ້ນທາງທີ່ປອດໄພ ເຊັ່ນ: HTTPS. ເບິ່ງລາຍລະອຽດເພີ່ມເຕີມໄດ້ຢູ່ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "ສິ້ນສຸດການສະໜັບສະໜຸນ getCurrentPosition() ແລະ watchPosition() ຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພແລ້ວ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາການສະຫຼັບແອັບພລິເຄຊັນຂອງທ່ານໄປເປັນຕົ້ນທາງທີ່ປອດໄພ, ເຊັ່ນ: HTTPS. ກະລຸນາອ່ານລາຍລະອຽດເພີ່ມເຕີມໃນ https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() ແລະ watchPosition() ເຊົານຳໃຊ້ແລ້ວຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາປ່ຽນແອັບພລິເຄຊັນຂອງທ່ານໄປໃຊ້ຕົ້ນທາງທີ່ປອດໄພ ເຊັ່ນ: HTTPS. ເບິ່ງລາຍລະອຽດເພີ່ມເຕີມໄດ້ຢູ່ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "ບໍ່ສາມາດໃຊ້ getUserMedia() ຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພໄດ້ອີກຕໍ່ໄປ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາການສະຫຼັບແອັບພລິເຄຊັນຂອງທ່ານໄປເປັນຕົ້ນທາງທີ່ປອດໄພ, ເຊັ່ນ: HTTPS. ກະລຸນາອ່ານລາຍລະອຽດເພີ່ມເຕີມໃນ https://goo.gle/chrome-insecure-origins."
+    "message": "getUserMedia() ບໍ່ເຮັດວຽກຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພອີກຕໍ່ໄປ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາປ່ຽນແອັບພລິເຄຊັນຂອງທ່ານໄປໃຊ້ຕົ້ນທາງທີ່ປອດໄພ ເຊັ່ນ: HTTPS. ເບິ່ງລາຍລະອຽດເພີ່ມເຕີມໄດ້ຢູ່ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "ເຊົາສະໜັບສະໜຸນ RTCPeerConnectionIceErrorEvent.hostCandidate ແລ້ວ. ກະລຸນາໃຊ້ RTCPeerConnectionIceErrorEvent.address ຫຼື RTCPeerConnectionIceErrorEvent.port ແທນ."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI ຈະຂໍການອະນຸຍາດເພື່ອໃຊ້ເຖິງແມ່ນວ່າຈະບໍ່ໄດ້ລະບຸ sysex ໃນ MIDIOptions ກໍຕາມ."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "ຈະບໍ່ມີການໃຊ້ API ການແຈ້ງເຕືອນຈາກຕົ້ນທາງທີ່ບໍ່ປອດໄພອີກຕໍ່ໄປ. ທ່ານຄວນພິຈາລະນາການສະຫຼັບແອັບພລິເຄຊັນຂອງທ່ານໄປຫາຕົ້ນທາງທີ່ປອດໄພ, ເຊັ່ນ: HTTPS. ກະລຸນາອ່ານລາຍລະອຽດເພີ່ມເຕີມໃນ https://goo.gle/chrome-insecure-origins."
+    "message": "ຕົ້ນທາງທີ່ບໍ່ປອດໄພອາດບໍ່ໃຊ້ API ການແຈ້ງເຕືອນອີກຕໍ່ໄປ. ທ່ານຄວນພິຈາລະນາປ່ຽນແອັບພລິເຄຊັນຂອງທ່ານໄປໃຊ້ຕົ້ນທາງທີ່ປອດໄພ ເຊັ່ນ: HTTPS. ເບິ່ງລາຍລະອຽດເພີ່ມເຕີມໄດ້ຢູ່ https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "ການອະນຸຍາດສຳລັບ API ການແຈ້ງເຕືອນອາດບໍ່ມີການຮ້ອງຂໍຈາກ iframe ຂ້າມຕົ້ນທາງອີກຕໍ່ໄປ. ທ່ານຄວນພິຈາລະນາການຮ້ອງຂໍການອະນຸຍາດຈາກເຟຣມທີ່ຢູ່ລະດັບເທິງສຸດ ຫຼື ເປີດໜ້າຈໍໃໝ່ແທນ."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "ສ່ວນຂະຫຍາຍຄວນເຂົ້າຮ່ວມການແຍກຕົວຂ້າມຕົ້ນທາງເພື່ອສືບຕໍ່ການໃຊ້ SharedArrayBuffer. ກະລຸນາອ່ານ https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() ເຊົານຳໃຊ້ແລ້ວ. ກະລຸນາໃຊ້ writeValueWithResponse() ຫຼື writeValueWithoutResponse() ແທນ."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "ບໍ່ຮອງຮັບ UTF-16 ໂດຍ json ການຕອບກັບໃນ XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "ຄຸນສົມບັດນີ້ໃຊ້ໄດ້ເມື່ອເຊື່ອມຕໍ່ອິນເຕີເນັດຢູ່ເທົ່ານັ້ນ."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools ໄດ້ຮັບຄຳຮ້ອງຂໍຈາກພາຍນອກ"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ເກີດຄວາມຜິດພາດທີ່ບໍ່ຮູ້ຈັກໃນການໂຫຼດໄຟລ໌"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} ເວລາການຕອບສະໜອງ, {PH2} ດາວໂຫຼດ ({PH3} ທັງໝົດ)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "ປ້ອນເສັ້ນທາງ"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "ປ້ອນເສັ້ນທາງສະເພາະ"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "ບໍ່ຮວມໂຟນເດີຍ່ອຍ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "ໂຫຼດ Blob ບໍ່ໄດ້."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ບໍ່ສາມາດເພີ່ມລະບົບໄຟລ໌ໄດ້: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "ເປີດໃນໂຟນເດີທີ່ເກັບ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "ຍົກເລີກເນື້ອຫາ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ ເປັນໄຟລ໌ທີ່ມີແຜນທີ່ຕົ້ນສະບັບ ແລະ ບໍ່ສາມາດຖືກຍົກເລີກໄດ້."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "ຍົກເລີກ ‘{PH1}’ ແທນບໍ?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "ບັນທຶກເປັນ…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "ບັນທຶກໄຟລ໌ໃສ່ດິສກ໌ບໍ່ສຳເລັດ."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "ບັນທຶກຮູບພາບ"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "ບໍ່ສາມາດບັນທຶກໂມດູນ WASM ໃສ່ໃນດິສກ໌ໄດ້. ມີຄວາມເປັນໄປໄດ້ວ່າໂມດູນມີຂະໜາດໃຫຍ່ເກີນໄປ."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "ສະແດງການຍົກເລີກທັງໝົດ"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "ເຊື່ອມໂຍງກັບ {PH1} ແລ້ວ"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "ເຊື່ອມໂຍງກັບແຜນທີ່ແຫຼ່ງທີ່ມາ: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem ບໍ່ສາມາດອ່ານໄຟລ໌ໄດ້."
@@ -2157,7 +2118,7 @@
     "message": "ພາບເຄື່ອນໄຫວ"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "ການປ່ຽນແປງໂຄງຮ່າງເກີດຂຶ້ນເມື່ອອົງປະກອບຕ່າງໆເຄື່ອນທີ່ໂດຍບໍ່ມີການໂຕ້ຕອບຂອງຜູ້ໃຊ້. [ກວດສອບສາເຫດຂອງການປ່ຽນແປງໂຄງຮ່າງ](https://web.dev/articles/optimize-cls) ເຊັ່ນ: ການເພີ່ມ, ການລຶບ ຫຼື ການປ່ຽນຟອນຂອງອົງປະກອບຕ່າງໆເມື່ອໂຫຼດໜ້າເວັບ."
+    "message": "ການປ່ຽນແປງໂຄງຮ່າງເກີດຂຶ້ນເມື່ອອົງປະກອບຕ່າງໆເຄື່ອນທີ່ໂດຍບໍ່ມີການໂຕ້ຕອບຂອງຜູ້ໃຊ້. [ກວດສອບສາເຫດຂອງການປ່ຽນແປງໂຄງຮ່າງ](https://developer.chrome.com/docs/performance/insights/cls-culprit) ເຊັ່ນ: ການເພີ່ມ, ການລຶບ ຫຼື ການປ່ຽນຟອນຂອງອົງປະກອບຕ່າງໆເມື່ອໂຫຼດໜ້າເວັບ."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "ມີການແຊກ iframe"
@@ -2193,7 +2154,7 @@
     "message": "TTL ຂອງແຄສ"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "ອາຍຸການນຳໃຊ້ແຄສທີ່ດົນຊ່ວຍເພີ່ມການເຂົ້າເບິ່ງໜ້າເວັບຂອງທ່ານຊ້ຳໄດ້. [ສຶກສາເພີ່ມເຕີມ](https://web.dev/uses-long-cache-ttl/)."
+    "message": "ອາຍຸການນຳໃຊ້ແຄສທີ່ດົນຊ່ວຍເພີ່ມການເຂົ້າເບິ່ງໜ້າເວັບຂອງທ່ານຊ້ຳໄດ້. [ສຶກສາເພີ່ມເຕີມກ່ຽວກັບການແຄສ](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "ບໍ່ມີຄຳຮ້ອງຂໍທີ່ມີນະໂຍບາຍແຄສທີ່ບໍ່ມີປະສິດທິພາບ"
@@ -2208,7 +2169,7 @@
     "message": "ໃຊ້ອາຍຸການນຳໃຊ້ແຄສທີ່ມີປະສິດທິພາບ"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM ທີ່ມີຂະໜາດໃຫຍ່ຈະໃຊ້ເວລາດົນຂຶ້ນໃນການຄິດໄລ່ຮູບແບບ ແລະ ຄຳນວນຕຳແໜ່ງໂຄງຮ່າງໃໝ່, ເຊິ່ງສົ່ງຜົນຕໍ່ການຕອບສະໜອງຂອງໜ້າເວັບ. ນອກຈາກນີ້, DOM ທີ່ມີຂະໜາດໃຫຍ່ຈະໃຊ້ໜ່ວຍຄວາມຈຳເພີ່ມຂຶ້ນນຳ. [ສຶກສາວິທີຫຼີກເວັ້ນ DOM ທີ່ມີຂະໜາດໃຫຍ່ເກີນໄປ](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "DOM ທີ່ມີຂະໜາດໃຫຍ່ຈະໃຊ້ເວລາດົນຂຶ້ນໃນການຄິດໄລ່ຮູບແບບ ແລະ ຄຳນວນຕຳແໜ່ງໂຄງຮ່າງໃໝ່, ເຊິ່ງສົ່ງຜົນຕໍ່ການຕອບສະໜອງຂອງໜ້າເວັບ. ນອກຈາກນີ້, DOM ທີ່ມີຂະໜາດໃຫຍ່ຈະໃຊ້ໜ່ວຍຄວາມຈຳເພີ່ມຂຶ້ນນຳ. [ສຶກສາວິທີຫຼີກເວັ້ນ DOM ທີ່ມີຂະໜາດໃຫຍ່ເກີນໄປ](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "ໄລຍະເວລາ"
@@ -2244,7 +2205,7 @@
     "message": "ຄ່າ"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "ຄຳຮ້ອງຂໍເຄືອຂ່າຍເທື່ອທຳອິດຂອງທ່ານເປັນສິ່ງສຳຄັນທີ່ສຸດ.  ຫຼຸດເວລາໃນການຕອບສະໜອງໂດຍຫຼີກເວັ້ນການປ່ຽນເສັ້ນທາງ, ກວດສອບການຕອບກັບຂອງເຊີບເວີທີ່ວ່ອງໄວ ແລະ ເປີດການນຳໃຊ້ການບີບອັດຂໍ້ຄວາມ."
+    "message": "ຄຳຮ້ອງຂໍເຄືອຂ່າຍເທື່ອທຳອິດຂອງທ່ານເປັນສິ່ງສຳຄັນທີ່ສຸດ. [ຫຼຸດເວລາໃນການຕອບສະໜອງ](https://developer.chrome.com/docs/performance/insights/document-latency) ໂດຍຫຼີກເວັ້ນການປ່ຽນເສັ້ນທາງ, ກວດສອບການຕອບກັບຂອງເຊີບເວີທີ່ວ່ອງໄວ ແລະ ເປີດໃຊ້ການບີບອັດຂໍ້ຄວາມ."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "ມີການປ່ຽນເສັ້ນທາງ (ປ່ຽນເສັ້ນທາງ {PH1}, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "ແຫຼ່ງທີ່ມາ"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "ລຶບໂມດູນ JavaScript ຂະໜາດໃຫຍ່ທີ່ຊ້ຳກັນອອກຈາກແພັກເກດເພື່ອຫຼຸດຈຳນວນໄບຕ໌ທີ່ບໍ່ຈຳເປັນທີ່ການເຄື່ອນໄຫວເຄືອຂ່າຍໃຊ້."
+    "message": "ລຶບ [ໂມດູນ JavaScript ທີ່ຊ້ຳກັນ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ແລະ ຂະໜາດໃຫຍ່ອອກຈາກແພັກເກດເພື່ອຫຼຸດຈຳນວນໄບຕ໌ທີ່ບໍ່ຈຳເປັນທີ່ການເຄື່ອນໄຫວເຄືອຂ່າຍໃຊ້."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript ທີ່ຊ້ຳກັນ"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "ພິຈາລະນາການຕັ້ງຄ່າ [font-display](https://developer.chrome.com/blog/font-display) ເປັນ swap ຫຼື optional ເພື່ອໃຫ້ແນ່ໃຈວ່າຂໍ້ຄວາມສາມາດເບິ່ງເຫັນຢ່າງສະໝ່ຳສະເໝີ. swap ສາມາດເພີ່ມປະສິດທິພາບເພີ່ມເຕີມເພື່ອຫຼຸດການປ່ຽນແປງໂຄງຮ່າງດ້ວຍ [ການຍົກເລີກການວັດແທກແບບຟອນ](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "ພິຈາລະນາການຕັ້ງຄ່າ [font-display](https://developer.chrome.com/docs/performance/insights/font-display) ເປັນ swap ຫຼື optional ເພື່ອໃຫ້ແນ່ໃຈວ່າຂໍ້ຄວາມສາມາດເບິ່ງເຫັນຢ່າງສະໝ່ຳສະເໝີ. swap ສາມາດເພີ່ມປະສິດທິພາບເພີ່ມເຕີມເພື່ອຫຼຸດການປ່ຽນແປງໂຄງຮ່າງດ້ວຍ [ການຍົກເລີກການວັດແທກແບບຟອນ](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ຟອນ"
@@ -2304,10 +2265,10 @@
     "message": "(ບໍ່ລະບຸຕົວຕົນ)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "ການບັງຄັບໃຫ້ຄຳນວນຕຳແໜ່ງໃໝ່ເກີດຂຶ້ນເມື່ອ JavaScript ຊອກຫາຄຸນສົມບັດທາງເລຂາຄະນິດ (ເຊັ່ນ: offsetWidth) ຫຼັງຈາກທີ່ຮູບແບບບໍ່ຖືກຕ້ອງເນື່ອງຈາກການປ່ຽນແປງສະຖານະ DOM. ເຊິ່ງອາດສົ່ງຜົນໃຫ້ປະສິດທິພາບບໍ່ດີ. ສຶກສາເພີ່ມເຕີມກ່ຽວກັບ [ການບັງຄັບໃຫ້ຄຳນວນຕຳແໜ່ງໃໝ່](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) ແລະ ການບັນເທົາຜົນກະທົບທີ່ອາດເກີດຂຶ້ນ."
+    "message": "ການບັງຄັບໃຫ້ຄຳນວນຕຳແໜ່ງໃໝ່ເກີດຂຶ້ນເມື່ອ JavaScript ຊອກຫາຄຸນສົມບັດທາງເລຂາຄະນິດ (ເຊັ່ນ: offsetWidth) ຫຼັງຈາກທີ່ຮູບແບບບໍ່ຖືກຕ້ອງເນື່ອງຈາກການປ່ຽນແປງສະຖານະ DOM. ເຊິ່ງອາດສົ່ງຜົນໃຫ້ປະສິດທິພາບບໍ່ດີ. ສຶກສາເພີ່ມເຕີມກ່ຽວກັບ [ການບັງຄັບໃຫ້ຄຳນວນຕຳແໜ່ງໃໝ່](https://developer.chrome.com/docs/performance/insights/forced-reflow) ແລະ ການບັນເທົາຜົນກະທົບທີ່ອາດເກີດຂຶ້ນ."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "ການຕິດຕາມແບບຊ້ອນກັນ"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "ເຟຣມການໂທທີ່ກະຕຸ້ນການຄຳນວນຕຳແໜ່ງໃໝ່"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "ການບັງຄັບໃຫ້ຄຳນວນຕຳແໜ່ງໃໝ່"
@@ -2322,7 +2283,7 @@
     "message": "[ບໍ່ມີຄຸນສົມບັດ]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "ເລີ່ມການກວດສອບຈາກສ່ວນຍ່ອຍທີ່ໃຊ້ເວລາດົນທີ່ສຸດ. [ຫຼຸດຄວາມຫຼ້າຊ້າໃຫ້ໜ້ອຍທີ່ສຸດ](https://web.dev/articles/optimize-inp#optimize_interactions). ເພື່ອຫຼຸດໄລຍະເວລາໃນການປະມວນຜົນ, ໃຫ້ [ເພີ່ມປະສິດທິພາບຕົ້ນທຶນຂອງຫົວຂໍ້ຫຼັກ](https://web.dev/articles/optimize-long-tasks), ເຊິ່ງມັກຈະເປັນ JS."
+    "message": "ເລີ່ມກວດສອບ [ວິທີປັບປຸງ INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) ໂດຍເບິ່ງສ່ວນຍ່ອຍທີ່ໃຊ້ເວລາດົນທີ່ສຸດ."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "ໄລຍະເວລາ"
@@ -2346,7 +2307,7 @@
     "message": "ລາຍລະອຽດ INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "ການຫຼຸດເວລາດາວໂຫຼດຮູບຈະຊ່ວຍປັບປຸງເວລາທີ່ໃຊ້ໃນການໂຫຼດທີ່ຮັບຮູ້ຂອງໜ້າເວັບ ແລະ LCP. [ສຶກສາເພີ່ມເຕີມກ່ຽວກັບການເພີ່ມປະສິດທິພາບຂະໜາດຮູບ](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "ການຫຼຸດເວລາດາວໂຫຼດຮູບຈະຊ່ວຍປັບປຸງເວລາທີ່ໃຊ້ໃນການໂຫຼດທີ່ຮັບຮູ້ຂອງໜ້າເວັບ ແລະ LCP. [ສຶກສາເພີ່ມເຕີມກ່ຽວກັບການເພີ່ມປະສິດທິພາບຂະໜາດຮູບ](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (ປະມານ {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "ການໃຊ້ຮູບແບບວິດີໂອແທນ GIF ຈະຊ່ວຍປັບປຸງຂະໜາດການດາວໂຫຼດເນື້ອຫາທີ່ເປັນພາບເຄື່ອນໄຫວໄດ້."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "ແຕ່ລະ [ສ່ວນຍ່ອຍມີກົນລະຍຸດການປັບປຸງສະເພາະ](https://web.dev/articles/optimize-lcp#lcp-breakdown). ໂດຍປົກກະຕິແລ້ວ, ເວລາສ່ວນໃຫຍ່ຂອງ LCP ຄວນໃຊ້ໄປກັບການໂຫຼດຊັບພະຍາກອນ, ບໍ່ແມ່ນຄວາມຫຼ້າຊ້າ."
+    "message": "ແຕ່ລະ [ສ່ວນຍ່ອຍມີກົນລະຍຸດການປັບປຸງສະເພາະ](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). ໂດຍປົກກະຕິແລ້ວ, ເວລາສ່ວນໃຫຍ່ຂອງ LCP ຄວນໃຊ້ໄປກັບການໂຫຼດຊັບພະຍາກອນ, ບໍ່ແມ່ນຄວາມຫຼ້າຊ້າ."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "ໄລຍະເວລາ"
@@ -2406,7 +2367,7 @@
     "message": "ລາຍລະອຽດ LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "ເພີ່ມປະສິດທິພາບ LCP ໂດຍເຮັດໃຫ້ຮູບ LCP [ຄົ້ນພົບໄດ້](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) ຈາກ HTML ທັນທີ ແລະ [ຫຼີກເວັ້ນ lazy loading](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[ເພີ່ມປະສິດທິພາບ LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) ໂດຍເຮັດໃຫ້ຮູບພາບ LCP ຄົ້ນພົບໄດ້ຈາກ HTML ທັນທີ ແລະ ຫຼີກເວັ້ນ lazy loading"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "ໃຊ້ລຳດັບຄວາມສຳຄັນໃນການດຶງຂໍ້ມູນ=ສູງຢູ່"
@@ -2439,13 +2400,13 @@
     "message": "ໄບຕ໌ທີ່ເສຍໄປ"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfills ແລະ ການປ່ຽນຮູບແບບຊ່ວຍໃຫ້ໂປຣແກຣມທ່ອງເວັບເກົ່າໃຊ້ຄຸນສົມບັດ JavaScript ໃໝ່ໄດ້. ແນວໃດກໍຕາມ, ສ່ວນຫຼາຍຈະບໍ່ຈຳເປັນສຳລັບໂປຣແກຣມທ່ອງເວັບສະໄໝໃໝ່. ລອງແກ້ໄຂຂະບວນການ build JavaScript ເພື່ອບໍ່ໃຫ້ເຮັດການ Transpile ຄຸນສົມບັດ [Baseline](https://web.dev/articles/baseline-and-polyfills), ເວັ້ນແຕ່ທ່ານຈະຮູ້ວ່າທ່ານຕ້ອງຮອງຮັບໂປຣແກຣມທ່ອງເວັບເກົ່າ. [ສຶກສາສາເຫດທີ່ເວັບໄຊສ່ວນໃຫຍ່ສາມາດຕິດຕັ້ງການນຳໃຊ້ໂຄດ ES6+ ໄດ້ໂດຍບໍ່ຕ້ອງເຮັດການ Transpile](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfills ແລະ ການປ່ຽນຮູບແບບຊ່ວຍໃຫ້ໂປຣແກຣມທ່ອງເວັບເກົ່າໃຊ້ຄຸນສົມບັດ JavaScript ໃໝ່ໄດ້. ແນວໃດກໍຕາມ, ສ່ວນຫຼາຍຈະບໍ່ຈຳເປັນສຳລັບໂປຣແກຣມທ່ອງເວັບສະໄໝໃໝ່. ລອງແກ້ໄຂຂະບວນການ build JavaScript ເພື່ອບໍ່ໃຫ້ເຮັດການ Transpile ຄຸນສົມບັດ [Baseline](https://web.dev/articles/baseline-and-polyfills), ເວັ້ນແຕ່ທ່ານຈະຮູ້ວ່າທ່ານຕ້ອງຮອງຮັບໂປຣແກຣມທ່ອງເວັບເກົ່າ. [ສຶກສາສາເຫດທີ່ເວັບໄຊສ່ວນໃຫຍ່ສາມາດຕິດຕັ້ງການນຳໃຊ້ໂຄດ ES6+ ໄດ້ໂດຍບໍ່ຕ້ອງເຮັດການ Transpile](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript ແບບເກົ່າ"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 ແລະ HTTP/3 ມີປະໂຫຍດຫຼາຍກວ່າ HTTP/1.1 ຫຼາຍຂໍ້ ເຊັ່ນ: multiplexing. [ສຶກສາເພີ່ມເຕີມກ່ຽວກັບການໃຊ້ HTTP ສະໄໝໃໝ່](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 ແລະ HTTP/3 ມີປະໂຫຍດຫຼາຍກວ່າ HTTP/1.1 ຫຼາຍຂໍ້ ເຊັ່ນ: multiplexing. [ສຶກສາເພີ່ມເຕີມກ່ຽວກັບການໃຊ້ HTTP ສະໄໝໃໝ່](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "ບໍ່ມີຄຳຮ້ອງຂໍທີ່ໃຊ້ HTTP/1.1 ຫຼື ການໃຊ້ HTTP/1.1 ໃນປັດຈຸບັນບໍ່ໄດ້ສະແດງໂອກາດໃນການເພີ່ມປະສິດທິພາບທີ່ສຳຄັນ. ລະບົບຈະປັກທຸງຄຳຮ້ອງຂໍ HTTP/1.1 ສະເພາະໃນກໍລະນີທີ່ມີຜົນງານແບບຄົງທີ່ 6 ລາຍການຂຶ້ນໄປມາຈາກຕົ້ນທາງດຽວກັນ ແລະ ບໍ່ໄດ້ສະແດງສະພາບແວດລ້ອມໃນການພັດທະນາຊອບແວໃນເຄື່ອງ ຫຼື ຈາກແຫຼ່ງທີ່ມາຂອງພາກສ່ວນທີສາມ."
@@ -2478,7 +2439,7 @@
     "message": "ການເຊື່ອມຕໍ່ລ່ວງໜ້າທີ່ບໍ່ໄດ້ໃຊ້. ກວດເບິ່ງວ່າຄຸນສົມບັດ crossorigin ຖືກໃຊ້ຢ່າງຖືກຕ້ອງ."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[ຫຼີກເວັ້ນການເຊນຄຳຮ້ອງຂໍທີ່ສຳຄັນ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) ໂດຍການຫຼຸດຄວາມຍາວຂອງເຊນ, ຫຼຸດຂະໜາດການດາວໂຫຼດຂອງຊັບພະຍາກອນ ຫຼື ເລື່ອນເວລາການດາວໂຫຼດຊັບພະຍາກອນທີ່ບໍ່ຈຳເປັນເພື່ອປັບປຸງການໂຫຼດໜ້າເວັບ."
+    "message": "[ຫຼີກເວັ້ນການເຊນຄຳຮ້ອງຂໍທີ່ສຳຄັນ](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) ໂດຍການຫຼຸດຄວາມຍາວຂອງເຊນ, ຫຼຸດຂະໜາດການດາວໂຫຼດຂອງຊັບພະຍາກອນ ຫຼື ເລື່ອນເວລາການດາວໂຫຼດຊັບພະຍາກອນທີ່ບໍ່ຈຳເປັນເພື່ອປັບປຸງການໂຫຼດໜ້າເວັບ."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "ເພີ່ມຄຳແນະນຳ [ການເຊື່ອມຕໍ່ລ່ວງໜ້າ](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ໄປຫາຕົ້ນທາງທີ່ສຳຄັນທີ່ສຸດ, ແຕ່ພະຍາຍາມໃຊ້ບໍ່ເກີນ 4."
@@ -2517,7 +2478,7 @@
     "message": "ຫຼີກເວັ້ນການເຊື່ອມຕໍ່ການຮ້ອງຂໍທີ່ສຳຄັນໂດຍການຫຼຸດຄວາມຍາວຂອງການເຊື່ອມຕໍ່, ຫຼຸດຂະໜາດການດາວໂຫຼດຂອງຊັບພະຍາກອນ ຫຼື ເລື່ອນການດາວໂຫຼດຊັບພະຍາກອນທີ່ບໍ່ຈຳເປັນອອກໄປເພື່ອປັບປຸງການໂຫຼດໜ້າ."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "ຄຳຮ້ອງຂໍກຳລັງບລັອກການສະແດງພາບເລີ່ມຕົ້ນຂອງໜ້າເວັບ, ເຊິ່ງອາດເຮັດໃຫ້ LCP ຫຼ້າຊ້າ. [ການເລື່ອນເວລາ ຫຼື ແຊກໃນແຖວ](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ສາມາດຍ້າຍຄຳຮ້ອງຂໍເຄືອຂ່າຍເຫຼົ່ານີ້ອອກຈາກເສັ້ນທາງທີ່ສຳຄັນໄດ້."
+    "message": "ຄຳຮ້ອງຂໍກຳລັງບລັອກການສະແດງພາບເລີ່ມຕົ້ນຂອງໜ້າເວັບ, ເຊິ່ງອາດເຮັດໃຫ້ LCP ຫຼ້າຊ້າ. [ການເລື່ອນເວລາ ຫຼື ແຊກໃນແຖວ](https://developer.chrome.com/docs/performance/insights/render-blocking) ສາມາດຍ້າຍຄຳຮ້ອງຂໍເຄືອຂ່າຍເຫຼົ່ານີ້ອອກຈາກເສັ້ນທາງທີ່ສຳຄັນໄດ້."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "ໄລຍະເວລາ"
@@ -2532,7 +2493,7 @@
     "message": "ສະແດງຜົນຄຳຮ້ອງຂໍການບລັອກ"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "ຫາກຕົ້ນທຶນໃນການຄິດໄລ່ຮູບແບບອີກຄັ້ງຍັງຄົງສູງຢູ່, ການເພີ່ມປະສິດທິພາບຕົວເລືອກຈະສາມາດຫຼຸດຕົ້ນທຶນໄດ້. [ເພີ່ມປະສິດທິພາບຕົວເລືອກ](https://developer.chrome.com/docs/devtools/performance/selector-stats) ດ້ວຍເວລາທີ່ຜ່ານໄປດົນ ແລະ % ຂອງເສັ້ນທາງທີ່ຊ້າທີ່ສຸດ. ຕົວເລືອກທີ່ຮຽບງ່າຍຂຶ້ນ, ຕົວເລືອກທີ່ໜ້ອຍລົງ, DOM ທີ່ນ້ອຍລົງ ແລະ DOM ທີ່ຕື້ນຂຶ້ນຈະຊ່ວຍຫຼຸດຕົ້ນທຶນການຈັບຄູ່ໄດ້ໝົດ."
+    "message": "ຫາກຕົ້ນທຶນໃນການຄິດໄລ່ຮູບແບບອີກຄັ້ງຍັງຄົງສູງຢູ່, ການເພີ່ມປະສິດທິພາບຕົວເລືອກຈະສາມາດຫຼຸດຕົ້ນທຶນໄດ້. [ເພີ່ມປະສິດທິພາບຕົວເລືອກ](https://developer.chrome.com/docs/performance/insights/slow-css-selector) ດ້ວຍເວລາທີ່ຜ່ານໄປດົນ ແລະ % ຂອງເສັ້ນທາງທີ່ຊ້າທີ່ສຸດ. ຕົວເລືອກທີ່ຮຽບງ່າຍຂຶ້ນ, ຕົວເລືອກທີ່ໜ້ອຍລົງ, DOM ທີ່ນ້ອຍລົງ ແລະ DOM ທີ່ຕື້ນຂຶ້ນຈະຊ່ວຍຫຼຸດຕົ້ນທຶນການຈັບຄູ່ໄດ້ໝົດ."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "ເວລາທີ່ຜ່ານໄປ"
@@ -2571,7 +2532,7 @@
     "message": "ຂະໜາດການໂອນຍ້າຍ"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "ລະຫັດຂອງພາກສ່ວນທີສາມອາດສົ່ງຜົນກະທົບທີ່ສຳຄັນຕໍ່ປະສິດທິພາບການໂຫຼດ. [ຫຼຸດ ແລະ ເລື່ອນການໂຫຼດລະຫັດຂອງພາກສ່ວນທີສາມອອກໄປ](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) ເພື່ອຈັດລຳດັບຄວາມສຳຄັນຂອງເນື້ອຫາໃນໜ້າເວັບຂອງທ່ານ."
+    "message": "ລະຫັດຂອງພາກສ່ວນທີສາມອາດສົ່ງຜົນກະທົບທີ່ສຳຄັນຕໍ່ປະສິດທິພາບການໂຫຼດ. [ຫຼຸດ ແລະ ເລື່ອນການໂຫຼດລະຫັດຂອງພາກສ່ວນທີສາມອອກໄປ](https://developer.chrome.com/docs/performance/insights/third-parties) ເພື່ອຈັດລຳດັບຄວາມສຳຄັນຂອງເນື້ອຫາໃນໜ້າເວັບຂອງທ່ານ."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "ບໍ່ພົບພາກສ່ວນທີສາມ"
@@ -2580,7 +2541,7 @@
     "message": "ພາກສ່ວນທີສາມ"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "ການໂຕ້ຕອບດ້ວຍການແຕະອາດ [ມີຄວາມຫຼ້າຊ້າສູງສຸດ 300 ມິລິວິນາທີ](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ຫາກວິວພອດບໍ່ເໝາະກັບໂທລະສັບມືຖື."
+    "message": "ການໂຕ້ຕອບດ້ວຍການແຕະອາດ [ມີຄວາມຫຼ້າຊ້າສູງສຸດ 300 ມິລິວິນາທີ](https://developer.chrome.com/docs/performance/insights/viewport) ຫາກວິວພອດບໍ່ເໝາະກັບໂທລະສັບມືຖື."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "ຄວາມຫຼ້າຊ້າຂອງການແຕະຢູ່ໂທລະສັບມືຖື"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "ສຶກສາກ່ຽວກັບ AI ໃນ DevTools"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "ຄວາມຊ່ວຍເຫຼືອຈາກ AI ບໍ່ພ້ອມໃຫ້ນຳໃຊ້ໃນໂໝດບໍ່ເປີດເຜີຍຕົວຕົນ ຫຼື ໂໝດແຂກ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "ຄຸນສົມບັດນີ້ສາມາດໃຊ້ໄດ້ສະເພາະເມື່ອທ່ານເຂົ້າສູ່ລະບົບ Chrome ດ້ວຍບັນຊີ Google ຂອງທ່ານເທົ່ານັ້ນ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານແລ້ວລອງໃໝ່"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "ເປີດເຜີຍລາຍການບໍລິບົດທີ່ເລືອກໃນ DevTools"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ຄວາມຊ່ວຍເຫຼືອຈາກ AI ໃນການຕັ້ງຄ່າ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "ເປີດ {PH1} ເພື່ອຮັບຄວາມຊ່ວຍເຫຼືອໃນການສ້າງຄວາມເຂົ້າໃຈຮູບແບບ CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "ເປີດ {PH1} ເພື່ອຮັບຄວາມຊ່ວຍເຫຼືອກ່ຽວກັບຮູບແບບ ແລະ ຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "ເປີດ {PH1} ເພື່ອຮັບຄວາມຊ່ວຍເຫຼືອຕໍ່ກັບຮູບແບບ, ຄຳຮ້ອງຂໍເຄືອຂ່າຍ ແລະ ໄຟລ໌"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "ເປີດ {PH1} ເພື່ອຮັບຄວາມຊ່ວຍເຫຼືອຕໍ່ກັບຮູບແບບ, ຄຳຮ້ອງຂໍເຄືອຂ່າຍ, ປະສິດທິພາບ ແລະ ໄຟລ໌"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ໃນໜ້ານີ້, ທ່ານສາມາດກວດສອບ ແລະ ແກ້ໄຂພາບເຄື່ອນໄຫວໄດ້."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "ຂໍ້ກຳນົດບໍລິການ"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "ເຊື່ອມໂຍງກັບ {PH1} ແລ້ວ"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "ເຊື່ອມໂຍງກັບແຜນທີ່ແຫຼ່ງທີ່ມາ: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "ອະນຸຍາດ"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "ສະແດງຄອນໂຊນ"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "ສະແດງຂໍ້ມູນສະຫຼຸບ AI ສຳລັບຂໍ້ຄວາມໃນຄອນໂຊ"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "ສະແດງຂໍ້ຜິດພາດ CORS ໃນຄອນໂຊ"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "ຂ້າມໄປຫາແຜງອະນິເມຊັນ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "ເປີດຕົວເລືອກສີ. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "ເພີ່ມ {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "ການບລັອກ"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "ກຳນົດເອງ"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "ຜູ້ຊົມ Hex ຄົນ"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "ເພີ່ມຮູບແບບການບລັອກຄຳຂໍເຄືອຂ່າຍ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "ເພີ່ມຮູບແບບ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "ເພີ່ມຮູບແບບເພື່ອບລັອກຄຳຮ້ອງຂໍຈາກເຄືອຂ່າຍໂດຍຄລິກປຸ່ມ \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "ບລັອກ {PH1} ໄວ້ແລ້ວ"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "ເປີດການນຳໃຊ້ການບລັອກຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "ລຶບລາຍການສຳເລັດແລ້ວ"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "ສຶກສາເພີ່ມເຕີມ"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "ບໍ່ມີຄຳຮ້ອງຂໍຈາກເຄືອຂ່າຍທີ່ຖືກບລັອກ"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "ມີຮູບແບບຢູ່ແລ້ວ."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "ອິນພຸດຮູບແບບບໍ່ສາມາດຫວ່າງເປົ່າໄດ້."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "ຮູບແບບຂໍ້ຄວາມທີ່ຈະບລັອກຄຳຂໍກົງກັນ; ໃຊ້ * ເປັນຕົວແທນ"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "ລຶບລ້າງທັງໝົດ"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "ບໍ່ສາມາດສະແດງສະຖານະຄຳຮ້ອງຂໍຢູ່ບ່ອນນີ້ໄດ້ເນື່ອງຈາກໜ້າທີ່ອອກມັນນັ້ນຍົກເລີກການໂຫຼດໃນເວລາທີ່ຄຳຮ້ອງຂໍກຳລັງດຳເນີນຢູ່. ທ່ານສາມາດໃຊ້ chrome://net-export ເພື່ອຈັດເກັບບັນທຶກເຄືອຂ່າຍ ແລະ ເບິ່ງລາຍລະອຽດຄຳຮ້ອງຂໍທັງໝົດໄດ້."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "ການເຊື່ອມຕໍ່ຂໍ້ມູນ"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "ບລັອກ URL ຄຳຂໍ"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "ບລັອກຄຳຮ້ອງຂໍ"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ຄຳຮ້ອງຂໍທີ່ຖືກບລັອກ"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "ຄຳຮ້ອງຂໍພາກສ່ວນທີສາມ"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "ຄວບຄຸມໂດເມນຄຳຮ້ອງຂໍ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "ຄວບຄຸມ URL ຄຳຮ້ອງຂໍ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "ຄຳຮ້ອງຂໍຄວບຄຸມ"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "ປົດບລັອກ {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "ຢຸດການຄວບຄຸມ {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "ໄອດີການເຊື່ອມຕໍ່"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "ເພີ່ມຮູບແບບການບລັອກຄຳຂໍເຄືອຂ່າຍ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "ເພີ່ມຮູບແບບ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "ເພີ່ມຮູບແບບການຄວບຄຸມ ຫຼື ການບລັອກຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "ເພີ່ມຮູບແບບໂດຍຄລິກປຸ່ມ \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "ບລັອກ {PH1} ໄວ້ແລ້ວ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "ຫຼຸດລຳດັບຄວາມສຳຄັນ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "ເປີດໃຊ້ການບລັອກ ແລະ ການຄວບຄຸມ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "ເປີດການນຳໃຊ້ການບລັອກຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "ເພີ່ມລຳດັບຄວາມສຳຄັນ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "ລຶບລາຍການສຳເລັດແລ້ວ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "ສຶກສາເພີ່ມເຕີມ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "ບໍ່ມີຄຳຮ້ອງຂໍຈາກເຄືອຂ່າຍທີ່ຖືກບລັອກ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "ບໍ່ມີຮູບແບບການຄວບຄຸມ ຫຼື ການບລັອກຄຳຮ້ອງຂໍ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "ມີຮູບແບບຢູ່ແລ້ວ."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "ຮູບແບບນີ້ແຍກວິເຄາະເປັນ URLPattern ບໍ່ສຳເລັດ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "ບໍ່ອະນຸຍາດໃຫ້ໃຊ້ກຸ່ມ RegExp"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "ອິນພຸດຮູບແບບບໍ່ສາມາດຫວ່າງເປົ່າໄດ້."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "ຮູບແບບນີ້ໄດ້ຮັບການອັບເກຣດຈາກ \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "ຮູບແບບຂໍ້ຄວາມທີ່ຈະບລັອກ ຫຼື ຄວບຄຸມຄຳຮ້ອງຂໍທີ່ກົງກັນ; ໃຊ້ໄວຍາກອນ URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "ຮູບແບບຂໍ້ຄວາມທີ່ຈະບລັອກຄຳຂໍກົງກັນ; ໃຊ້ * ເປັນຕົວແທນ"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ຄຸກກີ້ທີ່ໄດ້ຮັບຈາກເຊີບເວີໃນສ່ວນຫົວ 'set-cookie' ຂອງຄຳຕອບ"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ຮ້ອງຂໍໄປຫາ ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "ຄຳຂໍ/ການຕອບກັບ"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "ການກຳນົດເວລາຊັບພະຍາກອນ"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກເວັບໄຊອື່ນ, ເຊີບເວີອາດຈະຜ່ອນຄາຍສ່ວນຫົວການຕອບກັບຂອງນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງ:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "ເພີ່ມຮູບແບບການບລັອກ ຫຼື ການຄວບຄຸມຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "ເພີ່ມຮູບແບບການບລັອກຄຳຂໍເຄືອຂ່າຍ"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "ການບລັອກຄຳຂໍເຄືອຂ່າຍ"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "ເງື່ອນໄຂຄຳຮ້ອງຂໍ"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ການຄວບຄຸມເຄືອຂ່າຍ"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "ເກັບບັນທຶກເຄືອຂ່າຍ"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "ລຶບຮູບແບບການບລັອກ ຫຼື ການຄວບຄຸມປະລິມານການໃຊ້ເຄືອຂ່າຍທັງໝົດອອກ"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "ເອົາຮູບແບບການບລັອກຄຳຮ້ອງຂໍເຄືອຂ່າຍທັງໝົດອອກ"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "ສະແດງການບລັອກຄຳຂໍເຄືອຂ່າຍ"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "ສະແດງເງື່ອນໄຂຄຳຮ້ອງຂໍ"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "ສະແດງການຊອກຫາ"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "ອອບເຈັກທີ່ໂໜດ DOM ແບບຖອດອອກເກັບຮັກສາໄວ້"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "ອອບເຈັກທີ່ເກັບຮັກສາໄວ້ໂດຍຕົວຈັດການເຫດການ"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "ອອບເຈັກ JS ອື່ນໆ"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "ເມື່ອເປີດໃຊ້"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "ປ້ອນເສັ້ນທາງ"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "ປ້ອນເສັ້ນທາງສະເພາະ"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "ບໍ່ຮວມໂຟນເດີຍ່ອຍ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ເພີ່ມກົດລະບຽບ regular expression ສຳລັບ URL ຂອງສະຄຣິບ"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "ເປີດໄຟລ໌ JavaScript ຫຼື CSS ເພື່ອເບິ່ງສັນຍາລັກ"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "ເປີດໃນໂຟນເດີທີ່ເກັບ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "ຍົກເລີກເນື້ອຫາ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ ເປັນໄຟລ໌ທີ່ມີແຜນທີ່ຕົ້ນສະບັບ ແລະ ບໍ່ສາມາດຖືກຍົກເລີກໄດ້."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "ຍົກເລີກ ‘{PH1}’ ແທນບໍ?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "ບັນທຶກເປັນ…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "ບັນທຶກໄຟລ໌ໃສ່ດິສກ໌ບໍ່ສຳເລັດ."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "ບັນທຶກຮູບພາບ"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "ບໍ່ສາມາດບັນທຶກໂມດູນ WASM ໃສ່ໃນດິສກ໌ໄດ້. ມີຄວາມເປັນໄປໄດ້ວ່າໂມດູນມີຂະໜາດໃຫຍ່ເກີນໄປ."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "ສະແດງການຍົກເລີກທັງໝົດ"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "ຮວມການອະທິບາຍຄວາມເຫັນ"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "ຮວມເນື້ອຫາສະຄຣິບ"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "ຮວມແຜນທີ່ຂອງທີ່ມາສະຄຣິບ"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "ຂໍ້ມູນເພີ່ມເຕີມ:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "ບັນທຶກ"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "ຮວມທັງເນື້ອຫາເຕັມຂອງສະຄຣິບທີ່ໂຫຼດແລ້ວທັງໝົດ (ຍົກເວັ້ນສ່ວນຂະຫຍາຍ)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "ບີບອັດດ້ວຍ gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "ສ່ວນຫົວຂອງຄຳຮ້ອງຂໍຖືກຍົກເລີກ"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "ຄຸກກີ້ສຳລັບຄຳຮ້ອງຂໍນີ້ຖືກບລັອກເນື່ອງຈາກມີການປັງທຸງ Chrome ຫຼື ການຕັ້ງຄ່າໂປຣແກຣມທ່ອງເວັບ. ສຶກສາເພີ່ມເຕີມໃນແຜງບັນຫາ."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "ໃຊ້ regular expression"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ມີການປ່ຽນແປງການຕັ້ງຄ່າຢ່າງໜ້ອຍ 1 ລາຍການເຊິ່ງຈະຕ້ອງໂຫຼດໃໝ່ຈຶ່ງຈະມີຜົນ"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*ຕ້ອງໂຫຼດໃໝ່"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ເລືອກໄວ້"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ໃຊ້ສີທີ່ແນະນຳ {PH1} ເພື່ອແກ້ໄຂຄອນທຣາສຕໍ່າ"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ສີນີ້ຖືກຕັດອອກເພື່ອໃຫ້ກົງກັບຂອບເຂດຂອງຮູບແບບ. ຜົນໄດ້ຮັບທີ່ແທ້ຈິງແມ່ນ {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ ການປ່ຽນຄ່າເປັນຂອບເຂດທີ່ແຄບຈະເຮັດໃຫ້ສີປ່ຽນໄປ"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "ເພີ່ມໃສ່ຈານສີ"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "ຄຸກກີ້"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ໂດເມນ"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "ຄຸກກີ້ທີ່ແກ້ໄຂໄດ້"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(ບໍ່ຊັດເຈນ)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "ເວັບໄຊກະແຈພາທິຊັນ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "ເສັ້ນທາງ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "ລຳດັບຄວາມສຳຄັນ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "ປອດໄພ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "ເຊດຊັນ"

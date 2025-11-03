@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-blok"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Blokkeer"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Gestaak"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Dok na regs"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools het ’n eksterne versoek ontvang"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fokusbladsy"
   },
@@ -1275,13 +1281,13 @@
     "message": "Steundienste vir data: URL’e in SVGUseElement is opgeskort en dit sal in die toekoms verwyder word."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() en watchPosition() werk nie meer met onveilige oorspronge nie. Om hierdie kenmerk te gebruik, moet jy dit oorweeg om jou app na ’n veilige oorsprong, soos HTTPS, oor te skakel. Sien https://goo.gle/chrome-insecure-origins vir meer besonderhede."
+    "message": "getCurrentPosition() en watchPosition() werk nie meer op onveilige oorspronge nie. Om hierdie kenmerk te gebruik, moet jy dit oorweeg om jou app na ’n veilige oorsprong, soos HTTPS, oor te skakel. Verwys na https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ vir meer besonderhede."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() en watchPosition() is opgeskort vir onveilige oorspronge. Om hierdie kenmerk te gebruik, moet jy dit oorweeg om jou app na ’n veilige oorsprong, soos HTTPS, oor te skakel. Sien https://goo.gle/chrome-insecure-origins vir meer besonderhede."
+    "message": "getCurrentPosition() en watchPosition() is opgeskort op onveilige oorspronge. Om hierdie kenmerk te gebruik, moet jy dit oorweeg om jou app na ’n veilige oorsprong, soos HTTPS, oor te skakel. Verwys na https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ vir meer besonderhede."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() werk nie meer met onveilige oorspronge nie. Om hierdie kenmerk te gebruik, moet jy dit oorweeg om jou app na ’n veilige oorsprong, soos HTTPS, oor te skakel. Sien https://goo.gle/chrome-insecure-origins vir meer besonderhede."
+    "message": "getUserMedia() werk nie meer op onveilige oorspronge nie. Om hierdie kenmerk te gebruik, moet jy dit oorweeg om jou app na ’n veilige oorsprong, soos HTTPS, oor te skakel. Verwys na https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ vir meer besonderhede."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is opgeskort. Gebruik pleks daarvan RTCPeerConnectionIceErrorEvent.address of RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI sal ’n toestemming vra om te gebruik, selfs al is die sysex nie in die MIDIOptions gespesifiseer nie."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Die Notification API mag nie meer van onveilige oorspronge af gebruik word nie. Jy moet dit oorweeg om jou app oor te skakel na ’n veilige oorsprong, soos HTTPS. Sien https://goo.gle/chrome-insecure-origins vir meer besonderhede."
+    "message": "Die Notification API kan nie meer vanaf onveilige oorspronge gebruik word nie. Jy moet dit oorweeg om jou app oor te skakel na ’n veilige oorsprong, soos HTTPS. Verwys na https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ vir meer besonderhede."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Toestemming vir die Notification API mag nie meer van ’n kruisoorsprong-i-raam af versoek word nie. Jy moet dit oorweeg om pleks daarvan toestemming van ’n topvlakraam af te versoek, of om ’n nuwe venster oop te maak."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Uitbreidings moet kruisoorsprongisolasie aanvaar om aan te hou om SharedArrayBuffer te gebruik. Sien https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() is opgeskort. Gebruik eerder writeValueWithResponse() of writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 word nie deur response json in XMLHttpRequest gesteun nie"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Hierdie kenmerk is net met ’n aktiewe internetverbinding beskikbaar."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools het ’n eksterne versoek ontvang"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Onbekende lêerlaaifout"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Traagheid van {PH1}, aflaai van {PH2} (altesame {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Voer 'n pad in"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Voer 'n unieke pad in"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Subvouers wat uitgesluit is"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "BLOB kon nie gelaai word nie."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Kan nie lêerstelsel byvoeg nie: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Maak in houervouer oop"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Ignoreer inhoud"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" is ’n bronafgebeelde lêer en kan nie ignoreer word nie."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Ignoreer \"{PH1}\" eerder?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Stoor as …"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Kon nie lêer na skyf stoor nie."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Stoor prent"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "Kon nie WASM-module op skyf stoor nie. Die module is waarskynlik te groot."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Wys alle ignorerings"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Gekoppel aan {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Gekoppel aan bronkaart: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem kan nie lêers lees nie."
@@ -2157,7 +2118,7 @@
     "message": "Animasie"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Uitlegverskuiwings gebeur wanneer elemente beweeg sonder enige gebruikerinteraksie. [Ondersoek die oorsake van uitlegverskuiwings](https://web.dev/articles/optimize-cls), soos elemente wat bygevoeg of verwyder word, of hul lettertipes wat verander soos die bladsy laai."
+    "message": "Uitlegverskuiwings gebeur wanneer elemente beweeg sonder enige gebruikerinteraksie. [Ondersoek die oorsake van uitlegverskuiwings](https://developer.chrome.com/docs/performance/insights/cls-culprit), soos elemente wat bygevoeg of verwyder word, of hul lettertipes wat verander soos die bladsy laai."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Ingeplante i-raam"
@@ -2193,7 +2154,7 @@
     "message": "Kasgeheue-TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "’n Lang kasgeheueleeftyd kan herhaalbesoeke aan jou bladsy vinniger maak. [Meer inligting](https://web.dev/uses-long-cache-ttl/)."
+    "message": "’n Lang kasgeheueleeftyd kan herhaalbesoeke aan jou bladsy vinniger maak. [Kry meer inligting oor die kasproses](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Geen versoeke met ondoeltreffende kasgeheuebeleide nie"
@@ -2208,7 +2169,7 @@
     "message": "Gebruik doeltreffende kasgeheueleeftye"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "’n Groot DOM kan die duur van stylberekeninge en uitleghervloei verleng, wat die reaksie van die bladsy beïnvloed. ’n Groot DOM sal ook meer geheue gebruik. [Vind uit hoe om ’n buitensporige DOM-grootte te vermy](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "’n Groot DOM kan die duur van stylberekeninge en uitleghervloei verleng, wat die reaksie van die bladsy beïnvloed. ’n Groot DOM sal ook meer geheue gebruik. [Vind uit hoe om ’n buitensporige DOM-grootte te vermy](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Tydsduur"
@@ -2244,7 +2205,7 @@
     "message": "Waarde"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Jou eerste netwerkversoek is die belangrikste.  Maak dit minder traag deur herleidings te vermy en sodoende ’n vinniger bedienerreaksie te verseker en tekssaampersing te aktiveer."
+    "message": "Jou eerste netwerkversoek is die belangrikste een. [Maak dit minder traag](https://developer.chrome.com/docs/performance/insights/document-latency) deur herleidings te vermy en sodoende ’n vinniger bedienerreaksie te verseker en tekssaampersing te aktiveer."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Het herleidings gehad ({PH1} herleidings, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Bron"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Verwyder groot duplikaat-JavaScript-modules uit bondels om onnodige grepe te verminder wat deur netwerkaktiwiteit verbruik word."
+    "message": "Verwyder groot [duplikaat-JavaScript-modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) uit bondels om onnodige grepe te verminder wat deur netwerkaktiwiteit verbruik word."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Gedupliseerde JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Oorweeg dit om [font-display](https://developer.chrome.com/blog/font-display) op swap of optional te stel om te verseker dat teks deurgaans sigbaar is. swap kan verder geoptimeer word om uitlegverskuiwings te matig met [ignorering van lettertipemaatstawwe](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Oorweeg dit om [font-display](https://developer.chrome.com/docs/performance/insights/font-display) op swap of optional te stel om te verseker dat teks deurgaans sigbaar is. swap kan verder geoptimeer word om uitlegverskuiwings te matig met [ignorering van lettertipemaatstawwe](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Lettertipe"
@@ -2304,10 +2265,10 @@
     "message": "(anoniem)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "’n Verpligte hervloei vind plaas wanneer JavaScript geometriese eienskappe bevraagteken (soos offsetWidth) nadat style deur ’n verandering aan die DOM-toestand ongeldig verklaar is. Dit kan tot swak werkverrigting lei. Vind meer uit oor [verpligte hervloeie](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) en moontlike mitigasies."
+    "message": "’n Verpligte hervloei vind plaas wanneer JavaScript geometriese eienskappe bevraagteken (soos offsetWidth) nadat style deur ’n verandering aan die DOM-toestand ongeldig verklaar is. Dit kan tot swak werkverrigting lei. Vind meer uit oor [verpligte hervloeie](https://developer.chrome.com/docs/performance/insights/forced-reflow) en moontlike mitigasies."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Stapelspoor"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Oproeprame wat hervloei veroorsaak"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Het hervloei verplig"
@@ -2322,7 +2283,7 @@
     "message": "[sonder toeskrywing]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Gebruik die langste onderdeel om te begin ondersoek. [Vertragings kan geminimeer word](https://web.dev/articles/optimize-inp#optimize_interactions). [Optimeer die hoofdraadkoste](https://web.dev/articles/optimize-long-tasks), dikwels JS, om die tydsduur van verwerking te verminder."
+    "message": "Begin ’n ondersoek oor [hoe om INP te verbeter](https://developer.chrome.com/docs/performance/insights/inp-breakdown) deur na die langste subdeel te kyk."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Tydsduur"
@@ -2346,7 +2307,7 @@
     "message": "INP-uiteensetting"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "As jy die aflaaityd van prente verminder, kan dit die waargenome laaityd van die bladsy en LCP verbeter. [Kry meer inligting oor die optimering van prentgrootte](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "As jy die aflaaityd van prente verminder, kan dit die waargenome laaityd van die bladsy en LCP verbeter. [Kry meer inligting oor die optimering van prentgrootte](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (min of meer {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Die aflaaigrootte van geanimeerde inhoud kan verbeter as videoformate pleks van GIF’s gebruik word."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Elke [onderdeel het spesifieke verbeteringstrategieë](https://web.dev/articles/optimize-lcp#lcp-breakdown). Die meeste van die LCP-tyd moet ideaalgesproke aan die laai van die hulpbronne bestee word en nie tydens vertragings nie."
+    "message": "Elke [onderdeel het spesifieke verbeteringstrategieë](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Die meeste van die LCP-tyd moet ideaalgesproke aan die laai van die hulpbronne bestee word en nie tydens vertragings nie."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Tydsduur"
@@ -2406,7 +2367,7 @@
     "message": "LCP-uiteensetting"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimeer LCP deur die LCP-prent onmiddellik vanaf die HTML [opspoorbaar](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) te maak en [die trae laaiproses te vermy](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Optimeer LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) deur die LCP-prent onmiddellik vanaf die HTML opspoorbaar te maak en die trae laaiproses te vermy"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high toegepas"
@@ -2439,13 +2400,13 @@
     "message": "Gemorste grepe"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfills en omskeppings maak dit vir ouer blaaiers moontlik om nuwe JavaScript-kenmerke te gebruik. Baie daarvan is egter nie vir moderne blaaiers nodig nie. Oorweeg dit om jou JavaScript-bouproses te wysig om nie [Basislyn](https://web.dev/articles/baseline-and-polyfills)-kenmerke bron-tot-bron oor te dra nie, tensy jy weet dat jy ouer blaaiers moet steun. [Vind uit hoekom meeste werwe ES6+-kode kan ontplooi sonder om bron-tot-bron oor te dra](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfills en omskeppings maak dit vir ouer blaaiers moontlik om nuwe JavaScript-kenmerke te gebruik. Baie daarvan is egter nie vir moderne blaaiers nodig nie. Oorweeg dit om jou JavaScript-bouproses te wysig om nie [Basislyn](https://web.dev/articles/baseline-and-polyfills)-kenmerke bron-tot-bron oor te dra nie, tensy jy weet dat jy ouer blaaiers moet steun. [Vind uit hoekom meeste werwe ES6+-kode kan ontplooi sonder om bron-tot-bron oor te dra](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Vorige JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 en HTTP/3 bied baie voordele bo HTTP/1.1, soos multipleksvorming. [Kry meer inligting oor die gebruik van moderne HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 en HTTP/3 bied baie voordele bo HTTP/1.1, soos multipleksvorming. [Kry meer inligting oor die gebruik van moderne HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Geen versoeke het HTTP/1.1 gebruik nie of die huidige gebruik van HTTP/1.1 stel nie ’n betekenisvolle optimeringgeleentheid voor nie. HTTP/1.1-versoeke word net gevlag as ses of meer statiese komponente van dieselfde oorsprong is en hulle nie vanaf ’n plaaslike ontwikkelingomgewing of ’n derdepartybron gelewer word nie."
@@ -2478,7 +2439,7 @@
     "message": "Ongebruikte voorafverbinding. Maak seker dat die crossorigin-kenmerk reg gebruik word."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Vermy die ketting van kritieke versoeke](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) deur die lengte van kettings te verminder, die aflaaigrootte van hulpbronne te verminder, of die aflaai van onnodige hulpbronne uit te stel om bladsylading te verbeter."
+    "message": "[Vermy die ketting van kritieke versoeke](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) deur die lengte van kettings te verminder, die aflaaigrootte van hulpbronne te verminder, of die aflaai van onnodige hulpbronne uit te stel om bladsylading te verbeter."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Voeg [voorafverbinding](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)-wenke by jou belangrikste oorspronge, maar probeer om nie meer as 4 te gebruik nie."
@@ -2517,7 +2478,7 @@
     "message": "Vermy die ketting van kritieke versoeke deur die lengte van kettings te verminder, die aflaaigrootte van hulpbronne te verminder, of die aflaai van onnodige hulpbronne uit te stel om bladsylading te verbeter."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Versoeke blokkeer die bladsy se aanvanklike lewering, wat LCP kan vertraag. [Uitstelling of inlyning](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) kan hierdie netwerkversoeke uit die kritieke pad skuif."
+    "message": "Versoeke blokkeer die bladsy se aanvanklike lewering, wat LCP kan vertraag. [Uitstelling of inlyning](https://developer.chrome.com/docs/performance/insights/render-blocking) kan hierdie netwerkversoeke uit die kritieke pad skuif."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Tydsduur"
@@ -2532,7 +2493,7 @@
     "message": "Lewer blokkeerversoeke"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "As die koste van Herbereken Styl steeds hoog is, kan kieseroptimering die koste verminder. [Optimeer die kiesers](https://developer.chrome.com/docs/devtools/performance/selector-stats) met sowel hoë verstreke tyd- as hoë stadige-roete-%. Eenvoudiger kiesers, minder kiesers, ’n kleiner DOM en ’n vlakker DOM sal alles ooreenstemmende koste verminder."
+    "message": "As die koste van Herbereken Styl steeds hoog is, kan kieseroptimering die koste verminder. [Optimeer die kiesers](https://developer.chrome.com/docs/performance/insights/slow-css-selector) met sowel hoë verstreke tyd- as hoë stadige-roete-%. Eenvoudiger kiesers, minder kiesers, ’n kleiner DOM en ’n vlakker DOM sal alles ooreenstemmende koste verminder."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Tyd verloop"
@@ -2571,7 +2532,7 @@
     "message": "Oordraggrootte"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Derdepartykode kan laaiwerkverrigting beduidend beïnvloed. [Verminder en stel die laai van derdepartykode uit](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) om jou bladsy se inhoud te prioritiseer."
+    "message": "Derdepartykode kan laaiwerkverrigting beduidend beïnvloed. [Verminder en stel die laai van derdepartykode uit](https://developer.chrome.com/docs/performance/insights/third-parties) om jou bladsy se inhoud te prioritiseer."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Geen derde partye gevind nie"
@@ -2580,7 +2541,7 @@
     "message": "Derde partye"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Tikinteraksies kan met [tot 300 ms vertraag word](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) as die kykvenster nie vir mobiele toestelle geoptimeer is nie."
+    "message": "Tikinteraksies kan met [tot 300 ms vertraag word](https://developer.chrome.com/docs/performance/insights/viewport) as die kykvenster nie vir mobiele toestelle geoptimeer is nie."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Mobieletikvertraging"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Kry meer inligting oor AI in Ontwikkelaarnutsgoed"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "KI-bystand is nie beskikbaar in Incognitomodus of Gasmodus nie"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Hierdie kenmerk is net beskikbaar as jy met jou Google-rekening by Chrome aangemeld is"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Gaan jou internetverbinding na en probeer weer"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Wys die gekose konteksitem in Ontwikkelaarnutsgoed"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "AI-bystand in Instellings"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Skakel {PH1} aan om hulp te kry om VID-style te verstaan"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Skakel {PH1} aan om hulp te kry met style en netwerkversoeke"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Skakel {PH1} aan om hulp te kry met style, netwerkversoeke en lêers"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Skakel {PH1} aan om hulp te kry met style, netwerkversoeke, werkverrigting en lêers"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Jy kan op hierdie bladsy animasies ondersoek en wysig."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Diensbepalings"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Gekoppel aan {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Gekoppel aan bronkaart: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Laat toe"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Wys konsole"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Wys KI-opsommings vir konsoleboodskappe"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Wys CORS-foute in konsole"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Spring na Animasiespaneel"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Maak kleurkieser oop. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Voeg {PH1} by"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Blokkeer tans"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Gepasmaak"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex-bekyker"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Voeg netwerkversoekblokkeringpatroon by"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Voeg patroon by"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Voeg ’n patroon by om netwerkversoeke te blokkeer deur die “{PH1}”-knoppie te klik."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} geblokkeer"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Aktiveer netwerkversoekblokkering"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Item is suksesvol uitgevee"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Meer inligting"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Geen geblokkeerde netwerkversoeke nie"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Patroon bestaan reeds."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Patrooninvoer kan nie leeg wees nie."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Tekspatroon om passende versoeke te blokkeer; gebruik * as wisselkaart"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Vee alles uit"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Die versoekstatus kan nie hier gewys word nie want die bladsy wat dit uitgereik het, het ontlaai terwyl die versoek op pad was. Jy kan chrome://net-export gebruik om 'n netwerkloglêer vas te vang en alle versoekbesonderhede te sien."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Verbindinginligting"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Blokkeer versoek-URL"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Blokkeer versoeke"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Geblokkeerde versoeke"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Derdepartyversoeke"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Reguleringversoekdomein"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Reguleringversoek-URL"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Versoeke vir regulering"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Deblokkeer {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Hou op om {PH1} te reguleer"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Verbinding-ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Voeg netwerkversoekblokkeringpatroon by"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Voeg patroon by"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Voeg regulering- of blokkeringpatroon vir netwerkversoek by"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Voeg ’n patroon by deur die “{PH1}”-knoppie te klik."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} geblokkeer"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Verlaag prioriteit"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Aktiveer blokkering en regulering"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Aktiveer netwerkversoekblokkering"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Verhoog prioriteit"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Item is suksesvol uitgevee"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Meer inligting"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Geen geblokkeerde netwerkversoeke nie"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Geen regulering- of -blokkeringpatroon vir versoeke nie"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Patroon bestaan reeds."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Hierdie patroon kon nie as ’n URL-patroon ontleed word nie"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp-groepe word nie toegelaat nie"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Patrooninvoer kan nie leeg wees nie."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Hierdie patroon is opgegradeer vanaf “{PH1}”"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Tekspatroon om passende versoeke te blokkeer of te reguleer; gebruik URLPattern-sintaksis."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Tekspatroon om passende versoeke te blokkeer; gebruik * as wisselkaart"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Weboekies wat in die antwoord se \"set-cookie\"-opskrif van die bediener af ontvang is"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Versoek aan ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Versoek/Antwoord"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Hulpbronskedulering"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Om hierdie hulpbron van 'n ander werf af te gebruik, kan die bediener die kruisoorspronghulpbronbeleid se antwoordopskrif verslap:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Voeg netwerkversoekblokkering- of -reguleringpatroon by"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Voeg netwerkversoekblokkeringpatroon by"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Netwerkversoekblokkering"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Versoekvoorwaardes"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "netwerkregulering"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Neem netwerkloglêer op"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Verwyder alle blokkering- of reguleringpatrone vir netwerkversoeke"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Verwyder alle blokkeerpatrone vir netwerkversoeke"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Wys netwerkversoekblokkering"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Wys versoekvoorwaardes"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Wys Soek"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Voorwerpe wat deur losgemaakte DOM-nodusse behou is"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Voorwerpe wat deur gevalhanteerders behou word"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Ander JS-voorwerpe"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "As dit aan is"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Voer 'n pad in"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Voer 'n unieke pad in"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Subvouers wat uitgesluit is"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Voeg ’n gewone-uitdrukkingreël vir die skrip se URL by"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Maak 'n JavaScript- of CSS-lêer oop om simbole te sien"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Maak in houervouer oop"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Ignoreer inhoud"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" is ’n bronafgebeelde lêer en kan nie ignoreer word nie."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Ignoreer \"{PH1}\" eerder?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Stoor as …"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Kon nie lêer na skyf stoor nie."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Stoor prent"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Kon nie WASM-module op skyf stoor nie. Die module is waarskynlik te groot."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Wys alle ignorerings"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "KB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Sluit annotasies in"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Sluit skripinhoud in"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Sluit skripbronkaarte in"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Bykomende inligting:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Stoor"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Sluit die volle inhoud van al jou gelaaide skripte in (behalwe uitbreidings)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Pers saam met gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Versoekopskrifte word geïgnoreer"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Webkoekies vir hierdie versoek word geblokkeer as gevolg van óf Chrome-vlae óf blaaieropstelling. Kry meer inligting in die Kwessies-paneel."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Gebruik gewone uitdrukking"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Een of meer instellings het verander. Daar moet herlaai word voordat hulle in werking sal tree"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Vereis herlaai"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "gemerk"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Gebruik voorgestelde kleur {PH1}om lae kontras reg te stel"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Hierde kleur is geknip om by die formaat se gamut te pas. Die werklike resultaat was {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Omskakeling na ’n smal reeks sal kleurverskuiwings veroorsaak"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Voeg by palet"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Webkoekies"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domein"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Wysigbare webkoekies"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(ondeursigtig)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Afdelingsleutelwerf"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Pad"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioriteit"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Veilig"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sessie"

@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-sektion"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Bloker"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Annulleret"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Fastgør til højre"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools har modtaget en ekstern anmodning"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fokusside"
   },
@@ -1275,13 +1281,13 @@
     "message": "Understøttelse af data: Webadresser i SVGUseElement er udfaset, og de fjernes på et senere tidspunkt."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() og watchPosition() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() og watchPosition() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() og watchPosition() er udfasede på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+    "message": "getCurrentPosition() og watchPosition() er udfasede på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+    "message": "getUserMedia() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er udfaset. Brug i stedet RTCPeerConnectionIceErrorEvent.address eller RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI anmoder om tilladelse til brug, selvom sysex ikke er angivet i MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Notification API kan ikke længere bruges fra usikre oprindelser. Overvej at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+    "message": "Notification API kan ikke længere anvendes fra usikre oprindelser. Overvej at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Det er ikke længere muligt at anmode om tilladelse til Notification API fra en iframe med krydsoprindelse. Du bør i stedet overveje at anmode om tilladelse fra en ramme på øverste niveau eller åbne et nyt vindue."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Udvidelser skal tilvælge domæneisolering for fortsat at kunne bruge SharedArrayBuffer. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() er udfaset. Anvend i stedet writeValueWithResponse() eller writeValueWithoutResponse()."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 understøttes ikke af svar-json i XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Denne funktion er kun tilgængelig med en aktiv internetforbindelse."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools har modtaget en ekstern anmodning"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ukendt fejl under indlæsning af fil"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} forsinkelse, {PH2} download ({PH3} i alt)"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Angiv en sti"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Angiv en entydig sti"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Ekskluderede undermapper"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "Webadresse"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blob kunne ikke indlæses."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Filsystem kunne ikke tilføjes: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Åbn i overordnet mappe"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Tilsidesæt indhold"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" er en fil med kildekort og kan ikke tilsidesættes."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Vil du tilsidesætte \"{PH1}\" i stedet?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Gem som…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Filen kunne ikke gemmes på disken."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Gem billede"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM-modulet kunne ikke gemmes på disken. Modulet er sandsynligvis for stort."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Vis alle tilsidesættelser"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Linket til {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Knyttet til kildekort: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem kan ikke læse filerne."
@@ -2157,7 +2118,7 @@
     "message": "Animation"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Layoutændringer opstår, når elementer bevæger sig uden brugerinteraktion. [Undersøg årsagerne til layoutændringer](https://web.dev/articles/optimize-cls), f.eks. elementer, der tilføjes eller fjernes eller ændrer skrifttyper, mens siden indlæses."
+    "message": "Layoutændringer opstår, når elementer bevæger sig uden brugerinteraktion. [Undersøg årsagerne til layoutændringer](https://developer.chrome.com/docs/performance/insights/cls-culprit), f.eks. elementer, der tilføjes eller fjernes eller ændrer skrifttyper, mens siden indlæses."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Iframe er indsat"
@@ -2193,7 +2154,7 @@
     "message": "Cache-TTL"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "En lang cachelevetid kan gøre indlæsningen hurtigere for tilbagevendende besøgende på din side. [Få flere oplysninger](https://web.dev/uses-long-cache-ttl/)."
+    "message": "En lang cachelevetid kan gøre indlæsningen hurtigere for tilbagevendende besøgende på din side. [Få flere oplysninger om cachelagring](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Ingen anmodninger med ineffektive cachepolitikker"
@@ -2208,7 +2169,7 @@
     "message": "Brug effektive cachelevetider"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "En stor DOM kan øge varigheden af beregninger af typografi og dynamiske tilpasninger af layout, hvilket påvirker sidens svartid. En stor DOM øger også hukommelsesforbruget. [Få oplysninger om, hvordan du undgår en for stor DOM-størrelse](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "En stor DOM kan øge varigheden af beregninger af typografi og dynamiske tilpasninger af layout, hvilket påvirker sidens svartid. En stor DOM øger også hukommelsesforbruget. [Få oplysninger om, hvordan du undgår en for stor DOM-størrelse](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Varighed"
@@ -2244,7 +2205,7 @@
     "message": "Værdi"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Din første netværksanmodning er den vigtigste.  Reducer forsinkelsen ved at undgå omdirigeringer, sikre en hurtig serversvartid og aktivere tekstkomprimering."
+    "message": "Din første netværksanmodning er den vigtigste. [Reducer forsinkelsen](https://developer.chrome.com/docs/performance/insights/document-latency) ved at undgå omdirigeringer, sikre en hurtig serversvartid og aktivere tekstkomprimering."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Der var omdirigeringer ({PH1} omdirigeringer, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Kilde"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Fjern store, identiske JavaScript-moduler fra pakker for at reducere antallet af unødvendige bytes, der anvendes i forbindelse med netværksaktivitet."
+    "message": "Fjern store, [dublerede JavaScript-moduler](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) fra pakker for at reducere antallet af unødvendige bytes, der anvendes i forbindelse med netværksaktivitet."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplikeret JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Overvej at angive [font-display](https://developer.chrome.com/blog/font-display) som swap eller optional for at sikre, at teksten er synlig hele tiden. swap kan optimeres yderligere for at mindske layoutskift med [tilsidesættelse af skriftmetrics](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Overvej at angive [font-display](https://developer.chrome.com/docs/performance/insights/font-display) som swap eller optional for at sikre, at teksten er synlig hele tiden. swap kan optimeres yderligere for at mindske layoutskift med [tilsidesættelse af skriftmetrics](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Skrifttype"
@@ -2304,10 +2265,10 @@
     "message": "(anonym)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Tvungen reflow opstår, når JavaScript forespørger om geometriske egenskaber (f.eks. offsetWidth), efter typografier er blevet ugyldiggjort af en ændring af DOM-tilstanden. Dette kan resultere i mangelfuld effektivitet. Få flere oplysninger om [tvungne reflows](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) og mulige forebyggende foranstaltninger."
+    "message": "Tvungen reflow opstår, når JavaScript forespørger om geometriske egenskaber (f.eks. offsetWidth), efter typografier er blevet ugyldiggjort af en ændring af DOM-tilstanden. Dette kan resultere i mangelfuld effektivitet. Få flere oplysninger om [tvungne reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) og mulige forebyggende foranstaltninger."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Staksporing"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Opkaldsrammer, der udløser reflow"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Tvungen reflow"
@@ -2322,7 +2283,7 @@
     "message": "[uden attributter]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Start med at undersøge den længste underdel. [Forsinkelser kan minimeres](https://web.dev/articles/optimize-inp#optimize_interactions). Hvis du vil reducere behandlingsvarigheden, skal du [optimere omkostningerne for hovedtråden](https://web.dev/articles/optimize-long-tasks) (typisk JS)."
+    "message": "Start med at undersøge, [hvordan du kan forbedre INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown), ved at se på den længste underdel."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Varighed"
@@ -2346,7 +2307,7 @@
     "message": "INP-oversigt"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Hvis du reducerer downloadtiden for billeder, kan det forbedre den oplevede indlæsningstid for siden og LCP. [Få flere oplysninger om optimering af billedstørrelse](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "Hvis du reducerer downloadtiden for billeder, kan det forbedre den oplevede indlæsningstid for siden og LCP. [Få flere oplysninger om optimering af billedstørrelse](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Estimeret {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Hvis du bruger videoformater i stedet for giffer, kan det forbedre downloadstørrelsen på det animerede indhold."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Hver [underdel har specifikke forbedringsstrategier](https://web.dev/articles/optimize-lcp#lcp-breakdown). Det meste af LCP-tiden bør ideelt set bruges på at indlæse ressourcerne og ikke på forsinkelser."
+    "message": "Hver [underdel har specifikke forbedringsstrategier](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Det meste af LCP-tiden bør ideelt set bruges på at indlæse ressourcerne og ikke på forsinkelser."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Varighed"
@@ -2406,7 +2367,7 @@
     "message": "LCP-oversigt"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimer LCP ved at gøre LCP-billedet [synligt](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) i HTML med det samme, og [undgå lazy loading](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Optimer LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) ved at gøre LCP-billedet synligt i HTML med det samme, og undgå lazy loading"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high er anvendt"
@@ -2439,13 +2400,13 @@
     "message": "Bortkastede bytes"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill-koder og transformeringer gør det muligt for ældre browsere at anvende nye JavaScript-funktioner. Mange af dem er dog ikke nødvendige til moderne browsere. Du kan vælge at ændre din JavaScript-buildproces, så den ikke transpilerer [Baseline](https://web.dev/articles/baseline-and-polyfills)-funktioner, medmindre du ved, at du skal understøtte ældre browsere. [Se, hvorfor de fleste websites kan implementere ES6+-kode uden transpilering](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill-koder og transformeringer gør det muligt for ældre browsere at anvende nye JavaScript-funktioner. Mange af dem er dog ikke nødvendige til moderne browsere. Du kan vælge at ændre din JavaScript-buildproces, så den ikke transpilerer [Baseline](https://web.dev/articles/baseline-and-polyfills)-funktioner, medmindre du ved, at du skal understøtte ældre browsere. [Se, hvorfor de fleste websites kan implementere ES6+-kode uden transpilering](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Forældet JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 og HTTP/3 har mange fordele i forhold til HTTP/1.1, f.eks. multiplexing. [Få flere oplysninger om brug af moderne HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 og HTTP/3 har mange fordele i forhold til HTTP/1.1, f.eks. multiplexing. [Få flere oplysninger om brug af moderne HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Der var ingen anmodninger, der brugte HTTP/1.1, eller også giver den aktuelle brug af HTTP/1.1 ikke en betydelig optimeringsmulighed. HTTP/1.1-anmodninger rapporteres kun, hvis seks eller flere statiske aktiver stammer fra den samme oprindelse, og de ikke vises fra et lokalt udviklingsmiljø eller en tredjepartskilde."
@@ -2478,7 +2439,7 @@
     "message": "Ubrugt oprettelse af forbindelse på forhånd. Sørg for, at attributten crossorigin bruges korrekt."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Undgå at sammenkæde kritiske anmodninger](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) ved at reducere kædernes længde, så ressourcernes downloadstørrelse bliver mindre, eller at udskyde download af unødvendige ressourcer, så sideindlæsningen forbedres."
+    "message": "[Undgå at sammenkæde kritiske anmodninger](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) ved at reducere kædernes længde, så ressourcernes downloadstørrelse bliver mindre, eller at udskyde download af unødvendige ressourcer, så sideindlæsningen forbedres."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Føj hints til at [oprette tilknytning på forhånd](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) til dine vigtigste oprindelser, men prøv at bruge færre end 4."
@@ -2517,7 +2478,7 @@
     "message": "Undgå at sammenkæde kritiske anmodninger ved at reducere kædernes længde, så ressourcernes downloadstørrelse bliver mindre, eller at udskyde download af unødvendige ressourcer, så sideindlæsningen forbedres."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Anmodninger blokerer for sidens oprindelige gengivelse, hvilket kan forsinke LCP. [Udsættelse eller indlejring](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) kan flytte disse netværksanmodninger væk fra den kritiske sti."
+    "message": "Anmodninger blokerer for sidens oprindelige gengivelse, hvilket kan forsinke LCP. [Udsættelse eller indlejring](https://developer.chrome.com/docs/performance/insights/render-blocking) kan flytte disse netværksanmodninger væk fra den kritiske sti."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Varighed"
@@ -2532,7 +2493,7 @@
     "message": "Anmodninger, der blokerer gengivelse"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Hvis omkostningerne for Genberegn typografi forbliver høje, kan vælgeroptimering reducere dem. [Optimer vælgere](https://developer.chrome.com/docs/devtools/performance/selector-stats), der både har lang forløbstid og langsom vej en stor procentdel af tiden. Enklere vælgere, færre vælgere, en mindre DOM og en mindre omfattende DOM er med til at reducere omkostningerne ved matching."
+    "message": "Hvis omkostningerne for Genberegn typografi forbliver høje, kan vælgeroptimering reducere dem. [Optimer vælgere](https://developer.chrome.com/docs/performance/insights/slow-css-selector), der både har lang forløbstid og langsom vej en stor procentdel af tiden. Enklere vælgere, færre vælgere, en mindre DOM og en mindre omfattende DOM er med til at reducere omkostningerne ved matching."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Forløbet tid"
@@ -2571,7 +2532,7 @@
     "message": "Overførselsstørrelse"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Tredjepartskode kan have en væsentlig indvirkning på indlæsningen. [Reducer og udskyd indlæsningen af tredjepartskoden](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) for at prioritere din sides indhold."
+    "message": "Tredjepartskode kan have en væsentlig indvirkning på indlæsningen. [Reducer og udskyd indlæsningen af tredjepartskoden](https://developer.chrome.com/docs/performance/insights/third-parties) for at prioritere din sides indhold."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Der blev ikke fundet nogen tredjeparter"
@@ -2580,7 +2541,7 @@
     "message": "Tredjeparter"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Trykinteraktioner kan blive [forsinket med op til 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), hvis viewport ikke er optimeret til mobilen."
+    "message": "Trykinteraktioner kan blive [forsinket med op til 300 ms](https://developer.chrome.com/docs/performance/insights/viewport), hvis viewport ikke er optimeret til mobilen."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Forsinkelse ved tryk på mobil"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Få flere oplysninger om AI i Udviklerværktøjer"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "AI-hjælp er ikke tilgængelig i inkognitotilstand eller gæstetilstand"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Denne funktion er kun tilgængelig, når du er logget ind i Chrome med din Google-konto"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Tjek din internetforbindelse, og prøv igen"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Vis det valgte kontekstelement i Udviklerværktøjer"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "AI-hjælp i Indstillinger"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Aktivér {PH1} for at få hjælp til at forstå CSS-typografier"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Aktivér {PH1} for at få hjælp til typografi og netværksanmodninger"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Aktivér {PH1} for at få hjælp til typografier, netværksanmodninger og filer"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Aktivér {PH1} for at få hjælp til typografier, netværksanmodninger, ydeevne og filer"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "På denne side kan du undersøge og ændre animationer."
@@ -6063,10 +6000,16 @@
     "message": "Navnet på din Google-konto og dine interesser vil blive brugt på din Google-udviklerprofil. Dit navn kan blive vist, hvor du bidrager, og kan ændres når som helst."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
-    "message": "Når du opretter en udviklerprofil, accepterer du {PH1}. Googles {PH2} og {PH3} gælder for din brug af denne tjeneste."
+    "message": "Når du opretter en udviklerprofil, accepterer du vores {PH1}. Googles {PH2} og {PH3} gælder for din brug af denne tjeneste."
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Servicevilkår"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Linket til {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Knyttet til kildekort: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "Tillad"
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Vis konsol"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Vis AI-oversigter for konsolmeddelelser"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Vis CORS-fejl i konsollen"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Gå til panelet Animationer"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Åbn farvevælgeren. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Tilføj {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Blokering"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Tilpasset"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex-læser"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Tilføj blokeringsmønster for netværksanmodning"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Tilføj mønster"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Tilføj et mønster for at blokere netværksanmodninger ved at klikke på knappen \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} blev blokeret"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Aktivér blokering af netværksanmodning"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Elementet blev slettet"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Få flere oplysninger"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Der er ingen blokerede netværksanmodninger"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Mønsteret findes allerede."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Input af mønster kan ikke være tomt."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Tekstmønster til blokering af matchede anmodninger. Brug * som jokertegn"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Ryd alle"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Anmodningens status kan ikke vises her, da den side, der sendte den, unloadede, mens anmodningen blev behandlet. Du kan bruge chrome://net-export til at hente en netværkslog og se alle oplysninger om anmodninger."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Oplysninger om forbindelse"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Webadresse for anmodning om blokering"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Bloker anmodninger"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Blokerede anmodninger"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Tredjepartsanmodninger"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Domæne for begrænsningsanmodning"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Webadresse for begrænsningsanmodning"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Begrænsningsanmodninger"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Fjern blokering {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Stop begrænsning af {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Forbindelses-id"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "Webadresse"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Tilføj blokeringsmønster for netværksanmodning"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Tilføj mønster"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Tilføj begrænsnings- eller blokeringsmønster for netværksanmodninger"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Tilføj et mønster ved at klikke på knappen \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} blev blokeret"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Reducer prioritet"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Aktivér blokering og begrænsning"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Aktivér blokering af netværksanmodning"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Øg prioritet"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Elementet blev slettet"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Der er ingen blokerede netværksanmodninger"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Der er ingen blokerings- eller begrænsningsmønstre for anmodninger"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Mønsteret findes allerede."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Dette mønster kunne ikke parses som et URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp-grupper er ikke tilladt"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Input af mønster kan ikke være tomt."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Dette mønster er opgraderet fra \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Tekstmønster til blokering eller begrænsning af matchede anmodninger. Brug URLPattern-syntaks."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Tekstmønster til blokering af matchede anmodninger. Brug * som jokertegn"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies, som blev modtaget fra serveren i headeren \"set-cookie\" for svaret"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Anmodning til ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Anmodning/svar"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Ressourceplanlægning"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Serveren kan lempe politikken for ressourcer med krydsoprindelse i svarheaderen for at bruge denne ressource fra et andet website."
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Tilføj blokerings- eller begrænsningsmønster for netværksanmodning"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Tilføj blokeringsmønster for netværksanmodning"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Blokering af netværksanmodninger"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Anmodningsbetingelser"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "netværksbegrænsning"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Optag netværkslog"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Fjern alle blokerings- eller begrænsningsmønstre for netværksanmodninger"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Fjern alle blokeringsmønstre for netværksanmodninger"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Vis blokering af netværksanmodninger"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Vis anmodningsbetingelser"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Vis søgning"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Objekter, der opbevares af frigjorte DOM-noder"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Objekter, der opbevares af hændelseshandlere"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Andre JS-objekter"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Når funktionen er aktiveret"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Angiv en sti"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Angiv en entydig sti"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Ekskluderede undermapper"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "Webadresse"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Tilføj en regel med et regulært udtryk for scriptwebadressen"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Åbn en JavaScript- eller CSS-fil for at se symboler"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Åbn i overordnet mappe"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Tilsidesæt indhold"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" er en fil med kildekort og kan ikke tilsidesættes."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Vil du tilsidesætte \"{PH1}\" i stedet?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Gem som…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Filen kunne ikke gemmes på disken."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Gem billede"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM-modulet kunne ikke gemmes på disken. Modulet er sandsynligvis for stort."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Vis alle tilsidesættelser"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Inkluder annoteringer"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Inkluder scriptindhold"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Inkluder scriptkildekort"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Yderligere oplysninger:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Gem"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Omfatter alt indhold i alle indlæste scripts (undtagen udvidelser)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Komprimer med gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Anmodningsheadere er tilsidesat"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Cookies for denne anmodning er blokeret på grund af enten Chrome-flag eller browserkonfigurationen. Få flere oplysninger i panelet om problemer."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Brug regulært udtryk"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Kræver genindlæsning"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "markeret"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Brug foreslået farve {PH1}for at rette lav kontrast"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Denne farve blev justeret, så den matcher formatets farveområde. Det faktiske resultat var {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Konvertering til et lille farveområde medfører farveændringer"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Føj til palet"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domæne"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Redigerbare cookies"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(uigennemsigtig)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Website for partitionsnøgle"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Sti"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioritet"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Sikker"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Session"
@@ -17526,7 +17592,7 @@
     "message": "automatisk"
   },
   "ui/legacy/components/utils/Linkifier.ts | linkHandling": {
-    "message": "Link håndtering:"
+    "message": "Linkhåndtering:"
   },
   "ui/legacy/components/utils/Linkifier.ts | openUsingS": {
     "message": "Åbn med {PH1}"

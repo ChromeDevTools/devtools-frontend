@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "ផ្នែកនៃកូដ With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "ទប់ស្កាត់"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "បានបោះបង់"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ភ្ជាប់ទៅស្ដាំ"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevToolsបានទទួល​សំណើ​ខាងក្រៅ"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ទំព័រ​ផ្ដោត"
   },
@@ -1275,13 +1281,13 @@
     "message": "អាចប្រើ​ជាមួយ​ទិន្នន័យ៖ URL ជា SVGUseElement ត្រូវបាន​បញ្ឈប់ ហើយវានឹង​ត្រូវបាន​ដកចេញ​នាពេលអនាគត។"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() និង watchPosition() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+    "message": "getCurrentPosition() និង watchPosition() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ ដើម្បី​ទទួលបាន​ព័ត៌មាន​លម្អិត​បន្ថែម។"
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() និង watchPosition() ត្រូវបានបញ្ឈប់នៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាព។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+    "message": "getCurrentPosition() និង watchPosition() ត្រូវបានបញ្ឈប់នៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាព។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ ដើម្បី​ទទួលបាន​ព័ត៌មាន​លម្អិត​បន្ថែម។"
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+    "message": "getUserMedia() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ ដើម្បី​ទទួលបាន​ព័ត៌មាន​លម្អិត​បន្ថែម។"
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ត្រូវបាន​បញ្ឈប់។ សូមប្រើ RTCPeerConnectionIceErrorEvent.address ឬ RTCPeerConnectionIceErrorEvent.port ជំនួសវិញ។"
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI នឹងស្នើសុំការអនុញ្ញាតក្នុងការប្រើប្រាស់ ទោះបីជា sysex មិនត្រូវបានបញ្ជាក់នៅក្នុង MIDIOptions ក៏ដោយ។"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Notification API អាចលែងត្រូវបានប្រើពីប្រភពដើមដែលមិនមាន​សុវត្ថិភាពទៀតហើយ។ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+    "message": "Notification API អាចលែងត្រូវបានប្រើពីប្រភពដើមដែលមិនមាន​សុវត្ថិភាពទៀតហើយ។ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ ដើម្បី​ទទួលបាន​ព័ត៌មាន​លម្អិត​បន្ថែម។"
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "ការអនុញ្ញាតសម្រាប់ Notification API ប្រហែលលែងត្រូវបានស្នើសុំពី iframe ដែលមានប្រភពដើមផ្សេងទៀតហើយ។ អ្នកគួរតែពិចារណាស្នើសុំការអនុញ្ញាតពីស៊ុមកម្រិតខ្ពស់ ឬបើកវិនដូថ្មីជំនួសវិញ។"
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "កម្មវិធីបន្ថែម​គួរតែភ្ជាប់ការដាក់ប្រភពដើមផ្សេងឱ្យនៅដោយឡែក ដើម្បីបន្តប្រើប្រាស់ SharedArrayBuffer។ សូមមើល https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/។"
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() ត្រូវបានបញ្ឈប់។ សូមប្រើ writeValueWithResponse() ឬ writeValueWithoutResponse() ជំនួសវិញ។"
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 មិន​អាច​ប្រើ​ដោយ json ឆ្លើយតបនៅក្នុង XMLHttpRequest បាន​ទេ"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "មុខងារនេះអាចប្រើបាន លុះត្រាតែមានការតភ្ជាប់អ៊ីនធឺណិតសកម្ម។"
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevToolsបានទទួល​សំណើ​ខាងក្រៅ"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "មានបញ្ហា​មិនស្គាល់​ពេលកំពុងផ្ទុក​ឯកសារ"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "ការ​ពន្យារ {PH1}, ការទាញ​យក {PH2} (សរុប {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "បញ្ចូលផ្លូវ"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "បញ្ចូលផ្លូវពិសេស"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "មិនបានរួមបញ្ចូល​ថតរងទេ"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "មិនអាច​ផ្ទុក Blob បានទេ។"
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "មិនអាច​បញ្ចូល​ប្រព័ន្ធឯកសារ​បានទេ៖ {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "បើក​នៅក្នុងថតផ្ទុក"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "លុបពីលើ​ខ្លឹមសារ"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ គឺជាឯកសារ​ដែលបានភ្ជាប់ទៅ​ប្រភព និង​មិនអាច​ត្រូវបាន​លុបពីលើ​ទេ។"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "លុបពីលើ ‘{PH1}’ ជំនួសវិញឬ?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "រក្សាទុក​ជា…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "មិនអាច​រក្សាទុក​ឯកសារទៅ​ថាស​បានទេ។"
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "រក្សាទុករូបភាព"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "មិនអាចរក្សាទុកម៉ូឌុល WASM ទៅក្នុងថាសបានទេ។ ម៉ូឌុលទំនងមានទំហំធំពេក។"
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "បង្ហាញ​ការលុបពីលើ​ទាំងអស់"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "បាន​ភ្ជាប់​ទៅ {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "បានភ្ជាប់ទៅ​ផែនទីប្រភព៖ {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem មិនអាច​អាន​ឯកសារ​បានទេ​។"
@@ -2157,7 +2118,7 @@
     "message": "រូបមានចលនា"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "ការប្ដូរ​ប្លង់​កើតឡើង នៅពេល​ធាតុផ្លាស់ទី​ដោយគ្មាន​អន្តរកម្ម​អ្នកប្រើប្រាស់។ [ស៊ើបអង្កេត​អំពី​ដើមហេតុ​នៃ​ការប្ដូរប្លង់](https://web.dev/articles/optimize-cls) ដូចជា​ធាតុ​ដែលត្រូវបាន​បញ្ចូល ដកចេញ ឬ​ពុម្ពអក្សរ​របស់ធាតុ​ទាំងនោះ​ដែលផ្លាស់ប្ដូរ នៅពេល​ទំព័រផ្ទុក។"
+    "message": "ការប្ដូរ​ប្លង់​កើតឡើង នៅពេល​ធាតុផ្លាស់ទី​ដោយគ្មាន​អន្តរកម្ម​អ្នកប្រើប្រាស់។ [ស៊ើបអង្កេត​អំពី​ដើមហេតុ​នៃ​ការប្ដូរប្លង់](https://developer.chrome.com/docs/performance/insights/cls-culprit) ដូចជា​ធាតុ​ដែលត្រូវបាន​បញ្ចូល ដកចេញ ឬ​ពុម្ពអក្សរ​របស់ធាតុ​ទាំងនោះ​ដែលផ្លាស់ប្ដូរ នៅពេល​ទំព័រផ្ទុក។"
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "iframe ដែលបានបញ្ចូល"
@@ -2193,7 +2154,7 @@
     "message": "TTL របស់​ឃ្លាំងបម្រុង"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "អាយុកាល​ទាំងមូល​វែង​នៃឃ្លាំងបម្រុង​អាចបង្កើន​ល្បឿន​នៃការចូលមើល​ទំព័រ​របស់អ្នក​ឡើងវិញ។ [ស្វែងយល់​បន្ថែម](https://web.dev/uses-long-cache-ttl/)។"
+    "message": "អាយុកាល​ឃ្លាំងបម្រុងទាំងមូល​ដែលវែង​អាចបង្កើន​ល្បឿន​នៃការចូលមើល​ទំព័រ​របស់អ្នក​ឡើងវិញ។ [ស្វែងយល់បន្ថែម​អំពី​ការទុកក្នុងឃ្លាំងបម្រុង](https://developer.chrome.com/docs/performance/insights/cache)។"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "មិនមាន​សំណើ​ដែលមាន​គោលការណ៍​ឃ្លាំងបម្រុង​ដែលគ្មាន​ប្រសិទ្ធភាពទេ"
@@ -2208,7 +2169,7 @@
     "message": "ប្រើ​អាយុកាល​ទាំងមូល​នៃឃ្លាំងបម្រុង​ដែលមាន​ប្រសិទ្ធភាព"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "DOM ធំអាចបង្កើនរយៈពេលគណនារចនាបថ និងលំហូរជាថ្មីនៃប្លង់ ដែលប៉ះពាល់ដល់ការឆ្លើយតបរបស់ទំព័រ។ DOM ធំក៏នឹងបង្កើនការប្រើប្រាស់អង្គចងចាំផងដែរ។ [ស្វែងយល់​អំពី​របៀប​ជៀសវាង​ទំហំ DOM លើសលុប](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)។"
+    "message": "DOM ធំអាចបង្កើនរយៈពេលគណនារចនាបថ និងលំហូរជាថ្មីនៃប្លង់ ដែលប៉ះពាល់ដល់ការឆ្លើយតបរបស់ទំព័រ។ DOM ធំក៏នឹងបង្កើនការប្រើប្រាស់អង្គចងចាំផងដែរ។ [ស្វែងយល់​អំពី​របៀប​ជៀសវាង​ទំហំ DOM លើសលុប](https://developer.chrome.com/docs/performance/insights/dom-size)។"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "រយៈពេល"
@@ -2244,7 +2205,7 @@
     "message": "តម្លៃ"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "សំណើបណ្តាញដំបូងរបស់អ្នកមានសារៈសំខាន់បំផុត។  កាត់បន្ថយការ​ពន្យាររបស់វាដោយជៀសវាងការបញ្ជូនបន្ត ដែលធានាដល់ការឆ្លើយតបលឿនពីម៉ាស៊ីនមេ និងការបើកការបង្ហាប់អក្សរ។"
+    "message": "សំណើបណ្តាញដំបូងរបស់អ្នកមានសារៈសំខាន់បំផុត។ [កាត់បន្ថយការ​ពន្យារ​របស់វា](https://developer.chrome.com/docs/performance/insights/document-latency)ដោយ​ជៀសវាង​ការបញ្ជូនបន្ត ដែលធានា​ដល់ការឆ្លើយតបលឿន​ពីម៉ាស៊ីនមេ និង​ការបើក​ការបង្ហាប់​អក្សរ។"
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "មាន​ការបញ្ជូន​បន្ត (ការបញ្ជូន​បន្ត {PH1}, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "ប្រភព"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "ដក​ម៉ូឌុល JavaScript ស្ទួន​ដែលធំ​ចេញពី​កញ្ចប់ ដើម្បី​កាត់បន្ថយ​ចំនួនបៃ​មិនចាំបាច់​ដែលប្រើប្រាស់ដោយ​សកម្មភាពបណ្ដាញ។"
+    "message": "ដក[ម៉ូឌុល JavaScript ស្ទួន](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)ដែលធំ​ចេញពី​កញ្ចប់ ដើម្បី​កាត់បន្ថយ​ចំនួនបៃ​មិនចាំបាច់​ដែលប្រើប្រាស់ដោយ​សកម្មភាពបណ្ដាញ។"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript ស្ទួន"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "ពិចារណា​កំណត់[font-display](https://developer.chrome.com/blog/font-display)ទៅ \"swap\" ឬ \"optional\" ដើម្បី​ប្រាកដថា​អាចមើលឃើញ​អក្សរជាប់លាប់។ \"swap\" អាចត្រូវបានបង្កើនប្រសិទ្ធភាពបន្ថែមទៀតដើម្បីកាត់បន្ថយការប្ដូរប្លង់តាមរយៈ[ការលុបពីលើមេទ្រិកពុម្ព​អក្សរ](https://developer.chrome.com/blog/font-fallbacks)។"
+    "message": "ពិចារណា​កំណត់[font-display](https://developer.chrome.com/docs/performance/insights/font-display)ទៅ \"swap\" ឬ \"optional\" ដើម្បី​ប្រាកដថា​អាចមើលឃើញ​អក្សរជាប់លាប់។ \"swap\" អាចត្រូវបានបង្កើនប្រសិទ្ធភាពបន្ថែមទៀតដើម្បីកាត់បន្ថយការប្ដូរប្លង់តាមរយៈ[ការលុបពីលើមេទ្រិកពុម្ព​អក្សរ](https://developer.chrome.com/blog/font-fallbacks)។"
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ពុម្ពអក្សរ"
@@ -2304,10 +2265,10 @@
     "message": "(អនាមិក)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "លំហូរជាថ្មី​ដែលបាន​បង្ខំ​កើតឡើង នៅពេលដែល JavaScript សួរអំពី​លក្ខណៈ​ធរណីមាត្រ (ដូចជា offsetWidth) បន្ទាប់ពី​រចនាបថ​ត្រូវបាន​បញ្ឈប់​សុពលភាព​ដោយ​ការផ្លាស់ប្ដូរ​ចំពោះ​ស្ថានភាព DOM។ ករណីនេះ​អាចបណ្ដាលឱ្យ​មាន​ប្រតិបត្តិការ​មិនល្អ។ ស្វែងយល់​បន្ថែម​អំពី[លំហូរជាថ្មី​ដែល​បានបង្ខំ](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) និង​ការផ្ទេរ​ដែលអាចមាន។"
+    "message": "លំហូរជាថ្មី​ដែលបាន​បង្ខំ​កើតឡើង នៅពេលដែល JavaScript សួរអំពី​លក្ខណៈ​ធរណីមាត្រ (ដូចជា offsetWidth) បន្ទាប់ពី​រចនាបថ​ត្រូវបាន​បញ្ឈប់​សុពលភាព​ដោយ​ការផ្លាស់ប្ដូរ​ចំពោះ​ស្ថានភាព DOM។ ករណីនេះ​អាចបណ្ដាលឱ្យ​មាន​ប្រតិបត្តិការ​មិនល្អ។ ស្វែងយល់​បន្ថែម​អំពី[លំហូរជាថ្មី​ដែល​បានបង្ខំ](https://developer.chrome.com/docs/performance/insights/forced-reflow) និង​ការផ្ទេរ​ដែលអាចមាន។"
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "ដានបង្គរ"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "ស៊ុមនៃ​ការហៅ​ដែល​បើកដំណើរការ​លំហូរជាថ្មី"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "លំហូរជាថ្មីដែលបានបង្ខំ"
@@ -2322,7 +2283,7 @@
     "message": "[គ្មានលក្ខណៈ]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "ចាប់ផ្ដើម​ការស៊ើបអង្កេត​ពីផ្នែករង​ដែលវែងបំផុត។ [ការពន្យារពេលអាចត្រូវបានកាត់បន្ថយ​ឱ្យនៅតិចបំផុត](https://web.dev/articles/optimize-inp#optimize_interactions)។ ដើម្បីកាត់បន្ថយរយៈពេលដំណើរការ សូម[បង្កើនប្រសិទ្ធភាពចំណាយលើ thread ចម្បង](https://web.dev/articles/optimize-long-tasks) ជារឿយៗ JS។"
+    "message": "ចាប់ផ្ដើម​ការស៊ើបអង្កេត​អំពី[របៀប​កែលម្អ INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) ដោយមើល​ផ្នែករង​ដែលវែង​បំផុត។"
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "រយៈពេល"
@@ -2346,7 +2307,7 @@
     "message": "ព័ត៌មាន​លម្អិត​អំពី INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "ការបន្ថយ​រយៈពេល​ទាញយក​រូបភាព​អាចកែលម្អ​រយៈពេល​ផ្ទុកទំព័រ និង LCP ដែល​កត់សម្គាល់។ [ស្វែងយល់​បន្ថែម​អំពី​ការបង្កើន​ប្រសិទ្ធភាព​ទំហំ​រូបភាព](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "ការបន្ថយ​រយៈពេល​ទាញយក​រូបភាព​អាចកែលម្អ​រយៈពេល​ផ្ទុកទំព័រ និង LCP ដែល​កត់សម្គាល់។ [ស្វែងយល់​បន្ថែម​អំពី​ការបង្កើន​ប្រសិទ្ធភាព​ទំហំ​រូបភាព](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (តាមការ​ប៉ាន់ស្មាន {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "ការប្រើប្រាស់​ទម្រង់​វីដេអូ​ជំនួសឱ្យ GIF អាច​កែលម្អ​ទំហំ​ទាញយក​ខ្លឹមសារ​ដែលមាន​ចលនា។"
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "[ផ្នែករង​នីមួយៗ​មានយុទ្ធសាស្ត្រ​កែលម្អ​ជាក់លាក់](https://web.dev/articles/optimize-lcp#lcp-breakdown)។ ក្នុងស្ថានភាពល្អបំផុត ពេលវេលា LCP ភាគច្រើនគួរតែចំណាយលើការផ្ទុកធនធាន មិនមែនលើការពន្យារពេលនោះទេ។"
+    "message": "[ផ្នែករង​នីមួយៗ​មានយុទ្ធសាស្ត្រ​កែលម្អ​ជាក់លាក់](https://developer.chrome.com/docs/performance/insights/lcp-breakdown)។ ក្នុងស្ថានភាពល្អបំផុត ពេលវេលា LCP ភាគច្រើនគួរតែចំណាយលើការផ្ទុកធនធាន មិនមែនលើការពន្យារពេលនោះទេ។"
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "រយៈពេល"
@@ -2406,7 +2367,7 @@
     "message": "ព័ត៌មាន​លម្អិត​អំពី LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "បង្កើនប្រសិទ្ធភាព LCP ដោយធ្វើឱ្យរូបភាព LCP [អាចរកឃើញ](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)ពី HTML ភ្លាមៗ ហើយ[ជៀសវាងការផ្ទុកផ្នែកមើលឃើញ](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[បង្កើនប្រសិទ្ធភាព LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) ដោយ​ធ្វើឱ្យ​រូបភាព LCP អាច​រកឃើញពី HTML ភ្លាមៗ ហើយ​ជៀសវាង​ការផ្ទុកតែផ្នែកមើលឃើញ"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "បាន​អនុវត្ត fetchpriority=high"
@@ -2439,13 +2400,13 @@
     "message": "បៃដែល​ខាតបង់"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill និង​ការប្រែក្លាយ​បើក​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ចាស់ជាង ដើម្បីប្រើ​មុខងារ JavaScript ថ្មីៗ។ ទោះយ៉ាងណាក្ដី មុខងារ​ជាច្រើន​គឺមិនចាំបាច់​សម្រាប់​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​ទាន់សម័យទេ។ សូម​ពិចារណា​កែប្រែ​ដំណើរការ​បង្កើត JavaScript របស់អ្នក ដើម្បីកុំឱ្យ​បំប្លែង​ភាសាកូដ​មុខងារ[គោល](https://web.dev/articles/baseline-and-polyfills)ទៅជា​ភាសាកូដ​ផ្សេងទៀត ប្រសិនបើអ្នក​មិនដឹងថា​អ្នកត្រូវតែ​ប្រើ​កម្មវិធីរុករក​តាម​អ៊ីនធឺណិត​ចាស់ជាង​នោះទេ។ [ស្វែងយល់​អំពី​មូលហេតុ​ដែល​គេហទំព័រ​ភាគច្រើន​អាចប្រើ​កូដ ES6+ ដោយមិន​ចាំបាច់​បំប្លែង​ភាសាកូដ​ទៅជា​ភាសាកូដ​ផ្សេងទៀត](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill និង​ការប្រែក្លាយ​បើក​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ចាស់ជាង ដើម្បីប្រើ​មុខងារ JavaScript ថ្មីៗ។ ទោះយ៉ាងណាក្ដី មុខងារ​ជាច្រើន​គឺមិនចាំបាច់​សម្រាប់​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​ទាន់សម័យទេ។ សូម​ពិចារណា​កែប្រែ​ដំណើរការ​បង្កើត JavaScript របស់អ្នក ដើម្បីកុំឱ្យ​បំប្លែង​ភាសាកូដ​មុខងារ[គោល](https://web.dev/articles/baseline-and-polyfills)ទៅជា​ភាសាកូដ​ផ្សេងទៀត ប្រសិនបើអ្នក​មិនដឹងថា​អ្នកត្រូវតែ​ប្រើ​កម្មវិធីរុករក​តាម​អ៊ីនធឺណិត​ចាស់ជាង​នោះទេ។ [ស្វែងយល់​អំពី​មូលហេតុ​ដែល​គេហទំព័រ​ភាគច្រើន​អាចប្រើ​កូដ ES6+ ដោយមិន​ចាំបាច់​បំប្លែង​ភាសាកូដ​ទៅជា​ភាសាកូដ​ផ្សេងទៀត](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript ចាស់"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 និង HTTP/3 ផ្ដល់​អត្ថប្រយោជន៍​ជាច្រើន​លើស HTTP/1.1 ដូចជា​ការចងជាសំណុំ​ជាដើម។ [ស្វែងយល់​បន្ថែម​អំពី​ការប្រើប្រាស់ HTTP ទាន់សម័យ](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)។"
+    "message": "HTTP/2 និង HTTP/3 ផ្ដល់​អត្ថប្រយោជន៍​ជាច្រើន​លើស HTTP/1.1 ដូចជា​ការចងជាសំណុំ​ជាដើម។ [ស្វែងយល់​បន្ថែម​អំពី​ការប្រើប្រាស់ HTTP ទាន់សម័យ](https://developer.chrome.com/docs/performance/insights/modern-http)។"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "គ្មាន​សំណើ​ដែលបានប្រើ HTTP/1.1 ទេ ឬ​ការប្រើប្រាស់ HTTP/1.1 បច្ចុប្បន្ន​របស់វា​មិនបង្ហាញ​ឱកាស​បង្កើន​ប្រសិទ្ធភាព​បានច្រើនទេ។ សំណើ HTTP/1.1 ត្រូវបាន​សម្គាល់ លុះត្រាតែ​ទ្រព្យថេរ​ចំនួនប្រាំមួយ ឬ​ច្រើនជាងនេះ​មាន​ប្រភពដើម​ដូចគ្នា ហើយ​ពួកវា​មិនត្រូវបានផ្ដល់​ពីមជ្ឈដ្ឋាន​អភិវឌ្ឍន៍​មូលដ្ឋាន ឬ​ប្រភព​ភាគីទីបី​នោះទេ។"
@@ -2478,7 +2439,7 @@
     "message": "ការភ្ជាប់​ជាមុន​ដែលមិនបានប្រើ។ សូម​ពិនិត្យមើលថា​លក្ខណៈ crossorigin ត្រូវបានប្រើ​យ៉ាងត្រឹមត្រូវ។"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[ជៀសវាងភ្ជាប់សំណើសំខាន់ៗ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)ដោយកាត់បន្ថយប្រវែងតំណភ្ជាប់ កាត់បន្ថយទំហំទាញយកនៃធនធាន ឬពន្យារពេលទាញយកធនធានដែលមិនចាំបាច់ ដើម្បីធ្វើឱ្យការផ្ទុកទំព័រប្រសើរឡើង។"
+    "message": "[ជៀសវាងភ្ជាប់សំណើសំខាន់ៗ](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)ដោយកាត់បន្ថយប្រវែងតំណភ្ជាប់ កាត់បន្ថយទំហំទាញយកនៃធនធាន ឬពន្យារពេលទាញយកធនធានដែលមិនចាំបាច់ ដើម្បីធ្វើឱ្យការផ្ទុកទំព័រប្រសើរឡើង។"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "បញ្ចូល​តម្រុយ[ភ្ជាប់​ជាមុន](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ទៅ​ប្រភពដើម​សំខាន់ៗ​បំផុត​របស់អ្នក ប៉ុន្តែ​សូមព្យាយាម​ប្រើកុំឱ្យ​លើសពី 4។"
@@ -2517,7 +2478,7 @@
     "message": "ជៀសវាង​ភ្ជាប់សំណើ​សំខាន់ៗ​ដោយកាត់បន្ថយប្រវែង​តំណភ្ជាប់ កាត់បន្ថយ​ទំហំទាញយកនៃ​ធនធាន ឬពន្យារពេល​ទាញយក​ធនធានដែល​មិនចាំបាច់ ដើម្បីធ្វើឱ្យ​ការផ្ទុកទំព័រ​ប្រសើរឡើង។"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "សំណើកំពុង​ទប់ស្កាត់ការបំប្លែងដំបូងរបស់ទំព័រ ដែលអាចពន្យារពេល LCP។ [ការពន្យារពេល ឬការដាក់ក្នុងជួរ](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources)អាចផ្លាស់ទីសំណើបណ្ដាញទាំងនេះចេញពីផ្លូវសំខាន់។"
+    "message": "សំណើកំពុង​ទប់ស្កាត់ការបំប្លែងដំបូងរបស់ទំព័រ ដែលអាចពន្យារពេល LCP។ [ការពន្យារពេល ឬការដាក់ក្នុងជួរ](https://developer.chrome.com/docs/performance/insights/render-blocking)អាចផ្លាស់ទីសំណើបណ្ដាញទាំងនេះចេញពីផ្លូវសំខាន់។"
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "រយៈពេល"
@@ -2532,7 +2493,7 @@
     "message": "បំប្លែង​សំណើ​ទប់ស្កាត់"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "ប្រសិនបើចំណាយលើ \"គណនារចនាបថឡើងវិញ\" នៅតែខ្ពស់ ការបង្កើនប្រសិទ្ធភាពផ្ទាំងជ្រើសរើសអាចកាត់បន្ថយចំណាយទាំងនោះបាន។ [បង្កើនប្រសិទ្ធភាពផ្ទាំងជ្រើសរើស](https://developer.chrome.com/docs/devtools/performance/selector-stats)ដែលមានទាំងរយៈពេលកន្លងផុតខ្ពស់ និង % ផ្លូវយឺតខ្ពស់។ ផ្ទាំងជ្រើសរើសកាន់តែសាមញ្ញ, ផ្ទាំងជ្រើសរើសកាន់តែតិច, DOM កាន់តែតូច និង DOM កាន់តែរាក់នឹងសុទ្ធតែកាត់បន្ថយចំណាយដែលត្រូវគ្នា។"
+    "message": "ប្រសិនបើចំណាយលើ \"គណនារចនាបថឡើងវិញ\" នៅតែខ្ពស់ ការបង្កើនប្រសិទ្ធភាពផ្ទាំងជ្រើសរើសអាចកាត់បន្ថយចំណាយទាំងនោះបាន។ [បង្កើនប្រសិទ្ធភាពផ្ទាំងជ្រើសរើស](https://developer.chrome.com/docs/performance/insights/slow-css-selector)ដែលមានទាំងរយៈពេលកន្លងផុតខ្ពស់ និង % ផ្លូវយឺតខ្ពស់។ ផ្ទាំងជ្រើសរើសកាន់តែសាមញ្ញ, ផ្ទាំងជ្រើសរើសកាន់តែតិច, DOM កាន់តែតូច និង DOM កាន់តែរាក់នឹងសុទ្ធតែកាត់បន្ថយចំណាយដែលត្រូវគ្នា។"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "រយៈពេលកន្លងផុត"
@@ -2571,7 +2532,7 @@
     "message": "ទំហំផ្ទេរ"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "កូដភាគីទី 3 អាច​ជះឥទ្ធិពល​យ៉ាងខ្លាំង​ដល់ដំណើរ​ការផ្ទុក។ [កាត់បន្ថយ និង​ពន្យារពេល​ផ្ទុកកូដ​ភាគីទី 3](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) ដើម្បី​កំណត់អាទិភាព​ខ្លឹមសារ​ទំព័រ​របស់អ្នក។"
+    "message": "កូដភាគីទី 3 អាច​ជះឥទ្ធិពល​យ៉ាងខ្លាំង​ដល់ដំណើរ​ការផ្ទុក។ [កាត់បន្ថយ និង​ពន្យារពេល​ផ្ទុកកូដ​ភាគីទី 3](https://developer.chrome.com/docs/performance/insights/third-parties) ដើម្បី​កំណត់អាទិភាព​ខ្លឹមសារ​ទំព័រ​របស់អ្នក។"
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "រកមិនឃើញ​ភាគី​ទីបីទេ"
@@ -2580,7 +2541,7 @@
     "message": "ភាគីទី 3"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "អន្តរកម្ម​ដោយ​ការចុច​អាចត្រូវបាន[ពន្យារពេល​រហូតដល់ 300 មិល្លីវិនាទី](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ប្រសិនបើ​ផ្ទាំងមើលឃើញ​មិនត្រូវបាន​បង្កើន​ប្រសិទ្ធភាព​សម្រាប់​ឧបករណ៍​ចល័តទេ។"
+    "message": "អន្តរកម្ម​ដោយ​ការចុច​អាចត្រូវបាន[ពន្យារពេល​រហូតដល់ 300 មិល្លីវិនាទី](https://developer.chrome.com/docs/performance/insights/viewport) ប្រសិនបើ​ផ្ទាំងមើលឃើញ​មិនត្រូវបាន​បង្កើន​ប្រសិទ្ធភាព​សម្រាប់​ឧបករណ៍​ចល័តទេ។"
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "ការពន្យារ​ពេលចុចលើ​ឧបករណ៍​ចល័ត"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "ស្វែងយល់​អំពី AI នៅក្នុង​ឧបករណ៍អ្នកអភិវឌ្ឍន៍"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "មិនអាចប្រើ​ជំនួយ AI នៅក្នុង​មុខងារ​ឯកជន ឬ​មុខងារភ្ញៀវ​បានទេ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "អាចប្រើ​មុខងារនេះ​បាន តែនៅពេល​ដែលអ្នកបាន​ចូល Chrome ដោយប្រើ​គណនី Google របស់អ្នក​ប៉ុណ្ណោះ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "ពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្ដងទៀត"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "បង្ហាញ​ធាតុក្នុង​បរិបទ​ដែលបាន​ជ្រើសរើស​នៅក្នុង​ឧបករណ៍អ្នកអភិវឌ្ឍន៍"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "ជំនួយ AI នៅក្នុង \"ការកំណត់\""
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "បើក {PH1} ដើម្បី​ទទួលបាន​ជំនួយ​ពាក់ព័ន្ធនឹង​ការយល់ដឹងអំពី​រចនាបថ CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "បើក {PH1} ដើម្បី​ទទួលបាន​ជំនួយ​ពាក់ព័ន្ធនឹង​សំណើ​បណ្ដាញ និង​រចនាបថ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "បើក{PH1} ដើម្បី​ទទួលបាន​ជំនួយ​ពាក់ព័ន្ធនឹង​រចនាបថ សំណើ​បណ្ដាញ និង​ឯកសារ"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "បើក{PH1} ដើម្បី​ទទួលបាន​ជំនួយ​ពាក់ព័ន្ធនឹង​រចនាបថ សំណើ​បណ្ដាញ ប្រតិបត្តិការ និង​ឯកសារ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "នៅលើ​ទំព័រនេះ អ្នកអាច​ត្រួតពិនិត្យ និង​កែប្រែ​រូបមាន​ចលនា។"
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "លក្ខខណ្ឌ​ប្រើប្រាស់"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "បាន​ភ្ជាប់​ទៅ {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "បានភ្ជាប់ទៅ​ផែនទីប្រភព៖ {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "អនុញ្ញាត"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "បង្ហាញ​កុងសូល"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "បង្ហាញ​សេចក្ដីសង្ខេបដោយ AI សម្រាប់​សារកុងសូល"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "បង្ហាញបញ្ហា CORS នៅក្នុងកុងសូល"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "រំលងទៅ​ផ្ទាំង​រូបមានចលនា"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "បើកផ្ទាំង​ជ្រើសរើស​ពណ៌។ {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "បញ្ចូល {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "ការទប់ស្កាត់"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "ផ្ទាល់ខ្លួន"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "អ្នកមើល Hex នាក់"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "បញ្ចូល​លំនាំទប់ស្កាត់​សំណើ​បណ្ដាញ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "បញ្ចូលលំនាំ"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "បញ្ចូល​លំនាំ ដើម្បី​ទប់ស្កាត់​សំណើ​បណ្ដាញ​ដោយ​ចុចលើ​ប៊ូតុង \"{PH1}\"។"
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "បានទប់​ស្កាត់ {PH1}"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "បើកការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "បានលុបធាតុ​ដោយជោគជ័យ"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "ស្វែងយល់បន្ថែម"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "មិនមាន​សំណើ​បណ្ដាញ​ដែលបាន​ទប់ស្កាត់ទេ"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "លំនាំមាន​រួចហើយ។"
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "ការបញ្ចូល​លំនាំ​មិនអាចទទេ​បានទេ។"
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "លំនាំអត្ថបទសម្រាប់ទប់ស្កាត់សំណើដែលត្រូវគ្នា។ ប្រើ * សម្រាប់តួអក្សរ​ជំនួស"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "សម្អាត​ទាំងអស់"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "មិនអាច​បង្ហាញស្ថានភាព​សំណើ​នៅទីនេះបានទេ ដោយសារ​ទំព័រដែលបាន​ចេញផ្សាយវា​បានឈប់ផ្ទុក នៅពេលសំណើនេះ​ស្ថិតក្នុង​ការផ្សាយ​ពាណិជ្ជកម្មដែលមានគម្លាតពេលផ្សាយ។ អ្នកអាចប្រើ chrome://net-export ដើម្បីថត​កំណត់ហេតុ​បណ្ដាញ និងមើល​ព័ត៌មានលម្អិត​អំពីសំណើ​ទាំងអស់។"
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "ព័ត៌មាន​អំពី​ការតភ្ជាប់"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "ទប់ស្កាត់ URL សំណើ"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "ទប់ស្កាត់​សំណើ"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "សំណើ​ដែលបាន​ទប់ស្កាត់"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "សំណើ​របស់ភាគីទី 3"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "ពន្យឺត​ដូមែន​សំណើ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "ពន្យឺត URL សំណើ"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "ពន្យឺត​សំណើ"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "ឈប់ទប់ស្កាត់ {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "បញ្ឈប់​ការពន្យឺត {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "លេខសម្គាល់ការតភ្ជាប់"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "បញ្ចូល​លំនាំទប់ស្កាត់​សំណើ​បណ្ដាញ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "បញ្ចូលលំនាំ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "បញ្ចូល​ទម្រង់​ទប់ស្កាត់ ឬ​ពន្យឺត​សំណើ​បណ្ដាញ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "បញ្ចូល​ទម្រង់​ដោយ​ចុចលើ​ប៊ូតុង \"{PH1}\"។"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "បានទប់​ស្កាត់ {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "បន្ថយ​អាទិភាព"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "បើក​ការទប់ស្កាត់ និង​ការពន្យឺត"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "បើកការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "បង្កើន​អាទិភាព"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "បានលុបធាតុ​ដោយជោគជ័យ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "មិនមាន​សំណើ​បណ្ដាញ​ដែលបាន​ទប់ស្កាត់ទេ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "គ្មាន​ទម្រង់​ទប់ស្កាត់ ឬ​ពន្យឺត​សំណើទេ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "លំនាំមាន​រួចហើយ។"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "មិនអាចញែក​ទម្រង់នេះ​ជា URLPattern បានទេ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "មិនអនុញ្ញាត​ឱ្យប្រើ​ក្រុម RegExp ទេ"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "ការបញ្ចូល​លំនាំ​មិនអាចទទេ​បានទេ។"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "ទម្រង់នេះ​ត្រូវបាន​ប្ដូរពី \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "ទម្រង់អក្សរ​សម្រាប់​ទប់ស្កាត់ ឬ​ពន្យឺត​សំណើ​ដែលត្រូវគ្នា ប្រើ​វាក្យសម្ព័ន្ធ URLPattern។"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "លំនាំអត្ថបទសម្រាប់ទប់ស្កាត់សំណើដែលត្រូវគ្នា។ ប្រើ * សម្រាប់តួអក្សរ​ជំនួស"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ខូគី​ដែលបានទទួល​ពីម៉ាស៊ីនមេ​នៅក្នុងផ្នែកក្បាល 'set-cookie' នៃការឆ្លើយតប"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "សំណើទៅកាន់ ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "សំណើ/ការឆ្លើយតប"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "ការកំណត់កាលវិភាគធនធាន"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "ដើម្បីប្រើ​ធនធាននេះ​ពីគេហទំព័រផ្សេង ម៉ាស៊ីនមេអាច​សម្រាក​ផ្នែកក្បាលនៃការឆ្លើយតបរបស់គោលការណ៍ស្ដីពីធនធានដែលមានប្រភពដើមផ្សេង៖"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "បញ្ចូល​ទម្រង់​ពន្យឺត ឬ​ទប់ស្កាត់​សំណើ​បណ្ដាញ"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "បញ្ចូល​លំនាំទប់ស្កាត់​សំណើ​បណ្ដាញ"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "ការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "លក្ខខណ្ឌ​សំណើ"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ការពន្យឺត​បណ្ដាញ"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "ថត​កំណត់ហេតុបណ្ដាញ"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "ដក​ទម្រង់​ពន្យឺត ឬ​ទប់ស្កាត់​សំណើ​បណ្ដាញ​ទាំងអស់​ចេញ"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "ដកលំនាំទប់ស្កាត់សំណើបណ្ដាញទាំងអស់ចេញ"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "បង្ហាញការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "បង្ហាញ​លក្ខខណ្ឌ​សំណើ"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "បង្ហាញ​ការ​ស្វែងរក"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "បានរក្សាទុកវត្ថុដោយណត DOM ដែលបានផ្ដាច់ចេញ"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "បាន​រក្សាទុកវត្ថុ​ដោយ​ឧបករណ៍ដោះស្រាយ​ព្រឹត្តិការណ៍"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "វត្ថុ JS ផ្សេងទៀត"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "នៅពេលបើក"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "បញ្ចូលផ្លូវ"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "បញ្ចូលផ្លូវពិសេស"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "មិនបានរួមបញ្ចូល​ថតរងទេ"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "បញ្ចូល​វិធាន​កន្សោម​ធម្មតា​សម្រាប់ URL របស់​ស្គ្រីប"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "បើក​ឯកសារ CSS ឬ JavaScript ដើម្បីមើល​និមិត្តសញ្ញា"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "បើក​នៅក្នុងថតផ្ទុក"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "លុបពីលើ​ខ្លឹមសារ"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "‘{PH1}’ គឺជាឯកសារ​ដែលបានភ្ជាប់ទៅ​ប្រភព និង​មិនអាច​ត្រូវបាន​លុបពីលើ​ទេ។"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "លុបពីលើ ‘{PH1}’ ជំនួសវិញឬ?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "រក្សាទុក​ជា…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "មិនអាច​រក្សាទុក​ឯកសារទៅ​ថាស​បានទេ។"
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "រក្សាទុករូបភាព"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "មិនអាចរក្សាទុកម៉ូឌុល WASM ទៅក្នុងថាសបានទេ។ ម៉ូឌុលទំនងមានទំហំធំពេក។"
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "បង្ហាញ​ការលុបពីលើ​ទាំងអស់"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "រួមបញ្ចូល​ចំណារ"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "រួមបញ្ចូល​ខ្លឹមសារ​ស្គ្រីប"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "រួមបញ្ចូល​ផែនទី​ប្រភព​ស្គ្រីប"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "ព័ត៌មានបន្ថែម៖"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "រក្សាទុក"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "រួមបញ្ចូល​ខ្លឹមសារ​ពេញលេញ​នៃស្គ្រីប​ទាំងអស់​ដែលបាន​ផ្ទុក (លើកលែងតែ​កម្មវិធីបន្ថែម)។"
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "បង្ហាប់​ដោយប្រើ gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "ផ្នែកក្បាល​នៃសំណើ​ត្រូវបាន​លុបពីលើ"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "ខូគីសម្រាប់សំណើនេះត្រូវបានទប់ស្កាត់ដោយសារទង់ Chrome ឬការកំណត់រចនាសម្ព័ន្ធកម្មវិធីរុករកតាមអ៊ីនធឺណិត។ ស្វែងយល់បន្ថែមនៅក្នុងផ្ទាំងបញ្ហា។"
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "ប្រើ​កន្សោម​ធម្មតា"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "ការកំណត់មួយ ឬច្រើនបានផ្លាស់ប្ដូរ ដែលតម្រូវឱ្យផ្ទុកឡើងវិញ ទើបមានប្រសិទ្ធភាព"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*តម្រូវឱ្យ​ផ្ទុកឡើងវិញ"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "បានធីក​"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ប្រើពណ៌ {PH1} ដែលបានណែនាំ ដើម្បីកែ​ពន្លឺបញ្រ្ចាសកម្រិតទាប"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "ពណ៌​នេះ​ត្រូវ​បានកាត់ចេញ​ ដើម្បី​ឱ្យត្រូវគ្នានឹងកាមុតរបស់​ទម្រង់។ លទ្ធផល​ជាក់ស្ដែង​គឺ {PH1}"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ ការបំប្លែង​ទៅជា​កាមុត​តូចចង្អៀត​នឹងបណ្ដាល​ឱ្យមាន​ការប្ដូរពណ៌"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "បញ្ចូល​ទៅក្ដារលាយពណ៌"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "ខូគី"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "ដូមែន"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "ខូគីដែលអាចកែបាន"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(ស្រអាប់)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "គេហទំព័រ​កូដ​ផ្នែក"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "ច្រក"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "អាទិភាព"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "សុវត្ថិភាព"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "វគ្គ"

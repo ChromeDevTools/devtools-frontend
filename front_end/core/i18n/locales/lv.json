@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With bloks"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Bloķēt"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "Pārtraukts"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Dokot labajā pusē"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools saņēma ārēju pieprasījumu"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fokusa lapa"
   },
@@ -1275,13 +1281,13 @@
     "message": "Datu atbalsts: parametrā SVGUseElement vairs netiek atbalstīti vietrāži URL, un nākotnē tie tiks noņemti."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "Metodes getCurrentPosition() un watchPosition() vairs nedarbojas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+    "message": "Metodes “getCurrentPosition()” un “watchPosition()” vairs nedarbojas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Metodes getCurrentPosition() un watchPosition() vairs netiek izmantotas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+    "message": "Metodes “getCurrentPosition()” un “watchPosition()” vairs netiek izmantotas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Metode “getUserMedia()” vairs nedarbojas nedrošiem avotiem. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "Lauks RTCPeerConnectionIceErrorEvent.hostCandidate vairs netiek atbalstīts. Tā vietā izmantojiet lauku RTCPeerConnectionIceErrorEvent.address vai RTCPeerConnectionIceErrorEvent.port."
@@ -1311,7 +1317,7 @@
     "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Paziņojumu API vairs nevar izmantot no nedrošiem avotiem. Apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+    "message": "Paziņojumu API vairs nevar izmantot no nedrošiem avotiem. Apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "No citas izcelsmes iframe ietvara vairs nevar pieprasīt atļauju saskarnei Paziņojumu API. Apsveriet iespēju pieprasīt atļauju no augšējā līmeņa ietvara vai atvērt jaunu logu."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "Metode BluetoothRemoteGATTCharacteristic.writeValue() vairs netiek atbalstīta. Tā vietā izmantojiet “writeValueWithResponse()” vai “writeValueWithoutResponse()”."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Šī funkcija ir pieejama, ja ir izveidots aktīvs savienojums ar internetu."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools saņēma ārēju pieprasījumu"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ielādējot failu, radās nezināma kļūda"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "Latentums: {PH1}, lejupielāde: {PH2} (kopā: {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Ievadiet ceļu"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Ievadiet unikālu ceļu"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Izslēgtās apakšmapes"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Nevarēja ielādēt bināro lielo objektu."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Nevar pievienot failu sistēmu: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Atvērt ietvertajā mapē"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "Ignorēt saturu"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "“{PH1}” ir fails, kurā kartēti avoti, un to nevar ignorēt."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Vai tā vietā ignorēt “{PH1}”?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Saglabāt kā…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Neizdevās saglabāt failu diskā."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Saglabāt attēlu"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM moduli nevar saglabāt diskā. Visticamāk, modulis ir pārāk liels."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Rādīt visus ignorēšanas gadījumus"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Saistīts ar: {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Saistīts ar avota karti: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem nevar nolasīt failus."
@@ -2157,7 +2118,7 @@
     "message": "Animācija"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Izkārtojuma nobīdes rodas, ja elementi pārvietojas bez lietotāja mijiedarbības. [Izpētiet izkārtojuma nobīdes cēloņus](https://web.dev/articles/optimize-cls), piemēram, elementu pievienošanu un noņemšanu vai to fonta izmaiņas lapas ielādes laikā."
+    "message": "Izkārtojuma nobīdes rodas, ja elementi pārvietojas bez lietotāja mijiedarbības. [Izpētiet izkārtojuma nobīdes cēloņus](https://developer.chrome.com/docs/performance/insights/cls-culprit), piemēram, elementu pievienošanu un noņemšanu vai to fonta izmaiņas lapas ielādes laikā."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Iepludināts iframe"
@@ -2193,7 +2154,7 @@
     "message": "Kešatmiņas TTL vērtība"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Iestatot ilgu kešatmiņas mūžu, lapas atkārtoti apmeklējumi varētu paātrināties. [Uzziniet vairāk](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Iestatot ilgu kešatmiņas mūžu, lapas atkārtoti apmeklējumi varētu paātrināties. [Uzziniet vairāk par saglabāšanu kešatmiņā](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Nav pieprasījumu ar neefektīvām kešatmiņas politikām"
@@ -2208,7 +2169,7 @@
     "message": "Efektīva kešatmiņas darbības ilguma izmantošana"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Liels DOM koks var paildzināt stila aprēķinus un izkārtojuma plūduma pārkārtošanu, ietekmējot lapas reaģētspēju. Liels DOM koks arī palielinās atmiņas lietojumu. [Uzziniet, kā izvairīties no pārmērīga DOM lieluma](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Liels DOM koks var paildzināt stila aprēķinus un izkārtojuma plūduma pārkārtošanu, ietekmējot lapas reaģētspēju. Liels DOM koks arī palielinās atmiņas lietojumu. [Uzziniet, kā izvairīties no pārmērīga DOM lieluma](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Ilgums"
@@ -2244,7 +2205,7 @@
     "message": "Vērtība"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "Jūsu pirmais tīkla pieprasījums ir vissvarīgākais.  Samaziniet latentumu, novēršot novirzīšanu, nodrošinot ātru servera atbildi un iespējojot teksta saspiešanu."
+    "message": "Jūsu pirmais tīkla pieprasījums ir vissvarīgākais. [Samaziniet latentumu](https://developer.chrome.com/docs/performance/insights/document-latency), novēršot novirzīšanu, nodrošinot ātru servera atbildi un iespējojot teksta saspiešanu."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Tika veikta novirzīšana ({PH1} novirzīšana, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Avots"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Noņemiet lielus, dublētus JavaScript moduļus no pakām, lai samazinātu nevajadzīgu baitu apjomu, ko patērē tīkla darbība."
+    "message": "Noņemiet no komplektiem lielus, [dublētus JavaScript moduļus](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), lai samazinātu nevajadzīgu baitu apjomu, ko patērē tīkla darbība."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript kodu dublikāti"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Lai teksts vienmēr būtu redzams, ieteicams parametram [font-display](https://developer.chrome.com/blog/font-display) iestatīt vērtību swap vai optional. Lai mazinātu izkārtojuma nobīdes, swap var optimizēt vēl vairāk, izmantojot [fonta rādītāju ignorēšanu](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "Lai teksts vienmēr būtu redzams, ieteicams parametram [font-display](https://developer.chrome.com/docs/performance/insights/font-display) iestatīt vērtību swap vai optional. Lai mazinātu izkārtojuma nobīdes, swap var optimizēt vēl vairāk, izmantojot [fonta rādītāju ignorēšanu](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fonts"
@@ -2304,10 +2265,10 @@
     "message": "(anonīmas)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "Piespiedu plūduma pārkārtošana rodas, kad JavaScript pieprasa ģeometriskos parametrus (piemēram, offsetWidth) pēc tam, kad stili tiek atzīti par nederīgiem, mainot DOM stāvokli. Tā rezultātā var pasliktināties veiktspēja. Uzziniet vairāk par [piespiedu plūduma pārkārtošanu](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) un iespējamiem novēršanas pasākumiem."
+    "message": "Piespiedu plūduma pārkārtošana rodas, kad JavaScript pieprasa ģeometriskos parametrus (piemēram, offsetWidth) pēc tam, kad stili tiek atzīti par nederīgiem, mainot DOM stāvokli. Tā rezultātā var pasliktināties veiktspēja. Uzziniet vairāk par [piespiedu plūduma pārkārtošanu](https://developer.chrome.com/docs/performance/insights/forced-reflow) un iespējamiem novēršanas pasākumiem."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Steka trasēšana"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Izsaukumu ietvari, kas aktivizē plūduma pārkārtošanu"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Plūduma piespiedu pārkārtošana"
@@ -2322,7 +2283,7 @@
     "message": "[neattiecināti]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Vispirms izpētiet garāko apakšdaļu. [Aizkaves var samazināt](https://web.dev/articles/optimize-inp#optimize_interactions). Lai samazinātu apstrādes ilgumu, [optimizējiet galvenā pavediena izmaksas](https://web.dev/articles/optimize-long-tasks) (parasti JS)."
+    "message": "Izpētiet, [kā uzlabot INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown), izvērtējot garāko apakšdaļu."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Ilgums"
@@ -2346,7 +2307,7 @@
     "message": "INP iedalījums"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Samazinot attēlu lejupielādes laiku, var tikt uzlabots lapas ielādes laiks un LCP. [Uzziniet vairāk par attēlu lieluma optimizāciju](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
+    "message": "Samazinot attēlu lejupielādes laiku, var tikt uzlabots lapas ielādes laiks un LCP. [Uzziniet vairāk par attēlu lieluma optimizāciju](https://developer.chrome.com/docs/performance/insights/image-delivery)."
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (apt. {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "Izmantojot video formātus, nevis GIF attēlus, var uzlabot animēta satura lejupielādes lielumu."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Katrai [apakšdaļai ir noteiktas uzlabošanas stratēģijas](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideālā gadījumā lielāko daļu LCP laika ir jāveido resursu ielādei, nevis aizkavei."
+    "message": "Katrai [apakšdaļai ir noteiktas uzlabošanas stratēģijas](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideālā gadījumā lielāko daļu LCP laika ir jāveido resursu ielādei, nevis aizkavei."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Ilgums"
@@ -2406,7 +2367,7 @@
     "message": "LCP iedalījums"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "Optimizējiet LCP, padarot LCP attēlu nekavējoties [atklājamu](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) HTML struktūrā un [novēršot atlikto ielādi](https://web.dev/articles/lcp-lazy-loading)"
+    "message": "[Optimizējiet LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery), padarot LCP attēlu nekavējoties atklājamu HTML struktūrā un novēršot atlikto ielādi"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Tiek lietota vērtība fetchpriority=high"
@@ -2439,13 +2400,13 @@
     "message": "Neizmantotie baiti"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Pārlūka ielikumi un pārveidošanas kodi ļauj vecākos pārlūkos izmantot jaunas JavaScript funkcijas. Tomēr modernos pārlūkos daudzi no tiem nav nepieciešami. Ieteicams mainīt JavaScript būvēšanas procesu, lai netiktu transpilētas [pamata līmeņa](https://web.dev/articles/baseline-and-polyfills) funkcijas, ja vien nezināt, ka jums ir jāatbalsta vecāki pārlūki. [Uzziniet, kāpēc lielākajā daļā vietņu var izvietot ES6+ kodu bez transpilēšanas](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)."
+    "message": "Pārlūka ielikumi un pārveidošanas kodi ļauj vecākos pārlūkos izmantot jaunas JavaScript funkcijas. Tomēr modernos pārlūkos daudzi no tiem nav nepieciešami. Ieteicams mainīt JavaScript būvēšanas procesu, lai netiktu transpilētas [pamata līmeņa](https://web.dev/articles/baseline-and-polyfills) funkcijas, ja vien nezināt, ka jums ir jāatbalsta vecāki pārlūki. [Uzziniet, kāpēc lielākajā daļā vietņu var izvietot ES6+ kodu bez transpilēšanas](https://developer.chrome.com/docs/performance/insights/legacy-javascript)."
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Mantotais JavaScript kods"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 un HTTP/3 sniedz daudzas priekšrocības salīdzinājumā ar HTTP/1.1, piemēram, multipleksēšanu. [Uzziniet vairāk par modernā HTTP izmantošanu](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 un HTTP/3 sniedz daudzas priekšrocības salīdzinājumā ar HTTP/1.1, piemēram, multipleksēšanu. [Uzziniet vairāk par modernā HTTP izmantošanu](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Neviens pieprasījums neizmanto protokolu HTTP/1.1, vai arī pašreizējā protokola HTTP/1.1 izmantošana nenodrošina būtiskas optimizācijas iespējas. Protokola HTTP/1.1 pieprasījumi tiek atzīmēti tikai tad, ja seši vai vairāki statiski elementi tiek iegūti no viena avota un tie netiek rādīti no lokālas izstrādes vides vai trešās puses avota."
@@ -2478,7 +2439,7 @@
     "message": "Neizmantota iepriekšēja pieslēgšanās. Pārbaudiet, vai atribūts crossorigin tiek izmantots pareizi."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "[Novērsiet kritisko pieprasījumu ķēdes](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains), samazinot ķēžu garumu, samazinot resursu lejupielādes apjomu vai atliekot nevajadzīgo resursu lejupielādi, lai uzlabotu lapas ielādi."
+    "message": "[Novērsiet kritisko pieprasījumu ķēdes](https://developer.chrome.com/docs/performance/insights/network-dependency-tree), samazinot ķēžu garumu, samazinot resursu lejupielādes apjomu vai atliekot nevajadzīgo resursu lejupielādi, lai uzlabotu lapas ielādi."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "Pievienojiet [iepriekšējas savienojuma izveides](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) norādes saviem svarīgākajiem avotiem, taču centieties izmantot ne vairāk par četriem avotiem."
@@ -2517,7 +2478,7 @@
     "message": "Novērsiet kritisko pieprasījumu ķēdes, samazinot ķēžu garumu, samazinot resursu lejupielādes apjomu vai atliekot nevajadzīgo resursu lejupielādi, lai uzlabotu lapas ielādi."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Pieprasījumi bloķē lapas sākotnējo atveidi, un tas var aizkavēt LCP. [Atliekot vai iekļaujot](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) šos tīkla pieprasījumus, tos varat pārvietot ārpus kritiskā ceļa."
+    "message": "Pieprasījumi bloķē lapas sākotnējo atveidi, un tas var aizkavēt LCP. [Atliekot vai iekļaujot](https://developer.chrome.com/docs/performance/insights/render-blocking) šos tīkla pieprasījumus, tos varat pārvietot ārpus kritiskā ceļa."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Ilgums"
@@ -2532,7 +2493,7 @@
     "message": "Atveidošanas bloķēšanas pieprasījumi"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Ja izmaksas par stila pārrēķināšanu saglabājas augstas, tās var samazināt atlasītāja optimizācija. [Optimizējiet atlasītājus](https://developer.chrome.com/docs/devtools/performance/selector-stats), iestatot augstu pagājušā laika vērtību un augstu lēna ceļa % vērtību. Atbilstības izmaksas arī var samazināt, izmantojot vienkāršāku atlasītāju, mazāku skaitu atlasītāju, mazāku DOM un DOM koku ar mazāku līmeņu skaitu."
+    "message": "Ja izmaksas par stila pārrēķināšanu saglabājas augstas, tās var samazināt atlasītāja optimizācija. [Optimizējiet atlasītājus](https://developer.chrome.com/docs/performance/insights/slow-css-selector), iestatot augstu pagājušā laika vērtību un augstu lēna ceļa % vērtību. Atbilstības izmaksas arī var samazināt, izmantojot vienkāršāku atlasītāju, mazāku skaitu atlasītāju, mazāku DOM un DOM koku ar mazāku līmeņu skaitu."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Patērētais laiks"
@@ -2571,7 +2532,7 @@
     "message": "Pārsūtīto vienumu lielums"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Trešās puses kods var ievērojami ietekmēt ielādes veiktspēju. Lai piešķirtu prioritāti savas lapas saturam, [ierobežojiet un atlieciet trešās puses koda ielādi](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "Trešās puses kods var ievērojami ietekmēt ielādes veiktspēju. Lai piešķirtu prioritāti savas lapas saturam, [ierobežojiet un atlieciet trešās puses koda ielādi](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Netika atrasts trešās puses saturs"
@@ -2580,7 +2541,7 @@
     "message": "Trešās puses"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Ja skatvieta nav optimizēta mobilajām ierīcēm, mijiedarbībā ar pieskārieniem var būt [aizkave līdz pat 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Ja skatvieta nav optimizēta mobilajām ierīcēm, mijiedarbībā ar pieskārieniem var būt [aizkave līdz pat 300 ms](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Pieskāriena aizkave mobilajās ierīcēs"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Uzzināt vairāk par MI izstrādātāja rīkos"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "MI palīdzība nav pieejama inkognito režīmā vai viesa režīmā"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Šī funkcija ir pieejama tikai pēc pierakstīšanās pārlūkā Chrome ar Google kontu."
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "Pārbaudiet interneta savienojumu un mēģiniet vēlreiz"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Parādīt atlasīto konteksta vienumu izstrādātāja rīkos"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "MI palīdzība iestatījumos"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "Lai saņemtu palīdzību saistībā ar CSS stilu izprašanu, ieslēdziet funkciju {PH1}."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Lai saņemtu palīdzību saistībā ar stiliem un tīkla pieprasījumiem, ieslēdziet funkciju {PH1}."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem un failiem, ieslēdziet funkciju {PH1}."
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem, veiktspēju un failiem, ieslēdziet funkciju {PH1}."
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Šajā lapā varat pārbaudīt un mainīt animācijas."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Pakalpojumu sniegšanas noteikumi"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Saistīts ar: {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Saistīts ar avota karti: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "Atļaut"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Rādīt konsoli"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Rādīt konsoles ziņojumu MI kopsavilkumus"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Rādīt CORS kļūdas konsolē"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Pāriet uz paneli Animācijas"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Atveriet krāsu atlasītāju. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "Pievienot: {PH1}"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Bloķēšana"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Pielāgots"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex skatītājs"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Pievienot tīkla pieprasījumu bloķēšanas šablonu"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Pievienot rakstu"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "Pievienojiet tīkla pieprasījumu bloķēšanas kombināciju, noklikšķinot uz pogas {PH1}."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "Bloķēts: {PH1}"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Iespējot tīkla pieprasījumu bloķēšanu"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Vienums ir sekmīgi izdzēsts"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Uzzināt vairāk"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Nav bloķētu tīkla pieprasījumu"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Šablons jau pastāv."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Šablona lauks nedrīkst būt tukšs."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Teksta raksts atbilstošu pieprasījumu bloķēšanai; varat izmantot rakstzīmi * kā aizstājējzīmi"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Notīrīt visu"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "Pieprasījuma statusu šeit nevar parādīt, jo pieprasījuma izpildes laikā tika atcelta tās lapas ielāde, kas aktivizēja pieprasījumu. Varat izmantot chrome://net-export, lai tvertu tīkla žurnālu un skatītu visu pieprasījuma informāciju."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Informācija par savienojumu"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Bloķēt pieprasījuma URL"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "Bloķēt pieprasījumus"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Bloķētie pieprasījumi"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Trešās puses pieprasījumi"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "Ierobežot pieprasījuma domēnu"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "Ierobežot pieprasījuma URL"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "Ierobežot pieprasījumus"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Atbloķēt {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "Pārtraukt {PH1} ierobežošanu"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Savienojuma ID"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Pievienot tīkla pieprasījumu bloķēšanas šablonu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Pievienot rakstu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Pievienot tīkla pieprasījumu ierobežošanas vai bloķēšanas rakstu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "Pievienojiet rakstu, noklikšķinot uz pogas {PH1}."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "Bloķēts: {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Piešķirt zemāku prioritāti"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Iespējojiet bloķēšanu un ierobežošanu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Iespējot tīkla pieprasījumu bloķēšanu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Piešķirt augstāku prioritāti"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Vienums ir sekmīgi izdzēsts"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Nav bloķētu tīkla pieprasījumu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "Nav pieprasījumu ierobežošanas vai bloķēšanas rakstu"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Šablons jau pastāv."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Neizdevās šo rakstu analizēt kā URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "Nav atļauts izmantot RegExp grupas"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Šablona lauks nedrīkst būt tukšs."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Šis raksts ir mainīta “{PH1}” versija"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Teksta raksts atbilstošu pieprasījumu bloķēšanai vai ierobežošanai; izmantojiet URLPattern sintaksi."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Teksta raksts atbilstošu pieprasījumu bloķēšanai; varat izmantot rakstzīmi * kā aizstājējzīmi"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Sīkfaili, kas no servera tika saņemti atbildes galvenē “set-cookie”"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Pieprasījums skriptam ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "Pieprasījums/atbilde"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Resursu plānošana"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Lai izmantotu šo resursu no citas vietnes, serveris var iestatīt mazāk stingru vērtību atbildes galvenē, kas nosaka politiku par citas izcelsmes resursu kopīgošanu:"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Pievienojiet tīkla pieprasījumu bloķēšanas vai ierobežošanas rakstu"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Pievienot tīkla pieprasījumu bloķēšanas šablonu"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Tīkla pieprasījumu bloķēšana"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "Pieprasījuma nosacījumi"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "tīkla ierobežošana"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Ierakstīt tīkla žurnālu"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Noņemt visus tīkla pieprasījumu bloķēšanas vai ierobežošanas rakstus"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Noņemt visus tīkla pieprasījumu bloķēšanas šablonus"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Rādīt tīkla pieprasījumu bloķēšanas rīku"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "Rādīt pieprasījuma nosacījumus"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Rādīt rīku Meklēšana"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Objekti, ko saglabā atvienoti DOM mezgli"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Objekti, ko saglabā notikumu apdarinātāji"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Citi JS objekti"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Ja ieslēgta"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Ievadiet ceļu"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Ievadiet unikālu ceļu"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Izslēgtās apakšmapes"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Pievienojiet skripta URL regulārās izteiksmes kārtulu"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Lai skatītu simbolus, atveriet JavaScript vai CSS failu"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Atvērt ietvertajā mapē"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "Ignorēt saturu"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "“{PH1}” ir fails, kurā kartēti avoti, un to nevar ignorēt."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Vai tā vietā ignorēt “{PH1}”?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Saglabāt kā…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Neizdevās saglabāt failu diskā."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Saglabāt attēlu"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM moduli nevar saglabāt diskā. Visticamāk, modulis ir pārāk liels."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Rādīt visus ignorēšanas gadījumus"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Iekļaut komentārus"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Iekļaut skripta saturu"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Iekļaut skriptu avotu kartes"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Papildinformācija:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Saglabāt"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Ietver visu ielādēto skriptu saturu (izņemot paplašinājumus)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "Saspiest, izmantojot GZIP"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Pieprasījumu galvenes tiek ignorētas"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Šim pieprasījumam sīkfaili ir bloķēti Chrome karodziņu vai pārlūka konfigurācijas dēļ. Uzziniet vairāk panelī Problēmas."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Izmantot regulāro izteiksmi"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Viens vai vairāki iestatījumi ir mainījušies, tāpēc jāveic atkārtota ielāde."
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Nepieciešama atkārtota ielāde"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "atzīmēts"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Izmantot ieteikto krāsu ({PH1}), lai novērstu ar zemu kontrastu saistītas problēmas"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Šīs krāsas vērtības tika apgrieztas, lai nodrošinātu atbilstību formāta gammai. Faktiskais rezultāts bija {PH1}."
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Pārveidošana, izmantojot šaurāku krāsu gammu, izraisīs krāsu nobīdes"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Pievienot paletei"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Sīkfaili"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Domēns"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Rediģējami sīkfaili"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(nepārredzama)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Nodalījuma atslēgas vietne"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Ceļš"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Prioritāte"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Drošs"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sesija"

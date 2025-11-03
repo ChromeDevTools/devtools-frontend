@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "مجموعة With"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "حظر"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "تم الإلغاء"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "إرساء إلى يسار علامة تبويب المتصفِّح"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "تم إرسال طلب خارجي إلى \"DevTools\""
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "صفحة التركيز"
   },
@@ -1275,13 +1281,13 @@
     "message": "تم بشكل نهائي إيقاف استخدام عناوين URL التي تبدأ بمخطّط \"data:‎\" في واجهة SVGUseElement، وستتم إزالة هذه الميزة في المستقبل."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "لم يعد الإجراءان getCurrentPosition() وwatchPosition() متوافقين مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+    "message": "لم تعُد \"getCurrentPosition()\" و\"watchPosition()\" متوافقتين مع المصادر غير الآمنة. لاستخدام هذه الميزة، عليك نقل تطبيقك إلى مصدر آمن مثل HTTPS. يُرجى الاطّلاع على https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ لمزيد من التفاصيل."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "تم إيقاف الإجراءين getCurrentPosition() وwatchPosition() نهائيًا على المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+    "message": "تم إيقاف \"getCurrentPosition()\" و\"watchPosition()\" نهائيًا على المصادر غير الآمنة. لاستخدام هذه الميزة، عليك نقل تطبيقك إلى مصدر آمن مثل HTTPS. يُرجى الاطّلاع على https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ لمزيد من التفاصيل."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "لم تعد الميزة getUserMedia() متوافقة مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+    "message": "لم تعُد \"getUserMedia()\" متوافقة مع المصادر غير الآمنة. لاستخدام هذه الميزة، عليك نقل تطبيقك إلى مصدر آمن مثل HTTPS. يُرجى الاطّلاع على https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ لمزيد من التفاصيل."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "تم إيقاف RTCPeerConnectionIceErrorEvent.hostCandidate نهائيًا. يُرجى استخدام RTCPeerConnectionIceErrorEvent.address أو RTCPeerConnectionIceErrorEvent.port بدلاً منها."
@@ -1311,7 +1317,7 @@
     "message": "ستطلب واجهة برمجة التطبيقات Web MIDI إذنًا للاستخدام حتى في حال عدم تحديد رسائل النظام الحصرية (Sysex) في MIDIOptions."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "قد يتوقف استخدام واجهة برمجة التطبيقات Notification API من مصادر غير آمنة. يجب مراعاة نقل تطبيقك إلى مصدر آمن، مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+    "message": "قد يتوقف استخدام Notification API من مصادر غير آمنة. عليك نقل تطبيقك إلى مصدر آمن، مثل HTTPS. يُرجى الاطّلاع على https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ لمزيد من التفاصيل."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "قد تتوقّف إمكانية طلب إذن لواجهة برمجة التطبيقات Notification API من أحد إطارات iframe من مصادر متعددة. يجب مراعاة طلب إذن من إطار عالٍ المستوى أو فتح نافذة جديدة بدلاً من ذلك."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "يجب أن تستخدم الإضافات ميزة حظر الوصول من نطاقات أخرى لمواصلة استخدام الكائن SharedArrayBuffer. يُرجى الاطّلاع على https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "تم إيقاف \"BluetoothRemoteGATTCharacteristic.writeValue()\" نهائيًا. يُرجى استخدام \"writeValueWithResponse()\" أو \"writeValueWithoutResponse()\" بدلاً من ذلك."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "لا يتوفّر الترميز UTF-16 من خلال استجابة json في واجهة برمجة التطبيقات XMLHttpRequest."
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "لا تتوفّر هذه الميزة إلا مع وجود اتصال إنترنت نشط."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "تم إرسال طلب خارجي إلى \"DevTools\""
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "حدث خطأ غير معروف أثناء تحميل الملف."
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "وقت الاستجابة {PH1}، مدة التنزيل {PH2}، (الإجمالي {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "أدخِل مسارًا."
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "أدخِل مسارًا فريدًا."
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "المجلّدات الفرعية المستبعَدة"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "عنوان URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "تعذَّر تحميل الكائن الثنائي الكبير."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "تتعذّر إضافة نظام الملفّات: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "الفتح في المجلّد المتضمّن"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "تجاهُل المحتوى"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" هو ملف تم ربط مصدره ولا يمكن تجاوزه."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "هل تريد إلغاء \"{PH1}\" بدلاً من ذلك؟"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "حفظ بتنسيق…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "تعذَّر حفظ الملف على القرص."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "حفظ الصورة"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "يتعذّر حفظ وحدة WASM في القرص بسبب حجمها الكبير جدًا على الأرجح."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "عرض كل الملفات التي تم تجاهلها"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "تم الربط بـ {PH1}."
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "تم الربط بخريطة المصدر: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "يتعذّر على PlatformFileSystem قراءة الملفات."
@@ -2157,7 +2118,7 @@
     "message": "صورة متحركة"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "تحدث تغييرات التصميم عندما تتحرك العناصر بدون أي تدخُّل من المستخدم. [تحقَّق من أسباب تغييرات التصميم](https://web.dev/articles/optimize-cls)، مثل إضافة عناصر أو إزالتها أو تغيير خطوطها أثناء تحميل الصفحة."
+    "message": "تحدث تغييرات التصميم عندما تتحرك العناصر بدون أي تدخُّل من المستخدم. [تحقَّق من أسباب تغييرات التصميم](https://developer.chrome.com/docs/performance/insights/cls-culprit)، مثل إضافة عناصر أو إزالتها أو تغيير خطوطها أثناء تحميل الصفحة."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "إطار iframe الذي تم إدخاله"
@@ -2193,7 +2154,7 @@
     "message": "مدة البقاء (TTL) في ذاكرة التخزين المؤقت"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "يمكن لفترة التخزين المؤقت الطويلة زيادة سرعة الزيارات المتكررة إلى صفحتك. [مزيد من المعلومات](https://web.dev/uses-long-cache-ttl/)"
+    "message": "يمكن لفترة التخزين المؤقت الطويلة زيادة سرعة الزيارات المتكررة إلى صفحتك. [معلومات إضافية عن التخزين المؤقت](https://developer.chrome.com/docs/performance/insights/cache)"
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "ما مِن طلبات تتضمّن سياسات ذاكرة تخزين مؤقت غير فعّالة"
@@ -2208,7 +2169,7 @@
     "message": "استخدام فترات التخزين المؤقت الفعّالة"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "إنّ الحجم الكبير لنموذج العناصر في المستند (DOM) يمكن أن يؤدي إلى زيادة مدة عمليات احتساب الأنماط وإعادة تدفق التنسيقات، ما يؤثر في سرعة استجابة الصفحة. وسيزيد هذا الحجم الكبير أيضًا من استخدام الذاكرة. [التعرّف على كيفية تجنُّب زيادة حجم DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+    "message": "إنّ الحجم الكبير لنموذج العناصر في المستند (DOM) يمكن أن يؤدي إلى زيادة مدة عمليات احتساب الأنماط وإعادة تدفق التنسيقات، ما يؤثر في سرعة استجابة الصفحة. وسيزيد هذا الحجم الكبير أيضًا من استخدام الذاكرة. [التعرّف على كيفية تجنُّب زيادة حجم DOM](https://developer.chrome.com/docs/performance/insights/dom-size)"
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "المدة"
@@ -2244,7 +2205,7 @@
     "message": "القيمة"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "طلب الشبكة الأول هو الأهم.  يمكنك تقليل وقت الاستجابة للطلب عن طريق تجنُّب عمليات إعادة التوجيه وضمان استجابة الخادم بسرعة وتفعيل ميزة ضغط النص."
+    "message": "طلب الشبكة الأول هو الأهم. يمكنك [تقليل وقت الاستجابة للطلب](https://developer.chrome.com/docs/performance/insights/document-latency) عن طريق تجنُّب عمليات إعادة التوجيه وضمان استجابة الخادم بسرعة وتفعيل ميزة ضغط النص."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "تضمَّن الطلب عمليات إعادة توجيه (عدد عمليات إعادة التوجيه: {PH1}، ومدتها {PH2}+)"
@@ -2283,13 +2244,13 @@
     "message": "المصدر"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "يمكنك إزالة وحدات JavaScript الكبيرة المكرّرة من الحِزم لتقليل وحدات البايت غير الضرورية التي يستهلكها نشاط الشبكة."
+    "message": "يمكنك إزالة [وحدات JavaScript الكبيرة المكرّرة](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) من الحِزم لتقليل وحدات البايت غير الضرورية التي يستهلكها نشاط الشبكة."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "مصادر JavaScript المكرّرة"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "يمكنك ضبط [font-display](https://developer.chrome.com/blog/font-display) على swap أو optional لضمان ظهور النص بشكل ثابت. ويمكن تحسين swap بشكل أكبر للتخفيف من تغييرات التصميم باستخدام [إجراءات تجاوز مقاييس الخطوط](https://developer.chrome.com/blog/font-fallbacks)."
+    "message": "يمكنك ضبط [font-display](https://developer.chrome.com/docs/performance/insights/font-display) على swap أو optional لضمان ظهور النص بشكل ثابت. ويمكن تحسين swap بشكل أكبر للتخفيف من تغييرات التصميم باستخدام [إجراءات تجاوز مقاييس الخطوط](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "الخط"
@@ -2304,10 +2265,10 @@
     "message": "(مجهولة)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "تتم إعادة ترتيب المحتوى عندما تطلب JavaScript سمات هندسية (مثل offsetWidth) بعد أن يتم تغيير الأنماط بسبب تعديل في حالة DOM. وقد يؤدي ذلك إلى ضعف الأداء. يمكنك التعرّف على مزيد من المعلومات حول [إعادة ترتيب المحتوى](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) والحلول المتاحة."
+    "message": "تتم إعادة ترتيب المحتوى عندما تطلب JavaScript سمات هندسية (مثل offsetWidth) بعد أن يتم تغيير الأنماط بسبب تعديل في حالة DOM. وقد يؤدي ذلك إلى ضعف الأداء. يمكنك التعرّف على مزيد من المعلومات حول [إعادة ترتيب المحتوى](https://developer.chrome.com/docs/performance/insights/forced-reflow) والحلول المتاحة."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "تتبُّع تسلسل استدعاء الدوال البرمجية"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "إطارات المكالمات التي تؤدي إلى إعادة ترتيب المحتوى"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "إعادة التدفق الإلزامية"
@@ -2322,7 +2283,7 @@
     "message": "[نص غير منسوب لأي جهة]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "ابدأ بالتحقيق في المهام الفرعية الأطول. [يمكن تقليل التأخيرات](https://web.dev/articles/optimize-inp#optimize_interactions). ولخفض مدة المعالجة، [يجب تحسين تكاليف سلسلة التعليمات الرئيسية](https://web.dev/articles/optimize-long-tasks)، والتي تكون في الغالب بيانات JavaScript."
+    "message": "يمكنك بدء التحقيق في [طرق تحسين مدى استجابة الصفحة لتفاعلات المستخدم (INP)](https://developer.chrome.com/docs/performance/insights/inp-breakdown) من خلال الاطّلاع على المهام الفرعية الأطول."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "المدة"
@@ -2346,7 +2307,7 @@
     "message": "تفاصيل مدى استجابة الصفحة لتفاعلات المستخدم (INP)"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "يمكن أن يؤدي تقليل وقت تنزيل الصور إلى تحسين مدّة التحميل المُدرَكة للصفحة، بالإضافة إلى تحسين سرعة عرض أكبر محتوى مرئي. [مزيد من المعلومات حول تحسين حجم الصورة](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+    "message": "يمكن أن يؤدي تقليل وقت تنزيل الصور إلى تحسين مدّة التحميل المُدرَكة للصفحة، بالإضافة إلى تحسين سرعة عرض أكبر محتوى مرئي. [مزيد من المعلومات حول تحسين حجم الصورة](https://developer.chrome.com/docs/performance/insights/image-delivery)"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (الحجم المقدَّر: {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "إنّ استخدام تنسيقات الفيديو بدلاً من ملفات GIF يمكن أن يؤدي إلى تحسين حجم تنزيل المحتوى المتحرك."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "لكل [جزء فرعي استراتيجيات تحسين محدَّدة](https://web.dev/articles/optimize-lcp#lcp-breakdown). ومن الأفضل أن يتم قضاء معظم زمن عرض أكبر محتوى مرئي (LCP) في تحميل الموارد، وليس في التأخير."
+    "message": "لكل [جزء فرعي استراتيجيات تحسين محدَّدة](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). ومن الأفضل أن يتم قضاء معظم زمن عرض أكبر محتوى مرئي (LCP) في تحميل الموارد، وليس في التأخير."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "المدة"
@@ -2406,7 +2367,7 @@
     "message": "تفاصيل سرعة عرض أكبر محتوى مرئي (LCP)"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "يمكنك تحسين مقياس سرعة عرض أكبر محتوى مرئي (LCP) من خلال جعل صورة مقياس LCP [قابلة للاكتشاف](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) من HTML على الفور، و[تجنُّب التحميل الكسول](https://web.dev/articles/lcp-lazy-loading)."
+    "message": "يمكنك [تحسين مقياس \"سرعة عرض أكبر محتوى مرئي\" (LCP)](https://developer.chrome.com/docs/performance/insights/lcp-discovery) من خلال جعل النسخة المخصصة للمقياس قابلة للاكتشاف من HTML على الفور، وتجنُّب التحميل الكسول."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "تم تطبيق السمة fetchpriority=high"
@@ -2439,13 +2400,13 @@
     "message": "وحدات البايت المُهدرة"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "تساعد الرموز البرمجية polyfill وtransform المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. من الأفضل تعديل عملية تصميم رموز JavaScript لتجنُّب تحويل رموز ميزات [Baseline](https://web.dev/articles/baseline-and-polyfills)، إلّا إذا كان من الضروري التوافق مع المتصفِّحات القديمة. [التعرُّف على سبب إمكانية نشر معظم المواقع الإلكترونية لرمز ES6+‎ بدون تحويله](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "تساعد الرموز البرمجية polyfill وtransform المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. من الأفضل تعديل عملية تصميم رموز JavaScript لتجنُّب تحويل رموز ميزات [Baseline](https://web.dev/articles/baseline-and-polyfills)، إلّا إذا كان من الضروري التوافق مع المتصفِّحات القديمة. [التعرُّف على سبب إمكانية نشر معظم المواقع الإلكترونية لرمز ES6+‎ بدون تحويله](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ميزات JavaScript القديمة"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "يوفِّر البروتوكولان HTTP/2 وHTTP/3 العديد من المزايا أكثر من بروتوكول HTTP/1.1، مثل الإرسال المتعدّد. [مزيد من المعلومات حول استخدام HTTP الحديث](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+    "message": "يوفِّر البروتوكولان HTTP/2 وHTTP/3 العديد من المزايا أكثر من بروتوكول HTTP/1.1، مثل الإرسال المتعدّد. [مزيد من المعلومات حول استخدام HTTP الحديث](https://developer.chrome.com/docs/performance/insights/modern-http)"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "لم يتم استخدام HTTP/1.1 في أي طلب، أو أنّ استخدامه الحالي لا يمثل فرصة كبيرة للتحسين. يتم وضع علامة على طلبات HTTP/1.1 فقط إذا كانت ستة أو أكثر من مواد العرض الثابتة تأتي من المصدر نفسه، ولم يتم عرضها من بيئة تطوير محلية أو مصدر تابع لجهة خارجية."
@@ -2478,7 +2439,7 @@
     "message": "تمت إضافة اتصال مُسبَق لمصادر غير مستخدَمة. يُرجى التحقّق من استخدام السمة crossorigin بشكل صحيح."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "يُمكن [تجنُّب تقييد الطلبات المهمة](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) عن طريق تقليل طول السلاسل أو تقليل حجم تنزيل الموارد أو تأجيل تنزيل الموارد غير الضرورية لتحسين تحميل الصفحة."
+    "message": "يُمكن [تجنُّب تقييد الطلبات المهمة](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) عن طريق تقليل طول السلاسل أو تقليل حجم تنزيل الموارد أو تأجيل تنزيل الموارد غير الضرورية لتحسين تحميل الصفحة."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "يمكنك إضافة إشارات [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) إلى أهم مصادرك، ولكن يُرجى محاولة استخدام 4 إشارات كحدّ أقصى."
@@ -2517,7 +2478,7 @@
     "message": "يُمكن تجنُّب تقييد الطلبات المهمة عن طريق تقليل طول السلاسل أو تقليل حجم تنزيل الموارد أو تأجيل تنزيل الموارد غير الضرورية لتحسين تحميل الصفحة."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "تؤدي الطلبات إلى حظر العرض الأوّلي للصفحة، ما قد يُبطئ سرعة عرض أكبر محتوى مرئي (LCP). ويمكن [تأجيل هذه الطلبات](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) أو تضمينها لإخراجها من المسار الحرج."
+    "message": "تؤدي الطلبات إلى حظر العرض الأوّلي للصفحة، ما قد يُبطئ سرعة عرض أكبر محتوى مرئي (LCP). ويمكن [تأجيل هذه الطلبات](https://developer.chrome.com/docs/performance/insights/render-blocking) أو تضمينها لإخراجها من المسار الحرج."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "المدة"
@@ -2532,7 +2493,7 @@
     "message": "طلبات حظر العرض"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "إذا ظلت تكاليف ميزة \"إعادة احتساب النمط\" مرتفعة، يمكن أن يؤدي تحسين أداة الاختيار إلى خفضها. يمكنك [تحسين أدوات الاختيار](https://developer.chrome.com/docs/devtools/performance/selector-stats) من خلال زيادة الوقت المنقضي وزيادة النسبة المئوية للمسار البطيء. وسيؤدي استخدام أدوات الاختيار الأبسط وعدد أدوات الاختيار الأقل ونموذج DOM الأصغر ونموذج DOM الأقل تعقيدًا إلى تقليل تكاليف المطابقة."
+    "message": "إذا ظلت تكاليف ميزة \"إعادة احتساب النمط\" مرتفعة، يمكن أن يؤدي تحسين أداة الاختيار إلى خفضها. يمكنك [تحسين أدوات الاختيار](https://developer.chrome.com/docs/performance/insights/slow-css-selector) من خلال زيادة الوقت المنقضي وزيادة النسبة المئوية للمسار البطيء. وسيؤدي استخدام أدوات الاختيار الأبسط وعدد أدوات الاختيار الأقل ونموذج DOM الأصغر ونموذج DOM الأقل تعقيدًا إلى تقليل تكاليف المطابقة."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "الوقت المنقضي"
@@ -2571,7 +2532,7 @@
     "message": "حجم عملية النقل"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "يمكن أن يؤثر الرمز البرمجي التابع لجهة خارجية بشكل كبير في أداء التحميل. [يمكنك تقليل تحميل الرموز البرمجية التابعة لجهات خارجية وتأجيله](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)، ومنح الأولوية لمحتوى صفحتك."
+    "message": "يمكن أن يؤثر الرمز البرمجي التابع لجهة خارجية بشكل كبير في أداء التحميل. [يمكنك تقليل تحميل الرموز البرمجية التابعة لجهات خارجية وتأجيله](https://developer.chrome.com/docs/performance/insights/third-parties)، ومنح الأولوية لمحتوى صفحتك."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "لم يتم العثور على أي محتوى خارجي"
@@ -2580,7 +2541,7 @@
     "message": "الجهات الخارجية"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "قد يتم [تأخير الاستجابة لتفاعلات النقر بمقدار 300 ملي ثانية كحد أقصى](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) إذا لم يتم تحسين إطار العرض للأجهزة الجوّالة."
+    "message": "قد يتم [تأخير الاستجابة لتفاعلات النقر بمقدار 300 ملي ثانية كحد أقصى](https://developer.chrome.com/docs/performance/insights/viewport) إذا لم يتم تحسين إطار العرض للأجهزة الجوّالة."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "مدة تأخير الاستجابة للنقر على الأجهزة الجوّالة"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "مزيد من المعلومات حول الذكاء الاصطناعي في \"أدوات مطوري البرامج\""
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "لا يتوفّر \"الدعم الذكي\" في \"وضع التصفّح المتخفي\" أو \"وضع الضيف\""
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "لا تتوفّر هذه الميزة إلّا عند تسجيل الدخول إلى متصفّح Chrome باستخدام حسابك على Google"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "يُرجى التأكّد من الاتصال بالإنترنت، ثم إعادة المحاولة"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "يظهر هذا الزر عنصر السياق المحدد في \"أدوات مطوري البرامج\""
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "إعدادات ميزة \"المساعدة المستنِدة إلى الذكاء الاصطناعي\""
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "فعِّل \"{PH1}\" للحصول على مساعدة بشأن فهم أنماط CSS"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "فعِّل \"{PH1}\" للحصول على مساعدة بشأن الأنماط وطلبات الشبكة"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "فعِّل \"{PH1}\" للحصول على مساعدة بشأن الأنماط وطلبات الشبكة والملفات"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "فعِّل \"{PH1}\" للحصول على مساعدة بشأن الأنماط وطلبات الشبكة والأداء والملفات"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "يمكنك في هذه الصفحة فحص الصور المتحركة وتعديلها."
@@ -6068,6 +6005,12 @@
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "بنود الخدمة"
   },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "تم الربط بـ {PH1}."
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "تم الربط بخريطة المصدر: {PH1}"
+  },
   "panels/common/common.ts | allow": {
     "message": "السماح"
   },
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "عرض وحدة التحكّم"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "عرض ملخصات لرسائل وحدة التحكّم من إنشاء الذكاء الاصطناعي"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "عرض أخطاء CORS في وحدة التحكّم"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "الانتقال السريع إلى لوحة \"الصور المتحركة\""
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "فتح محرِّر \"masonry\""
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "فتح علبة الألوان: {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "إضافة الخيار \"{PH1}\""
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "الحظر"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "مخصَّص"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "عارض Hex"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "إضافة نمط حظر طلبات الشبكة"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "إضافة نمط"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "يمكنك إضافة نمط لحظر طلبات الشبكة من خلال النقر على الزر \"{PH1}\"."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "تم حظر {PH1} عنوان URL."
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "تفعيل حظر طلبات الشبكة"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "تم حذف العنصر بنجاح."
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "مزيد من المعلومات"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "ما مِن طلبات شبكة محظورة"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "هذا النمط متوفّر حاليًا."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "لا يمكن ترك حقل النمط فارغًا."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "نمط نص لحظر الطلبات المطابقة: يمكن استخدام العلامة * للحصول على حرف بديل."
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "محو الكل"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "لا يمكن عرض حالة الطلب هنا لأنّه تم إلغاء تحميل الصفحة التي أصدرته قبل وصوله. يمكنك استخدام chrome://net-export للحصول على سجلّ الشبكة والاطّلاع على جميع تفاصيل الطلب."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "تم تقييد الطلب ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "معلومات الاتصال"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "حظر عنوان URL للطلب"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "حظر الطلبات"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "الطلبات المحظورة"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "الطلبات التابعة لجهات خارجية"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "تقييد نطاق الطلبات"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "تقييد عنوان URL للطلب"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "تقييد الطلبات"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "إزالة حظر {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "إيقاف تقييد \"{PH1}\""
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "رمز إتمام الاتصال"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "عنوان URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "إضافة نمط حظر طلبات الشبكة"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "إضافة نمط"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "إضافة نمط لحظر أو تقييد طلبات الشبكة"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "يمكنك إضافة نمط من خلال النقر على الزر \"{PH1}\"."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "عدد روابط URL المتأثّرة: {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "تم حظر {PH1} عنوان URL."
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "خفض الأولوية"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "تفعيل الحظر والتقييد"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "تفعيل حظر طلبات الشبكة"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "زيادة الأولوية"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "تم حذف العنصر بنجاح."
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "مزيد من المعلومات"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "ما مِن طلبات شبكة محظورة"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "ما مِن أنماط لتقييد الطلبات أو حظرها"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "هذا النمط متوفّر حاليًا."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "تعذّر تحليل هذا النمط على أنّه URLPattern"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "مجموعات RegExp غير مسموح بها"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "لا يمكن ترك حقل النمط فارغًا."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "تمت ترقية هذا النمط من \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "نمط نص لحظر أو تقييد الطلبات المطابقة: يمكن استخدام بنية URLPattern."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "نمط نص لحظر الطلبات المطابقة: يمكن استخدام العلامة * للحصول على حرف بديل."
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ملفات تعريف الارتباط التي تم تلقّيها من الخادم في عنوان الاستجابة \"set-cookie\""
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "إرسال طلب إلى ServiceWorker"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "طلب/ردّ"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "جدولة الموارد"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "لاستخدام هذا المورد من موقع إلكتروني مختلف، قد يخفِّف الخادم عنوان الاستجابة الخاص بسياسة الموارد المشتركة النطاق."
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "إضافة نمط لحظر أو تقييد طلبات الشبكة"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "إضافة نمط حظر طلبات الشبكة"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "حظر طلب الشبكة"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "شروط الطلبات"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ضبط الحدّ الأقصى المسموح لعرض نطاق الشبكة"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "تسجيل سجلّ الشبكة"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "إزالة جميع أنماط حظر أو تقييد طلبات الشبكة"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "إزالة جميع أنماط حظر طلبات الشبكة"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "عرض أداة حظر طلب الشبكة"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "عرض شروط الطلبات"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "عرض أداة \"البحث\""
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "الكائنات التي تحتفظ بها عُقد DOM المنفصلة"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "العناصر التي تحتفظ بها معالجات الأحداث"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "عناصر JavaScript الأخرى"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "عندما تكون الميزة مفعَّلة"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "أدخِل مسارًا."
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "أدخِل مسارًا فريدًا."
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "المجلّدات الفرعية المستبعَدة"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "عنوان URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "إضافة قاعدة تعبير عادي لعنوان URL الخاص بالنص البرمجي"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "فتح ملف JavaScript أو CSS للاطّلاع على الرموز"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "الفتح في المجلّد المتضمّن"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "تجاهُل المحتوى"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" هو ملف تم ربط مصدره ولا يمكن تجاوزه."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "هل تريد إلغاء \"{PH1}\" بدلاً من ذلك؟"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "حفظ بتنسيق…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "تعذَّر حفظ الملف على القرص."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "حفظ الصورة"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "يتعذّر حفظ وحدة WASM في القرص بسبب حجمها الكبير جدًا على الأرجح."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "عرض كل الملفات التي تم تجاهلها"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "كيلوبايت"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "تضمين التعليقات التوضيحية"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "تضمين محتوى النص البرمجي"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "تضمين محتوى المصدر"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "تضمين خرائط مصدر النص البرمجي"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "معلومات إضافية:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "يتم تضمين المحتوى الكامل لجميع ملفات HTML وCSS والنصوص البرمجية التي تم تحميلها (باستثناء الإضافات)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "حفظ"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "يتم تضمين المحتوى الكامل لجميع النصوص البرمجية التي تم تحميلها (باستثناء الإضافات)."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "الضغط باستخدام gzip"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "تم تجاهل عناوين الطلبات."
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "تم تقييد {PH1} إلى {PH2}"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "تم حظر ملفات تعريف الارتباط لهذا الطلب بسبب إعدادات المتصفّح أو الميزات التجريبية في Chrome. يمكنك الاطّلاع على مزيد من المعلومات في لوحة \"المشاكل\"."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "استخدام التعبير العادي"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "تم تغيير إعداد أو أكثر، ما يتطلّب إعادة التحميل لتصبح هذه الإعدادات مفعَّلة"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*مطلوب إعادة التحميل"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "هناك علامة موضوعة في المربع."
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "استخدام اللون المقترَح {PH1}لإصلاح نسبة التباين المنخفضة"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "تمت إزالة هذا اللون للتوافق مع السلسلة اللونية للتنسيق. النتيجة الفعلية كانت ‎{PH1}."
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ سيؤدي التحويل إلى نطاق ألوان محدود إلى تغيير الألوان"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "الإضافة إلى لوحة الألوان"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "ملفات تعريف الارتباط"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "النطاق"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "ملفات تعريف الارتباط القابلة للتعديل"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(قيمة فارغة)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "الموقع الأساسي للتقسيم"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "المسار"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "الأولوية"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "آمن"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "الجلسة"

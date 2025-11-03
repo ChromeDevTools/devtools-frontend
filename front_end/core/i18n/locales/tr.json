@@ -296,6 +296,9 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With bölümü"
   },
+  "core/sdk/NetworkManager.ts | block": {
+    "message": "Engelle"
+  },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
     "message": "İptal edildi"
   },
@@ -1019,6 +1022,9 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Sağa yerleştir"
   },
+  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
+    "message": "DevTools harici bir istek aldı"
+  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Sayfaya odaklanın"
   },
@@ -1275,13 +1281,13 @@
     "message": "Veri desteği: SVGUseElement öğesindeki URL'lerin desteği sonlandırılmıştır ve gelecekte kaldırılacaktır."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
-    "message": "getCurrentPosition() ve watchPosition() güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+    "message": "getCurrentPosition() ve watchPosition() güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ adresine göz atın."
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() ve watchPosition() güvenli olmayan kaynaklarda kullanımdan kaldırıldı. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+    "message": "getCurrentPosition() ve watchPosition() desteği güvenli olmayan kaynaklarda sonlandırıldı. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ adresine göz atın."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
-    "message": "getUserMedia() güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+    "message": "getUserMedia() güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ adresine göz atın."
   },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate kullanımdan kaldırıldı. Yerine lütfen RTCPeerConnectionIceErrorEvent.address veya RTCPeerConnectionIceErrorEvent.port kullanın."
@@ -1311,7 +1317,7 @@
     "message": "Sysex, MIDIOptions içinde belirtilmiş olmasa bile Web MIDI, sysex kullanmak için izin ister."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
-    "message": "Artık Notification API güvenli olmayan kaynaklardan kullanılamaz. Uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+    "message": "Artık Notification API güvenli olmayan kaynaklardan kullanılamaz. Uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ adresine göz atın."
   },
   "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
     "message": "Artık çapraz kaynak iframe'lerden Notification API izni istenemez. Bunun yerine izni üst düzey bir çerçeveden istemeniz veya yeni bir pencere açmanız gerekir."
@@ -1397,6 +1403,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Uzantıların SharedArrayBuffer kullanmayı sürdürmek için kökler arası erişimi kapatmaları gerekir. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ adresini ziyaret edin."
   },
+  "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
+    "message": "BluetoothRemoteGATTCharacteristic.writeValue() desteği sonlandırıldı. Bunun yerine writeValueWithResponse() veya writeValueWithoutResponse() kullanın."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest içindeki yanıt JSON dosyası UTF-16'yı desteklemiyor."
   },
@@ -1414,9 +1423,6 @@
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Bu özellik yalnızca etkin internet bağlantısı olduğunda kullanılabilir."
-  },
-  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
-    "message": "DevTools harici bir istek aldı"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Sayfa yüklenirken bilinmeyen hata oluştu"
@@ -1685,18 +1691,6 @@
   "models/network_time_calculator/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} gecikme, {PH2} indirme (toplam {PH3})"
   },
-  "models/persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Yol girin"
-  },
-  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Benzersiz bir yol girin"
-  },
-  "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Hariç tutulan alt klasörler"
-  },
-  "models/persistence/EditFileSystemView.ts | url": {
-    "message": "URL"
-  },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blob yüklenemedi."
   },
@@ -1717,39 +1711,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Dosya sistemi eklenemiyor: {PH1}"
-  },
-  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "İçeren klasörde aç"
-  },
-  "models/persistence/PersistenceActions.ts | overrideContent": {
-    "message": "İçeriği geçersiz kılın"
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\", kaynak eşlemesine sahip bir dosya olduğu için geçersiz kılınamaz."
-  },
-  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Bunun yerine \"{PH1}\" geçersiz kılınsın mı?"
-  },
-  "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "Farklı kaydet…"
-  },
-  "models/persistence/PersistenceActions.ts | saveFailed": {
-    "message": "Dosya diske kaydedilemedi."
-  },
-  "models/persistence/PersistenceActions.ts | saveImage": {
-    "message": "Resmi kaydet"
-  },
-  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
-    "message": "WASM modülü diske kaydedilemiyor. Modül çok büyük olabilir."
-  },
-  "models/persistence/PersistenceActions.ts | showOverrides": {
-    "message": "Tüm geçersiz kılmaları göster"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Şuna bağlı: {PH1}"
-  },
-  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Kaynak eşlemesiyle bağlantılı: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem dosyaları okuyamıyor."
@@ -2157,7 +2118,7 @@
     "message": "Animasyon"
   },
   "models/trace/insights/CLSCulprits.ts | description": {
-    "message": "Düzen kaymaları, öğeler herhangi bir kullanıcı etkileşimi olmadan hareket ettiğinde gerçekleşir. [Öğelerin eklenmesi, kaldırılması veya sayfa yüklenirken yazı tiplerinin değişmesi gibi düzen kaymalarının nedenlerini araştırın](https://web.dev/articles/optimize-cls)."
+    "message": "Düzen kaymaları, öğeler herhangi bir kullanıcı etkileşimi olmadan hareket ettiğinde gerçekleşir. [Öğelerin eklenmesi, kaldırılması veya sayfa yüklenirken yazı tiplerinin değişmesi gibi düzen kaymalarının nedenlerini araştırın](https://developer.chrome.com/docs/performance/insights/cls-culprit)."
   },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "Yerleştirilen iFrame"
@@ -2193,7 +2154,7 @@
     "message": "TTL'yi Önbelleğe Al"
   },
   "models/trace/insights/Cache.ts | description": {
-    "message": "Uzun önbellek ömrü, sayfanızın tekrar ziyaret edilmesi sürecini hızlandırabilir. [Daha fazla bilgi edinin](https://web.dev/uses-long-cache-ttl/)."
+    "message": "Uzun önbellek ömrü, sayfanızın tekrar ziyaret edilmesi sürecini hızlandırabilir. [Önbelleğe alma hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/performance/insights/cache)."
   },
   "models/trace/insights/Cache.ts | noRequestsToCache": {
     "message": "Verimsiz önbellek politikalarını gerektiren istek yok"
@@ -2208,7 +2169,7 @@
     "message": "Verimli önbellek sürelerini kullanın"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "Büyük bir DOM, stil hesaplamalarının ve yeniden düzenlemelerin daha uzun sürmesine neden olarak sayfanın yanıt verme hızını etkileyebilir. Ayrıca bellek kullanımını da artırır. [DOM'un aşırı büyümesini nasıl önleyeceğinizi öğrenin](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+    "message": "Büyük bir DOM, stil hesaplamalarının ve yeniden düzenlemelerin daha uzun sürmesine neden olarak sayfanın yanıt verme hızını etkileyebilir. Ayrıca bellek kullanımını da artırır. [DOM'un aşırı büyümesini nasıl önleyeceğinizi öğrenin](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
   "models/trace/insights/DOMSize.ts | duration": {
     "message": "Süre"
@@ -2244,7 +2205,7 @@
     "message": "Değer"
   },
   "models/trace/insights/DocumentLatency.ts | description": {
-    "message": "İlk ağ isteğiniz en önemli isteğinizdir.  Yönlendirmelerden kaçınarak, hızlı sunucu yanıtı sağlayarak ve metin sıkıştırmayı etkinleştirerek gecikmeyi azaltın."
+    "message": "İlk ağ isteğiniz en önemli isteğinizdir. Yönlendirmelerden kaçınarak, hızlı sunucu yanıtı sağlayarak ve metin sıkıştırmayı etkinleştirerek [gecikmeyi azaltın](https://developer.chrome.com/docs/performance/insights/document-latency)."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Yönlendirmeler vardı ({PH1} yönlendirme, +{PH2})"
@@ -2283,13 +2244,13 @@
     "message": "Kaynak"
   },
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
-    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için paketlerden büyük, yinelenen JavaScript modüllerini kaldırın."
+    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için paketlerden büyük, [yinelenen JavaScript modüllerini](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) kaldırın."
   },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Yinelenen JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
-    "message": "Metnin her zaman görünmesini sağlamak için [font-display](https://developer.chrome.com/blog/font-display) özelliğini swap veya optional olarak ayarlayabilirsiniz. swap, [yazı tipi metriği geçersiz kılmalarıyla](https://developer.chrome.com/blog/font-fallbacks) düzen kaymalarını azaltmak için daha fazla optimize edilebilir."
+    "message": "Metnin her zaman görünmesini sağlamak için [font-display](https://developer.chrome.com/docs/performance/insights/font-display) özelliğini swap veya optional olarak ayarlayabilirsiniz. swap, [yazı tipi metriği geçersiz kılmalarıyla](https://developer.chrome.com/blog/font-fallbacks) düzen kaymalarını azaltmak için daha fazla optimize edilebilir."
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Yazı tipi"
@@ -2304,10 +2265,10 @@
     "message": "(anonim)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "DOM durumunda yapılan bir değişiklik nedeniyle stiller geçersiz kılındıktan sonra JavaScript, geometrik özellikler (ör. offsetWidth) sorguladığında zorunlu yeniden düzenleme gerçekleşir. Bu durum, performansın düşmesine neden olabilir. [Zorunlu yeniden düzenlemeler](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) ve olası çözümleri hakkında daha fazla bilgi edinin."
+    "message": "DOM durumunda yapılan bir değişiklik nedeniyle stiller geçersiz kılındıktan sonra JavaScript, geometrik özellikler (ör. offsetWidth) sorguladığında zorunlu yeniden düzenleme gerçekleşir. Bu durum, performansın düşmesine neden olabilir. [Zorunlu yeniden düzenlemeler](https://developer.chrome.com/docs/performance/insights/forced-reflow) ve olası çözümleri hakkında daha fazla bilgi edinin."
   },
-  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
-    "message": "Yığın izleme (stack trace)"
+  "models/trace/insights/ForcedReflow.ts | reflowCallFrames": {
+    "message": "Yeniden düzenlemeyi tetikleyen arama çerçeveleri"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Zorunlu yeniden düzenleme"
@@ -2322,7 +2283,7 @@
     "message": "[ilişkilendirilmemiş]"
   },
   "models/trace/insights/INPBreakdown.ts | description": {
-    "message": "Alt bölümler içinden en uzun olanla incelemeye başlayın. [Gecikmeler en aza indirilebilir](https://web.dev/articles/optimize-inp#optimize_interactions). İşleme süresini kısaltmak için genellikle JS'den oluşan [ana iş parçacığı maliyetlerini optimize edin](https://web.dev/articles/optimize-long-tasks)."
+    "message": "En uzun alt bölüme bakarak [INP'yi nasıl iyileştireceğinizi](https://developer.chrome.com/docs/performance/insights/inp-breakdown) incelemeye başlayın."
   },
   "models/trace/insights/INPBreakdown.ts | duration": {
     "message": "Süre"
@@ -2346,7 +2307,7 @@
     "message": "INP dökümü"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Resimlerin indirme süresini kısaltmak, sayfanın algılanan yükleme süresini ve LCP'yi daha iyi hale getirebilir. [Resim boyutunu optimize etme hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
+    "message": "Resimlerin indirme süresini kısaltmak, sayfanın algılanan yükleme süresini ve LCP'yi daha iyi hale getirebilir. [Resim boyutunu optimize etme hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/performance/insights/image-delivery)."
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Tahmini {PH2})"
@@ -2376,7 +2337,7 @@
     "message": "GIF yerine video biçimleri kullanmak, animasyonlu içeriğin indirme boyutunu küçültebilir."
   },
   "models/trace/insights/LCPBreakdown.ts | description": {
-    "message": "Her [alt bölüm için belirli iyileştirme stratejileri vardır](https://web.dev/articles/optimize-lcp#lcp-breakdown). İdeal olarak LCP süresinin çoğu gecikmeler için değil, kaynakları yüklemek için harcanmalıdır."
+    "message": "Her [alt bölüm için belirli iyileştirme stratejileri vardır](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). İdeal olarak LCP süresinin çoğu gecikmeler için değil, kaynakları yüklemek için harcanmalıdır."
   },
   "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "Süre"
@@ -2406,7 +2367,7 @@
     "message": "LCP dökümü"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "LCP resmini HTML'den anında [bulunabilir](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) hale getirerek ve [geç yüklemeden](https://web.dev/articles/lcp-lazy-loading) kaçınarak LCP'yi optimize edin"
+    "message": "LCP resmini HTML'den anında bulunabilir hale getirerek ve geç yüklemeden kaçınarak [LCP'yi optimize edin](https://developer.chrome.com/docs/performance/insights/lcp-discovery)."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high uygulandı"
@@ -2439,13 +2400,13 @@
     "message": "Boşa harcanan bayt miktarı"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfill'ler ve dönüşümler, daha eski tarayıcıların yeni JavaScript özelliklerini kullanmasını sağlar. Ancak, çoğu modern tarayıcılar için gerekli değildir. Daha eski tarayıcıları desteklemeniz gerekmediğinden eminseniz JavaScript derleme işleminizi [Baseline](https://web.dev/articles/baseline-and-polyfills) özelliklerini çevirecek şekilde değiştirmeyi düşünün. [Çoğu sitenin neden ES6+ kodunu çevirmeden dağıtabildiğini öğrenin](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Polyfill'ler ve dönüşümler, daha eski tarayıcıların yeni JavaScript özelliklerini kullanmasını sağlar. Ancak, çoğu modern tarayıcılar için gerekli değildir. Daha eski tarayıcıları desteklemeniz gerekmediğinden eminseniz JavaScript derleme işleminizi [Baseline](https://web.dev/articles/baseline-and-polyfills) özelliklerini çevirecek şekilde değiştirmeyi düşünün. [Çoğu sitenin neden ES6+ kodunu çevirmeden dağıtabildiğini öğrenin](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Eski JavaScript"
   },
   "models/trace/insights/ModernHTTP.ts | description": {
-    "message": "HTTP/2 ve HTTP/3, HTTP/1.1'e kıyasla multiplex gibi birçok avantaj sunar. [Modern HTTP'yi kullanma hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+    "message": "HTTP/2 ve HTTP/3, HTTP/1.1'e kıyasla multiplex gibi birçok avantaj sunar. [Modern HTTP'yi kullanma hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
     "message": "Hiçbir istekte HTTP/1.1 kullanılmadı veya HTTP/1.1'in geçerli kullanımı önemli bir optimizasyon fırsatı sunmuyor. HTTP/1.1 istekleri yalnızca aynı kaynaktan en az altı statik öğe geliyorsa ve yerel geliştirme ortamından veya üçüncü taraf bir kaynaktan sunulmuyorsa işaretlenir."
@@ -2478,7 +2439,7 @@
     "message": "Kullanılmayan ön bağlantı. crossorigin özelliğinin doğru şekilde kullanıldığını kontrol edin."
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
-    "message": "Sayfaların daha kolay yüklenmesi için zincir uzunluğunu azaltarak, kaynakların indirme boyutunu küçülterek veya gereksiz kaynakların indirilmesini erteleyerek [kritik istek zinciri oluşturmaktan kaçının](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
+    "message": "Sayfaların daha kolay yüklenmesi için zincir uzunluğunu azaltarak, kaynakların indirme boyutunu küçülterek veya gereksiz kaynakların indirilmesini erteleyerek [kritik istek zinciri oluşturmaktan kaçının](https://developer.chrome.com/docs/performance/insights/network-dependency-tree)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
     "message": "En önemli kaynaklarınıza [önceden bağlanma](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ipuçları ekleyin ancak 4'ten az ipucu kullanmaya çalışın."
@@ -2517,7 +2478,7 @@
     "message": "Sayfaların daha kolay yüklenmesi için zincir uzunluğunu azaltarak, kaynakların indirme boyutunu küçülterek veya gereksiz kaynakların indirilmesini erteleyerek kritik istek zinciri oluşturmaktan kaçının."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "İstekler sayfanın ilk oluşturma işlemini engelliyor. Bu durum, LCP'yi geciktirebilir. [Erteleme veya satır içine yerleştirme](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources), bu ağ isteklerini kritik yoldan uzaklaştırabilir."
+    "message": "İstekler sayfanın ilk oluşturma işlemini engelliyor. Bu durum, LCP'yi geciktirebilir. [Erteleme veya satır içine yerleştirme](https://developer.chrome.com/docs/performance/insights/render-blocking), bu ağ isteklerini kritik yoldan uzaklaştırabilir."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Süre"
@@ -2532,7 +2493,7 @@
     "message": "Oluşturma engelleme istekleri"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "\"Stili yeniden hesapla\" maliyetleri yüksekse seçicinin optimize edilmesi bu maliyetleri azaltabilir. Hem geçen süresi hem de yavaş yol yüzdesi yüksek olan [seçicileri optimize edin](https://developer.chrome.com/docs/devtools/performance/selector-stats). Daha basit seçici, daha az sayıda seçici, daha küçük DOM ve daha sığ DOM, eşleşme maliyetlerini azaltır."
+    "message": "\"Stili yeniden hesapla\" maliyetleri yüksekse seçicinin optimize edilmesi bu maliyetleri azaltabilir. Hem geçen süresi hem de yavaş yol yüzdesi yüksek olan [seçicileri optimize edin](https://developer.chrome.com/docs/performance/insights/slow-css-selector). Daha basit seçici, daha az sayıda seçici, daha küçük DOM ve daha sığ DOM, eşleşme maliyetlerini azaltır."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Geçen süre"
@@ -2571,7 +2532,7 @@
     "message": "Aktarım boyutu"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Üçüncü taraf kodu, yükleme performansını önemli ölçüde etkileyebilir. Sayfanızdaki içeriklere öncelik vermek için [üçüncü taraf kodlarının yüklenmesini azaltın ve geciktirin](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
+    "message": "Üçüncü taraf kodu, yükleme performansını önemli ölçüde etkileyebilir. Sayfanızdaki içeriklere öncelik vermek için [üçüncü taraf kodlarının yüklenmesini azaltın ve geciktirin](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Üçüncü taraf içeriği bulunamadı"
@@ -2580,7 +2541,7 @@
     "message": "3. taraflar"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Görüntü alanı, mobil cihazlar için optimize edilmezse dokunma etkileşimleri [300 ms.ye kadar gecikebilir](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Görüntü alanı, mobil cihazlar için optimize edilmezse dokunma etkileşimleri [300 ms.ye kadar gecikebilir](https://developer.chrome.com/docs/performance/insights/viewport)."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Mobil dokunma gecikmesi"
@@ -3101,32 +3062,8 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Geliştirici Araçları'nda yapay zeka hakkında bilgi edinin"
   },
-  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
-    "message": "Yapay Zeka Desteği, Gizli mod veya Misafir Modu'nda kullanılamaz"
-  },
-  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
-    "message": "Bu özelliğin kullanılabilmesi için Chrome'da Google Hesabınızla oturum açmanız gerekir"
-  },
-  "panels/ai_assistance/components/ChatView.ts | offline": {
-    "message": "İnternet bağlantınızı kontrol edip tekrar deneyin"
-  },
   "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
     "message": "Seçili bağlam öğesini Geliştirici Araçları'nda göster"
-  },
-  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
-    "message": "Ayarlar'da yapay zeka yardımı"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
-    "message": "CSS stillerini anlamanıza yardımcı olması için {PH1} özelliğini etkinleştirin"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
-    "message": "Stiller ve ağ istekleriyle ilgili yardım almak için {PH1} özelliğini etkinleştirin"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Stiller, ağ istekleri ve dosyalarla ilgili yardım almak için {PH1} özelliğini etkinleştirin"
-  },
-  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Stiller, ağ istekleri, performans ve dosyalarla ilgili yardım almak için {PH1} özelliğini etkinleştirin"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Bu sayfada animasyonları inceleyip değiştirebilirsiniz."
@@ -6036,7 +5973,7 @@
     "message": "Google Developer Program'a kaydolma iletişim kutusu"
   },
   "panels/common/GdpSignUpDialog.ts | keepUpdated": {
-    "message": "Evet isterim"
+    "message": "Güncel gelişmeleri bildir"
   },
   "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
     "message": "Geliştirici Araçları'ndaki en yeni özellikler, etkinlik davetleri ve size özel analizler doğrudan gelen kutunuza gönderilir."
@@ -6067,6 +6004,12 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Hizmet Şartları"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToS": {
+    "message": "Şuna bağlı: {PH1}"
+  },
+  "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Kaynak eşlemesiyle bağlantılı: {PH1}"
   },
   "panels/common/common.ts | allow": {
     "message": "İzin ver"
@@ -6445,6 +6388,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Konsolu Göster"
+  },
+  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
+    "message": "Konsol mesajları için yapay zeka özetlerini göster"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Konsolda CORS hatalarını göster"
@@ -7417,6 +7363,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Animasyon paneline atlayın"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
+    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Renk seçiciyi aç. {PH1}"
@@ -9089,6 +9038,9 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
     "message": "{PH1} ekle"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | blockingGroup": {
+    "message": "Engelleme"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Özel"
   },
@@ -9335,39 +9287,6 @@
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex Görüntüleyen Kişi"
   },
-  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Ağ isteği engelleme kalıbı ekle"
-  },
-  "panels/network/BlockedURLsPane.ts | addPattern": {
-    "message": "Kalıp ekle"
-  },
-  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
-    "message": "\"{PH1}\" düğmesini tıklayarak ağ isteklerini engellemek için bir kalıp ekleyin."
-  },
-  "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} engellendi"
-  },
-  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Ağ istek engellemeyi etkinleştir"
-  },
-  "panels/network/BlockedURLsPane.ts | itemDeleted": {
-    "message": "Öğe başarıyla silindi"
-  },
-  "panels/network/BlockedURLsPane.ts | learnMore": {
-    "message": "Daha fazla bilgi"
-  },
-  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
-    "message": "Engellenen ağ isteği yok"
-  },
-  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Kalıp zaten var."
-  },
-  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Kalıp girişi boş bırakılamaz."
-  },
-  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Eşleşen istekleri engellemek için metin şablonu; joker karakter olarak * kullanın"
-  },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Tümünü temizle"
   },
@@ -9599,6 +9518,9 @@
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
     "message": "İsteği yayınlayan sayfa, istek iletilirken kaldırıldığı için istek durumu burada gösterilemiyor. Ağ günlüğünü yakalamak ve tüm istek ayrıntılarını görmek için chrome://net-export adresini kullanabilirsiniz."
   },
+  "panels/network/NetworkDataGridNode.ts | wasThrottled": {
+    "message": "Request was throttled ({PH1})"
+  },
   "panels/network/NetworkItemView.ts | connectionInfo": {
     "message": "Bağlantı bilgileri"
   },
@@ -9682,6 +9604,9 @@
   },
   "panels/network/NetworkLogView.ts | blockRequestUrl": {
     "message": "İstek URL'sini engelle"
+  },
+  "panels/network/NetworkLogView.ts | blockRequests": {
+    "message": "İstekleri engelle"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Engellenen istekler"
@@ -9911,8 +9836,20 @@
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Üçüncü taraf istekleri"
   },
+  "panels/network/NetworkLogView.ts | throttleRequestDomain": {
+    "message": "İstek alanını kısıtla"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequestUrl": {
+    "message": "İstek URL'sini kısıtla"
+  },
+  "panels/network/NetworkLogView.ts | throttleRequests": {
+    "message": "İstekleri kısıtla"
+  },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Engellemeyi kaldır: {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | unthrottleS": {
+    "message": "{PH1} için kısıtlamayı durdur"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Bağlantı Kimliği"
@@ -10106,6 +10043,69 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/RequestConditionsDrawer.ts | addNetworkRequestBlockingPattern": {
+    "message": "Ağ isteği engelleme kalıbı ekle"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPattern": {
+    "message": "Kalıp ekle"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
+    "message": "Ağ isteği kısıtlama veya engelleme deseni ekle"
+  },
+  "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
+    "message": "\"{PH1}\" düğmesini tıklayarak bir desen ekleyin."
+  },
+  "panels/network/RequestConditionsDrawer.ts | dAffected": {
+    "message": "{PH1} affected"
+  },
+  "panels/network/RequestConditionsDrawer.ts | dBlocked": {
+    "message": "{PH1} engellendi"
+  },
+  "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
+    "message": "Önceliği azalt"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
+    "message": "Engellemeyi ve kısıtlamayı etkinleştir"
+  },
+  "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
+    "message": "Ağ istek engellemeyi etkinleştir"
+  },
+  "panels/network/RequestConditionsDrawer.ts | increasePriority": {
+    "message": "Önceliği artır"
+  },
+  "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
+    "message": "Öğe başarıyla silindi"
+  },
+  "panels/network/RequestConditionsDrawer.ts | learnMore": {
+    "message": "Daha fazla bilgi"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
+    "message": "Engellenen ağ isteği yok"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noPattern": {
+    "message": "İstek kısıtlama veya engelleme deseni yok"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
+    "message": "Kalıp zaten var."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedToParse": {
+    "message": "Bu desen URLPattern olarak ayrıştırılamadı"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
+    "message": "RegExp gruplarına izin verilmiyor"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
+    "message": "Kalıp girişi boş bırakılamaz."
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
+    "message": "Bu desen \"{PH1}\" sürümünden yükseltildi"
+  },
+  "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
+    "message": "Eşleşen istekleri engellemek veya kısıtlamak için metin deseni; URLPattern söz dizimini kullanın."
+  },
+  "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
+    "message": "Eşleşen istekleri engellemek için metin şablonu; joker karakter olarak * kullanın"
+  },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Sunucudan yanıtın \"set-cookie\" üst bilgisi içinde alınan çerezler"
   },
@@ -10267,9 +10267,6 @@
   },
   "panels/network/RequestTimingView.ts | requestToServiceworker": {
     "message": "ServiceWorker isteği"
-  },
-  "panels/network/RequestTimingView.ts | requestresponse": {
-    "message": "İstek/Yanıt"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
     "message": "Kaynak Planlaması"
@@ -10706,6 +10703,9 @@
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
     "message": "Sunucu, bu kaynağı başka bir siteden kullanabilmek için merkezler arası kaynak politikası başlığını gevşetebilir."
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
+    "message": "Ağ isteği engelleme veya kısıtlama deseni ekle"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "Ağ isteği engelleme kalıbı ekle"
   },
@@ -10763,11 +10763,17 @@
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Ağ isteği engelleme"
   },
+  "panels/network/network-meta.ts | networkRequestConditions": {
+    "message": "İstek koşulları"
+  },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "ağ sınırlama"
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Ağ günlüğünü kaydet"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
+    "message": "Tüm ağ isteği engelleme veya kısıtlama desenlerini kaldır"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
     "message": "Tüm ağ isteği engelleme kalıplarını kaldır"
@@ -10786,6 +10792,9 @@
   },
   "panels/network/network-meta.ts | showNetworkRequestBlocking": {
     "message": "Ağ isteği engelleme aracını göster"
+  },
+  "panels/network/network-meta.ts | showRequestConditions": {
+    "message": "İstek koşullarını göster"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Aramayı Göster"
@@ -11146,6 +11155,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "Ayrılmış DOM düğümleri tarafından saklanan nesneler"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
+    "message": "Etkinlik İşleyiciler tarafından saklanan nesneler"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Diğer JS nesneleri"
@@ -12983,6 +12995,18 @@
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "Açık olduğunda"
   },
+  "panels/settings/EditFileSystemView.ts | enterAPath": {
+    "message": "Yol girin"
+  },
+  "panels/settings/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Benzersiz bir yol girin"
+  },
+  "panels/settings/EditFileSystemView.ts | excludedFolders": {
+    "message": "Hariç tutulan alt klasörler"
+  },
+  "panels/settings/EditFileSystemView.ts | url": {
+    "message": "URL"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Komut dosyasının URL'si için normal ifade kuralı ekleyin"
   },
@@ -13870,6 +13894,33 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Simgeleri görmek için bir JavaScript veya CSS dosyası açın"
+  },
+  "panels/sources/PersistenceActions.ts | openInContainingFolder": {
+    "message": "İçeren klasörde aç"
+  },
+  "panels/sources/PersistenceActions.ts | overrideContent": {
+    "message": "İçeriği geçersiz kılın"
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\", kaynak eşlemesine sahip bir dosya olduğu için geçersiz kılınamaz."
+  },
+  "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Bunun yerine \"{PH1}\" geçersiz kılınsın mı?"
+  },
+  "panels/sources/PersistenceActions.ts | saveAs": {
+    "message": "Farklı kaydet…"
+  },
+  "panels/sources/PersistenceActions.ts | saveFailed": {
+    "message": "Dosya diske kaydedilemedi."
+  },
+  "panels/sources/PersistenceActions.ts | saveImage": {
+    "message": "Resmi kaydet"
+  },
+  "panels/sources/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM modülü diske kaydedilemiyor. Modül çok büyük olabilir."
+  },
+  "panels/sources/PersistenceActions.ts | showOverrides": {
+    "message": "Tüm geçersiz kılmaları göster"
   },
   "panels/sources/ProfilePlugin.ts | kb": {
     "message": "kB"
@@ -15485,17 +15536,20 @@
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Notları dahil edin"
   },
-  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
-    "message": "Komut dosyası içeriklerini dahil edin"
+  "panels/timeline/components/ExportTraceOptions.ts | includeResourceContent": {
+    "message": "Include resource content"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
     "message": "Komut dosyası kaynak haritalarını dahil edin"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
+    "message": "Ek bilgi:"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
+    "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
+  },
   "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
     "message": "Kaydet"
-  },
-  "panels/timeline/components/ExportTraceOptions.ts | scriptContentPrivacyInfo": {
-    "message": "Yüklenen tüm komut dosyalarının (uzantılar hariç) tam içeriği yer alır."
   },
   "panels/timeline/components/ExportTraceOptions.ts | shouldCompress": {
     "message": "gzip ile sıkıştır"
@@ -16262,6 +16316,9 @@
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "İstek başlıkları geçersiz kılındı"
   },
+  "panels/utils/utils.ts | resourceTypeWithThrottling": {
+    "message": "{PH1} (throttled to {PH2})"
+  },
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Bu istekle ilgili çerezler, Chrome flag'leri veya tarayıcı yapılandırması nedeniyle engelleniyor. Sorunlar panelinden daha fazla bilgi edinebilirsiniz."
   },
@@ -16760,12 +16817,6 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Normal ifade kullan"
   },
-  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Bir veya daha fazla ayarda yapılan değişikliklerin etkinleşmesi için yeniden yükleme gerekiyor"
-  },
-  "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*Yeniden yükleme gerektiriyor"
-  },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "işaretli"
   },
@@ -16928,8 +16979,8 @@
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Düşük kontrastı düzeltmek için önerilen {PH1} rengini kullan"
   },
-  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "Bu renk, biçim gamına uyacak şekilde kırpıldı. Gerçek sonuç {PH1} şeklindeydi"
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorShiftWarning": {
+    "message": "⚠️ Dar bir renk gamına dönüştürme renk kaymalarına neden olur"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Palete ekle"
@@ -16985,6 +17036,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Çerezler"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
+    "message": "Alan adı"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Düzenlenebilir Çerezler"
   },
@@ -16996,6 +17050,18 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(opak)"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
+    "message": "Bölüm Anahtarı Sitesi"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
+    "message": "Yol"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | priority": {
+    "message": "Öncelik"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
+    "message": "Güvenli"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Oturum"

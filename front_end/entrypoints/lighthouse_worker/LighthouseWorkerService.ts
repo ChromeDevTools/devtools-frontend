@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as PuppeteerService from '../../services/puppeteer/puppeteer.js';
 import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
 
@@ -12,19 +12,12 @@ function disableLoggingForTest(): void {
 }
 
 /**
- * ConnectionProxy is a SDK interface, but the implementation has no knowledge it's a parallelConnection.
- * The CDP traffic is smuggled back and forth by the system described in LighthouseProtocolService
+ * WorkerConnectionTransport is a DevTools `ConnectionTransport` implementation that talks
+ * CDP via web worker postMessage. The system is described in LighthouseProtocolService.
  */
-class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
-  sessionId: string;
-  onMessage: ((arg0: Object) => void)|null;
-  onDisconnect: ((arg0: string) => void)|null;
-
-  constructor(sessionId: string) {
-    this.sessionId = sessionId;
-    this.onMessage = null;
-    this.onDisconnect = null;
-  }
+class WorkerConnectionTransport implements ProtocolClient.ConnectionTransport.ConnectionTransport {
+  onMessage: ((arg0: Object) => void)|null = null;
+  onDisconnect: ((arg0: string) => void)|null = null;
 
   setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
@@ -32,14 +25,6 @@ class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
 
   setOnDisconnect(onDisconnect: (arg0: string) => void): void {
     this.onDisconnect = onDisconnect;
-  }
-
-  getOnDisconnect(): (((arg0: string) => void)|null) {
-    return this.onDisconnect;
-  }
-
-  getSessionId(): string {
-    return this.sessionId;
   }
 
   sendRawMessage(message: string): void {
@@ -53,7 +38,7 @@ class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
   }
 }
 
-let cdpConnection: ConnectionProxy|undefined;
+let cdpTransport: WorkerConnectionTransport|undefined;
 let endTimespan: (() => unknown)|undefined;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,8 +53,8 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     notifyFrontendViaWorkerMessage('statusUpdate', {message: message[1]});
   });
 
-  let puppeteerHandle: Awaited<ReturnType<typeof PuppeteerService.PuppeteerConnection
-                                              .PuppeteerConnectionHelper['connectPuppeteerToConnectionViaTabLegacy']>>|
+  let puppeteerHandle: Awaited<ReturnType<
+      typeof PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper['connectPuppeteerToConnectionViaTab']>>|
       undefined;
 
   try {
@@ -98,11 +83,15 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     self.thirdPartyWeb.provideThirdPartyWeb(ThirdPartyWeb.ThirdPartyWeb);
 
     const {rootTargetId, mainSessionId} = args;
-    cdpConnection = new ConnectionProxy(mainSessionId);
+    cdpTransport = new WorkerConnectionTransport();
+    // TODO(crbug.com/453469270): Use "DevToolsCDPConnection" once we split SessionRouter into
+    //                            a connection handling part and a session handling part.
+    const connection = new ProtocolClient.InspectorBackend.SessionRouter(cdpTransport);
     puppeteerHandle =
-        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTabLegacy({
-          connection: cdpConnection,
-          rootTargetId,
+        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab({
+          connection,
+          targetId: rootTargetId,
+          sessionId: mainSessionId,
           // Lighthouse can only audit normal pages.
           isPageTargetCallback: targetInfo => targetInfo.type === 'page',
         });
@@ -212,7 +201,7 @@ async function onFrontendMessage(event: MessageEvent): Promise<void> {
       break;
     }
     case 'dispatchProtocolMessage': {
-      cdpConnection?.onMessage?.(messageFromFrontend.args.message);
+      cdpTransport?.onMessage?.(messageFromFrontend.args.message);
       break;
     }
     default: {

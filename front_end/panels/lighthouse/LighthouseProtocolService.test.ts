@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -16,7 +15,6 @@ describeWithMockConnection('LighthouseProtocolService', () => {
   let rootTarget: SDK.Target.Target;
   let suspendAllTargets: sinon.SinonStub;
   let resumeAllTargets: sinon.SinonStub;
-  let createParallelConnection: sinon.SinonStub;
 
   beforeEach(async () => {
     Lighthouse = await import('./lighthouse.js');
@@ -33,19 +31,10 @@ describeWithMockConnection('LighthouseProtocolService', () => {
     assert.exists(childTargetManager);
 
     sinon.stub(childTargetManager, 'getParentTargetId').resolves(primaryTarget.targetInfo()?.targetId);
-    if (rootTarget === primaryTarget) {
-      createParallelConnection = sinon.stub(childTargetManager, 'createParallelConnection').resolves({
-        connection: {disconnect: () => {}} as ProtocolClient.ConnectionTransport.ConnectionTransport,
-        sessionId: 'foo',
-      });
-    } else {
+    if (rootTarget !== primaryTarget) {
       const rootChildTargetManager = rootTarget.model(SDK.ChildTargetManager.ChildTargetManager);
       assert.exists(rootChildTargetManager);
       sinon.stub(rootChildTargetManager, 'getParentTargetId').resolves(rootTarget.targetInfo()?.targetId);
-      createParallelConnection = sinon.stub(rootChildTargetManager, 'createParallelConnection').resolves({
-        connection: {disconnect: () => {}} as ProtocolClient.ConnectionTransport.ConnectionTransport,
-        sessionId: 'foo',
-      });
     }
   });
 
@@ -55,10 +44,15 @@ describeWithMockConnection('LighthouseProtocolService', () => {
     sinon.assert.calledOnce(suspendAllTargets);
   });
 
-  it('creates a parallel connection', async () => {
+  it('attaches to to the root target', async () => {
+    const attachedToTargetStub = sinon.stub();
+    setMockConnectionResponseHandler('Target.attachToTarget', attachedToTargetStub);
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
+
     await service.attach();
-    sinon.assert.calledOnce(createParallelConnection);
+
+    sinon.assert.calledOnceWithExactly(
+        attachedToTargetStub, {targetId: rootTarget.targetInfo()?.targetId, flatten: true});
   });
 
   it('resumes all targets', async () => {

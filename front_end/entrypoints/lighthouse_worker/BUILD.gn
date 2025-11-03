@@ -10,6 +10,7 @@ devtools_module("lighthouse_worker") {
   sources = [ "LighthouseWorkerService.ts" ]
 
   deps = [
+    "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../services/puppeteer:bundle",

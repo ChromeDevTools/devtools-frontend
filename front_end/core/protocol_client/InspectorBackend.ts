@@ -3,20 +3,22 @@
 // found in the LICENSE file.
 
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
-import type {ProtocolMapping} from '../../generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
 
-import type {CDPConnectionObserver, CDPEvent} from './CDPConnection.js';
+import {
+  type CDPCommandRequest,
+  type CDPConnectionObserver,
+  type CDPError,
+  CDPErrorStatus,
+  type CDPReceivableMessage,
+  type Command,
+  type CommandParams,
+  type CommandResult
+} from './CDPConnection.js';
 import {ConnectionTransport} from './ConnectionTransport.js';
 import {NodeURL} from './NodeURL.js';
-
-export const DevToolsStubErrorCode = -32015;
-// TODO(dgozman): we are not reporting generic errors in tests, but we should
-// instead report them and just have some expected errors in test expectations.
-const GenericErrorCode = -32000;
-const ConnectionClosedErrorCode = -32001;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageParams = Record<string, any>;
@@ -70,8 +72,8 @@ interface CommandParameter {
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;
 interface ResponseWithError {
-  error: MessageError|null;
-  result: Object|null;
+  error: CDPError|null;
+  result: CommandResult<Command>|null;
 }
 
 interface CallbackWithDebugInfo {
@@ -266,8 +268,7 @@ export class SessionRouter {
         result: null,
         error: {
           message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
-          code: ConnectionClosedErrorCode,
-          data: null,
+          code: CDPErrorStatus.SESSION_NOT_FOUND,
         }
       });
     }
@@ -282,10 +283,10 @@ export class SessionRouter {
     return this.#connection;
   }
 
-  sendMessage(sessionId: string, domain: string, method: QualifiedName, params: Object|null):
-      Promise<ResponseWithError> {
+  sendMessage<T extends Command>(sessionId: string, _domain: string, method: T, params: CommandParams<T>):
+      Promise<{result: CommandResult<T>| null, error: CDPError|null}> {
     const messageId = this.nextMessageId();
-    const messageObject: Message = {
+    const messageObject: Partial<CDPCommandRequest<T>> = {
       id: messageId,
       method,
     };
@@ -302,6 +303,7 @@ export class SessionRouter {
     }
 
     if (test.onMessageSent) {
+      const domain = method.split('.')[0];
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
       test.onMessageSent({domain, method, params: (paramsObject as Object), id: messageId, sessionId});
     }
@@ -320,7 +322,8 @@ export class SessionRouter {
   private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
       void {
     const domain = method.split('.')[0];
-    void this.sendMessage(sessionId, domain, method, params).then(({error, result}) => callback?.(error, result));
+    void this.sendMessage(sessionId, domain, method as Command, params as CommandParams<Command>)
+        .then(({error, result}) => callback?.(error, result as Object | null));
   }
 
   private onMessage(message: string|Object): void {
@@ -333,7 +336,7 @@ export class SessionRouter {
       test.onMessageReceived(messageObjectCopy);
     }
 
-    const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as Message;
+    const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as CDPReceivableMessage;
 
     // Send all messages to proxy connections.
     for (const session of this.#sessions.values()) {
@@ -362,7 +365,7 @@ export class SessionRouter {
       NodeURL.patch(messageObject);
     }
 
-    if (messageObject.id !== undefined) {  // just a response for some request
+    if ('id' in messageObject && messageObject.id !== undefined) {  // just a response for some request
       const callback = this.#callbacks.get(messageObject.id);
       this.#callbacks.delete(messageObject.id);
       if (!callback) {
@@ -370,22 +373,22 @@ export class SessionRouter {
         return;
       }
 
-      callback.resolve({error: messageObject.error || null, result: messageObject.result || null});
+      callback.resolve({
+        error: 'error' in messageObject ? messageObject.error : null,
+        result: 'result' in messageObject ? messageObject.result : null
+      });
       --this.#pendingResponsesCount;
       this.#pendingLongPollingMessageIds.delete(messageObject.id);
 
       if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
         this.deprecatedRunAfterPendingDispatches();
       }
-    } else {
-      if (messageObject.method === undefined) {
-        InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
-        return;
-      }
+    } else if ('method' in messageObject) {
       // This cast is justified as we just checked for the presence of messageObject.method.
-      session?.target.dispatch(messageObject as EventMessage);
-      this.#observers.forEach(
-          observer => observer.onEvent(messageObject as unknown as CDPEvent<keyof ProtocolMapping.Events>));
+      session?.target.dispatch(messageObject as unknown as EventMessage);
+      this.#observers.forEach(observer => observer.onEvent(messageObject));
+    } else {
+      InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
     }
   }
 
@@ -841,6 +844,13 @@ export class TargetBase {
   }
 }
 
+/** These are not logged as console.error */
+const IGNORED_ERRORS = new Set<CDPErrorStatus>([
+  CDPErrorStatus.DEVTOOLS_STUB_ERROR,
+  CDPErrorStatus.SERVER_ERROR,
+  CDPErrorStatus.SESSION_NOT_FOUND,
+]);
+
 /**
  * This is a class that serves as the prototype for a domains #agents (every target
  * has it's own set of #agents). The InspectorBackend keeps an instance of this class
@@ -880,15 +890,15 @@ class AgentPrototype {
           {result: null, getError: () => `Connection is closed, can\'t dispatch pending call to ${method}`});
     }
 
-    return router.sendMessage(this.target.sessionId, this.domain, method, request).then(({error, result}) => {
-      if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
-          error.code !== GenericErrorCode && error.code !== ConnectionClosedErrorCode) {
-        console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
-      }
+    return router.sendMessage(this.target.sessionId, this.domain, method as Command, request as CommandParams<Command>)
+        .then(({error, result}) => {
+          if (error && !test.suppressRequestErrors && !IGNORED_ERRORS.has(error.code)) {
+            console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
+          }
 
-      const errorMessage = error?.message;
-      return {...result, getError: () => errorMessage};
-    });
+          const errorMessage = error?.message;
+          return {...result, getError: () => errorMessage};
+        });
   }
 }
 

@@ -251,9 +251,10 @@ SDKTestRunner.PageMock = class {
       return handler.call(this, id, params);
     }
 
-    this.sendResponse(
-        id, undefined,
-        {message: 'Can\'t handle command ' + methodName, code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode});
+    this.sendResponse(id, undefined, {
+      message: 'Can\'t handle command ' + methodName,
+      code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR
+    });
   }
 
   sendResponse(id, result, error) {

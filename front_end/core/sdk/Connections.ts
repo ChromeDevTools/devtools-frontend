@@ -196,7 +196,7 @@ export class StubConnection implements ProtocolClient.ConnectionTransport.Connec
     const messageObject = JSON.parse(message);
     const error = {
       message: 'This is a stub connection, can\'t dispatch message.',
-      code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode,
+      code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
       data: messageObject,
     };
     if (this.onMessage) {

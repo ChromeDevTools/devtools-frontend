@@ -7,9 +7,7 @@ import * as Host from '../host/host.js';
 import type * as Platform from '../platform/platform.js';
 
 export class NodeURL {
-  static patch(object: {
-    url?: string,
-  }): void {
+  static patch(object: object): void {
     process(object, '');
 
     function process(object: {url?: string}, path: string): void {

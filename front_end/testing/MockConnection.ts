@@ -116,7 +116,7 @@ class MockConnection extends ProtocolClient.ConnectionTransport.ConnectionTransp
           sessionId: outgoingMessage.sessionId,
           error: {
             message: `Method ${outgoingMessage.method} is not stubbed in MockConnection`,
-            code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode,
+            code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
           }
         });
         return;

@@ -4,26 +4,28 @@
 
 import type {ProtocolMapping} from '../../generated/protocol-mapping.js';
 
+export type Command = keyof ProtocolMapping.Commands;
 export type CommandParams<T extends keyof ProtocolMapping.Commands> = ProtocolMapping.Commands[T]['paramsType'][0];
 export type CommandResult<T extends keyof ProtocolMapping.Commands> = ProtocolMapping.Commands[T]['returnType'];
+export type Event = keyof ProtocolMapping.Events;
 export type EventParams<T extends keyof ProtocolMapping.Events> = ProtocolMapping.Events[T];
 
 export interface CDPBaseMessage {
   sessionId?: string;
 }
 
-export interface CDPCommandRequest<T extends keyof ProtocolMapping.Commands> extends CDPBaseMessage {
+export interface CDPCommandRequest<T extends Command> extends CDPBaseMessage {
   id: number;
   method: T;
   params: CommandParams<T>;
 }
 
-export interface CDPCommandResponse<T extends keyof ProtocolMapping.Commands> extends CDPBaseMessage {
+export interface CDPCommandResponse<T extends Command> extends CDPBaseMessage {
   id: number;
   result: CommandResult<T>;
 }
 
-export interface CDPEvent<T extends keyof ProtocolMapping.Events> extends CDPBaseMessage {
+export interface CDPEvent<T extends Event> extends CDPBaseMessage {
   method: T;
   params: EventParams<T>;
 }
@@ -31,7 +33,7 @@ export interface CDPEvent<T extends keyof ProtocolMapping.Events> extends CDPBas
 /**
  * Keep this in sync with https://source.chromium.org/chromium/chromium/src/+/main:third_party/inspector_protocol/crdtp/dispatch.h.
  */
-export const enum CDPErrorStatus {
+export enum CDPErrorStatus {
   PARSE_ERROR = -32700,
   INVALID_REQUEST = -32600,
   METHOD_NOT_FOUND = -32601,
@@ -39,6 +41,7 @@ export const enum CDPErrorStatus {
   INTERNAL_ERROR = -32603,
   SERVER_ERROR = -32000,
   SESSION_NOT_FOUND = SERVER_ERROR - 1,
+  DEVTOOLS_STUB_ERROR = -32015,
 }
 
 export interface CDPError {
@@ -52,8 +55,7 @@ export interface CDPErrorMessage extends CDPBaseMessage {
   error: CDPError;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CDPMessage = CDPCommandRequest<any>|CDPCommandResponse<any>|CDPEvent<any>|CDPErrorMessage;
+export type CDPReceivableMessage = CDPCommandResponse<Command>|CDPEvent<Event>|CDPErrorMessage;
 
 /**
  * Allows the sending and receiving of CDP commands and the notification of CDP events to observers.
@@ -63,7 +65,7 @@ export type CDPMessage = CDPCommandRequest<any>|CDPCommandResponse<any>|CDPEvent
  * would conflict with any other shared traffic.
  */
 export interface CDPConnection {
-  send<T extends keyof ProtocolMapping.Commands>(method: T, params: CommandParams<T>, sessionId: string|undefined):
+  send<T extends Command>(method: T, params: CommandParams<T>, sessionId: string|undefined):
       Promise<{result: CommandResult<T>}|{error: CDPError}>;
 
   observe(observer: CDPConnectionObserver): void;
@@ -71,7 +73,7 @@ export interface CDPConnection {
 }
 
 export interface CDPConnectionObserver {
-  onEvent<T extends keyof ProtocolMapping.Events>(event: CDPEvent<T>): void;
+  onEvent<T extends Event>(event: CDPEvent<T>): void;
   onDisconnect(reason: string): void;
 }
 
@@ -84,6 +86,6 @@ export interface DebuggableCDPConnection extends CDPConnection {
 }
 
 export interface RawMessageObserver {
-  onMessageReceived(message: CDPMessage): void;
-  onMessageSent(message: CDPMessage): void;
+  onMessageReceived(message: CDPReceivableMessage): void;
+  onMessageSent(message: CDPCommandRequest<Command>): void;
 }

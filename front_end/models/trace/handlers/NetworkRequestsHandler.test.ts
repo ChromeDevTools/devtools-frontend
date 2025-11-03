@@ -471,6 +471,24 @@ describe('NetworkRequestsHandler', function() {
       assert.deepEqual(actualLinks, expectedLinks);
     });
   });
+
+  it('updates render blocking request statuses if they were updated with a preloadRenderBlockingStatusChange event',
+     async function() {
+       const traceEvents = await TraceLoader.rawEvents(this, 'render-blocking-preload.json.gz');
+       for (const event of traceEvents) {
+         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+         Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
+       }
+       await Trace.Handlers.ModelHandlers.Meta.finalize();
+       await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
+       const url = 'https://andydavies.github.io/agent-tests/render-blocking/css/styles.css';
+       const data = Trace.Handlers.ModelHandlers.NetworkRequests.data();
+
+       const request = data.byTime.find(e => e.args.data.url === url);
+       assert.isOk(request);
+
+       assert.strictEqual(request.args.data.renderBlocking, 'blocking');
+     });
 });
 
 function assertDataArgsStats<D extends keyof DataArgs>(

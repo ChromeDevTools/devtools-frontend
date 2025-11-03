@@ -3142,6 +3142,8 @@ export const enum Name {
   USER_TIMING_MEASURE = 'UserTiming::Measure',
 
   LINK_PRECONNECT = 'LinkPreconnect',
+
+  PRELOAD_RENDER_BLOCKING_STATUS_CHANGE = 'PreloadRenderBlockingStatusChange',
 }
 
 /**
@@ -3274,4 +3276,21 @@ export interface RundownScriptStub extends Event {
 export function isAnyScriptSourceEvent(event: Event): event is RundownScriptSource|RundownScriptSourceLarge|
     RundownScriptStub {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources';
+}
+
+export interface PreloadRenderBlockingStatusChangeEvent extends Instant {
+  name: Name.PRELOAD_RENDER_BLOCKING_STATUS_CHANGE;
+  cat: 'devtools.timeline';
+  args: Args&{
+    data: {
+      requestId: string,
+      url: string,
+      renderBlocking?: RenderBlocking,
+    },
+  };
+}
+
+export function isPreloadRenderBlockingStatusChangeEvent(event: Event):
+    event is PreloadRenderBlockingStatusChangeEvent {
+  return event.name === Name.PRELOAD_RENDER_BLOCKING_STATUS_CHANGE;
 }

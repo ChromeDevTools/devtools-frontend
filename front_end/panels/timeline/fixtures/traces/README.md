@@ -365,3 +365,7 @@ A trace that has a layout shift with a root cause that is a non-composited anima
 ### cls-with-iframes
 
 A trace of https://astro-news-1026410574114.us-central1.run.app/ used to test CLS + iframes and what our AI output looks like.
+
+### render-blocking-preload
+
+A trace of https://andydavies.github.io/agent-tests/render-blocking/css-preload.html that highlighted a bug where we do not update render blocking status based on PreloadRenderBlockingStatus events (crbug.com/457323832).

@@ -104,23 +104,24 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     const rootChildTargetManager = rootTarget.model(SDK.ChildTargetManager.ChildTargetManager);
-
     if (!rootChildTargetManager) {
       throw new Error('Could not find the child target manager class for the root target');
     }
 
-    // Pass an empty message handler because it will be overwritten by puppeteer anyways.
-    const result = await rootChildTargetManager.createParallelConnection(() => {});
-    const connection = result.connection as SDK.Connections.ParallelConnectionInterface;
+    const router = rootTarget.router();
+    if (!router) {
+      throw new Error('Expected root target to have a router');
+    }
 
     const mainTargetId = await childTargetManager.getParentTargetId();
     const rootTargetId = await rootChildTargetManager.getParentTargetId();
-
+    const {sessionId} = await rootTarget.targetAgent().invoke_attachToTarget({targetId: rootTargetId, flatten: true});
     const {page, browser, puppeteerConnection} =
         await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab(
             {
-              connection,
-              rootTargetId: rootTargetId as string,
+              connection: router,
+              targetId: rootTargetId,
+              sessionId,
               isPageTargetCallback: isPageTarget,
             },
         );

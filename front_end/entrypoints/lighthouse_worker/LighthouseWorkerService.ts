@@ -68,8 +68,8 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     notifyFrontendViaWorkerMessage('statusUpdate', {message: message[1]});
   });
 
-  let puppeteerHandle: Awaited<ReturnType<
-      typeof PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper['connectPuppeteerToConnectionViaTab']>>|
+  let puppeteerHandle: Awaited<ReturnType<typeof PuppeteerService.PuppeteerConnection
+                                              .PuppeteerConnectionHelper['connectPuppeteerToConnectionViaTabLegacy']>>|
       undefined;
 
   try {
@@ -100,7 +100,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     const {rootTargetId, mainSessionId} = args;
     cdpConnection = new ConnectionProxy(mainSessionId);
     puppeteerHandle =
-        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab({
+        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTabLegacy({
           connection: cdpConnection,
           rootTargetId,
           // Lighthouse can only audit normal pages.

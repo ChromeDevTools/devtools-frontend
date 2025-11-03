@@ -9,7 +9,9 @@ devtools_module("puppeteer_connection") {
   sources = [ "PuppeteerConnection.ts" ]
 
   deps = [
+    "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../third_party/puppeteer:bundle",
   ]
 }

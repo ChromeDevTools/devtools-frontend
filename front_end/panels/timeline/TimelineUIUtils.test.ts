@@ -239,7 +239,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
       error: ['Error: No LanguageSelector instance exists yet.'],
     });
     it('maps to the authored name and script of a profile call', async function() {
-      const {script} = await loadBasicSourceMapExample(target);
+      const {sourceMap, script} = await loadBasicSourceMapExample(target);
+
+      sourceMap.hasScopeInfo();  // Trigger source map processing.
+      await sourceMap.scopesFallbackPromiseForTest;
+
       // Ideally we would get a column number we can use from the source
       // map however the current status of the source map helpers makes
       // it difficult to do so.
@@ -274,10 +278,14 @@ describeWithMockConnection('TimelineUIUtils', function() {
           parsedTrace, profileCall, new Components.Linkifier.Linkifier(), false, null);
       const stackTraceData = getStackTraceForDetailsElement(details);
       assert.exists(stackTraceData);
-      assert.isTrue(stackTraceData[0].startsWith('someFunction @'));
+      assert.strictEqual(stackTraceData[0], 'someFunction @ main.js:6:10');
     });
     it('maps to the authored name and script of a function call', async function() {
-      const {script} = await loadBasicSourceMapExample(target);
+      const {sourceMap, script} = await loadBasicSourceMapExample(target);
+
+      sourceMap.hasScopeInfo();  // Trigger source map processing.
+      await sourceMap.scopesFallbackPromiseForTest;
+
       const [lineNumber, columnNumber, ts, dur, pid, tid] =
           [0, 51, 10, 100, Trace.Types.Events.ProcessID(1), Trace.Types.Events.ThreadID(1)];
       const profileCall = makeProfileCall('function', ts, dur, pid, tid);
@@ -1043,8 +1051,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(
           markerStackTraceData,
           [
-            `${function3.callFrame.functionName} @ `,
-            `${function1.callFrame.functionName} @ `,
+            `${function3.callFrame.functionName} @ unknown`,
+            `${function1.callFrame.functionName} @ unknown`,
           ],
       );
 
@@ -1071,8 +1079,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
       assert.exists(trackEntryStackTraceData);
       assert.deepEqual(trackEntryStackTraceData, [
-        `${function2.callFrame.functionName} @ `,
-        `${function1.callFrame.functionName} @ `,
+        `${function2.callFrame.functionName} @ unknown`,
+        `${function1.callFrame.functionName} @ unknown`,
       ]);
     });
     it('renders the stack trace of user timings properly', async function() {
@@ -1097,8 +1105,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(
           markerStackTraceData,
           [
-            `${function3.callFrame.functionName} @ `,
-            `${function1.callFrame.functionName} @ `,
+            `${function3.callFrame.functionName} @ unknown`,
+            `${function1.callFrame.functionName} @ unknown`,
           ],
       );
 
@@ -1112,8 +1120,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
       assert.exists(trackEntryStackTraceData);
       assert.deepEqual(trackEntryStackTraceData, [
-        `${function2.callFrame.functionName} @ `,
-        `${function1.callFrame.functionName} @ `,
+        `${function2.callFrame.functionName} @ unknown`,
+        `${function1.callFrame.functionName} @ unknown`,
       ]);
     });
     it('renders the warning for a trace event in its details', async function() {

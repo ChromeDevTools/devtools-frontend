@@ -39,6 +39,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
@@ -95,7 +96,8 @@ function populateContextMenu(link: Element, event: Event): void {
   void contextMenu.show();
 }
 
-export function buildStackTraceRows(
+// TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
+export function buildStackTraceRowsForLegacyRuntimeStackTrace(
     stackTrace: Protocol.Runtime.StackTrace,
     target: SDK.Target.Target|null,
     linkifier: Linkifier,
@@ -154,6 +156,63 @@ export function buildStackTraceRows(
       buildStackTraceRowsHelper(asyncStackTrace, previousCallFrames);
     }
     previousCallFrames = asyncStackTrace.callFrames;
+  }
+  return stackTraceRows;
+}
+
+export function buildStackTraceRows(
+    stackTrace: StackTrace.StackTrace.StackTrace,
+    target: SDK.Target.Target|null,
+    linkifier: Linkifier,
+    tabStops: boolean|undefined,
+    showColumnNumber?: boolean,
+    ): Array<StackTraceRegularRow|StackTraceAsyncRow> {
+  const stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow> = [];
+
+  function buildStackTraceRowsHelper(
+      fragment: StackTrace.StackTrace.Fragment|StackTrace.StackTrace.AsyncFragment,
+      previousFragment: StackTrace.StackTrace.Fragment|undefined = undefined): void {
+    let asyncRow: StackTraceAsyncRow|null = null;
+    const isAsync = 'description' in fragment;
+    if (previousFragment && isAsync) {
+      asyncRow = {
+        asyncDescription: UI.UIUtils.asyncStackTraceLabel(
+            fragment.description, previousFragment.frames.map(f => ({functionName: f.name ?? ''}))),
+      };
+      stackTraceRows.push(asyncRow);
+    }
+    let previousStackFrameWasBreakpointCondition = false;
+    for (const frame of fragment.frames) {
+      const functionName = UI.UIUtils.beautifyFunctionName(frame.name ?? '');
+      const link = linkifier.maybeLinkifyStackTraceFrame(target, frame, {
+        showColumnNumber,
+        tabStop: Boolean(tabStops),
+        inlineFrameIndex: 0,
+        revealBreakpoint: previousStackFrameWasBreakpointCondition,
+      });
+      if (link) {
+        link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({click: true})}`);
+        link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
+
+        if (!link.textContent) {
+          link.textContent = i18nString(UIStrings.unknownSource);
+        }
+      }
+      stackTraceRows.push({functionName, link});
+      previousStackFrameWasBreakpointCondition = [
+        SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
+        SDK.DebuggerModel.LOGPOINT_SOURCE_URL,
+      ].includes(frame.url ?? '');
+    }
+  }
+
+  buildStackTraceRowsHelper(stackTrace.syncFragment);
+  let previousFragment = stackTrace.syncFragment;
+  for (const asyncFragment of stackTrace.asyncFragments) {
+    if (asyncFragment.frames.length) {
+      buildStackTraceRowsHelper(asyncFragment, previousFragment);
+    }
+    previousFragment = asyncFragment;
   }
   return stackTraceRows;
 }
@@ -224,7 +283,9 @@ function renderStackTraceTable(
 }
 
 export interface Options {
-  stackTrace?: Protocol.Runtime.StackTrace;
+  // TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
+  runtimeStackTrace?: Protocol.Runtime.StackTrace;
+  stackTrace?: StackTrace.StackTrace.StackTrace;
   tabStops?: boolean;
   // Whether the width of stack trace preview
   // is constrained to its container or whether
@@ -269,6 +330,8 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
     this.#table = this.contentElement.createChild('table', 'stack-preview-container');
     this.#table.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
 
+    this.#options.stackTrace?.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.performUpdate.bind(this));
+
     this.performUpdate();
   }
 
@@ -277,10 +340,19 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
       return;
     }
 
-    const {stackTrace, tabStops} = this.#options;
+    const {runtimeStackTrace, stackTrace, tabStops} = this.#options;
+
+    if (stackTrace) {
+      const stackTraceRows = buildStackTraceRows(
+          stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
+      this.#links = renderStackTraceTable(this.#table, this.element, stackTraceRows);
+      return;
+    }
+
+    // TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
     const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element);
-    const stackTraceRows = buildStackTraceRows(
-        stackTrace ?? {callFrames: []}, this.#target ?? null, this.#linkifier, tabStops, updateCallback,
+    const stackTraceRows = buildStackTraceRowsForLegacyRuntimeStackTrace(
+        runtimeStackTrace ?? {callFrames: []}, this.#target ?? null, this.#linkifier, tabStops, updateCallback,
         this.#options.showColumnNumber);
     this.#links = renderStackTraceTable(this.#table, this.element, stackTraceRows);
   }

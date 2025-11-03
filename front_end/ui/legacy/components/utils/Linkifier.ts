@@ -12,6 +12,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
+import type * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
@@ -341,6 +342,53 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
         callFrame.url as Platform.DevToolsPath.UrlString, callFrame.lineNumber, linkifyOptions);
   }
 
+  maybeLinkifyStackTraceFrame(
+      target: SDK.Target.Target|null, frame: StackTrace.StackTrace.Frame, options?: LinkifyOptions): HTMLElement|null {
+    let fallbackAnchor: HTMLElement|null = null;
+    const linkifyURLOptions: LinkifyURLOptions = {
+      ...options,
+      lineNumber: frame.line,
+      maxLength: this.maxLength,
+      columnNumber: frame.column,
+      showColumnNumber: Boolean(options?.showColumnNumber),
+      className: options?.className,
+      tabStop: options?.tabStop,
+      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
+      userMetric: options?.userMetric,
+      jslogContext: options?.jslogContext || 'script-location',
+      omitOrigin: options?.omitOrigin,
+    };
+    const {className = ''} = linkifyURLOptions;
+    if (frame.url) {
+      fallbackAnchor = Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, linkifyURLOptions);
+    }
+    if (!target || target.isDisposed()) {
+      return fallbackAnchor;
+    }
+
+    const createLinkOptions: CreateLinkOptions = {
+      tabStop: options?.tabStop,
+      jslogContext: 'script-location',
+    };
+    const {link, linkInfo} = Linkifier.createLink(
+        fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
+    linkInfo.enableDecorator = this.useLinkDecorator;
+    linkInfo.fallback = fallbackAnchor;
+    linkInfo.userMetric = options?.userMetric;
+
+    const linkDisplayOptions: LinkDisplayOptions = {
+      showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
+      revealBreakpoint: options?.revealBreakpoint,
+    };
+
+    const uiLocation = frame.uiSourceCode?.uiLocation(frame.line, frame.column) ?? null;
+    this.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation);
+
+    const anchors = (this.anchorsByTarget.get(target) as Element[]);
+    anchors.push(link);
+    return link;
+  }
+
   linkifyStackTraceTopFrame(target: SDK.Target.Target|null, stackTrace: Protocol.Runtime.StackTrace): HTMLElement {
     console.assert(stackTrace.callFrames.length > 0);
 
@@ -459,6 +507,20 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       return;
     }
 
+    this.#anchorUpdaters.set(anchor, function(this: Linkifier, anchor: HTMLElement) {
+      void this.updateAnchor(anchor, options, liveLocation);
+    });
+    this.updateAnchorFromUILocation(anchor, options, uiLocation);
+  }
+
+  private updateAnchorFromUILocation(
+      anchor: HTMLElement, options: LinkDisplayOptions, uiLocation: Workspace.UISourceCode.UILocation|null): void {
+    if (!uiLocation) {
+      anchor.classList.add('invalid-link');
+      anchor.removeAttribute('role');
+      return;
+    }
+
     Linkifier.bindUILocation(anchor, uiLocation);
     if (options.revealBreakpoint) {
       Linkifier.bindBreakpoint(anchor, uiLocation);
@@ -466,9 +528,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
     const text = uiLocation.linkText(true /* skipTrim */, options.showColumnNumber);
     Linkifier.setTrimmedText(anchor, text, this.maxLength);
-    this.#anchorUpdaters.set(anchor, function(this: Linkifier, anchor: HTMLElement) {
-      void this.updateAnchor(anchor, options, liveLocation);
-    });
 
     let titleText: string = uiLocation.uiSourceCode.url();
     if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {

@@ -540,7 +540,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         >
           <devtools-resources-stack-trace .data=${{
             frame: this.#frame,
-            buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRows,
+            buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
           } as StackTraceData}>
           </devtools-resources-stack-trace>
         </devtools-report-value>

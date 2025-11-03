@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
@@ -65,9 +66,14 @@ export class NodeStackTraceWidget extends UI.Widget.VBox {
   override async performUpdate(): Promise<void> {
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
-    const stackTrace = await node?.creationStackTrace() ?? undefined;
+    const target = node?.domModel().target();
+    const runtimeStackTrace = await node?.creationStackTrace() ?? undefined;
+    const stackTrace = runtimeStackTrace && target ?
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(
+            runtimeStackTrace, target) :
+        undefined;
     const input: ViewInput = {
-      target: node?.domModel().target(),
+      target,
       linkifier: this.#linkifier,
       options: {stackTrace},
     };

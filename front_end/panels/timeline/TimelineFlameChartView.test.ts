@@ -184,6 +184,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       const selection = Timeline.TimelineSelection.selectionFromEvent(event);
       flameChartView.setSelectionAndReveal(selection);
       await raf();
+
       await assertScreenshot('timeline/timeline_with_main_thread_selection.png');
     });
   });

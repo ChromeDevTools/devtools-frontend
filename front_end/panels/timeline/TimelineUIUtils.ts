@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
@@ -1700,14 +1701,14 @@ export class TimelineUIUtils {
     const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace.data);
     if (stackTraceForEvent?.callFrames.length || stackTraceForEvent?.description || stackTraceForEvent?.parent) {
       contentHelper.addSection(i18nString(UIStrings.functionStack));
-      contentHelper.createChildStackTraceElement(stackTraceForEvent);
+      await contentHelper.createChildStackTraceElement(stackTraceForEvent);
       // TODO(andoli): also build stack trace component for other events
       // that have a stack trace using the StackTraceForEvent helper.
     } else {
       const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
       if (stackTrace?.length) {
         contentHelper.addSection(stackLabel);
-        contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+        await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
       }
     }
     switch (event.name) {
@@ -1740,12 +1741,7 @@ export class TimelineUIUtils {
       const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
       if (stackTrace) {
         contentHelper.addSection(initiatorStackLabel);
-        contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace.map(frame => {
-          return {
-            ...frame,
-            scriptId: String(frame.scriptId) as Protocol.Runtime.ScriptId,
-          };
-        })));
+        await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
       }
 
       const link = this.createEntryLink(initiator);
@@ -2455,29 +2451,30 @@ export class TimelineDetailsContentHelper {
     this.appendElementRow(title, locationContent);
   }
 
-  createChildStackTraceElement(stackTrace: Protocol.Runtime.StackTrace): void {
+  async createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace): Promise<void> {
     if (!this.#linkifier) {
       return;
     }
 
-    // We resolve the original function name here. StackTracePreviewContent uses
-    // Linkifier to resolve the source code location.
-    const resolvedStackTrace: Protocol.Runtime.StackTrace = structuredClone(stackTrace);
-    let currentResolvedStackTrace: Protocol.Runtime.StackTrace|undefined = resolvedStackTrace;
-    while (currentResolvedStackTrace) {
-      currentResolvedStackTrace.callFrames = currentResolvedStackTrace.callFrames.map(
-          callFrame => ({
-            ...callFrame,
-            functionName: SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame)?.name ||
-                callFrame.functionName,
-          }));
-      currentResolvedStackTrace = currentResolvedStackTrace.parent;
+    let callFrameContents;
+    if (this.target) {
+      const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                             .createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
+      callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
+          undefined, this.target ?? undefined, this.#linkifier, {stackTrace, tabStops: true, showColumnNumber: true});
+    } else {
+      // I _think_ this only happens during tests.
+      // See "TimelineFlameChartView > shows the details for a selected main thread event".
+      // For now, just defer to the still-supported legacy runtime stack trace. When
+      // that is removed, we could instead create a stub StackTrace ourselves, even
+      // without a `target`.
+      callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
+          undefined, this.target ?? undefined, this.#linkifier,
+          {runtimeStackTrace, tabStops: true, showColumnNumber: true});
     }
+
     const stackTraceElement =
         this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
-    const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
-        undefined, this.target ?? undefined, this.#linkifier,
-        {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
     callFrameContents.markAsRoot();
     callFrameContents.show(stackTraceElement);
   }

@@ -110,5 +110,6 @@ export async function loadBasicSourceMapExample(target: SDK.Target.Target):
   if (!sourceMap) {
     throw new Error('Source map could not be registered');
   }
+
   return {sourceMap, script};
 }

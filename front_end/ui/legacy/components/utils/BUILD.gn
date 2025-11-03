@@ -33,6 +33,7 @@ devtools_ui_module("utils") {
     "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
     "../../../../models/breakpoints:bundle",
+    "../../../../models/stack_trace:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/trace:bundle",
     "../../../../models/workspace:bundle",

@@ -9,6 +9,7 @@ import type * as Platform from '../platform/platform.js';
 
 import {
   type CDPCommandRequest,
+  type CDPConnection,
   type CDPConnectionObserver,
   type CDPError,
   CDPErrorStatus,
@@ -66,15 +67,11 @@ type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
 type CommandParameter = InspectorBackendCommands.CommandParameter;
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;
-interface ResponseWithError {
-  error: CDPError|null;
-  result: CommandResult<Command>|null;
-}
 
 interface CallbackWithDebugInfo {
-  resolve: (response: ResponseWithError) => void;
+  resolve: (response: Awaited<ReturnType<CDPConnection['send']>>) => void;
   method: string;
-  sessionId: string;
+  sessionId: string|undefined;
 }
 
 export class InspectorBackend implements InspectorBackendCommands.InspectorBackendAPI {
@@ -197,7 +194,7 @@ export const test = {
 
 const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
 
-export class SessionRouter {
+export class SessionRouter implements CDPConnection {
   readonly #connection: ConnectionTransport;
   #lastMessageId = 1;
   #pendingResponsesCount = 0;
@@ -260,7 +257,6 @@ export class SessionRouter {
         continue;
       }
       resolve({
-        result: null,
         error: {
           message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
           code: CDPErrorStatus.SESSION_NOT_FOUND,
@@ -278,8 +274,8 @@ export class SessionRouter {
     return this.#connection;
   }
 
-  sendMessage<T extends Command>(sessionId: string, _domain: string, method: T, params: CommandParams<T>):
-      Promise<{result: CommandResult<T>| null, error: CDPError|null}> {
+  send<T extends Command>(method: T, params: CommandParams<T>, sessionId: string|undefined):
+      Promise<{result: CommandResult<T>}|{error: CDPError}> {
     const messageId = this.nextMessageId();
     const messageObject: Partial<CDPCommandRequest<T>> = {
       id: messageId,
@@ -316,9 +312,13 @@ export class SessionRouter {
 
   private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
       void {
-    const domain = method.split('.')[0];
-    void this.sendMessage(sessionId, domain, method as Command, params as CommandParams<Command>)
-        .then(({error, result}) => callback?.(error, result as Object | null));
+    void this.send(method as Command, params as CommandParams<Command>, sessionId).then(response => {
+      if ('error' in response && response.error) {
+        callback?.(response.error, null);
+      } else if ('result' in response) {
+        callback?.(null, response.result as Object | null);
+      }
+    });
   }
 
   private onMessage(message: string|Object): void {
@@ -368,10 +368,7 @@ export class SessionRouter {
         return;
       }
 
-      callback.resolve({
-        error: 'error' in messageObject ? messageObject.error : null,
-        result: 'result' in messageObject ? messageObject.result : null
-      });
+      callback.resolve(messageObject);
       --this.#pendingResponsesCount;
       this.#pendingLongPollingMessageIds.delete(messageObject.id);
 
@@ -885,15 +882,19 @@ class AgentPrototype {
           {result: null, getError: () => `Connection is closed, can\'t dispatch pending call to ${method}`});
     }
 
-    return router.sendMessage(this.target.sessionId, this.domain, method as Command, request as CommandParams<Command>)
-        .then(({error, result}) => {
-          if (error && !test.suppressRequestErrors && !IGNORED_ERRORS.has(error.code)) {
-            console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
-          }
+    return router.send(method as Command, request as CommandParams<Command>, this.target.sessionId).then(response => {
+      if ('error' in response && response.error) {
+        if (!test.suppressRequestErrors && !IGNORED_ERRORS.has(response.error.code)) {
+          console.error('Request ' + method + ' failed. ' + JSON.stringify(response.error));
+        }
+        return {getError: () => response.error.message};
+      }
 
-          const errorMessage = error?.message;
-          return {...result, getError: () => errorMessage};
-        });
+      if ('result' in response) {
+        return {...response.result, getError: () => undefined};
+      }
+      return {getError: () => undefined};
+    });
   }
 }
 

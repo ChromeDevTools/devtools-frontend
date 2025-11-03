@@ -39,7 +39,6 @@ group("docs") {
     "./recorder_split_view",
     "./report",
     "./request_link_icon",
-    "./slider",
     "./snackbars",
     "./style_property_editor",
     "./survey_link",

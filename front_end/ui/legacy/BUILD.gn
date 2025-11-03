@@ -215,6 +215,7 @@ component_doc("docs") {
   sources = [
     "RadioButton.docs.ts",
     "SelectMenu.docs.ts",
+    "Slider.docs.ts",
   ]
   deps = [ ":bundle" ]
 }

@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
+import type {ProtocolMapping} from '../../generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
 
+import type {CDPConnectionObserver, CDPEvent} from './CDPConnection.js';
 import {ConnectionTransport} from './ConnectionTransport.js';
 import {NodeURL} from './NodeURL.js';
 
@@ -209,6 +211,7 @@ export class SessionRouter {
   }>();
   #pendingScripts: Array<() => void> = [];
   readonly #callbacks = new Map<number, CallbackWithDebugInfo>();
+  readonly #observers = new Set<CDPConnectionObserver>();
 
   constructor(connection: ConnectionTransport) {
     this.#connection = connection;
@@ -223,7 +226,16 @@ export class SessionRouter {
       if (session) {
         session.target.dispose(reason);
       }
+      this.#observers.forEach(observer => observer.onDisconnect(reason));
     });
+  }
+
+  observe(observer: CDPConnectionObserver): void {
+    this.#observers.add(observer);
+  }
+
+  unobserve(observer: CDPConnectionObserver): void {
+    this.#observers.delete(observer);
   }
 
   registerSession(target: TargetBase, sessionId: string, proxyConnection?: ConnectionTransport|null): void {
@@ -371,8 +383,9 @@ export class SessionRouter {
         return;
       }
       // This cast is justified as we just checked for the presence of messageObject.method.
-      const eventMessage = messageObject as EventMessage;
-      session?.target.dispatch(eventMessage);
+      session?.target.dispatch(messageObject as EventMessage);
+      this.#observers.forEach(
+          observer => observer.onEvent(messageObject as unknown as CDPEvent<keyof ProtocolMapping.Events>));
     }
   }
 

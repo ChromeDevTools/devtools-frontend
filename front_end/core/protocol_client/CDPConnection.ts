@@ -71,7 +71,7 @@ export interface CDPConnection {
 }
 
 export interface CDPConnectionObserver {
-  onEvent<T extends keyof ProtocolMapping.Events>(event: ProtocolMapping.Events[T]): void;
+  onEvent<T extends keyof ProtocolMapping.Events>(event: CDPEvent<T>): void;
   onDisconnect(reason: string): void;
 }
 

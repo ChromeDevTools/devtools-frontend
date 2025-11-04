@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  assertScreenshot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
@@ -14,6 +15,67 @@ import {
 import * as LinearMemoryInspectorComponents from './components.js';
 
 const LinearMemoryInspector = LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector;
+
+describeWithLocale('LinearMemoryInspector', () => {
+  it('renders the inspector', async () => {
+    const target = document.createElement('div');
+    target.style.width = 'var(--sys-size-40)';
+    target.style.height = 'var(--sys-size-30)';
+    renderElementIntoDOM(target);
+    const array = [];
+    const string = 'Hello this is a string from the memory buffer!';
+
+    for (let i = 0; i < string.length; ++i) {
+      array.push(string.charCodeAt(i));
+    }
+
+    for (let i = -1000; i < 1000; ++i) {
+      array.push(i);
+    }
+
+    const memory = new Uint8Array(array);
+    const valueTypes = new Set([
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32
+    ]);
+    const valueTypeModes = new Map();
+
+    LinearMemoryInspectorComponents.LinearMemoryInspector.DEFAULT_VIEW(
+        {
+          memory: new Uint8Array(memory),
+          address: 0,
+          memoryOffset: 0,
+          valueTypes,
+          outerMemoryLength: memory.length,
+          valueTypeModes,
+          endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
+          highlightInfo: undefined,
+          hideValueInspector: false,
+          currentNavigatorMode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED,
+          currentNavigatorAddressLine: '0',
+          canGoBackInHistory: false,
+          canGoForwardInHistory: false,
+          onRefreshRequest: () => {},
+          onAddressChange: () => {},
+          onNavigatePage: () => {},
+          onNavigateHistory: () => false,
+          onJumpToAddress: () => {},
+          onDeleteMemoryHighlight: () => {},
+          onByteSelected: () => {},
+          onResize: () => {},
+          onValueTypeToggled: () => {},
+          onValueTypeModeChanged: () => {},
+          onEndiannessChanged: () => {},
+          memorySlice: new Uint8Array(memory),
+          viewerStart: 0,
+        },
+        {},
+        target,
+    );
+    await assertScreenshot('linear_memory_inspector/lmi.png');
+  });
+});
 
 describeWithLocale('LinearMemoryInspector', () => {
   let component: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector;

@@ -17,7 +17,6 @@ group("docs") {
     "./expandable_list",
     "./input",
     "./legacy_color_invert",
-    "./linear_memory_inspector",
     "./linkifier",
     "./markdown_image",
     "./markdown_link",

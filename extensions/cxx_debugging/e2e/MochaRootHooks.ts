@@ -43,7 +43,7 @@ async function beforeAll() {
       `--disable-extensions-except=${EXTENSION_DIR}`,
       `--window-size=${defaultViewport.width + 20, defaultViewport.height + 100}`,
       `--custom-devtools-frontend=${new URL(`${DEVTOOLS_DIR}/front_end`, 'file://').href}`,
-      '--disable-features=RenderDocument',
+      '--disable-features=RenderDocument,DevToolsAiPromptApi',
     ],
   });
 

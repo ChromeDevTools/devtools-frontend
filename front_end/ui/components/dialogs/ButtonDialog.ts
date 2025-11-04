@@ -5,7 +5,11 @@
 
 import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import {html, render} from '../../../ui/lit/lit.js';
+import {
+  Directives,
+  html,
+  render,
+} from '../../../ui/lit/lit.js';
 
 import buttonDialogStyles from './buttonDialog.css.js';
 import {
@@ -15,6 +19,8 @@ import {
   DialogState,
   DialogVerticalPosition,
 } from './Dialog.js';
+
+const {ref} = Directives;
 
 export type ButtonDialogState = DialogState;
 
@@ -96,8 +102,10 @@ export class ButtonDialog extends HTMLElement {
       <style>${buttonDialogStyles}</style>
       <devtools-button
         @click=${this.#showDialog}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-          this.#showButton = node as Buttons.Button.Button;
+        ${ref(el => {
+          if (el instanceof HTMLElement) {
+            this.#showButton = el as Buttons.Button.Button;
+          }
         })}
         .data=${{
           variant: this.#data.variant,
@@ -123,8 +131,10 @@ export class ButtonDialog extends HTMLElement {
         .dialogTitle=${this.#data.dialogTitle}
         .jslogContext=${this.#data.jslogContext ?? ''}
         .state=${this.#data.state ?? DialogState.EXPANDED}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-          this.#dialog = node as DialogElement;
+        ${ref(el => {
+          if (el instanceof HTMLElement) {
+            this.#dialog = el as DialogElement;
+          }
         })}
       >
         <slot></slot>

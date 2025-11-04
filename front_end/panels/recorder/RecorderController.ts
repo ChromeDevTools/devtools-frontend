@@ -16,7 +16,6 @@ import * as Emulation from '../../panels/emulation/emulation.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
-import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../ui/components/menus/menus.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -33,7 +32,7 @@ import recorderControllerStyles from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
-const {html, Decorators, LitElement} = Lit;
+const {html, Decorators, Directives: {ref}, LitElement} = Lit;
 const {customElement, state} = Decorators;
 
 const UIStrings = {
@@ -1354,11 +1353,11 @@ export class RecorderController extends LitElement {
             <devtools-button
               id='origin'
               @click=${this.#onExportRecording}
-              on-render=${ComponentHelpers.Directives.nodeRenderedCallback(
-                node => {
-                  this.#exportMenuButton = node as Buttons.Button.Button;
-                },
-              )}
+              ${ref(el => {
+                if (el instanceof HTMLElement) {
+                  this.#exportMenuButton = el as Buttons.Button.Button;
+                }
+              })}
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,

@@ -647,8 +647,10 @@ export class MetricCard extends HTMLElement {
             class="tooltip"
             role="tooltip"
             aria-label=${i18nString(UIStrings.viewCardDetails)}
-            on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-              this.#tooltipEl = node as HTMLElement;
+            ${Lit.Directives.ref(el => {
+              if (el instanceof HTMLElement) {
+                this.#tooltipEl = el as HTMLElement;
+              }
             })}
           >
             <div class="tooltip-scroll">

@@ -874,10 +874,15 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderLogSection(): Lit.LitTemplate {
     // clang-format off
     return html`
-      <section class="logs-section" aria-label=${i18nString(UIStrings.eventLogs)}>
+      <section
+        class="logs-section"
+        aria-label=${i18nString(UIStrings.eventLogs)}
+      >
         <devtools-live-metrics-logs
-          on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-            this.#logsEl = node as LiveMetricsLogs;
+          ${Lit.Directives.ref(el => {
+            if (el instanceof HTMLElement) {
+              this.#logsEl = el as LiveMetricsLogs;
+            }
           })}
         >
           ${this.#renderInteractionsLog()}
@@ -924,8 +929,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return html`
       <ol class="log"
         slot="interactions-log-content"
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-          this.#interactionsListEl = node as HTMLElement;
+        ${Lit.Directives.ref(el => {
+          if (el instanceof HTMLElement) {
+            this.#interactionsListEl = el as HTMLElement;
+          }
         })}
       >
         ${this.#interactions.values().map(interaction => {
@@ -1034,8 +1041,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return html`
       <ol class="log"
         slot="layout-shifts-log-content"
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-          this.#layoutShiftsListEl = node as HTMLElement;
+        ${Lit.Directives.ref(el => {
+          if (el instanceof HTMLElement) {
+            this.#layoutShiftsListEl = el as HTMLElement;
+          }
         })}
       >
         ${this.#layoutShifts.map(layoutShift => {
@@ -1101,8 +1110,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           <main class="live-metrics">
             <h2 class="section-title">${liveMetricsTitle}</h2>
             <div class="metric-cards"
-              on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-                this.#tooltipContainerEl = node;
+              ${Lit.Directives.ref(el => {
+                if (el instanceof HTMLElement) {
+                  this.#tooltipContainerEl = el;
+                }
               })}
             >
               <div id="lcp">

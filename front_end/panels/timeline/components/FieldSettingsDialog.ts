@@ -310,8 +310,10 @@ export class FieldSettingsDialog extends HTMLElement {
     return html`
       <div class="origin-mapping-description">${i18nString(UIStrings.mapDevelopmentOrigins)}</div>
       <devtools-origin-map
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-          this.#originMap = node as OriginMap;
+        ${Lit.Directives.ref(el => {
+          if (el instanceof HTMLElement) {
+            this.#originMap = el as OriginMap;
+          }
         })}
       ></devtools-origin-map>
       <div class="origin-mapping-button-section">
@@ -347,8 +349,10 @@ export class FieldSettingsDialog extends HTMLElement {
         .jslogContext=${'timeline.field-data.settings'}
         .expectedMutationsSelector=${'.timeline-settings-pane option'}
         .dialogTitle=${i18nString(UIStrings.configureFieldData)}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-          this.#dialog = node as Dialogs.Dialog.Dialog;
+        ${Lit.Directives.ref(el => {
+          if (el instanceof HTMLElement) {
+            this.#dialog = el as Dialogs.Dialog.Dialog;
+          }
         })}
       >
         <div class="content">

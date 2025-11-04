@@ -418,4 +418,139 @@ describe('Tooltip', () => {
     assert.exists(tooltip3);
     assert.isTrue(tooltip3.open);
   });
+
+  describe('assigns the correct position', () => {
+    const inspectorViewRect = {
+      top: 0,
+      bottom: 290,
+      height: 290,
+      left: 0,
+      right: 500,
+      width: 500,
+    } as DOMRect;
+    const anchorRect = {
+      top: 100,
+      bottom: 200,
+      height: 100,
+      left: 200,
+      right: 400,
+      width: 200,
+    } as DOMRect;
+
+    it('for default postion bottom span right', () => {
+      const currentPopoverRect = {
+        height: 80,
+        width: 160,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip(
+          {inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions: []});
+      assert.strictEqual(proposedRect.top, 200);
+      assert.strictEqual(proposedRect.left, 200);
+    });
+
+    it('for preferred postion bottom span left', () => {
+      const currentPopoverRect = {
+        height: 80,
+        width: 160,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip({
+        inspectorViewRect,
+        anchorRect,
+        currentPopoverRect,
+        preferredPositions: [Tooltips.Tooltip.PositionOption.BOTTOM_SPAN_LEFT]
+      });
+      assert.strictEqual(proposedRect.top, 200);
+      assert.strictEqual(proposedRect.left, 240);
+    });
+
+    it('uses 2nd option from default order if 1st is impossible', () => {
+      const currentPopoverRect = {
+        height: 80,
+        width: 350,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip(
+          {inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions: []});
+      assert.strictEqual(proposedRect.top, 200);
+      assert.strictEqual(proposedRect.left, 50);
+    });
+
+    it('uses 3rd option from default order if first 2 are impossible', () => {
+      const currentPopoverRect = {
+        height: 95,
+        width: 160,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip(
+          {inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions: []});
+      assert.strictEqual(proposedRect.top, 5);
+      assert.strictEqual(proposedRect.left, 200);
+    });
+
+    it('uses 4th option from default order if first 3 are impossible', () => {
+      const currentPopoverRect = {
+        height: 95,
+        width: 350,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip(
+          {inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions: []});
+      assert.strictEqual(proposedRect.top, 5);
+      assert.strictEqual(proposedRect.left, 50);
+    });
+
+    it('uses 4th option from preferred order if first 3 are impossible', () => {
+      const currentPopoverRect = {
+        height: 95,
+        width: 350,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip({
+        inspectorViewRect,
+        anchorRect,
+        currentPopoverRect,
+        preferredPositions:
+            [Tooltips.Tooltip.PositionOption.BOTTOM_SPAN_LEFT, Tooltips.Tooltip.PositionOption.TOP_SPAN_LEFT]
+      });
+      assert.strictEqual(proposedRect.top, 5);
+      assert.strictEqual(proposedRect.left, 50);
+    });
+
+    it('moves the rect into the viewport if all 4 options are impossible', () => {
+      const currentPopoverRect = {
+        height: 110,
+        width: 440,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip(
+          {inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions: []});
+      assert.strictEqual(proposedRect.top, 0);
+      assert.strictEqual(proposedRect.left, 60);
+    });
+
+    it('for anchors in a corner of the viewport', () => {
+      const anchorBottomLeftCorner = {
+        top: 190,
+        bottom: 290,
+        height: 100,
+        left: 0,
+        right: 100,
+        width: 100,
+      } as DOMRect;
+      const currentPopoverRect = {
+        height: 100,
+        width: 200,
+      } as DOMRect;
+      const proposedRect = Tooltips.Tooltip.proposedRectForRichTooltip(
+          {inspectorViewRect, anchorRect: anchorBottomLeftCorner, currentPopoverRect, preferredPositions: []});
+      assert.strictEqual(proposedRect.top, 90);
+      assert.strictEqual(proposedRect.left, 0);
+    });
+
+    it('moves a simple tooltip into the viewport', () => {
+      const currentPopoverRect = {
+        height: 95,
+        width: 410,
+      } as DOMRect;
+      const proposedRect =
+          Tooltips.Tooltip.proposedRectForSimpleTooltip({inspectorViewRect, anchorRect, currentPopoverRect});
+      assert.strictEqual(proposedRect.top, 5);
+      assert.strictEqual(proposedRect.left, 90);
+    });
+  });
 });

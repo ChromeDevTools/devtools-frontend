@@ -21,7 +21,7 @@ interface PositioningParams {
   currentPopoverRect: DOMRect;
 }
 
-enum PositionOption {
+export enum PositionOption {
   BOTTOM_SPAN_RIGHT = 'bottom-span-right',
   BOTTOM_SPAN_LEFT = 'bottom-span-left',
   TOP_SPAN_RIGHT = 'top-span-right',
@@ -66,29 +66,32 @@ const positioningUtils = {
     };
   },
   // Adjusts proposed rect so that the resulting popover is always inside the inspector view bounds.
-  insetAdjustedRect:
-      ({inspectorViewRect, anchorRect, currentPopoverRect, proposedRect}:
-           {inspectorViewRect: DOMRect, anchorRect: DOMRect, currentPopoverRect: DOMRect, proposedRect: ProposedRect}):
-          ProposedRect => {
-            if (inspectorViewRect.left > proposedRect.left) {
-              proposedRect.left = inspectorViewRect.left;
-            }
+  insetAdjustedRect: ({inspectorViewRect, currentPopoverRect, proposedRect}:
+                          {inspectorViewRect: DOMRect, currentPopoverRect: DOMRect, proposedRect: ProposedRect}):
+      ProposedRect => {
+        if (inspectorViewRect.left > proposedRect.left) {
+          proposedRect.left = inspectorViewRect.left;
+        }
 
-            if (inspectorViewRect.right < proposedRect.left + currentPopoverRect.width) {
-              proposedRect.left = inspectorViewRect.right - currentPopoverRect.width;
-            }
+        if (inspectorViewRect.right < proposedRect.left + currentPopoverRect.width) {
+          proposedRect.left = inspectorViewRect.right - currentPopoverRect.width;
+        }
 
-            if (proposedRect.top + currentPopoverRect.height > inspectorViewRect.bottom) {
-              proposedRect.top = anchorRect.top - currentPopoverRect.height;
-            }
-            return proposedRect;
-          },
+        if (proposedRect.top < inspectorViewRect.top) {
+          proposedRect.top = inspectorViewRect.top;
+        }
+
+        if (proposedRect.top + currentPopoverRect.height > inspectorViewRect.bottom) {
+          proposedRect.top = inspectorViewRect.bottom - currentPopoverRect.height;
+        }
+        return proposedRect;
+      },
   isInBounds: ({inspectorViewRect, currentPopoverRect, proposedRect}:
                    {inspectorViewRect: DOMRect, currentPopoverRect: DOMRect, proposedRect: ProposedRect}): boolean => {
-    return inspectorViewRect.left < proposedRect.left &&
-        proposedRect.left + currentPopoverRect.width < inspectorViewRect.right &&
-        inspectorViewRect.top < proposedRect.top &&
-        proposedRect.top + currentPopoverRect.height < inspectorViewRect.bottom;
+    return inspectorViewRect.left <= proposedRect.left &&
+        proposedRect.left + currentPopoverRect.width <= inspectorViewRect.right &&
+        inspectorViewRect.top <= proposedRect.top &&
+        proposedRect.top + currentPopoverRect.height <= inspectorViewRect.bottom;
   },
   isSameRect: (rect1: DOMRect|null, rect2: DOMRect|null): boolean => {
     if (!rect1 || !rect2) {
@@ -100,7 +103,7 @@ const positioningUtils = {
   }
 };
 
-const proposedRectForRichTooltip = ({inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions}: {
+export const proposedRectForRichTooltip = ({inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions}: {
   inspectorViewRect: DOMRect,
   anchorRect: DOMRect,
   currentPopoverRect: DOMRect,
@@ -116,36 +119,49 @@ const proposedRectForRichTooltip = ({inspectorViewRect, anchorRect, currentPopov
     ]),
   ];
 
-  // Tries the positioning options in the order given by `uniqueOrder`.
-  // If none of them work out, we default to showing the tooltip in the bottom right and adjust
-  // its insets so that the tooltip is inside the inspector view bounds.
-  for (const positionOption of uniqueOrder) {
-    let proposedRect;
+  const getProposedRectForPositionOption = (positionOption: PositionOption): ProposedRect => {
     switch (positionOption) {
       case PositionOption.BOTTOM_SPAN_RIGHT:
-        proposedRect = positioningUtils.bottomSpanRight({anchorRect, currentPopoverRect});
-        break;
+        return positioningUtils.bottomSpanRight({anchorRect, currentPopoverRect});
       case PositionOption.BOTTOM_SPAN_LEFT:
-        proposedRect = positioningUtils.bottomSpanLeft({anchorRect, currentPopoverRect});
-        break;
+        return positioningUtils.bottomSpanLeft({anchorRect, currentPopoverRect});
       case PositionOption.TOP_SPAN_RIGHT:
-        proposedRect = positioningUtils.topSpanRight({anchorRect, currentPopoverRect});
-        break;
+        return positioningUtils.topSpanRight({anchorRect, currentPopoverRect});
       case PositionOption.TOP_SPAN_LEFT:
-        proposedRect = positioningUtils.topSpanLeft({anchorRect, currentPopoverRect});
+        return positioningUtils.topSpanLeft({anchorRect, currentPopoverRect});
     }
+  };
+
+  // Tries the positioning options in the order given by `uniqueOrder`.
+  for (const positionOption of uniqueOrder) {
+    const proposedRect = getProposedRectForPositionOption(positionOption);
     if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
       return proposedRect;
     }
   }
 
-  // If none of the options work above, we position to bottom right
-  // and adjust the insets so that it does not go out of bounds.
-  const proposedRect = positioningUtils.bottomSpanRight({anchorRect, currentPopoverRect});
-  return positioningUtils.insetAdjustedRect({anchorRect, currentPopoverRect, inspectorViewRect, proposedRect});
+  // If none of the options above work, we decide between top or bottom by which
+  // option is fewer vertical pixels out of the viewport. We pick left/right
+  // according to `uniqueOrder`. And finally we adjust the insets so that the
+  // tooltip is not out of bounds.
+  const bottomProposed = positioningUtils.bottomSpanRight({anchorRect, currentPopoverRect});
+  const bottomVerticalOutOfBounds =
+      Math.max(0, bottomProposed.top + currentPopoverRect.height - inspectorViewRect.bottom);
+  const topProposed = positioningUtils.topSpanRight({anchorRect, currentPopoverRect});
+  const topVerticalOutOfBounds = Math.max(0, inspectorViewRect.top - topProposed.top);
+  const prefersBottom = bottomVerticalOutOfBounds <= topVerticalOutOfBounds;
+  const fallbackOption = uniqueOrder.find(option => {
+    if (prefersBottom) {
+      return option === PositionOption.BOTTOM_SPAN_LEFT || option === PositionOption.BOTTOM_SPAN_RIGHT;
+    }
+    return option === PositionOption.TOP_SPAN_LEFT || option === PositionOption.TOP_SPAN_RIGHT;
+  }) ??
+      PositionOption.TOP_SPAN_RIGHT;
+  const fallbackRect = getProposedRectForPositionOption(fallbackOption);
+  return positioningUtils.insetAdjustedRect({currentPopoverRect, inspectorViewRect, proposedRect: fallbackRect});
 };
 
-const proposedRectForSimpleTooltip =
+export const proposedRectForSimpleTooltip =
     ({inspectorViewRect, anchorRect, currentPopoverRect}:
          {inspectorViewRect: DOMRect, anchorRect: DOMRect, currentPopoverRect: DOMRect}): ProposedRect => {
       // Default options are bottom centered & top centered.
@@ -153,16 +169,24 @@ const proposedRectForSimpleTooltip =
       if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
         return proposedRect;
       }
+      const bottomVerticalOutOfBoundsAmount =
+          Math.max(0, proposedRect.top + currentPopoverRect.height - inspectorViewRect.bottom);
 
       proposedRect = positioningUtils.topCentered({anchorRect, currentPopoverRect});
       if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
         return proposedRect;
       }
+      const topVerticalOutOfBoundsAmount = Math.max(0, inspectorViewRect.top - proposedRect.top);
 
-      // The default options did not work out, so position it to bottom center
-      // and adjust the insets to make sure that it does not go out of bounds.
-      proposedRect = positioningUtils.bottomCentered({anchorRect, currentPopoverRect});
-      return positioningUtils.insetAdjustedRect({anchorRect, currentPopoverRect, inspectorViewRect, proposedRect});
+      // The default options did not work out, so compare which option is fewer
+      // pixels out of the viewport vertically. Pick the better option and
+      // adjust the insets to make sure that the tooltip is not out of bounds.
+      if (bottomVerticalOutOfBoundsAmount <= topVerticalOutOfBoundsAmount) {
+        proposedRect = positioningUtils.bottomCentered({anchorRect, currentPopoverRect});
+      } else {
+        proposedRect = positioningUtils.topCentered({anchorRect, currentPopoverRect});
+      }
+      return positioningUtils.insetAdjustedRect({currentPopoverRect, inspectorViewRect, proposedRect});
     };
 
 export type TooltipVariant = 'simple'|'rich';

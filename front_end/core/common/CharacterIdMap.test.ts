@@ -8,20 +8,20 @@ const CharacterIdMap = Common.CharacterIdMap.CharacterIdMap;
 
 describe('CharacterIdMap class', () => {
   it('is able to convert an element to a character', () => {
-    const testElement = document.createElement('p');
+    const testElement = {};
     const characterIdMap = new CharacterIdMap();
     assert.strictEqual(characterIdMap.toChar(testElement), '!', 'element was not converted correctly');
   });
 
   it('is able to convert a character to an element', () => {
-    const testElement = document.createElement('p');
+    const testElement = {};
     const characterIdMap = new CharacterIdMap();
     assert.strictEqual(characterIdMap.toChar(testElement), '!', 'element was not converted correctly');
     assert.strictEqual(characterIdMap.fromChar('!'), testElement, 'character was not converted correctly');
   });
 
   it('returns the same character when trying to convert an element that was already converted', () => {
-    const testElement = document.createElement('p');
+    const testElement = {};
     const characterIdMap = new CharacterIdMap();
     assert.strictEqual(characterIdMap.toChar(testElement), '!', 'element was not converted correctly');
     assert.strictEqual(characterIdMap.toChar(testElement), '!', 'element was not converted correctly');
@@ -32,8 +32,9 @@ describe('CharacterIdMap class', () => {
     const characterIdMap = new CharacterIdMap();
     assert.throws(() => {
       for (let index = 0; index <= upperLimit; index++) {
-        const el = document.createElement('div');
-        el.setAttribute('id', 'Div' + index);
+        const el = {
+          id: 'Div' + index,
+        };
         characterIdMap.toChar(el);
       }
     }, 'CharacterIdMap ran out of capacity!');

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as fs from 'fs';
-import * as http from 'http';
 
 import type {ArtifactGroup} from './screenshot-error.js';
 
@@ -81,20 +80,19 @@ export function sendTestResult(results: TestResult): void {
     return;
   }
 
-  const postOptions = {
+  // As per ResultSink documentation, this will always be a localhost connection
+  // and can be treated as reliable as a local file write.
+  fetch(sinkData.url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       Authorization: `ResultSink ${sinkData.authToken}`,
     },
-  };
-
-  // As per ResultSink documentation, this will always be a localhost connection
-  // and can be treated as reliable as a local file write.
-  const request = http.request(sinkData.url, postOptions);
-
-  const data = JSON.stringify({testResults: [results]});
-  request.write(data);
-  request.end();
+    signal: AbortSignal.timeout(5000),
+    body: JSON.stringify({testResults: [results]}),
+  }).catch(err => {
+    console.error('sending to rdb errored', err);
+  });
+  // TODO: wait for the results to be written.
 }

@@ -54,7 +54,7 @@ async function gzipCodec(
     codecStream: CompressionStream|DecompressionStream): Promise<ArrayBuffer> {
   const readable = new ReadableStream({
     start(controller) {
-      controller.enqueue(buffer);
+      controller.enqueue(buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : buffer);
       controller.close();
     }
   });

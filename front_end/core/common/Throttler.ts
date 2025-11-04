@@ -9,7 +9,7 @@ export class Throttler {
   #process: (() => (void|Promise<unknown>))|null;
   #lastCompleteTime: number;
   #scheduler = Promise.withResolvers<unknown>();
-  #processTimeout?: number;
+  #processTimeout?: ReturnType<typeof setTimeout>;
 
   constructor(timeout: number) {
     this.#timeout = timeout;
@@ -78,11 +78,11 @@ export class Throttler {
     clearTimeout(this.#processTimeout);
 
     const timeout = this.#asSoonAsPossible ? 0 : this.#timeout;
-    this.#processTimeout = window.setTimeout(this.#onTimeout.bind(this), timeout);
+    this.#processTimeout = setTimeout(this.#onTimeout.bind(this), timeout);
   }
 
   #getTime(): number {
-    return window.performance.now();
+    return performance.now();
   }
 }
 

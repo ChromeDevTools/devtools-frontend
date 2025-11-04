@@ -276,6 +276,7 @@ group("unittests") {
 
 group("foundation_unittests") {
   deps = [
+    "core/common:foundation_unittests",
     "core/i18n:foundation_unittests",
     "models/ai_assistance:foundation_unittests",
   ]

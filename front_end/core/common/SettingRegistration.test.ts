@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {
-  deinitializeGlobalVars,
-  initializeGlobalVars,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
+import {setupSettings} from '../../testing/SettingsHelpers.js';
 import * as i18n from '../i18n/i18n.js';
 
 import * as Common from './common.js';
@@ -21,7 +20,7 @@ describe('SettingRegistration', () => {
   // its initialized here.
   const settingCategory = Common.Settings.SettingCategory.CONSOLE;
 
-  before(async () => {
+  beforeEach(() => {
     Common.Settings.registerSettingsForTest(
         [{
           category: settingCategory,
@@ -41,11 +40,8 @@ describe('SettingRegistration', () => {
           ],
         }],
         true);
-    await initializeGlobalVars({reset: false});
-  });
 
-  after(async () => {
-    await deinitializeGlobalVars();
+    setupSettings(false);
   });
 
   it('retrieves a registered setting', () => {

@@ -34,7 +34,8 @@ class PuppeteerConnectionAdapter extends puppeteer.Connection implements
   // eslint-disable-next-line @devtools/no-underscored-properties
   override _rawSend(
       _callbacks: unknown, method: string|number|symbol, params: unknown, sessionId?: string,
-      _options?: unknown): Promise<unknown> {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      _options?: unknown): Promise<any> {
     return this.#connection
         .send(
             method as ProtocolClient.CDPConnection.Command,

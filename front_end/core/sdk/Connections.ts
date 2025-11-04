@@ -213,55 +213,6 @@ export class StubConnection implements ProtocolClient.ConnectionTransport.Connec
   }
 }
 
-export interface ParallelConnectionInterface extends ProtocolClient.ConnectionTransport.ConnectionTransport {
-  getSessionId: () => string;
-  getOnDisconnect: () => ((arg0: string) => void) | null;
-}
-
-export class ParallelConnection implements ParallelConnectionInterface {
-  readonly #connection: ProtocolClient.ConnectionTransport.ConnectionTransport;
-  #sessionId: string;
-  onMessage: ((arg0: Object) => void)|null = null;
-  #onDisconnect: ((arg0: string) => void)|null = null;
-  constructor(connection: ProtocolClient.ConnectionTransport.ConnectionTransport, sessionId: string) {
-    this.#connection = connection;
-    this.#sessionId = sessionId;
-  }
-
-  setOnMessage(onMessage: (arg0: Object) => void): void {
-    this.onMessage = onMessage;
-  }
-
-  setOnDisconnect(onDisconnect: (arg0: string) => void): void {
-    this.#onDisconnect = onDisconnect;
-  }
-
-  getOnDisconnect(): ((arg0: string) => void)|null {
-    return this.#onDisconnect;
-  }
-
-  sendRawMessage(message: string): void {
-    const messageObject = JSON.parse(message);
-    // If the message isn't for a specific session, it must be for the root session.
-    if (!messageObject.sessionId) {
-      messageObject.sessionId = this.#sessionId;
-    }
-    this.#connection.sendRawMessage(JSON.stringify(messageObject));
-  }
-
-  getSessionId(): string {
-    return this.#sessionId;
-  }
-
-  async disconnect(): Promise<void> {
-    if (this.#onDisconnect) {
-      this.#onDisconnect.call(null, 'force disconnect');
-    }
-    this.#onDisconnect = null;
-    this.onMessage = null;
-  }
-}
-
 export async function initMainConnection(
     createRootTarget: () => Promise<void>,
     onConnectionLost: (message: Platform.UIString.LocalizedString) => void): Promise<void> {

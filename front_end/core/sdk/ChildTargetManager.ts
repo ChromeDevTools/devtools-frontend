@@ -7,9 +7,7 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 
-import {ParallelConnection} from './Connections.js';
 import {PrimaryPageChangeType, ResourceTreeModel} from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
@@ -36,7 +34,6 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   readonly #targetInfos = new Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo>();
   readonly #childTargetsBySessionId = new Map<Protocol.Target.SessionID, Target>();
   readonly #childTargetsById = new Map<Protocol.Target.TargetID|'main', Target>();
-  readonly #parallelConnections = new Map<string, ProtocolClient.ConnectionTransport.ConnectionTransport>();
   #parentTargetId: Protocol.Target.TargetID|null = null;
 
   constructor(parentTarget: Target) {
@@ -244,49 +241,16 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   detachedFromTarget({sessionId}: Protocol.Target.DetachedFromTargetEvent): void {
-    if (this.#parallelConnections.has(sessionId)) {
-      this.#parallelConnections.delete(sessionId);
-    } else {
-      const target = this.#childTargetsBySessionId.get(sessionId);
-      if (target) {
-        target.dispose('target terminated');
-        this.#childTargetsBySessionId.delete(sessionId);
-        this.#childTargetsById.delete(target.id());
-      }
+    const target = this.#childTargetsBySessionId.get(sessionId);
+    if (target) {
+      target.dispose('target terminated');
+      this.#childTargetsBySessionId.delete(sessionId);
+      this.#childTargetsById.delete(target.id());
     }
   }
 
   receivedMessageFromTarget({}: Protocol.Target.ReceivedMessageFromTargetEvent): void {
     // We use flatten protocol.
-  }
-
-  async createParallelConnection(onMessage: (arg0: Object|string) => void):
-      Promise<{connection: ProtocolClient.ConnectionTransport.ConnectionTransport, sessionId: string}> {
-    // The main Target id is actually just `main`, instead of the real targetId.
-    // Get the real id (requires an async operation) so that it can be used synchronously later.
-    const targetId = await this.getParentTargetId();
-    const {connection, sessionId} =
-        await this.createParallelConnectionAndSessionForTarget(this.#parentTarget, targetId);
-    connection.setOnMessage(onMessage);
-    this.#parallelConnections.set(sessionId, connection);
-    return {connection, sessionId};
-  }
-
-  private async createParallelConnectionAndSessionForTarget(target: Target, targetId: Protocol.Target.TargetID):
-      Promise<{
-        connection: ProtocolClient.ConnectionTransport.ConnectionTransport,
-        sessionId: string,
-      }> {
-    const targetAgent = target.targetAgent();
-    const targetRouter = (target.router() as ProtocolClient.InspectorBackend.SessionRouter);
-    const sessionId = (await targetAgent.invoke_attachToTarget({targetId, flatten: true})).sessionId;
-    const connection = new ParallelConnection(targetRouter.connection(), sessionId);
-    targetRouter.registerSession(target, sessionId, connection);
-    connection.setOnDisconnect(() => {
-      targetRouter.unregisterSession(sessionId);
-      void targetAgent.invoke_detachFromTarget({sessionId});
-    });
-    return {connection, sessionId};
   }
 
   targetInfos(): Protocol.Target.TargetInfo[] {

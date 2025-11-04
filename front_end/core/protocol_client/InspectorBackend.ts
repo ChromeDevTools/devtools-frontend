@@ -201,7 +201,6 @@ export class SessionRouter implements CDPConnection {
   readonly #pendingLongPollingMessageIds = new Set<number>();
   readonly #sessions = new Map<string, {
     target: TargetBase,
-    proxyConnection: ConnectionTransport|undefined|null,
   }>();
   #pendingScripts: Array<() => void> = [];
   readonly #callbacks = new Map<number, CallbackWithDebugInfo>();
@@ -232,19 +231,8 @@ export class SessionRouter implements CDPConnection {
     this.#observers.delete(observer);
   }
 
-  registerSession(target: TargetBase, sessionId: string, proxyConnection?: ConnectionTransport|null): void {
-    // Only the Audits panel uses proxy connections. If it is ever possible to have multiple active at the
-    // same time, it should be tested thoroughly.
-    if (proxyConnection) {
-      for (const session of this.#sessions.values()) {
-        if (session.proxyConnection) {
-          console.error('Multiple simultaneous proxy connections are currently unsupported');
-          break;
-        }
-      }
-    }
-
-    this.#sessions.set(sessionId, {target, proxyConnection});
+  registerSession(target: TargetBase, sessionId: string): void {
+    this.#sessions.set(sessionId, {target});
   }
 
   unregisterSession(sessionId: string): void {
@@ -333,28 +321,8 @@ export class SessionRouter implements CDPConnection {
 
     const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as CDPReceivableMessage;
 
-    // Send all messages to proxy connections.
-    for (const session of this.#sessions.values()) {
-      if (!session.proxyConnection) {
-        continue;
-      }
-
-      if (!session.proxyConnection.onMessage) {
-        InspectorBackend.reportProtocolError(
-            'Protocol Error: the session has a proxyConnection with no _onMessage', messageObject);
-        continue;
-      }
-
-      session.proxyConnection.onMessage(messageObject);
-    }
-
     const sessionId = messageObject.sessionId || '';
     const session = this.#sessions.get(sessionId);
-
-    // If this message is directly for the target controlled by the proxy connection, don't handle it.
-    if (session?.proxyConnection) {
-      return;
-    }
 
     if (session?.target.getNeedsNodeJSPatching()) {
       NodeURL.patch(messageObject);

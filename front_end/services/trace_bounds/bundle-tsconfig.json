@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/services/trace_bounds"},"files":["../../../../../../front_end/services/trace_bounds/trace_bounds.ts"],"references":[{"path":"./trace_bounds-tsconfig.json"}]}

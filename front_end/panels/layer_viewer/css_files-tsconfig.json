@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "layerDetailsView.css.js",
+        "layerTreeOutline.css.js",
+        "layers3DView.css.js",
+        "paintProfiler.css.js"
+    ]
+}

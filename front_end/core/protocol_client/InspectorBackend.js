@@ -2,13 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
+import { CDPErrorStatus } from './CDPConnection.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { NodeURL } from './NodeURL.js';
-export const DevToolsStubErrorCode = -32015;
-// TODO(dgozman): we are not reporting generic errors in tests, but we should
-// instead report them and just have some expected errors in test expectations.
-const GenericErrorCode = -32000;
-const ConnectionClosedErrorCode = -32001;
 export const splitQualifiedName = (string) => {
     const [domain, eventName] = string.split('.');
     return [domain, eventName];
@@ -117,6 +113,8 @@ export class SessionRouter {
     #pendingLongPollingMessageIds = new Set();
     #sessions = new Map();
     #pendingScripts = [];
+    #callbacks = new Map();
+    #observers = new Set();
     constructor(connection) {
         this.#connection = connection;
         test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
@@ -127,33 +125,31 @@ export class SessionRouter {
             if (session) {
                 session.target.dispose(reason);
             }
+            this.#observers.forEach(observer => observer.onDisconnect(reason));
         });
     }
-    registerSession(target, sessionId, proxyConnection) {
-        // Only the Audits panel uses proxy connections. If it is ever possible to have multiple active at the
-        // same time, it should be tested thoroughly.
-        if (proxyConnection) {
-            for (const session of this.#sessions.values()) {
-                if (session.proxyConnection) {
-                    console.error('Multiple simultaneous proxy connections are currently unsupported');
-                    break;
-                }
-            }
-        }
-        this.#sessions.set(sessionId, { target, callbacks: new Map(), proxyConnection });
+    observe(observer) {
+        this.#observers.add(observer);
+    }
+    unobserve(observer) {
+        this.#observers.delete(observer);
+    }
+    registerSession(target, sessionId) {
+        this.#sessions.set(sessionId, { target });
     }
     unregisterSession(sessionId) {
         const session = this.#sessions.get(sessionId);
         if (!session) {
             return;
         }
-        for (const { resolve, method } of session.callbacks.values()) {
+        for (const { resolve, method, sessionId: callbackSessionId } of this.#callbacks.values()) {
+            if (sessionId !== callbackSessionId) {
+                continue;
+            }
             resolve({
-                result: null,
                 error: {
                     message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
-                    code: ConnectionClosedErrorCode,
-                    data: null,
+                    code: CDPErrorStatus.SESSION_NOT_FOUND,
                 }
             });
         }
@@ -165,7 +161,7 @@ export class SessionRouter {
     connection() {
         return this.#connection;
     }
-    sendMessage(sessionId, domain, method, params) {
+    send(method, params, sessionId) {
         const messageId = this.nextMessageId();
         const messageObject = {
             id: messageId,
@@ -181,6 +177,7 @@ export class SessionRouter {
             test.dumpProtocol('frontend: ' + JSON.stringify(messageObject));
         }
         if (test.onMessageSent) {
+            const domain = method.split('.')[0];
             const paramsObject = JSON.parse(JSON.stringify(params || {}));
             test.onMessageSent({ domain, method, params: paramsObject, id: messageId, sessionId });
         }
@@ -188,18 +185,20 @@ export class SessionRouter {
         if (LongPollingMethods.has(method)) {
             this.#pendingLongPollingMessageIds.add(messageId);
         }
-        const session = this.#sessions.get(sessionId);
-        if (!session) {
-            return Promise.resolve({ error: null, result: null });
-        }
         return new Promise(resolve => {
-            session.callbacks.set(messageId, { resolve, method });
+            this.#callbacks.set(messageId, { resolve, method, sessionId });
             this.#connection.sendRawMessage(JSON.stringify(messageObject));
         });
     }
     sendRawMessageForTesting(method, params, callback, sessionId = '') {
-        const domain = method.split('.')[0];
-        void this.sendMessage(sessionId, domain, method, params).then(({ error, result }) => callback?.(error, result));
+        void this.send(method, params, sessionId).then(response => {
+            if ('error' in response && response.error) {
+                callback?.(response.error, null);
+            }
+            else if ('result' in response) {
+                callback?.(null, response.result);
+            }
+        });
     }
     onMessage(message) {
         if (test.dumpProtocol) {
@@ -210,61 +209,32 @@ export class SessionRouter {
             test.onMessageReceived(messageObjectCopy);
         }
         const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message);
-        // Send all messages to proxy connections.
-        let suppressUnknownMessageErrors = false;
-        for (const session of this.#sessions.values()) {
-            if (!session.proxyConnection) {
-                continue;
-            }
-            if (!session.proxyConnection.onMessage) {
-                InspectorBackend.reportProtocolError('Protocol Error: the session has a proxyConnection with no _onMessage', messageObject);
-                continue;
-            }
-            session.proxyConnection.onMessage(messageObject);
-            suppressUnknownMessageErrors = true;
-        }
         const sessionId = messageObject.sessionId || '';
         const session = this.#sessions.get(sessionId);
-        if (!session) {
-            // In the DevTools MCP case, we may share the transport with puppeteer so we silently
-            // ignore unknown sessions.
-            return;
-        }
-        // If this message is directly for the target controlled by the proxy connection, don't handle it.
-        if (session.proxyConnection) {
-            return;
-        }
-        if (session.target.getNeedsNodeJSPatching()) {
+        if (session?.target.getNeedsNodeJSPatching()) {
             NodeURL.patch(messageObject);
         }
-        if (messageObject.id !== undefined) { // just a response for some request
-            const callback = session.callbacks.get(messageObject.id);
-            session.callbacks.delete(messageObject.id);
+        if ('id' in messageObject && messageObject.id !== undefined) { // just a response for some request
+            const callback = this.#callbacks.get(messageObject.id);
+            this.#callbacks.delete(messageObject.id);
             if (!callback) {
-                if (messageObject.error?.code === ConnectionClosedErrorCode) {
-                    // Ignore the errors that are sent as responses after the session closes.
-                    return;
-                }
-                if (!suppressUnknownMessageErrors) {
-                    InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
-                }
+                // Ignore messages with unknown IDs, we might see puppeteer proxied messages here.
                 return;
             }
-            callback.resolve({ error: messageObject.error || null, result: messageObject.result || null });
+            callback.resolve(messageObject);
             --this.#pendingResponsesCount;
             this.#pendingLongPollingMessageIds.delete(messageObject.id);
             if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
                 this.deprecatedRunAfterPendingDispatches();
             }
         }
-        else {
-            if (messageObject.method === undefined) {
-                InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
-                return;
-            }
+        else if ('method' in messageObject) {
             // This cast is justified as we just checked for the presence of messageObject.method.
-            const eventMessage = messageObject;
-            session.target.dispatch(eventMessage);
+            session?.target.dispatch(messageObject);
+            this.#observers.forEach(observer => observer.onEvent(messageObject));
+        }
+        else {
+            InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
         }
     }
     hasOutstandingNonLongPollingRequests() {
@@ -604,6 +574,12 @@ export class TargetBase {
         return this.needsNodeJSPatching;
     }
 }
+/** These are not logged as console.error */
+const IGNORED_ERRORS = new Set([
+    CDPErrorStatus.DEVTOOLS_STUB_ERROR,
+    CDPErrorStatus.SERVER_ERROR,
+    CDPErrorStatus.SESSION_NOT_FOUND,
+]);
 /**
  * This is a class that serves as the prototype for a domains #agents (every target
  * has it's own set of #agents). The InspectorBackend keeps an instance of this class
@@ -636,13 +612,17 @@ class AgentPrototype {
         if (!router) {
             return Promise.resolve({ result: null, getError: () => `Connection is closed, can\'t dispatch pending call to ${method}` });
         }
-        return router.sendMessage(this.target.sessionId, this.domain, method, request).then(({ error, result }) => {
-            if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
-                error.code !== GenericErrorCode && error.code !== ConnectionClosedErrorCode) {
-                console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
+        return router.send(method, request, this.target.sessionId).then(response => {
+            if ('error' in response && response.error) {
+                if (!test.suppressRequestErrors && !IGNORED_ERRORS.has(response.error.code)) {
+                    console.error('Request ' + method + ' failed. ' + JSON.stringify(response.error));
+                }
+                return { getError: () => response.error.message };
             }
-            const errorMessage = error?.message;
-            return { ...result, getError: () => errorMessage };
+            if ('result' in response) {
+                return { ...response.result, getError: () => undefined };
+            }
+            return { getError: () => undefined };
         });
     }
 }

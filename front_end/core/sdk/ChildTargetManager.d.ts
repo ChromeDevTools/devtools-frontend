@@ -1,6 +1,5 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
 export declare class ChildTargetManager extends SDKModel<EventTypes> implements ProtocolProxyApi.TargetDispatcher {
@@ -25,11 +24,6 @@ export declare class ChildTargetManager extends SDKModel<EventTypes> implements 
     private initializeStorage;
     detachedFromTarget({ sessionId }: Protocol.Target.DetachedFromTargetEvent): void;
     receivedMessageFromTarget({}: Protocol.Target.ReceivedMessageFromTargetEvent): void;
-    createParallelConnection(onMessage: (arg0: Object | string) => void): Promise<{
-        connection: ProtocolClient.ConnectionTransport.ConnectionTransport;
-        sessionId: string;
-    }>;
-    private createParallelConnectionAndSessionForTarget;
     targetInfos(): Protocol.Target.TargetInfo[];
     private static lastAnonymousTargetId;
     private static attachCallback?;

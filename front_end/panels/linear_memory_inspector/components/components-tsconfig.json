@@ -1,0 +1,80 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/linear_memory_inspector/components",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "components-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryInspectorUtils.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryViewerUtils.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterSettings.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/helpers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/icon_button/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/components/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/lit/bundle-tsconfig.json"
+    }
+  ]
+}

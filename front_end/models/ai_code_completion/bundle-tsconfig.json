@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/ai_code_completion"},"files":["../../../../../../front_end/models/ai_code_completion/ai_code_completion.ts"],"references":[{"path":"./ai_code_completion-tsconfig.json"}]}

@@ -24770,6 +24770,7 @@ var DOMNode = class _DOMNode {
     });
   }
   async getSubtree(depth, pierce) {
+    console.assert(depth > 0, "Do not fetch an infinite subtree to avoid crashing the renderer for large documents");
     const response = await this.#agent.invoke_requestChildNodes({ nodeId: this.id, depth, pierce });
     return response.getError() ? null : this.childrenInternal;
   }
@@ -30640,33 +30641,293 @@ var ChildTargetManager_exports = {};
 __export(ChildTargetManager_exports, {
   ChildTargetManager: () => ChildTargetManager
 });
-import * as i18n27 from "./../i18n/i18n.js";
-import * as Common34 from "./../common/common.js";
-import * as Host9 from "./../host/host.js";
+import * as i18n23 from "./../i18n/i18n.js";
+import * as Common30 from "./../common/common.js";
+import * as Host8 from "./../host/host.js";
+var UIStrings10 = {
+  /**
+   * @description Text that refers to the main target. The main target is the primary webpage that
+   * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
+   * the user which target/webpage they are currently connected to, as DevTools may connect to multiple
+   * targets at the same time in some scenarios.
+   */
+  main: "Main"
+};
+var str_10 = i18n23.i18n.registerUIStrings("core/sdk/ChildTargetManager.ts", UIStrings10);
+var i18nString10 = i18n23.i18n.getLocalizedString.bind(void 0, str_10);
+var ChildTargetManager = class _ChildTargetManager extends SDKModel {
+  #targetManager;
+  #parentTarget;
+  #targetAgent;
+  #targetInfos = /* @__PURE__ */ new Map();
+  #childTargetsBySessionId = /* @__PURE__ */ new Map();
+  #childTargetsById = /* @__PURE__ */ new Map();
+  #parentTargetId = null;
+  constructor(parentTarget) {
+    super(parentTarget);
+    this.#targetManager = parentTarget.targetManager();
+    this.#parentTarget = parentTarget;
+    this.#targetAgent = parentTarget.targetAgent();
+    parentTarget.registerTargetDispatcher(this);
+    const browserTarget = this.#targetManager.browserTarget();
+    if (browserTarget) {
+      if (browserTarget !== parentTarget) {
+        void browserTarget.targetAgent().invoke_autoAttachRelated({ targetId: parentTarget.id(), waitForDebuggerOnStart: true });
+      }
+    } else if (parentTarget.type() === Type.NODE) {
+      void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: false });
+    } else {
+      void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
+    }
+    if (parentTarget.parentTarget()?.type() !== Type.FRAME && !Host8.InspectorFrontendHost.isUnderTest()) {
+      void this.#targetAgent.invoke_setDiscoverTargets({ discover: true });
+      void this.#targetAgent.invoke_setRemoteLocations({ locations: [{ host: "localhost", port: 9229 }] });
+    }
+  }
+  static install(attachCallback) {
+    _ChildTargetManager.attachCallback = attachCallback;
+    SDKModel.register(_ChildTargetManager, { capabilities: 32, autostart: true });
+  }
+  childTargets() {
+    return Array.from(this.#childTargetsBySessionId.values());
+  }
+  async suspendModel() {
+    await this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: false, flatten: true });
+  }
+  async resumeModel() {
+    await this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
+  }
+  dispose() {
+    for (const sessionId of this.#childTargetsBySessionId.keys()) {
+      this.detachedFromTarget({ sessionId, targetId: void 0 });
+    }
+  }
+  targetCreated({ targetInfo }) {
+    this.#targetInfos.set(targetInfo.targetId, targetInfo);
+    this.fireAvailableTargetsChanged();
+    this.dispatchEventToListeners("TargetCreated", targetInfo);
+  }
+  targetInfoChanged({ targetInfo }) {
+    this.#targetInfos.set(targetInfo.targetId, targetInfo);
+    const target = this.#childTargetsById.get(targetInfo.targetId);
+    if (target) {
+      void target.setHasCrashed(false);
+      if (target.targetInfo()?.subtype === "prerender" && !targetInfo.subtype) {
+        const resourceTreeModel = target.model(ResourceTreeModel);
+        target.updateTargetInfo(targetInfo);
+        if (resourceTreeModel?.mainFrame) {
+          resourceTreeModel.primaryPageChanged(
+            resourceTreeModel.mainFrame,
+            "Activation"
+            /* PrimaryPageChangeType.ACTIVATION */
+          );
+        }
+        target.setName(i18nString10(UIStrings10.main));
+      } else {
+        target.updateTargetInfo(targetInfo);
+      }
+    }
+    this.fireAvailableTargetsChanged();
+    this.dispatchEventToListeners("TargetInfoChanged", targetInfo);
+  }
+  targetDestroyed({ targetId }) {
+    this.#targetInfos.delete(targetId);
+    this.fireAvailableTargetsChanged();
+    this.dispatchEventToListeners("TargetDestroyed", targetId);
+  }
+  targetCrashed({ targetId }) {
+    const target = this.#childTargetsById.get(targetId);
+    if (target) {
+      target.setHasCrashed(true);
+    }
+  }
+  fireAvailableTargetsChanged() {
+    TargetManager.instance().dispatchEventToListeners("AvailableTargetsChanged", [...this.#targetInfos.values()]);
+  }
+  async getParentTargetId() {
+    if (!this.#parentTargetId) {
+      this.#parentTargetId = (await this.#parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
+    }
+    return this.#parentTargetId;
+  }
+  async getTargetInfo() {
+    return (await this.#parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo;
+  }
+  async attachedToTarget({ sessionId, targetInfo, waitingForDebugger }) {
+    if (this.#parentTargetId === targetInfo.targetId) {
+      return;
+    }
+    let type = Type.BROWSER;
+    let targetName = "";
+    if (targetInfo.type === "worker" && targetInfo.title && targetInfo.title !== targetInfo.url) {
+      targetName = targetInfo.title;
+    } else if (!["page", "iframe", "webview"].includes(targetInfo.type)) {
+      const KNOWN_FRAME_PATTERNS = [
+        "^chrome://print/$",
+        "^chrome://file-manager/",
+        "^chrome://feedback/",
+        "^chrome://.*\\.top-chrome/$",
+        "^chrome://view-cert/$",
+        "^devtools://"
+      ];
+      if (KNOWN_FRAME_PATTERNS.some((p) => targetInfo.url.match(p))) {
+        type = Type.FRAME;
+      } else {
+        const parsedURL = Common30.ParsedURL.ParsedURL.fromString(targetInfo.url);
+        targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + ++_ChildTargetManager.lastAnonymousTargetId;
+      }
+    }
+    if (targetInfo.type === "iframe" || targetInfo.type === "webview") {
+      type = Type.FRAME;
+    } else if (targetInfo.type === "background_page" || targetInfo.type === "app" || targetInfo.type === "popup_page") {
+      type = Type.FRAME;
+    } else if (targetInfo.type === "page") {
+      type = Type.FRAME;
+    } else if (targetInfo.type === "browser_ui") {
+      type = Type.FRAME;
+    } else if (targetInfo.type === "worker") {
+      type = Type.Worker;
+    } else if (targetInfo.type === "worklet") {
+      type = Type.WORKLET;
+    } else if (targetInfo.type === "shared_worker") {
+      type = Type.SHARED_WORKER;
+    } else if (targetInfo.type === "shared_storage_worklet") {
+      type = Type.SHARED_STORAGE_WORKLET;
+    } else if (targetInfo.type === "service_worker") {
+      type = Type.ServiceWorker;
+    } else if (targetInfo.type === "auction_worklet") {
+      type = Type.AUCTION_WORKLET;
+    } else if (targetInfo.type === "node_worker") {
+      type = Type.NODE_WORKER;
+    }
+    const target = this.#targetManager.createTarget(targetInfo.targetId, targetName, type, this.#parentTarget, sessionId, void 0, void 0, targetInfo);
+    this.#childTargetsBySessionId.set(sessionId, target);
+    this.#childTargetsById.set(target.id(), target);
+    if (_ChildTargetManager.attachCallback) {
+      await _ChildTargetManager.attachCallback({ target, waitingForDebugger });
+    }
+    if (waitingForDebugger) {
+      void target.runtimeAgent().invoke_runIfWaitingForDebugger();
+    }
+    if (type !== Type.FRAME && target.hasAllCapabilities(
+      8192
+      /* Capability.STORAGE */
+    )) {
+      await this.initializeStorage(target);
+    }
+  }
+  async initializeStorage(target) {
+    const storageAgent = target.storageAgent();
+    const response = await storageAgent.invoke_getStorageKey({});
+    const storageKey = response.storageKey;
+    if (response.getError() || !storageKey) {
+      console.error(`Failed to get storage key for target ${target.id()}: ${response.getError()}`);
+      return;
+    }
+    const storageKeyManager = target.model(StorageKeyManager);
+    if (storageKeyManager) {
+      storageKeyManager.setMainStorageKey(storageKey);
+      storageKeyManager.updateStorageKeys(/* @__PURE__ */ new Set([storageKey]));
+    }
+    const securityOriginManager = target.model(SecurityOriginManager);
+    if (securityOriginManager) {
+      const origin = new URL(storageKey).origin;
+      securityOriginManager.setMainSecurityOrigin(origin, "");
+      securityOriginManager.updateSecurityOrigins(/* @__PURE__ */ new Set([origin]));
+    }
+  }
+  detachedFromTarget({ sessionId }) {
+    const target = this.#childTargetsBySessionId.get(sessionId);
+    if (target) {
+      target.dispose("target terminated");
+      this.#childTargetsBySessionId.delete(sessionId);
+      this.#childTargetsById.delete(target.id());
+    }
+  }
+  receivedMessageFromTarget({}) {
+  }
+  targetInfos() {
+    return Array.from(this.#targetInfos.values());
+  }
+  static lastAnonymousTargetId = 0;
+  static attachCallback;
+};
+
+// gen/front_end/core/sdk/CompilerSourceMappingContentProvider.js
+var CompilerSourceMappingContentProvider_exports = {};
+__export(CompilerSourceMappingContentProvider_exports, {
+  CompilerSourceMappingContentProvider: () => CompilerSourceMappingContentProvider
+});
+import * as TextUtils25 from "./../../models/text_utils/text_utils.js";
+import * as i18n25 from "./../i18n/i18n.js";
+var UIStrings11 = {
+  /**
+   * @description Error message when failing to fetch a resource referenced in a source map
+   * @example {https://example.com/sourcemap.map} PH1
+   * @example {An error occurred} PH2
+   */
+  couldNotLoadContentForSS: "Could not load content for {PH1} ({PH2})"
+};
+var str_11 = i18n25.i18n.registerUIStrings("core/sdk/CompilerSourceMappingContentProvider.ts", UIStrings11);
+var i18nString11 = i18n25.i18n.getLocalizedString.bind(void 0, str_11);
+var CompilerSourceMappingContentProvider = class {
+  #sourceURL;
+  #contentType;
+  #initiator;
+  constructor(sourceURL, contentType, initiator) {
+    this.#sourceURL = sourceURL;
+    this.#contentType = contentType;
+    this.#initiator = initiator;
+  }
+  contentURL() {
+    return this.#sourceURL;
+  }
+  contentType() {
+    return this.#contentType;
+  }
+  async requestContentData() {
+    try {
+      const { content } = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
+      return new TextUtils25.ContentData.ContentData(
+        content,
+        /* isBase64=*/
+        false,
+        this.#contentType.canonicalMimeType()
+      );
+    } catch (e) {
+      const error = i18nString11(UIStrings11.couldNotLoadContentForSS, { PH1: this.#sourceURL, PH2: e.message });
+      console.error(error);
+      return { error };
+    }
+  }
+  async searchInContent(query, caseSensitive, isRegex) {
+    const contentData = await this.requestContentData();
+    return TextUtils25.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
+  }
+};
 
 // gen/front_end/core/sdk/Connections.js
 var Connections_exports = {};
 __export(Connections_exports, {
   MainConnection: () => MainConnection,
-  ParallelConnection: () => ParallelConnection,
-  StubConnection: () => StubConnection,
-  WebSocketConnection: () => WebSocketConnection,
+  StubTransport: () => StubTransport,
+  WebSocketTransport: () => WebSocketTransport,
   initMainConnection: () => initMainConnection
 });
-import * as i18n25 from "./../i18n/i18n.js";
-import * as Common33 from "./../common/common.js";
-import * as Host8 from "./../host/host.js";
+import * as i18n29 from "./../i18n/i18n.js";
+import * as Common34 from "./../common/common.js";
+import * as Host9 from "./../host/host.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
 import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
 __export(RehydratingConnection_exports, {
-  RehydratingConnection: () => RehydratingConnection,
+  RehydratingConnectionTransport: () => RehydratingConnectionTransport,
   RehydratingSession: () => RehydratingSession
 });
-import * as Common32 from "./../common/common.js";
-import * as i18n23 from "./../i18n/i18n.js";
+import * as Common33 from "./../common/common.js";
+import * as i18n27 from "./../i18n/i18n.js";
 import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
@@ -30674,7 +30935,7 @@ var EnhancedTracesParser_exports = {};
 __export(EnhancedTracesParser_exports, {
   EnhancedTracesParser: () => EnhancedTracesParser
 });
-import * as Common30 from "./../common/common.js";
+import * as Common31 from "./../common/common.js";
 import { UserVisibleError } from "./../platform/platform.js";
 var EnhancedTracesParser = class {
   #trace;
@@ -30867,9 +31128,9 @@ var EnhancedTracesParser = class {
     let resolvedSourceUrl = url;
     if (hasSourceURL && sourceURL) {
       const targetUrl = target.url;
-      resolvedSourceUrl = Common30.ParsedURL.ParsedURL.completeURL(targetUrl, sourceURL) ?? sourceURL;
+      resolvedSourceUrl = Common31.ParsedURL.ParsedURL.completeURL(targetUrl, sourceURL) ?? sourceURL;
     }
-    const resolvedSourceMapUrl = Common30.ParsedURL.ParsedURL.completeURL(resolvedSourceUrl, sourceMapURL);
+    const resolvedSourceMapUrl = Common31.ParsedURL.ParsedURL.completeURL(resolvedSourceUrl, sourceMapURL);
     if (!resolvedSourceMapUrl) {
       return;
     }
@@ -30995,7 +31256,7 @@ __export(TraceObject_exports, {
   RevealableNetworkRequest: () => RevealableNetworkRequest,
   TraceObject: () => TraceObject
 });
-import * as Common31 from "./../common/common.js";
+import * as Common32 from "./../common/common.js";
 var TraceObject = class {
   traceEvents;
   metadata;
@@ -31026,7 +31287,7 @@ var RevealableNetworkRequest = class _RevealableNetworkRequest {
   static create(event) {
     const syntheticNetworkRequest = event;
     const url = syntheticNetworkRequest.args.data.url;
-    const urlWithoutHash = Common31.ParsedURL.ParsedURL.urlWithoutHash(url);
+    const urlWithoutHash = Common32.ParsedURL.ParsedURL.urlWithoutHash(url);
     const resource = ResourceTreeModel.resourceForURL(url) ?? ResourceTreeModel.resourceForURL(urlWithoutHash);
     const sdkNetworkRequest = resource?.request;
     return sdkNetworkRequest ? new _RevealableNetworkRequest(sdkNetworkRequest) : null;
@@ -31034,7 +31295,7 @@ var RevealableNetworkRequest = class _RevealableNetworkRequest {
 };
 
 // gen/front_end/core/sdk/RehydratingConnection.js
-var UIStrings10 = {
+var UIStrings12 = {
   /**
    * @description Text that appears when no source text is available for the given script
    */
@@ -31048,9 +31309,9 @@ var UIStrings10 = {
    */
   errorLoadingLog: "Error loading log"
 };
-var str_10 = i18n23.i18n.registerUIStrings("core/sdk/RehydratingConnection.ts", UIStrings10);
-var i18nString10 = i18n23.i18n.getLocalizedString.bind(void 0, str_10);
-var RehydratingConnection = class {
+var str_12 = i18n27.i18n.registerUIStrings("core/sdk/RehydratingConnection.ts", UIStrings12);
+var i18nString12 = i18n27.i18n.getLocalizedString.bind(void 0, str_12);
+var RehydratingConnectionTransport = class {
   rehydratingConnectionState = 1;
   onDisconnect = null;
   onMessage = null;
@@ -31075,7 +31336,7 @@ var RehydratingConnection = class {
       }
     }
     if (traceUrl) {
-      void fetch(traceUrl).then((r) => r.arrayBuffer()).then((b) => Common32.Gzip.arrayBufferToString(b)).then((traceJson) => {
+      void fetch(traceUrl).then((r) => r.arrayBuffer()).then((b) => Common33.Gzip.arrayBufferToString(b)).then((traceJson) => {
         const trace = new TraceObject(JSON.parse(traceJson));
         void this.startHydration(trace);
       });
@@ -31090,7 +31351,7 @@ var RehydratingConnection = class {
     } else if (this.#rehydratingWindow !== window.top) {
       this.#rehydratingWindow.parent.postMessage({ type: "REHYDRATING_IFRAME_READY" }, "*");
     } else {
-      this.#onConnectionLost(i18nString10(UIStrings10.noHostWindow));
+      this.#onConnectionLost(i18nString12(UIStrings12.noHostWindow));
     }
   }
   /**
@@ -31104,7 +31365,7 @@ var RehydratingConnection = class {
       try {
         trace = new TraceObject(JSON.parse(traceJson));
       } catch {
-        this.#onConnectionLost(i18nString10(UIStrings10.errorLoadingLog));
+        this.#onConnectionLost(i18nString12(UIStrings12.errorLoadingLog));
         return;
       }
       void this.startHydration(trace);
@@ -31155,7 +31416,7 @@ var RehydratingConnection = class {
       return;
     }
     this.rehydratingConnectionState = 3;
-    await Common32.Revealer.reveal(this.trace);
+    await Common33.Revealer.reveal(this.trace);
   }
   setOnMessage(onMessage) {
     this.onMessage = onMessage;
@@ -31324,7 +31585,7 @@ var RehydratingSession = class extends RehydratingSessionBase {
     this.sendMessageToFrontend({
       id,
       result: {
-        scriptSource: typeof script.sourceText === "undefined" ? i18nString10(UIStrings10.noSourceText) : script.sourceText
+        scriptSource: typeof script.sourceText === "undefined" ? i18nString12(UIStrings12.noSourceText) : script.sourceText
       }
     });
   }
@@ -31421,14 +31682,14 @@ var RehydratingSession = class extends RehydratingSessionBase {
 };
 
 // gen/front_end/core/sdk/Connections.js
-var UIStrings11 = {
+var UIStrings13 = {
   /**
    * @description Text on the remote debugging window to indicate the connection is lost
    */
   websocketDisconnected: "WebSocket disconnected"
 };
-var str_11 = i18n25.i18n.registerUIStrings("core/sdk/Connections.ts", UIStrings11);
-var i18nString11 = i18n25.i18n.getLocalizedString.bind(void 0, str_11);
+var str_13 = i18n29.i18n.registerUIStrings("core/sdk/Connections.ts", UIStrings13);
+var i18nString13 = i18n29.i18n.getLocalizedString.bind(void 0, str_13);
 var MainConnection = class {
   onMessage = null;
   #onDisconnect = null;
@@ -31437,8 +31698,8 @@ var MainConnection = class {
   #eventListeners;
   constructor() {
     this.#eventListeners = [
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
+      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host9.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
+      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host9.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
     ];
   }
   setOnMessage(onMessage) {
@@ -31449,7 +31710,7 @@ var MainConnection = class {
   }
   sendRawMessage(message) {
     if (this.onMessage) {
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
+      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
     }
   }
   dispatchMessage(event) {
@@ -31472,7 +31733,7 @@ var MainConnection = class {
   }
   async disconnect() {
     const onDisconnect = this.#onDisconnect;
-    Common33.EventTarget.removeEventListeners(this.#eventListeners);
+    Common34.EventTarget.removeEventListeners(this.#eventListeners);
     this.#onDisconnect = null;
     this.onMessage = null;
     if (onDisconnect) {
@@ -31480,7 +31741,7 @@ var MainConnection = class {
     }
   }
 };
-var WebSocketConnection = class {
+var WebSocketTransport = class {
   #socket;
   onMessage = null;
   #onDisconnect = null;
@@ -31507,7 +31768,7 @@ var WebSocketConnection = class {
   }
   onError() {
     if (this.#onWebSocketDisconnect) {
-      this.#onWebSocketDisconnect.call(null, i18nString11(UIStrings11.websocketDisconnected));
+      this.#onWebSocketDisconnect.call(null, i18nString13(UIStrings13.websocketDisconnected));
     }
     if (this.#onDisconnect) {
       this.#onDisconnect.call(null, "connection failed");
@@ -31526,7 +31787,7 @@ var WebSocketConnection = class {
   }
   onClose() {
     if (this.#onWebSocketDisconnect) {
-      this.#onWebSocketDisconnect.call(null, i18nString11(UIStrings11.websocketDisconnected));
+      this.#onWebSocketDisconnect.call(null, i18nString13(UIStrings13.websocketDisconnected));
     }
     if (this.#onDisconnect) {
       this.#onDisconnect.call(null, "websocket closed");
@@ -31562,7 +31823,7 @@ var WebSocketConnection = class {
     });
   }
 };
-var StubConnection = class {
+var StubTransport = class {
   onMessage = null;
   #onDisconnect = null;
   setOnMessage(onMessage) {
@@ -31578,7 +31839,7 @@ var StubConnection = class {
     const messageObject = JSON.parse(message);
     const error = {
       message: "This is a stub connection, can't dispatch message.",
-      code: ProtocolClient2.InspectorBackend.DevToolsStubErrorCode,
+      code: ProtocolClient2.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
       data: messageObject
     };
     if (this.onMessage) {
@@ -31593,350 +31854,27 @@ var StubConnection = class {
     this.onMessage = null;
   }
 };
-var ParallelConnection = class {
-  #connection;
-  #sessionId;
-  onMessage = null;
-  #onDisconnect = null;
-  constructor(connection, sessionId) {
-    this.#connection = connection;
-    this.#sessionId = sessionId;
-  }
-  setOnMessage(onMessage) {
-    this.onMessage = onMessage;
-  }
-  setOnDisconnect(onDisconnect) {
-    this.#onDisconnect = onDisconnect;
-  }
-  getOnDisconnect() {
-    return this.#onDisconnect;
-  }
-  sendRawMessage(message) {
-    const messageObject = JSON.parse(message);
-    if (!messageObject.sessionId) {
-      messageObject.sessionId = this.#sessionId;
-    }
-    this.#connection.sendRawMessage(JSON.stringify(messageObject));
-  }
-  getSessionId() {
-    return this.#sessionId;
-  }
-  async disconnect() {
-    if (this.#onDisconnect) {
-      this.#onDisconnect.call(null, "force disconnect");
-    }
-    this.#onDisconnect = null;
-    this.onMessage = null;
-  }
-};
 async function initMainConnection(createRootTarget, onConnectionLost) {
-  ProtocolClient2.ConnectionTransport.ConnectionTransport.setFactory(createMainConnection.bind(null, onConnectionLost));
+  ProtocolClient2.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
   await createRootTarget();
-  Host8.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
+  Host9.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
-function createMainConnection(onConnectionLost) {
+function createMainTransport(onConnectionLost) {
   if (Root11.Runtime.Runtime.isTraceApp()) {
-    return new RehydratingConnection(onConnectionLost);
+    return new RehydratingConnectionTransport(onConnectionLost);
   }
   const wsParam = Root11.Runtime.Runtime.queryParam("ws");
   const wssParam = Root11.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
-    return new WebSocketConnection(ws, onConnectionLost);
+    return new WebSocketTransport(ws, onConnectionLost);
   }
-  const notEmbeddedOrWs = Host8.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+  const notEmbeddedOrWs = Host9.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
   if (notEmbeddedOrWs) {
-    return new StubConnection();
+    return new StubTransport();
   }
   return new MainConnection();
 }
-
-// gen/front_end/core/sdk/ChildTargetManager.js
-var UIStrings12 = {
-  /**
-   * @description Text that refers to the main target. The main target is the primary webpage that
-   * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
-   * the user which target/webpage they are currently connected to, as DevTools may connect to multiple
-   * targets at the same time in some scenarios.
-   */
-  main: "Main"
-};
-var str_12 = i18n27.i18n.registerUIStrings("core/sdk/ChildTargetManager.ts", UIStrings12);
-var i18nString12 = i18n27.i18n.getLocalizedString.bind(void 0, str_12);
-var ChildTargetManager = class _ChildTargetManager extends SDKModel {
-  #targetManager;
-  #parentTarget;
-  #targetAgent;
-  #targetInfos = /* @__PURE__ */ new Map();
-  #childTargetsBySessionId = /* @__PURE__ */ new Map();
-  #childTargetsById = /* @__PURE__ */ new Map();
-  #parallelConnections = /* @__PURE__ */ new Map();
-  #parentTargetId = null;
-  constructor(parentTarget) {
-    super(parentTarget);
-    this.#targetManager = parentTarget.targetManager();
-    this.#parentTarget = parentTarget;
-    this.#targetAgent = parentTarget.targetAgent();
-    parentTarget.registerTargetDispatcher(this);
-    const browserTarget = this.#targetManager.browserTarget();
-    if (browserTarget) {
-      if (browserTarget !== parentTarget) {
-        void browserTarget.targetAgent().invoke_autoAttachRelated({ targetId: parentTarget.id(), waitForDebuggerOnStart: true });
-      }
-    } else if (parentTarget.type() === Type.NODE) {
-      void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: false });
-    } else {
-      void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
-    }
-    if (parentTarget.parentTarget()?.type() !== Type.FRAME && !Host9.InspectorFrontendHost.isUnderTest()) {
-      void this.#targetAgent.invoke_setDiscoverTargets({ discover: true });
-      void this.#targetAgent.invoke_setRemoteLocations({ locations: [{ host: "localhost", port: 9229 }] });
-    }
-  }
-  static install(attachCallback) {
-    _ChildTargetManager.attachCallback = attachCallback;
-    SDKModel.register(_ChildTargetManager, { capabilities: 32, autostart: true });
-  }
-  childTargets() {
-    return Array.from(this.#childTargetsBySessionId.values());
-  }
-  async suspendModel() {
-    await this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: false, flatten: true });
-  }
-  async resumeModel() {
-    await this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
-  }
-  dispose() {
-    for (const sessionId of this.#childTargetsBySessionId.keys()) {
-      this.detachedFromTarget({ sessionId, targetId: void 0 });
-    }
-  }
-  targetCreated({ targetInfo }) {
-    this.#targetInfos.set(targetInfo.targetId, targetInfo);
-    this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners("TargetCreated", targetInfo);
-  }
-  targetInfoChanged({ targetInfo }) {
-    this.#targetInfos.set(targetInfo.targetId, targetInfo);
-    const target = this.#childTargetsById.get(targetInfo.targetId);
-    if (target) {
-      void target.setHasCrashed(false);
-      if (target.targetInfo()?.subtype === "prerender" && !targetInfo.subtype) {
-        const resourceTreeModel = target.model(ResourceTreeModel);
-        target.updateTargetInfo(targetInfo);
-        if (resourceTreeModel?.mainFrame) {
-          resourceTreeModel.primaryPageChanged(
-            resourceTreeModel.mainFrame,
-            "Activation"
-            /* PrimaryPageChangeType.ACTIVATION */
-          );
-        }
-        target.setName(i18nString12(UIStrings12.main));
-      } else {
-        target.updateTargetInfo(targetInfo);
-      }
-    }
-    this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners("TargetInfoChanged", targetInfo);
-  }
-  targetDestroyed({ targetId }) {
-    this.#targetInfos.delete(targetId);
-    this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners("TargetDestroyed", targetId);
-  }
-  targetCrashed({ targetId }) {
-    const target = this.#childTargetsById.get(targetId);
-    if (target) {
-      target.setHasCrashed(true);
-    }
-  }
-  fireAvailableTargetsChanged() {
-    TargetManager.instance().dispatchEventToListeners("AvailableTargetsChanged", [...this.#targetInfos.values()]);
-  }
-  async getParentTargetId() {
-    if (!this.#parentTargetId) {
-      this.#parentTargetId = (await this.#parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
-    }
-    return this.#parentTargetId;
-  }
-  async getTargetInfo() {
-    return (await this.#parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo;
-  }
-  async attachedToTarget({ sessionId, targetInfo, waitingForDebugger }) {
-    if (this.#parentTargetId === targetInfo.targetId) {
-      return;
-    }
-    let type = Type.BROWSER;
-    let targetName = "";
-    if (targetInfo.type === "worker" && targetInfo.title && targetInfo.title !== targetInfo.url) {
-      targetName = targetInfo.title;
-    } else if (!["page", "iframe", "webview"].includes(targetInfo.type)) {
-      const KNOWN_FRAME_PATTERNS = [
-        "^chrome://print/$",
-        "^chrome://file-manager/",
-        "^chrome://feedback/",
-        "^chrome://.*\\.top-chrome/$",
-        "^chrome://view-cert/$",
-        "^devtools://"
-      ];
-      if (KNOWN_FRAME_PATTERNS.some((p) => targetInfo.url.match(p))) {
-        type = Type.FRAME;
-      } else {
-        const parsedURL = Common34.ParsedURL.ParsedURL.fromString(targetInfo.url);
-        targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + ++_ChildTargetManager.lastAnonymousTargetId;
-      }
-    }
-    if (targetInfo.type === "iframe" || targetInfo.type === "webview") {
-      type = Type.FRAME;
-    } else if (targetInfo.type === "background_page" || targetInfo.type === "app" || targetInfo.type === "popup_page") {
-      type = Type.FRAME;
-    } else if (targetInfo.type === "page") {
-      type = Type.FRAME;
-    } else if (targetInfo.type === "browser_ui") {
-      type = Type.FRAME;
-    } else if (targetInfo.type === "worker") {
-      type = Type.Worker;
-    } else if (targetInfo.type === "worklet") {
-      type = Type.WORKLET;
-    } else if (targetInfo.type === "shared_worker") {
-      type = Type.SHARED_WORKER;
-    } else if (targetInfo.type === "shared_storage_worklet") {
-      type = Type.SHARED_STORAGE_WORKLET;
-    } else if (targetInfo.type === "service_worker") {
-      type = Type.ServiceWorker;
-    } else if (targetInfo.type === "auction_worklet") {
-      type = Type.AUCTION_WORKLET;
-    } else if (targetInfo.type === "node_worker") {
-      type = Type.NODE_WORKER;
-    }
-    const target = this.#targetManager.createTarget(targetInfo.targetId, targetName, type, this.#parentTarget, sessionId, void 0, void 0, targetInfo);
-    this.#childTargetsBySessionId.set(sessionId, target);
-    this.#childTargetsById.set(target.id(), target);
-    if (_ChildTargetManager.attachCallback) {
-      await _ChildTargetManager.attachCallback({ target, waitingForDebugger });
-    }
-    if (waitingForDebugger) {
-      void target.runtimeAgent().invoke_runIfWaitingForDebugger();
-    }
-    if (type !== Type.FRAME && target.hasAllCapabilities(
-      8192
-      /* Capability.STORAGE */
-    )) {
-      await this.initializeStorage(target);
-    }
-  }
-  async initializeStorage(target) {
-    const storageAgent = target.storageAgent();
-    const response = await storageAgent.invoke_getStorageKey({});
-    const storageKey = response.storageKey;
-    if (response.getError() || !storageKey) {
-      console.error(`Failed to get storage key for target ${target.id()}: ${response.getError()}`);
-      return;
-    }
-    const storageKeyManager = target.model(StorageKeyManager);
-    if (storageKeyManager) {
-      storageKeyManager.setMainStorageKey(storageKey);
-      storageKeyManager.updateStorageKeys(/* @__PURE__ */ new Set([storageKey]));
-    }
-    const securityOriginManager = target.model(SecurityOriginManager);
-    if (securityOriginManager) {
-      const origin = new URL(storageKey).origin;
-      securityOriginManager.setMainSecurityOrigin(origin, "");
-      securityOriginManager.updateSecurityOrigins(/* @__PURE__ */ new Set([origin]));
-    }
-  }
-  detachedFromTarget({ sessionId }) {
-    if (this.#parallelConnections.has(sessionId)) {
-      this.#parallelConnections.delete(sessionId);
-    } else {
-      const target = this.#childTargetsBySessionId.get(sessionId);
-      if (target) {
-        target.dispose("target terminated");
-        this.#childTargetsBySessionId.delete(sessionId);
-        this.#childTargetsById.delete(target.id());
-      }
-    }
-  }
-  receivedMessageFromTarget({}) {
-  }
-  async createParallelConnection(onMessage) {
-    const targetId = await this.getParentTargetId();
-    const { connection, sessionId } = await this.createParallelConnectionAndSessionForTarget(this.#parentTarget, targetId);
-    connection.setOnMessage(onMessage);
-    this.#parallelConnections.set(sessionId, connection);
-    return { connection, sessionId };
-  }
-  async createParallelConnectionAndSessionForTarget(target, targetId) {
-    const targetAgent = target.targetAgent();
-    const targetRouter = target.router();
-    const sessionId = (await targetAgent.invoke_attachToTarget({ targetId, flatten: true })).sessionId;
-    const connection = new ParallelConnection(targetRouter.connection(), sessionId);
-    targetRouter.registerSession(target, sessionId, connection);
-    connection.setOnDisconnect(() => {
-      targetRouter.unregisterSession(sessionId);
-      void targetAgent.invoke_detachFromTarget({ sessionId });
-    });
-    return { connection, sessionId };
-  }
-  targetInfos() {
-    return Array.from(this.#targetInfos.values());
-  }
-  static lastAnonymousTargetId = 0;
-  static attachCallback;
-};
-
-// gen/front_end/core/sdk/CompilerSourceMappingContentProvider.js
-var CompilerSourceMappingContentProvider_exports = {};
-__export(CompilerSourceMappingContentProvider_exports, {
-  CompilerSourceMappingContentProvider: () => CompilerSourceMappingContentProvider
-});
-import * as TextUtils25 from "./../../models/text_utils/text_utils.js";
-import * as i18n29 from "./../i18n/i18n.js";
-var UIStrings13 = {
-  /**
-   * @description Error message when failing to fetch a resource referenced in a source map
-   * @example {https://example.com/sourcemap.map} PH1
-   * @example {An error occurred} PH2
-   */
-  couldNotLoadContentForSS: "Could not load content for {PH1} ({PH2})"
-};
-var str_13 = i18n29.i18n.registerUIStrings("core/sdk/CompilerSourceMappingContentProvider.ts", UIStrings13);
-var i18nString13 = i18n29.i18n.getLocalizedString.bind(void 0, str_13);
-var CompilerSourceMappingContentProvider = class {
-  #sourceURL;
-  #contentType;
-  #initiator;
-  constructor(sourceURL, contentType, initiator) {
-    this.#sourceURL = sourceURL;
-    this.#contentType = contentType;
-    this.#initiator = initiator;
-  }
-  contentURL() {
-    return this.#sourceURL;
-  }
-  contentType() {
-    return this.#contentType;
-  }
-  async requestContentData() {
-    try {
-      const { content } = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
-      return new TextUtils25.ContentData.ContentData(
-        content,
-        /* isBase64=*/
-        false,
-        this.#contentType.canonicalMimeType()
-      );
-    } catch (e) {
-      const error = i18nString13(UIStrings13.couldNotLoadContentForSS, { PH1: this.#sourceURL, PH2: e.message });
-      console.error(error);
-      return { error };
-    }
-  }
-  async searchInContent(query, caseSensitive, isRegex) {
-    const contentData = await this.requestContentData();
-    return TextUtils25.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
-  }
-};
 
 // gen/front_end/core/sdk/ConsoleModel.js
 var ConsoleModel_exports = {};

@@ -1,0 +1,113 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/issues_manager",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "tsBuildInfoFile": "issues_manager-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../front_end/models/issues_manager/AttributionReportingIssue.ts",
+    "../../../../../../front_end/models/issues_manager/BounceTrackingIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CheckFormsIssuesTrigger.ts",
+    "../../../../../../front_end/models/issues_manager/ClientHintIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ContentSecurityPolicyIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ContrastCheckTrigger.ts",
+    "../../../../../../front_end/models/issues_manager/CookieDeprecationMetadataIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CookieIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CorsIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CrossOriginEmbedderPolicyIssue.ts",
+    "../../../../../../front_end/models/issues_manager/DeprecationIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ElementAccessibilityIssue.ts",
+    "../../../../../../front_end/models/issues_manager/FederatedAuthRequestIssue.ts",
+    "../../../../../../front_end/models/issues_manager/FederatedAuthUserInfoRequestIssue.ts",
+    "../../../../../../front_end/models/issues_manager/GenericIssue.ts",
+    "../../../../../../front_end/models/issues_manager/HeavyAdIssue.ts",
+    "../../../../../../front_end/models/issues_manager/Issue.ts",
+    "../../../../../../front_end/models/issues_manager/IssueResolver.ts",
+    "../../../../../../front_end/models/issues_manager/IssuesManager.ts",
+    "../../../../../../front_end/models/issues_manager/IssuesManagerEvents.ts",
+    "../../../../../../front_end/models/issues_manager/LowTextContrastIssue.ts",
+    "../../../../../../front_end/models/issues_manager/MarkdownIssueDescription.ts",
+    "../../../../../../front_end/models/issues_manager/MixedContentIssue.ts",
+    "../../../../../../front_end/models/issues_manager/PartitioningBlobURLIssue.ts",
+    "../../../../../../front_end/models/issues_manager/PropertyRuleIssue.ts",
+    "../../../../../../front_end/models/issues_manager/QuirksModeIssue.ts",
+    "../../../../../../front_end/models/issues_manager/RelatedIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SRIMessageSignatureIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SharedArrayBufferIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SharedDictionaryIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SourceFrameIssuesManager.ts",
+    "../../../../../../front_end/models/issues_manager/StylesheetLoadingIssue.ts",
+    "../../../../../../front_end/models/issues_manager/UnencodedDigestIssue.ts",
+    "../../../../../../front_end/models/issues_manager/UserReidentificationIssue.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/protocol_client/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../bindings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../text_utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../workspace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../third_party/marked/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../third_party/third-party-web/bundle-tsconfig.json"
+    }
+  ]
+}

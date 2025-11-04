@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/models/trace/lantern"},"files":["../../../../../../../front_end/models/trace/lantern/lantern.ts"],"references":[{"path":"./lantern-tsconfig.json"}]}

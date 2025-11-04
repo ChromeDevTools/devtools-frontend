@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
-import { RehydratingConnection } from './RehydratingConnection.js';
+import { RehydratingConnectionTransport } from './RehydratingConnection.js';
 const UIStrings = {
     /**
      * @description Text on the remote debugging window to indicate the connection is lost
@@ -66,7 +66,7 @@ export class MainConnection {
         }
     }
 }
-export class WebSocketConnection {
+export class WebSocketTransport {
     #socket;
     onMessage = null;
     #onDisconnect = null;
@@ -150,7 +150,7 @@ export class WebSocketConnection {
         });
     }
 }
-export class StubConnection {
+export class StubTransport {
     onMessage = null;
     #onDisconnect = null;
     setOnMessage(onMessage) {
@@ -166,7 +166,7 @@ export class StubConnection {
         const messageObject = JSON.parse(message);
         const error = {
             message: 'This is a stub connection, can\'t dispatch message.',
-            code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode,
+            code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
             data: messageObject,
         };
         if (this.onMessage) {
@@ -181,62 +181,25 @@ export class StubConnection {
         this.onMessage = null;
     }
 }
-export class ParallelConnection {
-    #connection;
-    #sessionId;
-    onMessage = null;
-    #onDisconnect = null;
-    constructor(connection, sessionId) {
-        this.#connection = connection;
-        this.#sessionId = sessionId;
-    }
-    setOnMessage(onMessage) {
-        this.onMessage = onMessage;
-    }
-    setOnDisconnect(onDisconnect) {
-        this.#onDisconnect = onDisconnect;
-    }
-    getOnDisconnect() {
-        return this.#onDisconnect;
-    }
-    sendRawMessage(message) {
-        const messageObject = JSON.parse(message);
-        // If the message isn't for a specific session, it must be for the root session.
-        if (!messageObject.sessionId) {
-            messageObject.sessionId = this.#sessionId;
-        }
-        this.#connection.sendRawMessage(JSON.stringify(messageObject));
-    }
-    getSessionId() {
-        return this.#sessionId;
-    }
-    async disconnect() {
-        if (this.#onDisconnect) {
-            this.#onDisconnect.call(null, 'force disconnect');
-        }
-        this.#onDisconnect = null;
-        this.onMessage = null;
-    }
-}
 export async function initMainConnection(createRootTarget, onConnectionLost) {
-    ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(createMainConnection.bind(null, onConnectionLost));
+    ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
     await createRootTarget();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
-function createMainConnection(onConnectionLost) {
+function createMainTransport(onConnectionLost) {
     if (Root.Runtime.Runtime.isTraceApp()) {
-        return new RehydratingConnection(onConnectionLost);
+        return new RehydratingConnectionTransport(onConnectionLost);
     }
     const wsParam = Root.Runtime.Runtime.queryParam('ws');
     const wssParam = Root.Runtime.Runtime.queryParam('wss');
     if (wsParam || wssParam) {
         const ws = (wsParam ? `ws://${wsParam}` : `wss://${wssParam}`);
-        return new WebSocketConnection(ws, onConnectionLost);
+        return new WebSocketTransport(ws, onConnectionLost);
     }
     const notEmbeddedOrWs = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
     if (notEmbeddedOrWs) {
         // eg., hosted mode (e.g. `http://localhost:9222/devtools/inspector.html`) without a WebSocket URL,
-        return new StubConnection();
+        return new StubTransport();
     }
     return new MainConnection();
 }

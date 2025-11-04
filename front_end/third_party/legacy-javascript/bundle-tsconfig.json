@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/third_party/legacy-javascript"},"files":["../../../../../../front_end/third_party/legacy-javascript/legacy-javascript.ts"],"references":[{"path":"./legacy-javascript-tsconfig.json"}]}

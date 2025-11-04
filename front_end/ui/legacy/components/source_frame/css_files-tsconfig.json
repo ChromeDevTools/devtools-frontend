@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "fontView.css.js",
+        "imageView.css.js",
+        "jsonView.css.js",
+        "resourceSourceFrame.css.js",
+        "xmlTree.css.js",
+        "xmlView.css.js"
+    ]
+}

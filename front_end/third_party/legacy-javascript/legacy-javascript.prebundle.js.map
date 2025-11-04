@@ -1,0 +1,1 @@
+{"version":3,"file":"legacy-javascript.prebundle.js","sourceRoot":"","sources":["legacy-javascript.prebundle.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,gBAAgB,MAAM,4BAA4B,CAAC;AAE/D,OAAO,EAAC,gBAAgB,EAAC,CAAC","sourcesContent":["import * as LegacyJavaScript from './lib/legacy-javascript.js';\n\nexport {LegacyJavaScript};\n"]}

@@ -1,7 +1,8 @@
+import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Platform from '../platform/platform.js';
+import { type CDPConnection, type CDPConnectionObserver, type CDPError, type Command, type CommandParams, type CommandResult } from './CDPConnection.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
-export declare const DevToolsStubErrorCode = -32015;
 type MessageParams = Record<string, any>;
 type ProtocolDomainName = ProtocolProxyApi.ProtocolDomainName;
 export interface MessageError {
@@ -34,20 +35,11 @@ export declare const splitQualifiedName: (string: QualifiedName) => [string, Unq
 export declare const qualifyName: (domain: string, name: UnqualifiedName) => QualifiedName;
 type EventParameterNames = Map<QualifiedName, string[]>;
 type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
-interface CommandParameter {
-    name: string;
-    type: string;
-    optional: boolean;
-    description: string;
-}
-interface ResponseWithError {
-    error: MessageError | null;
-    result: Object | null;
-}
-export declare class InspectorBackend {
+type CommandParameter = InspectorBackendCommands.CommandParameter;
+export declare class InspectorBackend implements InspectorBackendCommands.InspectorBackendAPI {
     #private;
     readonly agentPrototypes: Map<keyof ProtocolProxyApi.ProtocolApi, AgentPrototype>;
-    readonly typeMap: Map<QualifiedName, CommandParameter[]>;
+    readonly typeMap: Map<QualifiedName, InspectorBackendCommands.CommandParameter[]>;
     readonly enumMap: Map<QualifiedName, Record<string, string>>;
     constructor();
     private getOrCreateEventParameterNamesForDomain;
@@ -97,14 +89,20 @@ export declare const test: {
      */
     onMessageReceived: ((message: Object) => void) | null;
 };
-export declare class SessionRouter {
+export declare class SessionRouter implements CDPConnection {
     #private;
     constructor(connection: ConnectionTransport);
-    registerSession(target: TargetBase, sessionId: string, proxyConnection?: ConnectionTransport | null): void;
+    observe(observer: CDPConnectionObserver): void;
+    unobserve(observer: CDPConnectionObserver): void;
+    registerSession(target: TargetBase, sessionId: string): void;
     unregisterSession(sessionId: string): void;
     private nextMessageId;
     connection(): ConnectionTransport;
-    sendMessage(sessionId: string, domain: string, method: QualifiedName, params: Object | null): Promise<ResponseWithError>;
+    send<T extends Command>(method: T, params: CommandParams<T>, sessionId: string | undefined): Promise<{
+        result: CommandResult<T>;
+    } | {
+        error: CDPError;
+    }>;
     private sendRawMessageForTesting;
     private onMessage;
     private hasOutstandingNonLongPollingRequests;

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "./aiAssistancePanel.css.js",
+        "./components/chatView.css.js",
+        "./components/disabledWidget.css.js",
+        "./components/exploreWidget.css.js",
+        "./components/userActionRow.css.js",
+        "./selectWorkspaceDialog.css.js"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "accessibilityTreeNode.css.js",
+        "computedStyleProperty.css.js",
+        "computedStyleTrace.css.js",
+        "cssHintDetailsView.css.js",
+        "cssPropertyDocsView.css.js",
+        "cssQuery.css.js",
+        "cssVariableValueView.css.js",
+        "elementsBreadcrumbs.css.js",
+        "elementsTreeExpandButton.css.js",
+        "queryContainer.css.js",
+        "stylePropertyEditor.css.js"
+    ]
+}

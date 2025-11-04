@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/third_party/third-party-web"},"files":["../../../../../../front_end/third_party/third-party-web/third-party-web.ts"],"references":[{"path":"./third-party-web-tsconfig.json"}]}

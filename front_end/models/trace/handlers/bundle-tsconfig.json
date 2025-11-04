@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/models/trace/handlers"},"files":["../../../../../../../front_end/models/trace/handlers/handlers.ts"],"references":[{"path":"./handlers-tsconfig.json"}]}

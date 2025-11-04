@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "issuesPane.css.js",
+        "issuesTree.css.js"
+    ]
+}

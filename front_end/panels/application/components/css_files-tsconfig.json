@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "backForwardCacheView.css.js",
+        "bounceTrackingMitigationsView.css.js",
+        "endpointsGrid.css.js",
+        "frameDetailsReportView.css.js",
+        "interestGroupAccessGrid.css.js",
+        "originTrialTokenRows.css.js",
+        "originTrialTreeView.css.js",
+        "permissionsPolicySection.css.js",
+        "protocolHandlersView.css.js",
+        "reportsGrid.css.js",
+        "serviceWorkerRouterView.css.js",
+        "sharedStorageAccessGrid.css.js",
+        "sharedStorageMetadataView.css.js",
+        "stackTraceLinkButton.css.js",
+        "stackTraceRow.css.js",
+        "storageMetadataView.css.js",
+        "trustTokensView.css.js"
+    ]
+}

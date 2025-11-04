@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/badges"},"files":["../../../../../../front_end/models/badges/badges.ts"],"references":[{"path":"./badges-tsconfig.json"}]}

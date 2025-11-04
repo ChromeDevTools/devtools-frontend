@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "thirdPartyTreeView.css.js",
+        "timelineDetailsView.css.js",
+        "timelineFlameChartView.css.js",
+        "timelineFlamechartPopover.css.js",
+        "timelineHistoryManager.css.js",
+        "timelineMiniMap.css.js",
+        "timelinePaintProfiler.css.js",
+        "timelinePanel.css.js",
+        "timelineSelectorStatsView.css.js",
+        "timelineStatusDialog.css.js",
+        "timelineTreeView.css.js"
+    ]
+}

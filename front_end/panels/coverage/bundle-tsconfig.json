@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/panels/coverage"},"files":["../../../../../../front_end/panels/coverage/coverage.ts"],"references":[{"path":"./coverage-tsconfig.json"},{"path":"./css_files-tsconfig.json"}]}

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/panels/explain"},"files":["../../../../../../front_end/panels/explain/explain.ts"],"references":[{"path":"./explain-tsconfig.json"}]}

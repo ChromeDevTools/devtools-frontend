@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../../front_end/models/trace/lantern/simulation"},"files":["../../../../../../../../front_end/models/trace/lantern/simulation/simulation.ts"],"references":[{"path":"./simulation-tsconfig.json"}]}

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/panels/timeline/overlays"},"files":["../../../../../../../front_end/panels/timeline/overlays/overlays.ts"],"references":[{"path":"./overlays-tsconfig.json"}]}

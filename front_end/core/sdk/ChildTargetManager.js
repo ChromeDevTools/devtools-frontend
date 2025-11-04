@@ -4,7 +4,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import { ParallelConnection } from './Connections.js';
 import { ResourceTreeModel } from './ResourceTreeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { SecurityOriginManager } from './SecurityOriginManager.js';
@@ -29,7 +28,6 @@ export class ChildTargetManager extends SDKModel {
     #targetInfos = new Map();
     #childTargetsBySessionId = new Map();
     #childTargetsById = new Map();
-    #parallelConnections = new Map();
     #parentTargetId = null;
     constructor(parentTarget) {
         super(parentTarget);
@@ -221,41 +219,15 @@ export class ChildTargetManager extends SDKModel {
         }
     }
     detachedFromTarget({ sessionId }) {
-        if (this.#parallelConnections.has(sessionId)) {
-            this.#parallelConnections.delete(sessionId);
-        }
-        else {
-            const target = this.#childTargetsBySessionId.get(sessionId);
-            if (target) {
-                target.dispose('target terminated');
-                this.#childTargetsBySessionId.delete(sessionId);
-                this.#childTargetsById.delete(target.id());
-            }
+        const target = this.#childTargetsBySessionId.get(sessionId);
+        if (target) {
+            target.dispose('target terminated');
+            this.#childTargetsBySessionId.delete(sessionId);
+            this.#childTargetsById.delete(target.id());
         }
     }
     receivedMessageFromTarget({}) {
         // We use flatten protocol.
-    }
-    async createParallelConnection(onMessage) {
-        // The main Target id is actually just `main`, instead of the real targetId.
-        // Get the real id (requires an async operation) so that it can be used synchronously later.
-        const targetId = await this.getParentTargetId();
-        const { connection, sessionId } = await this.createParallelConnectionAndSessionForTarget(this.#parentTarget, targetId);
-        connection.setOnMessage(onMessage);
-        this.#parallelConnections.set(sessionId, connection);
-        return { connection, sessionId };
-    }
-    async createParallelConnectionAndSessionForTarget(target, targetId) {
-        const targetAgent = target.targetAgent();
-        const targetRouter = target.router();
-        const sessionId = (await targetAgent.invoke_attachToTarget({ targetId, flatten: true })).sessionId;
-        const connection = new ParallelConnection(targetRouter.connection(), sessionId);
-        targetRouter.registerSession(target, sessionId, connection);
-        connection.setOnDisconnect(() => {
-            targetRouter.unregisterSession(sessionId);
-            void targetAgent.invoke_detachFromTarget({ sessionId });
-        });
-        return { connection, sessionId };
     }
     targetInfos() {
         return Array.from(this.#targetInfos.values());

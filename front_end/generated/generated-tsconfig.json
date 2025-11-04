@@ -36,7 +36,7 @@
   "files": [
     "../../../../../front_end/generated/ARIAProperties.js",
     "../../../../../front_end/generated/Deprecation.ts",
-    "../../../../../front_end/generated/InspectorBackendCommands.js",
+    "../../../../../front_end/generated/InspectorBackendCommands.ts",
     "../../../../../front_end/generated/SupportedCSSProperties.js",
     "../../../../../front_end/generated/protocol.ts",
     "../../../../../front_end/legacy/legacy-defs.d.ts",

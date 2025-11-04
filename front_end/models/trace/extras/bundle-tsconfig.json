@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/models/trace/extras"},"files":["../../../../../../../front_end/models/trace/extras/extras.ts"],"references":[{"path":"./extras-tsconfig.json"}]}

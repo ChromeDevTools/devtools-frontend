@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/services/tracing"},"files":["../../../../../../front_end/services/tracing/tracing.ts"],"references":[{"path":"./tracing-tsconfig.json"}]}

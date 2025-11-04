@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "nodeIcon.css.js",
+        "outermostTargetSelector.css.js",
+        "renderingOptions.css.js"
+    ]
+}

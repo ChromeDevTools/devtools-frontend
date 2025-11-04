@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "linearMemoryHighlightChipList.css.js",
+        "linearMemoryInspector.css.js",
+        "linearMemoryNavigator.css.js",
+        "linearMemoryValueInterpreter.css.js",
+        "linearMemoryViewer.css.js",
+        "valueInterpreterDisplay.css.js",
+        "valueInterpreterSettings.css.js"
+    ]
+}

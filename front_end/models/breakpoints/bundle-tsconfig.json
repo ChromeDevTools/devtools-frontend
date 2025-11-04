@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/breakpoints"},"files":["../../../../../../front_end/models/breakpoints/breakpoints.ts"],"references":[{"path":"./breakpoints-tsconfig.json"}]}

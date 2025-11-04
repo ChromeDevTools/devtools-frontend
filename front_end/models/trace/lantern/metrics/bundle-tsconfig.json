@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../../front_end/models/trace/lantern/metrics"},"files":["../../../../../../../../front_end/models/trace/lantern/metrics/metrics.ts"],"references":[{"path":"./metrics-tsconfig.json"}]}

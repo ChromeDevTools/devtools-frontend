@@ -22,7 +22,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/RehydratingConnection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class RehydratingConnection {
+export class RehydratingConnectionTransport {
     rehydratingConnectionState = 1 /* RehydratingConnectionState.UNINITIALIZED */;
     onDisconnect = null;
     onMessage = null;

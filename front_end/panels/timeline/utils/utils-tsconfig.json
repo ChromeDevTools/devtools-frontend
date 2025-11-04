@@ -1,0 +1,87 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/timeline/utils",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "utils-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/timeline/utils/EntryNodes.ts",
+    "../../../../../../../front_end/panels/timeline/utils/Helpers.ts",
+    "../../../../../../../front_end/panels/timeline/utils/IgnoreList.ts",
+    "../../../../../../../front_end/panels/timeline/utils/ImageCache.ts",
+    "../../../../../../../front_end/panels/timeline/utils/Treemap.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../generated/generated-tsconfig.json"
+    },
+    {
+      "path": "../../../models/ai_assistance/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/bindings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/crux-manager/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/source_map_scopes/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/trace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/trace_source_maps_resolver/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/workspace/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../mobile_throttling/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/bundle-tsconfig.json"
+    }
+  ]
+}

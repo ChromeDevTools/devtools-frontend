@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["object_ui-meta.prebundle.ts"],
+  "sourcesContent": ["// Copyright 2021 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as SDK from '../../../../core/sdk/sdk.js';\nimport * as UI from '../../../../ui/legacy/legacy.js';\n\nimport type * as ObjectUI from './object_ui.js';\n\nlet loadedObjectUIModule: (typeof ObjectUI|undefined);\n\nasync function loadObjectUIModule(): Promise<typeof ObjectUI> {\n  if (!loadedObjectUIModule) {\n    loadedObjectUIModule = await import('./object_ui.js');\n  }\n  return loadedObjectUIModule;\n}\n\nUI.UIUtils.registerRenderer({\n  contextTypes() {\n    return [SDK.RemoteObject.RemoteObject];\n  },\n  async loadRenderer() {\n    const ObjectUI = await loadObjectUIModule();\n    return ObjectUI.ObjectPropertiesSection.Renderer.instance();\n  },\n});\n"],
+  "mappings": ";AAIA,YAAY,SAAS;AACrB,YAAY,QAAQ;AAIpB,IAAI;AAEJ,eAAe,qBAAkB;AAC/B,MAAI,CAAC,sBAAsB;AACzB,2BAAuB,MAAM,OAAO,gBAAgB;EACtD;AACA,SAAO;AACT;AAEG,WAAQ,iBAAiB;EAC1B,eAAY;AACV,WAAO,CAAK,iBAAa,YAAY;EACvC;EACA,MAAM,eAAY;AAChB,UAAM,WAAW,MAAM,mBAAkB;AACzC,WAAO,SAAS,wBAAwB,SAAS,SAAQ;EAC3D;CACD;",
+  "names": []
+}

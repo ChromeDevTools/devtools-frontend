@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "aiCodeCompletionDisclaimer.css.js",
+        "aiCodeCompletionSummaryToolbar.css.js",
+        "aiCodeCompletionTeaser.css.js",
+        "badgeNotification.css.js",
+        "common.css.js",
+        "freDialog.css.js",
+        "gdpSignUpDialog.css.js"
+    ]
+}

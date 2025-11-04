@@ -1,0 +1,1 @@
+{"version":3,"file":"third-party-web.prebundle.js","sourceRoot":"","sources":["third-party-web.prebundle.ts"],"names":[],"mappings":"AAAA,OAAO,aAAa,MAAM,yBAAyB,CAAC;AAEpD,OAAO,EAAC,aAAa,EAAC,CAAC","sourcesContent":["import ThirdPartyWeb from './lib/nostats-subset.js';\n\nexport {ThirdPartyWeb};\n"]}

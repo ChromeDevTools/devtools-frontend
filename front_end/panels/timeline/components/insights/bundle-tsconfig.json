@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../../front_end/panels/timeline/components/insights"},"files":["../../../../../../../../front_end/panels/timeline/components/insights/insights.ts"],"references":[{"path":"./css_files-tsconfig.json"},{"path":"./insights-tsconfig.json"}]}

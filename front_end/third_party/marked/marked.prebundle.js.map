@@ -1,0 +1,1 @@
+{"version":3,"file":"marked.prebundle.js","sourceRoot":"","sources":["marked.prebundle.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,MAAM,6BAA6B,CAAC;AAEtD,OAAO,EAAC,MAAM,EAAC,CAAC","sourcesContent":["import * as Marked from './package/lib/marked.esm.js';\n\nexport {Marked};\n"]}

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/stack_trace"},"files":["../../../../../../front_end/models/stack_trace/stack_trace.ts"],"references":[{"path":"./stack_trace-tsconfig.json"}]}

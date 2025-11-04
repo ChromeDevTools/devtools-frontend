@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "deviceModeView.css.js",
+        "inspectedPagePlaceholder.css.js",
+        "mediaQueryInspector.css.js"
+    ]
+}

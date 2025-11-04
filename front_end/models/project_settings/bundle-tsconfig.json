@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/project_settings"},"files":["../../../../../../front_end/models/project_settings/project_settings.ts"],"references":[{"path":"./project_settings-tsconfig.json"}]}

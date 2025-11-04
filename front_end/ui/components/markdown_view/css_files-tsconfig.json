@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "codeBlock.css.js",
+        "markdownImage.css.js",
+        "markdownLink.css.js",
+        "markdownView.css.js"
+    ]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["lantern.prebundle.ts"],
+  "sourcesContent": ["// Copyright 2024 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as Core from './core/core.js';\nimport * as Graph from './graph/graph.js';\nimport * as Metrics from './metrics/metrics.js';\nimport * as Simulation from './simulation/simulation.js';\nimport * as Types from './types/types.js';\n\nexport {\n  Core,\n  Graph,\n  Metrics,\n  Simulation,\n  Types,\n};\n"],
+  "mappings": ";AAIA,YAAY,UAAU;AACtB,YAAY,WAAW;AACvB,YAAY,aAAa;AACzB,YAAY,gBAAgB;AAC5B,YAAY,WAAW;",
+  "names": []
+}

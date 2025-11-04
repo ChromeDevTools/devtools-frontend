@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/panels/ai_assistance"},"files":["../../../../../../front_end/panels/ai_assistance/ai_assistance.ts"],"references":[{"path":"./ai_assistance-tsconfig.json"}]}

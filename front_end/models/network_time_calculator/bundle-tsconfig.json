@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/network_time_calculator"},"files":["../../../../../../front_end/models/network_time_calculator/network_time_calculator.ts"],"references":[{"path":"./network_time_calculator-tsconfig.json"}]}

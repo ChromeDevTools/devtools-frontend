@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/trace_source_maps_resolver"},"files":["../../../../../../front_end/models/trace_source_maps_resolver/trace_source_maps_resolver.ts"],"references":[{"path":"./trace_source_maps_resolver-tsconfig.json"}]}

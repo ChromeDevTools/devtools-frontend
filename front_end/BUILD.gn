@@ -125,6 +125,7 @@ group("unittests") {
     "entrypoints/heap_snapshot_worker:unittests",
     "entrypoints/inspector_main:unittests",
     "entrypoints/main:unittests",
+    "entrypoints/node_app/app:unittests",
     "entrypoints/wasmparser_worker:unittests",
     "models/ai_assistance:unittests",
     "models/ai_code_completion:unittests",

@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import type * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as uiI18n from '../../ui/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import type * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as uiI18n from '../../../ui/i18n/i18n.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 
@@ -36,10 +36,10 @@ const UIStrings = {
    */
   networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeConnectionsPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/app/NodeConnectionsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const nodejsIconUrl = new URL('../../Images/node-stack-icon.svg', import.meta.url).toString();
+const nodejsIconUrl = new URL('../../../Images/node-stack-icon.svg', import.meta.url).toString();
 
 export class NodeConnectionsPanel extends UI.Panel.Panel {
   #config!: Adb.Config;

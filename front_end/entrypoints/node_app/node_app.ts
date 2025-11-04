@@ -13,8 +13,10 @@ import type * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Main from '../main/main.js';
 
-import {NodeConnectionsPanel} from './NodeConnectionsPanel.js';  // eslint-disable-line @devtools/es-modules-import
-import {NodeMainImpl} from './NodeMain.js';                      // eslint-disable-line @devtools/es-modules-import
+import * as App from './app/app.js';
+
+const {NodeConnectionsPanel} = App.NodeConnectionsPanel;
+const {NodeMainImpl} = App.NodeMain;
 
 const UIStrings = {
   /**

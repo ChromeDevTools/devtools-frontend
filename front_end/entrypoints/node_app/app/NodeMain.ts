@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
-import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import type * as Protocol from '../../generated/protocol.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
+import type * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import type * as ProtocolClient from '../../../core/protocol_client/protocol_client.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import type * as ProtocolProxyApi from '../../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../../generated/protocol.js';
+import * as Components from '../../../ui/legacy/components/utils/utils.js';
 
 const UIStrings = {
   /**
@@ -28,7 +28,7 @@ const UIStrings = {
    */
   NodejsTitleS: 'DevTools - Node.js: {PH1}',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeMain.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/app/NodeMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let nodeMainImplInstance: NodeMainImpl;
 

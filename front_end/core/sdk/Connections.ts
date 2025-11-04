@@ -9,7 +9,7 @@ import type * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
-import {RehydratingConnection} from './RehydratingConnection.js';
+import {RehydratingConnectionTransport} from './RehydratingConnection.js';
 
 const UIStrings = {
   /**
@@ -81,7 +81,7 @@ export class MainConnection implements ProtocolClient.ConnectionTransport.Connec
   }
 }
 
-export class WebSocketConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
+export class WebSocketTransport implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   #socket: WebSocket|null;
   onMessage: ((arg0: Object|string) => void)|null = null;
   #onDisconnect: ((arg0: string) => void)|null = null;
@@ -176,7 +176,7 @@ export class WebSocketConnection implements ProtocolClient.ConnectionTransport.C
   }
 }
 
-export class StubConnection implements ProtocolClient.ConnectionTransport.ConnectionTransport {
+export class StubTransport implements ProtocolClient.ConnectionTransport.ConnectionTransport {
   onMessage: ((arg0: Object|string) => void)|null = null;
   #onDisconnect: ((arg0: string) => void)|null = null;
 
@@ -216,28 +216,28 @@ export class StubConnection implements ProtocolClient.ConnectionTransport.Connec
 export async function initMainConnection(
     createRootTarget: () => Promise<void>,
     onConnectionLost: (message: Platform.UIString.LocalizedString) => void): Promise<void> {
-  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(createMainConnection.bind(null, onConnectionLost));
+  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
   await createRootTarget();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 
-function createMainConnection(onConnectionLost: (message: Platform.UIString.LocalizedString) => void):
+function createMainTransport(onConnectionLost: (message: Platform.UIString.LocalizedString) => void):
     ProtocolClient.ConnectionTransport.ConnectionTransport {
   if (Root.Runtime.Runtime.isTraceApp()) {
-    return new RehydratingConnection(onConnectionLost);
+    return new RehydratingConnectionTransport(onConnectionLost);
   }
 
   const wsParam = Root.Runtime.Runtime.queryParam('ws');
   const wssParam = Root.Runtime.Runtime.queryParam('wss');
   if (wsParam || wssParam) {
     const ws = (wsParam ? `ws://${wsParam}` : `wss://${wssParam}`) as Platform.DevToolsPath.UrlString;
-    return new WebSocketConnection(ws, onConnectionLost);
+    return new WebSocketTransport(ws, onConnectionLost);
   }
 
   const notEmbeddedOrWs = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
   if (notEmbeddedOrWs) {
     // eg., hosted mode (e.g. `http://localhost:9222/devtools/inspector.html`) without a WebSocket URL,
-    return new StubConnection();
+    return new StubTransport();
   }
 
   return new MainConnection();

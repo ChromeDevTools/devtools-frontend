@@ -213,7 +213,7 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
     const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
     const messageLog: Array<string|Message> = [];
 
-    const conn = new SDK.RehydratingConnection.RehydratingConnection((e: string) => {
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport((e: string) => {
       throw new Error(`Connection lost: ${e}`);
     });
 

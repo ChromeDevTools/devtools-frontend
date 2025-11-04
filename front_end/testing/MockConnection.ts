@@ -91,10 +91,10 @@ async function enable({reset = true} = {}) {
   await initializeGlobalVars({reset});
   setMockResourceTree(true);
 
-  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(() => new MockConnection());
+  ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(() => new MockTransport());
 }
 
-class MockConnection extends ProtocolClient.ConnectionTransport.ConnectionTransport {
+class MockTransport extends ProtocolClient.ConnectionTransport.ConnectionTransport {
   messageCallback?: MessageCallback;
   override setOnMessage(callback: MessageCallback) {
     this.messageCallback = callback;

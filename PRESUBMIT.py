@@ -40,7 +40,6 @@ _EXCLUDED_PATHS = [
     r'^scripts[\\/]build[\\/]build_inspector_overlay\.py$',  # Lines too long
     r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
     r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long
-    r'front_end[\\/]generated[\\/]ARIAProperties\.ts$'  # Auto-generated files
     # Auto-generated files
     r'front_end[\\/]generated[\\/]InspectorBackendCommands\.ts$'
 ]
@@ -146,13 +145,6 @@ def _GetFilesToLint(input_api, lint_config_files, default_linted_directories,
         files_to_lint = _GetAffectedFiles(input_api,
                                           default_linted_directories, ['D'],
                                           accepted_endings)
-
-        # Exclude front_end/third_party and front_end/generated files.
-        files_to_lint = [
-            file for file in files_to_lint
-            if "front_end/third_party" not in file
-            and "front_end/generated" not in file
-        ]
 
     should_bail_out = len(files_to_lint) == 0 and not run_full_check
     return should_bail_out, files_to_lint

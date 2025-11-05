@@ -187,6 +187,28 @@ const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=e
     Platform.DevToolsPath.UrlString;
 const SIGN_IN_URL = 'https://accounts.google.com' as Platform.DevToolsPath.UrlString;
 
+interface ViewInput {
+  state: StateData;
+  disableAnimations: boolean;
+  renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
+  selectedRating?: boolean;
+  noLogging: boolean;
+  onClose: () => void;
+  onSearch: () => void;
+  onRating: (event: Event) => void;
+  onReport: () => void;
+  onGoToSignIn: () => void;
+  onConsentReminderConfirmed: () => Promise<void>;
+  onToggleReferenceDetails: () => void;
+  onDisclaimerSettingsLink: () => void;
+  onReminderSettingsLink: () => void;
+  onEnableInsightsInSettingsLink: () => void;
+}
+
+interface ViewOutput {
+  referenceDetailsRef: Lit.Directives.Ref<HTMLDetailsElement>;
+}
+
 const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
@@ -209,6 +231,7 @@ type StateData = {
   isPageReloadRecommended: boolean,
   completed: boolean,
   directCitationUrls: string[],
+  relatedUrls: string[],
   timedOut?: boolean,
 }&Host.AidaClient.DoConversationResponse|{
   type: State.ERROR,
@@ -247,10 +270,420 @@ const markedExtension = {
   renderer: () => '',
 };
 
+function isSearchRagResponse(metadata: Host.AidaClient.ResponseMetadata): boolean {
+  return Boolean(metadata.factualityMetadata?.facts.length);
+}
+
+function renderSearchButton(input: ViewInput): Lit.TemplateResult {
+  // clang-format off
+  return html`<devtools-button
+    @click=${input.onSearch}
+    class="search-button"
+    .variant=${Buttons.Button.Variant.OUTLINED}
+    .jslogContext=${'search'}
+  >
+    ${i18nString(UIStrings.search)}
+  </devtools-button>`;
+  // clang-format on
+}
+
+function renderLearnMoreAboutInsights(): Lit.TemplateResult {
+  // clang-format off
+  return html`<x-link href=${LEARN_MORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
+    ${i18nString(UIStrings.learnMore)}
+  </x-link>`;
+  // clang-format on
+}
+
+function maybeRenderSources(state: StateData): Lit.LitTemplate {
+  if (state.type !== State.INSIGHT || !state.directCitationUrls.length) {
+    return Lit.nothing;
+  }
+
+  // clang-format off
+  return html`
+    <ol class="sources-list">
+      ${state.directCitationUrls.map((url, index) => html`
+        <li>
+          <x-link
+            href=${url}
+            class="link"
+            data-index=${index + 1}
+            jslog=${VisualLogging.link('references.console-insights').track({click: true})}
+          >
+            ${url}
+          </x-link>
+        </li>
+      `)}
+    </ol>
+  `;
+  // clang-format on
+}
+
+function maybeRenderRelatedContent(state: StateData): Lit.LitTemplate {
+  if (state.type !== State.INSIGHT || state.relatedUrls.length === 0) {
+    return Lit.nothing;
+  }
+  // clang-format off
+  return html`
+    ${state.directCitationUrls.length ? html`<h3>${i18nString(UIStrings.relatedContent)}</h3>` : Lit.nothing}
+    <ul class="references-list">
+      ${state.relatedUrls.map(relatedUrl => html`
+        <li>
+          <x-link
+            href=${relatedUrl}
+            class="link"
+            jslog=${VisualLogging.link('references.console-insights').track({click: true})}
+          >
+            ${relatedUrl}
+          </x-link>
+        </li>
+      `)}
+    </ul>
+  `;
+  // clang-format on
+}
+
+function renderMain(input: ViewInput, output: ViewOutput): Lit.TemplateResult {
+  const jslog = `${VisualLogging.section(input.state.type).track({resize: true})}`;
+
+  // clang-format off
+  switch (input.state.type) {
+    case State.LOADING:
+      return html`<main jslog=${jslog}>
+          <div role="presentation" aria-label="Loading" class="loader" style="clip-path: url('#clipPath');">
+            <svg width="100%" height="64">
+              <clipPath id="clipPath">
+                <rect x="0" y="0" width="100%" height="16" rx="8"></rect>
+                <rect x="0" y="24" width="100%" height="16" rx="8"></rect>
+                <rect x="0" y="48" width="100%" height="16" rx="8"></rect>
+              </clipPath>
+            </svg>
+          </div>
+        </main>`;
+    case State.INSIGHT:
+      return html`
+      <main jslog=${jslog}>
+        ${
+          input.state.validMarkdown ? html`<devtools-markdown-view
+            .data=${{tokens: input.state.tokens, renderer: input.renderer, animationEnabled: !input.disableAnimations} as MarkdownView.MarkdownView.MarkdownViewData}>
+          </devtools-markdown-view>`: input.state.explanation
+        }
+        ${input.state.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}
+        ${isSearchRagResponse(input.state.metadata) ? html`
+          <details class="references" ${Lit.Directives.ref(output.referenceDetailsRef)} @toggle=${input.onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
+            <summary>${i18nString(UIStrings.references)}</summary>
+            ${maybeRenderSources(input.state)}
+            ${maybeRenderRelatedContent(input.state)}
+          </details>
+        ` : Lit.nothing}
+        <details jslog=${VisualLogging.expand('sources').track({click: true})}>
+          <summary>${i18nString(UIStrings.inputData)}</summary>
+          <devtools-console-insight-sources-list .sources=${input.state.sources} .isPageReloadRecommended=${input.state.isPageReloadRecommended}>
+          </devtools-console-insight-sources-list>
+        </details>
+        <div class="buttons">
+          ${renderSearchButton(input)}
+        </div>
+      </main>`;
+    case State.ERROR:
+      return html`
+      <main jslog=${jslog}>
+        <div class="error">${i18nString(UIStrings.errorBody)}</div>
+      </main>`;
+    case State.CONSENT_REMINDER:
+      return html`
+        <main class="reminder-container" jslog=${jslog}>
+          <h3>Things to consider</h3>
+          <div class="reminder-items">
+            <div>
+              <devtools-icon name="google" class="medium">
+              </devtools-icon>
+            </div>
+            <div>The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. ${input.noLogging
+                ? 'The content you submit and that is generated by this feature will not be used to improve Google’s AI models.'
+                : 'This data may be seen by human reviewers to improve this feature. Avoid sharing sensitive or personal information.'}
+            </div>
+            <div>
+              <devtools-icon name="policy" class="medium">
+              </devtools-icon>
+            </div>
+            <div>Use of this feature is subject to the <x-link
+                href=${TERMS_OF_SERVICE_URL}
+                class="link"
+                jslog=${VisualLogging.link('terms-of-service.console-insights').track({click: true})}>
+              Google Terms of Service
+              </x-link> and <x-link
+                href=${PRIVACY_POLICY_URL}
+                class="link"
+                jslog=${VisualLogging.link('privacy-policy.console-insights').track({click: true})}>
+              Google Privacy Policy
+              </x-link>
+            </div>
+            <div>
+              <devtools-icon name="warning" class="medium">
+              </devtools-icon>
+            </div>
+            <div>
+              <x-link
+                href=${CODE_SNIPPET_WARNING_URL}
+                class="link"
+                jslog=${VisualLogging.link('code-snippets-explainer.console-insights').track({click: true})}
+              >Use generated code snippets with caution</x-link>
+            </div>
+          </div>
+        </main>
+      `;
+    case State.SETTING_IS_NOT_TRUE: {
+      const settingsLink = html`<button
+          class="link" role="link"
+          jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
+          @click=${input.onEnableInsightsInSettingsLink}
+        >${i18nString(UIStrings.settingsLink)}</button>`;
+
+      return html`<main class="opt-in-teaser" jslog=${jslog}>
+        <div class="badge">
+          <devtools-icon name="lightbulb-spark" class="medium">
+          </devtools-icon>
+        </div>
+        <div>
+          ${i18nTemplate(UIStrings.turnOnInSettings, {PH1: settingsLink})} ${
+          renderLearnMoreAboutInsights()}
+        </div>
+      </main>`;
+    }
+    case State.NOT_LOGGED_IN:
+    case State.SYNC_IS_PAUSED:
+      return html`
+        <main jslog=${jslog}>
+          <div class="error">${Root.Runtime.hostConfig.isOffTheRecord ? i18nString(UIStrings.notAvailableInIncognitoMode) : i18nString(UIStrings.notLoggedIn)}</div>
+        </main>`;
+    case State.OFFLINE:
+      return html`
+        <main jslog=${jslog}>
+          <div class="error">${i18nString(UIStrings.offline)}</div>
+        </main>`;
+  }
+  // clang-format on
+}
+
+function renderDisclaimer(input: ViewInput): Lit.LitTemplate {
+  // clang-format off
+  return html`<span>
+    AI tools may generate inaccurate info that doesn't represent Google's views. ${input.noLogging
+      ? 'The content you submit and that is generated by this feature will not be used to improve Google’s AI models.'
+      : 'Data sent to Google may be seen by human reviewers to improve this feature.'
+    } <button class="link" role="link" @click=${input.onDisclaimerSettingsLink}
+              jslog=${VisualLogging.action('open-ai-settings').track({click: true})}>
+      Open settings
+    </button> or <x-link href=${LEARN_MORE_URL}
+        class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
+      learn more
+    </x-link>
+  </span>`;
+  // clang-format on
+}
+
+function renderFooter(input: ViewInput): Lit.LitTemplate {
+  const disclaimer = renderDisclaimer(input);
+  // clang-format off
+  switch (input.state.type) {
+    case State.LOADING:
+    case State.SETTING_IS_NOT_TRUE:
+      return Lit.nothing;
+    case State.ERROR:
+    case State.OFFLINE:
+      return html`<footer jslog=${VisualLogging.section('footer')}>
+        <div class="disclaimer">
+          ${disclaimer}
+        </div>
+      </footer>`;
+    case State.NOT_LOGGED_IN:
+    case State.SYNC_IS_PAUSED:
+      if (Root.Runtime.hostConfig.isOffTheRecord) {
+        return Lit.nothing;
+      }
+      return html`<footer jslog=${VisualLogging.section('footer')}>
+      <div class="filler"></div>
+      <div>
+        <devtools-button
+          @click=${input.onGoToSignIn}
+          .data=${
+            {
+              variant: Buttons.Button.Variant.PRIMARY,
+              jslogContext: 'update-settings',
+            } as Buttons.Button.ButtonData
+          }
+        >
+          ${UIStrings.signIn}
+        </devtools-button>
+      </div>
+    </footer>`;
+    case State.CONSENT_REMINDER:
+      return html`<footer jslog=${VisualLogging.section('footer')}>
+        <div class="filler"></div>
+        <div class="buttons">
+          <devtools-button
+            @click=${input.onReminderSettingsLink}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.TONAL,
+                jslogContext: 'settings',
+                title: 'Settings',
+              } as Buttons.Button.ButtonData
+            }
+          >
+            Settings
+          </devtools-button>
+          <devtools-button
+            class='continue-button'
+            @click=${input.onConsentReminderConfirmed}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.PRIMARY,
+                jslogContext: 'continue',
+                title: 'continue',
+              } as Buttons.Button.ButtonData
+            }
+            >
+            Continue
+          </devtools-button>
+        </div>
+      </footer>`;
+    case State.INSIGHT:
+      return html`<footer jslog=${VisualLogging.section('footer')}>
+      <div class="disclaimer">
+        ${disclaimer}
+      </div>
+      <div class="filler"></div>
+      <div class="rating">
+        <devtools-button
+          data-rating="true"
+          .data=${
+            {
+              variant: Buttons.Button.Variant.ICON_TOGGLE,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'thumb-up',
+              toggledIconName: 'thumb-up',
+              toggleOnClick: false,
+              toggleType: Buttons.Button.ToggleType.PRIMARY,
+              disabled: input.selectedRating !== undefined,
+              toggled: input.selectedRating === true,
+              title: i18nString(UIStrings.goodResponse),
+              jslogContext: 'thumbs-up',
+            } as Buttons.Button.ButtonData
+          }
+          @click=${input.onRating}
+        ></devtools-button>
+        <devtools-button
+          data-rating="false"
+          .data=${
+            {
+              variant: Buttons.Button.Variant.ICON_TOGGLE,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'thumb-down',
+              toggledIconName: 'thumb-down',
+              toggleOnClick: false,
+              toggleType: Buttons.Button.ToggleType.PRIMARY,
+              disabled: input.selectedRating !== undefined,
+              toggled: input.selectedRating === false,
+              title: i18nString(UIStrings.badResponse),
+              jslogContext: 'thumbs-down',
+            } as Buttons.Button.ButtonData
+          }
+          @click=${input.onRating}
+        ></devtools-button>
+        <devtools-button
+          .data=${
+            {
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'report',
+              title: i18nString(UIStrings.report),
+              jslogContext: 'report',
+            } as Buttons.Button.ButtonData
+          }
+          @click=${input.onReport}
+        ></devtools-button>
+      </div>
+
+    </footer>`;
+  }
+  // clang-format on
+}
+
+function getHeader(state: StateData): string {
+  switch (state.type) {
+    case State.NOT_LOGGED_IN:
+    case State.SYNC_IS_PAUSED:
+      return i18nString(UIStrings.signInToUse);
+    case State.OFFLINE:
+      return i18nString(UIStrings.offlineHeader);
+    case State.LOADING:
+      return i18nString(UIStrings.generating);
+    case State.INSIGHT:
+      return i18nString(UIStrings.insight);
+    case State.ERROR:
+      return i18nString(UIStrings.error);
+    case State.CONSENT_REMINDER:
+      return 'Understand console messages with AI';
+    case State.SETTING_IS_NOT_TRUE:
+      return '';  // not reached
+  }
+}
+
+function renderSpinner(state: StateData): Lit.LitTemplate {
+  // clang-format off
+  if (state.type === State.INSIGHT && !state.completed) {
+    return html`<devtools-spinner></devtools-spinner>`;
+  }
+  return Lit.nothing;
+  // clang-format on
+}
+
+function renderHeader(input: ViewInput): Lit.LitTemplate {
+  if (input.state.type === State.SETTING_IS_NOT_TRUE) {
+    return Lit.nothing;
+  }
+  const hasIcon = input.state.type === State.CONSENT_REMINDER;
+  // clang-format off
+  return html`
+    <header>
+      ${hasIcon ? html`
+        <div class="header-icon-container">
+          <devtools-icon name="lightbulb-spark" class="large">
+          </devtools-icon>
+        </div>`
+      : Lit.nothing}
+      <div class="filler">
+        <h2 tabindex="-1">
+          ${getHeader(input.state)}
+        </h2>
+        ${renderSpinner(input.state)}
+      </div>
+      <div class="close-button">
+        <devtools-button
+          .data=${
+            {
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'cross',
+              title: i18nString(UIStrings.closeInsight),
+            } as Buttons.Button.ButtonData
+          }
+          jslog=${VisualLogging.close().track({click: true})}
+          @click=${input.onClose}
+        ></devtools-button>
+      </div>
+    </header>
+  `;
+  // clang-format on
+}
+
 export class ConsoleInsight extends HTMLElement {
   static async create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient): Promise<ConsoleInsight> {
-    const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    return new ConsoleInsight(promptBuilder, aidaClient, aidaAvailability);
+    const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    return new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
   }
 
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -270,17 +703,17 @@ export class ConsoleInsight extends HTMLElement {
   #selectedRating?: boolean;
 
   #consoleInsightsEnabledSetting: Common.Settings.Setting<boolean>|undefined;
-  #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
+  #aidaPreconditions: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
   #marked: Marked.Marked.Marked;
 
   constructor(
       promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient,
-      aidaAvailability: Host.AidaClient.AidaAccessPreconditions) {
+      aidaPreconditions: Host.AidaClient.AidaAccessPreconditions) {
     super();
     this.#promptBuilder = promptBuilder;
     this.#aidaClient = aidaClient;
-    this.#aidaAvailability = aidaAvailability;
+    this.#aidaPreconditions = aidaPreconditions;
     this.#consoleInsightsEnabledSetting = this.#getConsoleInsightsEnabledSetting();
     this.#renderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer(this.#citationClickHandler.bind(this));
     this.#marked = new Marked.Marked.Marked({extensions: [markedExtension]});
@@ -330,7 +763,7 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #getStateFromAidaAvailability(): StateData {
-    switch (this.#aidaAvailability) {
+    switch (this.#aidaPreconditions) {
       case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
         // Allows skipping the consent reminder if the user enabled the feature via settings in the current session
         const skipReminder =
@@ -400,8 +833,8 @@ export class ConsoleInsight extends HTMLElement {
 
   async #onAidaAvailabilityChange(): Promise<void> {
     const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
+    if (currentAidaAvailability !== this.#aidaPreconditions) {
+      this.#aidaPreconditions = currentAidaAvailability;
       this.#state = this.#getStateFromAidaAvailability();
       void this.#generateInsightIfNeeded();
     }
@@ -528,7 +961,7 @@ export class ConsoleInsight extends HTMLElement {
   #insertCitations(explanation: string, metadata: Host.AidaClient.ResponseMetadata):
       {explanationWithCitations: string, directCitationUrls: string[]} {
     const directCitationUrls: string[] = [];
-    if (!this.#isSearchRagResponse(metadata) || !metadata.attributionMetadata) {
+    if (!isSearchRagResponse(metadata) || !metadata.attributionMetadata) {
       return {explanationWithCitations: explanation, directCitationUrls};
     }
 
@@ -576,10 +1009,33 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
+  #deriveRelatedUrls(directCitationUrls: string[], metadata: Host.AidaClient.ResponseMetadata): string[] {
+    if (!metadata.factualityMetadata?.facts.length) {
+      return [];
+    }
+
+    const relatedUrls =
+        metadata.factualityMetadata.facts.filter(fact => fact.sourceUri && !directCitationUrls.includes(fact.sourceUri))
+            .map(fact => fact.sourceUri as string) ||
+        [];
+    const trainingDataUrls =
+        metadata.attributionMetadata?.citations
+            .filter(
+                citation => citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA &&
+                    (citation.uri || citation.repository))
+            .map(citation => citation.uri || `https://www.github.com/${citation.repository}`) ||
+        [];
+    const dedupedTrainingDataUrls =
+        [...new Set(trainingDataUrls.filter(url => !relatedUrls.includes(url) && !directCitationUrls.includes(url)))];
+    relatedUrls.push(...dedupedTrainingDataUrls);
+    return relatedUrls;
+  }
+
   async #generateInsight(): Promise<void> {
     try {
       for await (const {sources, isPageReloadRecommended, explanation, metadata, completed} of this.#getInsight()) {
         const {explanationWithCitations, directCitationUrls} = this.#insertCitations(explanation, metadata);
+        const relatedUrls = this.#deriveRelatedUrls(directCitationUrls, metadata);
         const tokens = this.#validateMarkdown(explanationWithCitations);
         const valid = tokens !== false;
         if (valid) {
@@ -595,6 +1051,7 @@ export class ConsoleInsight extends HTMLElement {
           isPageReloadRecommended,
           completed,
           directCitationUrls,
+          relatedUrls,
         });
       }
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightGenerated);
@@ -669,465 +1126,57 @@ export class ConsoleInsight extends HTMLElement {
     }, {once: true});
   }
 
-  #renderSearchButton(): Lit.TemplateResult {
-    // clang-format off
-    return html`<devtools-button
-      @click=${this.#onSearch}
-      class="search-button"
-      .data=${
-        {
-          variant: Buttons.Button.Variant.OUTLINED,
-          jslogContext: 'search',
-        } as Buttons.Button.ButtonData
-      }
-    >
-      ${i18nString(UIStrings.search)}
-    </devtools-button>`;
-    // clang-format on
-  }
-
-  #renderLearnMoreAboutInsights(): Lit.TemplateResult {
-    // clang-format off
-    return html`<x-link href=${LEARN_MORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
-      ${i18nString(UIStrings.learnMore)}
-    </x-link>`;
-    // clang-format on
-  }
-
-  #maybeRenderSources(): Lit.LitTemplate {
-    if (this.#state.type !== State.INSIGHT || !this.#state.directCitationUrls.length) {
-      return Lit.nothing;
-    }
-
-    // clang-format off
-    return html`
-      <ol class="sources-list">
-        ${this.#state.directCitationUrls.map((url, index) => html`
-          <li>
-            <x-link
-              href=${url}
-              class="link"
-              data-index=${index + 1}
-              jslog=${VisualLogging.link('references.console-insights').track({click: true})}
-            >
-              ${url}
-            </x-link>
-          </li>
-        `)}
-      </ol>
-    `;
-    // clang-format on
-  }
-
-  #maybeRenderRelatedContent(): Lit.LitTemplate {
-    if (this.#state.type !== State.INSIGHT || !this.#state.metadata.factualityMetadata?.facts.length) {
-      return Lit.nothing;
-    }
-    const directCitationUrls = this.#state.directCitationUrls;
-    const relatedUrls = this.#state.metadata.factualityMetadata.facts
-                            .filter(fact => fact.sourceUri && !directCitationUrls.includes(fact.sourceUri))
-                            .map(fact => fact.sourceUri as string);
-    const trainingDataUrls =
-        this.#state.metadata.attributionMetadata?.citations
-            .filter(
-                citation => citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA &&
-                    (citation.uri || citation.repository))
-            .map(citation => citation.uri || `https://www.github.com/${citation.repository}`) ||
-        [];
-    const dedupedTrainingDataUrls =
-        [...new Set(trainingDataUrls.filter(url => !relatedUrls.includes(url) && !directCitationUrls.includes(url)))];
-    relatedUrls.push(...dedupedTrainingDataUrls);
-
-    if (relatedUrls.length === 0) {
-      return Lit.nothing;
-    }
-    // clang-format off
-    return html`
-      ${this.#state.directCitationUrls.length ? html`<h3>${i18nString(UIStrings.relatedContent)}</h3>` : Lit.nothing}
-      <ul class="references-list">
-        ${relatedUrls.map(relatedUrl => html`
-          <li>
-            <x-link
-              href=${relatedUrl}
-              class="link"
-              jslog=${VisualLogging.link('references.console-insights').track({click: true})}
-            >
-              ${relatedUrl}
-            </x-link>
-          </li>
-        `)}
-      </ul>
-    `;
-    // clang-format on
-  }
-
-  #isSearchRagResponse(metadata: Host.AidaClient.ResponseMetadata): boolean {
-    return Boolean(metadata.factualityMetadata?.facts.length);
-  }
-
   #onToggleReferenceDetails(): void {
     if (this.#referenceDetailsRef.value) {
       this.#areReferenceDetailsOpen = this.#referenceDetailsRef.value.open;
     }
   }
 
-  #renderMain(): Lit.TemplateResult {
-    const jslog = `${VisualLogging.section(this.#state.type).track({resize: true})}`;
-    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-
-    // clang-format off
-    switch (this.#state.type) {
-      case State.LOADING:
-        return html`<main jslog=${jslog}>
-            <div role="presentation" aria-label="Loading" class="loader" style="clip-path: url('#clipPath');">
-              <svg width="100%" height="64">
-                <clipPath id="clipPath">
-                  <rect x="0" y="0" width="100%" height="16" rx="8"></rect>
-                  <rect x="0" y="24" width="100%" height="16" rx="8"></rect>
-                  <rect x="0" y="48" width="100%" height="16" rx="8"></rect>
-                </clipPath>
-              </svg>
-            </div>
-          </main>`;
-      case State.INSIGHT:
-        return html`
-        <main jslog=${jslog}>
-          ${
-            this.#state.validMarkdown ? html`<devtools-markdown-view
-              .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: !this.disableAnimations} as MarkdownView.MarkdownView.MarkdownViewData}>
-            </devtools-markdown-view>`: this.#state.explanation
-          }
-          ${this.#state.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}
-          ${this.#isSearchRagResponse(this.#state.metadata) ? html`
-            <details class="references" ${Lit.Directives.ref(this.#referenceDetailsRef)} @toggle=${this.#onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
-              <summary>${i18nString(UIStrings.references)}</summary>
-              ${this.#maybeRenderSources()}
-              ${this.#maybeRenderRelatedContent()}
-            </details>
-          ` : Lit.nothing}
-          <details jslog=${VisualLogging.expand('sources').track({click: true})}>
-            <summary>${i18nString(UIStrings.inputData)}</summary>
-            <devtools-console-insight-sources-list .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>
-            </devtools-console-insight-sources-list>
-          </details>
-          <div class="buttons">
-            ${this.#renderSearchButton()}
-          </div>
-        </main>`;
-      case State.ERROR:
-        return html`
-        <main jslog=${jslog}>
-          <div class="error">${i18nString(UIStrings.errorBody)}</div>
-        </main>`;
-      case State.CONSENT_REMINDER:
-        return html`
-          <main class="reminder-container" jslog=${jslog}>
-            <h3>Things to consider</h3>
-            <div class="reminder-items">
-              <div>
-                <devtools-icon name="google" class="medium">
-                </devtools-icon>
-              </div>
-              <div>The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. ${noLogging
-                  ? 'The content you submit and that is generated by this feature will not be used to improve Google’s AI models.'
-                  : 'This data may be seen by human reviewers to improve this feature. Avoid sharing sensitive or personal information.'}
-              </div>
-              <div>
-                <devtools-icon name="policy" class="medium">
-                </devtools-icon>
-              </div>
-              <div>Use of this feature is subject to the <x-link
-                  href=${TERMS_OF_SERVICE_URL}
-                  class="link"
-                  jslog=${VisualLogging.link('terms-of-service.console-insights').track({click: true})}>
-                Google Terms of Service
-                </x-link> and <x-link
-                  href=${PRIVACY_POLICY_URL}
-                  class="link"
-                  jslog=${VisualLogging.link('privacy-policy.console-insights').track({click: true})}>
-                Google Privacy Policy
-                </x-link>
-              </div>
-              <div>
-                <devtools-icon name="warning" class="medium">
-                </devtools-icon>
-              </div>
-              <div>
-                <x-link
-                  href=${CODE_SNIPPET_WARNING_URL}
-                  class="link"
-                  jslog=${VisualLogging.link('code-snippets-explainer.console-insights').track({click: true})}
-                >Use generated code snippets with caution</x-link>
-              </div>
-            </div>
-          </main>
-        `;
-      case State.SETTING_IS_NOT_TRUE: {
-        const settingsLink = html`<button
-            class="link" role="link"
-            jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
-            @click=${() => {
-              Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
-              void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-            }}
-          >${i18nString(UIStrings.settingsLink)}</button>`;
-
-        return html`<main class="opt-in-teaser" jslog=${jslog}>
-          <div class="badge">
-            <devtools-icon name="lightbulb-spark" class="medium">
-            </devtools-icon>
-          </div>
-          <div>
-            ${i18nTemplate(UIStrings.turnOnInSettings, {PH1: settingsLink})} ${
-            this.#renderLearnMoreAboutInsights()}
-          </div>
-        </main>`;
-      }
-      case State.NOT_LOGGED_IN:
-      case State.SYNC_IS_PAUSED:
-        return html`
-          <main jslog=${jslog}>
-            <div class="error">${Root.Runtime.hostConfig.isOffTheRecord ? i18nString(UIStrings.notAvailableInIncognitoMode) : i18nString(UIStrings.notLoggedIn)}</div>
-          </main>`;
-      case State.OFFLINE:
-        return html`
-          <main jslog=${jslog}>
-            <div class="error">${i18nString(UIStrings.offline)}</div>
-          </main>`;
-    }
-    // clang-format on
+  #onDisclaimerSettingsLink(): void {
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
-  #renderDisclaimer(): Lit.LitTemplate {
-    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-
-    // clang-format off
-    return html`<span>
-      AI tools may generate inaccurate info that doesn't represent Google's views. ${noLogging
-        ? 'The content you submit and that is generated by this feature will not be used to improve Google’s AI models.'
-        : 'Data sent to Google may be seen by human reviewers to improve this feature.'
-      } <button class="link" role="link" @click=${() => UI.ViewManager.ViewManager.instance().showView('chrome-ai')}
-                jslog=${VisualLogging.action('open-ai-settings').track({click: true})}>
-        Open settings
-      </button> or <x-link href=${LEARN_MORE_URL}
-          class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
-        learn more
-      </x-link>
-    </span>`;
-    // clang-format on
+  #onReminderSettingsLink(): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserSettingsLinkClicked);
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
-  #renderFooter(): Lit.LitTemplate {
-    const disclaimer = this.#renderDisclaimer();
-    // clang-format off
-    switch (this.#state.type) {
-      case State.LOADING:
-      case State.SETTING_IS_NOT_TRUE:
-        return Lit.nothing;
-      case State.ERROR:
-      case State.OFFLINE:
-        return html`<footer jslog=${VisualLogging.section('footer')}>
-          <div class="disclaimer">
-            ${disclaimer}
-          </div>
-        </footer>`;
-      case State.NOT_LOGGED_IN:
-      case State.SYNC_IS_PAUSED:
-        if (Root.Runtime.hostConfig.isOffTheRecord) {
-          return Lit.nothing;
-        }
-        return html`<footer jslog=${VisualLogging.section('footer')}>
-        <div class="filler"></div>
-        <div>
-          <devtools-button
-            @click=${this.#onGoToSignIn}
-            .data=${
-              {
-                variant: Buttons.Button.Variant.PRIMARY,
-                jslogContext: 'update-settings',
-              } as Buttons.Button.ButtonData
-            }
-          >
-            ${UIStrings.signIn}
-          </devtools-button>
-        </div>
-      </footer>`;
-      case State.CONSENT_REMINDER:
-        return html`<footer jslog=${VisualLogging.section('footer')}>
-          <div class="filler"></div>
-          <div class="buttons">
-            <devtools-button
-              @click=${() => {
-                Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserSettingsLinkClicked);
-                void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-              }}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.TONAL,
-                  jslogContext: 'settings',
-                  title: 'Settings',
-                } as Buttons.Button.ButtonData
-              }
-            >
-              Settings
-            </devtools-button>
-            <devtools-button
-              class='continue-button'
-              @click=${this.#onConsentReminderConfirmed}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.PRIMARY,
-                  jslogContext: 'continue',
-                  title: 'continue',
-                } as Buttons.Button.ButtonData
-              }
-              >
-              Continue
-            </devtools-button>
-          </div>
-        </footer>`;
-      case State.INSIGHT:
-        return html`<footer jslog=${VisualLogging.section('footer')}>
-        <div class="disclaimer">
-          ${disclaimer}
-        </div>
-        <div class="filler"></div>
-        <div class="rating">
-          <devtools-button
-            data-rating="true"
-            .data=${
-              {
-                variant: Buttons.Button.Variant.ICON_TOGGLE,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'thumb-up',
-                toggledIconName: 'thumb-up',
-                toggleOnClick: false,
-                toggleType: Buttons.Button.ToggleType.PRIMARY,
-                disabled: this.#selectedRating !== undefined,
-                toggled: this.#selectedRating === true,
-                title: i18nString(UIStrings.goodResponse),
-                jslogContext: 'thumbs-up',
-              } as Buttons.Button.ButtonData
-            }
-            @click=${this.#onRating}
-          ></devtools-button>
-          <devtools-button
-            data-rating="false"
-            .data=${
-              {
-                variant: Buttons.Button.Variant.ICON_TOGGLE,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'thumb-down',
-                toggledIconName: 'thumb-down',
-                toggleOnClick: false,
-                toggleType: Buttons.Button.ToggleType.PRIMARY,
-                disabled: this.#selectedRating !== undefined,
-                toggled: this.#selectedRating === false,
-                title: i18nString(UIStrings.badResponse),
-                jslogContext: 'thumbs-down',
-              } as Buttons.Button.ButtonData
-            }
-            @click=${this.#onRating}
-          ></devtools-button>
-          <devtools-button
-            .data=${
-              {
-                variant: Buttons.Button.Variant.ICON,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'report',
-                title: i18nString(UIStrings.report),
-                jslogContext: 'report',
-              } as Buttons.Button.ButtonData
-            }
-            @click=${this.#onReport}
-          ></devtools-button>
-        </div>
-
-      </footer>`;
-    }
-    // clang-format on
-  }
-
-  #getHeader(): string {
-    switch (this.#state.type) {
-      case State.NOT_LOGGED_IN:
-      case State.SYNC_IS_PAUSED:
-        return i18nString(UIStrings.signInToUse);
-      case State.OFFLINE:
-        return i18nString(UIStrings.offlineHeader);
-      case State.LOADING:
-        return i18nString(UIStrings.generating);
-      case State.INSIGHT:
-        return i18nString(UIStrings.insight);
-      case State.ERROR:
-        return i18nString(UIStrings.error);
-      case State.CONSENT_REMINDER:
-        return 'Understand console messages with AI';
-      case State.SETTING_IS_NOT_TRUE:
-        return '';  // not reached
-    }
-  }
-
-  #renderSpinner(): Lit.LitTemplate {
-    // clang-format off
-    if (this.#state.type === State.INSIGHT && !this.#state.completed) {
-      return html`<devtools-spinner></devtools-spinner>`;
-    }
-    return Lit.nothing;
-    // clang-format on
-  }
-
-  #renderHeader(): Lit.LitTemplate {
-    if (this.#state.type === State.SETTING_IS_NOT_TRUE) {
-      return Lit.nothing;
-    }
-    const hasIcon = this.#state.type === State.CONSENT_REMINDER;
-    // clang-format off
-    return html`
-      <header>
-        ${hasIcon ? html`
-          <div class="header-icon-container">
-            <devtools-icon name="lightbulb-spark" class="large">
-            </devtools-icon>
-          </div>`
-        : Lit.nothing}
-        <div class="filler">
-          <h2 tabindex="-1">
-            ${this.#getHeader()}
-          </h2>
-          ${this.#renderSpinner()}
-        </div>
-        <div class="close-button">
-          <devtools-button
-            .data=${
-              {
-                variant: Buttons.Button.Variant.ICON,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'cross',
-                title: i18nString(UIStrings.closeInsight),
-              } as Buttons.Button.ButtonData
-            }
-            jslog=${VisualLogging.close().track({click: true})}
-            @click=${this.#onClose}
-          ></devtools-button>
-        </div>
-      </header>
-    `;
-    // clang-format on
+  #onEnableInsightsInSettingsLink(): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
   #render(): void {
+    const input: ViewInput = {
+      state: this.#state,
+      disableAnimations: this.disableAnimations,
+      renderer: this.#renderer,
+      selectedRating: this.#selectedRating,
+      noLogging: Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+          Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
+      onClose: this.#onClose.bind(this),
+      onSearch: this.#onSearch.bind(this),
+      onRating: this.#onRating.bind(this),
+      onReport: this.#onReport.bind(this),
+      onGoToSignIn: this.#onGoToSignIn.bind(this),
+      onConsentReminderConfirmed: this.#onConsentReminderConfirmed.bind(this),
+      onToggleReferenceDetails: this.#onToggleReferenceDetails.bind(this),
+      onDisclaimerSettingsLink: this.#onDisclaimerSettingsLink.bind(this),
+      onReminderSettingsLink: this.#onReminderSettingsLink.bind(this),
+      onEnableInsightsInSettingsLink: this.#onEnableInsightsInSettingsLink.bind(this),
+    };
+    const output: ViewOutput = {
+      referenceDetailsRef: this.#referenceDetailsRef,
+    };
     // clang-format off
     render(html`
       <style>${styles}</style>
       <style>${Input.checkboxStyles}</style>
       <div class="wrapper" jslog=${VisualLogging.pane('console-insights').track({resize: true})}>
         <div class="animation-wrapper">
-          ${this.#renderHeader()}
-          ${this.#renderMain()}
-          ${this.#renderFooter()}
+          ${renderHeader(input)}
+          ${renderMain(input, output)}
+          ${renderFooter(input)}
         </div>
       </div>
     `, this.#shadow, {

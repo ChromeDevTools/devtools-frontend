@@ -10,6 +10,7 @@ devtools_module("protocol_client") {
   sources = [
     "CDPConnection.ts",
     "ConnectionTransport.ts",
+    "DevToolsCDPConnection.ts",
     "InspectorBackend.ts",
   ]
 

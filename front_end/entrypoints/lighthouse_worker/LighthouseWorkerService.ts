@@ -84,9 +84,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
 
     const {rootTargetId, mainSessionId} = args;
     cdpTransport = new WorkerConnectionTransport();
-    // TODO(crbug.com/453469270): Use "DevToolsCDPConnection" once we split SessionRouter into
-    //                            a connection handling part and a session handling part.
-    const connection = new ProtocolClient.InspectorBackend.SessionRouter(cdpTransport);
+    const connection = new ProtocolClient.DevToolsCDPConnection.DevToolsCDPConnection(cdpTransport);
     puppeteerHandle =
         await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab({
           connection,

@@ -8,17 +8,16 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
 
 import {
-  type CDPCommandRequest,
   type CDPConnection,
   type CDPConnectionObserver,
-  type CDPError,
   CDPErrorStatus,
-  type CDPReceivableMessage,
+  type CDPEvent,
   type Command,
   type CommandParams,
-  type CommandResult
+  type Event
 } from './CDPConnection.js';
 import {ConnectionTransport} from './ConnectionTransport.js';
+import {DevToolsCDPConnection} from './DevToolsCDPConnection.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageParams = Record<string, any>;
@@ -64,14 +63,6 @@ type EventParameterNames = Map<QualifiedName, string[]>;
 type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
 
 type CommandParameter = InspectorBackendCommands.CommandParameter;
-
-type Callback = (error: MessageError|null, arg1: Object|null) => void;
-
-interface CallbackWithDebugInfo {
-  resolve: (response: Awaited<ReturnType<CDPConnection['send']>>) => void;
-  method: string;
-  sessionId: string|undefined;
-}
 
 export class InspectorBackend implements InspectorBackendCommands.InspectorBackendAPI {
   readonly agentPrototypes = new Map<ProtocolDomainName, AgentPrototype>();
@@ -191,43 +182,15 @@ export const test = {
   onMessageReceived: null as ((message: Object) => void) | null,
 };
 
-const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
-
-export class SessionRouter implements CDPConnection {
-  readonly #connection: ConnectionTransport;
-  #lastMessageId = 1;
-  #pendingResponsesCount = 0;
-  readonly #pendingLongPollingMessageIds = new Set<number>();
+export class SessionRouter implements CDPConnectionObserver {
+  readonly #connection: DevToolsCDPConnection;
   readonly #sessions = new Map<string, {
     target: TargetBase,
   }>();
-  #pendingScripts: Array<() => void> = [];
-  readonly #callbacks = new Map<number, CallbackWithDebugInfo>();
-  readonly #observers = new Set<CDPConnectionObserver>();
 
-  constructor(connection: ConnectionTransport) {
-    this.#connection = connection;
-
-    test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
-    test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
-
-    this.#connection.setOnMessage(this.onMessage.bind(this));
-
-    this.#connection.setOnDisconnect(reason => {
-      const session = this.#sessions.get('');
-      if (session) {
-        session.target.dispose(reason);
-      }
-      this.#observers.forEach(observer => observer.onDisconnect(reason));
-    });
-  }
-
-  observe(observer: CDPConnectionObserver): void {
-    this.#observers.add(observer);
-  }
-
-  unobserve(observer: CDPConnectionObserver): void {
-    this.#observers.delete(observer);
+  constructor(transport: ConnectionTransport) {
+    this.#connection = new DevToolsCDPConnection(transport);
+    this.#connection.observe(this);
   }
 
   registerSession(target: TargetBase, sessionId: string): void {
@@ -239,140 +202,25 @@ export class SessionRouter implements CDPConnection {
     if (!session) {
       return;
     }
-    for (const {resolve, method, sessionId: callbackSessionId} of this.#callbacks.values()) {
-      if (sessionId !== callbackSessionId) {
-        continue;
-      }
-      resolve({
-        error: {
-          message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
-          code: CDPErrorStatus.SESSION_NOT_FOUND,
-        }
-      });
-    }
+    this.#connection.resolvePendingCalls(sessionId);
     this.#sessions.delete(sessionId);
   }
 
-  private nextMessageId(): number {
-    return this.#lastMessageId++;
+  onDisconnect(reason: string): void {
+    const session = this.#sessions.get('');
+    if (session) {
+      session.target.dispose(reason);
+    }
   }
 
-  connection(): ConnectionTransport {
+  onEvent<T extends Event>(event: CDPEvent<T>): void {
+    const sessionId = event.sessionId || '';
+    const session = this.#sessions.get(sessionId);
+    session?.target.dispatch(event as unknown as EventMessage);
+  }
+
+  get connection(): CDPConnection {
     return this.#connection;
-  }
-
-  send<T extends Command>(method: T, params: CommandParams<T>, sessionId: string|undefined):
-      Promise<{result: CommandResult<T>}|{error: CDPError}> {
-    const messageId = this.nextMessageId();
-    const messageObject: Partial<CDPCommandRequest<T>> = {
-      id: messageId,
-      method,
-    };
-
-    if (params) {
-      messageObject.params = params;
-    }
-    if (sessionId) {
-      messageObject.sessionId = sessionId;
-    }
-
-    if (test.dumpProtocol) {
-      test.dumpProtocol('frontend: ' + JSON.stringify(messageObject));
-    }
-
-    if (test.onMessageSent) {
-      const domain = method.split('.')[0];
-      const paramsObject = JSON.parse(JSON.stringify(params || {}));
-      test.onMessageSent({domain, method, params: (paramsObject as Object), id: messageId, sessionId});
-    }
-
-    ++this.#pendingResponsesCount;
-    if (LongPollingMethods.has(method)) {
-      this.#pendingLongPollingMessageIds.add(messageId);
-    }
-
-    return new Promise(resolve => {
-      this.#callbacks.set(messageId, {resolve, method, sessionId});
-      this.#connection.sendRawMessage(JSON.stringify(messageObject));
-    });
-  }
-
-  private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
-      void {
-    void this.send(method as Command, params as CommandParams<Command>, sessionId).then(response => {
-      if ('error' in response && response.error) {
-        callback?.(response.error, null);
-      } else if ('result' in response) {
-        callback?.(null, response.result as Object | null);
-      }
-    });
-  }
-
-  private onMessage(message: string|Object): void {
-    if (test.dumpProtocol) {
-      test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
-    }
-
-    if (test.onMessageReceived) {
-      const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
-      test.onMessageReceived(messageObjectCopy);
-    }
-
-    const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as CDPReceivableMessage;
-
-    if ('id' in messageObject && messageObject.id !== undefined) {  // just a response for some request
-      const callback = this.#callbacks.get(messageObject.id);
-      this.#callbacks.delete(messageObject.id);
-      if (!callback) {
-        // Ignore messages with unknown IDs, we might see puppeteer proxied messages here.
-        return;
-      }
-
-      callback.resolve(messageObject);
-      --this.#pendingResponsesCount;
-      this.#pendingLongPollingMessageIds.delete(messageObject.id);
-
-      if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
-        this.deprecatedRunAfterPendingDispatches();
-      }
-    } else if ('method' in messageObject) {
-      // This cast is justified as we just checked for the presence of messageObject.method.
-      const sessionId = messageObject.sessionId || '';
-      const session = this.#sessions.get(sessionId);
-      session?.target.dispatch(messageObject as unknown as EventMessage);
-      this.#observers.forEach(observer => observer.onEvent(messageObject));
-    } else {
-      InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
-    }
-  }
-
-  private hasOutstandingNonLongPollingRequests(): boolean {
-    return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
-  }
-
-  private deprecatedRunAfterPendingDispatches(script?: (() => void)): void {
-    if (script) {
-      this.#pendingScripts.push(script);
-    }
-
-    // Execute all promises.
-    window.setTimeout(() => {
-      if (!this.hasOutstandingNonLongPollingRequests()) {
-        this.executeAfterPendingDispatches();
-      } else {
-        this.deprecatedRunAfterPendingDispatches();
-      }
-    }, 0);
-  }
-
-  private executeAfterPendingDispatches(): void {
-    if (!this.hasOutstandingNonLongPollingRequests()) {
-      const scripts = this.#pendingScripts;
-      this.#pendingScripts = [];
-      for (let id = 0; id < scripts.length; ++id) {
-        scripts[id]();
-      }
-    }
   }
 }
 
@@ -826,25 +674,26 @@ class AgentPrototype {
   }
 
   private invoke(method: QualifiedName, request: Object|null): Promise<Protocol.ProtocolResponseWithError> {
-    const router = this.target.router();
-    if (!router) {
+    const connection = this.target.router()?.connection;
+    if (!connection) {
       return Promise.resolve(
           {result: null, getError: () => `Connection is closed, can\'t dispatch pending call to ${method}`});
     }
 
-    return router.send(method as Command, request as CommandParams<Command>, this.target.sessionId).then(response => {
-      if ('error' in response && response.error) {
-        if (!test.suppressRequestErrors && !IGNORED_ERRORS.has(response.error.code)) {
-          console.error('Request ' + method + ' failed. ' + JSON.stringify(response.error));
-        }
-        return {getError: () => response.error.message};
-      }
+    return connection.send(method as Command, request as CommandParams<Command>, this.target.sessionId)
+        .then(response => {
+          if ('error' in response && response.error) {
+            if (!test.suppressRequestErrors && !IGNORED_ERRORS.has(response.error.code)) {
+              console.error('Request ' + method + ' failed. ' + JSON.stringify(response.error));
+            }
+            return {getError: () => response.error.message};
+          }
 
-      if ('result' in response) {
-        return {...response.result, getError: () => undefined};
-      }
-      return {getError: () => undefined};
-    });
+          if ('result' in response) {
+            return {...response.result, getError: () => undefined};
+          }
+          return {getError: () => undefined};
+        });
   }
 }
 

@@ -108,8 +108,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       throw new Error('Could not find the child target manager class for the root target');
     }
 
-    const router = rootTarget.router();
-    if (!router) {
+    const connection = rootTarget.router()?.connection;
+    if (!connection) {
       throw new Error('Expected root target to have a router');
     }
 
@@ -119,7 +119,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const {page, browser, puppeteerConnection} =
         await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab(
             {
-              connection: router,
+              connection,
               targetId: rootTargetId,
               sessionId,
               isPageTargetCallback: isPageTarget,

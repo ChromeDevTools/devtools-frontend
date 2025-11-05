@@ -900,6 +900,7 @@ grd_files_unbundled_sources = [
   "front_end/core/platform/UserVisibleError.js",
   "front_end/core/protocol_client/CDPConnection.js",
   "front_end/core/protocol_client/ConnectionTransport.js",
+  "front_end/core/protocol_client/DevToolsCDPConnection.js",
   "front_end/core/protocol_client/InspectorBackend.js",
   "front_end/core/root/Runtime.js",
   "front_end/core/sdk/AccessibilityModel.js",

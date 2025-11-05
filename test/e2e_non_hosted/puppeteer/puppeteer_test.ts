@@ -21,7 +21,7 @@ describe('Puppeteer', () => {
       const {sessionId} = await mainTarget.targetAgent().invoke_attachToTarget({targetId: mainTargetId, flatten: true});
 
       const {browser} = await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab({
-        connection: mainTarget.router(),
+        connection: mainTarget.router()?.connection,
         targetId: mainTargetId,
         sessionId,
         isPageTargetCallback: (target) => target.targetId === mainTargetId,

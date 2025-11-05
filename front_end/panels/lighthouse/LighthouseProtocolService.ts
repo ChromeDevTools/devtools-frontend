@@ -95,14 +95,14 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
       throw new Error('Could not find the child target manager class for the root target');
     }
 
-    const router = rootTarget.router();
-    if (!router) {
+    const connection = rootTarget.router()?.connection;
+    if (!connection) {
       throw new Error('Expected root target to have a session router');
     }
 
     const rootTargetId = await rootChildTargetManager.getParentTargetId();
     const {sessionId} = await rootTarget.targetAgent().invoke_attachToTarget({targetId: rootTargetId, flatten: true});
-    this.connection = router;
+    this.connection = connection;
     this.connection.observe(this);
 
     // Lighthouse implements its own dialog handler like this, however its lifecycle ends when

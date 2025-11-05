@@ -547,7 +547,7 @@ var EditableSpan = class extends HTMLElement {
         tabindex="0"
         .innerText=${this.#value}
         jslog=${VisualLogging2.value("header-editor").track({ change: true, keydown: "Enter|Escape" })}
-      </span>`, this.#shadow, { host: this });
+        ></span>`, this.#shadow, { host: this });
   }
   focus() {
     requestAnimationFrame(() => {

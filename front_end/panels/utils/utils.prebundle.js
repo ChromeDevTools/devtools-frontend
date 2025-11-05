@@ -79,8 +79,10 @@ export class PanelUtils {
         if (request.hasThirdPartyCookiePhaseoutIssue()) {
             // clang-format off
             return html `<devtools-icon
-          class="icon" name="warning-filled" title=${i18nString(UIStrings.thirdPartyPhaseout)}
-        </devtools-icon>`;
+        class="icon"
+        name="warning-filled"
+        title=${i18nString(UIStrings.thirdPartyPhaseout)}
+      ></devtools-icon>`;
             // clang-format on
         }
         const isHeaderOverridden = request.hasOverriddenHeaders();

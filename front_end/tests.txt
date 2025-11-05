@@ -112,6 +112,7 @@ entrypoints/inspector_main/OutermostTargetSelector.test.js
 entrypoints/main/ExecutionContextSelector.test.js
 entrypoints/main/GlobalAiButton.test.js
 entrypoints/main/MainImpl.test.js
+entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
 models/ai_assistance/data_formatters/FileFormatter.test.js
 models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js

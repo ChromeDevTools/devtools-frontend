@@ -1521,7 +1521,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
         @endiannesschanged=${input.onEndiannessChanged}
         @jumptopointeraddress=${input.onJumpToAddress}
         >
-      </devtools-linear-memory-inspector-interpreter/>
+      </devtools-linear-memory-inspector-interpreter>
     </div>`}
     `, target);
 };
@@ -1973,20 +1973,25 @@ var LinearMemoryNavigator = class extends HTMLElement {
       "address-input": true,
       invalid: !this.#valid
     };
-    return html7`
-      <input class=${Lit6.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
-        jslog=${VisualLogging6.textField("linear-memory-inspector.address").track({
+    return html7`<input
+      class=${Lit6.Directives.classMap(classMap)}
+      data-input="true"
+      .value=${this.#address}
+      jslog=${VisualLogging6.textField("linear-memory-inspector.address").track({
       change: true
     })}
-        title=${ifDefined(this.#valid ? i18nString7(UIStrings7.enterAddress) : this.#error)} @change=${this.#onAddressChange.bind(
+      title=${ifDefined(this.#valid ? i18nString7(UIStrings7.enterAddress) : this.#error)}
+      @change=${this.#onAddressChange.bind(
       this,
       "Submitted"
       /* Mode.SUBMITTED */
-    )} @input=${this.#onAddressChange.bind(
+    )}
+      @input=${this.#onAddressChange.bind(
       this,
       "Edit"
       /* Mode.EDIT */
-    )}/>`;
+    )}
+    />`;
   }
   #onAddressChange(mode, event) {
     const addressInput = event.target;

@@ -50,7 +50,7 @@ export class PreviewToggle extends HTMLElement {
           <devtools-checkbox
             ?checked=${checked}
             @change=${this.#checkboxChanged}
-            aria-label=${this.#name} />
+            aria-label=${this.#name} >
             <devtools-icon name="experiment" class="medium">
           </devtools-icon>${this.#name}
           </devtools-checkbox>

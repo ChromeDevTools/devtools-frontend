@@ -1658,14 +1658,14 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
         const treeElement = this.treeElementByNode.get(node);
         if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-            void treeElement.tagTypeContext.adornersThrottler.schedule(async () => treeElement.updateScrollAdorner());
+            void treeElement.updateScrollAdorner();
         }
     }
     affectedByStartingStylesFlagUpdated(event) {
         const { node } = event.data;
         const treeElement = this.treeElementByNode.get(node);
         if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-            void treeElement.tagTypeContext.adornersThrottler.schedule(async () => await treeElement.updateStyleAdorners());
+            void treeElement.updateStyleAdorners();
         }
     }
 }

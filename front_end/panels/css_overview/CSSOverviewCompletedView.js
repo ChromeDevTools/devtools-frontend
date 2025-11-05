@@ -402,7 +402,7 @@ function renderContrastIssue(key, issues) {
     </button>
     <div class="block-title">
       ${showAPCA ? html `
-        <div class="contrast-warning hidden" $="apca">
+        <div class="contrast-warning hidden">
           <span class="threshold-label">${i18nString(UIStrings.apca)}</span>
           ${minContrastIssue.thresholdsViolated.apca ? createClearIcon() : createCheckIcon()}
         </div>` : html `
@@ -410,7 +410,7 @@ function renderContrastIssue(key, issues) {
           <span class="threshold-label">${i18nString(UIStrings.aa)}</span>
           ${minContrastIssue.thresholdsViolated.aa ? createClearIcon() : createCheckIcon()}
         </div>
-        <div class="contrast-warning hidden" $="aaa">
+        <div class="contrast-warning hidden">
           <span class="threshold-label">${i18nString(UIStrings.aaa)}</span>
           ${minContrastIssue.thresholdsViolated.aaa ? createClearIcon() : createCheckIcon()}
         </div>`}
@@ -866,6 +866,6 @@ function createClearIcon() {
 function createCheckIcon() {
     return html `
     <devtools-icon name="checkmark" class="small"
-        style="color:var(--icon-checkmark-green);></devtools-icon>`;
+        style="color:var(--icon-checkmark-green);"></devtools-icon>`;
 }
 //# sourceMappingURL=CSSOverviewCompletedView.js.map

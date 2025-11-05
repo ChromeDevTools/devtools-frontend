@@ -375,6 +375,7 @@
   "front_end/entrypoints/main/main-meta.js",
   "front_end/entrypoints/main/main.js",
   "front_end/entrypoints/ndb_app/ndb_app.js",
+  "front_end/entrypoints/node_app/app/app.js",
   "front_end/entrypoints/node_app/node_app.js",
   "front_end/entrypoints/shell/shell.js",
   "front_end/entrypoints/trace_app/trace_app.js",

@@ -10,6 +10,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import { nothing } from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import { md, shouldRenderForCategory } from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
@@ -351,7 +352,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         const renderInsightComponent = (insightData) => {
             const { componentClass, model } = insightData;
             if (!this.#data.parsedTrace?.insights) {
-                return html ``;
+                return nothing;
             }
             const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
             // clang-format off

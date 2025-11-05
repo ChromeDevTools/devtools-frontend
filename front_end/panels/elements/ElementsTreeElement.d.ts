@@ -1,4 +1,3 @@
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -14,24 +13,31 @@ declare const enum TagType {
 }
 interface OpeningTagContext {
     tagType: TagType.OPENING;
-    readonly adornerContainer: HTMLElement;
-    adorners: Set<Adorners.Adorner.Adorner>;
-    styleAdorners: Set<Adorners.Adorner.Adorner>;
-    readonly adornersThrottler: Common.Throttler.Throttler;
     canAddAttributes: boolean;
-    slot?: Adorners.Adorner.Adorner;
 }
 interface ClosingTagContext {
     tagType: TagType.CLOSING;
 }
 export type TagTypeContext = OpeningTagContext | ClosingTagContext;
 export declare function isOpeningTag(context: TagTypeContext): context is OpeningTagContext;
+export interface ViewInput {
+    adorners?: Set<Adorners.Adorner.Adorner>;
+    nodeInfo?: DocumentFragment;
+    onGutterClick: (e: Event) => void;
+}
+export interface ViewOutput {
+    gutterContainer?: HTMLElement;
+    decorationsElement?: HTMLElement;
+    contentElement?: HTMLElement;
+}
+export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #private;
     nodeInternal: SDK.DOMModel.DOMNode;
     treeOutline: ElementsTreeOutline | null;
-    private gutterContainer;
-    private readonly decorationsElement;
+    gutterContainer: HTMLElement;
+    decorationsElement: HTMLElement;
+    contentElement: HTMLElement;
     private searchQuery;
     private readonly decorationsThrottler;
     private inClipboard;
@@ -41,13 +47,14 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     selectionElement?: HTMLDivElement;
     private hintElement?;
     private aiButtonContainer?;
-    private contentElement;
     readonly tagTypeContext: TagTypeContext;
     constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean);
     static animateOnDOMUpdate(treeElement: ElementsTreeElement): void;
     static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
     static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;
     static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
+    get adorners(): Adorners.Adorner.Adorner[];
+    performUpdate(): void;
     highlightAttribute(attributeName: string): void;
     isClosingTag(): boolean;
     node(): SDK.DOMModel.DOMNode;
@@ -122,25 +129,25 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }, content?: HTMLElement): Adorners.Adorner.Adorner;
     adornSlot({ name }: {
         name: string;
-    }, context: OpeningTagContext): Adorners.Adorner.Adorner;
+    }): Adorners.Adorner.Adorner;
     adornMedia({ name }: {
         name: string;
     }): Adorners.Adorner.Adorner;
-    removeAdorner(adornerToRemove: Adorners.Adorner.Adorner, context: OpeningTagContext): void;
+    removeAdorner(adornerToRemove: Adorners.Adorner.Adorner): void;
     /**
      * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
      */
     removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void;
     private updateAdorners;
     updateStyleAdorners(): Promise<void>;
-    pushPopoverAdorner(context: OpeningTagContext): void;
-    pushGridAdorner(context: OpeningTagContext, isSubgrid: boolean): void;
-    pushMasonryAdorner(context: OpeningTagContext): void;
-    pushScrollSnapAdorner(context: OpeningTagContext): void;
-    pushStartingStyleAdorner(context: OpeningTagContext): void;
-    pushFlexAdorner(context: OpeningTagContext): void;
-    pushContainerAdorner(context: OpeningTagContext): void;
-    pushMediaAdorner(context: OpeningTagContext): void;
+    pushPopoverAdorner(): void;
+    pushGridAdorner(isSubgrid: boolean): void;
+    pushMasonryAdorner(): void;
+    pushScrollSnapAdorner(): void;
+    pushStartingStyleAdorner(): void;
+    pushFlexAdorner(): void;
+    pushContainerAdorner(): void;
+    pushMediaAdorner(): void;
     updateScrollAdorner(): void;
     pushScrollAdorner(): void;
 }

@@ -1,3 +1,24 @@
+interface ProposedRect {
+    left: number;
+    top: number;
+}
+export declare enum PositionOption {
+    BOTTOM_SPAN_RIGHT = "bottom-span-right",
+    BOTTOM_SPAN_LEFT = "bottom-span-left",
+    TOP_SPAN_RIGHT = "top-span-right",
+    TOP_SPAN_LEFT = "top-span-left"
+}
+export declare const proposedRectForRichTooltip: ({ inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions }: {
+    inspectorViewRect: DOMRect;
+    anchorRect: DOMRect;
+    currentPopoverRect: DOMRect;
+    preferredPositions: PositionOption[];
+}) => ProposedRect;
+export declare const proposedRectForSimpleTooltip: ({ inspectorViewRect, anchorRect, currentPopoverRect }: {
+    inspectorViewRect: DOMRect;
+    anchorRect: DOMRect;
+    currentPopoverRect: DOMRect;
+}) => ProposedRect;
 export type TooltipVariant = 'simple' | 'rich';
 export type PaddingMode = 'small' | 'large';
 export type TooltipTrigger = 'hover' | 'click' | 'both';
@@ -70,3 +91,4 @@ declare global {
         'devtools-tooltip': Tooltip;
     }
 }
+export {};

@@ -10787,7 +10787,7 @@ devtools-tree-outline {
 // gen/front_end/panels/elements/ElementsTreeOutline.js
 var ElementsTreeOutline_exports = {};
 __export(ElementsTreeOutline_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   DOMTreeWidget: () => DOMTreeWidget,
   ElementsTreeOutline: () => ElementsTreeOutline,
   MappedCharToEntity: () => MappedCharToEntity
@@ -10801,7 +10801,7 @@ import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing3, render as render6 } from "./../../ui/lit/lit.js";
+import { html as html10, nothing as nothing4, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/ElementIssueUtils.js
@@ -10951,6 +10951,7 @@ function getTooltipFromElementAccessibilityIssue(reason) {
 // gen/front_end/panels/elements/ElementsTreeElement.js
 var ElementsTreeElement_exports = {};
 __export(ElementsTreeElement_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   EditTagBlocklist: () => EditTagBlocklist,
   ElementsTreeElement: () => ElementsTreeElement,
   ForbiddenClosingTagElements: () => ForbiddenClosingTagElements,
@@ -10976,6 +10977,7 @@ import * as IconButton4 from "./../../ui/components/icon_button/icon_button.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
+import * as Lit6 from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as Emulation from "./../emulation/emulation.js";
 import * as Media from "./../media/media.js";
@@ -11312,6 +11314,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
+var { html: html9, nothing: nothing3, render: render6, Directives: { ref: ref2, repeat } } = Lit6;
 var UIStrings13 = {
   /**
    * @description Title for Ad adorner. This iframe is marked as advertisement frame.
@@ -11577,11 +11580,35 @@ var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
+var DEFAULT_VIEW4 = (input, output, target) => {
+  render6(html9`
+    <div ${ref2((el) => {
+    output.contentElement = el;
+  })}>
+      ${input.nodeInfo ? html9`<span class="highlight">${input.nodeInfo}</span>` : nothing3}
+      <div class="gutter-container" @click=${input.onGutterClick} ${ref2((el) => {
+    output.gutterContainer = el;
+  })}>
+        <devtools-icon name="dots-horizontal"></devtools-icon>
+        <div class="hidden" ${ref2((el) => {
+    output.decorationsElement = el;
+  })}></div>
+      </div>
+      ${input.adorners ? html9`<div class="adorner-container ${input.adorners.size === 0 ? "hidden" : ""}">
+        ${repeat(Array.from(input.adorners.values()).sort(adornerComparator), (adorner) => {
+    return adorner;
+  })}
+      </div>` : nothing3}
+    </div>
+  `, target);
+};
 var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.TreeElement {
   nodeInternal;
   treeOutline;
+  // Handled by the view output for now.
   gutterContainer;
   decorationsElement;
+  contentElement;
   searchQuery;
   #expandedChildrenLimit;
   decorationsThrottler;
@@ -11593,11 +11620,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
   selectionElement;
   hintElement;
   aiButtonContainer;
-  contentElement;
   #elementIssues = /* @__PURE__ */ new Map();
   #nodeElementToIssue = /* @__PURE__ */ new Map();
   #highlights = [];
   tagTypeContext;
+  #adornersThrottler = new Common10.Throttler.Throttler(100);
+  #adorners = /* @__PURE__ */ new Set();
+  #nodeInfo;
   constructor(node, isClosingTag) {
     super();
     this.nodeInternal = node;
@@ -11607,13 +11636,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       drag: true,
       click: true
     })}`);
-    this.contentElement = this.listItemElement.createChild("div");
-    this.gutterContainer = this.contentElement.createChild("div", "gutter-container");
-    this.gutterContainer.addEventListener("click", this.showContextMenu.bind(this));
-    const gutterMenuIcon = new IconButton4.Icon.Icon();
-    gutterMenuIcon.name = "dots-horizontal";
-    this.gutterContainer.append(gutterMenuIcon);
-    this.decorationsElement = this.gutterContainer.createChild("div", "hidden");
     this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
     this.decorationsThrottler = new Common10.Throttler.Throttler(100);
@@ -11628,10 +11650,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     } else {
       this.tagTypeContext = {
         tagType: "OPENING_TAG",
-        adornerContainer: this.contentElement.createChild("div", "adorner-container hidden"),
-        adorners: /* @__PURE__ */ new Set(),
-        styleAdorners: /* @__PURE__ */ new Set(),
-        adornersThrottler: new Common10.Throttler.Throttler(100),
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE
       };
       void this.updateStyleAdorners();
@@ -11643,6 +11661,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       void this.updateScrollAdorner();
     }
     this.expandAllButtonElement = null;
+    this.performUpdate();
     if (this.nodeInternal.retained && !this.isClosingTag()) {
       const icon = new IconButton4.Icon.Icon();
       icon.name = "small-status-dot";
@@ -11700,6 +11719,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     function setPseudoStateCallback(pseudoState, enabled) {
       node.domModel().cssModel().forcePseudoState(node, pseudoState, enabled);
     }
+  }
+  get adorners() {
+    return Array.from(this.#adorners);
+  }
+  performUpdate() {
+    DEFAULT_VIEW4({
+      adorners: !this.isClosingTag() ? this.#adorners : void 0,
+      nodeInfo: this.#nodeInfo,
+      onGutterClick: this.showContextMenu.bind(this)
+    }, this, this.listItemElement);
   }
   highlightAttribute(attributeName) {
     let animationElement = this.listItemElement.querySelector(".webkit-html-tag-name") ?? this.listItemElement;
@@ -11823,14 +11852,15 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     }
     if (nodeShortcut) {
       const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SLOT);
-      this.tagTypeContext.slot = this.adornSlot(config, this.tagTypeContext);
+      const adorner = this.adornSlot(config);
+      this.#adorners.add(adorner);
       const deferredNode = nodeShortcut.deferredNode;
-      this.tagTypeContext.slot.addEventListener("click", () => {
+      adorner.addEventListener("click", () => {
         deferredNode.resolve((node) => {
           void Common10.Revealer.reveal(node);
         });
       });
-      this.tagTypeContext.slot.addEventListener("mousedown", (e) => e.consume(), false);
+      adorner.addEventListener("mousedown", (e) => e.consume(), false);
     }
   }
   createSelection() {
@@ -12661,7 +12691,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     if (this.editing) {
       return;
     }
-    const nodeInfo = this.nodeTitleInfo(updateRecord || null);
+    this.#nodeInfo = this.nodeTitleInfo(updateRecord || null);
     if (this.nodeInternal.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this.nodeInternal.isInShadowTree() && this.nodeInternal.shadowRootType()) {
       this.childrenListElement.classList.add("shadow-root");
       let depth = 4;
@@ -12676,18 +12706,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         this.childrenListElement.classList.add("shadow-root-depth-" + depth);
       }
     }
-    this.contentElement.removeChildren();
-    const highlightElement = this.contentElement.createChild("span", "highlight");
-    highlightElement.append(nodeInfo);
+    this.performUpdate();
     this.title = this.contentElement;
     this.updateDecorations();
-    this.contentElement.prepend(this.gutterContainer);
-    if (isOpeningTag(this.tagTypeContext)) {
-      this.contentElement.append(this.tagTypeContext.adornerContainer);
-    }
-    delete this.selectionElement;
-    delete this.hintElement;
-    delete this.aiButtonContainer;
     if (this.selected) {
       this.createSelection();
       this.createHint();
@@ -13249,13 +13270,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       jslogContext: name
     };
     if (isOpeningTag(this.tagTypeContext)) {
-      this.tagTypeContext.adorners.add(adorner);
+      this.#adorners.add(adorner);
       ElementsPanel.instance().registerAdorner(adorner);
-      this.updateAdorners(this.tagTypeContext);
+      this.updateAdorners();
     }
     return adorner;
   }
-  adornSlot({ name }, context) {
+  adornSlot({ name }) {
     const linkIcon = IconButton4.Icon.create("select-element");
     const slotText = document.createElement("span");
     slotText.textContent = name;
@@ -13269,9 +13290,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       content: adornerContent,
       jslogContext: "slot"
     };
-    context.adorners.add(adorner);
+    this.#adorners.add(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
-    this.updateAdorners(context);
+    this.updateAdorners();
     return adorner;
   }
   adornMedia({ name }) {
@@ -13287,18 +13308,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       jslogContext: "media"
     };
     if (isOpeningTag(this.tagTypeContext)) {
-      this.tagTypeContext.adorners.add(adorner);
+      this.#adorners.add(adorner);
       ElementsPanel.instance().registerAdorner(adorner);
-      this.updateAdorners(this.tagTypeContext);
+      this.updateAdorners();
     }
     return adorner;
   }
-  removeAdorner(adornerToRemove, context) {
+  removeAdorner(adornerToRemove) {
     ElementsPanel.instance().deregisterAdorner(adornerToRemove);
     adornerToRemove.remove();
-    context.adorners.delete(adornerToRemove);
-    context.styleAdorners.delete(adornerToRemove);
-    this.updateAdorners(context);
+    this.#adorners.delete(adornerToRemove);
+    this.updateAdorners();
   }
   /**
    * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
@@ -13307,29 +13327,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
     if (!isOpeningTag(this.tagTypeContext)) {
       return;
     }
-    for (const adorner of this.tagTypeContext.adorners) {
+    for (const adorner of this.#adorners) {
       if (adorner.name === adornerType || !adornerType) {
-        this.removeAdorner(adorner, this.tagTypeContext);
+        this.removeAdorner(adorner);
       }
     }
   }
-  updateAdorners(context) {
-    void context.adornersThrottler.schedule(this.#updateAdorners.bind(null, context));
+  updateAdorners() {
+    void this.#adornersThrottler.schedule(this.#updateAdorners.bind(this));
   }
-  #updateAdorners(context) {
-    const adornerContainer = context.adornerContainer;
-    if (!adornerContainer) {
-      return Promise.resolve();
-    }
-    const adorners = [...context.adorners].sort(adornerComparator);
-    if (context.slot) {
-      adorners.push(context.slot);
-    }
-    adornerContainer.removeChildren();
-    for (const adorner of adorners) {
-      adornerContainer.appendChild(adorner);
-    }
-    adornerContainer.classList.toggle("hidden", adorners.length === 0);
+  #updateAdorners() {
+    this.performUpdate();
     return Promise.resolve();
   }
   async updateStyleAdorners() {
@@ -13342,40 +13350,46 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       return;
     }
     const layout = await node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(nodeId);
-    for (const styleAdorner of this.tagTypeContext.styleAdorners) {
-      this.removeAdorner(styleAdorner, this.tagTypeContext);
-    }
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.MASONRY);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
     if (layout) {
       if (layout.isGrid) {
-        this.pushGridAdorner(this.tagTypeContext, layout.isSubgrid);
+        this.pushGridAdorner(layout.isSubgrid);
       }
       if (layout.isMasonry) {
-        this.pushMasonryAdorner(this.tagTypeContext);
+        this.pushMasonryAdorner();
       }
       if (layout.isFlex) {
-        this.pushFlexAdorner(this.tagTypeContext);
+        this.pushFlexAdorner();
       }
       if (layout.hasScroll) {
-        this.pushScrollSnapAdorner(this.tagTypeContext);
+        this.pushScrollSnapAdorner();
       }
       if (layout.isContainer) {
-        this.pushContainerAdorner(this.tagTypeContext);
+        this.pushContainerAdorner();
       }
     }
     if (node.isMediaNode()) {
-      this.pushMediaAdorner(this.tagTypeContext);
+      this.pushMediaAdorner();
     }
     if (Root6.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
       const affectedByStartingStyles = node.affectedByStartingStyles();
       if (affectedByStartingStyles) {
-        this.pushStartingStyleAdorner(this.tagTypeContext);
+        this.pushStartingStyleAdorner();
       }
     }
     if (node.attributes().find((attr) => attr.name === "popover")) {
-      this.pushPopoverAdorner(this.tagTypeContext);
+      this.pushPopoverAdorner();
     }
   }
-  pushPopoverAdorner(context) {
+  pushPopoverAdorner() {
     if (!Root6.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) {
       return;
     }
@@ -13394,7 +13408,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         if (!treeElement || !isOpeningTag(treeElement.tagTypeContext)) {
           return;
         }
-        const adorner2 = treeElement.tagTypeContext.adorners.values().find((adorner3) => adorner3.name === config.name);
+        const adorner2 = this.#adorners.values().find((adorner3) => adorner3.name === config.name);
         adorner2?.toggle(false);
       }
     };
@@ -13404,9 +13418,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       ariaLabelDefault: i18nString12(UIStrings13.forceOpenPopover),
       ariaLabelActive: i18nString12(UIStrings13.stopForceOpenPopover)
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
   }
-  pushGridAdorner(context, isSubgrid) {
+  pushGridAdorner(isSubgrid) {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13438,12 +13452,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       }
       adorner.toggle(enabled);
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
   }
-  pushMasonryAdorner(context) {
+  pushMasonryAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13473,12 +13487,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       }
       adorner.toggle(enabled);
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
   }
-  pushScrollSnapAdorner(context) {
+  pushScrollSnapAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13508,12 +13522,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       }
       adorner.toggle(enabled);
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedScrollSnapInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
   }
-  pushStartingStyleAdorner(context) {
+  pushStartingStyleAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13536,9 +13550,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       ariaLabelDefault: i18nString12(UIStrings13.enableStartingStyle),
       ariaLabelActive: i18nString12(UIStrings13.disableStartingStyle)
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
   }
-  pushFlexAdorner(context) {
+  pushFlexAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13568,12 +13582,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       }
       adorner.toggle(enabled);
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
   }
-  pushContainerAdorner(context) {
+  pushContainerAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13604,12 +13618,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       }
       adorner.toggle(enabled);
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedContainerQueryInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
   }
-  pushMediaAdorner(context) {
+  pushMediaAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -13635,18 +13649,18 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
       ariaLabelDefault: i18nString12(UIStrings13.openMediaPanel),
       ariaLabelActive: i18nString12(UIStrings13.openMediaPanel)
     });
-    context.styleAdorners.add(adorner);
+    this.#adorners.add(adorner);
   }
   updateScrollAdorner() {
     if (!isOpeningTag(this.tagTypeContext)) {
       return;
     }
-    const scrollAdorner = this.tagTypeContext.adorners.values().find((x) => x.name === ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL);
+    const scrollAdorner = this.#adorners.values().find((x) => x.name === ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL);
     const needsAScrollAdorner = this.node().nodeName() === "HTML" && this.node().ownerDocument?.isScrollable() || this.node().nodeName() !== "#document" && this.node().isScrollable();
     if (needsAScrollAdorner && !scrollAdorner) {
       this.pushScrollAdorner();
     } else if (!needsAScrollAdorner && scrollAdorner) {
-      this.removeAdorner(scrollAdorner, this.tagTypeContext);
+      this.removeAdorner(scrollAdorner);
     }
   }
   pushScrollAdorner() {
@@ -14318,7 +14332,7 @@ var str_16 = i18n31.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new Set();
-var DEFAULT_VIEW4 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   if (!output.elementsTreeOutline) {
     output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter);
     output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, void 0);
@@ -14416,7 +14430,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       useShadowDom: false,
       delegatesFocus: false
     });
-    this.#view = view ?? DEFAULT_VIEW4;
+    this.#view = view ?? DEFAULT_VIEW5;
     if (Common13.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
       SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
       SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearState, this, { scoped: true });
@@ -14689,16 +14703,16 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common13.ObjectWrap
         box: hoveredNode.boxInWindow(),
         show: async (popover) => {
           popover.setIgnoreLeftMargin(true);
-          render6(html9`
+          render7(html10`
             <div class="squiggles-content">
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
             if (!elementIssueDetails) {
-              return nothing3;
+              return nothing4;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common13.Revealer.reveal(issue);
-            return html9`
+            return html10`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
                   <x-link class="link" @click=${openIssueEvent}>${i18nString15(UIStrings16.viewIssue)}</x-link>
@@ -15838,14 +15852,14 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common13.ObjectWrap
     }
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-      void treeElement.tagTypeContext.adornersThrottler.schedule(async () => treeElement.updateScrollAdorner());
+      void treeElement.updateScrollAdorner();
     }
   }
   affectedByStartingStylesFlagUpdated(event) {
     const { node } = event.data;
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
-      void treeElement.tagTypeContext.adornersThrottler.schedule(async () => await treeElement.updateStyleAdorners());
+      void treeElement.updateStyleAdorners();
     }
   }
 };
@@ -15889,7 +15903,7 @@ import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../ui/lit/lit.js";
+import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layoutPane.css.js
@@ -16086,7 +16100,7 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var { render: render7, html: html10 } = Lit6;
+var { render: render8, html: html11 } = Lit7;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
   const nodeId = node.id;
@@ -16166,7 +16180,7 @@ function isBooleanSetting(setting) {
   return setting.type === "boolean";
 }
 var layoutPaneInstance;
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   const onColorLabelKeyUp = (event) => {
     if (event.key !== "Enter" && event.key !== " ") {
       return;
@@ -16182,7 +16196,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       event.preventDefault();
     }
   };
-  const renderElement = (element) => html10`<div
+  const renderElement = (element) => html11`<div
           class="element"
           jslog=${VisualLogging10.item()}>
         <devtools-checkbox
@@ -16232,8 +16246,8 @@ var DEFAULT_VIEW5 = (input, output, target) => {
            @click=${(e) => input.onElementClick(element, e)}
            ></devtools-button>
       </div>`;
-  render7(
-    html10`
+  render8(
+    html11`
       <div style="min-width: min-content;" jslog=${VisualLogging10.pane("layout").track({ resize: true })}>
         <style>${layoutPane_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI20.inspectorCommonStyles} }</style>
@@ -16246,12 +16260,12 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           <div class="content-section" jslog=${VisualLogging10.section("grid-settings")}>
             <h3 class="content-section-title">${i18nString16(UIStrings17.overlayDisplaySettings)}</h3>
             <div class="select-settings">
-              ${input.enumSettings.map((setting) => html10`<label data-enum-setting="true" class="select-label" title=${setting.title}>
+              ${input.enumSettings.map((setting) => html11`<label data-enum-setting="true" class="select-label" title=${setting.title}>
                       <select
                         data-input="true"
                         jslog=${VisualLogging10.dropDown().track({ change: true }).context(setting.name)}
                         @change=${(e) => input.onEnumSettingChange(setting, e)}>
-                        ${setting.options.map((opt) => html10`<option
+                        ${setting.options.map((opt) => html11`<option
                                 value=${opt.value}
                                 .selected=${setting.value === opt.value}
                                 jslog=${VisualLogging10.item(Platform8.StringUtilities.toKebabCase(opt.value)).track({
@@ -16261,7 +16275,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                     </label>`)}
             </div>
             <div class="checkbox-settings">
-              ${input.booleanSettings.map((setting) => html10`<devtools-checkbox
+              ${input.booleanSettings.map((setting) => html11`<devtools-checkbox
                       data-boolean-setting="true"
                       class="checkbox-label"
                       title=${setting.title}
@@ -16272,14 +16286,14 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                   </devtools-checkbox>`)}
             </div>
           </div>
-          ${input.gridElements ? html10`<div class="content-section" jslog=${VisualLogging10.section("grid-overlays")}>
+          ${input.gridElements ? html11`<div class="content-section" jslog=${VisualLogging10.section("grid-overlays")}>
               <h3 class="content-section-title">
                 ${input.gridElements.length ? i18nString16(UIStrings17.gridOrMasonryOverlays) : i18nString16(UIStrings17.noGridOrMasonryLayoutsFoundOnThisPage)}
               </h3>
-              ${input.gridElements.length ? html10`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
+              ${input.gridElements.length ? html11`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
             </div>` : ""}
         </details>
-        ${input.flexContainerElements !== void 0 ? html10`
+        ${input.flexContainerElements !== void 0 ? html11`
           <details open>
             <summary
                 class="header"
@@ -16287,11 +16301,11 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                 jslog=${VisualLogging10.sectionHeader("flexbox-overlays").track({ click: true })}>
               ${i18nString16(UIStrings17.flexbox)}
             </summary>
-            ${input.flexContainerElements ? html10`<div class="content-section" jslog=${VisualLogging10.section("flexbox-overlays")}>
+            ${input.flexContainerElements ? html11`<div class="content-section" jslog=${VisualLogging10.section("flexbox-overlays")}>
                 <h3 class="content-section-title">
                   ${input.flexContainerElements.length ? i18nString16(UIStrings17.flexboxOverlays) : i18nString16(UIStrings17.noFlexboxLayoutsFoundOnThisPage)}
                 </h3>
-                ${input.flexContainerElements.length ? html10`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
+                ${input.flexContainerElements.length ? html11`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
               </div>` : ""}
           </details>` : ""}
       </div>`,
@@ -16304,7 +16318,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
   #uaShadowDOMSetting;
   #domModels;
   #view;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#settings = this.#makeSettings();
     this.#uaShadowDOMSetting = Common14.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom");
@@ -18246,7 +18260,7 @@ var ToggleSearchActionDelegate = class {
 var EventListenersWidget_exports = {};
 __export(EventListenersWidget_exports, {
   ActionDelegate: () => ActionDelegate2,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   DispatchFilterBy: () => DispatchFilterBy,
   EventListenersWidget: () => EventListenersWidget
 });
@@ -18254,7 +18268,7 @@ import * as Common18 from "./../../core/common/common.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html11, render as render8 } from "./../../ui/lit/lit.js";
+import { html as html12, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting } = UI24.UIUtils;
@@ -18295,8 +18309,8 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var eventListenersWidgetInstance;
-var DEFAULT_VIEW6 = (input, _output, target) => {
-  render8(html11`
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render9(html12`
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
@@ -18310,7 +18324,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           aria-label=${i18nString18(UIStrings19.eventListenersCategory)}
           jslog=${VisualLogging14.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
-          ${input.dispatchFilters.map((filter) => html11`
+          ${input.dispatchFilters.map((filter) => html12`
             <option value=${filter.value} ?selected=${filter.value === input.selectedDispatchFilter}>
               ${filter.name}
             </option>`)}
@@ -18334,7 +18348,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI24.Widget.VBox 
   showFrameworkListenersSetting;
   lastRequestedNode;
   #view;
-  constructor(view = DEFAULT_VIEW6) {
+  constructor(view = DEFAULT_VIEW7) {
     super();
     this.#view = view;
     this.showForAncestorsSetting = Common18.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
@@ -18461,7 +18475,7 @@ var ActionDelegate2 = class {
 // gen/front_end/panels/elements/PropertiesWidget.js
 var PropertiesWidget_exports = {};
 __export(PropertiesWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   PropertiesWidget: () => PropertiesWidget
 });
 import "./../../ui/legacy/legacy.js";
@@ -18472,7 +18486,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html12, nothing as nothing4, render as render9 } from "./../../ui/lit/lit.js";
+import { html as html13, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -18522,8 +18536,8 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render9(html12`
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render10(html13`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -18534,9 +18548,9 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           </devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ${input.displayNoMatchingPropertyMessage ? html12`
+      ${input.displayNoMatchingPropertyMessage ? html13`
         <div class="gray-info-message">${i18nString19(UIStrings20.noMatchingProperty)}</div>
-      ` : nothing4}
+      ` : nothing5}
       ${input.treeOutlineElement}
     </div>`, target);
 };
@@ -18553,7 +18567,7 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
   lastRequestedNode;
   #view;
   #displayNoMatchingPropertyMessage = false;
-  constructor(view = DEFAULT_VIEW7) {
+  constructor(view = DEFAULT_VIEW8) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(propertiesWidget_css_default);
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
@@ -18653,7 +18667,7 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
 // gen/front_end/panels/elements/NodeStackTraceWidget.js
 var NodeStackTraceWidget_exports = {};
 __export(NodeStackTraceWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   MaxLengthForLinks: () => MaxLengthForLinks,
   NodeStackTraceWidget: () => NodeStackTraceWidget
 });
@@ -18662,7 +18676,7 @@ import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as Components6 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
-import { html as html13, render as render10 } from "./../../ui/lit/lit.js";
+import { html as html14, render as render11 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/nodeStackTraceWidget.css.js
 var nodeStackTraceWidget_css_default = `/*
@@ -18688,19 +18702,19 @@ var UIStrings21 = {
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   const { target: sdkTarget, linkifier, options } = input;
-  render10(html13`
+  render11(html14`
     <style>${nodeStackTraceWidget_css_default}</style>
-    ${target && options.stackTrace ? html13`<devtools-widget
+    ${target && options.stackTrace ? html14`<devtools-widget
                 class="stack-trace"
                 .widgetConfig=${UI26.Widget.widgetConfig(Components6.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, options })}>
-              </devtools-widget>` : html13`<div class="gray-info-message">${i18nString20(UIStrings21.noStackTraceAvailable)}</div>`}`, target);
+              </devtools-widget>` : html14`<div class="gray-info-message">${i18nString20(UIStrings21.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI26.Widget.VBox {
   #linkifier = new Components6.Linkifier.Linkifier(MaxLengthForLinks);
   #view;
-  constructor(view = DEFAULT_VIEW8) {
+  constructor(view = DEFAULT_VIEW9) {
     super({ useShadowDom: true });
     this.#view = view;
   }
@@ -19102,14 +19116,14 @@ var ClassNamePrompt = class extends UI27.TextPrompt.TextPrompt {
 var ElementStatePaneWidget_exports = {};
 __export(ElementStatePaneWidget_exports, {
   ButtonProvider: () => ButtonProvider4,
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
 import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as SDK25 from "./../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UI28 from "./../../ui/legacy/legacy.js";
-import { html as html14, render as render11 } from "./../../ui/lit/lit.js";
+import { html as html15, render as render12 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -19225,9 +19239,9 @@ var SpecificPseudoStates;
   SpecificPseudoStates2["OPEN"] = "open";
   SpecificPseudoStates2["TARGET_CURRENT"] = "target-current";
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
-    return html14`
+    return html15`
         <div id=${state.state}>
           <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
               jslog=${VisualLogging17.toggle(state.state).track({ change: true })} ?checked=${state.checked} ?disabled=${state.disabled}
@@ -19236,7 +19250,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render11(html14`
+  render12(html15`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>
@@ -19274,7 +19288,7 @@ var ElementStatePaneWidget = class extends UI28.Widget.Widget {
   #cssModel;
   #states = /* @__PURE__ */ new Map();
   #view;
-  constructor(view = DEFAULT_VIEW9) {
+  constructor(view = DEFAULT_VIEW10) {
     super({ useShadowDom: true });
     this.#view = view;
     this.#duals = /* @__PURE__ */ new Map();

@@ -43,6 +43,17 @@ export async function render(container) {
       </select>`, simpleMenuHTML);
     }
     {
+        const disabledMenuHTML = createDivWithP('Disabled select with lit-html');
+        // clang-format off
+        Lit.render(html `<select disabled aria-label="Select an option" @change=${onChange}>
+                <option hidden>Select an option</option>
+                <option jslog=${VisualLogging.item('option-1').track({
+            click: true
+        })} value="Option1">Option 1</option>
+              </select>`, disabledMenuHTML);
+        // clang-format on
+    }
+    {
         const groupMenuHTML = createDivWithP('Select with groups with lit-html');
         Lit.render(html `<select aria-label="Select an option"
                   @change=${onChange}>

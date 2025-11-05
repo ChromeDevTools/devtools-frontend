@@ -71,8 +71,10 @@ var PanelUtils = class _PanelUtils {
     }
     if (request.hasThirdPartyCookiePhaseoutIssue()) {
       return html`<devtools-icon
-          class="icon" name="warning-filled" title=${i18nString(UIStrings.thirdPartyPhaseout)}
-        </devtools-icon>`;
+        class="icon"
+        name="warning-filled"
+        title=${i18nString(UIStrings.thirdPartyPhaseout)}
+      ></devtools-icon>`;
     }
     const isHeaderOverridden = request.hasOverriddenHeaders();
     const isContentOverridden = request.hasOverriddenContent;

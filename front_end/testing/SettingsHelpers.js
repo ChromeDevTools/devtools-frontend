@@ -153,6 +153,7 @@ export function setupSettings(reset) {
         createSettingValue("APPEARANCE" /* Common.Settings.SettingCategory.APPEARANCE */, 'chrome-theme-colors', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
         createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline.user-had-shortcuts-dialog-opened-once', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
         createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-event-listeners-for-ancestors', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
+        createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'highlight-node-on-hover-in-overlay', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
         createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'global-ai-button-click-count', 0),
         createSettingValue("ACCOUNT" /* Common.Settings.SettingCategory.ACCOUNT */, 'receive-gdp-badges', false),
         createSettingValue("GLOBAL" /* Common.Settings.SettingCategory.GLOBAL */, 'currentDockState', 'right'),

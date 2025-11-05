@@ -98,7 +98,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         @endiannesschanged=${input.onEndiannessChanged}
         @jumptopointeraddress=${input.onJumpToAddress}
         >
-      </devtools-linear-memory-inspector-interpreter/>
+      </devtools-linear-memory-inspector-interpreter>
     </div>`}
     `, target);
     // clang-format on

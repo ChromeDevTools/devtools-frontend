@@ -810,6 +810,7 @@
   "front_end/entrypoints/js_app/js_app.js",
   "front_end/entrypoints/lighthouse_worker/lighthouse_worker.js",
   "front_end/entrypoints/ndb_app/ndb_app.js",
+  "front_end/entrypoints/node_app/app/app.js",
   "front_end/entrypoints/node_app/node_app.js",
   "front_end/entrypoints/trace_app/trace_app.js",
   "front_end/third_party/wasmparser/wasmparser.js",

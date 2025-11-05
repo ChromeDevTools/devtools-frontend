@@ -59,7 +59,7 @@ export class EditableSpan extends HTMLElement {
         tabindex="0"
         .innerText=${this.#value}
         jslog=${VisualLogging.value('header-editor').track({ change: true, keydown: 'Enter|Escape' })}
-      </span>`, this.#shadow, { host: this });
+        ></span>`, this.#shadow, { host: this });
         // clang-format on
     }
     focus() {

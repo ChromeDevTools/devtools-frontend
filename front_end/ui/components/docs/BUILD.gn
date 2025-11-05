@@ -25,7 +25,6 @@ group("docs") {
     "./perf_piechart",
     "./report",
     "./snackbars",
-    "./survey_link",
     "./text_prompt",
     "./theme_colors",
     "./tree_outline",

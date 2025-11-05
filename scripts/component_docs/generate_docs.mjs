@@ -8,27 +8,32 @@ import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
 const argv = yargs(hideBin(process.argv))
-                 .option('html-output-file', {
-                   type: 'string',
-                   demandOption: true,
-                 })
-                 .option('js-output-file', {
-                   type: 'string',
-                   demandOption: true,
-                 })
-                 .option('sources-file', {
-                   type: 'string',
-                   demandOption: true,
-                 })
-                 .parseSync();
+                .option('html-output-file', {
+                  type: 'string',
+                  demandOption: true,
+                })
+                .option('js-output-file', {
+                  type: 'string',
+                  demandOption: true,
+                })
+                .option('sources-file', {
+                  type: 'string',
+                  demandOption: true,
+                })
+                .option('environment-setup-file', {
+                  type: 'string',
+                  demandOption: true,
+                })
+                .parseSync();
 
 const HTML_OUTPUT_FILE = argv.htmlOutputFile;
 const JS_OUTPUT_FILE = argv.jsOutputFile;
 const SOURCES_FILE = argv.sourcesFile;
+const ENVIRONMENT_FILE = argv.environmentSetupFile;
 
-if (!HTML_OUTPUT_FILE || !JS_OUTPUT_FILE || !SOURCES_FILE) {
+if (!HTML_OUTPUT_FILE || !JS_OUTPUT_FILE || !SOURCES_FILE || !ENVIRONMENT_FILE) {
   console.error(
-      'Usage: node generate_docs.js --devtools-frontend-path <path> --html-output-file <path> --js-output-file <path> --sources-file <path>');
+      'Usage: node generate_docs.js --devtools-frontend-path <path> --html-output-file <path> --js-output-file <path> --sources-file <path> --environment-setup-file <path>');
   process.exit(1);
 }
 
@@ -48,7 +53,13 @@ async function main() {
                          })
                          .join('\n');
 
+  let environmentSetupPath = path.relative(path.dirname(JS_OUTPUT_FILE), ENVIRONMENT_FILE);
+  if (!environmentSetupPath.startsWith('.')) {
+    environmentSetupPath = `./${environmentSetupPath}`;
+  }
   const docLoader = `
+    import {setup, cleanup} from '${environmentSetupPath}';
+
     const components = {
       ${docImports}
     };
@@ -64,12 +75,14 @@ async function main() {
       // Replace the container to start off with a clean one.
       if (container) {
         container.remove();
+        await cleanup();
       }
 
       container = document.createElement('div');
       container.id = 'container';
       mainContent.appendChild(container);
 
+      await setup();
       const {render} = await components[name]();
       render(container);
     }

@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/typescript/typescript.gni")
 import("../build/ninja/copy.gni")
 import("../build/ninja/node.gni")
 
@@ -17,26 +18,36 @@ generated_file("component_docs_sources") {
   rebase = target_gen_dir
 }
 
+ts_library("docs_environment") {
+  sources = [ "docs_environment.ts" ]
+  deps = [ "../../front_end/testing" ]
+}
+
 node_action("component_docs") {
   script = "scripts/component_docs/generate_docs.mjs"
   deps = [
     ":component_docs_sources",
     ":copy_styles",
+    ":docs_environment",
   ]
 
   metadata_file = "$target_gen_dir/component_docs_sources.json"
+  environment_setup_file = "$target_gen_dir/docs_environment.js"
 
   outputs = [
     "$root_gen_dir/index.html",
-    "$target_gen_dir/index-loader.js",
+    "$target_gen_dir/index_loader.js",
   ]
   visibility = [ "../../:*" ]
+
   args = [
     "--html-output-file",
     rebase_path("$root_gen_dir/index.html", root_build_dir),
     "--js-output-file",
-    rebase_path("$target_gen_dir/index-loader.js", root_build_dir),
+    rebase_path("$target_gen_dir/index_loader.js", root_build_dir),
     "--sources-file",
     rebase_path(metadata_file, root_build_dir),
+    "--environment-setup-file",
+    rebase_path(environment_setup_file, root_build_dir),
   ]
 }

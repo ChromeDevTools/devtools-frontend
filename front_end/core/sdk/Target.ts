@@ -41,8 +41,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       parentTarget: Target|null, sessionId: string, suspended: boolean,
       connection: ProtocolClient.ConnectionTransport.ConnectionTransport|null,
       targetInfo?: Protocol.Target.TargetInfo) {
-    const needsNodeJSPatching = type === Type.NODE;
-    super(needsNodeJSPatching, parentTarget, sessionId, connection);
+    super(parentTarget, sessionId, connection);
     this.#targetManager = targetManager;
     this.#name = name;
     this.#capabilitiesMask = 0;
@@ -151,8 +150,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#type;
   }
 
-  override markAsNodeJSForTest(): void {
-    super.markAsNodeJSForTest();
+  markAsNodeJSForTest(): void {
     this.#type = Type.NODE;
   }
 

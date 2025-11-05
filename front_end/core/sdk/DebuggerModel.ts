@@ -5,9 +5,8 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
+import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
@@ -18,7 +17,7 @@ import {Script} from './Script.js';
 import {SDKModel} from './SDKModel.js';
 import {SourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
-import {Capability, type Target, Type} from './Target.js';
+import {Capability, type Target} from './Target.js';
 
 const UIStrings = {
   /**
@@ -456,17 +455,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   async setBreakpointByURL(
       url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber?: number,
       condition?: BackendCondition): Promise<SetBreakpointResult> {
-    // Convert file url to node-js path.
-    let urlRegex;
-    if (this.target().type() === Type.NODE && Common.ParsedURL.schemeIs(url, 'file:')) {
-      const platformPath = Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin());
-      urlRegex =
-          `${Platform.StringUtilities.escapeForRegExp(platformPath)}|${Platform.StringUtilities.escapeForRegExp(url)}`;
-      if (Host.Platform.isWin() && platformPath.match(/^.:\\/)) {
-        // Match upper or lower case drive letter
-        urlRegex = `[${platformPath[0].toUpperCase()}${platformPath[0].toLowerCase()}]` + urlRegex.substr(1);
-      }
-    }
     // Adjust column if needed.
     let minColumnNumber = 0;
     const scripts = this.#scriptsBySourceURL.get(url) || [];
@@ -479,8 +467,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     columnNumber = Math.max(columnNumber || 0, minColumnNumber);
     const response = await this.agent.invoke_setBreakpointByUrl({
       lineNumber,
-      url: urlRegex ? undefined : url,
-      urlRegex,
+      url,
       columnNumber,
       condition,
     });

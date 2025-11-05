@@ -19,7 +19,6 @@ import {
   type CommandResult
 } from './CDPConnection.js';
 import {ConnectionTransport} from './ConnectionTransport.js';
-import {NodeURL} from './NodeURL.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageParams = Record<string, any>;
@@ -321,13 +320,6 @@ export class SessionRouter implements CDPConnection {
 
     const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as CDPReceivableMessage;
 
-    const sessionId = messageObject.sessionId || '';
-    const session = this.#sessions.get(sessionId);
-
-    if (session?.target.getNeedsNodeJSPatching()) {
-      NodeURL.patch(messageObject);
-    }
-
     if ('id' in messageObject && messageObject.id !== undefined) {  // just a response for some request
       const callback = this.#callbacks.get(messageObject.id);
       this.#callbacks.delete(messageObject.id);
@@ -345,6 +337,8 @@ export class SessionRouter implements CDPConnection {
       }
     } else if ('method' in messageObject) {
       // This cast is justified as we just checked for the presence of messageObject.method.
+      const sessionId = messageObject.sessionId || '';
+      const session = this.#sessions.get(sessionId);
       session?.target.dispatch(messageObject as unknown as EventMessage);
       this.#observers.forEach(observer => observer.onEvent(messageObject));
     } else {
@@ -401,16 +395,12 @@ interface DispatcherMap extends Map<ProtocolDomainName, ProtocolProxyApi.Protoco
 }
 
 export class TargetBase {
-  needsNodeJSPatching: boolean;
   readonly sessionId: string;
   #router: SessionRouter|null;
   #agents: AgentsMap = new Map();
   #dispatchers: DispatcherMap = new Map();
 
-  constructor(
-      needsNodeJSPatching: boolean, parentTarget: TargetBase|null, sessionId: string,
-      connection: ConnectionTransport|null) {
-    this.needsNodeJSPatching = needsNodeJSPatching;
+  constructor(parentTarget: TargetBase|null, sessionId: string, connection: ConnectionTransport|null) {
     this.sessionId = sessionId;
 
     if (parentTarget && !sessionId) {
@@ -463,10 +453,6 @@ export class TargetBase {
 
   isDisposed(): boolean {
     return !this.#router;
-  }
-
-  markAsNodeJSForTest(): void {
-    this.needsNodeJSPatching = true;
   }
 
   router(): SessionRouter|null {
@@ -797,10 +783,6 @@ export class TargetBase {
 
   registerWebAuthnDispatcher(dispatcher: ProtocolProxyApi.WebAuthnDispatcher): void {
     this.registerDispatcher('WebAuthn', dispatcher);
-  }
-
-  getNeedsNodeJSPatching(): boolean {
-    return this.needsNodeJSPatching;
   }
 }
 

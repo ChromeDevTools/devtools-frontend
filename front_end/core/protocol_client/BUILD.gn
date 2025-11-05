@@ -11,7 +11,6 @@ devtools_module("protocol_client") {
     "CDPConnection.ts",
     "ConnectionTransport.ts",
     "InspectorBackend.ts",
-    "NodeURL.ts",
   ]
 
   deps = [
@@ -36,10 +35,8 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "NodeURL.test.ts" ]
+  # TODO(crbug.com/451502260): Add tests for CDPConnection implementation.
+  sources = [ "Dummy.test.ts" ]
 
-  deps = [
-    ":bundle",
-    "../host:bundle",
-  ]
+  deps = [ ":bundle" ]
 }

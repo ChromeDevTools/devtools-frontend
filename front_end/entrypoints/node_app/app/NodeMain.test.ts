@@ -32,6 +32,34 @@ describeWithMockConnection('NodeChildTargetManager', () => {
     assert.exists(target);
     assert.isNull(target.parentTarget());
     assert.strictEqual(target.sessionId, '');
-    assert.instanceOf(target.router()?.connection(), App.NodeMain.NodeConnection);
+  });
+
+  it('sends CDP messages via "sendMessageToTarget"', () => {
+    const browserTarget = createTarget({type: SDK.Target.Type.BROWSER});
+    const sendStub = sinon.stub(browserTarget.targetAgent(), 'invoke_sendMessageToTarget');
+    const childTargetManager = browserTarget.model(App.NodeMain.NodeChildTargetManager);
+    assert.exists(childTargetManager);
+
+    childTargetManager.attachedToTarget({
+      sessionId: 'session ID' as Protocol.Target.SessionID,
+      targetInfo: {
+        attached: true,
+        targetId: 'node js target' as Protocol.Target.TargetID,
+        type: 'other',
+        title: 'my node target',
+        url: 'file:///some/script.js',
+        canAccessOpener: false,
+      },
+      waitingForDebugger: true,
+    });
+
+    const target = SDK.TargetManager.TargetManager.instance().targetById('node js target');
+    assert.exists(target);
+
+    // Creating the target should have already sent a bunch of messages, like Debugger.enable
+    sinon.assert.calledWithMatch(sendStub, sinon.match(request => {
+      const {method} = JSON.parse(request.message);
+      return method === 'Debugger.enable';
+    }));
   });
 });

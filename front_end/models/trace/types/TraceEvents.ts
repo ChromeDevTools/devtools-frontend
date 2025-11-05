@@ -161,6 +161,7 @@ export interface Profile extends Sample {
   args: Args&{
     data: ArgsData & {
       startTime: Micro,
+      source?: ProfileSource,
     },
   };
 }
@@ -174,6 +175,7 @@ export interface ProfileChunk extends Sample {
       cpuProfile?: PartialProfile,
       timeDeltas?: Micro[],
       lines?: Micro[],
+      source?: ProfileSource,
     },
   };
 }
@@ -190,6 +192,20 @@ export interface PartialProfile {
   trace_ids?: Record<string, number>;
   /* eslint-enable @typescript-eslint/naming-convention */
 }
+
+/**
+ * Source of profile data, used to select the most relevant profile when
+ * multiple profiles exist for the same thread.
+ *
+ * - 'Inspector': User-initiated via console.profile()/profileEnd().
+ * - 'Internal': Browser-initiated during performance traces.
+ * - 'SelfProfiling': Page-initiated via JS Self-Profiling API.
+ *
+ * Selection priority (see PROFILE_SOURCES_BY_PRIORITY in SamplesHandler.ts).
+ */
+export type ProfileSource = 'Inspector'|'SelfProfiling'|'Internal';
+
+export const VALID_PROFILE_SOURCES: readonly ProfileSource[] = ['Inspector', 'SelfProfiling', 'Internal'] as const;
 
 export interface PartialNode {
   callFrame: CallFrame;

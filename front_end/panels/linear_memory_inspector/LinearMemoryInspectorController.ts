@@ -318,9 +318,9 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   appendApplicableItems(
       _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
       target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
-    if (target.property.value?.isLinearMemoryInspectable()) {
+    if (target.property.object?.isLinearMemoryInspectable()) {
       const expression = target.path();
-      const object = target.property.value;
+      const object = target.property.object;
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.openInMemoryInspectorPanel),
           this.reveal.bind(this, new SDK.RemoteObject.LinearMemoryInspectable(object, expression)),

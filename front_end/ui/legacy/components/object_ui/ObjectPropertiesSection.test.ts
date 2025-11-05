@@ -57,7 +57,8 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
   it('can edit values', async () => {
     const property = new SDK.RemoteObject.RemoteObjectProperty(
         'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(property);
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(
+        new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property));
     section.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
 
     const promptStub =

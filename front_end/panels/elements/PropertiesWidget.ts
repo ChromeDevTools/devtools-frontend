@@ -158,7 +158,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
     this.#displayNoMatchingPropertyMessage = true;
     for (const element of this.treeOutline.rootElement().children()) {
       const {property} = element as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
-      const hidden = !property?.match({
+      const hidden = !property?.property.match({
         includeNullOrUndefinedValues: this.showAllPropertiesSetting.get(),
         regex: this.filterRegex,
       });
@@ -195,7 +195,8 @@ export class PropertiesWidget extends UI.Widget.VBox {
         properties = [];
       }
       ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-          treeElement, properties, null, true /* skipProto */, true /* skipGettersAndSetters */, object);
+          treeElement, {properties: properties.map(p => new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(p))},
+          true /* skipProto */, true /* skipGettersAndSetters */);
       this.internalFilterProperties();
     }
     this.#view(

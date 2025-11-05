@@ -15,6 +15,7 @@ import {
   ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement,
+  ObjectTree,
 } from './ObjectPropertiesSection.js';
 
 const UIStrings = {
@@ -169,7 +170,8 @@ export class CustomPreviewSection {
         this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline({readOnly: true});
         this.defaultBodyTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
         this.defaultBodyTreeOutline.element.classList.add('custom-expandable-section-default-body');
-        void ObjectPropertyTreeElement.populate(this.defaultBodyTreeOutline.rootElement(), this.object, false, false);
+        void ObjectPropertyTreeElement.populate(
+            this.defaultBodyTreeOutline.rootElement(), new ObjectTree(this.object), false, false);
 
         this.cachedContent = this.defaultBodyTreeOutline.element;
       } else {

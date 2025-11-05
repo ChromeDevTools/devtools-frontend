@@ -296,14 +296,18 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     const properties = [];
     const eventListener = this.#eventListener;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
-    properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()));
-    properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
-    properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()));
+    properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture())));
+    properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive())));
+    properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once())));
     if (typeof eventListener.handler() !== 'undefined') {
-      properties.push(new SDK.RemoteObject.RemoteObjectProperty('handler', eventListener.handler()));
+      properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+          new SDK.RemoteObject.RemoteObjectProperty('handler', eventListener.handler())));
     }
     ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        this, properties, [], true, true, null);
+        this, {properties}, true, true, undefined);
   }
 
   private setTitle(object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier): void {

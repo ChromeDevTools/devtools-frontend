@@ -15,7 +15,6 @@ group("docs") {
     "./context_menu",
     "./expandable_list",
     "./input",
-    "./legacy_color_invert",
     "./linkifier",
     "./markdown_image",
     "./markdown_link",
@@ -27,7 +26,6 @@ group("docs") {
     "./snackbars",
     "./text_prompt",
     "./theme_colors",
-    "./tree_outline",
     "./user_agent_client_hints",
   ]
 }

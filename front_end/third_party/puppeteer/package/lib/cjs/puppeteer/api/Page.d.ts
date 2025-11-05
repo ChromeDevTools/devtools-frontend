@@ -2370,6 +2370,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     [disposeSymbol](): void;
     /** @internal */
     [asyncDisposeSymbol](): Promise<void>;
+    /**
+     * Opens DevTools for the current Page and returns the DevTools Page. This
+     * method is only available in Chrome.
+     */
+    abstract openDevTools(): Promise<Page>;
 }
 /**
  * @internal

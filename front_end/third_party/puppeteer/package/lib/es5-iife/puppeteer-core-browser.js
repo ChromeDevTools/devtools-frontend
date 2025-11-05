@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.28.0';
+  const packageVersion = '24.29.0';
   // x-release-please-end
 
   /**
@@ -20969,6 +20969,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     isJavaScriptEnabled() {
       return _classPrivateFieldGet(_emulationManager, this).javascriptEnabled;
     }
+    async openDevTools() {
+      const pageTargetId = this.target()._targetId;
+      const browser = this.browser();
+      const devtoolsPage = await browser._createDevToolsPage(pageTargetId);
+      return devtoolsPage;
+    }
     async waitForFileChooser(options = {}) {
       const needsEnable = _classPrivateFieldGet(_fileChooserDeferreds, this).size === 0;
       const {
@@ -22158,10 +22164,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _attachedToTargetListenersBySession = /*#__PURE__*/new WeakMap();
   var _detachedFromTargetListenersBySession = /*#__PURE__*/new WeakMap();
   var _initializeDeferred = /*#__PURE__*/new WeakMap();
-  var _targetsIdsForInit = /*#__PURE__*/new WeakMap();
   var _waitForInitiallyDiscoveredTargets = /*#__PURE__*/new WeakMap();
   var _discoveryFilter = /*#__PURE__*/new WeakMap();
-  var _storeExistingTargetsForInit = /*#__PURE__*/new WeakMap();
+  var _targetsIdsForInit = /*#__PURE__*/new WeakMap();
+  var _initialAttachDone = /*#__PURE__*/new WeakMap();
   var _TargetManager_brand = /*#__PURE__*/new WeakSet();
   var _onSessionDetached = /*#__PURE__*/new WeakMap();
   var _onTargetCreated = /*#__PURE__*/new WeakMap();
@@ -22204,24 +22210,19 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _attachedToTargetListenersBySession, new WeakMap());
       _classPrivateFieldInitSpec(this, _detachedFromTargetListenersBySession, new WeakMap());
       _classPrivateFieldInitSpec(this, _initializeDeferred, Deferred.create());
-      _classPrivateFieldInitSpec(this, _targetsIdsForInit, new Set());
       _classPrivateFieldInitSpec(this, _waitForInitiallyDiscoveredTargets, true);
       _classPrivateFieldInitSpec(this, _discoveryFilter, [{}]);
-      _classPrivateFieldInitSpec(this, _storeExistingTargetsForInit, () => {
-        if (!_classPrivateFieldGet(_waitForInitiallyDiscoveredTargets, this)) {
-          return;
-        }
-        for (const [targetId, targetInfo] of _classPrivateFieldGet(_discoveredTargetsByTargetId, this).entries()) {
-          const targetForFilter = new CdpTarget(targetInfo, undefined, undefined, this, undefined);
-          // Only wait for pages and frames (except those from extensions)
-          // to auto-attach.
-          const isPageOrFrame = targetInfo.type === 'page' || targetInfo.type === 'iframe';
-          const isExtension = targetInfo.url.startsWith('chrome-extension://');
-          if ((!_classPrivateFieldGet(_targetFilterCallback, this) || _classPrivateFieldGet(_targetFilterCallback, this).call(this, targetForFilter)) && isPageOrFrame && !isExtension) {
-            _classPrivateFieldGet(_targetsIdsForInit, this).add(targetId);
-          }
-        }
-      });
+      // IDs of tab targets detected while running the initial Target.setAutoAttach
+      // request. These are the targets whose initialization we want to await for
+      // before resolving puppeteer.connect() or launch() to avoid flakiness.
+      // Whenever a sub-target whose parent is a tab target is attached, we remove
+      // the tab target from this list. Once the list is empty, we resolve the
+      // initializeDeferred.
+      _classPrivateFieldInitSpec(this, _targetsIdsForInit, new Set());
+      // This is false until the connection-level Target.setAutoAttach request is
+      // done. It indicates whethere we are running the initial auto-attach step or
+      // if we are handling targets after that.
+      _classPrivateFieldInitSpec(this, _initialAttachDone, false);
       _classPrivateFieldInitSpec(this, _onSessionDetached, session => {
         _assertClassBrand(_TargetManager_brand, this, _removeAttachmentListeners).call(this, session);
       });
@@ -22304,7 +22305,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         // should determine if a target is auto-attached or not with the help of
         // CDP.
         if (targetInfo.type === 'service_worker') {
-          _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, targetInfo.targetId);
           await silentDetach();
           if (_classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId)) {
             return;
@@ -22317,11 +22317,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         const isExistingTarget = _classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId);
         const target = isExistingTarget ? _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId) : _classPrivateFieldGet(_targetFactory, this).call(this, targetInfo, session, parentSession instanceof CdpCDPSession ? parentSession : undefined);
+        const parentTarget = parentSession instanceof CdpCDPSession ? parentSession.target() : null;
         if (_classPrivateFieldGet(_targetFilterCallback, this) && !_classPrivateFieldGet(_targetFilterCallback, this).call(this, target)) {
           _classPrivateFieldGet(_ignoredTargets, this).add(targetInfo.targetId);
-          _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, targetInfo.targetId);
+          if (parentTarget?.type() === 'tab') {
+            _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, parentTarget._targetId);
+          }
           await silentDetach();
           return;
+        }
+        if (_classPrivateFieldGet(_waitForInitiallyDiscoveredTargets, this) && event.targetInfo.type === 'tab' && !_classPrivateFieldGet(_initialAttachDone, this)) {
+          _classPrivateFieldGet(_targetsIdsForInit, this).add(event.targetInfo.targetId);
         }
         _assertClassBrand(_TargetManager_brand, this, _setupAttachmentListeners).call(this, session);
         if (isExistingTarget) {
@@ -22332,14 +22338,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           _classPrivateFieldGet(_attachedTargetsByTargetId, this).set(targetInfo.targetId, target);
           _classPrivateFieldGet(_attachedTargetsBySessionId, this).set(session.id(), target);
         }
-        const parentTarget = parentSession instanceof CDPSession ? parentSession.target() : null;
         parentTarget?._addChildTarget(target);
         parentSession.emit(exports.CDPSessionEvent.Ready, session);
-        _classPrivateFieldGet(_targetsIdsForInit, this).delete(target._targetId);
         if (!isExistingTarget) {
           this.emit("targetAvailable" /* TargetManagerEvent.TargetAvailable */, target);
         }
-        _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this);
+        if (parentTarget?.type() === 'tab') {
+          _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, parentTarget._targetId);
+        }
         // TODO: the browser might be shutting down here. What do we do with the
         // error?
         await Promise.all([session.send('Target.setAutoAttach', {
@@ -22376,7 +22382,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         discover: true,
         filter: _classPrivateFieldGet(_discoveryFilter, this)
       });
-      _classPrivateFieldGet(_storeExistingTargetsForInit, this).call(this);
       await _classPrivateFieldGet(_connection3, this).send('Target.setAutoAttach', {
         waitForDebuggerOnStart: true,
         flatten: true,
@@ -22386,6 +22391,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           exclude: true
         }, ..._classPrivateFieldGet(_discoveryFilter, this)]
       });
+      _classPrivateFieldSet(_initialAttachDone, this, true);
       _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this);
       await _classPrivateFieldGet(_initializeDeferred, this).valueOrThrow();
     }
@@ -22440,6 +22446,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   function _finishInitializationIfReady(targetId) {
     if (targetId !== undefined) {
       _classPrivateFieldGet(_targetsIdsForInit, this).delete(targetId);
+    }
+    // If we are still initializing it might be that we have not learned about
+    // some targets yet.
+    if (!_classPrivateFieldGet(_initialAttachDone, this)) {
+      return;
     }
     if (_classPrivateFieldGet(_targetsIdsForInit, this).size === 0) {
       _classPrivateFieldGet(_initializeDeferred, this).resolve();
@@ -22646,6 +22657,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       const page = await target.page();
       if (!page) {
         throw new Error(`Failed to create a page for context (id = ${contextId})`);
+      }
+      return page;
+    }
+    async _createDevToolsPage(pageTargetId) {
+      const openDevToolsResponse = await _classPrivateFieldGet(_connection4, this).send('Target.openDevTools', {
+        targetId: pageTargetId
+      });
+      const target = await this.waitForTarget(t => {
+        return t._targetId === openDevToolsResponse.targetId;
+      });
+      if (!target) {
+        throw new Error(`Missing target for DevTools page (id = ${pageTargetId})`);
+      }
+      const initialized = (await target._initializedDeferred.valueOrThrow()) === exports.InitializationStatus.SUCCESS;
+      if (!initialized) {
+        throw new Error(`Failed to create target for DevTools page (id = ${pageTargetId})`);
+      }
+      const page = await target.page();
+      if (!page) {
+        throw new Error(`Failed to create a DevTools Page for target (id = ${pageTargetId})`);
       }
       return page;
     }
@@ -22863,6 +22894,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             if (parsed.sessionId === 'tabTargetSessionId') {
               _assertClassBrand(_ExtensionTransport_brand, this, _dispatchResponse).call(this, {
                 method: 'Target.attachedToTarget',
+                sessionId: 'tabTargetSessionId',
                 params: {
                   targetInfo: pageTargetInfo,
                   sessionId: 'pageTargetSessionId'
@@ -22958,7 +22990,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @public
    */
   function _dispatchResponse(message) {
-    this.onmessage?.(JSON.stringify(message));
+    // Dispatch in a new task like other transports.
+    setTimeout(() => {
+      this.onmessage?.(JSON.stringify(message));
+    }, 0);
   }
   const PredefinedNetworkConditions = Object.freeze({
     // Generally aligned with DevTools

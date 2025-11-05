@@ -60,9 +60,19 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
     #attachedToTargetListenersBySession = new WeakMap();
     #detachedFromTargetListenersBySession = new WeakMap();
     #initializeDeferred = Deferred_js_1.Deferred.create();
-    #targetsIdsForInit = new Set();
     #waitForInitiallyDiscoveredTargets = true;
     #discoveryFilter = [{}];
+    // IDs of tab targets detected while running the initial Target.setAutoAttach
+    // request. These are the targets whose initialization we want to await for
+    // before resolving puppeteer.connect() or launch() to avoid flakiness.
+    // Whenever a sub-target whose parent is a tab target is attached, we remove
+    // the tab target from this list. Once the list is empty, we resolve the
+    // initializeDeferred.
+    #targetsIdsForInit = new Set();
+    // This is false until the connection-level Target.setAutoAttach request is
+    // done. It indicates whethere we are running the initial auto-attach step or
+    // if we are handling targets after that.
+    #initialAttachDone = false;
     constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true) {
         super();
         this.#connection = connection;
@@ -75,30 +85,11 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         this.#connection.on(CDPSession_js_1.CDPSessionEvent.SessionDetached, this.#onSessionDetached);
         this.#setupAttachmentListeners(this.#connection);
     }
-    #storeExistingTargetsForInit = () => {
-        if (!this.#waitForInitiallyDiscoveredTargets) {
-            return;
-        }
-        for (const [targetId, targetInfo,] of this.#discoveredTargetsByTargetId.entries()) {
-            const targetForFilter = new Target_js_1.CdpTarget(targetInfo, undefined, undefined, this, undefined);
-            // Only wait for pages and frames (except those from extensions)
-            // to auto-attach.
-            const isPageOrFrame = targetInfo.type === 'page' || targetInfo.type === 'iframe';
-            const isExtension = targetInfo.url.startsWith('chrome-extension://');
-            if ((!this.#targetFilterCallback ||
-                this.#targetFilterCallback(targetForFilter)) &&
-                isPageOrFrame &&
-                !isExtension) {
-                this.#targetsIdsForInit.add(targetId);
-            }
-        }
-    };
     async initialize() {
         await this.#connection.send('Target.setDiscoverTargets', {
             discover: true,
             filter: this.#discoveryFilter,
         });
-        this.#storeExistingTargetsForInit();
         await this.#connection.send('Target.setAutoAttach', {
             waitForDebuggerOnStart: true,
             flatten: true,
@@ -111,6 +102,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
                 ...this.#discoveryFilter,
             ],
         });
+        this.#initialAttachDone = true;
         this.#finishInitializationIfReady();
         await this.#initializeDeferred.valueOrThrow();
     }
@@ -239,7 +231,6 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         // should determine if a target is auto-attached or not with the help of
         // CDP.
         if (targetInfo.type === 'service_worker') {
-            this.#finishInitializationIfReady(targetInfo.targetId);
             await silentDetach();
             if (this.#attachedTargetsByTargetId.has(targetInfo.targetId)) {
                 return;
@@ -254,11 +245,19 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         const target = isExistingTarget
             ? this.#attachedTargetsByTargetId.get(targetInfo.targetId)
             : this.#targetFactory(targetInfo, session, parentSession instanceof CdpSession_js_1.CdpCDPSession ? parentSession : undefined);
+        const parentTarget = parentSession instanceof CdpSession_js_1.CdpCDPSession ? parentSession.target() : null;
         if (this.#targetFilterCallback && !this.#targetFilterCallback(target)) {
             this.#ignoredTargets.add(targetInfo.targetId);
-            this.#finishInitializationIfReady(targetInfo.targetId);
+            if (parentTarget?.type() === 'tab') {
+                this.#finishInitializationIfReady(parentTarget._targetId);
+            }
             await silentDetach();
             return;
+        }
+        if (this.#waitForInitiallyDiscoveredTargets &&
+            event.targetInfo.type === 'tab' &&
+            !this.#initialAttachDone) {
+            this.#targetsIdsForInit.add(event.targetInfo.targetId);
         }
         this.#setupAttachmentListeners(session);
         if (isExistingTarget) {
@@ -270,16 +269,14 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
             this.#attachedTargetsByTargetId.set(targetInfo.targetId, target);
             this.#attachedTargetsBySessionId.set(session.id(), target);
         }
-        const parentTarget = parentSession instanceof CDPSession_js_1.CDPSession
-            ? parentSession.target()
-            : null;
         parentTarget?._addChildTarget(target);
         parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
-        this.#targetsIdsForInit.delete(target._targetId);
         if (!isExistingTarget) {
             this.emit("targetAvailable" /* TargetManagerEvent.TargetAvailable */, target);
         }
-        this.#finishInitializationIfReady();
+        if (parentTarget?.type() === 'tab') {
+            this.#finishInitializationIfReady(parentTarget._targetId);
+        }
         // TODO: the browser might be shutting down here. What do we do with the
         // error?
         await Promise.all([
@@ -295,6 +292,11 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
     #finishInitializationIfReady(targetId) {
         if (targetId !== undefined) {
             this.#targetsIdsForInit.delete(targetId);
+        }
+        // If we are still initializing it might be that we have not learned about
+        // some targets yet.
+        if (!this.#initialAttachDone) {
+            return;
         }
         if (this.#targetsIdsForInit.size === 0) {
             this.#initializeDeferred.resolve();

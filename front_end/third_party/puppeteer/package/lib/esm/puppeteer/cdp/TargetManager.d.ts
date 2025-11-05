@@ -8,7 +8,7 @@ import type { TargetFilterCallback } from '../api/Browser.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { CdpCDPSession } from './CdpSession.js';
 import type { Connection } from './Connection.js';
-import { CdpTarget } from './Target.js';
+import type { CdpTarget } from './Target.js';
 import type { TargetManagerEvents } from './TargetManageEvents.js';
 /**
  * @internal

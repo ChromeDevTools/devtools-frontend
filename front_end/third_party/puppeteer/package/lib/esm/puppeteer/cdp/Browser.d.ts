@@ -33,6 +33,7 @@ export declare class CdpBrowser extends BrowserBase {
     wsEndpoint(): string;
     newPage(): Promise<Page>;
     _createPageInContext(contextId?: string, options?: CreatePageOptions): Promise<Page>;
+    _createDevToolsPage(pageTargetId: string): Promise<Page>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     targets(): CdpTarget[];

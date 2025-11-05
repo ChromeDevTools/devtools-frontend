@@ -206,6 +206,27 @@ export class CdpBrowser extends BrowserBase {
         }
         return page;
     }
+    async _createDevToolsPage(pageTargetId) {
+        const openDevToolsResponse = await this.#connection.send('Target.openDevTools', {
+            targetId: pageTargetId,
+        });
+        const target = (await this.waitForTarget(t => {
+            return t._targetId === openDevToolsResponse.targetId;
+        }));
+        if (!target) {
+            throw new Error(`Missing target for DevTools page (id = ${pageTargetId})`);
+        }
+        const initialized = (await target._initializedDeferred.valueOrThrow()) ===
+            InitializationStatus.SUCCESS;
+        if (!initialized) {
+            throw new Error(`Failed to create target for DevTools page (id = ${pageTargetId})`);
+        }
+        const page = await target.page();
+        if (!page) {
+            throw new Error(`Failed to create a DevTools Page for target (id = ${pageTargetId})`);
+        }
+        return page;
+    }
     async installExtension(path) {
         const { id } = await this.#connection.send('Extensions.loadUnpacked', { path });
         return id;

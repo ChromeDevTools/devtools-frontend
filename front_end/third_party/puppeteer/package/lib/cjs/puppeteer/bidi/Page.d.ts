@@ -62,6 +62,7 @@ export declare class BidiPage extends Page {
         contentWidth: number;
         contentHeight: number;
     }): Promise<void>;
+    openDevTools(): Promise<Page>;
     focusedFrame(): Promise<BidiFrame>;
     frames(): BidiFrame[];
     isClosed(): boolean;

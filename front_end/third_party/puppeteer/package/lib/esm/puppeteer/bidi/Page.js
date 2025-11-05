@@ -268,6 +268,9 @@ let BidiPage = (() => {
         resize(_params) {
             throw new Error('Method not implemented for WebDriver BiDi yet.');
         }
+        openDevTools() {
+            throw new Error('Method not implemented for WebDriver BiDi yet.');
+        }
         async focusedFrame() {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {

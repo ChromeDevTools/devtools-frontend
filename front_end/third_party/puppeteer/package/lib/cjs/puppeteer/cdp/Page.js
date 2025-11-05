@@ -346,6 +346,12 @@ class CdpPage extends Page_js_1.Page {
     isJavaScriptEnabled() {
         return this.#emulationManager.javascriptEnabled;
     }
+    async openDevTools() {
+        const pageTargetId = this.target()._targetId;
+        const browser = this.browser();
+        const devtoolsPage = await browser._createDevToolsPage(pageTargetId);
+        return devtoolsPage;
+    }
     async waitForFileChooser(options = {}) {
         const needsEnable = this.#fileChooserDeferreds.size === 0;
         const { timeout = this._timeoutSettings.timeout() } = options;

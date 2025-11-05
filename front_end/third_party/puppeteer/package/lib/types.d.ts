@@ -6384,6 +6384,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
 
 
 
+    /**
+     * Opens DevTools for the current Page and returns the DevTools Page. This
+     * method is only available in Chrome.
+     */
+    abstract openDevTools(): Promise<Page>;
 }
 
 /**

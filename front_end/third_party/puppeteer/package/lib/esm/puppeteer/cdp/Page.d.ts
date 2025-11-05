@@ -40,6 +40,7 @@ export declare class CdpPage extends Page {
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;
     isJavaScriptEnabled(): boolean;
+    openDevTools(): Promise<Page>;
     waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
     setGeolocation(options: GeolocationOptions): Promise<void>;
     target(): CdpTarget;

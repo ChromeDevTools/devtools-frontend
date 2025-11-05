@@ -3,5 +3,5 @@
  * Copyright 2025 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-export declare const packageVersion = "24.28.0";
+export declare const packageVersion = "24.29.0";
 //# sourceMappingURL=version.d.ts.map

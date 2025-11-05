@@ -305,6 +305,7 @@ group("docs") {
     "ui/components/buttons:copy_stylesheets_for_server",
     "ui/components/buttons:docs",
     "ui/components/icon_button:docs",
+    "ui/components/snackbars:docs",
     "ui/components/spinners:docs",
     "ui/components/survey_link:docs",
     "ui/components/switch:docs",

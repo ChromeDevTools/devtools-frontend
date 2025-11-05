@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../../scripts/build/ninja/component_doc.gni")
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
@@ -43,4 +44,9 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../testing",
   ]
+}
+
+component_doc("docs") {
+  sources = [ "Snackbars.docs.ts" ]
+  deps = [ ":bundle" ]
 }

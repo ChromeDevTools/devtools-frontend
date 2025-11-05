@@ -19,7 +19,6 @@ group("docs") {
     "./markdown_link",
     "./markdown_view",
     "./report",
-    "./snackbars",
     "./text_prompt",
     "./theme_colors",
     "./user_agent_client_hints",

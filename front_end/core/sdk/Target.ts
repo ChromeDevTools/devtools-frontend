@@ -39,8 +39,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   constructor(
       targetManager: TargetManager, id: Protocol.Target.TargetID|'main', name: string, type: Type,
       parentTarget: Target|null, sessionId: string, suspended: boolean,
-      connection: ProtocolClient.ConnectionTransport.ConnectionTransport|null,
-      targetInfo?: Protocol.Target.TargetInfo) {
+      connection: ProtocolClient.CDPConnection.CDPConnection|null, targetInfo?: Protocol.Target.TargetInfo) {
     super(parentTarget, sessionId, connection);
     this.#targetManager = targetManager;
     this.#name = name;

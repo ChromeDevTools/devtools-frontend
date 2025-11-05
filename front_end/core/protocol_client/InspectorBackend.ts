@@ -183,13 +183,13 @@ export const test = {
 };
 
 export class SessionRouter implements CDPConnectionObserver {
-  readonly #connection: DevToolsCDPConnection;
+  readonly #connection: CDPConnection;
   readonly #sessions = new Map<string, {
     target: TargetBase,
   }>();
 
-  constructor(transport: ConnectionTransport) {
-    this.#connection = new DevToolsCDPConnection(transport);
+  constructor(connection: CDPConnection) {
+    this.#connection = connection;
     this.#connection.observe(this);
   }
 
@@ -202,7 +202,9 @@ export class SessionRouter implements CDPConnectionObserver {
     if (!session) {
       return;
     }
-    this.#connection.resolvePendingCalls(sessionId);
+    if (this.#connection instanceof DevToolsCDPConnection) {
+      this.#connection.resolvePendingCalls(sessionId);
+    }
     this.#sessions.delete(sessionId);
   }
 
@@ -248,7 +250,7 @@ export class TargetBase {
   #agents: AgentsMap = new Map();
   #dispatchers: DispatcherMap = new Map();
 
-  constructor(parentTarget: TargetBase|null, sessionId: string, connection: ConnectionTransport|null) {
+  constructor(parentTarget: TargetBase|null, sessionId: string, connection: CDPConnection|null) {
     this.sessionId = sessionId;
 
     if (parentTarget && !sessionId) {
@@ -261,7 +263,7 @@ export class TargetBase {
     } else if (connection) {
       router = new SessionRouter(connection);
     } else {
-      router = new SessionRouter(ConnectionTransport.getFactory()());
+      router = new SessionRouter(new DevToolsCDPConnection(ConnectionTransport.getFactory()()));
     }
 
     this.#router = router;

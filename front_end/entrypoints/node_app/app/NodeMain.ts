@@ -6,7 +6,7 @@ import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as ProtocolClient from '../../../core/protocol_client/protocol_client.js';
+import * as ProtocolClient from '../../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../../generated/protocol.js';
@@ -119,7 +119,8 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
       const connection = new NodeConnection(this.#targetAgent, sessionId);
       this.#childConnections.set(sessionId, connection);
       target = this.#targetManager.createTarget(
-          targetInfo.targetId, name, SDK.Target.Type.NODE, null, undefined, undefined, connection);
+          targetInfo.targetId, name, SDK.Target.Type.NODE, null, undefined, undefined,
+          new ProtocolClient.DevToolsCDPConnection.DevToolsCDPConnection(connection));
     }
     this.#childTargets.set(sessionId, target);
     void target.runtimeAgent().invoke_runIfWaitingForDebugger();

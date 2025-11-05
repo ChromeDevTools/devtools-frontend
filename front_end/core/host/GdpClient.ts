@@ -85,6 +85,7 @@ function normalizeBadgeName(name: string): string {
 }
 
 export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.google.com/profile/u/me';
+const ORIGIN_APPLICATION_NAME = 'APPLICATION_CHROME_DEVTOOLS';
 
 async function makeHttpRequest<R>(request: DispatchHttpRequestRequest): Promise<R> {
   if (!isGdpProfilesAvailable()) {
@@ -208,6 +209,9 @@ export class GdpClient {
         body: JSON.stringify({
           user,
           newsletter_email: emailPreference,
+          creation_origin: {
+            origin_application: ORIGIN_APPLICATION_NAME,
+          }
         }),
       });
       this.#clearCache();

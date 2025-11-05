@@ -6775,7 +6775,9 @@
                         "file-selector-button",
                         "details-content",
                         "picker",
-                        "permission-icon"
+                        "permission-icon",
+                        "overscroll-area-parent",
+                        "overscroll-client-area"
                     ]
                 },
                 {
@@ -16740,8 +16742,6 @@
                         "Allow",
                         "BlockFromInsecureToMorePrivate",
                         "WarnFromInsecureToMorePrivate",
-                        "PreflightBlock",
-                        "PreflightWarn",
                         "PermissionBlock",
                         "PermissionWarn"
                     ]

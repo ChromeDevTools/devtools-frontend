@@ -419,7 +419,10 @@ export const generatedProperties = [
    "column-height",
    "column-rule-break",
    "column-rule-color",
-   "column-rule-outset",
+   "column-rule-edge-end-outset",
+   "column-rule-edge-start-outset",
+   "column-rule-interior-end-outset",
+   "column-rule-interior-start-outset",
    "column-rule-style",
    "column-rule-visibility-items",
    "column-rule-width",
@@ -639,7 +642,10 @@ export const generatedProperties = [
    "row-gap",
    "row-rule-break",
    "row-rule-color",
-   "row-rule-outset",
+   "row-rule-edge-end-outset",
+   "row-rule-edge-start-outset",
+   "row-rule-interior-end-outset",
+   "row-rule-interior-start-outset",
    "row-rule-style",
    "row-rule-visibility-items",
    "row-rule-width",
@@ -1723,6 +1729,27 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
+  "name": "column-rule-edge-end-outset"
+ },
+ {
+  "inherited": false,
+  "name": "column-rule-edge-start-outset"
+ },
+ {
+  "inherited": false,
+  "name": "column-rule-interior-end-outset"
+ },
+ {
+  "inherited": false,
+  "name": "column-rule-interior-start-outset"
+ },
+ {
+  "longhands": [
+   "column-rule-edge-start-outset",
+   "column-rule-edge-end-outset",
+   "column-rule-interior-start-outset",
+   "column-rule-interior-end-outset"
+  ],
   "name": "column-rule-outset"
  },
  {
@@ -3711,6 +3738,27 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
+  "name": "row-rule-edge-end-outset"
+ },
+ {
+  "inherited": false,
+  "name": "row-rule-edge-start-outset"
+ },
+ {
+  "inherited": false,
+  "name": "row-rule-interior-end-outset"
+ },
+ {
+  "inherited": false,
+  "name": "row-rule-interior-start-outset"
+ },
+ {
+  "longhands": [
+   "row-rule-edge-start-outset",
+   "row-rule-edge-end-outset",
+   "row-rule-interior-start-outset",
+   "row-rule-interior-end-outset"
+  ],
   "name": "row-rule-outset"
  },
  {
@@ -3796,13 +3844,6 @@ export const generatedProperties = [
    "row-rule-color"
   ],
   "name": "rule-color"
- },
- {
-  "longhands": [
-   "row-rule-outset",
-   "column-rule-outset"
-  ],
-  "name": "rule-outset"
  },
  {
   "longhands": [

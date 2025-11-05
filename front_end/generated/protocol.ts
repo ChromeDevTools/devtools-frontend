@@ -4440,6 +4440,8 @@ export namespace DOM {
     DetailsContent = 'details-content',
     Picker = 'picker',
     PermissionIcon = 'permission-icon',
+    OverscrollAreaParent = 'overscroll-area-parent',
+    OverscrollClientArea = 'overscroll-client-area',
   }
 
   /**
@@ -11124,8 +11126,6 @@ export namespace Network {
     Allow = 'Allow',
     BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
     WarnFromInsecureToMorePrivate = 'WarnFromInsecureToMorePrivate',
-    PreflightBlock = 'PreflightBlock',
-    PreflightWarn = 'PreflightWarn',
     PermissionBlock = 'PermissionBlock',
     PermissionWarn = 'PermissionWarn',
   }

@@ -116,7 +116,6 @@ group("unittests") {
     "core/dom_extension:unittests",
     "core/host:unittests",
     "core/i18n:unittests",
-    "core/i18n/locales",
     "core/platform:unittests",
     "core/protocol_client:unittests",
     "core/root:unittests",

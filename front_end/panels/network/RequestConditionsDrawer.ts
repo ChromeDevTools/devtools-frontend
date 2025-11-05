@@ -18,6 +18,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
 
@@ -196,6 +197,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
   private blockedCountForUrl: Map<Platform.DevToolsPath.UrlString, number>;
   #throttledCount = new Map<string, number>();
   #view: View;
+  #listElements = new WeakMap<SDK.NetworkManager.RequestCondition, HTMLElement>();
 
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
     super(target, {
@@ -252,6 +254,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     const blockedCount = this.blockedRequestsCount(condition);
     const throttledCount = this.#throttledRequestsCount(condition);
     const element = document.createElement('div');
+    this.#listElements.set(condition, element);
     element.classList.add('blocked-url');
     const toggle = (e: Event): void => {
       if (editable) {
@@ -528,6 +531,20 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     super.willHide();
     UI.Context.Context.instance().setFlavor(RequestConditionsDrawer, null);
   }
+
+  static async reveal(appliedConditions: SDK.NetworkManager.AppliedNetworkConditions): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('network.blocked-urls');
+    const drawer = UI.Context.Context.instance().flavor(RequestConditionsDrawer);
+    if (!drawer) {
+      console.assert(!!drawer, 'Drawer not initialized');
+      return;
+    }
+    const conditions = drawer.manager.requestConditions.conditions.find(
+        condition => condition.ruleIds.has(appliedConditions.appliedNetworkConditionsId) &&
+            condition.constructorString && condition.constructorString === appliedConditions.urlPattern);
+    const element = (conditions && drawer.#listElements.get(conditions));
+    element && PanelUtils.PanelUtils.highlightElement(element);
+  }
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
@@ -548,5 +565,14 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       }
     }
     return false;
+  }
+}
+
+export class AppliedConditionsRevealer implements
+    Common.Revealer.Revealer<SDK.NetworkManager.AppliedNetworkConditions> {
+  async reveal(request: SDK.NetworkManager.AppliedNetworkConditions): Promise<void> {
+    if (request.urlPattern) {
+      await RequestConditionsDrawer.reveal(request);
+    }
   }
 }

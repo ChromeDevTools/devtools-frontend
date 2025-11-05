@@ -15,10 +15,9 @@ describeWithMockConnection('NetworkRequestTooltip', () => {
     const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
     sinon.stub(SDK.TraceObject.RevealableNetworkRequest, 'create')
         .returns(new SDK.TraceObject.RevealableNetworkRequest(networkRequest));
-    sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'appliedRequestConditions').returns({
-      conditions: SDK.NetworkManager.Slow3GConditions,
-      urlPattern: 'https://example.com',
-    });
+    sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'appliedRequestConditions')
+        .returns(new SDK.NetworkManager.AppliedNetworkConditions(
+            SDK.NetworkManager.Slow3GConditions, '', 'https://example.com'));
     const tooltip = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
     renderElementIntoDOM(tooltip, {includeCommonStyles: true});
     const data: TimelineComponents.NetworkRequestTooltip.NetworkTooltipData = {

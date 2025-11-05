@@ -307,11 +307,16 @@ interface ViewInput {
   serverTimings: SDK.ServerTiming.ServerTiming[];
   fetchDetails?: UI.TreeOutline.TreeOutlineInShadow;
   routerDetails?: UI.TreeOutline.TreeOutlineInShadow;
-  wasThrottled?: SDK.NetworkManager.Conditions;
+  wasThrottled?: SDK.NetworkManager.AppliedNetworkConditions;
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
+  const revealThrottled = (): void => {
+    if (input.wasThrottled) {
+      void Common.Revealer.reveal(input.wasThrottled);
+    }
+  };
   const scale = 100 / (input.endTime - input.startTime);
   const isClickable = (range: NetworkTimeCalculator.RequestTimeRange): boolean =>
       range.name === 'serviceworker-respondwith' || range.name === 'serviceworker-routerevaluation';
@@ -376,11 +381,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     }
   };
 
-  const throttledRequestTitle = input.wasThrottled ?
-      i18nString(
-          UIStrings.wasThrottled,
-          {PH1: typeof input.wasThrottled.title === 'string' ? input.wasThrottled.title : input.wasThrottled.title()}) :
-      undefined;
+  const throttledRequestTitle = input.wasThrottled ? i18nString(UIStrings.wasThrottled, {
+    PH1: typeof input.wasThrottled.conditions.title === 'string' ? input.wasThrottled.conditions.title :
+                                                                   input.wasThrottled.conditions.title()
+  }) :
+                                                     undefined;
 
   const classes = classMap({
     ['network-timing-table']: true,
@@ -503,7 +508,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
            </x-link>
          <td></td>
          <td class=${input.wasThrottled ? 'throttled' : ''} title=${ifDefined(throttledRequestTitle)}>
-           ${input.wasThrottled ? html` <devtools-icon name=watch ></devtools-icon>` : nothing}
+           ${input.wasThrottled ? html` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing}
            ${i18n.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -578,7 +583,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       requestUnfinished: false,
       fetchDetails: this.#fetchDetailsTree(),
       routerDetails: this.#routerDetailsTree(),
-      wasThrottled: conditions?.urlPattern ? conditions.conditions : undefined,
+      wasThrottled: conditions?.urlPattern ? conditions : undefined,
       timeRanges,
     };
     this.#view(input, {}, this.contentElement);

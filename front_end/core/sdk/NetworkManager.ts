@@ -1939,11 +1939,13 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     return this.#conditionsAppliedForTestPromise;
   }
 
-  conditionsForId(appliedNetworkConditionsId: string): {
-    conditions: Conditions,
-    urlPattern?: string,
-  }|undefined {
-    return this.#requestConditionsById.get(appliedNetworkConditionsId);
+  conditionsForId(appliedNetworkConditionsId: string): AppliedNetworkConditions|undefined {
+    const requestConditions = this.#requestConditionsById.get(appliedNetworkConditionsId);
+    if (!requestConditions) {
+      return undefined;
+    }
+    const {conditions, urlPattern} = requestConditions;
+    return new AppliedNetworkConditions(conditions, appliedNetworkConditionsId, urlPattern);
   }
 }
 
@@ -1957,6 +1959,12 @@ export namespace RequestConditions {
 }
 
 let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;
+
+export class AppliedNetworkConditions {
+  constructor(
+      readonly conditions: Conditions, readonly appliedNetworkConditionsId: string, readonly urlPattern?: string) {
+  }
+}
 
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes>
     implements SDKModelObserver<NetworkManager> {
@@ -2327,10 +2335,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         }, allowRemoteFilePaths));
   }
 
-  appliedRequestConditions(requestInternal: NetworkRequest): {
-    conditions: Conditions,
-    urlPattern?: string,
-  }|undefined {
+  appliedRequestConditions(requestInternal: NetworkRequest): AppliedNetworkConditions|undefined {
     if (!requestInternal.appliedNetworkConditionsId) {
       return undefined;
     }

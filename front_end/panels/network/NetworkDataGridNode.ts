@@ -958,7 +958,7 @@ export class NetworkRequestNode extends NetworkNode {
     return this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Prefetch;
   }
 
-  throttlingConditions(): {conditions: SDK.NetworkManager.Conditions, urlPattern?: string}|undefined {
+  throttlingConditions(): SDK.NetworkManager.AppliedNetworkConditions|undefined {
     return SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.requestInternal);
   }
 
@@ -1522,6 +1522,7 @@ export class NetworkRequestNode extends NetworkNode {
           throttlingConditions.conditions.title();
       const icon = IconButton.Icon.create('watch');
       icon.title = i18nString(UIStrings.wasThrottled, {PH1: throttlingConditionsTitle});
+      icon.addEventListener('click', () => void Common.Revealer.reveal(throttlingConditions));
       cell.append(icon);
     }
     if (this.requestInternal.duration > 0) {

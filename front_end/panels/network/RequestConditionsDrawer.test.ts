@@ -8,8 +8,11 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import * as Network from './network.js';
 
@@ -239,5 +242,28 @@ describeWithMockConnection('RequestConditionsDrawer', () => {
     decreaseButton.click();
     sinon.assert.calledOnceWithExactly(increasePriority, condition);
     sinon.assert.calledOnceWithExactly(decreasePriority, condition);
+  });
+
+  it('highlights conditions', async () => {
+    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+    UI.Context.Context.instance().setFlavor(
+        Network.RequestConditionsDrawer.RequestConditionsDrawer, requestConditionsDrawer);
+    const index = 0;
+    const urlPattern = 'http://example.com/*bar' as SDK.NetworkManager.URLPatternConstructorString;
+    const conditions = SDK.NetworkManager.RequestCondition.createFromSetting({
+      urlPattern,
+      enabled: true,
+      conditions: 'NO_THROTTLING' as SDK.NetworkManager.ThrottlingConditionKey,
+    });
+    conditions.ruleIds.add('abc');
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.add(conditions);
+    const item = requestConditionsDrawer.renderItem(conditions, /* editable=*/ true, index);
+    const viewShown = expectCall(sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves());
+    const highlighted = expectCall(sinon.stub(PanelUtils.PanelUtils, 'highlightElement'));
+    void Network.RequestConditionsDrawer.RequestConditionsDrawer.reveal(
+        new SDK.NetworkManager.AppliedNetworkConditions(SDK.NetworkManager.NoThrottlingConditions, 'abc', urlPattern));
+
+    assert.deepEqual(['network.blocked-urls'], await viewShown);
+    assert.deepEqual([item], await highlighted);
   });
 });

@@ -1260,9 +1260,15 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
 
     await assertScreenshot('network-log/throttled-request.png');
 
-    assert.deepEqual(
-        Array.from(container.querySelectorAll('devtools-icon')).map(e => e.title),
-        ['Other (throttled to 3G)', 'Request was throttled (3G)']);
+    await RenderCoordinator.done();
+    const icons = Array.from(container.querySelectorAll('devtools-icon'));
+    assert.deepEqual(icons.map(e => e.title), ['Other (throttled to 3G)', 'Request was throttled (3G)']);
+
+    const appliedConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(request);
+    assert.exists(appliedConditions);
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+    icons[1].click();
+    sinon.assert.calledOnceWithExactly(revealStub, appliedConditions, false);
   });
 });
 

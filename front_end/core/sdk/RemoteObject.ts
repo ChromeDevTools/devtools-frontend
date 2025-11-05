@@ -841,6 +841,10 @@ export class LocalJSONObject extends RemoteObject {
       return 'date';
     }
 
+    if (this.#value instanceof Error) {
+      return 'error';
+    }
+
     return undefined;
   }
 

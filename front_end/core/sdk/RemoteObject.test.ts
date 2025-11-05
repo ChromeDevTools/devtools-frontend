@@ -257,7 +257,7 @@ describe('RemoteObject', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(new Error('Some error message'));
 
       assert.deepEqual(remoteObject.type, 'object');
-      assert.isUndefined(remoteObject.subtype);
+      assert.deepEqual(remoteObject.subtype, 'error');
       // We can't represent an `Error` object, but we can compare its structure
       assert.deepEqual(typeof remoteObject.value, 'object');
       assert.deepEqual(String(remoteObject.value), 'Error: Some error message');

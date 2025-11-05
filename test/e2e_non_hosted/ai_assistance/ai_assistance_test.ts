@@ -554,71 +554,71 @@ describe('AI Assistance', function() {
     });
   });
 
-  it('aborts ongoing conversation if new input is submitted by pressing enter',
-     async ({devToolsPage, inspectedPage}) => {
-       await runAiAssistance(devToolsPage, inspectedPage, {
-         query: 'Change the background color for this element to blue',
-         messages: [{
-           functionCallChunk: {
-             functionCall: {
-               name: 'executeJavaScript',
-               args: {
-                 thought:
-                     'I can change the background color of an element by setting the background-color CSS property.',
-                 title: 'changing the property',
-                 code: 'await setElementStyles($0, { \'background-color\': \'blue\' });',
-               },
-             },
-           },
-         }],
-         node: 'div',
-         waitForSideEffect: true,
-       });
+  it('aborts ongoing conversation if new input is submitted by pressing enter', async ({
+                                                                                  devToolsPage,
+                                                                                  inspectedPage
+                                                                                }) => {
+    await runAiAssistance(devToolsPage, inspectedPage, {
+      query: 'Change the background color for this element to blue',
+      messages: [{
+        functionCallChunk: {
+          functionCall: {
+            name: 'executeJavaScript',
+            args: {
+              thought: 'I can change the background color of an element by setting the background-color CSS property.',
+              title: 'changing the property',
+              code: 'await setElementStyles($0, { \'background-color\': \'blue\' });',
+            },
+          },
+        },
+      }],
+      node: 'div',
+      waitForSideEffect: true,
+    });
 
-       await inspectedPage.waitForFunction(() => {
-         return inspectedPage.evaluate(() => {
-           // @ts-expect-error page context.
-           return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgba(0, 0, 0, 0)';
-         });
-       });
+    await inspectedPage.waitForFunction(() => {
+      return inspectedPage.evaluate(() => {
+        // @ts-expect-error page context.
+        return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgba(0, 0, 0, 0)';
+      });
+    });
 
-       const messages = [
-         {
-           functionCallChunk: {
-             functionCall: {
-               name: 'executeJavaScript',
-               args: {
-                 thought:
-                     'I can change the background color of an element by setting the background-color CSS property.',
-                 title: 'changing the property',
-                 code: 'await setElementStyles($0, { \'background-color\': \'green\' });',
-               },
-             },
-           },
-         },
-         {textChunk: {text: 'changed styles'}}
-       ];
-       await resetMockMessages(devToolsPage, messages);
-       await inspectNode(devToolsPage, 'div');
-       await typeQuery(devToolsPage, 'Change the background color for this element to green');
-       const done = devToolsPage.evaluate(() => {
-         return new Promise(resolve => {
-           window.addEventListener('aiassistancedone', resolve, {
-             once: true,
-           });
-         });
-       });
-       await devToolsPage.pressKey('Enter');
-       await devToolsPage.click('aria/Continue');
-       await done;
+    const messages = [
+      {
+        functionCallChunk: {
+          functionCall: {
+            name: 'executeJavaScript',
+            args: {
+              thought: 'I can change the background color of an element by setting the background-color CSS property.',
+              title: 'changing the property',
+              code: 'await setElementStyles($0, { \'background-color\': \'green\' });',
+            },
+          },
+        },
+      },
+      {textChunk: {text: 'changed styles'}}
+    ];
+    await resetMockMessages(devToolsPage, messages);
+    await inspectNode(devToolsPage, 'div');
+    await typeQuery(devToolsPage, 'Change the background color for this element to green');
+    const done = devToolsPage.evaluate(() => {
+      return new Promise(resolve => {
+        window.addEventListener('aiassistancedone', resolve, {
+          once: true,
+        });
+      });
+    });
+    await devToolsPage.pressKey('Enter');
+    await devToolsPage.click('aria/Continue');
+    await done;
 
-       await inspectedPage.waitForFunction(() => {
-         return inspectedPage.evaluate(() => {
-           // @ts-expect-error page context.
-           return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
-         });
-       });
-     });
+    await inspectedPage.waitForFunction(() => {
+      return inspectedPage.evaluate(() => {
+        // @ts-expect-error page context.
+        return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
+      });
+    });
+  });
 
   it('aborts ongoing conversation when previous chat is opened from history', async ({devToolsPage, inspectedPage}) => {
     await runAiAssistance(devToolsPage, inspectedPage, {
@@ -727,10 +727,10 @@ describe('AI Assistance', function() {
           name: 'executeJavaScript',
           response: {
             result:
-                'Error: None of the suggested CSS properties or their values for selector were considered valid by the browser\'s CSS engine. Please ensure property names are correct and values match the expected format for those properties.',
+                `Error: executing the line "await setElementStyles($0, { 'non/css/prop': 'blue' });" failed with the following error:\nNone of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.`,
           },
         },
-      }],
+      }]
     });
   });
 

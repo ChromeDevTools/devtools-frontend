@@ -324,7 +324,7 @@ export class FieldSettingsDialog extends HTMLElement {
             title: i18nString(UIStrings.new),
             iconName: 'plus',
           } as Buttons.Button.ButtonData}
-          jslogContext=${'new-origin-mapping'}
+          jslogContext="new-origin-mapping"
         >${i18nString(UIStrings.new)}</devtools-button>
       </div>
     `;

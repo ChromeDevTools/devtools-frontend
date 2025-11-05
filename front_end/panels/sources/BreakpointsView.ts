@@ -578,8 +578,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                   ?data-first-group=${groupIndex === 0}
                   ?data-last-group=${groupIndex === input.breakpointGroups.length - 1}
                   role=group
-                  aria-label='${group.name}'
-                  aria-description='${group.url}'
+                  aria-label=${group.name}
+                  aria-description=${group.url}
                   ?open=${live(group.expanded)}
                   @toggle=${input.groupToggleHandler.bind(undefined, group)}>
               <summary @contextmenu=${input.groupContextMenuHandler.bind(undefined, group)}
@@ -596,7 +596,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                           tabindex=-1
                           jslog=${VisualLogging.toggle('breakpoint-group').track({change: true,})}></input>
                   </span>
-                  <span class='group-header-title' title='${group.url}'>
+                  <span class='group-header-title' title=${group.url}>
                     ${group.name}
                     <span class='group-header-differentiator'>
                       ${input.urlToDifferentiatingPath.get(group.url)}

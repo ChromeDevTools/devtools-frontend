@@ -1072,7 +1072,7 @@ function renderParameters(
                         ${hasNoKeys ?
                           html`<devtools-suggestion-input
                             data-paramId=${parameterId}
-                            isKey=${true}
+                            .isKey=${true}
                             .isCorrectInput=${live(parameter.isCorrectType)}
                             .options=${hasOptions ? input.computeDropdownValues(parameter) : []}
                             .autocomplete=${false}
@@ -1258,7 +1258,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           <div class=toolbar-spacer></div>
         <devtools-button title=${Host.Platform.isMac() ? i18nString(UIStrings.sendCommandCmdEnter) : i18nString(UIStrings.sendCommandCtrlEnter)}
                         .iconName=${'send'}
-                        jslogContext=${'protocol-monitor.send-command'}
+                        jslogContext="protocol-monitor.send-command"
                         .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
                         @click=${input.onCommandSend}></devtools-button>
       </devtools-toolbar>

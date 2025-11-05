@@ -310,11 +310,13 @@ const DEFAULT_VIEW: View =
         const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? 'folder-off' : input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? 'folder-asterisk' : 'folder';
         return html`
         <div class="footer">
-          ${input.projectName ? html`
+          ${
+            input.projectName ? html`
             <div class="change-workspace" jslog=${VisualLogging.section('patch-widget.workspace')}>
                 <devtools-icon .name=${iconName}></devtools-icon>
                 <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
-              ${input.onChangeWorkspaceClick ? html`
+              ${
+                                    input.onChangeWorkspaceClick ? html`
                 <devtools-button
                   @click=${input.onChangeWorkspaceClick}
                   .jslogContext=${'change-workspace'}
@@ -323,18 +325,24 @@ const DEFAULT_VIEW: View =
                   .disabled=${input.patchSuggestionState === PatchSuggestionState.LOADING}
                   ${Directives.ref(output.changeRef)}
                 >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
-              ` : nothing}
+              ` :
+                                                                   nothing}
             </div>
-          ` : nothing}
+          ` :
+                                nothing}
           <div class="apply-to-workspace-container" aria-live="polite">
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`
-              <div class="loading-text-container" jslog=${VisualLogging.section('patch-widget.apply-to-workspace-loading')}>
+            ${
+            input.patchSuggestionState === PatchSuggestionState.LOADING ?
+                html`
+              <div class="loading-text-container" jslog=${
+                    VisualLogging.section('patch-widget.apply-to-workspace-loading')}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
                 </span>
               </div>
-            ` : html`
+            ` :
+                html`
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'patch-widget.apply-to-workspace'}
@@ -342,12 +350,14 @@ const DEFAULT_VIEW: View =
                 ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
               </devtools-button>
             `}
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`<devtools-button
+            ${
+            input.patchSuggestionState === PatchSuggestionState.LOADING ? html`<devtools-button
               @click=${input.onCancel}
               .jslogContext=${'cancel'}
               .variant=${Buttons.Button.Variant.OUTLINED}>
               ${lockedString(UIStringsNotTranslate.cancel)}
-            </devtools-button>` : nothing}
+            </devtools-button>` :
+                                                                          nothing}
             <devtools-button
               aria-details="info-tooltip"
               .jslogContext=${'patch-widget.info-tooltip-trigger'}
@@ -356,7 +366,7 @@ const DEFAULT_VIEW: View =
             ></devtools-button>
             <devtools-tooltip
                 id="info-tooltip"
-                variant=${'rich'}
+                variant="rich"
               >
              <div class="info-tooltip-container">
                ${input.applyToWorkspaceTooltipText}
@@ -364,8 +374,8 @@ const DEFAULT_VIEW: View =
                  class="link tooltip-link"
                  role="link"
                  jslog=${VisualLogging.link('open-ai-settings').track({
-                   click: true,
-                 })}
+          click: true,
+        })}
                  @click=${input.onLearnMoreTooltipClick}
                >${lockedString(UIStringsNotTranslate.learnMore)}</button>
              </div>

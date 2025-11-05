@@ -1510,7 +1510,7 @@ function renderDisclamerTooltip(id: string, disclaimerText: string): Lit.Templat
   return html`
     <devtools-tooltip
       id=${id}
-      variant=${'rich'}
+      variant="rich"
     >
       <div class="info-tooltip-container">
         ${disclaimerText}

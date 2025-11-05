@@ -37,7 +37,7 @@ function renderTooltip({
     <devtools-tooltip
      id=${id}
      variant=${variant}
-     hover-delay=${0}
+     .hover-delay=${0}
      trigger=${trigger}
      ?use-hotkey=${useHotkey}
      jslogContext=${jslogContext??nothing}
@@ -127,13 +127,13 @@ describe('Tooltip', () => {
       <devtools-tooltip
         id="outer-tooltip-id"
         variant="rich"
-        hover-delay=${0}
+        .hover-delay=${0}
       >
         <button aria-details="inner-tooltip-id">Inner Button</button>
         <devtools-tooltip
           id="inner-tooltip-id"
           variant="rich"
-          hover-delay=${0}
+          .hover-delay=${0}
         >
           <p>Inner Tooltip Content</p>
         </devtools-tooltip>

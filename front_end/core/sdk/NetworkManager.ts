@@ -1812,7 +1812,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     }
 
     Platform.ArrayUtilities.swap(this.#conditions, index, index + 1);
-    this.dispatchEventToListeners(RequestConditions.Events.REQUEST_CONDITIONS_CHANGED);
+    this.#conditionsChanged();
   }
 
   increasePriority(condition: RequestCondition): void {
@@ -1822,7 +1822,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
     }
 
     Platform.ArrayUtilities.swap(this.#conditions, index - 1, index);
-    this.dispatchEventToListeners(RequestConditions.Events.REQUEST_CONDITIONS_CHANGED);
+    this.#conditionsChanged();
   }
 
   delete(condition: RequestCondition): void {

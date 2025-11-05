@@ -108,11 +108,11 @@ const UIStrings = {
   /**
    * @description Aria label on a button moving an entry up
    */
-  increasePriority: 'Increase priority',
+  increasePriority: 'Move up (higher patterns are checked first)',
   /**
    * @description Aria label on a button moving an entry down
    */
-  decreasePriority: 'Decrease priority',
+  decreasePriority: 'Move down (higher patterns are checked first)',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestConditionsDrawer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -14,12 +14,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {HiddenIssuesRow} from './HiddenIssuesRow.js';
-import {
-  type AggregatedIssue,
-  type AggregationKey,
-  Events as IssueAggregatorEvents,
-  IssueAggregator,
-} from './IssueAggregator.js';
 import {getGroupIssuesByKindSetting, IssueKindView, issueKindViewSortPriority} from './IssueKindView.js';
 import issuesPaneStyles from './issuesPane.css.js';
 import issuesTreeStyles from './issuesTree.css.js';
@@ -181,14 +175,14 @@ export function getGroupIssuesByCategorySetting(): Common.Settings.Setting<boole
 
 export class IssuesPane extends UI.Widget.VBox {
   #categoryViews: Map<IssuesManager.Issue.IssueCategory, IssueCategoryView>;
-  #issueViews: Map<AggregationKey, IssueView>;
+  #issueViews: Map<IssuesManager.IssueAggregator.AggregationKey, IssueView>;
   #kindViews: Map<IssuesManager.Issue.IssueKind, IssueKindView>;
   #showThirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null;
   #issuesTree: UI.TreeOutline.TreeOutlineInShadow;
   #hiddenIssuesRow: HiddenIssuesRow;
   #noIssuesMessageDiv: UI.EmptyWidget.EmptyWidget;
   #issuesManager: IssuesManager.IssuesManager.IssuesManager;
-  #aggregator: IssueAggregator;
+  #aggregator: IssuesManager.IssueAggregator.IssueAggregator;
   #issueViewUpdatePromise: Promise<void> = Promise.resolve();
 
   constructor() {
@@ -222,9 +216,11 @@ export class IssuesPane extends UI.Widget.VBox {
     this.#noIssuesMessageDiv.show(this.contentElement);
 
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-    this.#aggregator = new IssueAggregator(this.#issuesManager);
-    this.#aggregator.addEventListener(IssueAggregatorEvents.AGGREGATED_ISSUE_UPDATED, this.#issueUpdated, this);
-    this.#aggregator.addEventListener(IssueAggregatorEvents.FULL_UPDATE_REQUIRED, this.#onFullUpdate, this);
+    this.#aggregator = new IssuesManager.IssueAggregator.IssueAggregator(this.#issuesManager);
+    this.#aggregator.addEventListener(
+        IssuesManager.IssueAggregator.Events.AGGREGATED_ISSUE_UPDATED, this.#issueUpdated, this);
+    this.#aggregator.addEventListener(
+        IssuesManager.IssueAggregator.Events.FULL_UPDATE_REQUIRED, this.#onFullUpdate, this);
     this.#hiddenIssuesRow.hidden = this.#issuesManager.numberOfHiddenIssues() === 0;
     this.#onFullUpdate();
     this.#issuesManager.addEventListener(
@@ -292,16 +288,16 @@ export class IssuesPane extends UI.Widget.VBox {
     return {toolbarContainer};
   }
 
-  #issueUpdated(event: Common.EventTarget.EventTargetEvent<AggregatedIssue>): void {
+  #issueUpdated(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssueAggregator.AggregatedIssue>): void {
     this.#scheduleIssueViewUpdate(event.data);
   }
 
-  #scheduleIssueViewUpdate(issue: AggregatedIssue): void {
+  #scheduleIssueViewUpdate(issue: IssuesManager.IssueAggregator.AggregatedIssue): void {
     this.#issueViewUpdatePromise = this.#issueViewUpdatePromise.then(() => this.#updateIssueView(issue));
   }
 
   /** Don't call directly. Use `scheduleIssueViewUpdate` instead. */
-  async #updateIssueView(issue: AggregatedIssue): Promise<void> {
+  async #updateIssueView(issue: IssuesManager.IssueAggregator.AggregatedIssue): Promise<void> {
     let issueView = this.#issueViews.get(issue.aggregationKey());
     if (!issueView) {
       const description = issue.getDescription();
@@ -361,7 +357,8 @@ export class IssuesPane extends UI.Widget.VBox {
     }
   }
 
-  #getIssueViewParent(issue: AggregatedIssue): UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement {
+  #getIssueViewParent(issue: IssuesManager.IssueAggregator.AggregatedIssue): UI.TreeOutline.TreeOutline
+      |UI.TreeOutline.TreeElement {
     if (issue.isHidden()) {
       return this.#hiddenIssuesRow;
     }

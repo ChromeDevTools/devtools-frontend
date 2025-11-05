@@ -4,7 +4,29 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+
+import {AttributionReportingIssue} from './AttributionReportingIssue.js';
+import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
+import {CookieDeprecationMetadataIssue} from './CookieDeprecationMetadataIssue.js';
+import {CookieIssue} from './CookieIssue.js';
+import {CorsIssue} from './CorsIssue.js';
+import {DeprecationIssue} from './DeprecationIssue.js';
+import {ElementAccessibilityIssue} from './ElementAccessibilityIssue.js';
+import {GenericIssue} from './GenericIssue.js';
+import {HeavyAdIssue} from './HeavyAdIssue.js';
+import {Issue, IssueCategory, IssueKind, unionIssueKind} from './Issue.js';
+import type {EventTypes as IssuesManagerEventsTypes, IssueAddedEvent} from './IssuesManager.js';
+import {Events as IssuesManagerEvents} from './IssuesManagerEvents.js';
+import {LowTextContrastIssue} from './LowTextContrastIssue.js';
+import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
+import {MixedContentIssue} from './MixedContentIssue.js';
+import {PartitioningBlobURLIssue} from './PartitioningBlobURLIssue.js';
+import {QuirksModeIssue} from './QuirksModeIssue.js';
+import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
+
+export interface IssuesProvider extends Common.EventTarget.EventTarget<IssuesManagerEventsTypes> {
+  issues(): Iterable<Issue>;
+}
 
 interface AggregationKeyTag {
   aggregationKeyTag: undefined;
@@ -24,7 +46,7 @@ export type AggregationKey = {
  * Currently only grouping by issue code, is supported. The class provides helpers to support displaying
  * of all resources that are affected by the aggregated issues.
  */
-export class AggregatedIssue extends IssuesManager.Issue.Issue {
+export class AggregatedIssue extends Issue {
   #affectedCookies = new Map<string, {
     cookie: Protocol.Audits.AffectedCookie,
     hasRequest: boolean,
@@ -33,24 +55,23 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #affectedRequests: Protocol.Audits.AffectedRequest[] = [];
   #affectedRequestIds = new Set<Protocol.Network.RequestId>();
   #affectedLocations = new Map<string, Protocol.Audits.SourceCodeLocation>();
-  #heavyAdIssues = new Set<IssuesManager.HeavyAdIssue.HeavyAdIssue>();
+  #heavyAdIssues = new Set<HeavyAdIssue>();
   #blockedByResponseDetails = new Map<string, Protocol.Audits.BlockedByResponseIssueDetails>();
   #bounceTrackingSites = new Set<string>();
-  #corsIssues = new Set<IssuesManager.CorsIssue.CorsIssue>();
-  #cspIssues = new Set<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>();
-  #deprecationIssues = new Set<IssuesManager.DeprecationIssue.DeprecationIssue>();
-  #issueKind = IssuesManager.Issue.IssueKind.IMPROVEMENT;
-  #lowContrastIssues = new Set<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>();
-  #cookieDeprecationMetadataIssues =
-      new Set<IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue>();
-  #mixedContentIssues = new Set<IssuesManager.MixedContentIssue.MixedContentIssue>();
-  #partitioningBlobURLIssues = new Set<IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue>();
-  #sharedArrayBufferIssues = new Set<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>();
-  #quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
-  #attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
-  #genericIssues = new Set<IssuesManager.GenericIssue.GenericIssue>();
-  #elementAccessibilityIssues = new Set<IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue>();
-  #representative?: IssuesManager.Issue.Issue;
+  #corsIssues = new Set<CorsIssue>();
+  #cspIssues = new Set<ContentSecurityPolicyIssue>();
+  #deprecationIssues = new Set<DeprecationIssue>();
+  #issueKind = IssueKind.IMPROVEMENT;
+  #lowContrastIssues = new Set<LowTextContrastIssue>();
+  #cookieDeprecationMetadataIssues = new Set<CookieDeprecationMetadataIssue>();
+  #mixedContentIssues = new Set<MixedContentIssue>();
+  #partitioningBlobURLIssues = new Set<PartitioningBlobURLIssue>();
+  #sharedArrayBufferIssues = new Set<SharedArrayBufferIssue>();
+  #quirksModeIssues = new Set<QuirksModeIssue>();
+  #attributionReportingIssues = new Set<AttributionReportingIssue>();
+  #genericIssues = new Set<GenericIssue>();
+  #elementAccessibilityIssues = new Set<ElementAccessibilityIssue>();
+  #representative?: Issue;
   #aggregatedIssuesCount = 0;
   #key: AggregationKey;
 
@@ -94,32 +115,31 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return this.#affectedCookies.values();
   }
 
-  getHeavyAdIssues(): Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue> {
+  getHeavyAdIssues(): Iterable<HeavyAdIssue> {
     return this.#heavyAdIssues;
   }
 
-  getCookieDeprecationMetadataIssues():
-      Iterable<IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue> {
+  getCookieDeprecationMetadataIssues(): Iterable<CookieDeprecationMetadataIssue> {
     return this.#cookieDeprecationMetadataIssues;
   }
 
-  getMixedContentIssues(): Iterable<IssuesManager.MixedContentIssue.MixedContentIssue> {
+  getMixedContentIssues(): Iterable<MixedContentIssue> {
     return this.#mixedContentIssues;
   }
 
-  getCorsIssues(): Set<IssuesManager.CorsIssue.CorsIssue> {
+  getCorsIssues(): Set<CorsIssue> {
     return this.#corsIssues;
   }
 
-  getCspIssues(): Iterable<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
+  getCspIssues(): Iterable<ContentSecurityPolicyIssue> {
     return this.#cspIssues;
   }
 
-  getDeprecationIssues(): Iterable<IssuesManager.DeprecationIssue.DeprecationIssue> {
+  getDeprecationIssues(): Iterable<DeprecationIssue> {
     return this.#deprecationIssues;
   }
 
-  getLowContrastIssues(): Iterable<IssuesManager.LowTextContrastIssue.LowTextContrastIssue> {
+  getLowContrastIssues(): Iterable<LowTextContrastIssue> {
     return this.#lowContrastIssues;
   }
 
@@ -127,45 +147,45 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return this.#affectedRequests.values();
   }
 
-  getSharedArrayBufferIssues(): Iterable<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue> {
+  getSharedArrayBufferIssues(): Iterable<SharedArrayBufferIssue> {
     return this.#sharedArrayBufferIssues;
   }
 
-  getQuirksModeIssues(): Iterable<IssuesManager.QuirksModeIssue.QuirksModeIssue> {
+  getQuirksModeIssues(): Iterable<QuirksModeIssue> {
     return this.#quirksModeIssues;
   }
 
-  getAttributionReportingIssues(): ReadonlySet<IssuesManager.AttributionReportingIssue.AttributionReportingIssue> {
+  getAttributionReportingIssues(): ReadonlySet<AttributionReportingIssue> {
     return this.#attributionReportingIssues;
   }
 
-  getGenericIssues(): ReadonlySet<IssuesManager.GenericIssue.GenericIssue> {
+  getGenericIssues(): ReadonlySet<GenericIssue> {
     return this.#genericIssues;
   }
 
-  getElementAccessibilityIssues(): Iterable<IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue> {
+  getElementAccessibilityIssues(): Iterable<ElementAccessibilityIssue> {
     return this.#elementAccessibilityIssues;
   }
 
-  getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription|null {
+  getDescription(): MarkdownIssueDescription|null {
     if (this.#representative) {
       return this.#representative.getDescription();
     }
     return null;
   }
 
-  getCategory(): IssuesManager.Issue.IssueCategory {
+  getCategory(): IssueCategory {
     if (this.#representative) {
       return this.#representative.getCategory();
     }
-    return IssuesManager.Issue.IssueCategory.OTHER;
+    return IssueCategory.OTHER;
   }
 
   getAggregatedIssuesCount(): number {
     return this.#aggregatedIssuesCount;
   }
 
-  getPartitioningBlobURLIssues(): Iterable<IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue> {
+  getPartitioningBlobURLIssues(): Iterable<PartitioningBlobURLIssue> {
     return this.#partitioningBlobURLIssues;
   }
 
@@ -178,12 +198,12 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return `${domain};${path};${name}`;
   }
 
-  addInstance(issue: IssuesManager.Issue.Issue): void {
+  addInstance(issue: Issue): void {
     this.#aggregatedIssuesCount++;
     if (!this.#representative) {
       this.#representative = issue;
     }
-    this.#issueKind = IssuesManager.Issue.unionIssueKind(this.#issueKind, issue.getKind());
+    this.#issueKind = unionIssueKind(this.#issueKind, issue.getKind());
     let hasRequest = false;
     for (const request of issue.requests()) {
       const {requestId} = request;
@@ -217,52 +237,52 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
         this.#affectedLocations.set(key, location);
       }
     }
-    if (issue instanceof IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue) {
+    if (issue instanceof CookieDeprecationMetadataIssue) {
       this.#cookieDeprecationMetadataIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.MixedContentIssue.MixedContentIssue) {
+    if (issue instanceof MixedContentIssue) {
       this.#mixedContentIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.HeavyAdIssue.HeavyAdIssue) {
+    if (issue instanceof HeavyAdIssue) {
       this.#heavyAdIssues.add(issue);
     }
     for (const details of issue.getBlockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
       this.#blockedByResponseDetails.set(key, details);
     }
-    if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
+    if (issue instanceof ContentSecurityPolicyIssue) {
       this.#cspIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.DeprecationIssue.DeprecationIssue) {
+    if (issue instanceof DeprecationIssue) {
       this.#deprecationIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue) {
+    if (issue instanceof SharedArrayBufferIssue) {
       this.#sharedArrayBufferIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.LowTextContrastIssue.LowTextContrastIssue) {
+    if (issue instanceof LowTextContrastIssue) {
       this.#lowContrastIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.CorsIssue.CorsIssue) {
+    if (issue instanceof CorsIssue) {
       this.#corsIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.QuirksModeIssue.QuirksModeIssue) {
+    if (issue instanceof QuirksModeIssue) {
       this.#quirksModeIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.AttributionReportingIssue.AttributionReportingIssue) {
+    if (issue instanceof AttributionReportingIssue) {
       this.#attributionReportingIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
+    if (issue instanceof GenericIssue) {
       this.#genericIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue) {
+    if (issue instanceof ElementAccessibilityIssue) {
       this.#elementAccessibilityIssues.add(issue);
     }
-    if (issue instanceof IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue) {
+    if (issue instanceof PartitioningBlobURLIssue) {
       this.#partitioningBlobURLIssues.add(issue);
     }
   }
 
-  getKind(): IssuesManager.Issue.IssueKind {
+  getKind(): IssueKind {
     return this.#issueKind;
   }
 
@@ -278,17 +298,16 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #aggregatedIssuesByKey = new Map<AggregationKey, AggregatedIssue>();
   readonly #hiddenAggregatedIssuesByKey = new Map<AggregationKey, AggregatedIssue>();
-  constructor(private readonly issuesManager: IssuesManager.IssuesManager.IssuesManager) {
+  constructor(private readonly issuesManager: IssuesProvider) {
     super();
-    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueAdded, this);
-    this.issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.FULL_UPDATE_REQUIRED, this.#onFullUpdateRequired, this);
+    this.issuesManager.addEventListener(IssuesManagerEvents.ISSUE_ADDED, this.#onIssueAdded, this);
+    this.issuesManager.addEventListener(IssuesManagerEvents.FULL_UPDATE_REQUIRED, this.#onFullUpdateRequired, this);
     for (const issue of this.issuesManager.issues()) {
       this.#aggregateIssue(issue);
     }
   }
 
-  #onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
+  #onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssueAddedEvent>): void {
     this.#aggregateIssue(event.data.issue);
   }
 
@@ -301,8 +320,8 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dispatchEventToListeners(Events.FULL_UPDATE_REQUIRED);
   }
 
-  #aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue|undefined {
-    if (IssuesManager.CookieIssue.CookieIssue.isThirdPartyCookiePhaseoutRelatedIssue(issue)) {
+  #aggregateIssue(issue: Issue): AggregatedIssue|undefined {
+    if (CookieIssue.isThirdPartyCookiePhaseoutRelatedIssue(issue)) {
       return;
     }
 
@@ -312,8 +331,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return aggregatedIssue;
   }
 
-  #aggregateIssueByStatus(aggregatedIssuesMap: Map<AggregationKey, AggregatedIssue>, issue: IssuesManager.Issue.Issue):
-      AggregatedIssue {
+  #aggregateIssueByStatus(aggregatedIssuesMap: Map<AggregationKey, AggregatedIssue>, issue: Issue): AggregatedIssue {
     const key = issue.code() as unknown as AggregationKey;
     let aggregatedIssue = aggregatedIssuesMap.get(key);
     if (!aggregatedIssue) {
@@ -332,16 +350,16 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return new Set([...this.#aggregatedIssuesByKey.keys(), ...this.#hiddenAggregatedIssuesByKey.keys()]);
   }
 
-  aggregatedIssueCategories(): Set<IssuesManager.Issue.IssueCategory> {
-    const result = new Set<IssuesManager.Issue.IssueCategory>();
+  aggregatedIssueCategories(): Set<IssueCategory> {
+    const result = new Set<IssueCategory>();
     for (const issue of this.#aggregatedIssuesByKey.values()) {
       result.add(issue.getCategory());
     }
     return result;
   }
 
-  aggregatedIssueKinds(): Set<IssuesManager.Issue.IssueKind> {
-    const result = new Set<IssuesManager.Issue.IssueKind>();
+  aggregatedIssueKinds(): Set<IssueKind> {
+    const result = new Set<IssueKind>();
     for (const issue of this.#aggregatedIssuesByKey.values()) {
       result.add(issue.getKind());
     }
@@ -356,7 +374,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#hiddenAggregatedIssuesByKey.size;
   }
 
-  keyForIssue(issue: IssuesManager.Issue.Issue<string>): AggregationKey {
+  keyForIssue(issue: Issue<string>): AggregationKey {
     return issue.code() as unknown as AggregationKey;
   }
 }

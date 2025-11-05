@@ -9,6 +9,7 @@ devtools_module("mcp") {
 
   deps = [
     "../front_end/models/ai_assistance",
+    "../front_end/models/issues_manager:bundle",
     "../front_end/models/trace:bundle",
   ]
 }

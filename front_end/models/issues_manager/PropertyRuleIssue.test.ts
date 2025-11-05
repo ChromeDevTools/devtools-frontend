@@ -4,7 +4,6 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Issues from '../../panels/issues/issues.js';
 import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
@@ -92,7 +91,7 @@ describeWithLocale('PropertyRuleIssue', () => {
 
     assert.lengthOf(issues, 4);
 
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    const aggregator = new IssuesManager.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
       mockManager.dispatchEventToListeners(
           IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});

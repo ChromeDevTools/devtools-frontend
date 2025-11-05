@@ -17,6 +17,7 @@ import * as FederatedAuthUserInfoRequestIssue from './FederatedAuthUserInfoReque
 import * as GenericIssue from './GenericIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
 import * as Issue from './Issue.js';
+import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueResolver from './IssueResolver.js';
 import * as IssuesManager from './IssuesManager.js';
 import * as LowTextContrastIssue from './LowTextContrastIssue.js';
@@ -49,6 +50,7 @@ export {
   GenericIssue,
   HeavyAdIssue,
   Issue,
+  IssueAggregator,
   IssueResolver,
   IssuesManager,
   LowTextContrastIssue,

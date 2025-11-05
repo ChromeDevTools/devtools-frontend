@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {StubIssue} from '../../testing/StubIssue.js';
 import {recordedMetricsContain} from '../../testing/UserMetricsHelpers.js';
@@ -12,9 +13,9 @@ import * as Issues from './issues.js';
 
 describeWithEnvironment('IssueView', () => {
   it('records metrics when an issue is expanded', () => {
-    const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
+    const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
     const issue = StubIssue.createFromRequestIds(['id1', 'id2']);
-    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code', aggregationKey);
+    const aggregatedIssue = new IssuesManager.IssueAggregator.AggregatedIssue('code', aggregationKey);
     aggregatedIssue.addInstance(issue);
     const view = new Issues.IssueView.IssueView(aggregatedIssue, {title: 'Mock issue', links: [], markdown: []});
     const treeOutline =
@@ -30,9 +31,9 @@ describeWithEnvironment('IssueView', () => {
   });
 
   it('records metrics when a SameSite Cookie issue is expanded', () => {
-    const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
+    const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
     const issue = StubIssue.createCookieIssue('CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie');
-    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue(
+    const aggregatedIssue = new IssuesManager.IssueAggregator.AggregatedIssue(
         'CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', aggregationKey);
     aggregatedIssue.addInstance(issue);
     const view = new Issues.IssueView.IssueView(aggregatedIssue, {title: 'Mock Cookie Issue', links: [], markdown: []});
@@ -52,10 +53,10 @@ describeWithEnvironment('IssueView', () => {
   });
 
   it('records metrics when a ThirdPartyPhaseout Cookie issue is expanded', () => {
-    const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
+    const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
     const issue = StubIssue.createCookieIssue('CookieIssue::WarnThirdPartyPhaseout::ReadCookie');
-    const aggregatedIssue =
-        new Issues.IssueAggregator.AggregatedIssue('CookieIssue::WarnThirdPartyPhaseout::ReadCookie', aggregationKey);
+    const aggregatedIssue = new IssuesManager.IssueAggregator.AggregatedIssue(
+        'CookieIssue::WarnThirdPartyPhaseout::ReadCookie', aggregationKey);
     aggregatedIssue.addInstance(issue);
     const view = new Issues.IssueView.IssueView(aggregatedIssue, {title: 'Mock Cookie Issue', links: [], markdown: []});
     const treeOutline =

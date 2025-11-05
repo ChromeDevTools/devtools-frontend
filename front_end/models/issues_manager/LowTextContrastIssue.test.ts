@@ -4,7 +4,6 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as Issues from '../../panels/issues/issues.js';
 import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
@@ -38,7 +37,7 @@ describe('LowTextContrastIssue', () => {
     const issues =
         issueDetails.map(details => new IssuesManager.LowTextContrastIssue.LowTextContrastIssue(details, mockModel));
 
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    const aggregator = new IssuesManager.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
       mockManager.dispatchEventToListeners(
           IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});

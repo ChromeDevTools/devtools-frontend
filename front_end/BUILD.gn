@@ -279,6 +279,7 @@ group("foundation_unittests") {
     "core/common:foundation_unittests",
     "core/i18n:foundation_unittests",
     "models/ai_assistance:foundation_unittests",
+    "models/issues_manager:foundation_unittests",
   ]
 }
 

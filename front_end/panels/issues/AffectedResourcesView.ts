@@ -18,7 +18,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
 import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
@@ -65,7 +64,7 @@ export interface CreateRequestCellOptions {
  */
 export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   readonly #parentView: IssueView;
-  protected issue: AggregatedIssue;
+  protected issue: IssuesManager.IssueAggregator.AggregatedIssue;
   protected affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
   #affectedResourcesCount: number;
@@ -73,7 +72,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   #unresolvedFrameIds: Set<string>;
   protected requestResolver: Logs.RequestResolver.RequestResolver;
 
-  constructor(parent: IssueView, issue: AggregatedIssue, jslogContext: string) {
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string) {
     super(/* title */ undefined, /* expandable */ undefined, jslogContext);
     this.#parentView = parent;
     this.issue = issue;
@@ -91,7 +90,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
    * Sets the issue to take the resources from. Does not
    * trigger an update, the caller needs to do that explicitly.
    */
-  setIssue(issue: AggregatedIssue): void {
+  setIssue(issue: IssuesManager.IssueAggregator.AggregatedIssue): void {
     this.issue = issue;
   }
 

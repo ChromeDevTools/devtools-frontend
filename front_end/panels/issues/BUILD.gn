@@ -35,7 +35,6 @@ devtools_ui_module("issues") {
     "CorsIssueDetailsView.ts",
     "GenericIssueDetailsView.ts",
     "HiddenIssuesRow.ts",
-    "IssueAggregator.ts",
     "IssueKindView.ts",
     "IssueRevealer.ts",
     "IssueView.ts",
@@ -98,7 +97,6 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
-    "IssueAggregator.test.ts",
     "IssueView.test.ts",
     "IssuesPane.test.ts",
   ]

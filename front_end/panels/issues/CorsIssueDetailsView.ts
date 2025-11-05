@@ -11,7 +11,6 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
-import type {AggregatedIssue} from './IssueAggregator.js';
 import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
@@ -128,7 +127,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CorsIssueDetailsView extends AffectedResourcesView {
-  constructor(parent: IssueView, issue: AggregatedIssue, jslogContext: string) {
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string) {
     super(parent, issue, jslogContext);
     this.affectedResourcesCountElement.classList.add('cors-issue-affected-resource-label');
   }

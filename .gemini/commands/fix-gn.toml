@@ -1,0 +1,27 @@
+description = "Sync BUILD.gn and devtools_grd_files.gni with latest commit"
+prompt = """
+Your task is to synchronize the latest changes with the GN build files.
+
+Retrieve the latest changes with:
+  * `git upstream-diff` if the current branch has an upstream branch set
+  * The latest commit if the current checkout is clean
+  * The latest uncommitted changes, including untracked files.
+
+For each new TypeScript file in the latest changes:
+  * Ensure that it is listed in the "sources" list of the BUILD.gn file of the same directory.
+  * Ensure that the file is listed in `config/gni/devtools_grd_files` but with a '.js' ending.
+  * Ensure the entrypoint TypeScript file of the same directory has:
+    * `import * as NewFile from './NewFile.js';` for a `NewFile.ts`.
+    * `NewFile` is in the list of exported symbols
+    * The entrypoint for a directory "foo" would be named "foo.ts".
+
+for each removed TypeScript file do the reverse:
+  * Ensure it is no longer listed in "sources" of the BUILD.gn in the same directory.
+  * Ensure it is no longer listed in `config/gni/devtools_grd_files`
+  * Ensure it is removed from the entrypoint.
+
+For any changed TypeScript file "file.ts" that adds or removes an import to a different
+entrypoint - that is an import of the form `import * as Foo from '../path/to/foo/foo.js' -
+ensure that `../path/to/foo:bundle` is added to the "deps" list in the BUILD.gn of the
+same directory as "file.ts".
+"""

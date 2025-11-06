@@ -19,7 +19,7 @@ import type * as Lit from '../../../ui/lit/lit.js';
  * ```
  **/
 export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
-  override templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
     if (token.type === 'code') {
       const lines = (token.text).split('\n');
       if (lines[0]?.trim() === 'css') {

@@ -159,7 +159,7 @@ export class MarkdownLitRenderer {
     return Lit.Directives.classMap(classInfo);
   }
 
-  renderChildTokens(token: Marked.Marked.Token): Lit.TemplateResult[] {
+  renderChildTokens(token: Marked.Marked.Token): Lit.LitTemplate[] {
     if ('tokens' in token && token.tokens) {
       return token.tokens.map(token => this.renderToken(token));
     }
@@ -222,7 +222,7 @@ export class MarkdownLitRenderer {
     // clang-format on
   }
 
-  templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
+  templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
     switch (token.type) {
       case 'paragraph':
         return html`<p class=${this.customClassMapForToken('paragraph')}>${this.renderChildTokens(token)}</p>`;
@@ -239,8 +239,7 @@ export class MarkdownLitRenderer {
       case 'code':
         return this.renderCodeBlock(token);
       case 'space':
-        // eslint-disable-next-line lit/prefer-nothing
-        return html``;
+        return Lit.nothing;
       case 'link':
         return html`<devtools-markdown-link
         class=${this.customClassMapForToken('link')}
@@ -266,7 +265,7 @@ export class MarkdownLitRenderer {
     }
   }
 
-  renderToken(token: Marked.Marked.Token): Lit.TemplateResult {
+  renderToken(token: Marked.Marked.Token): Lit.LitTemplate {
     const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
       throw new Error(`Markdown token type '${token.type}' not supported.`);
@@ -287,7 +286,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     this.addCustomClasses({heading: 'insight'});
   }
 
-  override renderToken(token: Marked.Marked.Token): Lit.TemplateResult {
+  override renderToken(token: Marked.Marked.Token): Lit.LitTemplate {
     const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
       return html`${token.raw}`;
@@ -322,7 +321,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     return '';
   }
 
-  override templateForToken(token: Marked.Marked.Token): Lit.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.Token): Lit.LitTemplate|null {
     switch (token.type) {
       case 'heading':
         return this.renderHeading(token as Marked.Marked.Tokens.Heading);

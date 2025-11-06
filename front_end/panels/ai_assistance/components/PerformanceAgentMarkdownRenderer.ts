@@ -21,7 +21,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
     super();
   }
 
-  override templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
     if (token.type === 'link' && token.href.startsWith('#')) {
       if (token.href.startsWith('#node-')) {
         const nodeId = Number(token.href.replace('#node-', '')) as Protocol.DOM.BackendNodeId;

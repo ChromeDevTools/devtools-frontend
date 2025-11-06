@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as fs from 'fs';
+import * as http from 'http';
 
 import type {ArtifactGroup} from './screenshot-error.js';
 
@@ -70,29 +71,68 @@ export function available(): boolean {
   return sinkData.url !== undefined;
 }
 
-/**
- * Call at the end of a test suite. Will send all `TestResult`s collected via
- * `recordTestResult` to the ResultSink endpoint (only if available).
- **/
-export function sendTestResult(results: TestResult): void {
+let pendingResults: TestResult[] = [];
+let timer: ReturnType<typeof setTimeout>|undefined;
+
+const seenTestIds = new Set<string>();
+
+function takeAndSendResults() {
   const sinkData = getSinkData();
   if (sinkData.url === undefined) {
     return;
   }
 
-  // As per ResultSink documentation, this will always be a localhost connection
-  // and can be treated as reliable as a local file write.
-  fetch(sinkData.url, {
+  if (pendingResults.length === 0) {
+    return;
+  }
+
+  const testResults = pendingResults;
+  pendingResults = [];
+
+  const postOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       Authorization: `ResultSink ${sinkData.authToken}`,
     },
-    signal: AbortSignal.timeout(5000),
-    body: JSON.stringify({testResults: [results]}),
-  }).catch(err => {
-    console.error('sending to rdb errored', err);
+  };
+
+  for (const t of testResults) {
+    if (seenTestIds.has(t.testId)) {
+      console.warn('WARN: duplicate test id', t.testId);
+    }
+    seenTestIds.add(t.testId);
+  }
+
+  // As per ResultSink documentation, this will always be a localhost connection
+  // and can be treated as reliable as a local file write.
+  const request = http.request(sinkData.url, postOptions);
+  request.setTimeout(5000, function() {
+    request.destroy();
+    console.error('sending to rdb timed out');
   });
-  // TODO: wait for the results to be written.
+  const data = JSON.stringify({testResults});
+  request.write(data);
+  request.end();
+}
+
+/**
+ * Call at the end of a test suite. Will send all `TestResult`s collected via
+ * `recordTestResult` to the ResultSink endpoint (only if available).
+ **/
+export function sendTestResult(results: TestResult, sendImmediately = false): void {
+  const sinkData = getSinkData();
+  if (sinkData.url === undefined) {
+    return;
+  }
+  pendingResults.push(results);
+  if (sendImmediately) {
+    takeAndSendResults();
+    return;
+  }
+  if (timer) {
+    clearTimeout(timer);
+  }
+  timer = setTimeout(takeAndSendResults, 1000);
 }

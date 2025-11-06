@@ -43,14 +43,6 @@ export class DevToolsPage extends PageWrapper {
   #currentHighlightedElement?: HighlightedElement;
   #cdpSession?: puppeteer.CDPSession;
 
-  constructor(page: puppeteer.Page) {
-    super(page);
-    if (!TestConfig.debug) {
-      // Timeout here is not useful if we pause the DevTools page
-      this.#startHeartbeat();
-    }
-  }
-
   async delayPromisesIfRequired(): Promise<void> {
     if (envLatePromises === 0) {
       return;
@@ -68,30 +60,6 @@ export class DevToolsPage extends PageWrapper {
         }
       };
     }, envLatePromises);
-  }
-
-  #heartbeatInterval: ReturnType<typeof setInterval> = -1 as unknown as ReturnType<typeof setInterval>;
-  /**
-   * Evaluates a script in the page every second
-   * to detect possible timeouts.
-   */
-  #startHeartbeat(): void {
-    const url = this.page.url();
-    this.#heartbeatInterval = setInterval(async () => {
-      // 1 - success, -1 - eval error, -2 - eval timeout.
-      const status = await Promise.race([
-        this.page.evaluate(() => 1).catch(() => {
-          return -1;
-        }),
-        new Promise<number>(resolve => setTimeout(() => resolve(-2), 1000))
-      ]);
-      if (status <= 0) {
-        clearInterval(this.#heartbeatInterval);
-      }
-      if (status === -2) {
-        console.error(`heartbeat(${url}): failed with ${status}`);
-      }
-    }, 2000);
   }
 
   async throttleCPUIfRequired(): Promise<void> {

@@ -134,7 +134,7 @@ export const ResultsDBReporter = function(
         }
       }
     }
-    ResultsDb.sendTestResult(testResult);
+    ResultsDb.sendTestResult(testResult, /* sendImmediately=*/ true);
   };
   this.specSuccess = specComplete;
   this.specSkipped = specComplete;

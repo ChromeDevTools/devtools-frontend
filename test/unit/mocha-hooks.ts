@@ -4,6 +4,7 @@
 
 exports.mochaHooks = {
   afterEach() {
+    sinon.clock?.runToLast();
     sinon.restore();
   },
 };

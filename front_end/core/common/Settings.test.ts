@@ -746,16 +746,6 @@ describe('updateVersionFrom38To39', () => {
       assert.isFalse(settings.globalStorage.has('preferred-network-condition'));
     });
 
-    it('migrates users who have a preferred-network-condition set to "Slow 4G"', () => {
-      preferredNetworkCondSetting.set({i18nTitleKey: 'Slow 4G'});
-      const versionController = new VersionController();
-      versionController.updateVersionFrom39To40();
-
-      const activeKeySetting = settings.globalStorage.get('active-network-condition-key');
-      assert.strictEqual(activeKeySetting, JSON.stringify('SPEED_SLOW_4G'));
-      assert.isFalse(settings.globalStorage.has('preferred-network-condition'));
-    });
-
     it('migrates users who have a preferred-network-condition set to "3G"', () => {
       preferredNetworkCondSetting.set({i18nTitleKey: '3G'});
       const versionController = new VersionController();

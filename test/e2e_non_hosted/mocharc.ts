@@ -21,5 +21,4 @@ module.exports = {
   reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
   suiteName : 'e2e_non_hosted',
   slow : 1000, ...TestConfig.mochaGrep,
-  exit : true,
 };

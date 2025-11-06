@@ -23,6 +23,7 @@ import * as PanelUtils from '../utils/utils.js';
 import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
 
 const {ref} = Directives;
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -179,6 +180,109 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       target);
 };
 
+interface AffectedCountViewInput {
+  count: number;
+}
+type AffectedCountView = (input: AffectedCountViewInput, output: object, target: HTMLElement) => void;
+export const AFFECTED_COUNT_DEFAULT_VIEW: AffectedCountView = (input, output, target) => {
+  if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+    render(html`${i18nString(UIStrings.dAffected, {PH1: input.count})}`, target);
+  } else {
+    render(html`${i18nString(UIStrings.dBlocked, {PH1: input.count})}`, target);
+  }
+};
+
+function matchesUrl(conditions: SDK.NetworkManager.RequestCondition, url: string): boolean {
+  function matchesPattern(pattern: string, url: string): boolean {
+    let pos = 0;
+    const parts = pattern.split('*');
+    for (let index = 0; index < parts.length; index++) {
+      const part = parts[index];
+      if (!part.length) {
+        continue;
+      }
+      pos = url.indexOf(part, pos);
+      if (pos === -1) {
+        return false;
+      }
+      pos += part.length;
+    }
+    return true;
+  }
+
+  return Boolean(
+      Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ?
+          conditions.originalOrUpgradedURLPattern?.test(url) :
+          (conditions.wildcardURL && matchesPattern(conditions.wildcardURL, url)));
+}
+
+export class AffectedCountWidget extends UI.Widget.Widget {
+  readonly #view: AffectedCountView;
+  #condition?: SDK.NetworkManager.RequestCondition;
+  #drawer?: RequestConditionsDrawer;
+  constructor(target?: HTMLElement, view = AFFECTED_COUNT_DEFAULT_VIEW) {
+    super(target, {classes: ['blocked-url-count']});
+    this.#view = view;
+  }
+
+  get condition(): SDK.NetworkManager.RequestCondition|undefined {
+    return this.#condition;
+  }
+
+  set condition(conditions: SDK.NetworkManager.RequestCondition) {
+    this.#condition = conditions;
+    this.requestUpdate();
+  }
+
+  get drawer(): RequestConditionsDrawer|undefined {
+    return this.#drawer;
+  }
+
+  set drawer(drawer: RequestConditionsDrawer) {
+    this.#drawer = drawer;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#condition || !this.#drawer) {
+      return;
+    }
+
+    const count = !Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || this.#condition.isBlocking ?
+        this.#drawer.blockedRequestsCount(this.#condition) :
+        this.#drawer.throttledRequestsCount(this.#condition);
+
+    this.#view({count}, {}, this.element);
+  }
+
+  override wasShown(): void {
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this,
+        {scoped: true});
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.requestUpdate, this);
+    super.wasShown();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this);
+    Logs.NetworkLog.NetworkLog.instance().removeEventListener(Logs.NetworkLog.Events.Reset, this.requestUpdate, this);
+  }
+
+  #onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    if (!this.#condition) {
+      return;
+    }
+
+    const request = event.data;
+    if ((request.appliedNetworkConditionsId && this.#condition.ruleIds.has(request.appliedNetworkConditionsId)) ||
+        (request.wasBlocked() && matchesUrl(this.#condition, request.url()))) {
+      this.requestUpdate();
+    }
+  }
+}
+
 function learnMore(): LitTemplate {
   return html`<x-link
         href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
@@ -251,8 +355,6 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
   }
 
   renderItem(condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number): Element {
-    const blockedCount = this.blockedRequestsCount(condition);
-    const throttledCount = this.#throttledRequestsCount(condition);
     const element = document.createElement('div');
     this.#listElements.set(condition, element);
     element.classList.add('blocked-url');
@@ -341,20 +443,18 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       aria-details=url-pattern-${index}>
         ${constructorStringOrWildcardURL}
     </div>
-   <devtools-widget
-      class=conditions-selector
-      ?disabled=${!editable}
-      .widgetConfig=${UI.Widget.widgetConfig(
-        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
-          variant:
-            MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
-          jslogContext: 'request-conditions',
-          onConditionsChanged,
-          currentConditions: condition.conditions,
-        })}></devtools-widget>
-    <div class=blocked-url-count>${i18nString(UIStrings.dAffected, {PH1: condition.isBlocking
-                                                                           ? blockedCount
-                                                                           : throttledCount})}</div>`,
+    <devtools-widget
+       class=conditions-selector
+       ?disabled=${!editable}
+       .widgetConfig=${UI.Widget.widgetConfig(
+         MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+           variant:
+             MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
+           jslogContext: 'request-conditions',
+           onConditionsChanged,
+           currentConditions: condition.conditions,
+         })}></devtools-widget>
+    <devtools-widget .widgetConfig=${widgetConfig(AffectedCountWidget, {condition, drawer: this})}></devtools-widget>`,
           // clang-format on
           element);
     } else {
@@ -368,7 +468,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       ?disabled=${!editable}
       .jslog=${VisualLogging.toggle().track({ change: true })}>
     <div @click=${toggle} class=blocked-url-label>${wildcardURL}</div>
-    <div class=blocked-url-count>${i18nString(UIStrings.dBlocked, {PH1: blockedCount})}</div>`,
+    <devtools-widget .widgetConfig=${widgetConfig(AffectedCountWidget, {condition, drawer: this})}></devtools-widget>`,
           // clang-format on
           element);
     }
@@ -464,20 +564,17 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     this.requestUpdate();
   }
 
-  private blockedRequestsCount(condition: SDK.NetworkManager.RequestCondition): number {
+  blockedRequestsCount(condition: SDK.NetworkManager.RequestCondition): number {
     let result = 0;
     for (const blockedUrl of this.blockedCountForUrl.keys()) {
-      const match = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ?
-          condition.originalOrUpgradedURLPattern?.test(blockedUrl) :
-          (condition.wildcardURL && this.matches(condition.wildcardURL, blockedUrl));
-      if (match) {
+      if (matchesUrl(condition, blockedUrl)) {
         result += (this.blockedCountForUrl.get(blockedUrl) as number);
       }
     }
     return result;
   }
 
-  #throttledRequestsCount(condition: SDK.NetworkManager.RequestCondition): number {
+  throttledRequestsCount(condition: SDK.NetworkManager.RequestCondition): number {
     let result = 0;
     for (const ruleId of condition.ruleIds) {
       result += this.#throttledCount.get(ruleId) ?? 0;
@@ -485,27 +582,9 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     return result;
   }
 
-  private matches(pattern: string, url: string): boolean {
-    let pos = 0;
-    const parts = pattern.split('*');
-    for (let index = 0; index < parts.length; index++) {
-      const part = parts[index];
-      if (!part.length) {
-        continue;
-      }
-      pos = url.indexOf(part, pos);
-      if (pos === -1) {
-        return false;
-      }
-      pos += part.length;
-    }
-    return true;
-  }
-
   private onNetworkLogReset(_event: Common.EventTarget.EventTargetEvent<Logs.NetworkLog.ResetEvent>): void {
     this.blockedCountForUrl.clear();
     this.#throttledCount.clear();
-    this.update();
   }
 
   private onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
@@ -518,10 +597,8 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       const count = this.blockedCountForUrl.get(request.url()) || 0;
       this.blockedCountForUrl.set(request.url(), count + 1);
     }
-    if (request.appliedNetworkConditionsId || request.wasBlocked()) {
-      this.update();
-    }
   }
+
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(RequestConditionsDrawer, this);
     super.wasShown();

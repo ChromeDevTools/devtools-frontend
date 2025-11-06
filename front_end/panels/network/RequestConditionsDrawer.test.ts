@@ -82,7 +82,7 @@ for (const individualThrottlingEnabled of [false, true]) {
           }
         });
 
-        describe('update', () => {
+        describe('affected counts', () => {
           const updatesOnRequestFinishedEvent = (inScope: boolean) => async () => {
             const target = createTarget();
             SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
@@ -94,7 +94,11 @@ for (const individualThrottlingEnabled of [false, true]) {
             renderElementIntoDOM(requestConditionsDrawer);
             await requestConditionsDrawer.updateComplete;
             assert.exists(networkManager);
-            const updateStub = sinon.spy(requestConditionsDrawer, 'requestUpdate');
+            const list = requestConditionsDrawer.contentElement.querySelector('.blocked-urls')?.shadowRoot;
+            const countWidget =
+                list?.querySelector<UI.Widget.WidgetElement<UI.Widget.Widget>>('.blocked-url-count')?.getWidget();
+            assert.exists(countWidget);
+            const updateStub = sinon.spy(countWidget, 'requestUpdate');
 
             const request = new SDK.NetworkRequest.NetworkRequest(
                 '', undefined, urlString`http://example.com`, urlString`http://example.com`, null, null, null);
@@ -104,7 +108,7 @@ for (const individualThrottlingEnabled of [false, true]) {
 
             assert.strictEqual(updateStub.calledOnce, inScope);
             if (inScope) {
-              await requestConditionsDrawer.updateComplete;
+              await countWidget.updateComplete;
               if (individualThrottlingEnabled) {
                 await assertScreenshot(`request_conditions/throttling_blocked-matched.png`);
               } else {
@@ -117,14 +121,17 @@ for (const individualThrottlingEnabled of [false, true]) {
             }
           };
 
-          it('is called upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
-          it('is called upon RequestFinished event (when target is out of scope)',
+          it('are updated upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
+          it('are updated upon RequestFinished event (when target is out of scope)',
              updatesOnRequestFinishedEvent(false));
 
-          it('is called upon Reset event', async () => {
-            const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.RequestConditionsDrawer);
-            new Network.RequestConditionsDrawer.RequestConditionsDrawer(undefined, viewFunction);
+          it('are updated upon Reset event', async () => {
+            const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.AffectedCountWidget);
+            const widget = new Network.RequestConditionsDrawer.AffectedCountWidget(undefined, viewFunction);
+            widget.condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: '*', enabled: true});
+            widget.drawer = sinon.createStubInstance(Network.RequestConditionsDrawer.RequestConditionsDrawer);
             await viewFunction.nextInput;
+            renderElementIntoDOM(widget);
 
             Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
                 Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});

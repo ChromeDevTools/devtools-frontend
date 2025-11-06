@@ -312,7 +312,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             </div>
             <div class="checkbox-settings">
               ${input.booleanSettings.map(setting =>
-                  html`<devtools-checkbox
+                  html`<div><devtools-checkbox
                       data-boolean-setting="true"
                       class="checkbox-label"
                       title=${setting.title}
@@ -320,7 +320,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                       @change=${(e: Event) => input.onBooleanSettingChange(setting, e)}
                       jslog=${VisualLogging.toggle().track({click: true}).context(setting.name)}>
                     ${setting.title}
-                  </devtools-checkbox>`)}
+                  </devtools-checkbox></div>`)}
             </div>
           </div>
           ${input.gridElements ?

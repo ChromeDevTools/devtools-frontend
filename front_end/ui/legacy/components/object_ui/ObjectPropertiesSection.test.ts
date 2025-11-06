@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import {dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as ObjectUI from './object_ui.js';
@@ -69,5 +70,30 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
     section.valueElement.dispatchEvent(event);
     sinon.assert.calledOnce(promptStub);
+  });
+
+  it('shows expandable text contents for lengthy strings', async () => {
+    const longString = `l${'o'.repeat(15000)}ng`;
+    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection
+                      .createPropertyValue(SDK.RemoteObject.RemoteObject.fromLocalObject(longString), false, true)
+                      .element;
+
+    renderElementIntoDOM(value, {includeCommonStyles: true});
+
+    await assertScreenshot('object_ui/expandable_strings.png');
+
+    const copyStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+    const copyButton = value.querySelector<HTMLButtonElement>('[data-text="Copy"]');
+    assert.exists(copyButton);
+    const expandButton = value.querySelector<HTMLButtonElement>('[data-text="Show more (15.0\xA0kB)"]');
+    assert.exists(expandButton);
+
+    sinon.assert.notCalled(copyStub);
+    copyButton.click();
+    sinon.assert.calledOnceWithExactly(copyStub, `"${longString}"`);
+
+    assert.notStrictEqual(value.textContent, `"${longString}"`);
+    expandButton.click();
+    assert.strictEqual(value.textContent, `"${longString}"`);
   });
 });

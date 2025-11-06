@@ -74,9 +74,8 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
 
   it('shows expandable text contents for lengthy strings', async () => {
     const longString = `l${'o'.repeat(15000)}ng`;
-    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection
-                      .createPropertyValue(SDK.RemoteObject.RemoteObject.fromLocalObject(longString), false, true)
-                      .element;
+    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
+        SDK.RemoteObject.RemoteObject.fromLocalObject(longString), false, true);
 
     renderElementIntoDOM(value, {includeCommonStyles: true});
 

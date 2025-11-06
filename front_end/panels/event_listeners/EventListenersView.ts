@@ -315,7 +315,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
     const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
         object, /* wasThrown */ false, /* showPreview */ false);
-    this.valueTitle = propertyValue.element;
+    this.valueTitle = propertyValue;
     title.appendChild(this.valueTitle);
 
     if (this.#eventListener.canRemove()) {

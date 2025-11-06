@@ -213,6 +213,7 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [
+    "ContextMenu.docs.ts",
     "RadioButton.docs.ts",
     "SelectMenu.docs.ts",
     "Slider.docs.ts",

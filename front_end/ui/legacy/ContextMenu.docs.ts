@@ -2,23 +2,44 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
-import * as UI from '../../../legacy/legacy.js';
-import * as Lit from '../../../lit/lit.js';
-import * as ComponentHelpers from '../../helpers/helpers.js';
+import * as Lit from '../lit/lit.js';
+
+import {ContextMenu} from './legacy.js';
 
 const {html} = Lit;
 
-await ComponentHelpers.ComponentServerSetup.setup();
-await FrontendHelpers.initializeGlobalVars();
+export async function render(container: HTMLElement) {
+  const style = document.createElement('style');
+  style.textContent = `
+      #container > div {
+        width: var(--sys-size-34);
+        padding: var(--sys-size-11);
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--sys-size-5);
+        background-color: var(--sys-color-neutral-container);
+        border-radius: var(--sys-shape-corner-medium);
+        text-align: center;
 
-{
-  const menuButtonSection = document.querySelector('#menu-button') as HTMLElement;
+        p {
+          vertical-align: middle;
+        }
+      }
+    `;
+  container.appendChild(style);
+
+  const menuButtonSection = document.createElement('div');
+  const menuButtonHeader = document.createElement('header');
+  menuButtonHeader.textContent = 'DevTools menu button (lit-html)';
+  container.appendChild(menuButtonHeader);
+  container.appendChild(menuButtonSection);
+
   Lit.render(
       html`
     <devtools-menu-button
       icon-name="bin"
-      .populateMenuCall=${(menu: UI.ContextMenu.ContextMenu) => {
+      .populateMenuCall=${(menu: ContextMenu.ContextMenu) => {
         menu.defaultSection().appendItem('Item', () => {
           alert('Item clicked');
         }, {jslogContext: 'item'});
@@ -27,15 +48,19 @@ await FrontendHelpers.initializeGlobalVars();
     ></devtools-menu-button>
 `,
       menuButtonSection);
-}
 
-{
+  const simpleItemsSection = document.createElement('div');
+  simpleItemsSection.innerHTML = '<p>Right-click here</p>';
+  const simpleItemsHeader = document.createElement('header');
+  simpleItemsHeader.textContent = 'Various simple menu items (imperative API)';
+  container.appendChild(simpleItemsHeader);
+  container.appendChild(simpleItemsSection);
+
   let checked = true;
-  const simpleItemMenuSection = document.querySelector('#simple-items');
-  simpleItemMenuSection?.addEventListener('contextmenu', onSimpleMenu.bind(this));
+  simpleItemsSection.addEventListener('contextmenu', onSimpleMenu);
 
   function onSimpleMenu(event: Event) {
-    const simpleMenu = new UI.ContextMenu.ContextMenu(event);
+    const simpleMenu = new ContextMenu.ContextMenu(event);
 
     // Regular item
     simpleMenu.defaultSection().appendItem('Regular item', () => {
@@ -63,14 +88,18 @@ await FrontendHelpers.initializeGlobalVars();
 
     void simpleMenu.show();
   }
-}
 
-{
-  const customSectionMenuSection = document.querySelector('#custom-section');
-  customSectionMenuSection?.addEventListener('contextmenu', onCustomSectionMenu.bind(this));
+  const customSection = document.createElement('div');
+  customSection.innerHTML = '<p>Right-click here</p>';
+  const customSectionHeader = document.createElement('header');
+  customSectionHeader.textContent = 'Custom sections (imperative API)';
+  container.appendChild(customSectionHeader);
+  container.appendChild(customSection);
+
+  customSection.addEventListener('contextmenu', onCustomSectionMenu);
 
   function onCustomSectionMenu(event: Event) {
-    const customSectionMenu = new UI.ContextMenu.ContextMenu(event);
+    const customSectionMenu = new ContextMenu.ContextMenu(event);
 
     // First custom section
     const customSection = customSectionMenu.section('Custom section');
@@ -83,14 +112,18 @@ await FrontendHelpers.initializeGlobalVars();
 
     void customSectionMenu.show();
   }
-}
 
-{
-  const subMenuSection = document.querySelector('#sub-menu');
-  subMenuSection?.addEventListener('contextmenu', onCustomSectionMenu.bind(this));
+  const subMenuSection = document.createElement('div');
+  subMenuSection.innerHTML = '<p>Right-click here</p>';
+  const subMenuHeader = document.createElement('header');
+  subMenuHeader.textContent = 'Sub menu (imperative API)';
+  container.appendChild(subMenuHeader);
+  container.appendChild(subMenuSection);
 
-  function onCustomSectionMenu(event: Event) {
-    const subMenuMenu = new UI.ContextMenu.ContextMenu(event);
+  subMenuSection.addEventListener('contextmenu', onSubMenu);
+
+  function onSubMenu(event: Event) {
+    const subMenuMenu = new ContextMenu.ContextMenu(event);
 
     const subMenu =
         subMenuMenu.defaultSection().appendSubMenuItem('Item to open sub menu', /* disabled */ false, 'my-sub-menu');

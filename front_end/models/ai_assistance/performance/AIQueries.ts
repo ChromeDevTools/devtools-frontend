@@ -35,6 +35,10 @@ export class AIQueries {
 
     const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace.data);
     const thread = threads.find(thread => {
+      if (!thread.processIsOnMainFrame) {
+        return false;
+      }
+
       if (mainThreadPID && mainThreadTID) {
         return thread.pid === mainThreadPID && thread.tid === mainThreadTID;
       }
@@ -45,9 +49,9 @@ export class AIQueries {
   }
 
   /**
-   * Returns bottom up activity for the given range.
+   * Returns bottom up activity for the given range (within a single navigation / thread).
    */
-  static mainThreadActivityBottomUp(
+  static mainThreadActivityBottomUpSingleNavigation(
       navigationId: string|undefined, bounds: Trace.Types.Timing.TraceWindowMicro,
       parsedTrace: Trace.TraceModel.ParsedTrace): Trace.Extras.TraceTree.BottomUpRootNode|null {
     const thread = this.findMainThread(navigationId, parsedTrace);
@@ -57,6 +61,56 @@ export class AIQueries {
 
     const events = AICallTree.findEventsForThread({thread, parsedTrace, bounds});
     if (!events) {
+      return null;
+    }
+
+    // Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
+    const visibleEvents = Trace.Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
+    const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
+        visibleEvents.concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
+
+    // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
+    const startTime = Trace.Helpers.Timing.microToMilli(bounds.min);
+    const endTime = Trace.Helpers.Timing.microToMilli(bounds.max);
+    return new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+      textFilter: new Trace.Extras.TraceFilter.ExclusiveNameFilter([]),
+      filters: [filter],
+      startTime,
+      endTime,
+    });
+  }
+
+  /**
+   * Returns bottom up activity for the given range (no matter the navigation / thread).
+   */
+  static mainThreadActivityBottomUp(
+      bounds: Trace.Types.Timing.TraceWindowMicro,
+      parsedTrace: Trace.TraceModel.ParsedTrace): Trace.Extras.TraceTree.BottomUpRootNode|null {
+    const threads: Trace.Handlers.Threads.ThreadData[] = [];
+    if (parsedTrace.insights) {
+      for (const insightSet of parsedTrace.insights?.values()) {
+        const thread = this.findMainThread(insightSet.navigation?.args.data?.navigationId, parsedTrace);
+        if (thread) {
+          threads.push(thread);
+        }
+      }
+    } else {
+      const navigationId = parsedTrace.data.Meta.mainFrameNavigations[0].args.data?.navigationId;
+      const thread = this.findMainThread(navigationId, parsedTrace);
+      if (thread) {
+        threads.push(thread);
+      }
+    }
+
+    if (threads.length === 0) {
+      return null;
+    }
+
+    const threadEvents =
+        [...new Set(threads)].map(thread => AICallTree.findEventsForThread({thread, parsedTrace, bounds}) ?? []);
+    const events = threadEvents.flat();
+
+    if (events.length === 0) {
       return null;
     }
 

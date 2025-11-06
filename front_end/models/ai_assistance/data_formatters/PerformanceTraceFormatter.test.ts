@@ -72,28 +72,60 @@ describeWithLocale('PerformanceTraceFormatter', function() {
     });
   });
 
-  it('formatCriticalRequests', async function() {
-    const {formatter} = await createFormatter(this, 'render-blocking-requests.json.gz');
-    const output = formatter.formatCriticalRequests();
-    snapshotTester.assert(this, output);
+  describe('formatCriticalRequests', () => {
+    it('render-blocking-requests.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'render-blocking-requests.json.gz');
+      const output = formatter.formatCriticalRequests();
+      snapshotTester.assert(this, output);
+    });
+
+    it('multiple-navigations-render-blocking.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'multiple-navigations-render-blocking.json.gz');
+      const output = formatter.formatCriticalRequests();
+      snapshotTester.assert(this, output);
+    });
   });
 
-  it('formatLongestTasks', async function() {
-    const {formatter} = await createFormatter(this, 'long-task-from-worker-thread.json.gz');
-    const output = formatter.formatLongestTasks();
-    snapshotTester.assert(this, output);
+  describe('formatLongestTasks', () => {
+    it('long-task-from-worker-thread.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'long-task-from-worker-thread.json.gz');
+      const output = formatter.formatLongestTasks();
+      snapshotTester.assert(this, output);
+    });
+
+    it('multiple-navigations-render-blocking.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'multiple-navigations-render-blocking.json.gz');
+      const output = formatter.formatLongestTasks();
+      snapshotTester.assert(this, output);
+    });
   });
 
-  it('formatMainThreadBottomUpSummary', async function() {
-    const {formatter} = await createFormatter(this, 'yahoo-news.json.gz');
-    const output = formatter.formatMainThreadBottomUpSummary();
-    snapshotTester.assert(this, output);
+  describe('formatMainThreadBottomUpSummary', () => {
+    it('yahoo-news.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'yahoo-news.json.gz');
+      const output = formatter.formatMainThreadBottomUpSummary();
+      snapshotTester.assert(this, output);
+    });
+
+    it('multiple-navigations-render-blocking.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'multiple-navigations-render-blocking.json.gz');
+      const output = formatter.formatMainThreadBottomUpSummary();
+      snapshotTester.assert(this, output);
+    });
   });
 
-  it('formatThirdPartySummary', async function() {
-    const {formatter} = await createFormatter(this, 'yahoo-news.json.gz');
-    const output = formatter.formatThirdPartySummary();
-    snapshotTester.assert(this, output);
+  describe('formatThirdPartySummary', () => {
+    it('yahoo-news.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'yahoo-news.json.gz');
+      const output = formatter.formatThirdPartySummary();
+      snapshotTester.assert(this, output);
+    });
+
+    it('multiple-navigations-render-blocking.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'multiple-navigations-render-blocking.json.gz');
+      const output = formatter.formatThirdPartySummary();
+      snapshotTester.assert(this, output);
+    });
   });
 
   it('formatMainThreadTrackSummary', async function() {

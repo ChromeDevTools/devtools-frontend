@@ -513,12 +513,12 @@ code
 
       // Populate the function calls for the LCP Context
       await Array.fromAsync(agent.run('test 1 LCP', {selected: lcpContext}));
-      assert.strictEqual(agent.currentFacts().size, 7);  // always adds 7 facts for high-level summary of trace.
+      assert.strictEqual(agent.currentFacts().size, 8);  // always adds 8 facts for high-level summary of trace.
       await Array.fromAsync(agent.run('test 2 LCP', {selected: lcpContext}));
-      assert.strictEqual(agent.currentFacts().size, 8);  // added the function call as a fact.
+      assert.strictEqual(agent.currentFacts().size, 9);  // added the function call as a fact.
       // Now change the context and send a request.
       await Array.fromAsync(agent.run('test 1 RenderBlocking', {selected: renderBlockingContext}));
-      assert.strictEqual(agent.currentFacts().size, 7);  // back to 7.
+      assert.strictEqual(agent.currentFacts().size, 8);  // back to 8.
     });
 
     it('will cache function calls as facts', async function() {
@@ -543,7 +543,8 @@ code
                 return fact.metadata.source;
               }),
           [
-            'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools',
+            // https://www.youtube.com/watch?v=Vhh_GeBPOhs
+            'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools',
             'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
             'getNetworkTrackSummary({min: 197695826524, max: 197698633660})'
           ]);

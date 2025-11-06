@@ -267,7 +267,7 @@ def custom_locationsfilters(builder):
             cq.location_filter(path_regexp = "extensions/cxx_debugging/.+", exclude = False),
             cq.location_filter(path_regexp = "node_modules/.+", exclude = False),
             cq.location_filter(path_regexp = "third_party/.+", exclude = False),
-            cq.location_filter(path_regexp = "build", exclude = False),
+            cq.location_filter(path_regexp = "DEPS", exclude = False),
         ]
     if builder == "dtf_check_no_bundle":
         return [

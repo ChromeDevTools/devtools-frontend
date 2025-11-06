@@ -5,6 +5,7 @@
 import * as Trace from '../../../models/trace/trace.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {getInsightSetOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -38,14 +39,12 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.isOk(parsedTrace.insights);
     // only one navigation in this trace.
     assert.strictEqual(parsedTrace.insights.size, 1);
-    // This is the navigationID from this trace.
-    const navigationId = '8463DF94CD61B265B664E7F768183DE3';
-    assert.isTrue(parsedTrace.insights.has(navigationId));
+    const insightSet = getInsightSetOrError(parsedTrace.insights, '8463DF94CD61B265B664E7F768183DE3');
 
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     component.data = {
-      insightSetKey: navigationId,
+      insightSetKey: insightSet.id,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
       parsedTrace,
@@ -81,12 +80,14 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
 
   it('does not render experimental insights by default', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'font-display.json.gz');
+    assert.isOk(parsedTrace.insights);
+
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
-    const firstNavigation = parsedTrace.data.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId;
-    assert.isOk(firstNavigation);
+    const firstNavigation = parsedTrace.data.Meta.mainFrameNavigations.at(0);
+    const insightSet = getInsightSetOrError(parsedTrace.insights, firstNavigation);
     component.data = {
-      insightSetKey: firstNavigation,
+      insightSetKey: insightSet.id,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
       parsedTrace,
@@ -127,11 +128,9 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.isOk(parsedTrace.insights);
     // only one navigation in this trace.
     assert.strictEqual(parsedTrace.insights.size, 1);
-    // This is the navigationID from this trace.
-    const navigationId = '8463DF94CD61B265B664E7F768183DE3';
-    assert.isTrue(parsedTrace.insights.has(navigationId));
+    const insightSet = getInsightSetOrError(parsedTrace.insights, '8463DF94CD61B265B664E7F768183DE3');
 
-    const model = parsedTrace.insights.get(navigationId)?.model.LCPBreakdown;
+    const model = insightSet.model.LCPBreakdown;
     if (!model) {
       throw new Error('missing LCPBreakdown model');
     }
@@ -139,11 +138,11 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     component.data = {
-      insightSetKey: navigationId,
+      insightSetKey: insightSet.id,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: {
         model,
-        insightSetKey: navigationId,
+        insightSetKey: insightSet.id,
       },
       parsedTrace,
     };

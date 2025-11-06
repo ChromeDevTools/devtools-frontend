@@ -110,7 +110,7 @@ export type PartialInsightModel<T> =
  * navigation (or the end of the trace).
  */
 export interface InsightSet {
-  /** If for a navigation, this is the navigationId. Else it is Trace.Types.Events.NO_NAVIGATION. */
+  /** If for a navigation, this is of the form "NAVIGATION_(index)". Else it is Trace.Types.Events.NO_NAVIGATION. */
   id: Types.Events.NavigationId;
   /** The URL to show in the accordion list. */
   url: URL;

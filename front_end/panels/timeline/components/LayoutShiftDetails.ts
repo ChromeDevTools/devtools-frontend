@@ -190,15 +190,22 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       // clang-format on
     };
 
+function findInsightSet(insightSets: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|undefined):
+    Trace.Insights.Types.InsightSet|undefined {
+  return insightSets?.values().find(
+      insightSet =>
+          navigationId ? navigationId === insightSet.navigation?.args.data?.navigationId : !insightSet.navigation);
+}
+
 function renderLayoutShiftDetails(
-    layoutShift: Trace.Types.Events.SyntheticLayoutShift, traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
+    layoutShift: Trace.Types.Events.SyntheticLayoutShift, insightSets: Trace.Insights.Types.TraceInsightSets|null,
     parsedTrace: Trace.TraceModel.ParsedTrace, isFreshRecording: boolean,
     onEventClick: (e: Trace.Types.Events.Event) => void): Lit.LitTemplate {
-  if (!traceInsightsSets) {
+  if (!insightSets) {
     return Lit.nothing;
   }
-  const insightsId = layoutShift.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
-  const clsInsight = traceInsightsSets.get(insightsId)?.model.CLSCulprits;
+
+  const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
   if (!clsInsight || clsInsight instanceof Error) {
     return Lit.nothing;
   }
@@ -242,14 +249,13 @@ function renderLayoutShiftDetails(
 }
 
 function renderLayoutShiftClusterDetails(
-    cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
-    traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null, parsedTrace: Trace.TraceModel.ParsedTrace,
-    onEventClick: (e: Trace.Types.Events.Event) => void): Lit.LitTemplate {
-  if (!traceInsightsSets) {
+    cluster: Trace.Types.Events.SyntheticLayoutShiftCluster, insightSets: Trace.Insights.Types.TraceInsightSets|null,
+    parsedTrace: Trace.TraceModel.ParsedTrace, onEventClick: (e: Trace.Types.Events.Event) => void): Lit.LitTemplate {
+  if (!insightSets) {
     return Lit.nothing;
   }
-  const insightsId = cluster.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
-  const clsInsight = traceInsightsSets.get(insightsId)?.model.CLSCulprits;
+
+  const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
   if (!clsInsight || clsInsight instanceof Error) {
     return Lit.nothing;
   }

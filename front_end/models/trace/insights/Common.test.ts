@@ -5,7 +5,7 @@
 import type {RecursivePartial} from '../../../core/platform/TypescriptUtilities.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {getFirstOrError, getInsightSetOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import {microsecondsTraceWindow} from '../../../testing/TraceHelpers.js';
 import type * as Types from '../types/types.js';
 
@@ -22,14 +22,7 @@ describeWithEnvironment('Common', function() {
       }
 
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      if (!firstNav.args.data?.navigationId) {
-        throw new Error('expected navigationId');
-      }
-      const insightSetKey = firstNav.args.data.navigationId;
-      const insightSet = insights.get(insightSetKey);
-      if (!insightSet) {
-        throw new Error('missing insight set');
-      }
+      const insightSet = getInsightSetOrError(insights, firstNav);
 
       // Clone so it may be modified.
       const clonedMetadata = structuredClone(metadata);

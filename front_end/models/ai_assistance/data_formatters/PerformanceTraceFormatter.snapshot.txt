@@ -462,7 +462,7 @@ Network throttling: none
 
 The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
 
-## insight set id: 86EB5E5C401E3E17ECE461B3FC627867
+## insight set id: NAVIGATION_0
 
 URL: https://web.dev/cls/
 Bounds: {min: 1020034834921, max: 1020036087961}
@@ -504,7 +504,7 @@ Network throttling: none
 
 The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
 
-## insight set id: 513BDA1E9EC088611B53BFF7A859B5DD
+## insight set id: NAVIGATION_0
 
 URL: https://news.yahoo.com/
 Bounds: {min: 157423488682, max: 157427277166}
@@ -575,7 +575,7 @@ Network throttling: Fast 3G
 
 The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
 
-## insight set id: 8671F33ECE0C8DBAEFBC2F9A2D1D6107
+## insight set id: NAVIGATION_0
 
 URL: http://localhost:8080/render-blocking
 Bounds: {min: 171607579779, max: 171613750571}
@@ -599,7 +599,7 @@ Available insights:
     example question: Show me the most impactful render blocking requests that I should focus on
     example question: How can I reduce the number of render blocking requests?
 
-## insight set id: 1AE2016BBCC48AA090FDAE2CBBA01900
+## insight set id: NAVIGATION_1
 
 URL: http://localhost:8080/render-blocking
 Bounds: {min: 171613750571, max: 171616667355}
@@ -635,7 +635,7 @@ Network throttling: No throttling
 
 The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
 
-## insight set id: 9094E106056B51D078CE44F3356FE194
+## insight set id: NAVIGATION_0
 
 URL: http://localhost/image-delivery-cases.html
 Bounds: {min: 59728649746, max: 59734400108}
@@ -708,7 +708,7 @@ Network throttling: No throttling
 
 The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
 
-## insight set id: 9094E106056B51D078CE44F3356FE194
+## insight set id: NAVIGATION_0
 
 URL: http://localhost/image-delivery-cases.html
 Bounds: {min: 59728649746, max: 59734400108}
@@ -830,11 +830,11 @@ Title: PerformanceTraceFormatter formatCriticalRequests multiple-navigations-ren
 Content:
 # Critical network requests
 
-## insight set id: 8671F33ECE0C8DBAEFBC2F9A2D1D6107
+## insight set id: NAVIGATION_0
 
 none
 
-## insight set id: 1AE2016BBCC48AA090FDAE2CBBA01900
+## insight set id: NAVIGATION_1
 
 none
 === end content
@@ -852,13 +852,13 @@ Title: PerformanceTraceFormatter formatLongestTasks multiple-navigations-render-
 Content:
 # Longest tasks
 
-## insight set id: 8671F33ECE0C8DBAEFBC2F9A2D1D6107
+## insight set id: NAVIGATION_0
 
 - total time: 8 ms, event: (eventKey: r-6426, ts: 171608877757)
 - total time: 7 ms, event: (eventKey: r-3609, ts: 171608164318)
 - total time: 2 ms, event: (eventKey: r-6501, ts: 171608885367)
 
-## insight set id: 1AE2016BBCC48AA090FDAE2CBBA01900
+## insight set id: NAVIGATION_1
 
 - total time: 3 ms, event: (eventKey: r-12777, ts: 171614328028)
 - total time: 0.7 ms, event: (eventKey: r-15391, ts: 171615043591)
@@ -889,13 +889,13 @@ Content:
 
 This is the bottom-up summary for the entire trace. Only the top 10 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
 
-## insight set id: 8671F33ECE0C8DBAEFBC2F9A2D1D6107
+## insight set id: NAVIGATION_0
 
 - self: 10 ms, total: 21 ms, source: Task
 - self: 7 ms, total: 7 ms, source: Layout
 - self: 2 ms, total: 2 ms, source: Profiling overhead
 
-## insight set id: 1AE2016BBCC48AA090FDAE2CBBA01900
+## insight set id: NAVIGATION_1
 
 - self: 6 ms, total: 7 ms, source: Task
 === end content
@@ -915,11 +915,11 @@ Title: PerformanceTraceFormatter formatThirdPartySummary multiple-navigations-re
 Content:
 # 3rd party summary
 
-## insight set id: 8671F33ECE0C8DBAEFBC2F9A2D1D6107
+## insight set id: NAVIGATION_0
 
 - name: localhost, main thread time: 0.8 ms, network transfer size: 22.9 kB
 
-## insight set id: 1AE2016BBCC48AA090FDAE2CBBA01900
+## insight set id: NAVIGATION_1
 
 - name: localhost, main thread time: 0.3 ms, network transfer size: 22.9 kB
 === end content

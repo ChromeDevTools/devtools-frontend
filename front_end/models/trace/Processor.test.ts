@@ -304,7 +304,7 @@ describeWithEnvironment('TraceProcessor', function() {
 
       assert.deepEqual([...processor.insights.keys()], [
         // excluded NO_NAVIGATION set, as it was trivial
-        '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
+        'NAVIGATION_0',
       ]);
 
       const insights = Array.from(processor.insights.values());
@@ -326,9 +326,9 @@ describeWithEnvironment('TraceProcessor', function() {
 
       assert.deepEqual([...processor.insights.keys()], [
         Trace.Types.Events.NO_NAVIGATION,
-        '83ACBFD389F1F66EF79CEDB4076EB44A',
-        '70BCD304FD2C098BA2513488AB0FF3F2',
-        '71CF0F2B9FE50F2CB31B261D129D06E8',
+        'NAVIGATION_1',
+        'NAVIGATION_2',
+        'NAVIGATION_3',
       ]);
 
       const insights = Array.from(processor.insights.values());

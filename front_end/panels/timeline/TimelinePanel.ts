@@ -3094,15 +3094,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         };
       }
 
-      const navigationId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
-      if (!navigationId) {
+      const insightSetId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
+      if (!insightSetId) {
         return {
           type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,
           message: 'The trace was loaded successfully but no navigation was detected.',
         };
       }
 
-      const insightsForNav = parsedTrace.insights.get(navigationId);
+      const insightsForNav = parsedTrace.insights.get(insightSetId);
       if (!insightsForNav) {
         return {
           type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,

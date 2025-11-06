@@ -45,23 +45,32 @@ export function createContextForNavigation(
 
 export function getInsightSetOrError(
     insights: Trace.Insights.Types.TraceInsightSets,
-    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightSet {
-  let key;
-  if (navigation) {
-    if (!navigation.args.data?.navigationId) {
+    navigationOrNavigationId?: Trace.Types.Events.NavigationStart|string): Trace.Insights.Types.InsightSet {
+  let insightSet;
+  if (navigationOrNavigationId) {
+    const navigationId = typeof navigationOrNavigationId === 'string' ?
+        navigationOrNavigationId :
+        navigationOrNavigationId.args.data?.navigationId;
+    if (!navigationId) {
       throw new Error('expected navigationId');
     }
-    key = navigation.args.data.navigationId;
+
+    insightSet = insights.values().find(insightSet => insightSet.navigation?.args.data?.navigationId === navigationId);
+
+    if (!insightSet) {
+      throw new Error(`Could not find Insights for navigation ${
+          navigationId}. If you are trying to load an Insight for a particular navigation, you must supply it as an argument to \`getInsightOrError\``);
+    }
   } else {
-    key = Trace.Types.Events.NO_NAVIGATION;
-  }
-  const insightSets = insights.get(key);
-  if (!insightSets) {
-    throw new Error(`Could not find Insights for navigation ${
-        key}. If you are trying to load an Insight for a particular navigation, you must supply it as an argument to \`getInsightOrError\``);
+    insightSet = insights.get(Trace.Types.Events.NO_NAVIGATION);
+
+    if (!insightSet) {
+      throw new Error(
+          `Could not find Insights for NO_NAVIGATION. If you are trying to load an Insight for a particular navigation, you must supply it as an argument to \`getInsightOrError\``);
+    }
   }
 
-  return insightSets;
+  return insightSet;
 }
 
 export function getInsightOrError<InsightName extends keyof Trace.Insights.Types.InsightModels>(

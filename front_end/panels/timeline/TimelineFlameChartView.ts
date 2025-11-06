@@ -622,10 +622,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     }
 
     const fieldMetricResultsByNavigationId = new Map<string, Trace.Insights.Common.CrUXFieldMetricResults|null>();
-    for (const [key, insightSet] of insights) {
-      if (insightSet.navigation) {
+    for (const insightSet of insights.values()) {
+      if (insightSet.navigation?.args.data?.navigationId) {
         fieldMetricResultsByNavigationId.set(
-            key,
+            insightSet.navigation.args.data.navigationId,
             Trace.Insights.Common.getFieldMetricsForInsightSet(
                 insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
       }

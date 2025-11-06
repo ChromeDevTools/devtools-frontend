@@ -431,9 +431,13 @@ export class TraceProcessor extends EventTarget {
   #computeInsightSet(data: Handlers.Types.HandlerData, context: Insights.Types.InsightSetContext): void {
     const logger = context.options.logger;
 
+    if (!this.#insights) {
+      this.#insights = new Map();
+    }
+
     let id, urlString, navigation;
     if (context.navigation) {
-      id = context.navigationId;
+      id = `NAVIGATION_${this.#insights.size}`;
       urlString = data.Meta.finalDisplayUrlByNavigationId.get(context.navigationId) ?? data.Meta.mainFrameURL;
       navigation = context.navigation;
     } else {
@@ -503,9 +507,6 @@ export class TraceProcessor extends EventTarget {
       bounds: context.bounds,
       model: insightSetModel,
     };
-    if (!this.#insights) {
-      this.#insights = new Map();
-    }
     this.#insights.set(insightSet.id, insightSet);
     this.sortInsightSet(insightSet, context.options.metadata ?? null);
   }

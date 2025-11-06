@@ -1321,7 +1321,6 @@ import * as Persistence2 from "./../../../models/persistence/persistence.js";
 import * as Workspace from "./../../../models/workspace/workspace.js";
 import * as NetworkForward3 from "./../forward/forward.js";
 import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers3 from "./../../../ui/components/helpers/helpers.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
@@ -2203,22 +2202,29 @@ var RequestHeadersView = class extends LegacyWrapper.LegacyWrapper.WrappableComp
         void contextMenu.show();
       }
     };
-    const addContextMenuListener = (el) => {
-      if (isShortened) {
-        el.addEventListener("contextmenu", onContextMenuOpen);
-      }
-    };
     return html6`
-      <div class="row raw-headers-row" on-render=${ComponentHelpers3.Directives.nodeRenderedCallback(addContextMenuListener)}>
-        <div class="raw-headers">${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}</div>
+      <div
+        class="row raw-headers-row"
+        @contextmenu=${(event) => {
+      if (isShortened) {
+        onContextMenuOpen(event);
+      }
+    }}
+      >
+        <div class="raw-headers">
+          ${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}
+        </div>
         ${isShortened ? html6`
-          <devtools-button
-            .size=${"SMALL"}
-            .variant=${"outlined"}
-            @click=${showMore}
-            jslog=${VisualLogging6.action("raw-headers-show-more").track({ click: true })}
-          >${i18nString5(UIStrings5.showMore)}</devtools-button>
-        ` : Lit4.nothing}
+              <devtools-button
+                .size=${"SMALL"}
+                .variant=${"outlined"}
+                @click=${showMore}
+                jslog=${VisualLogging6.action("raw-headers-show-more").track({
+      click: true
+    })}
+                >${i18nString5(UIStrings5.showMore)}</devtools-button
+              >
+            ` : Lit4.nothing}
       </div>
     `;
   }

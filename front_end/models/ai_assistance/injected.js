@@ -28,6 +28,7 @@ function freestylerBindingFunc(bindingName) {
                 element: args.element,
                 resolve,
                 reject,
+                error: args.error,
             });
             // @ts-expect-error this is binding added though CDP
             globalThis[bindingName](String(freestyler.id));
@@ -47,7 +48,11 @@ function freestylerBindingFunc(bindingName) {
                 freestyler.callbacks.get(callbackId)?.resolve(styleChangesOrError);
             }
             else {
-                freestyler.callbacks.get(callbackId)?.reject(styleChangesOrError);
+                const callback = freestyler.callbacks.get(callbackId);
+                if (callback) {
+                    callback.error.message = styleChangesOrError.message;
+                    callback.reject(callback?.error);
+                }
             }
             freestyler.callbacks.delete(callbackId);
         };
@@ -55,6 +60,7 @@ function freestylerBindingFunc(bindingName) {
     }
 }
 export const freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
+export const PAGE_EXPOSED_FUNCTIONS = ['setElementStyles'];
 /**
  * Please see fileoverview
  */
@@ -91,12 +97,14 @@ function setupSetElementStyles(prefix) {
             // @ts-expect-error this won't throw if wrong
             el.style[key] = '';
         }
+        const bindingError = new Error();
         const result = await global.freestyler({
             method: 'setElementStyles',
             selector,
             className,
             styles,
             element: el,
+            error: bindingError,
         });
         const rootNode = el.getRootNode();
         if (rootNode instanceof ShadowRoot) {

@@ -13,6 +13,8 @@ export interface FreestyleCallbackArgs {
     className: `${typeof AI_ASSISTANCE_CSS_CLASS_NAME}-${number}`;
     styles: Record<string, string>;
     element: Node;
+    error: Error;
 }
 export declare const freestylerBinding: string;
+export declare const PAGE_EXPOSED_FUNCTIONS: string[];
 export declare const injectedFunctions: string;

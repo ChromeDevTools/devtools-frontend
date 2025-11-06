@@ -248,7 +248,7 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
     }
     appendApplicableItems(_event, contextMenu, target) {
         if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-            if (!target.property.synthetic) {
+            if (!target.property.property.synthetic) {
                 contextMenu.debugSection().appendItem(i18nString(UIStrings.addPropertyPathToWatch), () => this.focusAndAddExpressionToWatch(target.path()), { jslogContext: 'add-property-path-to-watch' });
             }
             return;
@@ -440,7 +440,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
         const headerElement = this.createWatchExpressionHeader(expressionValue, exceptionDetails);
         if (!exceptionDetails && expressionValue && expressionValue.hasChildren && !expressionValue.customPreview()) {
             headerElement.classList.add('watch-expression-object-header');
-            this.#treeElement = new ObjectUI.ObjectPropertiesSection.RootElement(expressionValue, this.linkifier);
+            this.#treeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(expressionValue), this.linkifier);
             this.expandController.watchSection(this.#expression, this.#treeElement);
             this.#treeElement.toggleOnClick = false;
             this.#treeElement.listItemElement.addEventListener('click', this.onSectionClick.bind(this), false);

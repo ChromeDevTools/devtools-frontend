@@ -1,10 +1,3 @@
-core/i18n/ByteUtilities.test.js
-core/i18n/DevToolsLocale.test.js
-core/i18n/NumberFormatter.test.js
-core/i18n/i18n.test.js
-core/i18n/time-utilities.test.js
-models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
-models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 core/common/Base64.test.js
 core/common/CharacterIdMap.test.js
 core/common/Color.test.js
@@ -31,6 +24,14 @@ core/common/StringOutputStream.test.js
 core/common/TextDictionary.test.js
 core/common/Throttler.test.js
 core/common/Trie.test.js
+core/i18n/ByteUtilities.test.js
+core/i18n/DevToolsLocale.test.js
+core/i18n/NumberFormatter.test.js
+core/i18n/i18n.test.js
+core/i18n/time-utilities.test.js
+models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
+models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
+core/common/Base64.browser.test.js
 core/dom_extension/DOMExtension.test.js
 core/host/AidaClient.test.js
 core/host/GdpClient.test.js
@@ -45,7 +46,7 @@ core/platform/MimeType.test.js
 core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
-core/protocol_client/NodeURL.test.js
+core/protocol_client/Dummy.test.js
 core/root/Runtime.test.js
 core/sdk/AccessibilityModel.test.js
 core/sdk/AnimationModel.test.js

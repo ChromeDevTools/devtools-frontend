@@ -1077,7 +1077,7 @@ function renderDisclamerTooltip(id, disclaimerText) {
     return html `
     <devtools-tooltip
       id=${id}
-      variant=${'rich'}
+      variant="rich"
     >
       <div class="info-tooltip-container">
         ${disclaimerText}

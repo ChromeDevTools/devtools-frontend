@@ -52,8 +52,8 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
                 </span>
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
-                    variant=${'rich'}
-                    jslogContext=${'ai-code-completion-citations'}
+                    variant="rich"
+                    jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
                     ${Directives.repeat(input.citations, citation => html `<x-link
                         tabIndex="0"

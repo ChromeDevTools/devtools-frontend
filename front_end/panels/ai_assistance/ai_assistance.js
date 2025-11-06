@@ -742,7 +742,7 @@ var DEFAULT_VIEW = (input, output, target) => {
             ></devtools-button>
             <devtools-tooltip
                 id="info-tooltip"
-                variant=${"rich"}
+                variant="rich"
               >
              <div class="info-tooltip-container">
                ${input.applyToWorkspaceTooltipText}
@@ -3519,7 +3519,7 @@ function renderDisclamerTooltip(id, disclaimerText) {
   return html4`
     <devtools-tooltip
       id=${id}
-      variant=${"rich"}
+      variant="rich"
     >
       <div class="info-tooltip-container">
         ${disclaimerText}

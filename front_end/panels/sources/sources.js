@@ -1903,8 +1903,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                   ?data-first-group=${groupIndex === 0}
                   ?data-last-group=${groupIndex === input.breakpointGroups.length - 1}
                   role=group
-                  aria-label='${group.name}'
-                  aria-description='${group.url}'
+                  aria-label=${group.name}
+                  aria-description=${group.url}
                   ?open=${live(group.expanded)}
                   @toggle=${input.groupToggleHandler.bind(void 0, group)}>
               <summary @contextmenu=${input.groupContextMenuHandler.bind(void 0, group)}
@@ -1924,7 +1924,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                           tabindex=-1
                           jslog=${VisualLogging4.toggle("breakpoint-group").track({ change: true })}></input>
                   </span>
-                  <span class='group-header-title' title='${group.url}'>
+                  <span class='group-header-title' title=${group.url}>
                     ${group.name}
                     <span class='group-header-differentiator'>
                       ${input.urlToDifferentiatingPath.get(group.url)}
@@ -13805,7 +13805,13 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI25.Widget.VBo
     }
     titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
     titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
-    const section6 = new ObjectUI3.ObjectPropertiesSection.RootElement(scope.object(), this.linkifier, emptyPlaceholder, 0, scope.extraProperties());
+    const root = new ObjectUI3.ObjectPropertiesSection.ObjectTree(
+      scope.object(),
+      0
+      /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL */
+    );
+    root.addExtraProperties(...scope.extraProperties());
+    const section6 = new ObjectUI3.ObjectPropertiesSection.RootElement(root, this.linkifier, emptyPlaceholder);
     section6.title = titleElement;
     section6.listItemElement.classList.add("scope-chain-sidebar-pane-section");
     section6.listItemElement.setAttribute("aria-label", title);
@@ -14721,7 +14727,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   }
   appendApplicableItems(_event, contextMenu, target) {
     if (target instanceof ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-      if (!target.property.synthetic) {
+      if (!target.property.property.synthetic) {
         contextMenu.debugSection().appendItem(i18nString25(UIStrings26.addPropertyPathToWatch), () => this.focusAndAddExpressionToWatch(target.path()), { jslogContext: "add-property-path-to-watch" });
       }
       return;
@@ -14912,7 +14918,7 @@ var WatchExpression = class _WatchExpression extends Common20.ObjectWrapper.Obje
     const headerElement = this.createWatchExpressionHeader(expressionValue, exceptionDetails);
     if (!exceptionDetails && expressionValue && expressionValue.hasChildren && !expressionValue.customPreview()) {
       headerElement.classList.add("watch-expression-object-header");
-      this.#treeElement = new ObjectUI4.ObjectPropertiesSection.RootElement(expressionValue, this.linkifier);
+      this.#treeElement = new ObjectUI4.ObjectPropertiesSection.RootElement(new ObjectUI4.ObjectPropertiesSection.ObjectTree(expressionValue), this.linkifier);
       this.expandController.watchSection(this.#expression, this.#treeElement);
       this.#treeElement.toggleOnClick = false;
       this.#treeElement.listItemElement.addEventListener("click", this.onSectionClick.bind(this), false);

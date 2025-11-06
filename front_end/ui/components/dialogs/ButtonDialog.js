@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import { html, render } from '../../../ui/lit/lit.js';
+import { Directives, html, render, } from '../../../ui/lit/lit.js';
 import buttonDialogStyles from './buttonDialog.css.js';
+const { ref } = Directives;
 export class ButtonDialog extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #dialog = null;
@@ -56,8 +57,10 @@ export class ButtonDialog extends HTMLElement {
       <style>${buttonDialogStyles}</style>
       <devtools-button
         @click=${this.#showDialog}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-            this.#showButton = node;
+        ${ref(el => {
+            if (el instanceof HTMLElement) {
+                this.#showButton = el;
+            }
         })}
         .data=${{
             variant: this.#data.variant,
@@ -83,8 +86,10 @@ export class ButtonDialog extends HTMLElement {
         .dialogTitle=${this.#data.dialogTitle}
         .jslogContext=${this.#data.jslogContext ?? ''}
         .state=${this.#data.state ?? "expanded" /* DialogState.EXPANDED */}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-            this.#dialog = node;
+        ${ref(el => {
+            if (el instanceof HTMLElement) {
+                this.#dialog = el;
+            }
         })}
       >
         <slot></slot>

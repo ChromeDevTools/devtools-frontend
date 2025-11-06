@@ -10,7 +10,7 @@ __export(ButtonDialog_exports, {
   ButtonDialog: () => ButtonDialog
 });
 import * as ComponentHelpers from "./../helpers/helpers.js";
-import { html, render } from "./../../lit/lit.js";
+import { Directives, html, render } from "./../../lit/lit.js";
 
 // gen/front_end/ui/components/dialogs/buttonDialog.css.js
 var buttonDialog_css_default = `/*
@@ -26,6 +26,7 @@ var buttonDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./buttonDialog.css")} */`;
 
 // gen/front_end/ui/components/dialogs/ButtonDialog.js
+var { ref } = Directives;
 var ButtonDialog = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #dialog = null;
@@ -73,8 +74,10 @@ var ButtonDialog = class extends HTMLElement {
       <style>${buttonDialog_css_default}</style>
       <devtools-button
         @click=${this.#showDialog}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback((node) => {
-      this.#showButton = node;
+        ${ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#showButton = el;
+      }
     })}
         .data=${{
       variant: this.#data.variant,
@@ -100,8 +103,10 @@ var ButtonDialog = class extends HTMLElement {
         .dialogTitle=${this.#data.dialogTitle}
         .jslogContext=${this.#data.jslogContext ?? ""}
         .state=${this.#data.state ?? "expanded"}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback((node) => {
-      this.#dialog = node;
+        ${ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#dialog = el;
+      }
     })}
       >
         <slot></slot>

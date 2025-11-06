@@ -552,14 +552,14 @@ export class RequestTimingView extends UI.Widget.VBox {
         const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(this.#request.url());
         if (origRequest) {
             const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
-            const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(requestObject);
+            const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(requestObject));
             requestTreeElement.title = i18nString(UIStrings.originalRequest);
             detailsView.appendChild(requestTreeElement);
         }
         const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(this.#request.url());
         if (response) {
             const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
-            const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(responseObject);
+            const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(responseObject));
             responseTreeElement.title = i18nString(UIStrings.responseReceived);
             detailsView.appendChild(responseTreeElement);
         }

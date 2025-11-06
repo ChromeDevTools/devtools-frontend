@@ -1,17 +1,69 @@
 import * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 import * as UI from '../../legacy.js';
 import type * as Components from '../utils/utils.js';
+interface NodeChildren {
+    properties?: ObjectTreeNode[];
+    internalProperties?: ObjectTreeNode[];
+    arrayRanges?: ArrayGroupTreeNode[];
+}
+declare abstract class ObjectTreeNodeBase {
+    #private;
+    readonly parent?: ObjectTreeNodeBase | undefined;
+    readonly propertiesMode: ObjectPropertiesMode;
+    protected extraProperties: ObjectTreeNode[];
+    constructor(parent?: ObjectTreeNodeBase | undefined, propertiesMode?: ObjectPropertiesMode);
+    abstract get object(): SDK.RemoteObject.RemoteObject | undefined;
+    removeChildren(): void;
+    removeChild(child: ObjectTreeNodeBase): void;
+    protected selfOrParentIfInternal(): ObjectTreeNodeBase;
+    children(): Promise<NodeChildren>;
+    protected populateChildren(): Promise<NodeChildren>;
+    get hasChildren(): boolean;
+    get arrayLength(): number;
+    setPropertyValue(name: string | Protocol.Runtime.CallArgument, value: string): Promise<string | undefined>;
+    addExtraProperties(...properties: SDK.RemoteObject.RemoteObjectProperty[]): void;
+}
+export declare class ObjectTree extends ObjectTreeNodeBase {
+    #private;
+    constructor(object: SDK.RemoteObject.RemoteObject, propertiesMode?: ObjectPropertiesMode);
+    get object(): SDK.RemoteObject.RemoteObject;
+}
+declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
+    #private;
+    constructor(object: SDK.RemoteObject.RemoteObject, range: {
+        fromIndex: number;
+        toIndex: number;
+        count: number;
+    }, parent?: ObjectTreeNodeBase, propertiesMode?: ObjectPropertiesMode);
+    protected populateChildren(): Promise<NodeChildren>;
+    get singular(): boolean;
+    get range(): {
+        fromIndex: number;
+        toIndex: number;
+        count: number;
+    };
+    get object(): SDK.RemoteObject.RemoteObject;
+}
+export declare class ObjectTreeNode extends ObjectTreeNodeBase {
+    readonly property: SDK.RemoteObject.RemoteObjectProperty;
+    readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined;
+    constructor(property: SDK.RemoteObject.RemoteObjectProperty, propertiesMode?: ObjectPropertiesMode, parent?: ObjectTreeNodeBase, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
+    get object(): SDK.RemoteObject.RemoteObject | undefined;
+    get name(): string;
+    selfOrParentIfInternal(): ObjectTreeNodeBase;
+}
 export declare const getObjectPropertiesSectionFrom: (element: Element) => ObjectPropertiesSection | undefined;
 export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
     #private;
-    private readonly object;
+    private readonly root;
     editable: boolean;
     titleElement: Element;
     skipProtoInternal?: boolean;
     constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean);
     static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): Element;
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
-    static compareProperties(propertyA: SDK.RemoteObject.RemoteObjectProperty, propertyB: SDK.RemoteObject.RemoteObjectProperty): number;
+    static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty): number;
     static createNameElement(name: string | null, isPrivate?: boolean): Element;
     static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string): Element;
     static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): ObjectPropertyValue;
@@ -42,11 +94,8 @@ export declare class RootElement extends UI.TreeOutline.TreeElement {
     private readonly object;
     private readonly linkifier;
     private readonly emptyPlaceholder;
-    private readonly propertiesMode;
-    private readonly extraProperties;
-    private readonly targetObject;
     toggleOnClick: boolean;
-    constructor(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null, propertiesMode?: ObjectPropertiesMode, extraProperties?: SDK.RemoteObject.RemoteObjectProperty[], targetObject?: SDK.RemoteObject.RemoteObject);
+    constructor(object: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null);
     onexpand(): void;
     oncollapse(): void;
     ondblclick(_e: Event): boolean;
@@ -59,7 +108,7 @@ export declare class RootElement extends UI.TreeOutline.TreeElement {
  **/
 export declare const InitialVisibleChildrenLimit = 200;
 export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
-    property: SDK.RemoteObject.RemoteObjectProperty;
+    property: ObjectTreeNode;
     toggleOnClick: boolean;
     private highlightChanges;
     private linkifier;
@@ -72,9 +121,9 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private editableDiv;
     propertyValue?: ObjectPropertyValue;
     expandedValueElement?: Element | null;
-    constructor(property: SDK.RemoteObject.RemoteObjectProperty, linkifier?: Components.Linkifier.Linkifier);
-    static populate(treeElement: UI.TreeOutline.TreeElement, value: SDK.RemoteObject.RemoteObject, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null, propertiesMode?: ObjectPropertiesMode, extraProperties?: SDK.RemoteObject.RemoteObjectProperty[], targetValue?: SDK.RemoteObject.RemoteObject): Promise<void>;
-    static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, properties: SDK.RemoteObject.RemoteObjectProperty[], internalProperties: SDK.RemoteObject.RemoteObjectProperty[] | null, skipProto: boolean, skipGettersAndSetters: boolean, value: SDK.RemoteObject.RemoteObject | null, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
+    constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier);
+    static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
+    static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, { properties, internalProperties }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
     private static appendEmptyPlaceholderIfNeeded;
     static createRemoteObjectAccessorPropertySpan(object: SDK.RemoteObject.RemoteObject | null, propertyPath: string[], callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement;
     setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
@@ -104,21 +153,15 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     path(): string;
 }
 export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
+    #private;
     toggleOnClick: boolean;
-    private readonly fromIndex;
-    private readonly toIndex;
-    private readonly object;
-    private readonly propertyCount;
     private readonly linkifier;
-    constructor(object: SDK.RemoteObject.RemoteObject, fromIndex: number, toIndex: number, propertyCount: number, linkifier?: Components.Linkifier.Linkifier);
-    static populateArray(treeNode: UI.TreeOutline.TreeElement, object: SDK.RemoteObject.RemoteObject, fromIndex: number, toIndex: number, linkifier?: Components.Linkifier.Linkifier): Promise<void>;
-    private static populateRanges;
-    private static populateAsFragment;
-    private static populateNonIndexProperties;
+    constructor(child: ArrayGroupTreeNode, linkifier?: Components.Linkifier.Linkifier);
+    static populate(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, linkifier?: Components.Linkifier.Linkifier): Promise<void>;
     onpopulate(): Promise<void>;
     onattach(): void;
-    private static bucketThreshold;
-    private static sparseIterationThreshold;
+    static bucketThreshold: number;
+    static sparseIterationThreshold: number;
 }
 export declare class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
     constructor();
@@ -152,3 +195,4 @@ export declare class ExpandableTextPropertyValue extends ObjectPropertyValue {
     private expandText;
     private copyText;
 }
+export {};

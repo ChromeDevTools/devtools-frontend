@@ -7,7 +7,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
-import { ObjectPropertiesSection, ObjectPropertiesSectionsTreeOutline, ObjectPropertyTreeElement, } from './ObjectPropertiesSection.js';
+import { ObjectPropertiesSection, ObjectPropertiesSectionsTreeOutline, ObjectPropertyTreeElement, ObjectTree, } from './ObjectPropertiesSection.js';
 const UIStrings = {
     /**
      * @description A context menu item in the Custom Preview Component
@@ -143,7 +143,7 @@ export class CustomPreviewSection {
                 this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline({ readOnly: true });
                 this.defaultBodyTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
                 this.defaultBodyTreeOutline.element.classList.add('custom-expandable-section-default-body');
-                void ObjectPropertyTreeElement.populate(this.defaultBodyTreeOutline.rootElement(), this.object, false, false);
+                void ObjectPropertyTreeElement.populate(this.defaultBodyTreeOutline.rootElement(), new ObjectTree(this.object), false, false);
                 this.cachedContent = this.defaultBodyTreeOutline.element;
             }
             else {

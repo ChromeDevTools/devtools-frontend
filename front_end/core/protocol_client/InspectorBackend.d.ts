@@ -1,8 +1,7 @@
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Platform from '../platform/platform.js';
-import { type CDPConnection, type CDPConnectionObserver, type CDPError, type Command, type CommandParams, type CommandResult } from './CDPConnection.js';
-import { ConnectionTransport } from './ConnectionTransport.js';
+import { type CDPConnection, type CDPConnectionObserver, type CDPEvent, type Event } from './CDPConnection.js';
 type MessageParams = Record<string, any>;
 type ProtocolDomainName = ProtocolProxyApi.ProtocolDomainName;
 export interface MessageError {
@@ -89,35 +88,22 @@ export declare const test: {
      */
     onMessageReceived: ((message: Object) => void) | null;
 };
-export declare class SessionRouter implements CDPConnection {
+export declare class SessionRouter implements CDPConnectionObserver {
     #private;
-    constructor(connection: ConnectionTransport);
-    observe(observer: CDPConnectionObserver): void;
-    unobserve(observer: CDPConnectionObserver): void;
+    constructor(connection: CDPConnection);
     registerSession(target: TargetBase, sessionId: string): void;
     unregisterSession(sessionId: string): void;
-    private nextMessageId;
-    connection(): ConnectionTransport;
-    send<T extends Command>(method: T, params: CommandParams<T>, sessionId: string | undefined): Promise<{
-        result: CommandResult<T>;
-    } | {
-        error: CDPError;
-    }>;
-    private sendRawMessageForTesting;
-    private onMessage;
-    private hasOutstandingNonLongPollingRequests;
-    private deprecatedRunAfterPendingDispatches;
-    private executeAfterPendingDispatches;
+    onDisconnect(reason: string): void;
+    onEvent<T extends Event>(event: CDPEvent<T>): void;
+    get connection(): CDPConnection;
 }
 export declare class TargetBase {
     #private;
-    needsNodeJSPatching: boolean;
     readonly sessionId: string;
-    constructor(needsNodeJSPatching: boolean, parentTarget: TargetBase | null, sessionId: string, connection: ConnectionTransport | null);
+    constructor(parentTarget: TargetBase | null, sessionId: string, connection: CDPConnection | null);
     dispatch(eventMessage: EventMessage): void;
     dispose(_reason: string): void;
     isDisposed(): boolean;
-    markAsNodeJSForTest(): void;
     router(): SessionRouter | null;
     /**
      * Make sure that `Domain` is only ever instantiated with one protocol domain
@@ -205,7 +191,6 @@ export declare class TargetBase {
     registerTracingDispatcher(dispatcher: ProtocolProxyApi.TracingDispatcher): void;
     registerWebAudioDispatcher(dispatcher: ProtocolProxyApi.WebAudioDispatcher): void;
     registerWebAuthnDispatcher(dispatcher: ProtocolProxyApi.WebAuthnDispatcher): void;
-    getNeedsNodeJSPatching(): boolean;
 }
 /**
  * This is a class that serves as the prototype for a domains #agents (every target

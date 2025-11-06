@@ -21,33 +21,6 @@ async function setup() {
   ThemeSupport.ThemeSupport.instance({ forceNew: true, setting });
 }
 
-// gen/front_end/ui/components/helpers/directives.js
-var directives_exports = {};
-__export(directives_exports, {
-  nodeRenderedCallback: () => nodeRenderedCallback
-});
-import * as Lit from "./../../lit/lit.js";
-var NodeRenderedCallback = class extends Lit.Directive.Directive {
-  constructor(partInfo) {
-    super(partInfo);
-    if (partInfo.type !== Lit.Directive.PartType.ATTRIBUTE) {
-      throw new Error("Node rendered callback directive must be used as an attribute.");
-    }
-  }
-  update(part, [callback]) {
-    callback(part.element);
-  }
-  /*
-   * Because this directive doesn't render anything, there's no implementation
-   * here for the render method. But we need it to state that it takes in a
-   * callback function at the callsite. Without this definition, the types in
-   * the update() method above don't get correctly picked up.
-   */
-  render(_callback) {
-  }
-};
-var nodeRenderedCallback = Lit.Directive.directive(NodeRenderedCallback);
-
 // gen/front_end/ui/components/helpers/get-root-node.js
 var get_root_node_exports = {};
 __export(get_root_node_exports, {
@@ -99,7 +72,6 @@ function isScheduledRender(component) {
 }
 export {
   component_server_setup_exports as ComponentServerSetup,
-  directives_exports as Directives,
   get_root_node_exports as GetRootNode,
   scheduled_render_exports as ScheduledRender
 };

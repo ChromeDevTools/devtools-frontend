@@ -11,7 +11,7 @@ import * as Dialogs from '../dialogs/dialogs.js';
 import menuStyles from './menu.css.js';
 import menuGroupStyles from './menuGroup.css.js';
 import menuItemStyles from './menuItem.css.js';
-const { html } = Lit;
+const { html, Directives: { ref } } = Lit;
 const selectedItemCheckmark = new URL('../../../Images/checkmark.svg', import.meta.url).toString();
 export class Menu extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
@@ -309,8 +309,10 @@ export class Menu extends HTMLElement {
         .dialogShownCallback=${this.#dialogDeployed.bind(this)}
         .horizontalAlignment=${this.horizontalAlignment}
         .getConnectorCustomXPosition=${this.getConnectorCustomXPosition}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback((domNode) => {
-            this.#dialog = domNode;
+        ${ref(el => {
+            if (el instanceof HTMLElement) {
+                this.#dialog = el;
+            }
         })}
         >
         <span id="container" role="menu" tabIndex="0" @keydown=${this.#handleDialogKeyDown} jslog=${VisualLogging.menu().track({ resize: true, keydown: 'Escape' })}>

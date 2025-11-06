@@ -272,18 +272,22 @@ const DEFAULT_VIEW = (input, output, target) => {
                   .disabled=${input.patchSuggestionState === PatchSuggestionState.LOADING}
                   ${Directives.ref(output.changeRef)}
                 >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
-              ` : nothing}
+              ` :
+            nothing}
             </div>
-          ` : nothing}
+          ` :
+            nothing}
           <div class="apply-to-workspace-container" aria-live="polite">
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html `
+            ${input.patchSuggestionState === PatchSuggestionState.LOADING ?
+            html `
               <div class="loading-text-container" jslog=${VisualLogging.section('patch-widget.apply-to-workspace-loading')}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
                 </span>
               </div>
-            ` : html `
+            ` :
+            html `
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'patch-widget.apply-to-workspace'}
@@ -296,7 +300,8 @@ const DEFAULT_VIEW = (input, output, target) => {
               .jslogContext=${'cancel'}
               .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}>
               ${lockedString(UIStringsNotTranslate.cancel)}
-            </devtools-button>` : nothing}
+            </devtools-button>` :
+            nothing}
             <devtools-button
               aria-details="info-tooltip"
               .jslogContext=${'patch-widget.info-tooltip-trigger'}
@@ -305,7 +310,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             ></devtools-button>
             <devtools-tooltip
                 id="info-tooltip"
-                variant=${'rich'}
+                variant="rich"
               >
              <div class="info-tooltip-container">
                ${input.applyToWorkspaceTooltipText}

@@ -4,7 +4,7 @@
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
 import { CDPErrorStatus } from './CDPConnection.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
-import { NodeURL } from './NodeURL.js';
+import { DevToolsCDPConnection } from './DevToolsCDPConnection.js';
 export const splitQualifiedName = (string) => {
     const [domain, eventName] = string.split('.');
     return [domain, eventName];
@@ -105,34 +105,12 @@ export const test = {
      */
     onMessageReceived: null,
 };
-const LongPollingMethods = new Set(['CSS.takeComputedStyleUpdates']);
 export class SessionRouter {
     #connection;
-    #lastMessageId = 1;
-    #pendingResponsesCount = 0;
-    #pendingLongPollingMessageIds = new Set();
     #sessions = new Map();
-    #pendingScripts = [];
-    #callbacks = new Map();
-    #observers = new Set();
     constructor(connection) {
         this.#connection = connection;
-        test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
-        test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
-        this.#connection.setOnMessage(this.onMessage.bind(this));
-        this.#connection.setOnDisconnect(reason => {
-            const session = this.#sessions.get('');
-            if (session) {
-                session.target.dispose(reason);
-            }
-            this.#observers.forEach(observer => observer.onDisconnect(reason));
-        });
-    }
-    observe(observer) {
-        this.#observers.add(observer);
-    }
-    unobserve(observer) {
-        this.#observers.delete(observer);
+        this.#connection.observe(this);
     }
     registerSession(target, sessionId) {
         this.#sessions.set(sessionId, { target });
@@ -142,136 +120,32 @@ export class SessionRouter {
         if (!session) {
             return;
         }
-        for (const { resolve, method, sessionId: callbackSessionId } of this.#callbacks.values()) {
-            if (sessionId !== callbackSessionId) {
-                continue;
-            }
-            resolve({
-                error: {
-                    message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
-                    code: CDPErrorStatus.SESSION_NOT_FOUND,
-                }
-            });
+        if (this.#connection instanceof DevToolsCDPConnection) {
+            this.#connection.resolvePendingCalls(sessionId);
         }
         this.#sessions.delete(sessionId);
     }
-    nextMessageId() {
-        return this.#lastMessageId++;
+    onDisconnect(reason) {
+        const session = this.#sessions.get('');
+        if (session) {
+            session.target.dispose(reason);
+        }
     }
-    connection() {
-        return this.#connection;
-    }
-    send(method, params, sessionId) {
-        const messageId = this.nextMessageId();
-        const messageObject = {
-            id: messageId,
-            method,
-        };
-        if (params) {
-            messageObject.params = params;
-        }
-        if (sessionId) {
-            messageObject.sessionId = sessionId;
-        }
-        if (test.dumpProtocol) {
-            test.dumpProtocol('frontend: ' + JSON.stringify(messageObject));
-        }
-        if (test.onMessageSent) {
-            const domain = method.split('.')[0];
-            const paramsObject = JSON.parse(JSON.stringify(params || {}));
-            test.onMessageSent({ domain, method, params: paramsObject, id: messageId, sessionId });
-        }
-        ++this.#pendingResponsesCount;
-        if (LongPollingMethods.has(method)) {
-            this.#pendingLongPollingMessageIds.add(messageId);
-        }
-        return new Promise(resolve => {
-            this.#callbacks.set(messageId, { resolve, method, sessionId });
-            this.#connection.sendRawMessage(JSON.stringify(messageObject));
-        });
-    }
-    sendRawMessageForTesting(method, params, callback, sessionId = '') {
-        void this.send(method, params, sessionId).then(response => {
-            if ('error' in response && response.error) {
-                callback?.(response.error, null);
-            }
-            else if ('result' in response) {
-                callback?.(null, response.result);
-            }
-        });
-    }
-    onMessage(message) {
-        if (test.dumpProtocol) {
-            test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
-        }
-        if (test.onMessageReceived) {
-            const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
-            test.onMessageReceived(messageObjectCopy);
-        }
-        const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message);
-        const sessionId = messageObject.sessionId || '';
+    onEvent(event) {
+        const sessionId = event.sessionId || '';
         const session = this.#sessions.get(sessionId);
-        if (session?.target.getNeedsNodeJSPatching()) {
-            NodeURL.patch(messageObject);
-        }
-        if ('id' in messageObject && messageObject.id !== undefined) { // just a response for some request
-            const callback = this.#callbacks.get(messageObject.id);
-            this.#callbacks.delete(messageObject.id);
-            if (!callback) {
-                // Ignore messages with unknown IDs, we might see puppeteer proxied messages here.
-                return;
-            }
-            callback.resolve(messageObject);
-            --this.#pendingResponsesCount;
-            this.#pendingLongPollingMessageIds.delete(messageObject.id);
-            if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
-                this.deprecatedRunAfterPendingDispatches();
-            }
-        }
-        else if ('method' in messageObject) {
-            // This cast is justified as we just checked for the presence of messageObject.method.
-            session?.target.dispatch(messageObject);
-            this.#observers.forEach(observer => observer.onEvent(messageObject));
-        }
-        else {
-            InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
-        }
+        session?.target.dispatch(event);
     }
-    hasOutstandingNonLongPollingRequests() {
-        return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
-    }
-    deprecatedRunAfterPendingDispatches(script) {
-        if (script) {
-            this.#pendingScripts.push(script);
-        }
-        // Execute all promises.
-        window.setTimeout(() => {
-            if (!this.hasOutstandingNonLongPollingRequests()) {
-                this.executeAfterPendingDispatches();
-            }
-            else {
-                this.deprecatedRunAfterPendingDispatches();
-            }
-        }, 0);
-    }
-    executeAfterPendingDispatches() {
-        if (!this.hasOutstandingNonLongPollingRequests()) {
-            const scripts = this.#pendingScripts;
-            this.#pendingScripts = [];
-            for (let id = 0; id < scripts.length; ++id) {
-                scripts[id]();
-            }
-        }
+    get connection() {
+        return this.#connection;
     }
 }
 export class TargetBase {
-    needsNodeJSPatching;
     sessionId;
     #router;
     #agents = new Map();
     #dispatchers = new Map();
-    constructor(needsNodeJSPatching, parentTarget, sessionId, connection) {
-        this.needsNodeJSPatching = needsNodeJSPatching;
+    constructor(parentTarget, sessionId, connection) {
         this.sessionId = sessionId;
         if (parentTarget && !sessionId) {
             throw new Error('Specifying a parent target requires a session ID');
@@ -284,7 +158,7 @@ export class TargetBase {
             router = new SessionRouter(connection);
         }
         else {
-            router = new SessionRouter(ConnectionTransport.getFactory()());
+            router = new SessionRouter(new DevToolsCDPConnection(ConnectionTransport.getFactory()()));
         }
         this.#router = router;
         router.registerSession(this, this.sessionId);
@@ -315,9 +189,6 @@ export class TargetBase {
     }
     isDisposed() {
         return !this.#router;
-    }
-    markAsNodeJSForTest() {
-        this.needsNodeJSPatching = true;
     }
     router() {
         return this.#router;
@@ -570,9 +441,6 @@ export class TargetBase {
     registerWebAuthnDispatcher(dispatcher) {
         this.registerDispatcher('WebAuthn', dispatcher);
     }
-    getNeedsNodeJSPatching() {
-        return this.needsNodeJSPatching;
-    }
 }
 /** These are not logged as console.error */
 const IGNORED_ERRORS = new Set([
@@ -608,11 +476,12 @@ class AgentPrototype {
         this['invoke_' + methodName] = invoke;
     }
     invoke(method, request) {
-        const router = this.target.router();
-        if (!router) {
+        const connection = this.target.router()?.connection;
+        if (!connection) {
             return Promise.resolve({ result: null, getError: () => `Connection is closed, can\'t dispatch pending call to ${method}` });
         }
-        return router.send(method, request, this.target.sessionId).then(response => {
+        return connection.send(method, request, this.target.sessionId)
+            .then(response => {
             if ('error' in response && response.error) {
                 if (!test.suppressRequestErrors && !IGNORED_ERRORS.has(response.error.code)) {
                     console.error('Request ' + method + ' failed. ' + JSON.stringify(response.error));

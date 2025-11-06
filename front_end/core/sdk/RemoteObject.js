@@ -665,6 +665,9 @@ export class LocalJSONObject extends RemoteObject {
         if (this.#value instanceof Date) {
             return 'date';
         }
+        if (this.#value instanceof Error) {
+            return 'error';
+        }
         return undefined;
     }
     get hasChildren() {

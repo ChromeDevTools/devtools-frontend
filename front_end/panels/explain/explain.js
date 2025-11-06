@@ -1273,7 +1273,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
         <div class="filler"></div>
         <div class="rating">
           <devtools-button
-            data-rating=${"true"}
+            data-rating="true"
             .data=${{
           variant: "icon_toggle",
           size: "SMALL",
@@ -1289,7 +1289,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
             @click=${this.#onRating}
           ></devtools-button>
           <devtools-button
-            data-rating=${"false"}
+            data-rating="false"
             .data=${{
           variant: "icon_toggle",
           size: "SMALL",

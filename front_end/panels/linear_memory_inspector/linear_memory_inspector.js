@@ -436,9 +436,9 @@ var LinearMemoryInspectorController = class _LinearMemoryInspectorController ext
     void UI2.ViewManager.ViewManager.instance().showView("linear-memory-inspector", omitFocus);
   }
   appendApplicableItems(_event, contextMenu, target) {
-    if (target.property.value?.isLinearMemoryInspectable()) {
+    if (target.property.object?.isLinearMemoryInspectable()) {
       const expression = target.path();
-      const object = target.property.value;
+      const object = target.property.object;
       contextMenu.debugSection().appendItem(i18nString2(UIStrings2.openInMemoryInspectorPanel), this.reveal.bind(this, new SDK.RemoteObject.LinearMemoryInspectable(object, expression)), { jslogContext: "reveal-in-memory-inspector" });
     }
   }

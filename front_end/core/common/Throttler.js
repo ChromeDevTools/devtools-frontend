@@ -63,10 +63,10 @@ export class Throttler {
         }
         clearTimeout(this.#processTimeout);
         const timeout = this.#asSoonAsPossible ? 0 : this.#timeout;
-        this.#processTimeout = window.setTimeout(this.#onTimeout.bind(this), timeout);
+        this.#processTimeout = setTimeout(this.#onTimeout.bind(this), timeout);
     }
     #getTime() {
-        return window.performance.now();
+        return performance.now();
     }
 }
 //# sourceMappingURL=Throttler.js.map

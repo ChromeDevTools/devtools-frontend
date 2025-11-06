@@ -1635,7 +1635,7 @@ var UIStrings = {
   /**
    * @description Event category in the Performance panel for time spent to perform Garbage Collection for C++: https://chromium.googlesource.com/v8/v8/+/main/include/cppgc/README.md
    */
-  cppGc: "CPP GC",
+  cppGc: "C++ GC",
   /**
    * @description Event category in the Performance panel for time spent to perform encryption
    */

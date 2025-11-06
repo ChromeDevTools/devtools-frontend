@@ -370,7 +370,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appendJSONPayloadParsed(rootListItem, parsedObject, sourceText) {
         const object = SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject);
-        const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
+        const section = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
         section.title = (object.description);
         section.expand();
         // `editable` is not a valid property for `ObjectUI.ObjectPropertiesSection.RootElement`. Only for

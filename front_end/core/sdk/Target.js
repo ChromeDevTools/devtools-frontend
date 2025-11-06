@@ -31,8 +31,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     #targetInfo;
     #creatingModels;
     constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection, targetInfo) {
-        const needsNodeJSPatching = type === Type.NODE;
-        super(needsNodeJSPatching, parentTarget, sessionId, connection);
+        super(parentTarget, sessionId, connection);
         this.#targetManager = targetManager;
         this.#name = name;
         this.#capabilitiesMask = 0;
@@ -135,7 +134,6 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         return this.#type;
     }
     markAsNodeJSForTest() {
-        super.markAsNodeJSForTest();
         this.#type = Type.NODE;
     }
     targetManager() {

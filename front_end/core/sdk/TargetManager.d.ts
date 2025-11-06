@@ -34,7 +34,7 @@ export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         scoped: boolean;
     }): void;
     unobserveTargets(targetObserver: Observer): void;
-    createTarget(id: Protocol.Target.TargetID | 'main', name: string, type: TargetType, parentTarget: Target | null, sessionId?: string, waitForDebuggerInPage?: boolean, connection?: ProtocolClient.ConnectionTransport.ConnectionTransport, targetInfo?: Protocol.Target.TargetInfo): Target;
+    createTarget(id: Protocol.Target.TargetID | 'main', name: string, type: TargetType, parentTarget: Target | null, sessionId?: string, waitForDebuggerInPage?: boolean, connection?: ProtocolClient.CDPConnection.CDPConnection, targetInfo?: Protocol.Target.TargetInfo): Target;
     removeTarget(target: Target): void;
     targets(): Target[];
     targetById(id: string): Target | null;

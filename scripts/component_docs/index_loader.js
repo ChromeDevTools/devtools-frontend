@@ -1,8 +1,11 @@
 
+    import {setup, cleanup} from './docs_environment.js';
+
     const components = {
       'Button': () => import('../../front_end/ui/components/buttons/Button.docs.js'),
 'Icon': () => import('../../front_end/ui/components/icon_button/Icon.docs.js'),
 'Spinners': () => import('../../front_end/ui/components/spinners/Spinners.docs.js'),
+'SurveyLink': () => import('../../front_end/ui/components/survey_link/SurveyLink.docs.js'),
 'Switch': () => import('../../front_end/ui/components/switch/Switch.docs.js'),
 'Tooltip': () => import('../../front_end/ui/components/tooltips/Tooltip.docs.js'),
 'RadioButton': () => import('../../front_end/ui/legacy/RadioButton.docs.js'),
@@ -21,12 +24,14 @@
       // Replace the container to start off with a clean one.
       if (container) {
         container.remove();
+        await cleanup();
       }
 
       container = document.createElement('div');
       container.id = 'container';
       mainContent.appendChild(container);
 
+      await setup();
       const {render} = await components[name]();
       render(container);
     }

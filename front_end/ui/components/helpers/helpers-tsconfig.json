@@ -35,7 +35,6 @@
   },
   "files": [
     "../../../../../../../front_end/ui/components/helpers/component-server-setup.ts",
-    "../../../../../../../front_end/ui/components/helpers/directives.ts",
     "../../../../../../../front_end/ui/components/helpers/get-root-node.ts",
     "../../../../../../../front_end/ui/components/helpers/scheduled-render.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -54,9 +53,6 @@
     },
     {
       "path": "../../legacy/theme_support/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../lit/bundle-tsconfig.json"
     },
     {
       "path": "../render_coordinator/bundle-tsconfig.json"

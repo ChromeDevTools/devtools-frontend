@@ -991,8 +991,8 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
           aria-describedby=${input.spinnerTooltipId}></devtools-spinner>
           <devtools-tooltip
               id=${input.spinnerTooltipId}
-              variant=${"rich"}
-              jslogContext=${"ai-code-completion-spinner-tooltip"}>
+              variant="rich"
+              jslogContext="ai-code-completion-spinner-tooltip">
           <div class="disclaimer-tooltip-container"><div class="tooltip-text">
             ${lockedString2(UIStringsNotTranslate2.tooltipTextForSpinner)}
           </div></div></devtools-tooltip>
@@ -1011,8 +1011,8 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
           >${lockedString2(UIStringsNotTranslate2.relevantData)}</span>${lockedString2(UIStringsNotTranslate2.isSentToGoogle)}
           <devtools-tooltip
               id=${input.disclaimerTooltipId}
-              variant=${"rich"}
-              jslogContext=${"ai-code-completion-disclaimer"}
+              variant="rich"
+              jslogContext="ai-code-completion-disclaimer"
               ${Directives.ref((el) => {
     if (el instanceof HTMLElement) {
       output.hideTooltip = () => {
@@ -1273,8 +1273,8 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
                 </span>
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
-                    variant=${"rich"}
-                    jslogContext=${"ai-code-completion-citations"}
+                    variant="rich"
+                    jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
                     ${Directives2.repeat(input.citations, (citation) => html5`<x-link
                         tabIndex="0"

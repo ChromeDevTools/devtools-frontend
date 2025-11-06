@@ -47,7 +47,7 @@ export async function compress(str) {
 async function gzipCodec(buffer, codecStream) {
     const readable = new ReadableStream({
         start(controller) {
-            controller.enqueue(buffer);
+            controller.enqueue(buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : buffer);
             controller.close();
         }
     });

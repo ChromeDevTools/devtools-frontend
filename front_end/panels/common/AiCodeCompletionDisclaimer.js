@@ -63,8 +63,8 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
           aria-describedby=${input.spinnerTooltipId}></devtools-spinner>
           <devtools-tooltip
               id=${input.spinnerTooltipId}
-              variant=${'rich'}
-              jslogContext=${'ai-code-completion-spinner-tooltip'}>
+              variant="rich"
+              jslogContext="ai-code-completion-spinner-tooltip">
           <div class="disclaimer-tooltip-container"><div class="tooltip-text">
             ${lockedString(UIStringsNotTranslate.tooltipTextForSpinner)}
           </div></div></devtools-tooltip>
@@ -83,8 +83,8 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
           >${lockedString(UIStringsNotTranslate.relevantData)}</span>${lockedString(UIStringsNotTranslate.isSentToGoogle)}
           <devtools-tooltip
               id=${input.disclaimerTooltipId}
-              variant=${'rich'}
-              jslogContext=${'ai-code-completion-disclaimer'}
+              variant="rich"
+              jslogContext="ai-code-completion-disclaimer"
               ${Directives.ref(el => {
         if (el instanceof HTMLElement) {
             output.hideTooltip = () => {

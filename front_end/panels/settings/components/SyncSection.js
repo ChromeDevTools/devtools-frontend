@@ -95,7 +95,7 @@ function renderDataDisclaimer() {
       aria-details="gdp-profile-tooltip"
       aria-describedby="gdp-profile-tooltip"
       >${i18nString(UIStrings.relevantData)}</span>
-    <devtools-tooltip id="gdp-profile-tooltip" variant=${'rich'}>
+    <devtools-tooltip id="gdp-profile-tooltip" variant="rich">
       <div class="tooltip-content" tabindex="0">${i18nString(UIStrings.tooltipDisclaimerText)}</div>
     </devtools-tooltip>`;
     const container = document.createElement('span');

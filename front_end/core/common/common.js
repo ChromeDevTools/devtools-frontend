@@ -3771,10 +3771,10 @@ __export(Debouncer_exports, {
   debounce: () => debounce
 });
 var debounce = function(func, delay) {
-  let timer = 0;
+  let timer;
   const debounced = (...args) => {
     clearTimeout(timer);
-    timer = window.setTimeout(() => func(...args), delay);
+    timer = setTimeout(() => func(...args), delay);
   };
   return debounced;
 };
@@ -3843,7 +3843,7 @@ async function compress(str) {
 async function gzipCodec(buffer, codecStream) {
   const readable = new ReadableStream({
     start(controller) {
-      controller.enqueue(buffer);
+      controller.enqueue(buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : buffer);
       controller.close();
     }
   });
@@ -6913,10 +6913,10 @@ var Throttler = class {
     }
     clearTimeout(this.#processTimeout);
     const timeout = this.#asSoonAsPossible ? 0 : this.#timeout;
-    this.#processTimeout = window.setTimeout(this.#onTimeout.bind(this), timeout);
+    this.#processTimeout = setTimeout(this.#onTimeout.bind(this), timeout);
   }
   #getTime() {
-    return window.performance.now();
+    return performance.now();
   }
 };
 

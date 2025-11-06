@@ -1656,8 +1656,10 @@ var FieldSettingsDialog = class extends HTMLElement {
     return html5`
       <div class="origin-mapping-description">${i18nString6(UIStrings6.mapDevelopmentOrigins)}</div>
       <devtools-origin-map
-        on-render=${ComponentHelpers3.Directives.nodeRenderedCallback((node) => {
-      this.#originMap = node;
+        ${Lit5.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#originMap = el;
+      }
     })}
       ></devtools-origin-map>
       <div class="origin-mapping-button-section">
@@ -1668,7 +1670,7 @@ var FieldSettingsDialog = class extends HTMLElement {
       title: i18nString6(UIStrings6.new),
       iconName: "plus"
     }}
-          jslogContext=${"new-origin-mapping"}
+          jslogContext="new-origin-mapping"
         >${i18nString6(UIStrings6.new)}</devtools-button>
       </div>
     `;
@@ -1688,8 +1690,10 @@ var FieldSettingsDialog = class extends HTMLElement {
         .jslogContext=${"timeline.field-data.settings"}
         .expectedMutationsSelector=${".timeline-settings-pane option"}
         .dialogTitle=${i18nString6(UIStrings6.configureFieldData)}
-        on-render=${ComponentHelpers3.Directives.nodeRenderedCallback((node) => {
-      this.#dialog = node;
+        ${Lit5.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#dialog = el;
+      }
     })}
       >
         <div class="content">
@@ -4100,8 +4104,10 @@ var MetricCard = class extends HTMLElement {
             class="tooltip"
             role="tooltip"
             aria-label=${i18nString12(UIStrings13.viewCardDetails)}
-            on-render=${ComponentHelpers7.Directives.nodeRenderedCallback((node) => {
-      this.#tooltipEl = node;
+            ${Lit10.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#tooltipEl = el;
+      }
     })}
           >
             <div class="tooltip-scroll">
@@ -5281,10 +5287,15 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderLogSection() {
     return html12`
-      <section class="logs-section" aria-label=${i18nString13(UIStrings14.eventLogs)}>
+      <section
+        class="logs-section"
+        aria-label=${i18nString13(UIStrings14.eventLogs)}
+      >
         <devtools-live-metrics-logs
-          on-render=${ComponentHelpers8.Directives.nodeRenderedCallback((node) => {
-      this.#logsEl = node;
+          ${Lit12.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#logsEl = el;
+      }
     })}
         >
           ${this.#renderInteractionsLog()}
@@ -5323,8 +5334,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     return html12`
       <ol class="log"
         slot="interactions-log-content"
-        on-render=${ComponentHelpers8.Directives.nodeRenderedCallback((node) => {
-      this.#interactionsListEl = node;
+        ${Lit12.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#interactionsListEl = el;
+      }
     })}
       >
         ${this.#interactions.values().map((interaction) => {
@@ -5414,8 +5427,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     return html12`
       <ol class="log"
         slot="layout-shifts-log-content"
-        on-render=${ComponentHelpers8.Directives.nodeRenderedCallback((node) => {
-      this.#layoutShiftsListEl = node;
+        ${Lit12.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#layoutShiftsListEl = el;
+      }
     })}
       >
         ${this.#layoutShifts.map((layoutShift) => {
@@ -5471,8 +5486,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
           <main class="live-metrics">
             <h2 class="section-title">${liveMetricsTitle}</h2>
             <div class="metric-cards"
-              on-render=${ComponentHelpers8.Directives.nodeRenderedCallback((node) => {
-      this.#tooltipContainerEl = node;
+              ${Lit12.Directives.ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#tooltipContainerEl = el;
+      }
     })}
             >
               <div id="lcp">

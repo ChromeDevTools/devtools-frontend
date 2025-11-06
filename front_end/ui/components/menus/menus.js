@@ -152,7 +152,7 @@ var menuItem_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./menuItem.css")} */`;
 
 // gen/front_end/ui/components/menus/Menu.js
-var { html } = Lit;
+var { html, Directives: { ref } } = Lit;
 var selectedItemCheckmark = new URL("../../../Images/checkmark.svg", import.meta.url).toString();
 var Menu = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -436,8 +436,10 @@ var Menu = class extends HTMLElement {
         .dialogShownCallback=${this.#dialogDeployed.bind(this)}
         .horizontalAlignment=${this.horizontalAlignment}
         .getConnectorCustomXPosition=${this.getConnectorCustomXPosition}
-        on-render=${ComponentHelpers.Directives.nodeRenderedCallback((domNode) => {
-      this.#dialog = domNode;
+        ${ref((el) => {
+      if (el instanceof HTMLElement) {
+        this.#dialog = el;
+      }
     })}
         >
         <span id="container" role="menu" tabIndex="0" @keydown=${this.#handleDialogKeyDown} jslog=${VisualLogging.menu().track({ resize: true, keydown: "Escape" })}>

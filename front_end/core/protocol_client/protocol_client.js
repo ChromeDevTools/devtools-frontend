@@ -36,6 +36,12 @@ var ConnectionTransport = class {
   }
 };
 
+// gen/front_end/core/protocol_client/DevToolsCDPConnection.js
+var DevToolsCDPConnection_exports = {};
+__export(DevToolsCDPConnection_exports, {
+  DevToolsCDPConnection: () => DevToolsCDPConnection
+});
+
 // gen/front_end/core/protocol_client/InspectorBackend.js
 var InspectorBackend_exports = {};
 __export(InspectorBackend_exports, {
@@ -343,7 +349,7 @@ function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerCommand("Cast.startTabMirroring", [{ "name": "sinkName", "type": "string", "optional": false, "description": "", "typeRef": null }], [], "Starts mirroring the tab to the sink.");
   inspectorBackend2.registerCommand("Cast.stopCasting", [{ "name": "sinkName", "type": "string", "optional": false, "description": "", "typeRef": null }], [], "Stops the active Cast session on the sink.");
   inspectorBackend2.registerType("Cast.Sink", [{ "name": "name", "type": "string", "optional": false, "description": "", "typeRef": null }, { "name": "id", "type": "string", "optional": false, "description": "", "typeRef": null }, { "name": "session", "type": "string", "optional": true, "description": "Text describing the current session. Present only if there is an active session on the sink.", "typeRef": null }]);
-  inspectorBackend2.registerEnum("DOM.PseudoType", { FirstLine: "first-line", FirstLetter: "first-letter", Checkmark: "checkmark", Before: "before", After: "after", PickerIcon: "picker-icon", InterestHint: "interest-hint", Marker: "marker", Backdrop: "backdrop", Column: "column", Selection: "selection", SearchText: "search-text", TargetText: "target-text", SpellingError: "spelling-error", GrammarError: "grammar-error", Highlight: "highlight", FirstLineInherited: "first-line-inherited", ScrollMarker: "scroll-marker", ScrollMarkerGroup: "scroll-marker-group", ScrollButton: "scroll-button", Scrollbar: "scrollbar", ScrollbarThumb: "scrollbar-thumb", ScrollbarButton: "scrollbar-button", ScrollbarTrack: "scrollbar-track", ScrollbarTrackPiece: "scrollbar-track-piece", ScrollbarCorner: "scrollbar-corner", Resizer: "resizer", InputListButton: "input-list-button", ViewTransition: "view-transition", ViewTransitionGroup: "view-transition-group", ViewTransitionImagePair: "view-transition-image-pair", ViewTransitionGroupChildren: "view-transition-group-children", ViewTransitionOld: "view-transition-old", ViewTransitionNew: "view-transition-new", Placeholder: "placeholder", FileSelectorButton: "file-selector-button", DetailsContent: "details-content", Picker: "picker", PermissionIcon: "permission-icon" });
+  inspectorBackend2.registerEnum("DOM.PseudoType", { FirstLine: "first-line", FirstLetter: "first-letter", Checkmark: "checkmark", Before: "before", After: "after", PickerIcon: "picker-icon", InterestHint: "interest-hint", Marker: "marker", Backdrop: "backdrop", Column: "column", Selection: "selection", SearchText: "search-text", TargetText: "target-text", SpellingError: "spelling-error", GrammarError: "grammar-error", Highlight: "highlight", FirstLineInherited: "first-line-inherited", ScrollMarker: "scroll-marker", ScrollMarkerGroup: "scroll-marker-group", ScrollButton: "scroll-button", Scrollbar: "scrollbar", ScrollbarThumb: "scrollbar-thumb", ScrollbarButton: "scrollbar-button", ScrollbarTrack: "scrollbar-track", ScrollbarTrackPiece: "scrollbar-track-piece", ScrollbarCorner: "scrollbar-corner", Resizer: "resizer", InputListButton: "input-list-button", ViewTransition: "view-transition", ViewTransitionGroup: "view-transition-group", ViewTransitionImagePair: "view-transition-image-pair", ViewTransitionGroupChildren: "view-transition-group-children", ViewTransitionOld: "view-transition-old", ViewTransitionNew: "view-transition-new", Placeholder: "placeholder", FileSelectorButton: "file-selector-button", DetailsContent: "details-content", Picker: "picker", PermissionIcon: "permission-icon", OverscrollAreaParent: "overscroll-area-parent", OverscrollClientArea: "overscroll-client-area" });
   inspectorBackend2.registerEnum("DOM.ShadowRootType", { UserAgent: "user-agent", Open: "open", Closed: "closed" });
   inspectorBackend2.registerEnum("DOM.CompatibilityMode", { QuirksMode: "QuirksMode", LimitedQuirksMode: "LimitedQuirksMode", NoQuirksMode: "NoQuirksMode" });
   inspectorBackend2.registerEnum("DOM.PhysicalAxes", { Horizontal: "Horizontal", Vertical: "Vertical", Both: "Both" });
@@ -742,7 +748,7 @@ function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerEnum("Network.SignedExchangeErrorField", { SignatureSig: "signatureSig", SignatureIntegrity: "signatureIntegrity", SignatureCertUrl: "signatureCertUrl", SignatureCertSha256: "signatureCertSha256", SignatureValidityUrl: "signatureValidityUrl", SignatureTimestamps: "signatureTimestamps" });
   inspectorBackend2.registerEnum("Network.ContentEncoding", { Deflate: "deflate", Gzip: "gzip", Br: "br", Zstd: "zstd" });
   inspectorBackend2.registerEnum("Network.DirectSocketDnsQueryType", { Ipv4: "ipv4", Ipv6: "ipv6" });
-  inspectorBackend2.registerEnum("Network.PrivateNetworkRequestPolicy", { Allow: "Allow", BlockFromInsecureToMorePrivate: "BlockFromInsecureToMorePrivate", WarnFromInsecureToMorePrivate: "WarnFromInsecureToMorePrivate", PreflightBlock: "PreflightBlock", PreflightWarn: "PreflightWarn", PermissionBlock: "PermissionBlock", PermissionWarn: "PermissionWarn" });
+  inspectorBackend2.registerEnum("Network.PrivateNetworkRequestPolicy", { Allow: "Allow", BlockFromInsecureToMorePrivate: "BlockFromInsecureToMorePrivate", WarnFromInsecureToMorePrivate: "WarnFromInsecureToMorePrivate", PermissionBlock: "PermissionBlock", PermissionWarn: "PermissionWarn" });
   inspectorBackend2.registerEnum("Network.IPAddressSpace", { Loopback: "Loopback", Local: "Local", Public: "Public", Unknown: "Unknown" });
   inspectorBackend2.registerEnum("Network.CrossOriginOpenerPolicyValue", { SameOrigin: "SameOrigin", SameOriginAllowPopups: "SameOriginAllowPopups", RestrictProperties: "RestrictProperties", UnsafeNone: "UnsafeNone", SameOriginPlusCoep: "SameOriginPlusCoep", RestrictPropertiesPlusCoep: "RestrictPropertiesPlusCoep", NoopenerAllowPopups: "NoopenerAllowPopups" });
   inspectorBackend2.registerEnum("Network.CrossOriginEmbedderPolicyValue", { None: "None", Credentialless: "Credentialless", RequireCorp: "RequireCorp" });
@@ -1520,39 +1526,6 @@ function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerType("Schema.Domain", [{ "name": "name", "type": "string", "optional": false, "description": "Domain name.", "typeRef": null }, { "name": "version", "type": "string", "optional": false, "description": "Domain version.", "typeRef": null }]);
 }
 
-// gen/front_end/core/protocol_client/NodeURL.js
-var NodeURL_exports = {};
-__export(NodeURL_exports, {
-  NodeURL: () => NodeURL
-});
-import * as Common from "./../common/common.js";
-import * as Host from "./../host/host.js";
-var NodeURL = class _NodeURL {
-  static patch(object) {
-    process(object, "");
-    function process(object2, path) {
-      if (object2.url && _NodeURL.isPlatformPath(object2.url, Host.Platform.isWin())) {
-        object2.url = Common.ParsedURL.ParsedURL.rawPathToUrlString(object2.url);
-      }
-      for (const entry of Object.entries(object2)) {
-        const key = entry[0];
-        const value = entry[1];
-        const entryPath = path + "." + key;
-        if (entryPath !== ".result.result.value" && value !== null && typeof value === "object") {
-          process(value, entryPath);
-        }
-      }
-    }
-  }
-  static isPlatformPath(fileSystemPath, isWindows) {
-    if (isWindows) {
-      const re = /^([a-z]:[\/\\]|\\\\)/i;
-      return re.test(fileSystemPath);
-    }
-    return fileSystemPath.length ? fileSystemPath[0] === "/" : false;
-  }
-};
-
 // gen/front_end/core/protocol_client/InspectorBackend.js
 var splitQualifiedName = (string) => {
   const [domain, eventName] = string.split(".");
@@ -1648,34 +1621,12 @@ var test = {
    */
   onMessageReceived: null
 };
-var LongPollingMethods = /* @__PURE__ */ new Set(["CSS.takeComputedStyleUpdates"]);
 var SessionRouter = class {
   #connection;
-  #lastMessageId = 1;
-  #pendingResponsesCount = 0;
-  #pendingLongPollingMessageIds = /* @__PURE__ */ new Set();
   #sessions = /* @__PURE__ */ new Map();
-  #pendingScripts = [];
-  #callbacks = /* @__PURE__ */ new Map();
-  #observers = /* @__PURE__ */ new Set();
   constructor(connection) {
     this.#connection = connection;
-    test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
-    test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
-    this.#connection.setOnMessage(this.onMessage.bind(this));
-    this.#connection.setOnDisconnect((reason) => {
-      const session = this.#sessions.get("");
-      if (session) {
-        session.target.dispose(reason);
-      }
-      this.#observers.forEach((observer) => observer.onDisconnect(reason));
-    });
-  }
-  observe(observer) {
-    this.#observers.add(observer);
-  }
-  unobserve(observer) {
-    this.#observers.delete(observer);
+    this.#connection.observe(this);
   }
   registerSession(target, sessionId) {
     this.#sessions.set(sessionId, { target });
@@ -1685,129 +1636,32 @@ var SessionRouter = class {
     if (!session) {
       return;
     }
-    for (const { resolve, method, sessionId: callbackSessionId } of this.#callbacks.values()) {
-      if (sessionId !== callbackSessionId) {
-        continue;
-      }
-      resolve({
-        error: {
-          message: `Session is unregistering, can't dispatch pending call to ${method}`,
-          code: CDPErrorStatus.SESSION_NOT_FOUND
-        }
-      });
+    if (this.#connection instanceof DevToolsCDPConnection) {
+      this.#connection.resolvePendingCalls(sessionId);
     }
     this.#sessions.delete(sessionId);
   }
-  nextMessageId() {
-    return this.#lastMessageId++;
+  onDisconnect(reason) {
+    const session = this.#sessions.get("");
+    if (session) {
+      session.target.dispose(reason);
+    }
   }
-  connection() {
-    return this.#connection;
-  }
-  send(method, params, sessionId) {
-    const messageId = this.nextMessageId();
-    const messageObject = {
-      id: messageId,
-      method
-    };
-    if (params) {
-      messageObject.params = params;
-    }
-    if (sessionId) {
-      messageObject.sessionId = sessionId;
-    }
-    if (test.dumpProtocol) {
-      test.dumpProtocol("frontend: " + JSON.stringify(messageObject));
-    }
-    if (test.onMessageSent) {
-      const domain = method.split(".")[0];
-      const paramsObject = JSON.parse(JSON.stringify(params || {}));
-      test.onMessageSent({ domain, method, params: paramsObject, id: messageId, sessionId });
-    }
-    ++this.#pendingResponsesCount;
-    if (LongPollingMethods.has(method)) {
-      this.#pendingLongPollingMessageIds.add(messageId);
-    }
-    return new Promise((resolve) => {
-      this.#callbacks.set(messageId, { resolve, method, sessionId });
-      this.#connection.sendRawMessage(JSON.stringify(messageObject));
-    });
-  }
-  sendRawMessageForTesting(method, params, callback, sessionId = "") {
-    void this.send(method, params, sessionId).then((response) => {
-      if ("error" in response && response.error) {
-        callback?.(response.error, null);
-      } else if ("result" in response) {
-        callback?.(null, response.result);
-      }
-    });
-  }
-  onMessage(message) {
-    if (test.dumpProtocol) {
-      test.dumpProtocol("backend: " + (typeof message === "string" ? message : JSON.stringify(message)));
-    }
-    if (test.onMessageReceived) {
-      const messageObjectCopy = JSON.parse(typeof message === "string" ? message : JSON.stringify(message));
-      test.onMessageReceived(messageObjectCopy);
-    }
-    const messageObject = typeof message === "string" ? JSON.parse(message) : message;
-    const sessionId = messageObject.sessionId || "";
+  onEvent(event) {
+    const sessionId = event.sessionId || "";
     const session = this.#sessions.get(sessionId);
-    if (session?.target.getNeedsNodeJSPatching()) {
-      NodeURL.patch(messageObject);
-    }
-    if ("id" in messageObject && messageObject.id !== void 0) {
-      const callback = this.#callbacks.get(messageObject.id);
-      this.#callbacks.delete(messageObject.id);
-      if (!callback) {
-        return;
-      }
-      callback.resolve(messageObject);
-      --this.#pendingResponsesCount;
-      this.#pendingLongPollingMessageIds.delete(messageObject.id);
-      if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
-        this.deprecatedRunAfterPendingDispatches();
-      }
-    } else if ("method" in messageObject) {
-      session?.target.dispatch(messageObject);
-      this.#observers.forEach((observer) => observer.onEvent(messageObject));
-    } else {
-      InspectorBackend.reportProtocolError("Protocol Error: the message without method", messageObject);
-    }
+    session?.target.dispatch(event);
   }
-  hasOutstandingNonLongPollingRequests() {
-    return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
-  }
-  deprecatedRunAfterPendingDispatches(script) {
-    if (script) {
-      this.#pendingScripts.push(script);
-    }
-    window.setTimeout(() => {
-      if (!this.hasOutstandingNonLongPollingRequests()) {
-        this.executeAfterPendingDispatches();
-      } else {
-        this.deprecatedRunAfterPendingDispatches();
-      }
-    }, 0);
-  }
-  executeAfterPendingDispatches() {
-    if (!this.hasOutstandingNonLongPollingRequests()) {
-      const scripts = this.#pendingScripts;
-      this.#pendingScripts = [];
-      for (let id = 0; id < scripts.length; ++id) {
-        scripts[id]();
-      }
-    }
+  get connection() {
+    return this.#connection;
   }
 };
 var TargetBase = class {
-  needsNodeJSPatching;
   sessionId;
   #router;
   #agents = /* @__PURE__ */ new Map();
   #dispatchers = /* @__PURE__ */ new Map();
-  constructor(needsNodeJSPatching, parentTarget, sessionId, connection) {
-    this.needsNodeJSPatching = needsNodeJSPatching;
+  constructor(parentTarget, sessionId, connection) {
     this.sessionId = sessionId;
     if (parentTarget && !sessionId) {
       throw new Error("Specifying a parent target requires a session ID");
@@ -1818,7 +1672,7 @@ var TargetBase = class {
     } else if (connection) {
       router = new SessionRouter(connection);
     } else {
-      router = new SessionRouter(ConnectionTransport.getFactory()());
+      router = new SessionRouter(new DevToolsCDPConnection(ConnectionTransport.getFactory()()));
     }
     this.#router = router;
     router.registerSession(this, this.sessionId);
@@ -1849,9 +1703,6 @@ var TargetBase = class {
   }
   isDisposed() {
     return !this.#router;
-  }
-  markAsNodeJSForTest() {
-    this.needsNodeJSPatching = true;
   }
   router() {
     return this.#router;
@@ -2104,9 +1955,6 @@ var TargetBase = class {
   registerWebAuthnDispatcher(dispatcher) {
     this.registerDispatcher("WebAuthn", dispatcher);
   }
-  getNeedsNodeJSPatching() {
-    return this.needsNodeJSPatching;
-  }
 };
 var IGNORED_ERRORS = /* @__PURE__ */ new Set([
   CDPErrorStatus.DEVTOOLS_STUB_ERROR,
@@ -2131,11 +1979,11 @@ var AgentPrototype = class {
     this["invoke_" + methodName] = invoke;
   }
   invoke(method, request) {
-    const router = this.target.router();
-    if (!router) {
+    const connection = this.target.router()?.connection;
+    if (!connection) {
       return Promise.resolve({ result: null, getError: () => `Connection is closed, can't dispatch pending call to ${method}` });
     }
-    return router.send(method, request, this.target.sessionId).then((response) => {
+    return connection.send(method, request, this.target.sessionId).then((response) => {
       if ("error" in response && response.error) {
         if (!test.suppressRequestErrors && !IGNORED_ERRORS.has(response.error.code)) {
           console.error("Request " + method + " failed. " + JSON.stringify(response.error));
@@ -2183,10 +2031,139 @@ var DispatcherManager = class {
   }
 };
 var inspectorBackend = new InspectorBackend();
+
+// gen/front_end/core/protocol_client/DevToolsCDPConnection.js
+var LongPollingMethods = /* @__PURE__ */ new Set(["CSS.takeComputedStyleUpdates"]);
+var DevToolsCDPConnection = class {
+  #transport;
+  #lastMessageId = 1;
+  #pendingResponsesCount = 0;
+  #pendingLongPollingMessageIds = /* @__PURE__ */ new Set();
+  #pendingScripts = [];
+  #callbacks = /* @__PURE__ */ new Map();
+  #observers = /* @__PURE__ */ new Set();
+  constructor(transport) {
+    this.#transport = transport;
+    test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
+    test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
+    this.#transport.setOnMessage(this.onMessage.bind(this));
+    this.#transport.setOnDisconnect((reason) => {
+      this.#observers.forEach((observer) => observer.onDisconnect(reason));
+    });
+  }
+  observe(observer) {
+    this.#observers.add(observer);
+  }
+  unobserve(observer) {
+    this.#observers.delete(observer);
+  }
+  send(method, params, sessionId) {
+    const messageId = ++this.#lastMessageId;
+    const messageObject = {
+      id: messageId,
+      method
+    };
+    if (params) {
+      messageObject.params = params;
+    }
+    if (sessionId) {
+      messageObject.sessionId = sessionId;
+    }
+    if (test.dumpProtocol) {
+      test.dumpProtocol("frontend: " + JSON.stringify(messageObject));
+    }
+    if (test.onMessageSent) {
+      const domain = method.split(".")[0];
+      const paramsObject = JSON.parse(JSON.stringify(params || {}));
+      test.onMessageSent({ domain, method, params: paramsObject, id: messageId, sessionId });
+    }
+    ++this.#pendingResponsesCount;
+    if (LongPollingMethods.has(method)) {
+      this.#pendingLongPollingMessageIds.add(messageId);
+    }
+    return new Promise((resolve) => {
+      this.#callbacks.set(messageId, { resolve, method, sessionId });
+      this.#transport.sendRawMessage(JSON.stringify(messageObject));
+    });
+  }
+  resolvePendingCalls(sessionId) {
+    for (const { resolve, method, sessionId: callbackSessionId } of this.#callbacks.values()) {
+      if (sessionId !== callbackSessionId) {
+        continue;
+      }
+      resolve({
+        error: {
+          message: `Session is unregistering, can't dispatch pending call to ${method}`,
+          code: CDPErrorStatus.SESSION_NOT_FOUND
+        }
+      });
+    }
+  }
+  sendRawMessageForTesting(method, params, callback, sessionId = "") {
+    void this.send(method, params, sessionId).then((response) => {
+      if ("error" in response && response.error) {
+        callback?.(response.error, null);
+      } else if ("result" in response) {
+        callback?.(null, response.result);
+      }
+    });
+  }
+  onMessage(message) {
+    if (test.dumpProtocol) {
+      test.dumpProtocol("backend: " + (typeof message === "string" ? message : JSON.stringify(message)));
+    }
+    if (test.onMessageReceived) {
+      const messageObjectCopy = JSON.parse(typeof message === "string" ? message : JSON.stringify(message));
+      test.onMessageReceived(messageObjectCopy);
+    }
+    const messageObject = typeof message === "string" ? JSON.parse(message) : message;
+    if ("id" in messageObject && messageObject.id !== void 0) {
+      const callback = this.#callbacks.get(messageObject.id);
+      this.#callbacks.delete(messageObject.id);
+      if (!callback) {
+        return;
+      }
+      callback.resolve(messageObject);
+      --this.#pendingResponsesCount;
+      this.#pendingLongPollingMessageIds.delete(messageObject.id);
+      if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
+        this.deprecatedRunAfterPendingDispatches();
+      }
+    } else if ("method" in messageObject) {
+      this.#observers.forEach((observer) => observer.onEvent(messageObject));
+    } else {
+      InspectorBackend.reportProtocolError("Protocol Error: the message without method", messageObject);
+    }
+  }
+  hasOutstandingNonLongPollingRequests() {
+    return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
+  }
+  deprecatedRunAfterPendingDispatches(script) {
+    if (script) {
+      this.#pendingScripts.push(script);
+    }
+    setTimeout(() => {
+      if (!this.hasOutstandingNonLongPollingRequests()) {
+        this.executeAfterPendingDispatches();
+      } else {
+        this.deprecatedRunAfterPendingDispatches();
+      }
+    }, 0);
+  }
+  executeAfterPendingDispatches() {
+    if (!this.hasOutstandingNonLongPollingRequests()) {
+      const scripts = this.#pendingScripts;
+      this.#pendingScripts = [];
+      for (let id = 0; id < scripts.length; ++id) {
+        scripts[id]();
+      }
+    }
+  }
+};
 export {
   CDPConnection_exports as CDPConnection,
   ConnectionTransport_exports as ConnectionTransport,
-  InspectorBackend_exports as InspectorBackend,
-  NodeURL_exports as NodeURL
+  DevToolsCDPConnection_exports as DevToolsCDPConnection,
+  InspectorBackend_exports as InspectorBackend
 };
 //# sourceMappingURL=protocol_client.js.map

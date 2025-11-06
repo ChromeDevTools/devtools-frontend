@@ -40,6 +40,7 @@ function normalizeBadgeName(name) {
     return name.replace(/profiles\/[^/]+\/awards\//, 'profiles/me/awards/');
 }
 export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.google.com/profile/u/me';
+const ORIGIN_APPLICATION_NAME = 'APPLICATION_CHROME_DEVTOOLS';
 async function makeHttpRequest(request) {
     if (!isGdpProfilesAvailable()) {
         throw new DispatchHttpRequestClient.DispatchHttpRequestError(DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE);
@@ -146,6 +147,9 @@ export class GdpClient {
                 body: JSON.stringify({
                     user,
                     newsletter_email: emailPreference,
+                    creation_origin: {
+                        origin_application: ORIGIN_APPLICATION_NAME,
+                    }
                 }),
             });
             this.#clearCache();

@@ -12,7 +12,6 @@ import * as Persistence from '../../../models/persistence/persistence.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -353,24 +352,33 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
                 void contextMenu.show();
             }
         };
-        const addContextMenuListener = (el) => {
-            if (isShortened) {
-                el.addEventListener('contextmenu', onContextMenuOpen);
-            }
-        };
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return html `
-      <div class="row raw-headers-row" on-render=${ComponentHelpers.Directives.nodeRenderedCallback(addContextMenuListener)}>
-        <div class="raw-headers">${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}</div>
-        ${isShortened ? html `
-          <devtools-button
-            .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-            .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
-            @click=${showMore}
-            jslog=${VisualLogging.action('raw-headers-show-more').track({ click: true })}
-          >${i18nString(UIStrings.showMore)}</devtools-button>
-        ` : Lit.nothing}
+      <div
+        class="row raw-headers-row"
+        @contextmenu=${(event) => {
+            if (isShortened) {
+                onContextMenuOpen(event);
+            }
+        }}
+      >
+        <div class="raw-headers">
+          ${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}
+        </div>
+        ${isShortened
+            ? html `
+              <devtools-button
+                .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+                .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+                @click=${showMore}
+                jslog=${VisualLogging.action('raw-headers-show-more').track({
+                click: true,
+            })}
+                >${i18nString(UIStrings.showMore)}</devtools-button
+              >
+            `
+            : Lit.nothing}
       </div>
     `;
         // clang-format on

@@ -4423,7 +4423,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI8.Widget.VBox {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appendJSONPayloadParsed(rootListItem, parsedObject, sourceText) {
     const object = SDK7.RemoteObject.RemoteObject.fromLocalObject(parsedObject);
-    const section4 = new ObjectUI.ObjectPropertiesSection.RootElement(object);
+    const section4 = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
     section4.title = object.description;
     section4.expand();
     section4.editable = false;
@@ -5946,14 +5946,14 @@ var RequestTimingView = class _RequestTimingView extends UI13.Widget.VBox {
     const origRequest = Logs4.NetworkLog.NetworkLog.instance().originalRequestForURL(this.#request.url());
     if (origRequest) {
       const requestObject = SDK8.RemoteObject.RemoteObject.fromLocalObject(origRequest);
-      const requestTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(requestObject);
+      const requestTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(requestObject));
       requestTreeElement.title = i18nString12(UIStrings12.originalRequest);
       detailsView.appendChild(requestTreeElement);
     }
     const response = Logs4.NetworkLog.NetworkLog.instance().originalResponseForURL(this.#request.url());
     if (response) {
       const responseObject = SDK8.RemoteObject.RemoteObject.fromLocalObject(response);
-      const responseTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(responseObject);
+      const responseTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(responseObject));
       responseTreeElement.title = i18nString12(UIStrings12.responseReceived);
       detailsView.appendChild(responseTreeElement);
     }

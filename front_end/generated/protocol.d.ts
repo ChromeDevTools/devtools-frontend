@@ -4098,7 +4098,9 @@ export declare namespace DOM {
         FileSelectorButton = "file-selector-button",
         DetailsContent = "details-content",
         Picker = "picker",
-        PermissionIcon = "permission-icon"
+        PermissionIcon = "permission-icon",
+        OverscrollAreaParent = "overscroll-area-parent",
+        OverscrollClientArea = "overscroll-client-area"
     }
     /**
      * Shadow root type.
@@ -10307,8 +10309,6 @@ export declare namespace Network {
         Allow = "Allow",
         BlockFromInsecureToMorePrivate = "BlockFromInsecureToMorePrivate",
         WarnFromInsecureToMorePrivate = "WarnFromInsecureToMorePrivate",
-        PreflightBlock = "PreflightBlock",
-        PreflightWarn = "PreflightWarn",
         PermissionBlock = "PermissionBlock",
         PermissionWarn = "PermissionWarn"
     }

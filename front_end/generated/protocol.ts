@@ -544,9 +544,9 @@ export namespace Animation {
      */
     iterationStart: number;
     /**
-     * `AnimationEffect`'s iterations.
+     * `AnimationEffect`'s iterations. Omitted if the value is infinite.
      */
-    iterations: number;
+    iterations?: number;
     /**
      * `AnimationEffect`'s iteration duration.
      * Milliseconds for time based animations and
@@ -3452,6 +3452,53 @@ export namespace CSS {
     style: CSSStyle;
   }
 
+  export const enum CSSAtRuleType {
+    FontFace = 'font-face',
+    FontFeatureValues = 'font-feature-values',
+    FontPaletteValues = 'font-palette-values',
+  }
+
+  export const enum CSSAtRuleSubsection {
+    Swash = 'swash',
+    Annotation = 'annotation',
+    Ornaments = 'ornaments',
+    Stylistic = 'stylistic',
+    Styleset = 'styleset',
+    CharacterVariant = 'character-variant',
+  }
+
+  /**
+   * CSS generic @rule representation.
+   */
+  export interface CSSAtRule {
+    /**
+     * Type of at-rule.
+     */
+    type: CSSAtRuleType;
+    /**
+     * Subsection of font-feature-values, if this is a subsection.
+     */
+    subsection?: CSSAtRuleSubsection;
+    /**
+     * LINT_SKIP.ThenChange(//third_party/blink/renderer/core/inspector/inspector_style_sheet.cc:FontVariantAlternatesFeatureType,//third_party/blink/renderer/core/inspector/inspector_css_agent.cc:FontVariantAlternatesFeatureType)
+     * Associated name, if applicable.
+     */
+    name?: Value;
+    /**
+     * The css style sheet identifier (absent for user agent stylesheet and user-specified
+     * stylesheet rules) this rule came from.
+     */
+    styleSheetId?: StyleSheetId;
+    /**
+     * Parent stylesheet's origin.
+     */
+    origin: StyleSheetOrigin;
+    /**
+     * Associated style declaration.
+     */
+    style: CSSStyle;
+  }
+
   /**
    * CSS property at-rule representation.
    */
@@ -3848,6 +3895,10 @@ export namespace CSS {
      * A font-palette-values rule matching this node.
      */
     cssFontPaletteValuesRule?: CSSFontPaletteValuesRule;
+    /**
+     * A list of simple @rules matching this node or its pseudo-elements.
+     */
+    cssAtRules?: CSSAtRule[];
     /**
      * Id of the first parent element that does not have display: contents.
      */
@@ -18464,6 +18515,11 @@ export namespace Target {
      * This can be the page or tab target ID.
      */
     targetId: TargetID;
+    /**
+     * The id of the panel we want DevTools to open initially. Currently
+     * supported panels are elements, console, network, sources and resources.
+     */
+    panelId?: string;
   }
 
   export interface OpenDevToolsResponse extends ProtocolResponseWithError {

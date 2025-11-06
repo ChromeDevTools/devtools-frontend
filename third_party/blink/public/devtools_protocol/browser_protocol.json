@@ -734,7 +734,8 @@
                         },
                         {
                             "name": "iterations",
-                            "description": "`AnimationEffect`'s iterations.",
+                            "description": "`AnimationEffect`'s iterations. Omitted if the value is infinite.",
+                            "optional": true,
                             "type": "number"
                         },
                         {
@@ -5177,6 +5178,59 @@
                     ]
                 },
                 {
+                    "id": "CSSAtRule",
+                    "description": "CSS generic @rule representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "description": "Type of at-rule.",
+                            "type": "string",
+                            "enum": [
+                                "font-face",
+                                "font-feature-values",
+                                "font-palette-values"
+                            ]
+                        },
+                        {
+                            "name": "subsection",
+                            "description": "Subsection of font-feature-values, if this is a subsection.",
+                            "optional": true,
+                            "type": "string",
+                            "enum": [
+                                "swash",
+                                "annotation",
+                                "ornaments",
+                                "stylistic",
+                                "styleset",
+                                "character-variant"
+                            ]
+                        },
+                        {
+                            "name": "name",
+                            "description": "LINT_SKIP.ThenChange(//third_party/blink/renderer/core/inspector/inspector_style_sheet.cc:FontVariantAlternatesFeatureType,//third_party/blink/renderer/core/inspector/inspector_css_agent.cc:FontVariantAlternatesFeatureType)\nAssociated name, if applicable.",
+                            "optional": true,
+                            "$ref": "Value"
+                        },
+                        {
+                            "name": "styleSheetId",
+                            "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified\nstylesheet rules) this rule came from.",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Parent stylesheet's origin.",
+                            "$ref": "StyleSheetOrigin"
+                        },
+                        {
+                            "name": "style",
+                            "description": "Associated style declaration.",
+                            "$ref": "CSSStyle"
+                        }
+                    ]
+                },
+                {
                     "id": "CSSPropertyRule",
                     "description": "CSS property at-rule representation.",
                     "type": "object",
@@ -5786,6 +5840,15 @@
                             "description": "A font-palette-values rule matching this node.",
                             "optional": true,
                             "$ref": "CSSFontPaletteValuesRule"
+                        },
+                        {
+                            "name": "cssAtRules",
+                            "description": "A list of simple @rules matching this node or its pseudo-elements.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSAtRule"
+                            }
                         },
                         {
                             "name": "parentLayoutNodeId",
@@ -28155,6 +28218,12 @@
                             "name": "targetId",
                             "description": "This can be the page or tab target ID.",
                             "$ref": "TargetID"
+                        },
+                        {
+                            "name": "panelId",
+                            "description": "The id of the panel we want DevTools to open initially. Currently\nsupported panels are elements, console, network, sources and resources.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ],
                     "returns": [

@@ -45,6 +45,7 @@ import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type {DirectiveResult} from '../../third_party/lit/lib/directive.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -351,10 +352,13 @@ export function isOpeningTag(context: TagTypeContext): context is OpeningTagCont
 }
 
 export interface ViewInput {
+  showAdAdorner: boolean;
   adorners?: Set<Adorners.Adorner.Adorner>;
   nodeInfo?: DocumentFragment;
 
   onGutterClick: (e: Event) => void;
+  onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
+  onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
 }
 
 export interface ViewOutput {
@@ -363,7 +367,23 @@ export interface ViewOutput {
   contentElement?: HTMLElement;
 }
 
+function adornerRef(input: ViewInput): DirectiveResult<typeof Lit.Directives.RefDirective> {
+  let adorner: Adorners.Adorner.Adorner|undefined;
+  return ref((el?: Element) => {
+    if (adorner) {
+      input.onAdornerRemoved(adorner);
+    }
+    adorner = el as Adorners.Adorner.Adorner;
+    if (adorner) {
+      input.onAdornerAdded(adorner);
+    }
+  });
+}
+
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+  const adAdornerConfig =
+      ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
+  const hasAdorners = input.adorners || input.showAdAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -372,8 +392,14 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         <devtools-icon name="dots-horizontal"></devtools-icon>
         <div class="hidden" ${ref(el => { output.decorationsElement = el as HTMLElement; })}></div>
       </div>
-      ${input.adorners ? html`<div class="adorner-container ${input.adorners.size === 0 ? 'hidden': ''}">
-        ${repeat(Array.from(input.adorners.values()).sort(adornerComparator), adorner => {
+      ${hasAdorners? html`<div class="adorner-container ${!hasAdorners ? 'hidden': ''}">
+        ${input.showAdAdorner ? html`<devtools-adorner
+          .data=${{name: adAdornerConfig.name, jslogContext: adAdornerConfig.name}}
+          aria-label=${i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd)}
+          ${adornerRef(input)}>
+          <span>${adAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
+        ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
           return adorner;
         })}
       </div>`: nothing}
@@ -441,13 +467,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
       };
       void this.updateStyleAdorners();
-
-      if (node.isAdFrameNode()) {
-        const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-            ElementsComponents.AdornerManager.RegisteredAdorners.AD);
-        const adorner = this.adorn(config);
-        UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd));
-      }
 
       void this.updateScrollAdorner();
     }
@@ -533,8 +552,17 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     DEFAULT_VIEW(
         {
           adorners: !this.isClosingTag() ? this.#adorners : undefined,
+          showAdAdorner:
+              ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.AD) &&
+              this.nodeInternal.isAdFrameNode(),
           nodeInfo: this.#nodeInfo,
           onGutterClick: this.showContextMenu.bind(this),
+          onAdornerAdded: adorner => {
+            ElementsPanel.instance().registerAdorner(adorner);
+          },
+          onAdornerRemoved: adorner => {
+            ElementsPanel.instance().deregisterAdorner(adorner);
+          },
         },
         this, this.listItemElement);
   }

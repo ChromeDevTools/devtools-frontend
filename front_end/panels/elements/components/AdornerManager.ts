@@ -22,20 +22,20 @@ export interface RegisteredAdorner {
 }
 
 export enum RegisteredAdorners {
-  GRID = 'grid',
-  SUBGRID = 'subgrid',
-  MASONRY = 'masonry',
-  FLEX = 'flex',
   AD = 'ad',
-  SCROLL_SNAP = 'scroll-snap',
-  STARTING_STYLE = 'starting-style',
   CONTAINER = 'container',
-  SLOT = 'slot',
-  TOP_LAYER = 'top-layer',
-  REVEAL = 'reveal',
+  FLEX = 'flex',
+  GRID = 'grid',
+  MASONRY = 'masonry',
   MEDIA = 'media',
-  SCROLL = 'scroll',
   POPOVER = 'popover',
+  REVEAL = 'reveal',
+  SCROLL = 'scroll',
+  SCROLL_SNAP = 'scroll-snap',
+  SLOT = 'slot',
+  STARTING_STYLE = 'starting-style',
+  SUBGRID = 'subgrid',
+  TOP_LAYER = 'top-layer',
 }
 
 /**

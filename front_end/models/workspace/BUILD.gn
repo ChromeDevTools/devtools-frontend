@@ -74,6 +74,17 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
+devtools_entrypoint("meta") {
+  entrypoint = "workspace-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+  ]
+
+  visibility = [ "../../entrypoints/*" ]
+}
+
 ts_library("unittests") {
   testonly = true
 

@@ -15,6 +15,7 @@ devtools_entrypoint("shell") {
     "../../entrypoints/main:meta",
     "../../models/logs:meta",
     "../../models/persistence:meta",
+    "../../models/workspace:meta",
     "../../panels/ai_assistance:meta",
     "../../panels/application:meta",
     "../../panels/changes:meta",

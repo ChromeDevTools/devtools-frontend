@@ -5,6 +5,7 @@
 import '../main/main-meta.js';
 import '../inspector_main/inspector_main-meta.js';
 import '../../core/sdk/sdk-meta.js';
+import '../../models/workspace/workspace-meta.js';
 import '../../Images/Images.js';
 import '../../models/logs/logs-meta.js';
 import '../../models/persistence/persistence-meta.js';

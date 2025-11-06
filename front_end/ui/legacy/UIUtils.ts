@@ -1820,7 +1820,8 @@ export const isScrolledToBottom = (element: Element): boolean => {
   return Math.abs(element.scrollTop + element.clientHeight - element.scrollHeight) <= 2;
 };
 
-export function createSVGChild(element: Element, childType: string, className?: string): Element {
+export function createSVGChild<K extends keyof SVGElementTagNameMap>(
+    element: Element, childType: K, className?: string): SVGElementTagNameMap[K] {
   const child = element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', childType);
   if (className) {
     child.setAttribute('class', className);

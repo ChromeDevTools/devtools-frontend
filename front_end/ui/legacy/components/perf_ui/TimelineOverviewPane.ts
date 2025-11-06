@@ -337,7 +337,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   #initializeDimHighlightSVG(): void {
     // Set up the desaturation mask
     const defs = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'defs');
-    const mask = UI.UIUtils.createSVGChild(defs, 'mask') as SVGMaskElement;
+    const mask = UI.UIUtils.createSVGChild(defs, 'mask');
     mask.id = 'dim-highlight-cutouts';
     /* Within the mask...
         - black fill = punch, fully transparently, through to the next thing. these are the cutouts to the color.
@@ -357,7 +357,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     // `mask` element.
     // The `mixBlendMode` is set to 'saturation', so this rectangle will completely desaturate the area it covers
     // within the mask.
-    const desaturateRect = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'rect', 'background') as SVGRectElement;
+    const desaturateRect = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'rect', 'background');
     desaturateRect.setAttribute('width', '100%');
     desaturateRect.setAttribute('height', '100%');
     desaturateRect.setAttribute('fill', ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'));
@@ -374,7 +374,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
 
     // This polygon is for the bracket beyond the not desaturated area.
     const bracketColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-on-header-hover');
-    const bracket = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'polygon') as SVGRectElement;
+    const bracket = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'polygon');
     bracket.setAttribute('fill', bracketColor);
 
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {

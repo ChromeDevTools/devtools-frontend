@@ -147,7 +147,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     return category;
   }
 
-  private createPresetModifyIcon(parentElement: Element, className: string, drawPath: string): Element {
+  private createPresetModifyIcon(parentElement: Element, className: string, drawPath: string): SVGElement {
     const icon = UI.UIUtils.createSVGChild(parentElement, 'svg', 'bezier-preset-modify ' + className);
     icon.setAttribute('width', '20');
     icon.setAttribute('height', '20');

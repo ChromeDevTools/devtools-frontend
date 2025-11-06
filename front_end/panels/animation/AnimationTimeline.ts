@@ -219,6 +219,8 @@ const DEFAULT_TOOLBAR_VIEW: ToolbarView = (input: ToolbarViewInput, output: unde
 };
 // clang-format on
 
+const DEFAULT_DURATION = 100;
+
 let animationTimelineInstance: AnimationTimeline;
 export class AnimationTimeline extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.AnimationModel.AnimationModel> {
@@ -233,7 +235,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #clearButton!: UI.Toolbar.ToolbarButton;
   #selectedGroup!: SDK.AnimationModel.AnimationGroup|null;
   #renderQueue!: AnimationUI[];
-  #defaultDuration: number;
   #duration: number;
   #timelineControlsWidth: number;
   readonly #nodesMap: Map<number, NodeUI>;
@@ -297,8 +298,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         i18nString(UIStrings.noEffectSelected), i18nString(UIStrings.selectAnEffectAboveToInspectAnd));
     noEffectSelectedPlaceholder.show(timelineHint);
 
-    /** @constant */ this.#defaultDuration = 100;
-    this.#duration = this.#defaultDuration;
+    this.#duration = DEFAULT_DURATION;
     this.#nodesMap = new Map();
     this.#uiAnimations = [];
     this.#groupBuffer = [];
@@ -614,7 +614,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#nodesMap.clear();
     this.#animationsMap.clear();
     this.#animationsContainer.removeChildren();
-    this.#duration = this.#defaultDuration;
+    this.#duration = DEFAULT_DURATION;
     this.#timelineScrubber.classList.add('hidden');
     this.#gridHeader.classList.remove('scrubber-enabled');
     this.#selectedGroup = null;

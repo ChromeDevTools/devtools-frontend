@@ -320,6 +320,7 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
 }
 
 export class ObjectTreeNode extends ObjectTreeNodeBase {
+  #path?: string;
   constructor(
       readonly property: SDK.RemoteObject.RemoteObjectProperty,
       propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
@@ -334,6 +335,31 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
 
   get name(): string {
     return this.property.name;
+  }
+
+  get path(): string {
+    if (!this.#path) {
+      if (this.property.synthetic) {
+        this.#path = this.name;
+        return this.name;
+      }
+
+      // https://tc39.es/ecma262/#prod-IdentifierName
+      const useDotNotation = /^(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u;
+      const isInteger = /^(?:0|[1-9]\d*)$/;
+
+      const parentPath =
+          (this.parent instanceof ObjectTreeNode && !this.parent.property.synthetic) ? this.parent.path : '';
+
+      if (this.property.private || useDotNotation.test(this.name)) {
+        this.#path = parentPath ? `${parentPath}.${this.name}` : this.name;
+      } else if (isInteger.test(this.name)) {
+        this.#path = `${parentPath}[${this.name}]`;
+      } else {
+        this.#path = `${parentPath}[${JSON.stringify(this.name)}]`;
+      }
+    }
+    return this.#path;
   }
 
   override selfOrParentIfInternal(): ObjectTreeNodeBase {
@@ -830,6 +856,11 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
   }
 
+  override invalidateChildren(): void {
+    super.invalidateChildren();
+    this.object.removeChildren();
+  }
+
   override onexpand(): void {
     if (this.treeOutline) {
       this.treeOutline.element.classList.add('expanded');
@@ -1189,8 +1220,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.property.property.synthetic) {
       this.nameElement.classList.add('synthetic-property');
     }
-
-    this.updatePropertyPath();
+    this.nameElement.title = this.property.path;
 
     const isInternalEntries = this.property.property.synthetic && this.property.name === '[[Entries]]';
     if (isInternalEntries) {
@@ -1200,7 +1230,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       const showPreview = this.property.name !== '[[Prototype]]';
       this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
           this.property.object, this.property.property.wasThrown, showPreview, this.linkifier,
-          this.property.property.synthetic, this.path() /* variableName */);
+          this.property.property.synthetic, this.property.path /* variableName */);
       this.valueElement = this.propertyValue;
     } else if (this.property.property.getter) {
       this.valueElement = document.createElement('span');
@@ -1252,36 +1282,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.removeChildren();
     this.rowContainer = (container as HTMLElement);
     this.listItemElement.appendChild(this.rowContainer);
-  }
-
-  private updatePropertyPath(): void {
-    if (this.nameElement.title) {
-      return;
-    }
-
-    const name = this.property.name;
-
-    if (this.property.property.synthetic) {
-      UI.Tooltip.Tooltip.install(this.nameElement, name);
-      return;
-    }
-
-    // https://tc39.es/ecma262/#prod-IdentifierName
-    const useDotNotation = /^(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u;
-    const isInteger = /^(?:0|[1-9]\d*)$/;
-
-    const parentPath = (this.parent instanceof ObjectPropertyTreeElement && this.parent.nameElement &&
-                        !this.parent.property.property.synthetic) ?
-        this.parent.nameElement.title :
-        '';
-
-    if (this.property.property.private || useDotNotation.test(name)) {
-      UI.Tooltip.Tooltip.install(this.nameElement, parentPath ? `${parentPath}.${name}` : name);
-    } else if (isInteger.test(name)) {
-      UI.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${name}]`);
-    } else {
-      UI.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${JSON.stringify(name)}]`);
-    }
   }
 
   getContextMenu(event: Event): UI.ContextMenu.ContextMenu {
@@ -1447,6 +1447,11 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         void parent.onpopulate();
       }
     }
+  }
+
+  override invalidateChildren(): void {
+    super.invalidateChildren();
+    this.property.removeChildren();
   }
 
   private onInvokeGetterClick(result: SDK.RemoteObject.CallFunctionResult): void {
@@ -1640,6 +1645,11 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
+  }
+
+  override invalidateChildren(): void {
+    super.invalidateChildren();
+    this.#child.removeChildren();
   }
 
   override async onpopulate(): Promise<void> {

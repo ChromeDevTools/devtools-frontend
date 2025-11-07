@@ -222,7 +222,10 @@ var BinaryViewObject = class {
 // gen/front_end/panels/network/RequestConditionsDrawer.js
 var RequestConditionsDrawer_exports = {};
 __export(RequestConditionsDrawer_exports, {
+  AFFECTED_COUNT_DEFAULT_VIEW: () => AFFECTED_COUNT_DEFAULT_VIEW,
   ActionDelegate: () => ActionDelegate,
+  AffectedCountWidget: () => AffectedCountWidget,
+  AppliedConditionsRevealer: () => AppliedConditionsRevealer,
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   RequestConditionsDrawer: () => RequestConditionsDrawer
 });
@@ -238,6 +241,7 @@ import * as UI2 from "./../../ui/legacy/legacy.js";
 import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
+import * as PanelUtils from "./../utils/utils.js";
 
 // gen/front_end/panels/network/requestConditionsDrawer.css.js
 var requestConditionsDrawer_css_default = `/*
@@ -326,6 +330,7 @@ var requestConditionsDrawer_css_default = `/*
 
 // gen/front_end/panels/network/RequestConditionsDrawer.js
 var { ref } = Directives;
+var { widgetConfig } = UI2.Widget;
 var UIStrings2 = {
   /**
    * @description Text to enable blocking of network requests
@@ -410,11 +415,11 @@ var UIStrings2 = {
   /**
    * @description Aria label on a button moving an entry up
    */
-  increasePriority: "Increase priority",
+  increasePriority: "Move up (higher patterns are checked first)",
   /**
    * @description Aria label on a button moving an entry down
    */
-  decreasePriority: "Decrease priority"
+  decreasePriority: "Move down (higher patterns are checked first)"
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/network/RequestConditionsDrawer.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -465,6 +470,81 @@ var DEFAULT_VIEW = (input, output, target) => {
     target
   );
 };
+var AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {
+  if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
+    render(html`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target);
+  } else {
+    render(html`${i18nString2(UIStrings2.dBlocked, { PH1: input.count })}`, target);
+  }
+};
+function matchesUrl(conditions, url) {
+  function matchesPattern(pattern, url2) {
+    let pos = 0;
+    const parts = pattern.split("*");
+    for (let index = 0; index < parts.length; index++) {
+      const part = parts[index];
+      if (!part.length) {
+        continue;
+      }
+      pos = url2.indexOf(part, pos);
+      if (pos === -1) {
+        return false;
+      }
+      pos += part.length;
+    }
+    return true;
+  }
+  return Boolean(Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ? conditions.originalOrUpgradedURLPattern?.test(url) : conditions.wildcardURL && matchesPattern(conditions.wildcardURL, url));
+}
+var AffectedCountWidget = class extends UI2.Widget.Widget {
+  #view;
+  #condition;
+  #drawer;
+  constructor(target, view = AFFECTED_COUNT_DEFAULT_VIEW) {
+    super(target, { classes: ["blocked-url-count"] });
+    this.#view = view;
+  }
+  get condition() {
+    return this.#condition;
+  }
+  set condition(conditions) {
+    this.#condition = conditions;
+    this.requestUpdate();
+  }
+  get drawer() {
+    return this.#drawer;
+  }
+  set drawer(drawer) {
+    this.#drawer = drawer;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    if (!this.#condition || !this.#drawer) {
+      return;
+    }
+    const count = !Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || this.#condition.isBlocking ? this.#drawer.blockedRequestsCount(this.#condition) : this.#drawer.throttledRequestsCount(this.#condition);
+    this.#view({ count }, {}, this.element);
+  }
+  wasShown() {
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this, { scoped: true });
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.requestUpdate, this);
+    super.wasShown();
+  }
+  willHide() {
+    super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this);
+    Logs.NetworkLog.NetworkLog.instance().removeEventListener(Logs.NetworkLog.Events.Reset, this.requestUpdate, this);
+  }
+  #onRequestFinished(event) {
+    if (!this.#condition) {
+      return;
+    }
+    const request = event.data;
+    if (request.appliedNetworkConditionsId && this.#condition.ruleIds.has(request.appliedNetworkConditionsId) || request.wasBlocked() && matchesUrl(this.#condition, request.url())) {
+      this.requestUpdate();
+    }
+  }
+};
 function learnMore() {
   return html`<x-link
         href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
@@ -481,6 +561,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   blockedCountForUrl;
   #throttledCount = /* @__PURE__ */ new Map();
   #view;
+  #listElements = /* @__PURE__ */ new WeakMap();
   constructor(target, view = DEFAULT_VIEW) {
     super(target, {
       jslog: `${VisualLogging.panel("network.blocked-urls").track({ resize: true })}`,
@@ -517,9 +598,8 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     this.manager.requestConditions.clear();
   }
   renderItem(condition, editable, index) {
-    const blockedCount = this.blockedRequestsCount(condition);
-    const throttledCount = this.#throttledRequestsCount(condition);
     const element = document.createElement("div");
+    this.#listElements.set(condition, element);
     element.classList.add("blocked-url");
     const toggle2 = (e) => {
       if (editable) {
@@ -601,16 +681,16 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       aria-details=url-pattern-${index}>
         ${constructorStringOrWildcardURL}
     </div>
-   <devtools-widget
-      class=conditions-selector
-      ?disabled=${!editable}
-      .widgetConfig=${UI2.Widget.widgetConfig(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+    <devtools-widget
+       class=conditions-selector
+       ?disabled=${!editable}
+       .widgetConfig=${UI2.Widget.widgetConfig(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
           variant: "individual-request-conditions",
           jslogContext: "request-conditions",
           onConditionsChanged,
           currentConditions: condition.conditions
         })}></devtools-widget>
-    <div class=blocked-url-count>${i18nString2(UIStrings2.dAffected, { PH1: condition.isBlocking ? blockedCount : throttledCount })}</div>`,
+    <devtools-widget .widgetConfig=${widgetConfig(AffectedCountWidget, { condition, drawer: this })}></devtools-widget>`,
         // clang-format on
         element
       );
@@ -625,7 +705,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       ?disabled=${!editable}
       .jslog=${VisualLogging.toggle().track({ change: true })}>
     <div @click=${toggle2} class=blocked-url-label>${wildcardURL}</div>
-    <div class=blocked-url-count>${i18nString2(UIStrings2.dBlocked, { PH1: blockedCount })}</div>`,
+    <devtools-widget .widgetConfig=${widgetConfig(AffectedCountWidget, { condition, drawer: this })}></devtools-widget>`,
         // clang-format on
         element
       );
@@ -706,40 +786,22 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   blockedRequestsCount(condition) {
     let result = 0;
     for (const blockedUrl of this.blockedCountForUrl.keys()) {
-      const match = Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled ? condition.originalOrUpgradedURLPattern?.test(blockedUrl) : condition.wildcardURL && this.matches(condition.wildcardURL, blockedUrl);
-      if (match) {
+      if (matchesUrl(condition, blockedUrl)) {
         result += this.blockedCountForUrl.get(blockedUrl);
       }
     }
     return result;
   }
-  #throttledRequestsCount(condition) {
+  throttledRequestsCount(condition) {
     let result = 0;
     for (const ruleId of condition.ruleIds) {
       result += this.#throttledCount.get(ruleId) ?? 0;
     }
     return result;
   }
-  matches(pattern, url) {
-    let pos = 0;
-    const parts = pattern.split("*");
-    for (let index = 0; index < parts.length; index++) {
-      const part = parts[index];
-      if (!part.length) {
-        continue;
-      }
-      pos = url.indexOf(part, pos);
-      if (pos === -1) {
-        return false;
-      }
-      pos += part.length;
-    }
-    return true;
-  }
   onNetworkLogReset(_event) {
     this.blockedCountForUrl.clear();
     this.#throttledCount.clear();
-    this.update();
   }
   onRequestFinished(event) {
     const request = event.data;
@@ -751,9 +813,6 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       const count = this.blockedCountForUrl.get(request.url()) || 0;
       this.blockedCountForUrl.set(request.url(), count + 1);
     }
-    if (request.appliedNetworkConditionsId || request.wasBlocked()) {
-      this.update();
-    }
   }
   wasShown() {
     UI2.Context.Context.instance().setFlavor(_RequestConditionsDrawer, this);
@@ -762,6 +821,17 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   willHide() {
     super.willHide();
     UI2.Context.Context.instance().setFlavor(_RequestConditionsDrawer, null);
+  }
+  static async reveal(appliedConditions) {
+    await UI2.ViewManager.ViewManager.instance().showView("network.blocked-urls");
+    const drawer = UI2.Context.Context.instance().flavor(_RequestConditionsDrawer);
+    if (!drawer) {
+      console.assert(!!drawer, "Drawer not initialized");
+      return;
+    }
+    const conditions = drawer.manager.requestConditions.conditions.find((condition) => condition.ruleIds.has(appliedConditions.appliedNetworkConditionsId) && condition.constructorString && condition.constructorString === appliedConditions.urlPattern);
+    const element = conditions && drawer.#listElements.get(conditions);
+    element && PanelUtils.PanelUtils.highlightElement(element);
   }
 };
 var ActionDelegate = class {
@@ -781,6 +851,13 @@ var ActionDelegate = class {
       }
     }
     return false;
+  }
+};
+var AppliedConditionsRevealer = class {
+  async reveal(request) {
+    if (request.urlPattern) {
+      await RequestConditionsDrawer.reveal(request);
+    }
   }
 };
 
@@ -1880,7 +1957,7 @@ import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import { render as render2 } from "./../../ui/lit/lit.js";
-import { PanelUtils } from "./../utils/utils.js";
+import { PanelUtils as PanelUtils3 } from "./../utils/utils.js";
 var UIStrings5 = {
   /**
    * @description Text in Network Data Grid Node of the Network panel
@@ -2798,7 +2875,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }
   isFailed() {
-    return PanelUtils.isFailedNetworkRequest(this.requestInternal);
+    return PanelUtils3.isFailedNetworkRequest(this.requestInternal);
   }
   renderPrimaryCell(cell, columnId, text) {
     const columnIndex = this.dataGrid?.indexOfVisibleColumn(columnId) | 0;
@@ -2820,7 +2897,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         ippIcon.style.color = "var(--sys-color-on-surface-subtle);";
         cell.appendChild(ippIcon);
       }
-      const iconElement = PanelUtils.getIconForNetworkRequest(this.requestInternal);
+      const iconElement = PanelUtils3.getIconForNetworkRequest(this.requestInternal);
       render2(iconElement, cell);
       const aiButtonContainer = this.createAiButtonIfAvailable();
       if (aiButtonContainer) {
@@ -3109,6 +3186,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === "string" ? throttlingConditions.conditions.title : throttlingConditions.conditions.title();
       const icon = IconButton.Icon.create("watch");
       icon.title = i18nString5(UIStrings5.wasThrottled, { PH1: throttlingConditionsTitle });
+      icon.addEventListener("click", () => void Common4.Revealer.reveal(throttlingConditions));
       cell.append(icon);
     }
     if (this.requestInternal.duration > 0) {
@@ -5053,25 +5131,25 @@ var UIStrings11 = {
 };
 var str_11 = i18n21.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings11);
 var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
-var widgetConfig = UI12.Widget.widgetConfig;
+var widgetConfig2 = UI12.Widget.widgetConfig;
 var widgetRef = UI12.Widget.widgetRef;
 var DEFAULT_VIEW3 = (input, output, target) => {
   let widget;
   if (TextUtils2.StreamingContentData.isError(input.contentData)) {
     widget = html3`<devtools-widget
-                    .widgetConfig=${widgetConfig((element) => new UI12.EmptyWidget.EmptyWidget(i18nString11(UIStrings11.failedToLoadResponseData), input.contentData.error, element))}></devtools-widget>`;
+                    .widgetConfig=${widgetConfig2((element) => new UI12.EmptyWidget.EmptyWidget(i18nString11(UIStrings11.failedToLoadResponseData), input.contentData.error, element))}></devtools-widget>`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
     widget = html3`<devtools-widget
-                     .widgetConfig=${widgetConfig((element) => new UI12.EmptyWidget.EmptyWidget(i18nString11(UIStrings11.noPreview), i18nString11(UIStrings11.thisRequestHasNoResponseData), element))}></devtools-widget>`;
+                     .widgetConfig=${widgetConfig2((element) => new UI12.EmptyWidget.EmptyWidget(i18nString11(UIStrings11.noPreview), i18nString11(UIStrings11.thisRequestHasNoResponseData), element))}></devtools-widget>`;
   } else if (input.renderAsText) {
     widget = html3`<devtools-widget
-                    .widgetConfig=${widgetConfig((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+                    .widgetConfig=${widgetConfig2((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
                     ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget2) => {
       output.revealPosition = widget2.revealPosition.bind(widget2);
     })}></devtools-widget>`;
   } else {
     widget = html3`<devtools-widget
-                    .widgetConfig=${widgetConfig((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}></devtools-widget>`;
+                    .widgetConfig=${widgetConfig2((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}></devtools-widget>`;
   }
   render4(widget, target);
 };
@@ -5682,6 +5760,11 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
   }
 }
 var DEFAULT_VIEW4 = (input, output, target) => {
+  const revealThrottled = () => {
+    if (input.wasThrottled) {
+      void Common8.Revealer.reveal(input.wasThrottled);
+    }
+  };
   const scale = 100 / (input.endTime - input.startTime);
   const isClickable = (range) => range.name === "serviceworker-respondwith" || range.name === "serviceworker-routerevaluation";
   const addServerTiming = (serverTiming) => {
@@ -5737,7 +5820,9 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.NetworkPanelServiceWorkerRespondWith);
     }
   };
-  const throttledRequestTitle = input.wasThrottled ? i18nString12(UIStrings12.wasThrottled, { PH1: typeof input.wasThrottled.title === "string" ? input.wasThrottled.title : input.wasThrottled.title() }) : void 0;
+  const throttledRequestTitle = input.wasThrottled ? i18nString12(UIStrings12.wasThrottled, {
+    PH1: typeof input.wasThrottled.conditions.title === "string" ? input.wasThrottled.conditions.title : input.wasThrottled.conditions.title()
+  }) : void 0;
   const classes = classMap({
     ["network-timing-table"]: true,
     ["resource-timing-table"]: true
@@ -5854,7 +5939,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
            </x-link>
          <td></td>
          <td class=${input.wasThrottled ? "throttled" : ""} title=${ifDefined(throttledRequestTitle)}>
-           ${input.wasThrottled ? html4` <devtools-icon name=watch ></devtools-icon>` : nothing3}
+           ${input.wasThrottled ? html4` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing3}
            ${i18n23.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -5921,7 +6006,7 @@ var RequestTimingView = class _RequestTimingView extends UI13.Widget.VBox {
       requestUnfinished: false,
       fetchDetails: this.#fetchDetailsTree(),
       routerDetails: this.#routerDetailsTree(),
-      wasThrottled: conditions?.urlPattern ? conditions.conditions : void 0,
+      wasThrottled: conditions?.urlPattern ? conditions : void 0,
       timeRanges
     };
     this.#view(input, {}, this.contentElement);

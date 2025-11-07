@@ -325,7 +325,21 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function isOpeningTag(context) {
     return context.tagType === "OPENING_TAG" /* TagType.OPENING */;
 }
+function adornerRef(input) {
+    let adorner;
+    return ref((el) => {
+        if (adorner) {
+            input.onAdornerRemoved(adorner);
+        }
+        adorner = el;
+        if (adorner) {
+            input.onAdornerAdded(adorner);
+        }
+    });
+}
 export const DEFAULT_VIEW = (input, output, target) => {
+    const adAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
+    const hasAdorners = input.adorners || input.showAdAdorner;
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
@@ -334,8 +348,14 @@ export const DEFAULT_VIEW = (input, output, target) => {
         <devtools-icon name="dots-horizontal"></devtools-icon>
         <div class="hidden" ${ref(el => { output.decorationsElement = el; })}></div>
       </div>
-      ${input.adorners ? html `<div class="adorner-container ${input.adorners.size === 0 ? 'hidden' : ''}">
-        ${repeat(Array.from(input.adorners.values()).sort(adornerComparator), adorner => {
+      ${hasAdorners ? html `<div class="adorner-container ${!hasAdorners ? 'hidden' : ''}">
+        ${input.showAdAdorner ? html `<devtools-adorner
+          .data=${{ name: adAdornerConfig.name, jslogContext: adAdornerConfig.name }}
+          aria-label=${i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd)}
+          ${adornerRef(input)}>
+          <span>${adAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
+        ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
         return adorner;
     })}
       </div>` : nothing}
@@ -393,11 +413,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
             };
             void this.updateStyleAdorners();
-            if (node.isAdFrameNode()) {
-                const config = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
-                const adorner = this.adorn(config);
-                UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd));
-            }
             void this.updateScrollAdorner();
         }
         this.expandAllButtonElement = null;
@@ -467,8 +482,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     performUpdate() {
         DEFAULT_VIEW({
             adorners: !this.isClosingTag() ? this.#adorners : undefined,
+            showAdAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.AD) &&
+                this.nodeInternal.isAdFrameNode(),
             nodeInfo: this.#nodeInfo,
             onGutterClick: this.showContextMenu.bind(this),
+            onAdornerAdded: adorner => {
+                ElementsPanel.instance().registerAdorner(adorner);
+            },
+            onAdornerRemoved: adorner => {
+                ElementsPanel.instance().deregisterAdorner(adorner);
+            },
         }, this, this.listItemElement);
     }
     highlightAttribute(attributeName) {

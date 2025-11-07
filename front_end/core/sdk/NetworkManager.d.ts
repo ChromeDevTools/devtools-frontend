@@ -234,10 +234,7 @@ export declare class RequestConditions extends Common.ObjectWrapper.ObjectWrappe
     get conditions(): IteratorObject<RequestCondition>;
     applyConditions(offline: boolean, globalConditions: Conditions | null, ...agents: ProtocolProxyApi.NetworkApi[]): boolean;
     conditionsAppliedForTest(): Promise<unknown>;
-    conditionsForId(appliedNetworkConditionsId: string): {
-        conditions: Conditions;
-        urlPattern?: string;
-    } | undefined;
+    conditionsForId(appliedNetworkConditionsId: string): AppliedNetworkConditions | undefined;
 }
 export declare namespace RequestConditions {
     const enum Events {
@@ -246,6 +243,12 @@ export declare namespace RequestConditions {
     interface EventTypes {
         [Events.REQUEST_CONDITIONS_CHANGED]: void;
     }
+}
+export declare class AppliedNetworkConditions {
+    readonly conditions: Conditions;
+    readonly appliedNetworkConditionsId: string;
+    readonly urlPattern?: string | undefined;
+    constructor(conditions: Conditions, appliedNetworkConditionsId: string, urlPattern?: string | undefined);
 }
 export declare class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes> implements SDKModelObserver<NetworkManager> {
     #private;
@@ -299,10 +302,7 @@ export declare class MultitargetNetworkManager extends Common.ObjectWrapper.Obje
         content: string;
         errorDescription: Host.ResourceLoader.LoadErrorDescription;
     }>;
-    appliedRequestConditions(requestInternal: NetworkRequest): {
-        conditions: Conditions;
-        urlPattern?: string;
-    } | undefined;
+    appliedRequestConditions(requestInternal: NetworkRequest): AppliedNetworkConditions | undefined;
 }
 export declare namespace MultitargetNetworkManager {
     const enum Events {

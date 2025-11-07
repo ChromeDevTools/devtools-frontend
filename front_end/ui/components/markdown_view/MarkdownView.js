@@ -192,6 +192,7 @@ export class MarkdownLitRenderer {
             case 'code':
                 return this.renderCodeBlock(token);
             case 'space':
+                // eslint-disable-next-line lit/prefer-nothing
                 return html ``;
             case 'link':
                 return html `<devtools-markdown-link

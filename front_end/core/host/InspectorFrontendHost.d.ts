@@ -114,19 +114,19 @@ export declare class InspectorFrontendHostStub implements InspectorFrontendHostA
      * Whereas in **Non-hosted** (aka "embedded"), DevTools is embedded and fully dockable. It's the common way DevTools is run.
      *
      * **Hosted mode** == we're using the `InspectorFrontendHostStub`. impl. (@see `InspectorFrontendHostStub` class comment)
-     * Whereas with **non-hosted** mode, native `DevToolsEmbedderMessageDispatcher` is used for CDP and more.
+     * Whereas with **non-hosted** mode, native `DevToolsEmbedderMessageDispatcher` is used for CDP and more.  `globalThis.DevToolsAPI` is present.
      *
      * Relationships to other signals:
-     * - Hosted-ness does not indicate whether the frontend is _connected to a valid CDP target_.
-     * - Being _"dockable"_ (aka `canDock`) is typically aligned but technically orthogonal.
-     * - It's unrelated to the _tab's (main frame's) URL_. Though in non-hosted, the devtools frame origin will always be `devtools://devtools`.
+     * - _Connection_: Hosted-ness does not indicate whether the frontend is _connected to a valid CDP target_.
+     * - _Dockability_: Being _"dockable"_ (aka `canDock`) is typically aligned but technically orthogonal.
+     * - _URL scheme_: If the main frame's URL scheme is `devtools://`, it's non-hosted.
      *
-     *  | Example case                                         | Mode           | Example devtools                                                                   |
-     *  | :--------------------------------------------------- | :------------- | :---------------------------------------------------------------------------- |
-     *  | tab URL: anything. embedded DevTools w/ native CDP bindings    | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?targetType=tab&...`            |
-     *  | tab URL: `devtools://…?ws=…`                | **Hosted**     | `devtools://devtools/bundled/devtools_app.html?ws=localhost:9228/...`         |
-     *  | tab URL: `devtools://…` but no connection   | **Hosted**     | `devtools://devtools/bundled/devtools_app.html`                               |
-     *  | tab URL: `https://…` but no connection      | **Hosted**     | `https://chrome-devtools-frontend.appspot.com/serve_rev/@.../worker_app.html` |
+     *  | Example case                                | Mode           | Example devtools                                                              |
+     *  | :------------------------------------------ | :------------- | :---------------------------------------------------------------------------- |
+     *  | tab URL: `devtools://…`                     | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?targetType=tab&...`            |
+     *  | tab URL: `devtools://…?ws=…`                | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?ws=localhost:9228/...`         |
+     *  | tab URL: `devtools://…` but no connection   | **NOT Hosted** | `devtools://devtools/bundled/trace_app.html`                                  |
+     *  | tab URL: `https://…` but no connection      | **Hosted**     | `https://chrome-devtools-frontend.appspot.com/serve_rev/@.../trace_app.html`  |
      *  | tab URL: `http://…?ws=` (connected)         | **Hosted**     | `http://localhost:9222/devtools/inspector.html?ws=localhost:9222/...`         |
      */
     isHostedMode(): boolean;

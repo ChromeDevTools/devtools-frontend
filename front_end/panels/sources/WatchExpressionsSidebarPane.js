@@ -428,7 +428,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
         }
         else {
             const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(expressionValue, Boolean(exceptionDetails), false /* showPreview */, this.linkifier);
-            this.valueElement = propertyValue.element;
+            this.valueElement = propertyValue;
         }
         const separatorElement = document.createElement('span');
         separatorElement.classList.add('watch-expressions-separator');

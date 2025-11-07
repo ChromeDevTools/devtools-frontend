@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | networkPanel": {
     "message": "Network panel"
   },
+  "core/common/Revealer.ts | requestConditionsDrawer": {
+    "message": "Request conditions drawer"
+  },
   "core/common/Revealer.ts | securityPanel": {
     "message": "Security panel"
   },
@@ -10410,7 +10413,7 @@
     "message": "{PH1} blocked"
   },
   "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
-    "message": "Decrease priority"
+    "message": "Move down (higher patterns are checked first)"
   },
   "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
     "message": "Enable blocking and throttling"
@@ -10419,7 +10422,7 @@
     "message": "Enable network request blocking"
   },
   "panels/network/RequestConditionsDrawer.ts | increasePriority": {
-    "message": "Increase priority"
+    "message": "Move up (higher patterns are checked first)"
   },
   "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
     "message": "Item successfully deleted"

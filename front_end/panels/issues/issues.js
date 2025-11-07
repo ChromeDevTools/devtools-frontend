@@ -4,302 +4,6 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/issues/IssueAggregator.js
-var IssueAggregator_exports = {};
-__export(IssueAggregator_exports, {
-  AggregatedIssue: () => AggregatedIssue,
-  IssueAggregator: () => IssueAggregator
-});
-import * as Common from "./../../core/common/common.js";
-import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
-var AggregatedIssue = class extends IssuesManager.Issue.Issue {
-  #affectedCookies = /* @__PURE__ */ new Map();
-  #affectedRawCookieLines = /* @__PURE__ */ new Map();
-  #affectedRequests = [];
-  #affectedRequestIds = /* @__PURE__ */ new Set();
-  #affectedLocations = /* @__PURE__ */ new Map();
-  #heavyAdIssues = /* @__PURE__ */ new Set();
-  #blockedByResponseDetails = /* @__PURE__ */ new Map();
-  #bounceTrackingSites = /* @__PURE__ */ new Set();
-  #corsIssues = /* @__PURE__ */ new Set();
-  #cspIssues = /* @__PURE__ */ new Set();
-  #deprecationIssues = /* @__PURE__ */ new Set();
-  #issueKind = "Improvement";
-  #lowContrastIssues = /* @__PURE__ */ new Set();
-  #cookieDeprecationMetadataIssues = /* @__PURE__ */ new Set();
-  #mixedContentIssues = /* @__PURE__ */ new Set();
-  #partitioningBlobURLIssues = /* @__PURE__ */ new Set();
-  #sharedArrayBufferIssues = /* @__PURE__ */ new Set();
-  #quirksModeIssues = /* @__PURE__ */ new Set();
-  #attributionReportingIssues = /* @__PURE__ */ new Set();
-  #genericIssues = /* @__PURE__ */ new Set();
-  #elementAccessibilityIssues = /* @__PURE__ */ new Set();
-  #representative;
-  #aggregatedIssuesCount = 0;
-  #key;
-  constructor(code, aggregationKey) {
-    super(code);
-    this.#key = aggregationKey;
-  }
-  primaryKey() {
-    throw new Error("This should never be called");
-  }
-  aggregationKey() {
-    return this.#key;
-  }
-  getBlockedByResponseDetails() {
-    return this.#blockedByResponseDetails.values();
-  }
-  cookies() {
-    return Array.from(this.#affectedCookies.values()).map((x) => x.cookie);
-  }
-  getRawCookieLines() {
-    return this.#affectedRawCookieLines.values();
-  }
-  sources() {
-    return this.#affectedLocations.values();
-  }
-  getBounceTrackingSites() {
-    return this.#bounceTrackingSites.values();
-  }
-  cookiesWithRequestIndicator() {
-    return this.#affectedCookies.values();
-  }
-  getHeavyAdIssues() {
-    return this.#heavyAdIssues;
-  }
-  getCookieDeprecationMetadataIssues() {
-    return this.#cookieDeprecationMetadataIssues;
-  }
-  getMixedContentIssues() {
-    return this.#mixedContentIssues;
-  }
-  getCorsIssues() {
-    return this.#corsIssues;
-  }
-  getCspIssues() {
-    return this.#cspIssues;
-  }
-  getDeprecationIssues() {
-    return this.#deprecationIssues;
-  }
-  getLowContrastIssues() {
-    return this.#lowContrastIssues;
-  }
-  requests() {
-    return this.#affectedRequests.values();
-  }
-  getSharedArrayBufferIssues() {
-    return this.#sharedArrayBufferIssues;
-  }
-  getQuirksModeIssues() {
-    return this.#quirksModeIssues;
-  }
-  getAttributionReportingIssues() {
-    return this.#attributionReportingIssues;
-  }
-  getGenericIssues() {
-    return this.#genericIssues;
-  }
-  getElementAccessibilityIssues() {
-    return this.#elementAccessibilityIssues;
-  }
-  getDescription() {
-    if (this.#representative) {
-      return this.#representative.getDescription();
-    }
-    return null;
-  }
-  getCategory() {
-    if (this.#representative) {
-      return this.#representative.getCategory();
-    }
-    return "Other";
-  }
-  getAggregatedIssuesCount() {
-    return this.#aggregatedIssuesCount;
-  }
-  getPartitioningBlobURLIssues() {
-    return this.#partitioningBlobURLIssues;
-  }
-  /**
-   * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
-   * case new fields are added to `AffectedCookie`.
-   */
-  #keyForCookie(cookie) {
-    const { domain, path, name } = cookie;
-    return `${domain};${path};${name}`;
-  }
-  addInstance(issue) {
-    this.#aggregatedIssuesCount++;
-    if (!this.#representative) {
-      this.#representative = issue;
-    }
-    this.#issueKind = IssuesManager.Issue.unionIssueKind(this.#issueKind, issue.getKind());
-    let hasRequest = false;
-    for (const request of issue.requests()) {
-      const { requestId } = request;
-      hasRequest = true;
-      if (requestId === void 0) {
-        this.#affectedRequests.push(request);
-      } else if (!this.#affectedRequestIds.has(requestId)) {
-        this.#affectedRequests.push(request);
-        this.#affectedRequestIds.add(requestId);
-      }
-    }
-    for (const cookie of issue.cookies()) {
-      const key = this.#keyForCookie(cookie);
-      if (!this.#affectedCookies.has(key)) {
-        this.#affectedCookies.set(key, { cookie, hasRequest });
-      }
-    }
-    for (const rawCookieLine of issue.rawCookieLines()) {
-      if (!this.#affectedRawCookieLines.has(rawCookieLine)) {
-        this.#affectedRawCookieLines.set(rawCookieLine, { rawCookieLine, hasRequest });
-      }
-    }
-    for (const site of issue.trackingSites()) {
-      if (!this.#bounceTrackingSites.has(site)) {
-        this.#bounceTrackingSites.add(site);
-      }
-    }
-    for (const location of issue.sources()) {
-      const key = JSON.stringify(location);
-      if (!this.#affectedLocations.has(key)) {
-        this.#affectedLocations.set(key, location);
-      }
-    }
-    if (issue instanceof IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue) {
-      this.#cookieDeprecationMetadataIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.MixedContentIssue.MixedContentIssue) {
-      this.#mixedContentIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.HeavyAdIssue.HeavyAdIssue) {
-      this.#heavyAdIssues.add(issue);
-    }
-    for (const details of issue.getBlockedByResponseDetails()) {
-      const key = JSON.stringify(details, ["parentFrame", "blockedFrame", "requestId", "frameId", "reason", "request"]);
-      this.#blockedByResponseDetails.set(key, details);
-    }
-    if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
-      this.#cspIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.DeprecationIssue.DeprecationIssue) {
-      this.#deprecationIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue) {
-      this.#sharedArrayBufferIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.LowTextContrastIssue.LowTextContrastIssue) {
-      this.#lowContrastIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.CorsIssue.CorsIssue) {
-      this.#corsIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.QuirksModeIssue.QuirksModeIssue) {
-      this.#quirksModeIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.AttributionReportingIssue.AttributionReportingIssue) {
-      this.#attributionReportingIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
-      this.#genericIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue) {
-      this.#elementAccessibilityIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue) {
-      this.#partitioningBlobURLIssues.add(issue);
-    }
-  }
-  getKind() {
-    return this.#issueKind;
-  }
-  isHidden() {
-    return this.#representative?.isHidden() || false;
-  }
-  setHidden(_value) {
-    throw new Error("Should not call setHidden on aggregatedIssue");
-  }
-};
-var IssueAggregator = class extends Common.ObjectWrapper.ObjectWrapper {
-  issuesManager;
-  #aggregatedIssuesByKey = /* @__PURE__ */ new Map();
-  #hiddenAggregatedIssuesByKey = /* @__PURE__ */ new Map();
-  constructor(issuesManager) {
-    super();
-    this.issuesManager = issuesManager;
-    this.issuesManager.addEventListener("IssueAdded", this.#onIssueAdded, this);
-    this.issuesManager.addEventListener("FullUpdateRequired", this.#onFullUpdateRequired, this);
-    for (const issue of this.issuesManager.issues()) {
-      this.#aggregateIssue(issue);
-    }
-  }
-  #onIssueAdded(event) {
-    this.#aggregateIssue(event.data.issue);
-  }
-  #onFullUpdateRequired() {
-    this.#aggregatedIssuesByKey.clear();
-    this.#hiddenAggregatedIssuesByKey.clear();
-    for (const issue of this.issuesManager.issues()) {
-      this.#aggregateIssue(issue);
-    }
-    this.dispatchEventToListeners(
-      "FullUpdateRequired"
-      /* Events.FULL_UPDATE_REQUIRED */
-    );
-  }
-  #aggregateIssue(issue) {
-    if (IssuesManager.CookieIssue.CookieIssue.isThirdPartyCookiePhaseoutRelatedIssue(issue)) {
-      return;
-    }
-    const map = issue.isHidden() ? this.#hiddenAggregatedIssuesByKey : this.#aggregatedIssuesByKey;
-    const aggregatedIssue = this.#aggregateIssueByStatus(map, issue);
-    this.dispatchEventToListeners("AggregatedIssueUpdated", aggregatedIssue);
-    return aggregatedIssue;
-  }
-  #aggregateIssueByStatus(aggregatedIssuesMap, issue) {
-    const key = issue.code();
-    let aggregatedIssue = aggregatedIssuesMap.get(key);
-    if (!aggregatedIssue) {
-      aggregatedIssue = new AggregatedIssue(issue.code(), key);
-      aggregatedIssuesMap.set(key, aggregatedIssue);
-    }
-    aggregatedIssue.addInstance(issue);
-    return aggregatedIssue;
-  }
-  aggregatedIssues() {
-    return [...this.#aggregatedIssuesByKey.values(), ...this.#hiddenAggregatedIssuesByKey.values()];
-  }
-  aggregatedIssueCodes() {
-    return /* @__PURE__ */ new Set([...this.#aggregatedIssuesByKey.keys(), ...this.#hiddenAggregatedIssuesByKey.keys()]);
-  }
-  aggregatedIssueCategories() {
-    const result = /* @__PURE__ */ new Set();
-    for (const issue of this.#aggregatedIssuesByKey.values()) {
-      result.add(issue.getCategory());
-    }
-    return result;
-  }
-  aggregatedIssueKinds() {
-    const result = /* @__PURE__ */ new Set();
-    for (const issue of this.#aggregatedIssuesByKey.values()) {
-      result.add(issue.getKind());
-    }
-    return result;
-  }
-  numberOfAggregatedIssues() {
-    return this.#aggregatedIssuesByKey.size;
-  }
-  numberOfHiddenAggregatedIssues() {
-    return this.#hiddenAggregatedIssuesByKey.size;
-  }
-  keyForIssue(issue) {
-    return issue.code();
-  }
-};
-
 // gen/front_end/panels/issues/IssueRevealer.js
 var IssueRevealer_exports = {};
 __export(IssueRevealer_exports, {
@@ -314,9 +18,9 @@ __export(IssuesPane_exports, {
   getGroupIssuesByCategorySetting: () => getGroupIssuesByCategorySetting
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common7 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as IssuesManager13 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager12 from "./../../models/issues_manager/issues_manager.js";
 import * as IssueCounter5 from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
@@ -324,7 +28,7 @@ import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 // gen/front_end/panels/issues/HiddenIssuesRow.js
 import "./../../ui/components/adorners/adorners.js";
 import * as i18n from "./../../core/i18n/i18n.js";
-import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import { html, render } from "./../../ui/lit/lit.js";
@@ -372,7 +76,7 @@ var HiddenIssuesRow = class extends UI.TreeOutline.TreeElement {
     this.update(0);
   }
   update(count) {
-    const issuesManager = IssuesManager2.IssuesManager.IssuesManager.instance();
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     const onUnhideAllIssues = issuesManager.unhideAllIssues.bind(issuesManager);
     const input = {
       count,
@@ -384,9 +88,9 @@ var HiddenIssuesRow = class extends UI.TreeOutline.TreeElement {
 };
 
 // gen/front_end/panels/issues/IssueKindView.js
-import * as Common2 from "./../../core/common/common.js";
+import * as Common from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as IssuesManager4 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager3 from "./../../models/issues_manager/issues_manager.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
@@ -409,7 +113,7 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/issues/IssueKindView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 function getGroupIssuesByKindSetting() {
-  return Common2.Settings.Settings.instance().createSetting("group-issues-by-kind", false);
+  return Common.Settings.Settings.instance().createSetting("group-issues-by-kind", false);
 }
 function issueKindViewSortPriority(a, b) {
   if (a.getKind() === b.getKind()) {
@@ -473,15 +177,15 @@ var IssueKindView = class extends UI2.TreeOutline.TreeElement {
     this.#issueCount.textContent = "0";
     const title = document.createElement("div");
     title.classList.add("title");
-    title.textContent = IssuesManager4.Issue.getIssueKindName(this.#kind);
+    title.textContent = IssuesManager3.Issue.getIssueKindName(this.#kind);
     const hideAvailableIssuesBtn = new Components.HideIssuesMenu.HideIssuesMenu();
     hideAvailableIssuesBtn.classList.add("hide-available-issues");
     hideAvailableIssuesBtn.data = {
       menuItemLabel: this.getHideAllCurrentKindString(),
       menuItemAction: () => {
-        const setting = IssuesManager4.IssuesManager.getHideIssueByCodeSetting();
+        const setting = IssuesManager3.IssuesManager.getHideIssueByCodeSetting();
         const values = setting.get();
-        for (const issue of IssuesManager4.IssuesManager.IssuesManager.instance().issues()) {
+        for (const issue of IssuesManager3.IssuesManager.IssuesManager.instance().issues()) {
           if (issue.getKind() === this.#kind) {
             values[issue.code()] = "Hidden";
           }
@@ -1019,10 +723,10 @@ var IssueView_exports = {};
 __export(IssueView_exports, {
   IssueView: () => IssueView
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as IssuesManager11 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager10 from "./../../models/issues_manager/issues_manager.js";
 import * as NetworkForward3 from "./../network/forward/forward.js";
 import * as Adorners2 from "./../../ui/components/adorners/adorners.js";
 import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
@@ -1034,10 +738,10 @@ import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 // gen/front_end/panels/issues/AffectedBlockedByResponseView.js
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as IssuesManager6 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager5 from "./../../models/issues_manager/issues_manager.js";
 
 // gen/front_end/panels/issues/AffectedResourcesView.js
-import * as Common3 from "./../../core/common/common.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
@@ -1156,7 +860,7 @@ var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
     }
     const frameWasUnresolved = this.#unresolvedFrameIds.delete(frame.id);
     if (this.#unresolvedFrameIds.size === 0 && this.#frameListeners.length) {
-      Common3.EventTarget.removeEventListeners(this.#frameListeners);
+      Common2.EventTarget.removeEventListeners(this.#frameListeners);
       this.#frameListeners = [];
     }
     if (frameWasUnresolved) {
@@ -1182,7 +886,7 @@ var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
         if (frame2) {
           const ownerNode = await frame2.getOwnerDOMNodeOrDocument();
           if (ownerNode) {
-            void Common3.Revealer.reveal(ownerNode);
+            void Common2.Revealer.reveal(ownerNode);
           }
         }
       };
@@ -1221,7 +925,7 @@ var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
       );
     }
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchorElement = await Common3.Linkifier.Linkifier.linkify(deferredDOMNode);
+    const anchorElement = await Common2.Linkifier.Linkifier.linkify(deferredDOMNode);
     anchorElement.textContent = nodeName;
     anchorElement.addEventListener("click", () => sendTelemetry());
     anchorElement.addEventListener("keydown", (event) => {
@@ -1346,7 +1050,7 @@ var AffectedBlockedByResponseView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedCookiesView.js
-import * as Common4 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as NetworkForward from "./../network/forward/forward.js";
@@ -1411,7 +1115,7 @@ var AffectedCookiesView = class extends AffectedResourcesView {
           "Cookie"
           /* AffectedItem.COOKIE */
         );
-        void Common4.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+        void Common3.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
           {
             filterType: NetworkForward.UIFilter.FilterType.CookieDomain,
             filterValue: cookie.domain
@@ -1459,7 +1163,7 @@ var AffectedRawCookieLinesView = class extends AffectedResourcesView {
         link5.tabIndex = 0;
         link5.setAttribute("jslog", `${VisualLogging3.link("issues.filter-network-requests-by-raw-cookie").track({ click: true })}`);
         link5.addEventListener("click", () => {
-          void Common4.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+          void Common3.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
             {
               filterType: NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie,
               filterValue: cookie.rawCookieLine
@@ -1559,12 +1263,12 @@ var AffectedDescendantsWithinSelectElementView = class extends AffectedElementsV
 };
 
 // gen/front_end/panels/issues/AffectedDirectivesView.js
-import * as Common5 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as IssuesManager7 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager6 from "./../../models/issues_manager/issues_manager.js";
 import * as IssuesComponents from "./components/components.js";
 var UIStrings8 = {
   /**
@@ -1647,7 +1351,7 @@ var AffectedDirectivesView = class extends AffectedResourcesView {
             /* AffectedItem.ELEMENT */
           );
           const deferredDOMNode = new SDK2.DOMModel.DeferredDOMNode(target, violatingNodeId);
-          void Common5.Revealer.reveal(deferredDOMNode);
+          void Common4.Revealer.reveal(deferredDOMNode);
         }
       };
       const onElementRevealIconMouseEnter = () => {
@@ -1671,24 +1375,24 @@ var AffectedDirectivesView = class extends AffectedResourcesView {
   }
   #appendAffectedContentSecurityPolicyDetails(cspIssues) {
     const header = document.createElement("tr");
-    if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.inlineViolationCode) {
+    if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.inlineViolationCode) {
       this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
       this.appendColumnTitle(header, i18nString8(UIStrings8.element));
       this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
       this.appendColumnTitle(header, i18nString8(UIStrings8.status));
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.urlViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.urlViolationCode) {
       this.appendColumnTitle(header, i18nString8(UIStrings8.resourceC), "affected-resource-directive-info-header");
       this.appendColumnTitle(header, i18nString8(UIStrings8.status));
       this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
       this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.evalViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.evalViolationCode) {
       this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
       this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
       this.appendColumnTitle(header, i18nString8(UIStrings8.status));
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
       this.appendColumnTitle(header, i18nString8(UIStrings8.status));
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
       this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
       this.appendColumnTitle(header, i18nString8(UIStrings8.status));
@@ -1708,28 +1412,28 @@ var AffectedDirectivesView = class extends AffectedResourcesView {
     const element = document.createElement("tr");
     element.classList.add("affected-resource-directive");
     const cspIssueDetails = cspIssue.details();
-    const location = IssuesManager7.Issue.toZeroBasedLocation(cspIssueDetails.sourceCodeLocation);
+    const location = IssuesManager6.Issue.toZeroBasedLocation(cspIssueDetails.sourceCodeLocation);
     const model = cspIssue.model();
     const maybeTarget = cspIssue.model()?.getTargetIfNotDisposed();
-    if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.inlineViolationCode && model) {
+    if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.inlineViolationCode && model) {
       this.#appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this.#appendBlockedElement(element, cspIssueDetails.violatingNodeId, model);
       this.appendSourceLocation(element, location, maybeTarget);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.urlViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.urlViolationCode) {
       const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL : Platform.DevToolsPath.EmptyUrlString;
       this.#appendBlockedURL(element, url);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
       this.#appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this.appendSourceLocation(element, location, maybeTarget);
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.evalViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.evalViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
       this.#appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this.issue.code() === IssuesManager7.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+    } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
       this.#appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
@@ -2090,7 +1794,7 @@ var AffectedPartitioningBlobURLView = class extends AffectedResourcesView {
 
 // gen/front_end/panels/issues/AffectedSharedArrayBufferIssueDetailsView.js
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as IssuesManager8 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager7 from "./../../models/issues_manager/issues_manager.js";
 var UIStrings14 = {
   /**
    * @description Label for number of affected resources indication in issue view
@@ -2181,7 +1885,7 @@ var AffectedSharedArrayBufferIssueDetailsView = class extends AffectedResourcesV
     const element = document.createElement("tr");
     element.classList.add("affected-resource-directive");
     const sabIssueDetails = sabIssue.details();
-    const location = IssuesManager8.Issue.toZeroBasedLocation(sabIssueDetails.sourceCodeLocation);
+    const location = IssuesManager7.Issue.toZeroBasedLocation(sabIssueDetails.sourceCodeLocation);
     this.appendSourceLocation(element, location, sabIssue.model()?.getTargetIfNotDisposed());
     this.#appendType(element, sabIssueDetails.type);
     this.#appendStatus(element, sabIssueDetails.isWarning);
@@ -2270,7 +1974,7 @@ var AffectedTrackingSitesView = class extends AffectedResourcesView {
 // gen/front_end/panels/issues/AttributionReportingIssueDetailsView.js
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as IssuesManager9 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager8 from "./../../models/issues_manager/issues_manager.js";
 var UIStrings17 = {
   /**
    * @description Label for number of rows in the issue details table.
@@ -2434,7 +2138,7 @@ import * as Components4 from "./components/components.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
-import * as IssuesManager10 from "./../../models/issues_manager/issues_manager.js";
+import * as IssuesManager9 from "./../../models/issues_manager/issues_manager.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
 var UIStrings18 = {
   /**
@@ -3136,7 +2840,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
     super();
     this.#issue = issue;
     this.#description = description;
-    this.#throttle = new Common6.Throttler.Throttler(250);
+    this.#throttle = new Common5.Throttler.Throttler(250);
     this.toggleOnClick = true;
     this.listItemElement.classList.add("issue");
     this.childrenListElement.classList.add("issue-body");
@@ -3253,7 +2957,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
   onexpand() {
     const category = this.#issue.getCategory();
     if (category === "Cookie") {
-      const cookieIssueSubCategory = IssuesManager11.CookieIssue.CookieIssue.getSubCategory(this.#issue.code());
+      const cookieIssueSubCategory = IssuesManager10.CookieIssue.CookieIssue.getSubCategory(this.#issue.code());
       Host7.userMetrics.issuesPanelIssueExpanded(cookieIssueSubCategory);
     } else {
       Host7.userMetrics.issuesPanelIssueExpanded(category);
@@ -3272,7 +2976,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
     if (this.#issueKindIcon) {
       const kind = this.#issue.getKind();
       this.#issueKindIcon.name = IssueCounter3.IssueCounter.getIssueKindIconName(kind);
-      this.#issueKindIcon.title = IssuesManager11.Issue.getIssueKindDescription(kind);
+      this.#issueKindIcon.title = IssuesManager10.Issue.getIssueKindDescription(kind);
     }
     if (this.#aggregatedIssuesCount) {
       this.#aggregatedIssuesCount.textContent = `${this.#issue.getAggregatedIssuesCount()}`;
@@ -3282,7 +2986,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
       const data = {
         menuItemLabel: this.#issue.isHidden() ? i18nString20(UIStrings20.unhideIssuesLikeThis) : i18nString20(UIStrings20.hideIssuesLikeThis),
         menuItemAction: () => {
-          const setting = IssuesManager11.IssuesManager.getHideIssueByCodeSetting();
+          const setting = IssuesManager10.IssuesManager.getHideIssueByCodeSetting();
           const values = setting.get();
           values[this.#issue.code()] = this.#issue.isHidden() ? "Unhidden" : "Hidden";
           setting.set(values);
@@ -3507,7 +3211,7 @@ var IssueCategoryView = class extends UI6.TreeOutline.TreeElement {
   }
 };
 function getGroupIssuesByCategorySetting() {
-  return Common7.Settings.Settings.instance().createSetting("group-issues-by-category", false);
+  return Common6.Settings.Settings.instance().createSetting("group-issues-by-category", false);
 }
 var IssuesPane = class extends UI6.Widget.VBox {
   #categoryViews;
@@ -3542,8 +3246,8 @@ var IssuesPane = class extends UI6.Widget.VBox {
     this.#noIssuesMessageDiv = new UI6.EmptyWidget.EmptyWidget("", i18nString21(UIStrings21.issuesPanelDescription));
     this.#noIssuesMessageDiv.link = ISSUES_PANEL_EXPLANATION_URL;
     this.#noIssuesMessageDiv.show(this.contentElement);
-    this.#issuesManager = IssuesManager13.IssuesManager.IssuesManager.instance();
-    this.#aggregator = new IssueAggregator(this.#issuesManager);
+    this.#issuesManager = IssuesManager12.IssuesManager.IssuesManager.instance();
+    this.#aggregator = new IssuesManager12.IssueAggregator.IssueAggregator(this.#issuesManager);
     this.#aggregator.addEventListener("AggregatedIssueUpdated", this.#issueUpdated, this);
     this.#aggregator.addEventListener("FullUpdateRequired", this.#onFullUpdate, this);
     this.#hiddenIssuesRow.hidden = this.#issuesManager.numberOfHiddenIssues() === 0;
@@ -3575,7 +3279,7 @@ var IssuesPane = class extends UI6.Widget.VBox {
       this.#fullUpdate(true);
     });
     groupByKindSettingCheckbox.setVisible(true);
-    const thirdPartySetting = IssuesManager13.Issue.getShowThirdPartyIssuesSetting();
+    const thirdPartySetting = IssuesManager12.Issue.getShowThirdPartyIssuesSetting();
     this.#showThirdPartyCheckbox = new UI6.Toolbar.ToolbarSettingCheckbox(thirdPartySetting, i18nString21(UIStrings21.includeCookieIssuesCausedBy), i18nString21(UIStrings21.includeThirdpartyCookieIssues));
     rightToolbar.appendToolbarItem(this.#showThirdPartyCheckbox);
     this.setDefaultFocusedElement(this.#showThirdPartyCheckbox.element);
@@ -3586,11 +3290,11 @@ var IssuesPane = class extends UI6.Widget.VBox {
         this.focus();
       },
       tooltipCallback: () => {
-        const issueEnumeration = IssueCounter5.IssueCounter.getIssueCountsEnumeration(IssuesManager13.IssuesManager.IssuesManager.instance(), false);
+        const issueEnumeration = IssueCounter5.IssueCounter.getIssueCountsEnumeration(IssuesManager12.IssuesManager.IssuesManager.instance(), false);
         issueCounter.title = issueEnumeration;
       },
       displayMode: "ShowAlways",
-      issuesManager: IssuesManager13.IssuesManager.IssuesManager.instance()
+      issuesManager: IssuesManager12.IssuesManager.IssuesManager.instance()
     };
     issueCounter.id = "console-issues-counter";
     issueCounter.setAttribute("jslog", `${VisualLogging6.counter("issues")}`);
@@ -3613,7 +3317,7 @@ var IssuesPane = class extends UI6.Widget.VBox {
         console.warn("Could not find description for issue code:", issue.code());
         return;
       }
-      const markdownDescription = await IssuesManager13.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
+      const markdownDescription = await IssuesManager12.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
       issueView = new IssueView(issue, markdownDescription);
       this.#issueViews.set(issue.aggregationKey(), issueView);
       const parent = this.#getIssueViewParent(issue);
@@ -3792,7 +3496,6 @@ var IssueRevealer = class {
   }
 };
 export {
-  IssueAggregator_exports as IssueAggregator,
   IssueRevealer_exports as IssueRevealer,
   IssueView_exports as IssueView,
   IssuesPane_exports as IssuesPane

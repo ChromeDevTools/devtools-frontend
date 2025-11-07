@@ -4866,36 +4866,6 @@ var UIStrings14 = {
 var str_14 = i18n28.i18n.registerUIStrings("core/sdk/sdk-meta.ts", UIStrings14);
 var i18nLazyString14 = i18n28.i18n.getLazilyComputedLocalizedString.bind(void 0, str_14);
 Common9.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "skip-stack-frames-pattern",
-  settingType: "regex",
-  defaultValue: "/node_modules/|^node:"
-});
-Common9.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "skip-content-scripts",
-  settingType: "boolean",
-  defaultValue: true
-});
-Common9.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "automatically-ignore-list-known-third-party-scripts",
-  settingType: "boolean",
-  defaultValue: true
-});
-Common9.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "skip-anonymous-scripts",
-  settingType: "boolean",
-  defaultValue: false
-});
-Common9.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "enable-ignore-listing",
-  settingType: "boolean",
-  defaultValue: true
-});
-Common9.Settings.registerSettingExtension({
   category: "CONSOLE",
   storageType: "Synced",
   title: i18nLazyString14(UIStrings14.preserveLogUponNavigation),
@@ -5625,8 +5595,41 @@ Common9.Settings.registerSettingExtension({
   }
 });
 
-// gen/front_end/ui/legacy/components/source_frame/source_frame-meta.js
+// gen/front_end/models/workspace/workspace-meta.js
 import * as Common10 from "./../../core/common/common.js";
+Common10.Settings.registerSettingExtension({
+  storageType: "Synced",
+  settingName: "skip-stack-frames-pattern",
+  settingType: "regex",
+  defaultValue: "/node_modules/|^node:"
+});
+Common10.Settings.registerSettingExtension({
+  storageType: "Synced",
+  settingName: "skip-content-scripts",
+  settingType: "boolean",
+  defaultValue: true
+});
+Common10.Settings.registerSettingExtension({
+  storageType: "Synced",
+  settingName: "automatically-ignore-list-known-third-party-scripts",
+  settingType: "boolean",
+  defaultValue: true
+});
+Common10.Settings.registerSettingExtension({
+  storageType: "Synced",
+  settingName: "skip-anonymous-scripts",
+  settingType: "boolean",
+  defaultValue: false
+});
+Common10.Settings.registerSettingExtension({
+  storageType: "Synced",
+  settingName: "enable-ignore-listing",
+  settingType: "boolean",
+  defaultValue: true
+});
+
+// gen/front_end/ui/legacy/components/source_frame/source_frame-meta.js
+import * as Common11 from "./../../core/common/common.js";
 import * as i18n30 from "./../../core/i18n/i18n.js";
 var UIStrings15 = {
   /**
@@ -5668,7 +5671,7 @@ var UIStrings15 = {
 };
 var str_15 = i18n30.i18n.registerUIStrings("ui/legacy/components/source_frame/source_frame-meta.ts", UIStrings15);
 var i18nLazyString15 = i18n30.i18n.getLazilyComputedLocalizedString.bind(void 0, str_15);
-Common10.Settings.registerSettingExtension({
+Common11.Settings.registerSettingExtension({
   category: "SOURCES",
   storageType: "Synced",
   title: i18nLazyString15(UIStrings15.defaultIndentation),
@@ -5738,7 +5741,7 @@ UI13.UIUtils.registerRenderer({
 });
 
 // gen/front_end/panels/explain/explain-meta.js
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Console2 from "./../../panels/console/console.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
@@ -5830,7 +5833,7 @@ function isPolicyRestricted(config) {
 function isFeatureEnabled(config) {
   return (config?.aidaAvailability?.enabled && config?.devToolsConsoleInsights?.enabled) === true;
 }
-Common11.Settings.registerSettingExtension({
+Common12.Settings.registerSettingExtension({
   category: "AI",
   settingName: setting,
   settingType: "boolean",
@@ -5870,7 +5873,7 @@ for (const action of actions) {
 }
 
 // gen/front_end/panels/ai_assistance/ai_assistance-meta.js
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
@@ -5971,7 +5974,7 @@ UI15.ViewManager.registerViewExtension({
     return await AiAssistance.AiAssistancePanel.instance();
   }
 });
-Common12.Settings.registerSettingExtension({
+Common13.Settings.registerSettingExtension({
   category: "AI",
   settingName: setting2,
   settingType: "boolean",

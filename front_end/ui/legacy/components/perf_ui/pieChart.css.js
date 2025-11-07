@@ -38,7 +38,7 @@ export default `/*
 }
 
 :focus {
-  outline-width: 0;
+  outline-style: none;
 }
 
 .pie-chart-total.selected {

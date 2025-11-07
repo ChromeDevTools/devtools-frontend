@@ -13,7 +13,7 @@ interface ViewInput {
     serverTimings: SDK.ServerTiming.ServerTiming[];
     fetchDetails?: UI.TreeOutline.TreeOutlineInShadow;
     routerDetails?: UI.TreeOutline.TreeOutlineInShadow;
-    wasThrottled?: SDK.NetworkManager.Conditions;
+    wasThrottled?: SDK.NetworkManager.AppliedNetworkConditions;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

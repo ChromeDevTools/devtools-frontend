@@ -1255,7 +1255,7 @@ var breakpointsView_css_default = `/*
   .pause-on-uncaught-exceptions:focus,
   .pause-on-caught-exceptions:focus {
     background-color: var(--sys-color-tonal-container);
-    outline-width: 0;
+    outline-style: none;
   }
 }
 
@@ -6470,8 +6470,8 @@ var sourcesPanel_css_default = `/*
  */
 
 .paused-message {
-  align-self: center;
-  width: fit-content;
+  display: flex;
+  justify-content: center;
 }
 
 .scripts-debug-toolbar {
@@ -11986,7 +11986,7 @@ var ValueDecoration = class extends CodeMirror7.WidgetType {
           /* showPreview */
           false
         );
-        nameValuePair.appendChild(propertyValue.element);
+        nameValuePair.appendChild(propertyValue);
       }
     }
     return widget;
@@ -14906,7 +14906,7 @@ var WatchExpression = class _WatchExpression extends Common20.ObjectWrapper.Obje
       }
     } else {
       const propertyValue = ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(expressionValue, Boolean(exceptionDetails), false, this.linkifier);
-      this.valueElement = propertyValue.element;
+      this.valueElement = propertyValue;
     }
     const separatorElement = document.createElement("span");
     separatorElement.classList.add("watch-expressions-separator");

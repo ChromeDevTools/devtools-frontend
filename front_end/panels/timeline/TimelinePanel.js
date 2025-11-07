@@ -2614,14 +2614,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                     message: 'The trace was loaded successfully but no Insights were detected.',
                 };
             }
-            const navigationId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
-            if (!navigationId) {
+            const insightSetId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
+            if (!insightSetId) {
                 return {
                     type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,
                     message: 'The trace was loaded successfully but no navigation was detected.',
                 };
             }
-            const insightsForNav = parsedTrace.insights.get(navigationId);
+            const insightsForNav = parsedTrace.insights.get(insightSetId);
             if (!insightsForNav) {
                 return {
                     type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,

@@ -612,6 +612,7 @@
   "front_end/models/trace/trace.js",
   "front_end/models/trace/types/types.js",
   "front_end/models/trace_source_maps_resolver/trace_source_maps_resolver.js",
+  "front_end/models/workspace/workspace-meta.js",
   "front_end/models/workspace/workspace.js",
   "front_end/models/workspace_diff/workspace_diff.js",
   "front_end/ndb_app.html",

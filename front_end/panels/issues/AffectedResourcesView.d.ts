@@ -5,7 +5,6 @@ import type * as IssuesManager from '../../models/issues_manager/issues_manager.
 import * as Logs from '../../models/logs/logs.js';
 import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type { AggregatedIssue } from './IssueAggregator.js';
 import type { IssueView } from './IssueView.js';
 export declare const enum AffectedItem {
     COOKIE = "Cookie",
@@ -30,16 +29,16 @@ export interface CreateRequestCellOptions {
  */
 export declare abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     #private;
-    protected issue: AggregatedIssue;
+    protected issue: IssuesManager.IssueAggregator.AggregatedIssue;
     protected affectedResourcesCountElement: HTMLElement;
     protected affectedResources: HTMLElement;
     protected requestResolver: Logs.RequestResolver.RequestResolver;
-    constructor(parent: IssueView, issue: AggregatedIssue, jslogContext: string);
+    constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string);
     /**
      * Sets the issue to take the resources from. Does not
      * trigger an update, the caller needs to do that explicitly.
      */
-    setIssue(issue: AggregatedIssue): void;
+    setIssue(issue: IssuesManager.IssueAggregator.AggregatedIssue): void;
     createAffectedResourcesCounter(): HTMLElement;
     createAffectedResources(): HTMLElement;
     protected abstract getResourceNameWithCount(count: number): string;

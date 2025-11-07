@@ -270,7 +270,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     setTitle(object, linkifier) {
         const title = this.listItemElement.createChild('span', 'event-listener-details');
         const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ false);
-        this.valueTitle = propertyValue.element;
+        this.valueTitle = propertyValue;
         title.appendChild(this.valueTitle);
         if (this.#eventListener.canRemove()) {
             const deleteButton = new Buttons.Button.Button();

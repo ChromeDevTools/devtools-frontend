@@ -49,18 +49,14 @@ export default `/*
   }
 
   .checkbox-settings {
-    margin-top: 8px;
+    margin-top: var(--sys-size-5);
     display: grid;
     grid-template-columns: 1fr;
-    gap: 5px;
-  }
+    gap: var(--sys-size-4);
 
-  .checkbox-settings devtools-checkbox {
-    margin-bottom: 8px;
-  }
-
-  .checkbox-settings devtools-checkbox:last-child {
-    margin-bottom: 0;
+    > div {
+      display: flex;
+    }
   }
 
   devtools-checkbox {

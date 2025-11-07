@@ -16,6 +16,7 @@ import * as FederatedAuthUserInfoRequestIssue from './FederatedAuthUserInfoReque
 import * as GenericIssue from './GenericIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
 import * as Issue from './Issue.js';
+import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueResolver from './IssueResolver.js';
 import * as IssuesManager from './IssuesManager.js';
 import * as LowTextContrastIssue from './LowTextContrastIssue.js';
@@ -31,5 +32,5 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
-export { AttributionReportingIssue, CheckFormsIssuesTrigger, ClientHintIssue, ContentSecurityPolicyIssue, ContrastCheckTrigger, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueResolver, IssuesManager, LowTextContrastIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
+export { AttributionReportingIssue, CheckFormsIssuesTrigger, ClientHintIssue, ContentSecurityPolicyIssue, ContrastCheckTrigger, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, LowTextContrastIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
 //# sourceMappingURL=issues_manager.prebundle.js.map

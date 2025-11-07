@@ -152,12 +152,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       `, target);
     // clang-format on
 };
-function renderLayoutShiftDetails(layoutShift, traceInsightsSets, parsedTrace, isFreshRecording, onEventClick) {
-    if (!traceInsightsSets) {
+function findInsightSet(insightSets, navigationId) {
+    return insightSets?.values().find(insightSet => navigationId ? navigationId === insightSet.navigation?.args.data?.navigationId : !insightSet.navigation);
+}
+function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFreshRecording, onEventClick) {
+    if (!insightSets) {
         return Lit.nothing;
     }
-    const insightsId = layoutShift.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
-    const clsInsight = traceInsightsSets.get(insightsId)?.model.CLSCulprits;
+    const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
     if (!clsInsight || clsInsight instanceof Error) {
         return Lit.nothing;
     }
@@ -194,12 +196,11 @@ function renderLayoutShiftDetails(layoutShift, traceInsightsSets, parsedTrace, i
     `;
     // clang-format on
 }
-function renderLayoutShiftClusterDetails(cluster, traceInsightsSets, parsedTrace, onEventClick) {
-    if (!traceInsightsSets) {
+function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEventClick) {
+    if (!insightSets) {
         return Lit.nothing;
     }
-    const insightsId = cluster.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
-    const clsInsight = traceInsightsSets.get(insightsId)?.model.CLSCulprits;
+    const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
     if (!clsInsight || clsInsight instanceof Error) {
         return Lit.nothing;
     }

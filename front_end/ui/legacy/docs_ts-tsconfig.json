@@ -43,6 +43,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/ui/legacy/ContextMenu.docs.ts",
     "../../../../../../front_end/ui/legacy/RadioButton.docs.ts",
     "../../../../../../front_end/ui/legacy/SelectMenu.docs.ts",
     "../../../../../../front_end/ui/legacy/Slider.docs.ts",

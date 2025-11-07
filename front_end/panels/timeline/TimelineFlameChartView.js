@@ -503,9 +503,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
             return;
         }
         const fieldMetricResultsByNavigationId = new Map();
-        for (const [key, insightSet] of insights) {
-            if (insightSet.navigation) {
-                fieldMetricResultsByNavigationId.set(key, Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
+        for (const insightSet of insights.values()) {
+            if (insightSet.navigation?.args.data?.navigationId) {
+                fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
             }
         }
         for (const marker of this.#markers) {

@@ -36,6 +36,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
+import { Directives, html, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import { CustomPreviewComponent } from './CustomPreviewComponent.js';
@@ -43,6 +44,7 @@ import { JavaScriptREPL } from './JavaScriptREPL.js';
 import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
 import objectValueStyles from './objectValue.css.js';
 import { createSpansForNodeTitle, RemoteObjectPreviewFormatter } from './RemoteObjectPreviewFormatter.js';
+const { ifDefined } = Directives;
 const UIStrings = {
     /**
      * @description Text in Object Properties Section
@@ -329,7 +331,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         titleElement.classList.add('source-code');
         const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(titleElement, { cssFile: objectValueStyles });
         const propertyValue = ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ true);
-        shadowRoot.appendChild(propertyValue.element);
+        shadowRoot.appendChild(propertyValue);
         const objectPropertiesSection = new ObjectPropertiesSection(object, titleElement, linkifier);
         objectPropertiesSection.editable = false;
         if (skipProto) {
@@ -489,7 +491,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         if (value.customPreview()) {
             const result = (new CustomPreviewComponent(value)).element;
             result.classList.add('object-properties-section-custom-section');
-            return new ObjectPropertyValue(result);
+            return result;
         }
         return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
     }
@@ -524,9 +526,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         if (type === 'object' && subtype === 'internal#location') {
             const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
             if (rawLocation && linkifier) {
-                return new ObjectPropertyValue(linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString));
+                return linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString);
             }
-            propertyValue = new ObjectPropertyValue(createUnknownInternalLocationElement());
+            propertyValue = createUnknownInternalLocationElement();
         }
         else if (type === 'string' && typeof description === 'string') {
             propertyValue = createStringElement();
@@ -535,10 +537,10 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             propertyValue = createTrustedTypeElement();
         }
         else if (type === 'function') {
-            propertyValue = new ObjectPropertyValue(ObjectPropertiesSection.valueElementForFunctionDescription(description));
+            propertyValue = ObjectPropertiesSection.valueElementForFunctionDescription(description);
         }
         else if (type === 'object' && subtype === 'node' && description) {
-            propertyValue = new ObjectPropertyValue(createNodeElement());
+            propertyValue = createNodeElement();
         }
         else {
             const valueElement = document.createElement('span');
@@ -546,16 +548,16 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             if (value.preview && showPreview) {
                 const previewFormatter = new RemoteObjectPreviewFormatter();
                 previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
-                propertyValue = new ObjectPropertyValue(valueElement);
-                UI.Tooltip.Tooltip.install(propertyValue.element, description || '');
+                propertyValue = valueElement;
+                UI.Tooltip.Tooltip.install(propertyValue, description || '');
             }
             else if (description.length > maxRenderableStringLength) {
-                propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH);
+                propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH).element;
             }
             else {
-                propertyValue = new ObjectPropertyValue(valueElement);
-                propertyValue.element.textContent = description;
-                UI.Tooltip.Tooltip.install(propertyValue.element, description);
+                propertyValue = valueElement;
+                propertyValue.textContent = description;
+                UI.Tooltip.Tooltip.install(propertyValue, description);
             }
             if (!isSyntheticProperty) {
                 this.appendMemoryIcon(valueElement, value, variableName);
@@ -565,10 +567,10 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             const wrapperElement = document.createElement('span');
             wrapperElement.classList.add('error');
             wrapperElement.classList.add('value');
-            wrapperElement.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.exceptionS, { PH1: propertyValue.element }));
-            propertyValue.element = wrapperElement;
+            wrapperElement.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.exceptionS, { PH1: propertyValue }));
+            propertyValue = wrapperElement;
         }
-        propertyValue.element.classList.add('value');
+        propertyValue.classList.add('value');
         return propertyValue;
         function createUnknownInternalLocationElement() {
             const valueElement = document.createElement('span');
@@ -582,11 +584,11 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             const text = JSON.stringify(description);
             let propertyValue;
             if (description.length > maxRenderableStringLength) {
-                propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH);
+                propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH).element;
             }
             else {
                 UI.UIUtils.createTextChild(valueElement, text);
-                propertyValue = new ObjectPropertyValue(valueElement);
+                propertyValue = valueElement;
                 UI.Tooltip.Tooltip.install(valueElement, description);
             }
             return propertyValue;
@@ -597,13 +599,13 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             const text = `${className} "${description}"`;
             let propertyValue;
             if (text.length > maxRenderableStringLength) {
-                propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH);
+                propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH).element;
             }
             else {
                 const contentString = createStringElement();
                 UI.UIUtils.createTextChild(valueElement, `${className} `);
-                valueElement.appendChild(contentString.element);
-                propertyValue = new ObjectPropertyValue(valueElement);
+                valueElement.appendChild(contentString);
+                propertyValue = valueElement;
                 UI.Tooltip.Tooltip.install(valueElement, text);
             }
             return propertyValue;
@@ -1018,7 +1020,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         else if (this.property.object) {
             const showPreview = this.property.name !== '[[Prototype]]';
             this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(this.property.object, this.property.property.wasThrown, showPreview, this.linkifier, this.property.property.synthetic, this.path() /* variableName */);
-            this.valueElement = this.propertyValue.element;
+            this.valueElement = this.propertyValue;
         }
         else if (this.property.property.getter) {
             this.valueElement = document.createElement('span');
@@ -1094,7 +1096,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             UI.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${JSON.stringify(name)}]`);
         }
     }
-    contextMenuFired(event) {
+    getContextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         contextMenu.appendApplicableItems(this);
         if (this.property.property.symbol) {
@@ -1120,9 +1122,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: 'expand-recursively' });
             contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), { jslogContext: 'collapse-children' });
         }
-        if (this.propertyValue) {
-            this.propertyValue.appendApplicableItems(event, contextMenu, {});
-        }
+        return contextMenu;
+    }
+    contextMenuFired(event) {
+        const contextMenu = this.getContextMenu(event);
         void contextMenu.show();
     }
     startEditing() {
@@ -1514,65 +1517,76 @@ export class Renderer {
         };
     }
 }
-export class ObjectPropertyValue {
-    element;
-    constructor(element) {
-        this.element = element;
-    }
-    appendApplicableItems(_event, _contextMenu, _object) {
-    }
-}
-export class ExpandableTextPropertyValue extends ObjectPropertyValue {
+export class ExpandableTextPropertyValue {
     text;
     maxLength;
-    expandElement;
     maxDisplayableTextLength;
-    expandElementText;
-    copyButtonText;
+    #byteCount;
+    #expanded = false;
+    #element;
     constructor(element, text, maxLength) {
-        // abbreviated text and expandable text controls are added as children to element
-        super(element);
-        const container = element.createChild('span');
+        this.#element = element;
         this.text = text;
         this.maxLength = maxLength;
-        container.textContent = text.slice(0, maxLength);
-        UI.Tooltip.Tooltip.install(container, `${text.slice(0, maxLength)}…`);
-        this.expandElement = container.createChild('button');
         this.maxDisplayableTextLength = 10000000;
-        const byteCount = Platform.StringUtilities.countWtf8Bytes(text);
-        const totalBytesText = i18n.ByteUtilities.bytesToString(byteCount);
-        if (this.text.length < this.maxDisplayableTextLength) {
-            this.expandElementText = i18nString(UIStrings.showMoreS, { PH1: totalBytesText });
-            this.expandElement.setAttribute('data-text', this.expandElementText);
-            this.expandElement.setAttribute('jslog', `${VisualLogging.action('expand').track({ click: true })}`);
-            this.expandElement.classList.add('expandable-inline-button');
-            this.expandElement.addEventListener('click', this.expandText.bind(this));
-        }
-        else {
-            this.expandElement.setAttribute('data-text', i18nString(UIStrings.longTextWasTruncatedS, { PH1: totalBytesText }));
-            this.expandElement.classList.add('undisplayable-text');
-        }
-        this.copyButtonText = i18nString(UIStrings.copy);
-        const copyButton = container.createChild('button', 'expandable-inline-button');
-        copyButton.setAttribute('data-text', this.copyButtonText);
-        copyButton.setAttribute('jslog', `${VisualLogging.action('copy').track({ click: true })}`);
-        copyButton.addEventListener('click', this.copyText.bind(this));
+        this.#byteCount = Platform.StringUtilities.countWtf8Bytes(text);
+        this.#render();
     }
-    appendApplicableItems(_event, contextMenu, _object) {
-        if (this.text.length < this.maxDisplayableTextLength && this.expandElement) {
-            contextMenu.clipboardSection().appendItem(this.expandElementText || '', this.expandText.bind(this), { jslogContext: 'show-more' });
-        }
-        contextMenu.clipboardSection().appendItem(this.copyButtonText, this.copyText.bind(this), { jslogContext: 'copy' });
+    get element() {
+        return this.#element;
+    }
+    #render() {
+        const totalBytesText = i18n.ByteUtilities.bytesToString(this.#byteCount);
+        const onContextMenu = (e) => {
+            const { target } = e;
+            if (!(target instanceof Element)) {
+                return;
+            }
+            const listItem = target.closest('li');
+            const element = listItem && UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+            if (!(element instanceof ObjectPropertyTreeElement)) {
+                return;
+            }
+            const contextMenu = element.getContextMenu(e);
+            if (this.text.length < this.maxDisplayableTextLength && !this.#expanded) {
+                contextMenu.clipboardSection().appendItem(i18nString(UIStrings.showMoreS, { PH1: totalBytesText }), this.expandText.bind(this), { jslogContext: 'show-more' });
+            }
+            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), this.copyText.bind(this), { jslogContext: 'copy' });
+            void contextMenu.show();
+            e.consume(true);
+        };
+        const croppedText = this.text.slice(0, this.maxLength);
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(
+        // clang-format off
+        html `<span title=${croppedText + '…'} @contextmenu=${onContextMenu}>
+               ${this.#expanded ? this.text : croppedText}
+               <button
+                 ?hidden=${this.#expanded}
+                 @click=${this.#canExpand ? this.expandText.bind(this) : undefined}
+                 jslog=${ifDefined(this.#canExpand ? VisualLogging.action('expand').track({ click: true }) : undefined)}
+                 class=${this.#canExpand ? 'expandable-inline-button' : 'undisplayable-text'}
+                 data-text=${this.#canExpand ? i18nString(UIStrings.showMoreS, { PH1: totalBytesText }) :
+            i18nString(UIStrings.longTextWasTruncatedS, { PH1: totalBytesText })}
+                 ></button>
+               <button
+                 class=expandable-inline-button
+                 @click=${this.copyText.bind(this)}
+                 data-text=${i18nString(UIStrings.copy)}
+                 jslog=${VisualLogging.action('copy').track({ click: true })}
+                 ></button>
+             </span>`, 
+        // clang-format on
+        this.#element);
+    }
+    get #canExpand() {
+        return this.text.length < this.maxDisplayableTextLength;
     }
     expandText() {
-        if (!this.expandElement) {
-            return;
+        if (!this.#expanded) {
+            this.#expanded = true;
+            this.#render();
         }
-        if (this.expandElement.parentElement) {
-            this.expandElement.parentElement.insertBefore(document.createTextNode(this.text.slice(this.maxLength)), this.expandElement);
-        }
-        this.expandElement.remove();
-        this.expandElement = null;
     }
     copyText() {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.text);

@@ -12,6 +12,8 @@ export declare class IgnoreListManager extends Common.ObjectWrapper.ObjectWrappe
     private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
+        settings?: Common.Settings.Settings;
+        targetManager?: SDK.TargetManager.TargetManager;
     }): IgnoreListManager;
     static removeInstance(): void;
     addChangeListener(listener: () => void): void;

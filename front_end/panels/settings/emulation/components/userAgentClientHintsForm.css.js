@@ -97,7 +97,7 @@ hr.section-separator {
 
 .input-field:focus {
   border: 1px solid var(--sys-color-state-focus-ring);
-  outline-width: 0;
+  outline-style: none;
 }
 
 .add-container {

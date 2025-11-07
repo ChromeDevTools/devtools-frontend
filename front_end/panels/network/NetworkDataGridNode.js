@@ -1329,6 +1329,7 @@ export class NetworkRequestNode extends NetworkNode {
                 throttlingConditions.conditions.title();
             const icon = IconButton.Icon.create('watch');
             icon.title = i18nString(UIStrings.wasThrottled, { PH1: throttlingConditionsTitle });
+            icon.addEventListener('click', () => void Common.Revealer.reveal(throttlingConditions));
             cell.append(icon);
         }
         if (this.requestInternal.duration > 0) {

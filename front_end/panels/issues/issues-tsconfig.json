@@ -52,7 +52,6 @@
     "../../../../../../front_end/panels/issues/CorsIssueDetailsView.ts",
     "../../../../../../front_end/panels/issues/GenericIssueDetailsView.ts",
     "../../../../../../front_end/panels/issues/HiddenIssuesRow.ts",
-    "../../../../../../front_end/panels/issues/IssueAggregator.ts",
     "../../../../../../front_end/panels/issues/IssueKindView.ts",
     "../../../../../../front_end/panels/issues/IssueRevealer.ts",
     "../../../../../../front_end/panels/issues/IssueView.ts",

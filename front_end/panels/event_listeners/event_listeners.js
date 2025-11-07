@@ -864,7 +864,7 @@ var ObjectEventListenerBar = class extends UI.TreeOutline.TreeElement {
       /* showPreview */
       false
     );
-    this.valueTitle = propertyValue.element;
+    this.valueTitle = propertyValue;
     title.appendChild(this.valueTitle);
     if (this.#eventListener.canRemove()) {
       const deleteButton = new Buttons.Button.Button();

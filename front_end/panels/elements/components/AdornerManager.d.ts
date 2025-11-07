@@ -14,20 +14,20 @@ export interface RegisteredAdorner {
     readonly enabledByDefault: boolean;
 }
 export declare enum RegisteredAdorners {
-    GRID = "grid",
-    SUBGRID = "subgrid",
-    MASONRY = "masonry",
-    FLEX = "flex",
     AD = "ad",
-    SCROLL_SNAP = "scroll-snap",
-    STARTING_STYLE = "starting-style",
     CONTAINER = "container",
-    SLOT = "slot",
-    TOP_LAYER = "top-layer",
-    REVEAL = "reveal",
+    FLEX = "flex",
+    GRID = "grid",
+    MASONRY = "masonry",
     MEDIA = "media",
+    POPOVER = "popover",
+    REVEAL = "reveal",
     SCROLL = "scroll",
-    POPOVER = "popover"
+    SCROLL_SNAP = "scroll-snap",
+    SLOT = "slot",
+    STARTING_STYLE = "starting-style",
+    SUBGRID = "subgrid",
+    TOP_LAYER = "top-layer"
 }
 /**
  * This enum-like const object serves as the authoritative registry for all the

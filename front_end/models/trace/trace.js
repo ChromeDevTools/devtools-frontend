@@ -880,9 +880,12 @@ var TraceProcessor = class extends EventTarget {
   }
   #computeInsightSet(data, context) {
     const logger = context.options.logger;
+    if (!this.#insights) {
+      this.#insights = /* @__PURE__ */ new Map();
+    }
     let id, urlString, navigation;
     if (context.navigation) {
-      id = context.navigationId;
+      id = `NAVIGATION_${this.#insights.size}`;
       urlString = data.Meta.finalDisplayUrlByNavigationId.get(context.navigationId) ?? data.Meta.mainFrameURL;
       navigation = context.navigation;
     } else {
@@ -934,9 +937,6 @@ var TraceProcessor = class extends EventTarget {
       bounds: context.bounds,
       model: insightSetModel
     };
-    if (!this.#insights) {
-      this.#insights = /* @__PURE__ */ new Map();
-    }
     this.#insights.set(insightSet.id, insightSet);
     this.sortInsightSet(insightSet, context.options.metadata ?? null);
   }

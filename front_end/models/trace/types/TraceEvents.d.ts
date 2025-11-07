@@ -781,7 +781,7 @@ export declare const NO_NAVIGATION = "NO_NAVIGATION";
  * portion of the trace for which we don't have any navigation event for (as it happeneded prior
  * to the trace start).
  */
-export type NavigationId = string | typeof NO_NAVIGATION;
+export type NavigationId = string;
 /**
  * This is a synthetic Layout shift cluster. The rawSourceEvent is the worst layout shift event
  * in the cluster.

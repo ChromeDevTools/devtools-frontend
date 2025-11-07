@@ -1736,7 +1736,7 @@ class ValueDecoration extends CodeMirror.WidgetType {
             }
             else {
                 const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
-                nameValuePair.appendChild(propertyValue.element);
+                nameValuePair.appendChild(propertyValue);
             }
         }
         return widget;

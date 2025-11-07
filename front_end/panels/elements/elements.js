@@ -11580,7 +11580,21 @@ var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
+function adornerRef(input) {
+  let adorner;
+  return ref2((el) => {
+    if (adorner) {
+      input.onAdornerRemoved(adorner);
+    }
+    adorner = el;
+    if (adorner) {
+      input.onAdornerAdded(adorner);
+    }
+  });
+}
 var DEFAULT_VIEW4 = (input, output, target) => {
+  const adAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD);
+  const hasAdorners = input.adorners || input.showAdAdorner;
   render6(html9`
     <div ${ref2((el) => {
     output.contentElement = el;
@@ -11594,8 +11608,14 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     output.decorationsElement = el;
   })}></div>
       </div>
-      ${input.adorners ? html9`<div class="adorner-container ${input.adorners.size === 0 ? "hidden" : ""}">
-        ${repeat(Array.from(input.adorners.values()).sort(adornerComparator), (adorner) => {
+      ${hasAdorners ? html9`<div class="adorner-container ${!hasAdorners ? "hidden" : ""}">
+        ${input.showAdAdorner ? html9`<devtools-adorner
+          .data=${{ name: adAdornerConfig.name, jslogContext: adAdornerConfig.name }}
+          aria-label=${i18nString12(UIStrings13.thisFrameWasIdentifiedAsAnAd)}
+          ${adornerRef(input)}>
+          <span>${adAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing3}
+        ${repeat(Array.from((input.adorners ?? /* @__PURE__ */ new Set()).values()).sort(adornerComparator), (adorner) => {
     return adorner;
   })}
       </div>` : nothing3}
@@ -11653,11 +11673,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE
       };
       void this.updateStyleAdorners();
-      if (node.isAdFrameNode()) {
-        const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD);
-        const adorner = this.adorn(config);
-        UI16.Tooltip.Tooltip.install(adorner, i18nString12(UIStrings13.thisFrameWasIdentifiedAsAnAd));
-      }
       void this.updateScrollAdorner();
     }
     this.expandAllButtonElement = null;
@@ -11726,8 +11741,15 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI16.TreeOutline.Tr
   performUpdate() {
     DEFAULT_VIEW4({
       adorners: !this.isClosingTag() ? this.#adorners : void 0,
+      showAdAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents5.AdornerManager.RegisteredAdorners.AD) && this.nodeInternal.isAdFrameNode(),
       nodeInfo: this.#nodeInfo,
-      onGutterClick: this.showContextMenu.bind(this)
+      onGutterClick: this.showContextMenu.bind(this),
+      onAdornerAdded: (adorner) => {
+        ElementsPanel.instance().registerAdorner(adorner);
+      },
+      onAdornerRemoved: (adorner) => {
+        ElementsPanel.instance().deregisterAdorner(adorner);
+      }
     }, this, this.listItemElement);
   }
   highlightAttribute(attributeName) {
@@ -15953,18 +15975,14 @@ var layoutPane_css_default = `/*
   }
 
   .checkbox-settings {
-    margin-top: 8px;
+    margin-top: var(--sys-size-5);
     display: grid;
     grid-template-columns: 1fr;
-    gap: 5px;
-  }
+    gap: var(--sys-size-4);
 
-  .checkbox-settings devtools-checkbox {
-    margin-bottom: 8px;
-  }
-
-  .checkbox-settings devtools-checkbox:last-child {
-    margin-bottom: 0;
+    > div {
+      display: flex;
+    }
   }
 
   devtools-checkbox {
@@ -16275,7 +16293,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                     </label>`)}
             </div>
             <div class="checkbox-settings">
-              ${input.booleanSettings.map((setting) => html11`<devtools-checkbox
+              ${input.booleanSettings.map((setting) => html11`<div><devtools-checkbox
                       data-boolean-setting="true"
                       class="checkbox-label"
                       title=${setting.title}
@@ -16283,7 +16301,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                       @change=${(e) => input.onBooleanSettingChange(setting, e)}
                       jslog=${VisualLogging10.toggle().track({ click: true }).context(setting.name)}>
                     ${setting.title}
-                  </devtools-checkbox>`)}
+                  </devtools-checkbox></div>`)}
             </div>
           </div>
           ${input.gridElements ? html11`<div class="content-section" jslog=${VisualLogging10.section("grid-overlays")}>

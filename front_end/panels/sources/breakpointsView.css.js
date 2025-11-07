@@ -276,7 +276,7 @@ export default `/*
   .pause-on-uncaught-exceptions:focus,
   .pause-on-caught-exceptions:focus {
     background-color: var(--sys-color-tonal-container);
-    outline-width: 0;
+    outline-style: none;
   }
 }
 

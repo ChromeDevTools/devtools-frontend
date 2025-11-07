@@ -36,38 +36,32 @@ const str_ = i18n.i18n.registerUIStrings('models/workspace/IgnoreListManager.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let ignoreListManagerInstance;
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
-    #listeners;
-    #isIgnoreListedURLCache;
-    #contentScriptExecutionContexts;
-    constructor() {
+    #settings;
+    #targetManager;
+    #listeners = new Set();
+    #isIgnoreListedURLCache = new Map();
+    #contentScriptExecutionContexts = new Set();
+    constructor(settings, targetManager) {
         super();
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.clearCacheIfNeeded.bind(this), this);
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this.onExecutionContextCreated, this, { scoped: true });
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.onExecutionContextDestroyed, this, { scoped: true });
-        Common.Settings.Settings.instance()
-            .moduleSetting('skip-stack-frames-pattern')
+        this.#settings = settings;
+        this.#targetManager = targetManager;
+        this.#targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.clearCacheIfNeeded.bind(this), this);
+        this.#targetManager.addModelListener(SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this.onExecutionContextCreated, this, { scoped: true });
+        this.#targetManager.addModelListener(SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.onExecutionContextDestroyed, this, { scoped: true });
+        this.#settings.moduleSetting('skip-stack-frames-pattern').addChangeListener(this.patternChanged.bind(this));
+        this.#settings.moduleSetting('skip-content-scripts').addChangeListener(this.patternChanged.bind(this));
+        this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts')
             .addChangeListener(this.patternChanged.bind(this));
-        Common.Settings.Settings.instance()
-            .moduleSetting('skip-content-scripts')
-            .addChangeListener(this.patternChanged.bind(this));
-        Common.Settings.Settings.instance()
-            .moduleSetting('automatically-ignore-list-known-third-party-scripts')
-            .addChangeListener(this.patternChanged.bind(this));
-        Common.Settings.Settings.instance()
-            .moduleSetting('enable-ignore-listing')
-            .addChangeListener(this.patternChanged.bind(this));
-        Common.Settings.Settings.instance()
-            .moduleSetting('skip-anonymous-scripts')
-            .addChangeListener(this.patternChanged.bind(this));
-        this.#listeners = new Set();
-        this.#isIgnoreListedURLCache = new Map();
-        this.#contentScriptExecutionContexts = new Set();
-        SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
+        this.#settings.moduleSetting('enable-ignore-listing').addChangeListener(this.patternChanged.bind(this));
+        this.#settings.moduleSetting('skip-anonymous-scripts').addChangeListener(this.patternChanged.bind(this));
+        this.#targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
     }
-    static instance(opts = { forceNew: null }) {
+    static instance(opts = {
+        forceNew: null,
+    }) {
         const { forceNew } = opts;
         if (!ignoreListManagerInstance || forceNew) {
-            ignoreListManagerInstance = new IgnoreListManager();
+            ignoreListManagerInstance = new IgnoreListManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance());
         }
         return ignoreListManagerInstance;
     }
@@ -99,7 +93,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
         if (this.isContentScript(event.data)) {
             this.#contentScriptExecutionContexts.add(event.data.uniqueId);
             if (this.skipContentScripts) {
-                for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+                for (const debuggerModel of this.#targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
                     void this.updateIgnoredExecutionContexts(debuggerModel);
                 }
             }
@@ -109,7 +103,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
         if (this.isContentScript(event.data)) {
             this.#contentScriptExecutionContexts.delete(event.data.uniqueId);
             if (this.skipContentScripts) {
-                for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+                for (const debuggerModel of this.#targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
                     void this.updateIgnoredExecutionContexts(debuggerModel);
                 }
             }
@@ -121,7 +115,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     getSkipStackFramesPatternSetting() {
-        return Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern');
+        return this.#settings.moduleSetting('skip-stack-frames-pattern');
     }
     setIgnoreListPatterns(debuggerModel) {
         const regexPatterns = this.enableIgnoreListing ? this.getSkipStackFramesPatternSetting().getAsArray() : [];
@@ -253,48 +247,47 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
         this.unIgnoreListURL(this.uiSourceCodeURL(uiSourceCode), this.getGeneralRulesForUISourceCode(uiSourceCode));
     }
     get enableIgnoreListing() {
-        return Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing').get();
+        return this.#settings.moduleSetting('enable-ignore-listing').get();
     }
     set enableIgnoreListing(value) {
-        Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing').set(value);
+        this.#settings.moduleSetting('enable-ignore-listing').set(value);
     }
     get skipContentScripts() {
-        return this.enableIgnoreListing && Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').get();
+        return this.enableIgnoreListing && this.#settings.moduleSetting('skip-content-scripts').get();
     }
     get skipAnonymousScripts() {
-        return this.enableIgnoreListing &&
-            Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts').get();
+        return this.enableIgnoreListing && this.#settings.moduleSetting('skip-anonymous-scripts').get();
     }
     get automaticallyIgnoreListKnownThirdPartyScripts() {
         return this.enableIgnoreListing &&
-            Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts').get();
+            this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts').get();
     }
     ignoreListContentScripts() {
         if (!this.enableIgnoreListing) {
             this.enableIgnoreListing = true;
         }
-        Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(true);
+        this.#settings.moduleSetting('skip-content-scripts').set(true);
     }
     unIgnoreListContentScripts() {
-        Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(false);
+        this.#settings.moduleSetting('skip-content-scripts').set(false);
     }
     ignoreListAnonymousScripts() {
         if (!this.enableIgnoreListing) {
             this.enableIgnoreListing = true;
         }
-        Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts').set(true);
+        this.#settings.moduleSetting('skip-anonymous-scripts').set(true);
     }
     unIgnoreListAnonymousScripts() {
-        Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts').set(false);
+        this.#settings.moduleSetting('skip-anonymous-scripts').set(false);
     }
     ignoreListThirdParty() {
         if (!this.enableIgnoreListing) {
             this.enableIgnoreListing = true;
         }
-        Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts').set(true);
+        this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts').set(true);
     }
     unIgnoreListThirdParty() {
-        Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts').set(false);
+        this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts').set(false);
     }
     ignoreListURL(url) {
         const regexValue = this.urlToRegExpString(url);
@@ -372,7 +365,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
     async patternChanged() {
         this.#isIgnoreListedURLCache.clear();
         const promises = [];
-        for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+        for (const debuggerModel of this.#targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
             promises.push(this.setIgnoreListPatterns(debuggerModel));
             const sourceMapManager = debuggerModel.sourceMapManager();
             for (const script of debuggerModel.scripts()) {

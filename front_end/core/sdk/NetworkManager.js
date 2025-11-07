@@ -1464,7 +1464,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         Platform.ArrayUtilities.swap(this.#conditions, index, index + 1);
-        this.dispatchEventToListeners("request-conditions-changed" /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */);
+        this.#conditionsChanged();
     }
     increasePriority(condition) {
         const index = this.#conditions.indexOf(condition);
@@ -1472,7 +1472,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         Platform.ArrayUtilities.swap(this.#conditions, index - 1, index);
-        this.dispatchEventToListeners("request-conditions-changed" /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */);
+        this.#conditionsChanged();
     }
     delete(condition) {
         const index = this.#conditions.indexOf(condition);
@@ -1575,11 +1575,26 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
         return this.#conditionsAppliedForTestPromise;
     }
     conditionsForId(appliedNetworkConditionsId) {
-        return this.#requestConditionsById.get(appliedNetworkConditionsId);
+        const requestConditions = this.#requestConditionsById.get(appliedNetworkConditionsId);
+        if (!requestConditions) {
+            return undefined;
+        }
+        const { conditions, urlPattern } = requestConditions;
+        return new AppliedNetworkConditions(conditions, appliedNetworkConditionsId, urlPattern);
     }
 }
 _a = RequestConditions;
 let multiTargetNetworkManagerInstance;
+export class AppliedNetworkConditions {
+    conditions;
+    appliedNetworkConditionsId;
+    urlPattern;
+    constructor(conditions, appliedNetworkConditionsId, urlPattern) {
+        this.conditions = conditions;
+        this.appliedNetworkConditionsId = appliedNetworkConditionsId;
+        this.urlPattern = urlPattern;
+    }
+}
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper {
     #userAgentOverride = '';
     #userAgentMetadataOverride = null;

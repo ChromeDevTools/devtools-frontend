@@ -178,18 +178,42 @@ export class PerformanceTraceFormatter {
         }
         return parts.join('\n');
     }
-    formatCriticalRequests() {
-        const insightSet = this.#insightSet;
-        const criticalRequests = [];
-        const walkRequest = (node) => {
-            criticalRequests.push(node.request);
-            node.children.forEach(walkRequest);
-        };
-        insightSet?.model.NetworkDependencyTree.rootNodes.forEach(walkRequest);
-        if (!criticalRequests.length) {
-            return '';
+    #formatFactByInsightSet(options) {
+        const { insights, title, description, empty, cb } = options;
+        const lines = [`# ${title}\n`];
+        if (description) {
+            lines.push(`${description}\n`);
         }
-        return 'Critical network requests:\n' + this.formatNetworkRequests(criticalRequests, { verbose: false });
+        if (insights?.size) {
+            const multipleInsightSets = insights.size > 1;
+            for (const insightSet of insights.values()) {
+                if (multipleInsightSets) {
+                    lines.push(`## insight set id: ${insightSet.id}\n`);
+                }
+                lines.push((cb(insightSet) ?? empty) + '\n');
+            }
+        }
+        else {
+            lines.push(empty + '\n');
+        }
+        return lines.join('\n');
+    }
+    formatCriticalRequests() {
+        const parsedTrace = this.#parsedTrace;
+        return this.#formatFactByInsightSet({
+            insights: parsedTrace.insights,
+            title: 'Critical network requests',
+            empty: 'none',
+            cb: insightSet => {
+                const criticalRequests = [];
+                const walkRequest = (node) => {
+                    criticalRequests.push(node.request);
+                    node.children.forEach(walkRequest);
+                };
+                insightSet.model.NetworkDependencyTree.rootNodes.forEach(walkRequest);
+                return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, { verbose: false }) : null;
+            },
+        });
     }
     #serializeBottomUpRootNode(rootNode, limit) {
         // Sorted by selfTime.
@@ -221,19 +245,24 @@ export class PerformanceTraceFormatter {
             }
             return `- self: ${millis(node.selfTime)}, total: ${millis(node.totalTime)}, source: ${source}`;
         }
-        const listText = topNodes.map(node => nodeToText.call(this, node)).join('\n');
-        const format = `This is the bottom-up summary for the entire trace. Only the top ${limit} activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.`;
-        return `${format}\n\n${listText}`;
+        return topNodes.map(node => nodeToText.call(this, node)).join('\n');
+    }
+    #getSerializeBottomUpRootNodeFormat(limit) {
+        return `This is the bottom-up summary for the entire trace. Only the top ${limit} activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.`;
     }
     formatMainThreadBottomUpSummary() {
         const parsedTrace = this.#parsedTrace;
-        const insightSet = this.#insightSet;
-        const bounds = parsedTrace.data.Meta.traceBounds;
-        const rootNode = AIQueries.mainThreadActivityBottomUp(insightSet?.navigation?.args.data?.navigationId, bounds, parsedTrace);
-        if (!rootNode) {
-            return '';
-        }
-        return this.#serializeBottomUpRootNode(rootNode, 10);
+        const limit = 10;
+        return this.#formatFactByInsightSet({
+            insights: parsedTrace.insights,
+            title: 'Main thread bottom-up summary',
+            description: this.#getSerializeBottomUpRootNodeFormat(limit),
+            empty: 'no activity',
+            cb: insightSet => {
+                const rootNode = AIQueries.mainThreadActivityBottomUpSingleNavigation(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace);
+                return rootNode ? this.#serializeBottomUpRootNode(rootNode, limit) : null;
+            },
+        });
     }
     #formatThirdPartyEntitySummaries(summaries) {
         const topMainThreadTimeEntries = summaries.toSorted((a, b) => b.mainThreadTime - a.mainThreadTime).slice(0, 5);
@@ -249,36 +278,36 @@ export class PerformanceTraceFormatter {
         return listText;
     }
     formatThirdPartySummary() {
-        const insightSet = this.#insightSet;
-        if (!insightSet) {
-            return '';
-        }
-        const thirdParties = insightSet.model.ThirdParties;
-        let summaries = thirdParties.entitySummaries ?? [];
-        if (thirdParties.firstPartyEntity) {
-            summaries = summaries.filter(s => s.entity !== thirdParties?.firstPartyEntity || null);
-        }
-        const listText = this.#formatThirdPartyEntitySummaries(summaries);
-        if (!listText) {
-            return '';
-        }
-        return `Third party summary:\n${listText}`;
+        const parsedTrace = this.#parsedTrace;
+        return this.#formatFactByInsightSet({
+            insights: parsedTrace.insights,
+            title: '3rd party summary',
+            empty: 'no 3rd parties',
+            cb: insightSet => {
+                const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace.data, insightSet.bounds);
+                return thirdPartySummaries.length ? this.#formatThirdPartyEntitySummaries(thirdPartySummaries) : null;
+            },
+        });
     }
     formatLongestTasks() {
         const parsedTrace = this.#parsedTrace;
-        const insightSet = this.#insightSet;
-        const bounds = parsedTrace.data.Meta.traceBounds;
-        const longestTaskTrees = AIQueries.longestTasks(insightSet?.navigation?.args.data?.navigationId, bounds, parsedTrace, 3);
-        if (!longestTaskTrees || longestTaskTrees.length === 0) {
-            return 'Longest tasks: none';
-        }
-        const listText = longestTaskTrees
-            .map(tree => {
-            const time = millis(tree.rootNode.totalTime);
-            return `- total time: ${time}, event: ${this.serializeEvent(tree.rootNode.event)}`;
-        })
-            .join('\n');
-        return `Longest ${longestTaskTrees.length} tasks:\n${listText}`;
+        return this.#formatFactByInsightSet({
+            insights: parsedTrace.insights,
+            title: 'Longest tasks',
+            empty: 'none',
+            cb: insightSet => {
+                const longestTaskTrees = AIQueries.longestTasks(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace, 3);
+                if (!longestTaskTrees?.length) {
+                    return null;
+                }
+                return longestTaskTrees
+                    .map(tree => {
+                    const time = millis(tree.rootNode.totalTime);
+                    return `- total time: ${time}, event: ${this.serializeEvent(tree.rootNode.event)}`;
+                })
+                    .join('\n');
+            },
+        });
     }
     #serializeRelatedInsightsForEvents(events) {
         if (!events.length) {
@@ -314,16 +343,22 @@ export class PerformanceTraceFormatter {
         return results.join('\n');
     }
     formatMainThreadTrackSummary(bounds) {
+        if (!this.#parsedTrace.insights) {
+            return 'No main thread activity found';
+        }
         const results = [];
-        const topDownTree = AIQueries.mainThreadActivityTopDown(this.#insightSet?.navigation?.args.data?.navigationId, bounds, this.#parsedTrace);
+        const insightSet = this.#parsedTrace.insights?.values().find(insightSet => Trace.Helpers.Timing.boundsIncludeTimeRange({ bounds, timeRange: insightSet.bounds }));
+        const topDownTree = AIQueries.mainThreadActivityTopDown(insightSet?.navigation?.args.data?.navigationId, bounds, this.#parsedTrace);
         if (topDownTree) {
             results.push('# Top-down main thread summary');
             results.push(this.formatCallTree(topDownTree, 2 /* headerLevel */));
         }
-        const bottomUpRootNode = AIQueries.mainThreadActivityBottomUp(this.#insightSet?.navigation?.args.data?.navigationId, bounds, this.#parsedTrace);
+        const bottomUpRootNode = AIQueries.mainThreadActivityBottomUp(bounds, this.#parsedTrace);
         if (bottomUpRootNode) {
             results.push('# Bottom-up main thread summary');
-            results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, 20));
+            const limit = 20;
+            results.push(this.#getSerializeBottomUpRootNodeFormat(limit));
+            results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, limit));
         }
         const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(this.#parsedTrace.data, bounds);
         if (thirdPartySummaries.length) {

@@ -236,7 +236,7 @@ export interface HighlightChange {
     parent?: Node;
 }
 export declare const isScrolledToBottom: (element: Element) => boolean;
-export declare function createSVGChild(element: Element, childType: string, className?: string): Element;
+export declare function createSVGChild<K extends keyof SVGElementTagNameMap>(element: Element, childType: K, className?: string): SVGElementTagNameMap[K];
 export declare const enclosingNodeOrSelfWithNodeNameInArray: (initialNode: Node, nameArray: string[]) => Node | null;
 export declare const enclosingNodeOrSelfWithNodeName: (node: Node, nodeName: string) => Node | null;
 export declare const deepElementFromPoint: (document: Document | ShadowRoot | null | undefined, x: number, y: number) => Node | null;

@@ -21,9 +21,12 @@ interface ClosingTagContext {
 export type TagTypeContext = OpeningTagContext | ClosingTagContext;
 export declare function isOpeningTag(context: TagTypeContext): context is OpeningTagContext;
 export interface ViewInput {
+    showAdAdorner: boolean;
     adorners?: Set<Adorners.Adorner.Adorner>;
     nodeInfo?: DocumentFragment;
     onGutterClick: (e: Event) => void;
+    onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
+    onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
 }
 export interface ViewOutput {
     gutterContainer?: HTMLElement;

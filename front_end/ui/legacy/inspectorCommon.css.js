@@ -40,7 +40,7 @@ body {
 }
 
 :focus {
-  outline-width: 0;
+  outline-style: none;
 }
 
 /* Prevent UA stylesheet from overriding font-family for HTML elements. */
@@ -145,7 +145,8 @@ iframe.widget {
   inset: 0;
 }
 
-.hidden {
+[hidden],
+.hidden { /* TODO(crbug.com/458299714): remove the class */
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 

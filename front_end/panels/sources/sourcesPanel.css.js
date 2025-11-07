@@ -33,8 +33,8 @@ export default `/*
  */
 
 .paused-message {
-  align-self: center;
-  width: fit-content;
+  display: flex;
+  justify-content: center;
 }
 
 .scripts-debug-toolbar {

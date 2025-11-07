@@ -36,7 +36,7 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
     targetRemoved(target: SDK.Target.Target): void;
     maybeLinkifyScriptLocation(target: SDK.Target.Target | null, scriptId: Protocol.Runtime.ScriptId | null, sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number | undefined, options?: LinkifyOptions): HTMLElement | null;
     linkifyScriptLocation(target: SDK.Target.Target | null, scriptId: Protocol.Runtime.ScriptId | null, sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number | undefined, options?: LinkifyOptions): HTMLElement;
-    linkifyRawLocation(rawLocation: SDK.DebuggerModel.Location, fallbackUrl: Platform.DevToolsPath.UrlString, className?: string): Element;
+    linkifyRawLocation(rawLocation: SDK.DebuggerModel.Location, fallbackUrl: Platform.DevToolsPath.UrlString, className?: string): HTMLElement;
     maybeLinkifyConsoleCallFrame(target: SDK.Target.Target | null, callFrame: Protocol.Runtime.CallFrame | Trace.Types.Events.CallFrame, options?: LinkifyOptions): HTMLElement | null;
     maybeLinkifyStackTraceFrame(target: SDK.Target.Target | null, frame: StackTrace.StackTrace.Frame, options?: LinkifyOptions): HTMLElement | null;
     linkifyStackTraceTopFrame(target: SDK.Target.Target | null, stackTrace: Protocol.Runtime.StackTrace): HTMLElement;

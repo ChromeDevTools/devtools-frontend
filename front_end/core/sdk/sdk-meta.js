@@ -362,36 +362,6 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("core/sdk/sdk-meta.ts", UIStrings);
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
 Common.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "skip-stack-frames-pattern",
-  settingType: "regex",
-  defaultValue: "/node_modules/|^node:"
-});
-Common.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "skip-content-scripts",
-  settingType: "boolean",
-  defaultValue: true
-});
-Common.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "automatically-ignore-list-known-third-party-scripts",
-  settingType: "boolean",
-  defaultValue: true
-});
-Common.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "skip-anonymous-scripts",
-  settingType: "boolean",
-  defaultValue: false
-});
-Common.Settings.registerSettingExtension({
-  storageType: "Synced",
-  settingName: "enable-ignore-listing",
-  settingType: "boolean",
-  defaultValue: true
-});
-Common.Settings.registerSettingExtension({
   category: "CONSOLE",
   storageType: "Synced",
   title: i18nLazyString(UIStrings.preserveLogUponNavigation),

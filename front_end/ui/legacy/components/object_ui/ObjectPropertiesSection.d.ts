@@ -65,10 +65,10 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty): number;
     static createNameElement(name: string | null, isPrivate?: boolean): Element;
-    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string): Element;
-    static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): ObjectPropertyValue;
+    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string): HTMLElement;
+    static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement;
     static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void;
-    static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): ObjectPropertyValue;
+    static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement;
     static formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, element: Element, linkify: boolean, includePreview?: boolean): Promise<void>;
     static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty, parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean;
     skipProto(): void;
@@ -119,7 +119,7 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     readOnly: boolean;
     private prompt;
     private editableDiv;
-    propertyValue?: ObjectPropertyValue;
+    propertyValue?: HTMLElement;
     expandedValueElement?: Element | null;
     constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier);
     static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
@@ -141,6 +141,7 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private createExpandedValueElement;
     update(): void;
     private updatePropertyPath;
+    getContextMenu(event: Event): UI.ContextMenu.ContextMenu;
     private contextMenuFired;
     private startEditing;
     private editingEnded;
@@ -178,20 +179,13 @@ export declare class Renderer implements UI.UIUtils.Renderer {
     }): Renderer;
     render(object: Object, options?: UI.UIUtils.Options): Promise<UI.UIUtils.RenderedObject | null>;
 }
-export declare class ObjectPropertyValue implements UI.ContextMenu.Provider<Object> {
-    element: Element;
-    constructor(element: Element);
-    appendApplicableItems(_event: Event, _contextMenu: UI.ContextMenu.ContextMenu, _object: Object): void;
-}
-export declare class ExpandableTextPropertyValue extends ObjectPropertyValue {
+export declare class ExpandableTextPropertyValue {
+    #private;
     private readonly text;
     private readonly maxLength;
-    private expandElement;
     private readonly maxDisplayableTextLength;
-    private readonly expandElementText;
-    private readonly copyButtonText;
-    constructor(element: Element, text: string, maxLength: number);
-    appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _object: Object): void;
+    constructor(element: HTMLElement, text: string, maxLength: number);
+    get element(): HTMLElement;
     private expandText;
     private copyText;
 }

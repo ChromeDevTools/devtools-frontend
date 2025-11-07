@@ -3909,6 +3909,19 @@ var generatedProperties = [
   },
   {
     "longhands": [
+      "row-rule-edge-start-outset",
+      "row-rule-edge-end-outset",
+      "row-rule-interior-start-outset",
+      "row-rule-interior-end-outset",
+      "column-rule-edge-start-outset",
+      "column-rule-edge-end-outset",
+      "column-rule-interior-start-outset",
+      "column-rule-interior-end-outset"
+    ],
+    "name": "rule-outset"
+  },
+  {
+    "longhands": [
       "column-rule-style",
       "row-rule-style"
     ],
@@ -9479,6 +9492,7 @@ var Cookie = class _Cookie {
 // gen/front_end/core/sdk/NetworkManager.js
 var NetworkManager_exports = {};
 __export(NetworkManager_exports, {
+  AppliedNetworkConditions: () => AppliedNetworkConditions,
   BlockingConditions: () => BlockingConditions,
   Events: () => Events2,
   Fast4GConditions: () => Fast4GConditions,
@@ -11536,10 +11550,7 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
       return;
     }
     Platform3.ArrayUtilities.swap(this.#conditions, index, index + 1);
-    this.dispatchEventToListeners(
-      "request-conditions-changed"
-      /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */
-    );
+    this.#conditionsChanged();
   }
   increasePriority(condition) {
     const index = this.#conditions.indexOf(condition);
@@ -11547,10 +11558,7 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
       return;
     }
     Platform3.ArrayUtilities.swap(this.#conditions, index - 1, index);
-    this.dispatchEventToListeners(
-      "request-conditions-changed"
-      /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */
-    );
+    this.#conditionsChanged();
   }
   delete(condition) {
     const index = this.#conditions.indexOf(condition);
@@ -11650,11 +11658,26 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
     return this.#conditionsAppliedForTestPromise;
   }
   conditionsForId(appliedNetworkConditionsId) {
-    return this.#requestConditionsById.get(appliedNetworkConditionsId);
+    const requestConditions = this.#requestConditionsById.get(appliedNetworkConditionsId);
+    if (!requestConditions) {
+      return void 0;
+    }
+    const { conditions, urlPattern } = requestConditions;
+    return new AppliedNetworkConditions(conditions, appliedNetworkConditionsId, urlPattern);
   }
 };
 _a = RequestConditions;
 var multiTargetNetworkManagerInstance;
+var AppliedNetworkConditions = class {
+  conditions;
+  appliedNetworkConditionsId;
+  urlPattern;
+  constructor(conditions, appliedNetworkConditionsId, urlPattern) {
+    this.conditions = conditions;
+    this.appliedNetworkConditionsId = appliedNetworkConditionsId;
+    this.urlPattern = urlPattern;
+  }
+};
 var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5.ObjectWrapper.ObjectWrapper {
   #userAgentOverride = "";
   #userAgentMetadataOverride = null;

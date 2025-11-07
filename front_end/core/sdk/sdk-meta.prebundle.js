@@ -364,36 +364,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 Common.Settings.registerSettingExtension({
-    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
-    settingName: 'skip-stack-frames-pattern',
-    settingType: "regex" /* Common.Settings.SettingType.REGEX */,
-    defaultValue: '/node_modules/|^node:',
-});
-Common.Settings.registerSettingExtension({
-    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
-    settingName: 'skip-content-scripts',
-    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-    defaultValue: true,
-});
-Common.Settings.registerSettingExtension({
-    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
-    settingName: 'automatically-ignore-list-known-third-party-scripts',
-    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-    defaultValue: true,
-});
-Common.Settings.registerSettingExtension({
-    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
-    settingName: 'skip-anonymous-scripts',
-    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-    defaultValue: false,
-});
-Common.Settings.registerSettingExtension({
-    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
-    settingName: 'enable-ignore-listing',
-    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-    defaultValue: true,
-});
-Common.Settings.registerSettingExtension({
     category: "CONSOLE" /* Common.Settings.SettingCategory.CONSOLE */,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
     title: i18nLazyString(UIStrings.preserveLogUponNavigation),

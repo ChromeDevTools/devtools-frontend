@@ -126,10 +126,7 @@ export declare class NetworkRequestNode extends NetworkNode {
     isNavigationRequest(): boolean;
     nodeSelfHeight(): number;
     private isPrefetch;
-    throttlingConditions(): {
-        conditions: SDK.NetworkManager.Conditions;
-        urlPattern?: string;
-    } | undefined;
+    throttlingConditions(): SDK.NetworkManager.AppliedNetworkConditions | undefined;
     isWarning(): boolean;
     isError(): boolean;
     createCells(element: Element): void;

@@ -117,20 +117,20 @@ __export(AdornerManager_exports, {
 });
 var RegisteredAdorners;
 (function(RegisteredAdorners2) {
-  RegisteredAdorners2["GRID"] = "grid";
-  RegisteredAdorners2["SUBGRID"] = "subgrid";
-  RegisteredAdorners2["MASONRY"] = "masonry";
-  RegisteredAdorners2["FLEX"] = "flex";
   RegisteredAdorners2["AD"] = "ad";
-  RegisteredAdorners2["SCROLL_SNAP"] = "scroll-snap";
-  RegisteredAdorners2["STARTING_STYLE"] = "starting-style";
   RegisteredAdorners2["CONTAINER"] = "container";
-  RegisteredAdorners2["SLOT"] = "slot";
-  RegisteredAdorners2["TOP_LAYER"] = "top-layer";
-  RegisteredAdorners2["REVEAL"] = "reveal";
+  RegisteredAdorners2["FLEX"] = "flex";
+  RegisteredAdorners2["GRID"] = "grid";
+  RegisteredAdorners2["MASONRY"] = "masonry";
   RegisteredAdorners2["MEDIA"] = "media";
-  RegisteredAdorners2["SCROLL"] = "scroll";
   RegisteredAdorners2["POPOVER"] = "popover";
+  RegisteredAdorners2["REVEAL"] = "reveal";
+  RegisteredAdorners2["SCROLL"] = "scroll";
+  RegisteredAdorners2["SCROLL_SNAP"] = "scroll-snap";
+  RegisteredAdorners2["SLOT"] = "slot";
+  RegisteredAdorners2["STARTING_STYLE"] = "starting-style";
+  RegisteredAdorners2["SUBGRID"] = "subgrid";
+  RegisteredAdorners2["TOP_LAYER"] = "top-layer";
 })(RegisteredAdorners || (RegisteredAdorners = {}));
 function getRegisteredAdorner(which) {
   switch (which) {

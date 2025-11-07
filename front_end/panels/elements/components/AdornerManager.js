@@ -3,20 +3,20 @@
 // found in the LICENSE file.
 export var RegisteredAdorners;
 (function (RegisteredAdorners) {
-    RegisteredAdorners["GRID"] = "grid";
-    RegisteredAdorners["SUBGRID"] = "subgrid";
-    RegisteredAdorners["MASONRY"] = "masonry";
-    RegisteredAdorners["FLEX"] = "flex";
     RegisteredAdorners["AD"] = "ad";
-    RegisteredAdorners["SCROLL_SNAP"] = "scroll-snap";
-    RegisteredAdorners["STARTING_STYLE"] = "starting-style";
     RegisteredAdorners["CONTAINER"] = "container";
-    RegisteredAdorners["SLOT"] = "slot";
-    RegisteredAdorners["TOP_LAYER"] = "top-layer";
-    RegisteredAdorners["REVEAL"] = "reveal";
+    RegisteredAdorners["FLEX"] = "flex";
+    RegisteredAdorners["GRID"] = "grid";
+    RegisteredAdorners["MASONRY"] = "masonry";
     RegisteredAdorners["MEDIA"] = "media";
-    RegisteredAdorners["SCROLL"] = "scroll";
     RegisteredAdorners["POPOVER"] = "popover";
+    RegisteredAdorners["REVEAL"] = "reveal";
+    RegisteredAdorners["SCROLL"] = "scroll";
+    RegisteredAdorners["SCROLL_SNAP"] = "scroll-snap";
+    RegisteredAdorners["SLOT"] = "slot";
+    RegisteredAdorners["STARTING_STYLE"] = "starting-style";
+    RegisteredAdorners["SUBGRID"] = "subgrid";
+    RegisteredAdorners["TOP_LAYER"] = "top-layer";
 })(RegisteredAdorners || (RegisteredAdorners = {}));
 /**
  * This enum-like const object serves as the authoritative registry for all the

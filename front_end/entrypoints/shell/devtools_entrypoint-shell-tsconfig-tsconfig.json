@@ -59,6 +59,9 @@
       "path": "../../models/persistence/meta-tsconfig.json"
     },
     {
+      "path": "../../models/workspace/meta-tsconfig.json"
+    },
+    {
       "path": "../../panels/ai_assistance/meta-tsconfig.json"
     },
     {

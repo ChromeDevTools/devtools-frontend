@@ -10,7 +10,6 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { HiddenIssuesRow } from './HiddenIssuesRow.js';
-import { IssueAggregator, } from './IssueAggregator.js';
 import { getGroupIssuesByKindSetting, IssueKindView, issueKindViewSortPriority } from './IssueKindView.js';
 import issuesPaneStyles from './issuesPane.css.js';
 import issuesTreeStyles from './issuesTree.css.js';
@@ -191,9 +190,9 @@ export class IssuesPane extends UI.Widget.VBox {
         this.#noIssuesMessageDiv.link = ISSUES_PANEL_EXPLANATION_URL;
         this.#noIssuesMessageDiv.show(this.contentElement);
         this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-        this.#aggregator = new IssueAggregator(this.#issuesManager);
-        this.#aggregator.addEventListener("AggregatedIssueUpdated" /* IssueAggregatorEvents.AGGREGATED_ISSUE_UPDATED */, this.#issueUpdated, this);
-        this.#aggregator.addEventListener("FullUpdateRequired" /* IssueAggregatorEvents.FULL_UPDATE_REQUIRED */, this.#onFullUpdate, this);
+        this.#aggregator = new IssuesManager.IssueAggregator.IssueAggregator(this.#issuesManager);
+        this.#aggregator.addEventListener("AggregatedIssueUpdated" /* IssuesManager.IssueAggregator.Events.AGGREGATED_ISSUE_UPDATED */, this.#issueUpdated, this);
+        this.#aggregator.addEventListener("FullUpdateRequired" /* IssuesManager.IssueAggregator.Events.FULL_UPDATE_REQUIRED */, this.#onFullUpdate, this);
         this.#hiddenIssuesRow.hidden = this.#issuesManager.numberOfHiddenIssues() === 0;
         this.#onFullUpdate();
         this.#issuesManager.addEventListener("IssuesCountUpdated" /* IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED */, this.#updateCounts, this);

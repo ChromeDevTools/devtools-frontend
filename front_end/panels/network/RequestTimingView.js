@@ -285,6 +285,11 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
     }
 }
 export const DEFAULT_VIEW = (input, output, target) => {
+    const revealThrottled = () => {
+        if (input.wasThrottled) {
+            void Common.Revealer.reveal(input.wasThrottled);
+        }
+    };
     const scale = 100 / (input.endTime - input.startTime);
     const isClickable = (range) => range.name === 'serviceworker-respondwith' || range.name === 'serviceworker-routerevaluation';
     const addServerTiming = (serverTiming) => {
@@ -341,8 +346,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelServiceWorkerRespondWith);
         }
     };
-    const throttledRequestTitle = input.wasThrottled ?
-        i18nString(UIStrings.wasThrottled, { PH1: typeof input.wasThrottled.title === 'string' ? input.wasThrottled.title : input.wasThrottled.title() }) :
+    const throttledRequestTitle = input.wasThrottled ? i18nString(UIStrings.wasThrottled, {
+        PH1: typeof input.wasThrottled.conditions.title === 'string' ? input.wasThrottled.conditions.title :
+            input.wasThrottled.conditions.title()
+    }) :
         undefined;
     const classes = classMap({
         ['network-timing-table']: true,
@@ -464,7 +471,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
            </x-link>
          <td></td>
          <td class=${input.wasThrottled ? 'throttled' : ''} title=${ifDefined(throttledRequestTitle)}>
-           ${input.wasThrottled ? html ` <devtools-icon name=watch ></devtools-icon>` : nothing}
+           ${input.wasThrottled ? html ` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing}
            ${i18n.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -527,7 +534,7 @@ export class RequestTimingView extends UI.Widget.VBox {
             requestUnfinished: false,
             fetchDetails: this.#fetchDetailsTree(),
             routerDetails: this.#routerDetailsTree(),
-            wasThrottled: conditions?.urlPattern ? conditions.conditions : undefined,
+            wasThrottled: conditions?.urlPattern ? conditions : undefined,
             timeRanges,
         };
         this.#view(input, {}, this.contentElement);

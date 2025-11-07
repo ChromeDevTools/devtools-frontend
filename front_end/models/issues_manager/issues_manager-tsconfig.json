@@ -51,6 +51,7 @@
     "../../../../../../front_end/models/issues_manager/GenericIssue.ts",
     "../../../../../../front_end/models/issues_manager/HeavyAdIssue.ts",
     "../../../../../../front_end/models/issues_manager/Issue.ts",
+    "../../../../../../front_end/models/issues_manager/IssueAggregator.ts",
     "../../../../../../front_end/models/issues_manager/IssueResolver.ts",
     "../../../../../../front_end/models/issues_manager/IssuesManager.ts",
     "../../../../../../front_end/models/issues_manager/IssuesManagerEvents.ts",

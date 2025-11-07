@@ -3846,6 +3846,19 @@ export const generatedProperties = [
     },
     {
         "longhands": [
+            "row-rule-edge-start-outset",
+            "row-rule-edge-end-outset",
+            "row-rule-interior-start-outset",
+            "row-rule-interior-end-outset",
+            "column-rule-edge-start-outset",
+            "column-rule-edge-end-outset",
+            "column-rule-interior-start-outset",
+            "column-rule-interior-end-outset"
+        ],
+        "name": "rule-outset"
+    },
+    {
+        "longhands": [
             "column-rule-style",
             "row-rule-style"
         ],

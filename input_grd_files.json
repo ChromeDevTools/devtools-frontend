@@ -778,6 +778,7 @@
   "front_end/entrypoints/main/main-meta.js",
   "front_end/models/logs/logs-meta.js",
   "front_end/models/persistence/persistence-meta.js",
+  "front_end/models/workspace/workspace-meta.js",
   "front_end/panels/ai_assistance/ai_assistance-meta.js",
   "front_end/panels/changes/changes-meta.js",
   "front_end/panels/console/console.js",

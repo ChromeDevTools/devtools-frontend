@@ -10354,14 +10354,14 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
           message: "The trace was loaded successfully but no Insights were detected."
         };
       }
-      const navigationId = Array.from(parsedTrace.insights.keys()).find((k) => k !== "NO_NAVIGATION");
-      if (!navigationId) {
+      const insightSetId = Array.from(parsedTrace.insights.keys()).find((k) => k !== "NO_NAVIGATION");
+      if (!insightSetId) {
         return {
           type: "error",
           message: "The trace was loaded successfully but no navigation was detected."
         };
       }
-      const insightsForNav = parsedTrace.insights.get(navigationId);
+      const insightsForNav = parsedTrace.insights.get(insightSetId);
       if (!insightsForNav) {
         return {
           type: "error",
@@ -15844,9 +15844,9 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
       return;
     }
     const fieldMetricResultsByNavigationId = /* @__PURE__ */ new Map();
-    for (const [key, insightSet] of insights) {
-      if (insightSet.navigation) {
-        fieldMetricResultsByNavigationId.set(key, Trace32.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager5.CrUXManager.instance().getSelectedScope()));
+    for (const insightSet of insights.values()) {
+      if (insightSet.navigation?.args.data?.navigationId) {
+        fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace32.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager5.CrUXManager.instance().getSelectedScope()));
       }
     }
     for (const marker of this.#markers) {

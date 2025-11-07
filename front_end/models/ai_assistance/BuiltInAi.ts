@@ -44,7 +44,8 @@ export class BuiltInAi {
   }
 
   static cachedIsAvailable(): boolean {
-    return availability === LanguageModelAvailability.AVAILABLE;
+    return availability === LanguageModelAvailability.AVAILABLE &&
+        (hasGpu || Boolean(Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu));
   }
 
   static isGpuAvailable(): boolean {

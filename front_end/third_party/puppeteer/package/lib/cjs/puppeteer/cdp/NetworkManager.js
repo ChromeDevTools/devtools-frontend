@@ -53,7 +53,9 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
     }
     #canIgnoreError(error) {
         return ((0, ErrorLike_js_1.isErrorLike)(error) &&
-            ((0, Connection_js_1.isTargetClosedError)(error) || error.message.includes('Not supported')));
+            ((0, Connection_js_1.isTargetClosedError)(error) ||
+                error.message.includes('Not supported') ||
+                error.message.includes("wasn't found")));
     }
     async addClient(client) {
         if (!this.#networkEnabled || this.#clients.has(client)) {

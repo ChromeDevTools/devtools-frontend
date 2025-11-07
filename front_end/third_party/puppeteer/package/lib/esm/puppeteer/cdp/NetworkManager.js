@@ -50,7 +50,9 @@ export class NetworkManager extends EventEmitter {
     }
     #canIgnoreError(error) {
         return (isErrorLike(error) &&
-            (isTargetClosedError(error) || error.message.includes('Not supported')));
+            (isTargetClosedError(error) ||
+                error.message.includes('Not supported') ||
+                error.message.includes("wasn't found")));
     }
     async addClient(client) {
         if (!this.#networkEnabled || this.#clients.has(client)) {

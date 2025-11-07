@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.29.0';
+  const packageVersion = '24.29.1';
   // x-release-please-end
 
   /**
@@ -17779,7 +17779,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * SPDX-License-Identifier: Apache-2.0
    */
   function _canIgnoreError(error) {
-    return isErrorLike(error) && (isTargetClosedError(error) || error.message.includes('Not supported'));
+    return isErrorLike(error) && (isTargetClosedError(error) || error.message.includes('Not supported') || error.message.includes("wasn't found"));
   }
   async function _removeClient(client) {
     _classPrivateFieldGet(_clients, this).get(client)?.dispose();
@@ -24853,8 +24853,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '142.0.7444.59',
-    'chrome-headless-shell': '142.0.7444.59',
+    chrome: '142.0.7444.61',
+    'chrome-headless-shell': '142.0.7444.61',
     firefox: 'stable_144.0.2'
   });
 

@@ -4,9 +4,9 @@
 
 import rule from '../lib/prefer-assert-strict-equal.ts';
 
-import {RuleTester} from './utils/RuleTester.ts';
+import {RuleTester, typeCheckingOptions} from './utils/RuleTester.ts';
 
-new RuleTester().run('prefer-assert-strict-equal', rule, {
+new RuleTester(typeCheckingOptions).run('prefer-assert-strict-equal', rule, {
   valid: [
     {
       code: 'assert(a);',
@@ -31,6 +31,11 @@ new RuleTester().run('prefer-assert-strict-equal', rule, {
     },
     {
       code: 'assert.notStrictEqual(x, y, "message");',
+    },
+    {
+      code: `
+      let x: {y:number};
+      assert(x.y === z, "message");`,
     },
   ],
 
@@ -362,6 +367,44 @@ new RuleTester().run('prefer-assert-strict-equal', rule, {
         },
       ],
     },
-
+    {
+      code: `
+      let x: {y: {z: number}};
+      assert(x === z, "message");`,
+      output: `
+      let x: {y: {z: number}};
+      assert.strictEqual(x, z, "message");`,
+      errors: [
+        {
+          messageId: 'useAssertStrictEqual',
+        },
+      ],
+    },
+    {
+      code: `
+      let x: {y: {z: number}};
+      assert(x.y === z, "message");`,
+      output: `
+      let x: {y: {z: number}};
+      assert.strictEqual(x.y, z, "message");`,
+      errors: [
+        {
+          messageId: 'useAssertStrictEqual',
+        },
+      ],
+    },
+    {
+      code: `
+      let x: {y:number};
+      assert(x.y !== z, "message");`,
+      output: `
+      let x: {y:number};
+      assert.notStrictEqual(x.y, z, "message");`,
+      errors: [
+        {
+          messageId: 'useAssertNotStrictEqual',
+        },
+      ],
+    },
   ],
 });

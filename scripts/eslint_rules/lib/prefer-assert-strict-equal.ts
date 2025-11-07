@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {TSESTree} from '@typescript-eslint/utils';
+import {ESLintUtils, type TSESTree} from '@typescript-eslint/utils';
+import {type Type, type TypeChecker, TypeFlags} from 'typescript';
 
 import {createRule} from './utils/ruleCreator.ts';
 
@@ -41,20 +42,34 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
+    const {sourceCode} = context;
+
+    const parserServices = ESLintUtils.getParserServices(context);
+    const checker: TypeChecker = parserServices.program.getTypeChecker();
+
     function reportError(
         node: TSESTree.CallExpression, calleeText: string,
         messageId: 'useAssertStrictEqual'|'useAssertNotStrictEqual') {
+      const calleeNode = node.callee;
+      const [argumentNode] = node.arguments;
+      if (argumentNode.type !== 'BinaryExpression') {
+        return;
+      }
+
+      // Allow type narrowing for objects called via `x.y === z`
+      // Also for false assertion we want to skip this
+      if (argumentNode.left.type === 'MemberExpression' && calleeText === 'assert.strictEqual') {
+        const tsNode = parserServices.esTreeNodeToTSNodeMap.get(argumentNode.left.property);
+        const type: Type = checker.getTypeAtLocation(tsNode);
+        if ((type.flags & TypeFlags.Object) === 0) {
+          return;
+        }
+      }
+
       context.report({
         node,
         messageId,
         fix(fixer) {
-          const {sourceCode} = context;
-          const calleeNode = node.callee;
-          const [argumentNode] = node.arguments;
-          if (!('left' in argumentNode && 'right' in argumentNode)) {
-            return [];
-          }
-
           const argumentText = `${sourceCode.getText(argumentNode.left)}, ${sourceCode.getText(argumentNode.right)}`;
           return [
             fixer.replaceText(calleeNode, calleeText),

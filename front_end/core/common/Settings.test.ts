@@ -82,15 +82,13 @@ describe('SettingsStorage class', () => {
 
 describe('Settings instance', () => {
   afterEach(() => {
-    Common.Settings.Settings.removeInstance();
     Common.Settings.resetSettings();  // Clear SettingsRegistrations.
   });
 
   it('can be instantiated in a test', () => {
     const dummyStorage = new SettingsStorage({});
 
-    const settings = Common.Settings.Settings.instance({
-      forceNew: true,
+    const settings = new Common.Settings.Settings({
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
@@ -115,8 +113,8 @@ describe('Settings instance', () => {
       defaultValue: false,
       storageType: Common.Settings.SettingStorageType.SYNCED,
     });
-    const settings = Common.Settings.Settings.instance(
-        {forceNew: true, syncedStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
+    const settings =
+        new Common.Settings.Settings({syncedStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
 
     const dynamicSetting: Common.Settings.Setting<string> =
         settings.createSetting('dynamic-synced-setting', 'default val', Common.Settings.SettingStorageType.SYNCED);
@@ -143,9 +141,8 @@ describe('Settings instance', () => {
       defaultValue: false,
       storageType: Common.Settings.SettingStorageType.GLOBAL,
     });
-
-    const settings = Common.Settings.Settings.instance(
-        {forceNew: true, syncedStorage: storage, globalStorage: storage, localStorage: storage});
+    const settings =
+        new Common.Settings.Settings({syncedStorage: storage, globalStorage: storage, localStorage: storage});
     settings.createSetting('dynamic-local-setting', 42, Common.Settings.SettingStorageType.LOCAL);
     settings.createSetting('dynamic-synced-setting', 'foo', Common.Settings.SettingStorageType.SYNCED);
 
@@ -160,8 +157,7 @@ describe('Settings instance', () => {
          const mockStore = new MockStore();
          const settingsStorage = new SettingsStorage({}, mockStore);
          mockStore.set('test', '"old"');
-         const settings = Common.Settings.Settings.instance({
-           forceNew: true,
+         const settings = new Common.Settings.Settings({
            syncedStorage: settingsStorage,
            globalStorage: settingsStorage,
            localStorage: settingsStorage,
@@ -188,8 +184,12 @@ describe('Settings instance', () => {
       register: (name: string) => registeredSettings.add(name),
     };
     const storage = new SettingsStorage({}, mockBackingStore, '__prefix__.');
-    const settings = Common.Settings.Settings.instance(
-        {forceNew: true, syncedStorage: storage, globalStorage: storage, localStorage: storage});
+    const settings = new Common.Settings.Settings({
+      syncedStorage: storage,
+      globalStorage: storage,
+      localStorage: storage,
+      runSettingsMigration: false,
+    });
     const testSetting = settings.createSetting('test-setting', 'some value');
     assert.strictEqual(testSetting.getIfNotDisabled(), 'some value');
 
@@ -212,17 +212,12 @@ describe('VersionController', () => {
     syncedStorage = new Common.Settings.SettingsStorage({}, mockStore);
     globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
     localStorage = new Common.Settings.SettingsStorage({}, mockStore);
-    settings = Common.Settings.Settings.instance({
-      forceNew: true,
+    settings = new Common.Settings.Settings({
       syncedStorage,
       globalStorage,
       localStorage,
       runSettingsMigration: false,
     });
-  });
-
-  afterEach(() => {
-    Common.Settings.Settings.removeInstance();
   });
 
   describe('updateVersion', () => {
@@ -547,8 +542,7 @@ describe('updateVersionFrom37To38', () => {
       defaultValue: true,
     });
 
-    settings = Common.Settings.Settings.instance({
-      forceNew: true,
+    settings = new Common.Settings.Settings({
       syncedStorage,
       globalStorage,
       localStorage,
@@ -557,7 +551,6 @@ describe('updateVersionFrom37To38', () => {
   });
 
   afterEach(() => {
-    Common.Settings.Settings.removeInstance();
     Common.Settings.resetSettings();  // Clear SettingsRegistrations.
   });
 
@@ -616,8 +609,7 @@ describe('updateVersionFrom38To39', () => {
     const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
     const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
 
-    settings = Common.Settings.Settings.instance({
-      forceNew: true,
+    settings = new Common.Settings.Settings({
       syncedStorage,
       globalStorage,
       localStorage,
@@ -627,7 +619,6 @@ describe('updateVersionFrom38To39', () => {
   });
 
   afterEach(() => {
-    Common.Settings.Settings.removeInstance();
     Common.Settings.resetSettings();  // Clear SettingsRegistrations.
   });
 
@@ -685,8 +676,7 @@ describe('updateVersionFrom38To39', () => {
         defaultValue: [],
       });
 
-      settings = Common.Settings.Settings.instance({
-        forceNew: true,
+      settings = new Common.Settings.Settings({
         syncedStorage,
         globalStorage,
         localStorage,
@@ -697,7 +687,6 @@ describe('updateVersionFrom38To39', () => {
     });
 
     afterEach(() => {
-      Common.Settings.Settings.removeInstance();
       Common.Settings.resetSettings();  // Clear SettingsRegistrations.
     });
 
@@ -778,7 +767,7 @@ describe('updateVersionFrom38To39', () => {
       const activeKeySetting = settings.globalStorage.get('active-network-condition-key');
       assert.strictEqual(activeKeySetting, JSON.stringify('OFFLINE'));
 
-      const newSetting = Common.Settings.Settings.instance().createSetting('active-network-condition-key', 'INVALID');
+      const newSetting = settings.createSetting('active-network-condition-key', 'INVALID');
       assert.strictEqual(newSetting.defaultValue, 'NO_THROTTLING');
 
       assert.isFalse(settings.globalStorage.has('preferred-network-condition'));
@@ -819,8 +808,7 @@ describe('access logging', () => {
     const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
     const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
     logSettingAccess = sinon.spy();
-    settings = Common.Settings.Settings.instance({
-      forceNew: true,
+    settings = new Common.Settings.Settings({
       syncedStorage,
       globalStorage,
       localStorage,

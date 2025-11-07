@@ -25,7 +25,19 @@ import {
 
 let settingsInstance: Settings|undefined;
 
+export interface SettingsCreationOptions {
+  syncedStorage: SettingsStorage;
+  globalStorage: SettingsStorage;
+  localStorage: SettingsStorage;
+  logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
+  runSettingsMigration?: boolean;
+}
+
 export class Settings {
+  readonly syncedStorage: SettingsStorage;
+  readonly globalStorage: SettingsStorage;
+  readonly localStorage: SettingsStorage;
+
   readonly #sessionStorage = new SettingsStorage({});
   settingNameSet = new Set<string>();
   orderValuesBySettingCategory = new Map<SettingCategory, Set<number>>();
@@ -34,13 +46,11 @@ export class Settings {
   readonly moduleSettings = new Map<string, Setting<unknown>>();
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
 
-  private constructor(
-      readonly syncedStorage: SettingsStorage,
-      readonly globalStorage: SettingsStorage,
-      readonly localStorage: SettingsStorage,
-      logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>,
-      runSettingsMigration?: boolean,
-  ) {
+  constructor({syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration}:
+                  SettingsCreationOptions) {
+    this.syncedStorage = syncedStorage;
+    this.globalStorage = globalStorage;
+    this.localStorage = localStorage;
     this.#logSettingAccess = logSettingAccess;
 
     for (const registration of this.getRegisteredSettings()) {
@@ -90,7 +100,7 @@ export class Settings {
       }
 
       settingsInstance =
-          new Settings(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration);
+          new Settings({syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration});
     }
 
     return settingsInstance;

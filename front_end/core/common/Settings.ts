@@ -305,16 +305,6 @@ export class SettingsStorage {
   }
 }
 
-function removeSetting(setting: {name: string, storage: SettingsStorage}): void {
-  const name = setting.name;
-  const settings = Settings.instance();
-
-  settings.getRegistry().delete(name);
-  settings.moduleSettings.delete(name);
-
-  setting.storage.remove(name);
-}
-
 export class Deprecation {
   readonly disabled: boolean;
   readonly warning: Platform.UIString.LocalizedString;
@@ -687,6 +677,15 @@ export class VersionController {
     this.#localVersionSetting.set(VersionController.CURRENT_VERSION);
   }
 
+  #removeSetting(setting: {name: string, storage: SettingsStorage}): void {
+    const name = setting.name;
+
+    this.#settings.getRegistry().delete(name);
+    this.#settings.moduleSettings.delete(name);
+
+    setting.storage.remove(name);
+  }
+
   /**
    * Runs the appropriate migrations and updates the version settings accordingly.
    *
@@ -728,13 +727,13 @@ export class VersionController {
 
   updateVersionFrom2To3(): void {
     this.#settings.createSetting('fileSystemMapping', {}).set({});
-    removeSetting(this.#settings.createSetting('fileMappingEntries', []));
+    this.#removeSetting(this.#settings.createSetting('fileMappingEntries', []));
   }
 
   updateVersionFrom3To4(): void {
     const advancedMode = this.#settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
-    moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
-    removeSetting(advancedMode);
+    this.#settings.moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
+    this.#removeSetting(advancedMode);
   }
 
   updateVersionFrom4To5(): void {
@@ -772,7 +771,7 @@ export class VersionController {
         newValue.vertical = {};
         // @ts-expect-error
         newValue.vertical.size = oldSetting.get();
-        removeSetting(oldSetting);
+        this.#removeSetting(oldSetting);
       }
       const oldSettingH = this.#settings.createSetting(oldNameH, empty);
       if (oldSettingH.get() !== empty) {
@@ -781,7 +780,7 @@ export class VersionController {
         newValue.horizontal = {};
         // @ts-expect-error
         newValue.horizontal.size = oldSettingH.get();
-        removeSetting(oldSettingH);
+        this.#removeSetting(oldSettingH);
       }
       if (newValue) {
         this.#settings.createSetting(newName, {}).set(newValue);
@@ -799,14 +798,14 @@ export class VersionController {
     for (const oldName in settingNames) {
       const oldSetting = this.#settings.createSetting(oldName, null);
       if (oldSetting.get() === null) {
-        removeSetting(oldSetting);
+        this.#removeSetting(oldSetting);
         continue;
       }
 
       const newName = settingNames[oldName];
       const invert = oldName === 'WebInspector.Drawer.showOnLoad';
       const hidden = oldSetting.get() !== invert;
-      removeSetting(oldSetting);
+      this.#removeSetting(oldSetting);
       const showMode = hidden ? 'OnlyMain' : 'Both';
 
       const newSetting = this.#settings.createSetting(newName, {});
@@ -925,7 +924,7 @@ export class VersionController {
     if (newList.length) {
       this.#settings.createSetting<unknown[]>(newSettingName, []).set(newList);
     }
-    removeSetting(oldSetting);
+    this.#removeSetting(oldSetting);
   }
 
   updateVersionFrom11To12(): void {
@@ -934,7 +933,7 @@ export class VersionController {
 
   updateVersionFrom12To13(): void {
     this.migrateSettingsFromLocalStorage();
-    removeSetting(this.#settings.createSetting('timelineOverviewMode', ''));
+    this.#removeSetting(this.#settings.createSetting('timelineOverviewMode', ''));
   }
 
   updateVersionFrom13To14(): void {
@@ -1018,14 +1017,14 @@ export class VersionController {
     }
     const newSetting = this.#settings.createSetting('networkLogColumns', {});
     newSetting.set(configs);
-    removeSetting(visibleColumnSettings);
+    this.#removeSetting(visibleColumnSettings);
   }
 
   updateVersionFrom19To20(): void {
     const oldSetting = this.#settings.createSetting('InspectorView.panelOrder', {});
     const newSetting = this.#settings.createSetting('panel-tabOrder', {});
     newSetting.set(oldSetting.get());
-    removeSetting(oldSetting);
+    this.#removeSetting(oldSetting);
   }
 
   updateVersionFrom20To21(): void {
@@ -1054,7 +1053,7 @@ export class VersionController {
     const oldSetting = this.#settings.createSetting('searchInContentScripts', false);
     const newSetting = this.#settings.createSetting('searchInAnonymousAndContentScripts', false);
     newSetting.set(oldSetting.get());
-    removeSetting(oldSetting);
+    this.#removeSetting(oldSetting);
   }
 
   updateVersionFrom24To25(): void {
@@ -1075,7 +1074,7 @@ export class VersionController {
       const suffix = textFilterSetting.get() ? ` ${textFilterSetting.get()}` : '';
       textFilterSetting.set(`${textFilter}${suffix}`);
     }
-    removeSetting(oldSetting);
+    this.#removeSetting(oldSetting);
   }
 
   updateVersionFrom26To27(): void {
@@ -1150,15 +1149,15 @@ export class VersionController {
     closeableTabSetting.set(newValue);
 
     // Remove old settings
-    removeSetting(panelCloseableTabSetting);
-    removeSetting(drawerCloseableTabSetting);
+    this.#removeSetting(panelCloseableTabSetting);
+    this.#removeSetting(drawerCloseableTabSetting);
   }
 
   updateVersionFrom30To31(): void {
     // Remove recorder_recordings setting that was used for storing recordings
     // by an old recorder experiment.
     const recordingsSetting = this.#settings.createSetting('recorder_recordings', []);
-    removeSetting(recordingsSetting);
+    this.#removeSetting(recordingsSetting);
   }
 
   updateVersionFrom31To32(): void {
@@ -1249,7 +1248,7 @@ export class VersionController {
         const normalizedKey = Settings.normalizeSettingName(key);
         if (normalizedKey !== key) {
           const value = storage.get(key);
-          removeSetting({name: key, storage});
+          this.#removeSetting({name: key, storage});
           storage.set(normalizedKey, value);
         }
       }
@@ -1274,7 +1273,7 @@ export class VersionController {
   updateVersionFrom37To38(): void {
     const getConsoleInsightsEnabledSetting = (): Setting<boolean>|undefined => {
       try {
-        return moduleSetting('console-insights-enabled') as Setting<boolean>;
+        return this.#settings.moduleSetting('console-insights-enabled') as Setting<boolean>;
       } catch {
         return;
       }
@@ -1337,7 +1336,7 @@ export class VersionController {
     const hasCustomNetworkConditionsSetting = (): boolean => {
       try {
         // this will error if it does not exist
-        moduleSetting('custom-network-conditions');
+        this.#settings.moduleSetting('custom-network-conditions');
         return true;
       } catch {
         return false;
@@ -1353,7 +1352,8 @@ export class VersionController {
        * objects, and we need to set the right key on each one. The actual keys &
        * values in the object are not important.
        */
-      const conditionsSetting = moduleSetting('custom-network-conditions') as Setting<Array<{key?: string}>>;
+      const conditionsSetting =
+          this.#settings.moduleSetting('custom-network-conditions') as Setting<Array<{key?: string}>>;
       const customConditions = conditionsSetting.get();
       if (customConditions?.length > 0) {
         customConditions.forEach((condition, i) => {

@@ -23,6 +23,7 @@ devtools_module("main") {
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
+    "../../foundation:bundle",
     "../../generated:protocol",
     "../../models/ai_assistance:bundle",
     "../../models/autofill_manager:bundle",

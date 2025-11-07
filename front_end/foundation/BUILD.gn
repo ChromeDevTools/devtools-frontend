@@ -1,0 +1,39 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+
+devtools_foundation_module("foundation") {
+  sources = [ "Universe.ts" ]
+
+  deps = [ "../core/common:bundle" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "foundation.ts"
+
+  deps = [ ":foundation" ]
+
+  # IMPORTANT: core/ or models/ must not be added here.
+  visibility = [
+    "../../mcp/*",
+    "../entrypoints/*",
+    "../panels/*",
+    "../testing/*",
+    "../ui/*",
+    "./*",
+  ]
+}
+
+devtools_foundation_module("unittests") {
+  testonly = true
+
+  sources = [ "Universe.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../core/common:bundle",
+  ]
+}

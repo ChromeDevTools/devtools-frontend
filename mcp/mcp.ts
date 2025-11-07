@@ -10,6 +10,7 @@
 export * as Common from '../front_end/core/common/common.js';
 export * as I18n from '../front_end/core/i18n/i18n.js';
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
+export * as Foundation from '../front_end/foundation/foundation.js';
 export {
   PerformanceInsightFormatter
 } from '../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js';

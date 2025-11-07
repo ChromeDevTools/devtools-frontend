@@ -952,7 +952,11 @@
     }
 
     function gotPreferences(prefs) {
-      Main.Main.instanceForTest.createSettings(prefs);
+      Common.Settings.Settings.instance({
+        forceNew: true,
+        ...Main.Main.instanceForTest.createSettingsStorage(prefs),
+        runSettingsMigration: false,
+      });
 
       const localSetting = Common.Settings.Settings.instance().createLocalSetting('local', undefined);
       test.assertEquals('object', typeof localSetting.get());

@@ -11,8 +11,7 @@ import yargs from 'yargs/yargs';
 
 import {convertRawOutputToEval, type RawOutput} from '../suite/to_eval_output.ts';
 import type {
-  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult, TestTarget} from
-  '../types';
+  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult} from '../types';
 
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
@@ -27,7 +26,7 @@ function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
 
-const globalUserArgs =
+const userArgsBuilder =
     yargs(hideBin(process.argv))
         .option('example-urls', {
           string: true,
@@ -62,21 +61,8 @@ const globalUserArgs =
           describe: 'Also output to the format required for the DevTools Eval framework',
           boolean: true,
           default: false,
-        })
-        .parseSync();
-
-const exampleUrls: string[] = [];
-const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
-
-for (const exampleUrl of globalUserArgs.exampleUrls) {
-  for (let i = 0; i < globalUserArgs.times; i++) {
-    const url = new URL(exampleUrl);
-    if (i !== 0) {
-      url.searchParams.set('iteration', `${i + 1}`);
-    }
-    exampleUrls.push(url.toString());
-  }
-}
+        });
+type UserArgs = ReturnType<typeof userArgsBuilder.parseSync>;
 
 class Logger {
   #logs: Logs = {};
@@ -148,20 +134,22 @@ export class Example {
   #devtoolsPage: Page|null = null;
 
   #logger: Logger;
-  #userArgs: typeof globalUserArgs;
+  #userArgs: UserArgs;
   #executor: TargetExecutor;
   #traceDownloader: TraceDownloader;
   #preparationResult: TargetPreparationResult|null = null;
+  #exampleUrls: readonly string[];
 
   constructor(
-      url: string, browser: Browser, testTarget: TestTarget, userArgs: typeof globalUserArgs, logger: Logger,
-      traceDownloader: TraceDownloader) {
+      url: string, browser: Browser, userArgs: UserArgs, logger: Logger, traceDownloader: TraceDownloader,
+      exampleUrls: readonly string[]) {
     this.#url = url;
     this.#browser = browser;
     this.#logger = logger;
     this.#userArgs = userArgs;
     this.#traceDownloader = traceDownloader;
-    this.#executor = createTargetExecutor(testTarget, this.#traceDownloader);
+    this.#executor = createTargetExecutor(userArgs.testTarget, this.#traceDownloader);
+    this.#exampleUrls = exampleUrls;
   }
 
   url(): string {
@@ -224,7 +212,7 @@ export class Example {
           this.#devtoolsPage,
           this.#preparationResult,
           this.id(),
-          globalUserArgs.randomize,
+          this.#userArgs.randomize,
           (text: string) => this.log(text),
       );
 
@@ -278,26 +266,25 @@ export class Example {
   }
 
   log(text: string) {
-    const indexOfExample = exampleUrls.indexOf(this.#url);
+    const indexOfExample = this.#exampleUrls.indexOf(this.#url);
     this.#logger.log(
         this.id(),
         indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`,
+        `\x1b[33m[${indexOfExample + 1}/${this.#exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`,
     );
   }
 
   error(text: string) {
-    const indexOfExample = exampleUrls.indexOf(this.#url);
+    const indexOfExample = this.#exampleUrls.indexOf(this.#url);
     this.#logger.error(
         this.id(),
         indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${exampleUrls.length}] ${this.id()}:[0m [31m${text}[0m`,
+        `\x1b[33m[${indexOfExample + 1}/${this.#exampleUrls.length}] ${this.id()}: [0m  [31m${text} [0m`,
     );
   }
 }
 
-const logger = new Logger();
-async function runInParallel(examples: Example[]): Promise<RunResult> {
+async function runInParallel(examples: Example[], logger: Logger): Promise<RunResult> {
   logger.head('Preparing examples...');
   for (const example of examples) {
     await example.prepare();
@@ -324,7 +311,7 @@ async function runInParallel(examples: Example[]): Promise<RunResult> {
   return {allExampleResults, metadata};
 }
 
-async function runSequentially(examples: Example[]): Promise<RunResult> {
+async function runSequentially(examples: Example[], logger: Logger): Promise<RunResult> {
   const allExampleResults: IndividualPromptRequestResponse[] = [];
   const metadata: ExampleMetadata[] = [];
   logger.head('Running examples sequentially...');
@@ -340,16 +327,29 @@ async function runSequentially(examples: Example[]): Promise<RunResult> {
       metadata.push(executedExample.metadata);
     } catch (err) {
       const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
-      example.error(
-          `There is an error, skipping it.\n${errorMsg}`,
-      );
+      example.error(`There is an error, skipping it.\n${errorMsg}`);
     }
   }
 
   return {allExampleResults, metadata};
 }
 
+// Run if this file invoked as a CLI directly
 async function main() {
+  const userArgs: UserArgs = userArgsBuilder.parseSync();
+
+  const exampleUrls: string[] = [];
+  for (const exampleUrl of userArgs.exampleUrls) {
+    for (let i = 0; i < userArgs.times; i++) {
+      const url = new URL(exampleUrl);
+      if (i !== 0) {
+        url.searchParams.set('iteration', `${i + 1}`);
+      }
+      exampleUrls.push(url.toString());
+    }
+  }
+
+  const logger = new Logger();
   logger.head('Connecting to the browser...');
   const browser = await puppeteer.connect({
     browserURL: 'http://127.0.0.1:9222',
@@ -364,8 +364,7 @@ async function main() {
   logger.head('Browser connection is ready...');
 
   logger.head(
-      'Getting browser pages... (If stuck in here, please close all the tabs in the connected Chrome manually.)',
-  );
+      'Getting browser pages... (If stuck in here, please close all the tabs in the connected Chrome manually.)');
   try {
     for (const page of await browser.pages()) {
       if (page.url() === 'about:blank') {
@@ -375,24 +374,16 @@ async function main() {
     }
   } catch (err) {
     const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
-    logger.head(
-        `There was an error closing pages\n${errorMsg}`,
-    );
+    logger.head(`There was an error closing pages\n${errorMsg}`);
   }
 
   logger.head('Preparing examples...');
   const traceDownloader = new TraceDownloader();
-  const examples = exampleUrls.map(
-      exampleUrl =>
-          new Example(exampleUrl, browser, globalUserArgs.testTarget, globalUserArgs, logger, traceDownloader));
-  let allExampleResults: IndividualPromptRequestResponse[] = [];
-  let metadata: ExampleMetadata[] = [];
+  const examples =
+      exampleUrls.map(exampleUrl => new Example(exampleUrl, browser, userArgs, logger, traceDownloader, exampleUrls));
 
-  if (globalUserArgs.parallel) {
-    ({allExampleResults, metadata} = await runInParallel(examples));
-  } else {
-    ({allExampleResults, metadata} = await runSequentially(examples));
-  }
+  const {allExampleResults, metadata} =
+      userArgs.parallel ? await runInParallel(examples, logger) : await runSequentially(examples, logger);
 
   await browser.disconnect();
 
@@ -411,41 +402,50 @@ async function main() {
     }
   }
 
-  const output = {
+  const output: Output = {
     score,
     metadata,
     examples: allExampleResults,
   };
-
-  const dateSuffix = new Date().toISOString().slice(0, 19);
-  const outputPath = path.resolve(
-      OUTPUT_DIR,
-      `${globalUserArgs.label}-${dateSuffix}.json`,
-  );
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR);
-  }
-
-  if (output.metadata.length === 0 && output.examples.length === 0) {
-    console.info('\n[Warn]: No results to export.');
-  } else {
-    fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
-    if (globalUserArgs.eval) {
-      const convertedOutput = convertRawOutputToEval({
-        inputFromAutoRun: output as RawOutput,
-        label: globalUserArgs.label,
-      });
-      const evalOutputPath = outputPath.replace('.json', '.eval.json');
-      fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
-      console.info(
-          `\n[Info]: Exported eval output to ${evalOutputPath}`,
-      );
-    }
-    console.info(
-        `\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`,
-    );
-  }
+  writeOutput(output, userArgs);
   logger.destroy();
 }
 
-void main();
+interface Output {
+  score: number;
+  metadata: ExampleMetadata[];
+  examples: IndividualPromptRequestResponse[];
+}
+
+function writeOutput(
+    output: Output,
+    userArgs: UserArgs,
+) {
+  const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
+  const dateSuffix = new Date().toISOString().slice(0, 19);
+  const outputPath = path.resolve(OUTPUT_DIR, `${userArgs.label}-${dateSuffix}.json`);
+  fs.mkdirSync(OUTPUT_DIR, {recursive: true});
+
+  if (output.metadata.length === 0 && output.examples.length === 0) {
+    console.info('\n[Warn]: No results to export.');
+    return;
+  }
+
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+  console.info(`\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`);
+
+  if (userArgs.eval) {
+    const convertedOutput = convertRawOutputToEval({
+      inputFromAutoRun: output as RawOutput,
+      label: userArgs.label,
+    });
+    const evalOutputPath = outputPath.replace('.json', '.eval.json');
+    fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
+    console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
+  }
+}
+
+// If run directly, invoke the CLI
+if (import.meta.url.endsWith(process?.argv[1])) {
+  void main();
+}

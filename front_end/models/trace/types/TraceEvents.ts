@@ -2804,7 +2804,7 @@ export interface FunctionCall extends Complete {
   args: Args&{
     data?: Partial<CallFrame>& {
       frame?: string,
-      isolate?: number,
+      isolate?: string,
     },
   };
 }

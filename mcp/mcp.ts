@@ -30,4 +30,5 @@ export {
   IssuesManager
 } from '../front_end/models/issues_manager/IssuesManager.js';
 export {findTitleFromMarkdownAst} from '../front_end/models/issues_manager/MarkdownIssueDescription.js';
+export * as TraceEngine from '../front_end/models/trace/trace.js';
 export * as Marked from '../front_end/third_party/marked/marked.js';

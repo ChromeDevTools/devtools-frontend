@@ -734,44 +734,55 @@ export class PerformanceAgent extends AiAgent {
             },
         });
         const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
-        const hasScriptContents = parsedTrace.metadata.enhancedTraceVersion && parsedTrace.data.Scripts.scripts.some(s => s.content);
-        if (isFresh || hasScriptContents) {
-            this.declareFunction('getResourceContent', {
-                description: 'Returns the content of the resource with the given url. Only use this for text resource types.',
-                parameters: {
-                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                    description: '',
-                    nullable: false,
-                    properties: {
-                        url: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The url for the resource.',
-                            nullable: false,
-                        },
+        const isTraceApp = Root.Runtime.Runtime.isTraceApp();
+        this.declareFunction('getResourceContent', {
+            description: 'Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {
+                    url: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The url for the resource.',
+                        nullable: false,
                     },
                 },
-                displayInfoFromArgs: args => {
-                    return { title: lockedString('Looking at resource content…'), action: `getResourceContent('${args.url}')` };
-                },
-                handler: async (args) => {
-                    debugLog('Function call: getResourceContent');
-                    const url = args.url;
+            },
+            displayInfoFromArgs: args => {
+                return { title: lockedString('Looking at resource content…'), action: `getResourceContent('${args.url}')` };
+            },
+            handler: async (args) => {
+                debugLog('Function call: getResourceContent');
+                const url = args.url;
+                let content;
+                // First check parsedTrace.data.Scripts.
+                // Then, check ResourceTreeModel, but only when it is valid. Don't want to
+                // use if viewing a loaded trace from DevTools attached to an unrelated
+                // page.
+                const script = parsedTrace.data.Scripts.scripts.find(script => script.url === url);
+                if (script?.content !== undefined) {
+                    content = script.content;
+                }
+                else if (isFresh || isTraceApp) {
                     const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
                     if (!resource) {
-                        if (!resource) {
-                            return { error: 'Resource not found' };
-                        }
+                        return { error: 'Resource not found' };
                     }
-                    const content = await resource.requestContentData();
-                    if ('error' in content) {
-                        return { error: `Could not get resource content: ${content.error}` };
+                    const data = await resource.requestContentData();
+                    if ('error' in data) {
+                        return { error: `Could not get resource content: ${data.error}` };
                     }
-                    const key = `getResourceContent(${args.url})`;
-                    this.#cacheFunctionResult(focus, key, content.text);
-                    return { result: { content: content.text } };
-                },
-            });
-        }
+                    content = data.text;
+                }
+                else {
+                    return { error: 'Resource not found' };
+                }
+                const key = `getResourceContent(${args.url})`;
+                this.#cacheFunctionResult(focus, key, content);
+                return { result: { content } };
+            },
+        });
         if (!context.external) {
             this.declareFunction('selectEventByKey', {
                 description: 'Selects the event in the flamechart for the user. If the user asks to show them something, it\'s likely a good idea to call this function.',

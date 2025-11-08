@@ -20,6 +20,7 @@ export declare class Settings {
         globalStorage: SettingsStorage | null;
         localStorage: SettingsStorage | null;
         logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
+        runSettingsMigration?: boolean;
     }): Settings;
     static removeInstance(): void;
     private registerModuleSetting;
@@ -126,7 +127,7 @@ export declare class VersionController {
     static readonly SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
     static readonly LOCAL_VERSION_SETTING_NAME = "localInspectorVersion";
     static readonly CURRENT_VERSION = 40;
-    constructor();
+    constructor(settings: Settings);
     /**
      * Force re-sets all version number settings to the current version without
      * running any migrations.

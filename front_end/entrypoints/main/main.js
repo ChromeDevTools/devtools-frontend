@@ -433,6 +433,7 @@ import * as Platform2 from "./../../core/platform/platform.js";
 import * as ProtocolClient from "./../../core/protocol_client/protocol_client.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as Foundation from "./../../foundation/foundation.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as AutofillManager from "./../../models/autofill_manager/autofill_manager.js";
 import * as Badges from "./../../models/badges/badges.js";
@@ -548,7 +549,12 @@ var MainImpl = class {
     console.timeStamp("Main._gotPreferences");
     this.#initializeGlobalsForLayoutTests();
     Object.assign(Root2.Runtime.hostConfig, config);
-    this.createSettings(prefs);
+    const creationOptions = {
+      ...this.createSettingsStorage(prefs),
+      logSettingAccess: VisualLogging2.logSettingAccess,
+      runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest()
+    };
+    new Foundation.Universe.Universe(creationOptions);
     await this.requestAndRegisterLocaleData();
     Host.userMetrics.syncSetting(Common2.Settings.Settings.instance().moduleSetting("sync-preferences").get());
     const veLogging = config.devToolsVeLogging;
@@ -604,7 +610,7 @@ var MainImpl = class {
       devToolsLocale.forceFallbackLocale();
     }
   }
-  createSettings(prefs) {
+  createSettingsStorage(prefs) {
     this.#initializeExperiments();
     let storagePrefix = "";
     if (Host.Platform.isCustomDevtoolsFrontend()) {
@@ -639,10 +645,7 @@ var MainImpl = class {
     };
     const syncedStorage = new Common2.Settings.SettingsStorage(prefs, hostSyncedStorage, storagePrefix);
     const globalStorage = new Common2.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
-    Common2.Settings.Settings.instance({ forceNew: true, syncedStorage, globalStorage, localStorage, logSettingAccess: VisualLogging2.logSettingAccess });
-    if (!Host.InspectorFrontendHost.isUnderTest()) {
-      new Common2.Settings.VersionController().updateVersion();
-    }
+    return { syncedStorage, globalStorage, localStorage };
   }
   #initializeExperiments() {
     Root2.Runtime.experiments.register("capture-node-creation-stacks", "Capture node creation stacks");

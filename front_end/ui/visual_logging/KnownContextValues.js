@@ -3830,6 +3830,7 @@ export const knownContextValues = new Set([
     'timeline.annotation-sidebar.delete',
     'timeline.annotations-tab',
     'timeline.annotations.',
+    'timeline.annotations.ai-generate-label',
     'timeline.annotations.create-entries-link',
     'timeline.annotations.create-entry-label',
     'timeline.annotations.create-entry-link',

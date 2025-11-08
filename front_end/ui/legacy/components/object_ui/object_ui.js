@@ -945,9 +945,10 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
     return this.#object;
   }
 };
-var ObjectTreeNode = class extends ObjectTreeNodeBase {
+var ObjectTreeNode = class _ObjectTreeNode extends ObjectTreeNodeBase {
   property;
   nonSyntheticParent;
+  #path;
   constructor(property, propertiesMode = 1, parent, nonSyntheticParent) {
     super(parent, propertiesMode);
     this.property = property;
@@ -958,6 +959,25 @@ var ObjectTreeNode = class extends ObjectTreeNodeBase {
   }
   get name() {
     return this.property.name;
+  }
+  get path() {
+    if (!this.#path) {
+      if (this.property.synthetic) {
+        this.#path = this.name;
+        return this.name;
+      }
+      const useDotNotation = /^(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u;
+      const isInteger = /^(?:0|[1-9]\d*)$/;
+      const parentPath = this.parent instanceof _ObjectTreeNode && !this.parent.property.synthetic ? this.parent.path : "";
+      if (this.property.private || useDotNotation.test(this.name)) {
+        this.#path = parentPath ? `${parentPath}.${this.name}` : this.name;
+      } else if (isInteger.test(this.name)) {
+        this.#path = `${parentPath}[${this.name}]`;
+      } else {
+        this.#path = `${parentPath}[${JSON.stringify(this.name)}]`;
+      }
+    }
+    return this.#path;
   }
   selfOrParentIfInternal() {
     return this.name === "[[Prototype]]" ? this.parent ?? this : this;
@@ -1373,6 +1393,10 @@ var RootElement = class extends UI3.TreeOutline.TreeElement {
     this.listItemElement.classList.add("object-properties-section-root-element");
     this.listItemElement.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
   }
+  invalidateChildren() {
+    super.invalidateChildren();
+    this.object.removeChildren();
+  }
   onexpand() {
     if (this.treeOutline) {
       this.treeOutline.element.classList.add("expanded");
@@ -1658,7 +1682,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI3.Tre
     if (this.property.property.synthetic) {
       this.nameElement.classList.add("synthetic-property");
     }
-    this.updatePropertyPath();
+    this.nameElement.title = this.property.path;
     const isInternalEntries = this.property.property.synthetic && this.property.name === "[[Entries]]";
     if (isInternalEntries) {
       this.valueElement = document.createElement("span");
@@ -1671,7 +1695,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI3.Tre
         showPreview,
         this.linkifier,
         this.property.property.synthetic,
-        this.path()
+        this.property.path
         /* variableName */
       );
       this.valueElement = this.propertyValue;
@@ -1714,26 +1738,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI3.Tre
     this.listItemElement.removeChildren();
     this.rowContainer = container;
     this.listItemElement.appendChild(this.rowContainer);
-  }
-  updatePropertyPath() {
-    if (this.nameElement.title) {
-      return;
-    }
-    const name = this.property.name;
-    if (this.property.property.synthetic) {
-      UI3.Tooltip.Tooltip.install(this.nameElement, name);
-      return;
-    }
-    const useDotNotation = /^(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u;
-    const isInteger = /^(?:0|[1-9]\d*)$/;
-    const parentPath = this.parent instanceof _ObjectPropertyTreeElement && this.parent.nameElement && !this.parent.property.property.synthetic ? this.parent.nameElement.title : "";
-    if (this.property.property.private || useDotNotation.test(name)) {
-      UI3.Tooltip.Tooltip.install(this.nameElement, parentPath ? `${parentPath}.${name}` : name);
-    } else if (isInteger.test(name)) {
-      UI3.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${name}]`);
-    } else {
-      UI3.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${JSON.stringify(name)}]`);
-    }
   }
   getContextMenu(event) {
     const contextMenu = new UI3.ContextMenu.ContextMenu(event);
@@ -1866,6 +1870,10 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI3.Tre
         void parent.onpopulate();
       }
     }
+  }
+  invalidateChildren() {
+    super.invalidateChildren();
+    this.property.removeChildren();
   }
   onInvokeGetterClick(result) {
     if (!result.object) {
@@ -2017,6 +2025,10 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI3.TreeO
       }
     }
     ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
+  }
+  invalidateChildren() {
+    super.invalidateChildren();
+    this.#child.removeChildren();
   }
   async onpopulate() {
     this.removeChildren();

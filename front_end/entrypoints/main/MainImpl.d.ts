@@ -1,3 +1,4 @@
+import * as Common from '../../core/common/common.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -7,7 +8,11 @@ export declare class MainImpl {
     static time(label: string): void;
     static timeEnd(label: string): void;
     requestAndRegisterLocaleData(): Promise<void>;
-    createSettings(prefs: Record<string, string>): void;
+    createSettingsStorage(prefs: Record<string, string>): {
+        syncedStorage: Common.Settings.SettingsStorage;
+        globalStorage: Common.Settings.SettingsStorage;
+        localStorage: Common.Settings.SettingsStorage;
+    };
     readyForTest(): Promise<void>;
     static instanceForTest: MainImpl | null;
 }

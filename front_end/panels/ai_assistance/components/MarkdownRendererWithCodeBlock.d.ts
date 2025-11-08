@@ -14,5 +14,5 @@ import type * as Lit from '../../../ui/lit/lit.js';
  * ```
  **/
 export declare class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
-    templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult | null;
+    templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate | null;
 }

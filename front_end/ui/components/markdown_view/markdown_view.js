@@ -860,7 +860,7 @@ var MarkdownLitRenderer = class {
       case "code":
         return this.renderCodeBlock(token);
       case "space":
-        return html6``;
+        return Lit3.nothing;
       case "link":
         return html6`<devtools-markdown-link
         class=${this.customClassMapForToken("link")}

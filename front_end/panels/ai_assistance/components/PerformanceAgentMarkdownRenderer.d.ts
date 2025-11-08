@@ -7,5 +7,5 @@ export declare class PerformanceAgentMarkdownRenderer extends MarkdownRendererWi
     private mainFrameId;
     private lookupEvent;
     constructor(mainFrameId?: string, lookupEvent?: (key: Trace.Types.File.SerializableKey) => Trace.Types.Events.Event | null);
-    templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult | null;
+    templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate | null;
 }

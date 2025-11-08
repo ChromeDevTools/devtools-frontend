@@ -18,7 +18,7 @@ export class Settings {
     #registry = new Map();
     moduleSettings = new Map();
     #logSettingAccess;
-    constructor(syncedStorage, globalStorage, localStorage, logSettingAccess) {
+    constructor(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration) {
         this.syncedStorage = syncedStorage;
         this.globalStorage = globalStorage;
         this.localStorage = localStorage;
@@ -37,6 +37,9 @@ export class Settings {
             setting.setRegistration(registration);
             this.registerModuleSetting(setting);
         }
+        if (runSettingsMigration) {
+            new VersionController(this).updateVersion();
+        }
     }
     getRegisteredSettings() {
         return getRegisteredSettingsInternal();
@@ -45,12 +48,13 @@ export class Settings {
         return typeof settingsInstance !== 'undefined';
     }
     static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null }) {
-        const { forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess } = opts;
+        const { forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration } = opts;
         if (!settingsInstance || forceNew) {
             if (!syncedStorage || !globalStorage || !localStorage) {
                 throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
             }
-            settingsInstance = new Settings(syncedStorage, globalStorage, localStorage, logSettingAccess);
+            settingsInstance =
+                new Settings(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration);
         }
         return settingsInstance;
     }
@@ -138,7 +142,7 @@ export class Settings {
         this.globalStorage.removeAll();
         this.syncedStorage.removeAll();
         this.localStorage.removeAll();
-        new VersionController().resetToCurrent();
+        new VersionController(this).resetToCurrent();
     }
     storageFromType(storageType) {
         switch (storageType) {
@@ -229,13 +233,6 @@ export class SettingsStorage {
             Console.instance().log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
         }
     }
-}
-function removeSetting(setting) {
-    const name = setting.name;
-    const settings = Settings.instance();
-    settings.getRegistry().delete(name);
-    settings.moduleSettings.delete(name);
-    setting.storage.remove(name);
 }
 export class Deprecation {
     disabled;
@@ -548,14 +545,16 @@ export class VersionController {
     static SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
     static LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
     static CURRENT_VERSION = 40;
+    #settings;
     #globalVersionSetting;
     #syncedVersionSetting;
     #localVersionSetting;
-    constructor() {
+    constructor(settings) {
+        this.#settings = settings;
         // If no version setting is found, we initialize with the current version and don't do anything.
-        this.#globalVersionSetting = Settings.instance().createSetting(VersionController.GLOBAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, "Global" /* SettingStorageType.GLOBAL */);
-        this.#syncedVersionSetting = Settings.instance().createSetting(VersionController.SYNCED_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, "Synced" /* SettingStorageType.SYNCED */);
-        this.#localVersionSetting = Settings.instance().createSetting(VersionController.LOCAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, "Local" /* SettingStorageType.LOCAL */);
+        this.#globalVersionSetting = this.#settings.createSetting(VersionController.GLOBAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, "Global" /* SettingStorageType.GLOBAL */);
+        this.#syncedVersionSetting = this.#settings.createSetting(VersionController.SYNCED_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, "Synced" /* SettingStorageType.SYNCED */);
+        this.#localVersionSetting = this.#settings.createSetting(VersionController.LOCAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, "Local" /* SettingStorageType.LOCAL */);
     }
     /**
      * Force re-sets all version number settings to the current version without
@@ -565,6 +564,12 @@ export class VersionController {
         this.#globalVersionSetting.set(VersionController.CURRENT_VERSION);
         this.#syncedVersionSetting.set(VersionController.CURRENT_VERSION);
         this.#localVersionSetting.set(VersionController.CURRENT_VERSION);
+    }
+    #removeSetting(setting) {
+        const name = setting.name;
+        this.#settings.getRegistry().delete(name);
+        this.#settings.moduleSettings.delete(name);
+        setting.storage.remove(name);
     }
     /**
      * Runs the appropriate migrations and updates the version settings accordingly.
@@ -594,19 +599,19 @@ export class VersionController {
         return result;
     }
     updateVersionFrom0To1() {
-        this.clearBreakpointsWhenTooMany(Settings.instance().createLocalSetting('breakpoints', []), 500000);
+        this.clearBreakpointsWhenTooMany(this.#settings.createLocalSetting('breakpoints', []), 500000);
     }
     updateVersionFrom1To2() {
-        Settings.instance().createSetting('previouslyViewedFiles', []).set([]);
+        this.#settings.createSetting('previouslyViewedFiles', []).set([]);
     }
     updateVersionFrom2To3() {
-        Settings.instance().createSetting('fileSystemMapping', {}).set({});
-        removeSetting(Settings.instance().createSetting('fileMappingEntries', []));
+        this.#settings.createSetting('fileSystemMapping', {}).set({});
+        this.#removeSetting(this.#settings.createSetting('fileMappingEntries', []));
     }
     updateVersionFrom3To4() {
-        const advancedMode = Settings.instance().createSetting('showHeaSnapshotObjectsHiddenProperties', false);
-        moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
-        removeSetting(advancedMode);
+        const advancedMode = this.#settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
+        this.#settings.moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
+        this.#removeSetting(advancedMode);
     }
     updateVersionFrom4To5() {
         const settingNames = {
@@ -635,26 +640,26 @@ export class VersionController {
             const newName = settingNames[oldName];
             const oldNameH = oldName + 'H';
             let newValue = null;
-            const oldSetting = Settings.instance().createSetting(oldName, empty);
+            const oldSetting = this.#settings.createSetting(oldName, empty);
             if (oldSetting.get() !== empty) {
                 newValue = newValue || {};
                 // @ts-expect-error
                 newValue.vertical = {};
                 // @ts-expect-error
                 newValue.vertical.size = oldSetting.get();
-                removeSetting(oldSetting);
+                this.#removeSetting(oldSetting);
             }
-            const oldSettingH = Settings.instance().createSetting(oldNameH, empty);
+            const oldSettingH = this.#settings.createSetting(oldNameH, empty);
             if (oldSettingH.get() !== empty) {
                 newValue = newValue || {};
                 // @ts-expect-error
                 newValue.horizontal = {};
                 // @ts-expect-error
                 newValue.horizontal.size = oldSettingH.get();
-                removeSetting(oldSettingH);
+                this.#removeSetting(oldSettingH);
             }
             if (newValue) {
-                Settings.instance().createSetting(newName, {}).set(newValue);
+                this.#settings.createSetting(newName, {}).set(newValue);
             }
         }
     }
@@ -665,17 +670,17 @@ export class VersionController {
             'WebInspector.Drawer.showOnLoad': 'Inspector.drawerSplitViewState',
         };
         for (const oldName in settingNames) {
-            const oldSetting = Settings.instance().createSetting(oldName, null);
+            const oldSetting = this.#settings.createSetting(oldName, null);
             if (oldSetting.get() === null) {
-                removeSetting(oldSetting);
+                this.#removeSetting(oldSetting);
                 continue;
             }
             const newName = settingNames[oldName];
             const invert = oldName === 'WebInspector.Drawer.showOnLoad';
             const hidden = oldSetting.get() !== invert;
-            removeSetting(oldSetting);
+            this.#removeSetting(oldSetting);
             const showMode = hidden ? 'OnlyMain' : 'Both';
-            const newSetting = Settings.instance().createSetting(newName, {});
+            const newSetting = this.#settings.createSetting(newName, {});
             const newValue = newSetting.get() || {};
             // @ts-expect-error
             newValue.vertical = newValue.vertical || {};
@@ -697,7 +702,7 @@ export class VersionController {
         };
         const empty = {};
         for (const name in settingNames) {
-            const setting = Settings.instance().createSetting(name, empty);
+            const setting = this.#settings.createSetting(name, empty);
             const value = setting.get();
             if (value === empty) {
                 continue;
@@ -717,7 +722,7 @@ export class VersionController {
     updateVersionFrom8To9() {
         const settingNames = ['skipStackFramesPattern', 'workspaceFolderExcludePattern'];
         for (let i = 0; i < settingNames.length; ++i) {
-            const setting = Settings.instance().createSetting(settingNames[i], '');
+            const setting = this.#settings.createSetting(settingNames[i], '');
             let value = setting.get();
             if (!value) {
                 return;
@@ -747,7 +752,7 @@ export class VersionController {
     updateVersionFrom10To11() {
         const oldSettingName = 'customDevicePresets';
         const newSettingName = 'customEmulatedDeviceList';
-        const oldSetting = Settings.instance().createSetting(oldSettingName, undefined);
+        const oldSetting = this.#settings.createSetting(oldSettingName, undefined);
         const list = oldSetting.get();
         if (!Array.isArray(list)) {
             return;
@@ -776,23 +781,23 @@ export class VersionController {
             newList.push(device);
         }
         if (newList.length) {
-            Settings.instance().createSetting(newSettingName, []).set(newList);
+            this.#settings.createSetting(newSettingName, []).set(newList);
         }
-        removeSetting(oldSetting);
+        this.#removeSetting(oldSetting);
     }
     updateVersionFrom11To12() {
         this.migrateSettingsFromLocalStorage();
     }
     updateVersionFrom12To13() {
         this.migrateSettingsFromLocalStorage();
-        removeSetting(Settings.instance().createSetting('timelineOverviewMode', ''));
+        this.#removeSetting(this.#settings.createSetting('timelineOverviewMode', ''));
     }
     updateVersionFrom13To14() {
         const defaultValue = { throughput: -1, latency: 0 };
-        Settings.instance().createSetting('networkConditions', defaultValue).set(defaultValue);
+        this.#settings.createSetting('networkConditions', defaultValue).set(defaultValue);
     }
     updateVersionFrom14To15() {
-        const setting = Settings.instance().createLocalSetting('workspaceExcludedFolders', {});
+        const setting = this.#settings.createLocalSetting('workspaceExcludedFolders', {});
         const oldValue = setting.get();
         const newValue = {};
         for (const fileSystemPath in oldValue) {
@@ -804,7 +809,7 @@ export class VersionController {
         setting.set(newValue);
     }
     updateVersionFrom15To16() {
-        const setting = Settings.instance().createSetting('InspectorView.panelOrder', {});
+        const setting = this.#settings.createSetting('InspectorView.panelOrder', {});
         const tabOrders = setting.get();
         for (const key of Object.keys(tabOrders)) {
             tabOrders[key] = (tabOrders[key] + 1) * 10;
@@ -812,7 +817,7 @@ export class VersionController {
         setting.set(tabOrders);
     }
     updateVersionFrom16To17() {
-        const setting = Settings.instance().createSetting('networkConditionsCustomProfiles', []);
+        const setting = this.#settings.createSetting('networkConditionsCustomProfiles', []);
         const oldValue = setting.get();
         const newValue = [];
         if (Array.isArray(oldValue)) {
@@ -829,7 +834,7 @@ export class VersionController {
         setting.set(newValue);
     }
     updateVersionFrom17To18() {
-        const setting = Settings.instance().createLocalSetting('workspaceExcludedFolders', {});
+        const setting = this.#settings.createLocalSetting('workspaceExcludedFolders', {});
         const oldValue = setting.get();
         const newValue = {};
         for (const oldKey in oldValue) {
@@ -848,7 +853,7 @@ export class VersionController {
     }
     updateVersionFrom18To19() {
         const defaultColumns = { status: true, type: true, initiator: true, size: true, time: true };
-        const visibleColumnSettings = Settings.instance().createSetting('networkLogColumnsVisibility', defaultColumns);
+        const visibleColumnSettings = this.#settings.createSetting('networkLogColumnsVisibility', defaultColumns);
         const visibleColumns = visibleColumnSettings.get();
         visibleColumns.name = true;
         visibleColumns.timeline = true;
@@ -859,25 +864,25 @@ export class VersionController {
             }
             configs[columnId.toLowerCase()] = { visible: visibleColumns[columnId] };
         }
-        const newSetting = Settings.instance().createSetting('networkLogColumns', {});
+        const newSetting = this.#settings.createSetting('networkLogColumns', {});
         newSetting.set(configs);
-        removeSetting(visibleColumnSettings);
+        this.#removeSetting(visibleColumnSettings);
     }
     updateVersionFrom19To20() {
-        const oldSetting = Settings.instance().createSetting('InspectorView.panelOrder', {});
-        const newSetting = Settings.instance().createSetting('panel-tabOrder', {});
+        const oldSetting = this.#settings.createSetting('InspectorView.panelOrder', {});
+        const newSetting = this.#settings.createSetting('panel-tabOrder', {});
         newSetting.set(oldSetting.get());
-        removeSetting(oldSetting);
+        this.#removeSetting(oldSetting);
     }
     updateVersionFrom20To21() {
-        const networkColumns = Settings.instance().createSetting('networkLogColumns', {});
+        const networkColumns = this.#settings.createSetting('networkLogColumns', {});
         const columns = networkColumns.get();
         delete columns['timeline'];
         delete columns['waterfall'];
         networkColumns.set(columns);
     }
     updateVersionFrom21To22() {
-        const breakpointsSetting = Settings.instance().createLocalSetting('breakpoints', []);
+        const breakpointsSetting = this.#settings.createLocalSetting('breakpoints', []);
         const breakpoints = breakpointsSetting.get();
         for (const breakpoint of breakpoints) {
             breakpoint['url'] = breakpoint['sourceFileId'];
@@ -889,32 +894,33 @@ export class VersionController {
         // This update is no-op.
     }
     updateVersionFrom23To24() {
-        const oldSetting = Settings.instance().createSetting('searchInContentScripts', false);
-        const newSetting = Settings.instance().createSetting('searchInAnonymousAndContentScripts', false);
+        const oldSetting = this.#settings.createSetting('searchInContentScripts', false);
+        const newSetting = this.#settings.createSetting('searchInAnonymousAndContentScripts', false);
         newSetting.set(oldSetting.get());
-        removeSetting(oldSetting);
+        this.#removeSetting(oldSetting);
     }
     updateVersionFrom24To25() {
         const defaultColumns = { status: true, type: true, initiator: true, size: true, time: true };
-        const networkLogColumnsSetting = Settings.instance().createSetting('networkLogColumns', defaultColumns);
+        const networkLogColumnsSetting = this.#settings.createSetting('networkLogColumns', defaultColumns);
         const columns = networkLogColumnsSetting.get();
         delete columns.product;
         networkLogColumnsSetting.set(columns);
     }
     updateVersionFrom25To26() {
-        const oldSetting = Settings.instance().createSetting('messageURLFilters', {});
+        const oldSetting = this.#settings.createSetting('messageURLFilters', {});
         const urls = Object.keys(oldSetting.get());
         const textFilter = urls.map(url => `-url:${url}`).join(' ');
         if (textFilter) {
-            const textFilterSetting = Settings.instance().createSetting('console.textFilter', '');
+            const textFilterSetting = this.#settings.createSetting('console.textFilter', '');
             const suffix = textFilterSetting.get() ? ` ${textFilterSetting.get()}` : '';
             textFilterSetting.set(`${textFilter}${suffix}`);
         }
-        removeSetting(oldSetting);
+        this.#removeSetting(oldSetting);
     }
     updateVersionFrom26To27() {
+        const settings = this.#settings;
         function renameKeyInObjectSetting(settingName, from, to) {
-            const setting = Settings.instance().createSetting(settingName, {});
+            const setting = settings.createSetting(settingName, {});
             const value = setting.get();
             if (from in value) {
                 value[to] = value[from];
@@ -923,7 +929,7 @@ export class VersionController {
             }
         }
         function renameInStringSetting(settingName, from, to) {
-            const setting = Settings.instance().createSetting(settingName, '');
+            const setting = settings.createSetting(settingName, '');
             const value = setting.get();
             if (value === from) {
                 setting.set(to);
@@ -934,14 +940,15 @@ export class VersionController {
         renameInStringSetting('panel-selectedTab', 'audits2', 'audits');
     }
     updateVersionFrom27To28() {
-        const setting = Settings.instance().createSetting('uiTheme', 'systemPreferred');
+        const setting = this.#settings.createSetting('uiTheme', 'systemPreferred');
         if (setting.get() === 'default') {
             setting.set('systemPreferred');
         }
     }
     updateVersionFrom28To29() {
+        const settings = this.#settings;
         function renameKeyInObjectSetting(settingName, from, to) {
-            const setting = Settings.instance().createSetting(settingName, {});
+            const setting = settings.createSetting(settingName, {});
             const value = setting.get();
             if (from in value) {
                 value[to] = value[from];
@@ -950,7 +957,7 @@ export class VersionController {
             }
         }
         function renameInStringSetting(settingName, from, to) {
-            const setting = Settings.instance().createSetting(settingName, '');
+            const setting = settings.createSetting(settingName, '');
             const value = setting.get();
             if (value === from) {
                 setting.set(to);
@@ -962,31 +969,31 @@ export class VersionController {
     }
     updateVersionFrom29To30() {
         // Create new location agnostic setting
-        const closeableTabSetting = Settings.instance().createSetting('closeableTabs', {});
+        const closeableTabSetting = this.#settings.createSetting('closeableTabs', {});
         // Read current settings
-        const panelCloseableTabSetting = Settings.instance().createSetting('panel-closeableTabs', {});
-        const drawerCloseableTabSetting = Settings.instance().createSetting('drawer-view-closeableTabs', {});
+        const panelCloseableTabSetting = this.#settings.createSetting('panel-closeableTabs', {});
+        const drawerCloseableTabSetting = this.#settings.createSetting('drawer-view-closeableTabs', {});
         const openTabsInPanel = panelCloseableTabSetting.get();
         const openTabsInDrawer = panelCloseableTabSetting.get();
         // Set #value of new setting
         const newValue = Object.assign(openTabsInDrawer, openTabsInPanel);
         closeableTabSetting.set(newValue);
         // Remove old settings
-        removeSetting(panelCloseableTabSetting);
-        removeSetting(drawerCloseableTabSetting);
+        this.#removeSetting(panelCloseableTabSetting);
+        this.#removeSetting(drawerCloseableTabSetting);
     }
     updateVersionFrom30To31() {
         // Remove recorder_recordings setting that was used for storing recordings
         // by an old recorder experiment.
-        const recordingsSetting = Settings.instance().createSetting('recorder_recordings', []);
-        removeSetting(recordingsSetting);
+        const recordingsSetting = this.#settings.createSetting('recorder_recordings', []);
+        this.#removeSetting(recordingsSetting);
     }
     updateVersionFrom31To32() {
         // Introduce the new 'resourceTypeName' property on stored breakpoints. Prior to
         // this change we synchronized the breakpoint only by URL, but since we don't
         // know on which resource type the given breakpoint was set, we just assume
         // 'script' here to keep things simple.
-        const breakpointsSetting = Settings.instance().createLocalSetting('breakpoints', []);
+        const breakpointsSetting = this.#settings.createLocalSetting('breakpoints', []);
         const breakpoints = breakpointsSetting.get();
         for (const breakpoint of breakpoints) {
             breakpoint['resourceTypeName'] = 'script';
@@ -994,7 +1001,7 @@ export class VersionController {
         breakpointsSetting.set(breakpoints);
     }
     updateVersionFrom32To33() {
-        const previouslyViewedFilesSetting = Settings.instance().createLocalSetting('previouslyViewedFiles', []);
+        const previouslyViewedFilesSetting = this.#settings.createLocalSetting('previouslyViewedFiles', []);
         let previouslyViewedFiles = previouslyViewedFilesSetting.get();
         // Discard old 'previouslyViewedFiles' items that don't have a 'url' property.
         previouslyViewedFiles = previouslyViewedFiles.filter((previouslyViewedFile) => 'url' in previouslyViewedFile);
@@ -1018,7 +1025,7 @@ export class VersionController {
         // the future.
         const logpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
         const logpointSuffix = ')';
-        const breakpointsSetting = Settings.instance().createLocalSetting('breakpoints', []);
+        const breakpointsSetting = this.#settings.createLocalSetting('breakpoints', []);
         const breakpoints = breakpointsSetting.get();
         for (const breakpoint of breakpoints) {
             const isLogpoint = breakpoint.condition.startsWith(logpointPrefix) && breakpoint.condition.endsWith(logpointSuffix);
@@ -1034,7 +1041,7 @@ export class VersionController {
         // the future.
         const logpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
         const logpointSuffix = ')';
-        const breakpointsSetting = Settings.instance().createLocalSetting('breakpoints', []);
+        const breakpointsSetting = this.#settings.createLocalSetting('breakpoints', []);
         const breakpoints = breakpointsSetting.get();
         for (const breakpoint of breakpoints) {
             const { condition, isLogpoint } = breakpoint;
@@ -1046,7 +1053,7 @@ export class VersionController {
     }
     updateVersionFrom35To36() {
         // We have changed the default from 'false' to 'true' and this updates the existing setting just for once.
-        Settings.instance().createSetting('showThirdPartyIssues', true).set(true);
+        this.#settings.createSetting('showThirdPartyIssues', true).set(true);
     }
     updateVersionFrom36To37() {
         const updateStorage = (storage) => {
@@ -1054,22 +1061,22 @@ export class VersionController {
                 const normalizedKey = Settings.normalizeSettingName(key);
                 if (normalizedKey !== key) {
                     const value = storage.get(key);
-                    removeSetting({ name: key, storage });
+                    this.#removeSetting({ name: key, storage });
                     storage.set(normalizedKey, value);
                 }
             }
         };
-        updateStorage(Settings.instance().globalStorage);
-        updateStorage(Settings.instance().syncedStorage);
-        updateStorage(Settings.instance().localStorage);
-        for (const key of Settings.instance().globalStorage.keys()) {
+        updateStorage(this.#settings.globalStorage);
+        updateStorage(this.#settings.syncedStorage);
+        updateStorage(this.#settings.localStorage);
+        for (const key of this.#settings.globalStorage.keys()) {
             if ((key.startsWith('data-grid-') && key.endsWith('-column-weights')) || key.endsWith('-tab-order') ||
                 key === 'views-location-override' || key === 'closeable-tabs') {
-                const setting = Settings.instance().createSetting(key, {});
+                const setting = this.#settings.createSetting(key, {});
                 setting.set(Platform.StringUtilities.toKebabCaseKeys(setting.get()));
             }
             if (key.endsWith('-selected-tab')) {
-                const setting = Settings.instance().createSetting(key, '');
+                const setting = this.#settings.createSetting(key, '');
                 setting.set(Platform.StringUtilities.toKebabCase(setting.get()));
             }
         }
@@ -1077,14 +1084,14 @@ export class VersionController {
     updateVersionFrom37To38() {
         const getConsoleInsightsEnabledSetting = () => {
             try {
-                return moduleSetting('console-insights-enabled');
+                return this.#settings.moduleSetting('console-insights-enabled');
             }
             catch {
                 return;
             }
         };
         const consoleInsightsEnabled = getConsoleInsightsEnabledSetting();
-        const onboardingFinished = Settings.instance().createLocalSetting('console-insights-onboarding-finished', false);
+        const onboardingFinished = this.#settings.createLocalSetting('console-insights-onboarding-finished', false);
         if (consoleInsightsEnabled && consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
             consoleInsightsEnabled.set(false);
         }
@@ -1099,7 +1106,7 @@ export class VersionController {
         // Note: we load the raw value via the globalStorage here because
         // `createSetting` creates if it is not present, and we do not want that;
         // we only want to update existing, old values.
-        const setting = Settings.instance().globalStorage.get(PREFERRED_NETWORK_COND);
+        const setting = this.#settings.globalStorage.get(PREFERRED_NETWORK_COND);
         if (!setting) {
             return;
         }
@@ -1108,17 +1115,17 @@ export class VersionController {
             if (networkSetting.title === 'Slow 3G') {
                 networkSetting.title = '3G';
                 networkSetting.i18nTitleKey = '3G';
-                Settings.instance().globalStorage.set(PREFERRED_NETWORK_COND, JSON.stringify(networkSetting));
+                this.#settings.globalStorage.set(PREFERRED_NETWORK_COND, JSON.stringify(networkSetting));
             }
             else if (networkSetting.title === 'Fast 3G') {
                 networkSetting.title = 'Slow 4G';
                 networkSetting.i18nTitleKey = 'Slow 4G';
-                Settings.instance().globalStorage.set(PREFERRED_NETWORK_COND, JSON.stringify(networkSetting));
+                this.#settings.globalStorage.set(PREFERRED_NETWORK_COND, JSON.stringify(networkSetting));
             }
         }
         catch {
             // If parsing the setting threw, it's in some invalid state, so remove it.
-            Settings.instance().globalStorage.remove(PREFERRED_NETWORK_COND);
+            this.#settings.globalStorage.remove(PREFERRED_NETWORK_COND);
         }
     }
     /**
@@ -1133,7 +1140,7 @@ export class VersionController {
         const hasCustomNetworkConditionsSetting = () => {
             try {
                 // this will error if it does not exist
-                moduleSetting('custom-network-conditions');
+                this.#settings.moduleSetting('custom-network-conditions');
                 return true;
             }
             catch {
@@ -1150,7 +1157,7 @@ export class VersionController {
              * objects, and we need to set the right key on each one. The actual keys &
              * values in the object are not important.
              */
-            const conditionsSetting = moduleSetting('custom-network-conditions');
+            const conditionsSetting = this.#settings.moduleSetting('custom-network-conditions');
             const customConditions = conditionsSetting.get();
             if (customConditions?.length > 0) {
                 customConditions.forEach((condition, i) => {
@@ -1174,7 +1181,7 @@ export class VersionController {
         // is more likely to change. This migration step tries to update the
         // setting for users, or removes it if we fail, so they start fresh next
         // time they load DevTools.
-        const setting = Settings.instance().globalStorage.get(PREFERRED_NETWORK_COND_SETTING);
+        const setting = this.#settings.globalStorage.get(PREFERRED_NETWORK_COND_SETTING);
         if (!setting) {
             return;
         }
@@ -1194,13 +1201,13 @@ export class VersionController {
                 const key = UI_STRING_TO_NEW_KEY[networkSetting.i18nTitleKey];
                 // The second argument is the default value, so it's important that we
                 // set this to the default, and then update it to the new key.
-                const newSetting = Settings.instance().createSetting('active-network-condition-key', 'NO_THROTTLING');
+                const newSetting = this.#settings.createSetting('active-network-condition-key', 'NO_THROTTLING');
                 newSetting.set(key);
             }
         }
         finally {
             // This setting is now not used, so we can remove it.
-            Settings.instance().globalStorage.remove(PREFERRED_NETWORK_COND_SETTING);
+            this.#settings.globalStorage.remove(PREFERRED_NETWORK_COND_SETTING);
         }
     }
     /*
@@ -1235,7 +1242,7 @@ export class VersionController {
             }
             const value = window.localStorage[key];
             window.localStorage.removeItem(key);
-            Settings.instance().globalStorage.set(key, value);
+            this.#settings.globalStorage.set(key, value);
         }
     }
     clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {

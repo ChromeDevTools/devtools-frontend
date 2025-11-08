@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Foundation from '../../foundation/foundation.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as Badges from '../../models/badges/badges.js';
@@ -155,7 +156,12 @@ export class MainImpl {
         console.timeStamp('Main._gotPreferences');
         this.#initializeGlobalsForLayoutTests();
         Object.assign(Root.Runtime.hostConfig, config);
-        this.createSettings(prefs);
+        const creationOptions = {
+            ...this.createSettingsStorage(prefs),
+            logSettingAccess: VisualLogging.logSettingAccess,
+            runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
+        };
+        new Foundation.Universe.Universe(creationOptions);
         await this.requestAndRegisterLocaleData();
         Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting('sync-preferences').get());
         const veLogging = config.devToolsVeLogging;
@@ -224,7 +230,7 @@ export class MainImpl {
             devToolsLocale.forceFallbackLocale();
         }
     }
-    createSettings(prefs) {
+    createSettingsStorage(prefs) {
         this.#initializeExperiments();
         let storagePrefix = '';
         if (Host.Platform.isCustomDevtoolsFrontend()) {
@@ -265,10 +271,7 @@ export class MainImpl {
         // setting can't change storage buckets during a single DevTools session.
         const syncedStorage = new Common.Settings.SettingsStorage(prefs, hostSyncedStorage, storagePrefix);
         const globalStorage = new Common.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
-        Common.Settings.Settings.instance({ forceNew: true, syncedStorage, globalStorage, localStorage, logSettingAccess: VisualLogging.logSettingAccess });
-        if (!Host.InspectorFrontendHost.isUnderTest()) {
-            new Common.Settings.VersionController().updateVersion();
-        }
+        return { syncedStorage, globalStorage, localStorage };
     }
     #initializeExperiments() {
         Root.Runtime.experiments.register('capture-node-creation-stacks', 'Capture node creation stacks');

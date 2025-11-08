@@ -382,6 +382,7 @@
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker.js",
   "front_end/entrypoints/worker_app/worker_app.js",
+  "front_end/foundation/foundation.js",
   "front_end/inspector.html",
   "front_end/js_app.html",
   "front_end/models/ai_assistance/ai_assistance.js",

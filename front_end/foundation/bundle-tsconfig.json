@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../front_end/foundation"},"files":["../../../../../front_end/foundation/foundation.ts"],"references":[{"path":"./foundation-tsconfig.json"}]}

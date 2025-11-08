@@ -46,11 +46,13 @@ declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     get object(): SDK.RemoteObject.RemoteObject;
 }
 export declare class ObjectTreeNode extends ObjectTreeNodeBase {
+    #private;
     readonly property: SDK.RemoteObject.RemoteObjectProperty;
     readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined;
     constructor(property: SDK.RemoteObject.RemoteObjectProperty, propertiesMode?: ObjectPropertiesMode, parent?: ObjectTreeNodeBase, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
     get object(): SDK.RemoteObject.RemoteObject | undefined;
     get name(): string;
+    get path(): string;
     selfOrParentIfInternal(): ObjectTreeNodeBase;
 }
 export declare const getObjectPropertiesSectionFrom: (element: Element) => ObjectPropertiesSection | undefined;
@@ -96,6 +98,7 @@ export declare class RootElement extends UI.TreeOutline.TreeElement {
     private readonly emptyPlaceholder;
     toggleOnClick: boolean;
     constructor(object: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null);
+    invalidateChildren(): void;
     onexpand(): void;
     oncollapse(): void;
     ondblclick(_e: Event): boolean;
@@ -140,7 +143,6 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private showExpandedValueElement;
     private createExpandedValueElement;
     update(): void;
-    private updatePropertyPath;
     getContextMenu(event: Event): UI.ContextMenu.ContextMenu;
     private contextMenuFired;
     private startEditing;
@@ -149,6 +151,7 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private editingCommitted;
     private promptKeyDown;
     private applyExpression;
+    invalidateChildren(): void;
     private onInvokeGetterClick;
     private updateExpandable;
     path(): string;
@@ -159,6 +162,7 @@ export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement
     private readonly linkifier;
     constructor(child: ArrayGroupTreeNode, linkifier?: Components.Linkifier.Linkifier);
     static populate(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, linkifier?: Components.Linkifier.Linkifier): Promise<void>;
+    invalidateChildren(): void;
     onpopulate(): Promise<void>;
     onattach(): void;
     static bucketThreshold: number;

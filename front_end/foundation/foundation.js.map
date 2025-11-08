@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../front_end/foundation/Universe.ts"],
+  "sourcesContent": ["// Copyright 2025 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport * as Common from '../core/common/common.js';\n\nexport interface CreationOptions {\n  // Settings things\n  syncedStorage: Common.Settings.SettingsStorage;\n  globalStorage: Common.Settings.SettingsStorage;\n  localStorage: Common.Settings.SettingsStorage;\n  logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;\n  runSettingsMigration?: boolean;\n}\n\nexport class Universe {\n  constructor(options: CreationOptions) {\n    // TODO(crbug.com/458180550): Store instance on a \"DevToolsContext\" instead.\n    //                            For now the global is fine as we don't anticipate the MCP server to change settings.\n    Common.Settings.Settings.instance({\n      forceNew: true,\n      syncedStorage: options.syncedStorage,\n      globalStorage: options.globalStorage,\n      localStorage: options.localStorage,\n      logSettingAccess: options.logSettingAccess,\n      runSettingsMigration: options.runSettingsMigration,\n    });\n  }\n}\n"],
+  "mappings": ";;;;;;;AAAA;;;;AAIA,YAAY,YAAY;AAWlB,IAAO,WAAP,MAAe;EACnB,YAAY,SAAwB;AAGlC,IAAO,gBAAS,SAAS,SAAS;MAChC,UAAU;MACV,eAAe,QAAQ;MACvB,eAAe,QAAQ;MACvB,cAAc,QAAQ;MACtB,kBAAkB,QAAQ;MAC1B,sBAAsB,QAAQ;KAC/B;EACH;;",
+  "names": []
+}

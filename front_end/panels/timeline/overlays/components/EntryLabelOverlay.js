@@ -612,7 +612,10 @@ export class EntryLabelOverlay extends HTMLElement {
         @mousedown=${(e) => e.preventDefault()}>
         <button
           class="ai-label-button enabled"
-          @click=${this.#handleAiButtonClick}>
+          @click=${this.#handleAiButtonClick}
+          jslog=${VisualLogging.link('timeline.annotations.ai-generate-label').track({
+            click: true,
+        })}>
           <devtools-icon
             class="pen-icon extra-large"
             name="pen-spark"

@@ -23,7 +23,8 @@ export class BuiltInAi {
         }
     }
     static cachedIsAvailable() {
-        return availability === "available" /* LanguageModelAvailability.AVAILABLE */;
+        return availability === "available" /* LanguageModelAvailability.AVAILABLE */ &&
+            (hasGpu || Boolean(Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu));
     }
     static isGpuAvailable() {
         const hasGpuHelper = () => {

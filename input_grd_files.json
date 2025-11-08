@@ -771,6 +771,7 @@
   "front_end/panels/whats_new/resources/WNDT.md",
   "front_end/panels/whats_new/whats_new.js",
   "front_end/panels/whats_new/whats_new-meta.js",
+  "front_end/foundation/foundation.js",
   "front_end/panels/changes/changes.js",
   "front_end/panels/ai_assistance/ai_assistance.js",
   "front_end/entrypoints/main/main.js",

@@ -7,7 +7,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import * as HAR from './har.js';
 
-const exampleLog = new HAR.HARFormat.HARLog({
+const harPreamble = {
   version: '1.2',
   creator: {
     name: 'WebInspector',
@@ -24,6 +24,10 @@ const exampleLog = new HAR.HARFormat.HARLog({
     },
     comment: '',
   }],
+};
+
+const exampleLog = new HAR.HARFormat.HARLog({
+  ...harPreamble,
   entries: [
     {
       _connectionId: '1',
@@ -350,5 +354,115 @@ describe('HAR Importer', () => {
       assert.strictEqual(request.responseCookies[0].name(), 'MyAwesomeCookie');
       assert.strictEqual(request.responseCookies[0].value(), 'Secret!');
     }
+  });
+
+  it('Parses EventSource messages from HAR', () => {
+    const sseReq = {
+      _connectionId: '2',
+      _initiator: {
+        type: 'script',
+        stack: {
+          callframes: [
+            {
+              functionName: 'fetchEvents',
+              scriptId: '54',
+              url: 'https://example.com/event-script.js',
+              lineNumber: 5,
+              columnNumber: 10,
+            },
+          ],
+        },
+      },
+      _priority: 'High',
+      _resourceType: 'fetch',
+      cache: {},
+      connection: '6790',
+      request: {
+        method: 'GET',
+        url: 'https://example.com/events',
+        httpVersion: 'http/1.1',
+        headers: [],
+        queryString: [],
+        headersSize: -1,
+        bodySize: 0,
+        cookies: [],
+      },
+      response: {
+        status: 200,
+        statusText: 'OK',
+        httpVersion: 'http/1.1',
+        headers: [
+          {
+            name: 'Content-Type',
+            value: 'text/event-stream',
+          },
+        ],
+        content: {
+          size: 100,
+          mimeType: 'text/event-stream',
+          text: 'id: 1\n' +
+              'event: greeting\n' +
+              'data: Hello World!\n\n' +
+              'data: Another message\n' +
+              'id: 2\n' +
+              'event: update\n' +
+              'data: This is an update.\n\n' +
+              ': this is a comment\n' +
+              'id: 3\n' +
+              'data: Final message.\n' +
+              '\n',
+        },
+        cookies: [],
+        redirectURL: '',
+        headersSize: -1,
+        bodySize: -1,
+        _transferSize: 150,
+        _error: null,
+      },
+      serverIPAddress: '127.0.0.1',
+      startedDateTime: '2020-12-14T20:36:00.000Z',
+      time: 100,
+      timings: {
+        blocked: 0.1,
+        dns: -1,
+        ssl: -1,
+        connect: -1,
+        send: 0.1,
+        wait: 50,
+        receive: 49.8,
+        _blocked_queueing: 0.05,
+      },
+    };
+    const exampleLog = new HAR.HARFormat.HARLog({...harPreamble, entries: [sseReq]});
+    const requests = HAR.Importer.Importer.requestsFromHARLog(exampleLog);
+
+    assert.lengthOf(requests, 1);
+    const eventStreamRequest = requests[0];
+    assert.strictEqual(eventStreamRequest.mimeType, 'text/event-stream');
+
+    const messages = eventStreamRequest.eventSourceMessages();
+    assert.lengthOf(messages, 3);
+
+    const expected = [
+      {
+        data: 'Hello World!',
+        eventId: '1',
+        eventName: 'greeting',
+        time: 1607978160,
+      },
+      {
+        data: 'Another message\nThis is an update.',
+        eventId: '2',
+        eventName: 'update',
+        time: 1607978160,
+      },
+      {
+        data: 'Final message.',
+        eventId: '3',
+        eventName: 'message',
+        time: 1607978160,
+      }
+    ];
+    assert.deepEqual(messages, expected);
   });
 });

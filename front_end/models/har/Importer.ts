@@ -137,6 +137,20 @@ export class Importer {
         async () =>
             new TextUtils.ContentData.ContentData(contentText ?? '', isBase64, mimeType ?? '', charset ?? undefined));
 
+    if (request.mimeType === Platform.MimeType.MimeType.EVENTSTREAM && contentText) {
+      const issueTime = entry.startedDateTime.getTime() / 1000;
+      const onEvent = (eventName: string, data: string, eventId: string): void => {
+        request.addEventSourceMessage(issueTime, eventName, eventId, data);
+      };
+      const parser = new SDK.ServerSentEventProtocol.ServerSentEventsParser(onEvent, charset ?? undefined);
+      let text = contentText;
+      if (isBase64) {
+        const bytes = Common.Base64.decode(contentText);
+        text = new TextDecoder(charset ?? undefined).decode(bytes);
+      }
+      parser.addTextChunk(text);
+    }
+
     // Timing data.
     Importer.setupTiming(request, issueTime, entry.time, entry.timings);
 

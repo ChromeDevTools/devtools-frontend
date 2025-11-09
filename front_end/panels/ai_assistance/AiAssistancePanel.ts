@@ -616,15 +616,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  // We select the default agent based on the open panels if
-  // there isn't any active conversation.
-  #selectDefaultAgentIfNeeded(): void {
-    // If there already is an agent and if it is not empty,
-    // we don't automatically change the agent. In addition to this,
-    // we don't change the current agent when there is a message in flight.
-    if ((this.#conversationAgent && this.#conversation && !this.#conversation.isEmpty) || this.#isLoading) {
-      return;
-    }
+  #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {
     const {hostConfig} = Root.Runtime;
     const viewManager = UI.ViewManager.ViewManager.instance();
     const isElementsPanelVisible = viewManager.isViewVisible('elements');
@@ -643,12 +635,24 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
     }
 
+    return targetConversationType;
+  }
+
+  // We select the default agent based on the open panels if
+  // there isn't any active conversation.
+  #selectDefaultAgentIfNeeded(): void {
+    // If there already is an agent and if it is not empty,
+    // we don't automatically change the agent. In addition to this,
+    // we don't change the current agent when there is a message in flight.
+    if ((this.#conversationAgent && this.#conversation && !this.#conversation.isEmpty) || this.#isLoading) {
+      return;
+    }
+    const targetConversationType = this.#getDefaultConversationType();
     if (this.#conversation?.type === targetConversationType) {
       // The above if makes sure even if we have an active agent it's empty
       // So we can just reuse it
       return;
     }
-
     const agent = targetConversationType ?
         this.#conversationHandler.createAgent(targetConversationType, this.#changeManager) :
         undefined;
@@ -671,9 +675,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // create a new conversation along side it
       if (opts?.agent) {
         this.#conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(
-            agentToConversationType(opts?.agent),
+            agentToConversationType(opts.agent),
             [],
-            opts?.agent.id,
+            opts.agent.id,
             false,
         );
       }
@@ -687,15 +691,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // but conversation is
       // update with history conversation
       if (opts?.conversation) {
-        this.#conversation = opts?.conversation;
+        this.#conversation = opts.conversation;
       }
     }
 
     if (!this.#conversationAgent && !this.#conversation) {
-      this.#selectDefaultAgentIfNeeded();
+      const conversationType = this.#getDefaultConversationType();
+      if (conversationType) {
+        const agent = this.#conversationHandler.createAgent(conversationType, this.#changeManager);
+        this.#updateConversationState({agent});
+        return;
+      }
     }
 
     this.#onContextSelectionChanged();
+
     this.requestUpdate();
   }
 

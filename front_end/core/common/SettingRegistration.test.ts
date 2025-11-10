@@ -51,16 +51,6 @@ describe('SettingRegistration', () => {
     assert.isNotTrue(preRegisteredSetting.get(), 'Setting value is not returned correctly');
   });
 
-  it('triggers a setting\'s change listener when a setting is set', () => {
-    const preRegisteredSetting = Common.Settings.Settings.instance().moduleSetting(settingName);
-    let settingChanged = false;
-    preRegisteredSetting.addChangeListener(() => {
-      settingChanged = true;
-    });
-    preRegisteredSetting.set(true);
-    assert.isTrue(settingChanged, 'Setting\'s change listener was not triggered after the setting was set');
-  });
-
   it('throws an error when trying to register a duplicated setting name', () => {
     assert.throws(() => {
       Common.Settings.registerSettingExtension({

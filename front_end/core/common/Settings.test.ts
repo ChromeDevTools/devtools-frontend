@@ -215,6 +215,25 @@ describe('Settings instance', () => {
     testSetting.setDisabled(false);
     assert.strictEqual(testSetting.getIfNotDisabled(), 'some value');
   });
+
+  it('notifies change listeners when updating a setting', () => {
+    const storage = new Common.Settings.SettingsStorage({});
+    const settings = new Common.Settings.Settings({
+      syncedStorage: storage,
+      globalStorage: storage,
+      localStorage: storage,
+      settingRegistrations: [],
+    });
+    const setting = settings.createSetting('test-setting', 'initial value');
+    const changeStub = sinon.stub();
+    setting.addChangeListener(changeStub);
+
+    setting.set('new value');
+
+    sinon.assert.calledOnceWithMatch(changeStub, sinon.match(event => {
+      return event.data === 'new value';
+    }));
+  });
 });
 
 describe('VersionController', () => {

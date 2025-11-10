@@ -29,6 +29,7 @@ devtools_entrypoint("bundle") {
     # as the UI modules should only be used to actually build user interfaces,
     # and the business logic should never depend on the UI modules.
     "../*",
+    "../../../../scripts/component_docs/*",
     "../../../entrypoints/main/*",
     "../../../panels/*",
     "../../../testing/*",

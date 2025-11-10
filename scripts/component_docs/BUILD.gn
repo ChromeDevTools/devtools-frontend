@@ -20,7 +20,12 @@ generated_file("component_docs_sources") {
 
 ts_library("docs_environment") {
   sources = [ "docs_environment.ts" ]
-  deps = [ "../../front_end/testing" ]
+  deps = [
+    "../../front_end/core/common:bundle",
+    "../../front_end/testing",
+    "../../front_end/ui/legacy/theme_support:bundle",
+  ]
+  data_deps = [ "../../front_end/Images" ]
 }
 
 node_action("component_docs") {

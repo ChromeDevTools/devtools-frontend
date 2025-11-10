@@ -44,7 +44,6 @@ devtools_module("issues_manager") {
     "SourceFrameIssuesManager.ts",
     "StylesheetLoadingIssue.ts",
     "UnencodedDigestIssue.ts",
-    "UserReidentificationIssue.ts",
   ]
 
   deps = [
@@ -250,7 +249,6 @@ devtools_issue_description_files = [
   "unencodedDigestIncorrectDigestType.md",
   "unencodedDigestMalformedDictionary.md",
   "unencodedDigestUnknownAlgorithm.md",
-  "userReidentificationBlocked.md",
 ]
 
 devtools_pre_built("descriptions") {

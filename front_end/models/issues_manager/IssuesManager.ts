@@ -33,7 +33,6 @@ import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {SRIMessageSignatureIssue} from './SRIMessageSignatureIssue.js';
 import {StylesheetLoadingIssue} from './StylesheetLoadingIssue.js';
 import {UnencodedDigestIssue} from './UnencodedDigestIssue.js';
-import {UserReidentificationIssue} from './UserReidentificationIssue.js';
 
 export {Events} from './IssuesManagerEvents.js';
 
@@ -144,10 +143,6 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue,
     UnencodedDigestIssue.fromInspectorIssue,
-  ],
-  [
-    Protocol.Audits.InspectorIssueCode.UserReidentificationIssue,
-    UserReidentificationIssue.fromInspectorIssue,
   ],
 ]);
 

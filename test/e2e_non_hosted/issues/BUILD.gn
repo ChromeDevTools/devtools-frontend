@@ -31,7 +31,6 @@ ts_e2e_library("issues") {
     "report-only_test.ts",
     "sab-issues_test.ts",
     "select-element-accessibility-issues_test.ts",
-    "user-reidentification-issues_test.ts",
   ]
   deps = [
     "../../e2e/helpers",

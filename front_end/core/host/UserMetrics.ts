@@ -317,6 +317,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Insights.TeaserGenerationTime', timeInMilliseconds);
   }
+
+  consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
+  }
 }
 
 /**

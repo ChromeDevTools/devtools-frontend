@@ -368,6 +368,15 @@ out/Default/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/
 afterwards, which can be quite a bit faster than building and linking the full
 Chromium binary.
 
+Alternatively you can use `npm start` from the DevTools sub folder (`third_party/devtools-frontend/src/`) with the browser set to `chromium`.
+This will tell the command that you are in a Chromium checkout and try to find the correct browser executable path to resolve.
+Or alternately you can use a `.env` file, see [set up here](#using-a-env-file-for-default-script-options).
+
+```bash
+cd third_party/devtools-frontend/src/
+npm start -- --browser=chromium
+```
+
 ### Testing
 
 To run the test suite, use `npm test` from within the DevTools front-end folder:

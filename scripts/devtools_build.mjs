@@ -48,7 +48,10 @@ class SpawnError extends Error {
  */
 function spawn(command, args, options = {}) {
   return new Promise((resolve, reject) => {
-    const child = childProcess.spawn(command, args, {...options, shell: true});
+    const child = childProcess.spawn(command, args, {
+      ...options,
+      shell: true,
+    });
 
     let stdout = '';
     let stderr = '';
@@ -63,9 +66,17 @@ function spawn(command, args, options = {}) {
 
     child.on('exit', (code, signal) => {
       if (signal) {
-        reject(new SpawnError(`Process terminated due to signal ${signal}`, stderr, stdout));
+        reject(
+            new SpawnError(
+                `Process terminated due to signal ${signal}`,
+                stderr,
+                stdout,
+                ),
+        );
       } else if (code) {
-        reject(new SpawnError(`Process exited with code ${code}`, stderr, stdout));
+        reject(
+            new SpawnError(`Process exited with code ${code}`, stderr, stdout),
+        );
       } else {
         resolve({stdout, stderr});
       }
@@ -205,15 +216,21 @@ ${stderr}
   }
   if (stdout) {
     // Check for `tsc` or `esbuild` errors in the stdout.
-    const tscErrors = [...stdout.matchAll(/^[^\s].*\(\d+,\d+\): error TS\d+:\s+.*$/gm)].map(([tscError]) => tscError);
+    const tscErrors = [
+      ...stdout.matchAll(/^[^\s].*\(\d+,\d+\): error TS\d+:\s+.*$/gm),
+    ].map(([tscError]) => tscError);
     if (!tscErrors.length) {
       // We didn't find any `tsc` errors, but maybe there are `esbuild` errors.
       // Transform these into the `tsc` format (with a made up error code), so
       // we can report all TypeScript errors consistently in `tsc` format (which
       // is well-known and understood by tools).
-      const esbuildErrors = stdout.matchAll(/^✘ \[ERROR\] ([^\n]+)\n\n\s+\.\.\/\.\.\/(.+):(\d+):(\d+):/gm);
+      const esbuildErrors = stdout.matchAll(
+          /^✘ \[ERROR\] ([^\n]+)\n\n\s+\.\.\/\.\.\/(.+):(\d+):(\d+):/gm,
+      );
       for (const [, message, filename, line, column] of esbuildErrors) {
-        tscErrors.push(`${filename}(${line},${column}): error TS0000: ${message}`);
+        tscErrors.push(
+            `${filename}(${line},${column}): error TS0000: ${message}`,
+        );
       }
     }
     if (tscErrors.length) {
@@ -225,13 +242,17 @@ ${tscErrors.join('\n')}
 
     // At the very least we strip `ninja: Something, something` lines from the
     // standard output, since that's not particularly helpful.
-    const output = stdout.replaceAll(/^ninja: [^\n]+\n+/mg, '').trim();
+    const output = stdout.replaceAll(/^ninja: [^\n]+\n+/gm, '').trim();
     return `Failed to build \`${target}' in \`${outDir}'
 
 ${output}
 `;
   }
-  return `Failed to build \`${target}' in \`${outDir}' (${message.substring(0, message.indexOf('\n'))})`;
+  return `Failed to build \`${target}' in \`${outDir}' (${
+      message.substring(
+          0,
+          message.indexOf('\n'),
+          )})`;
 }
 
 /** @enum */
@@ -294,7 +315,10 @@ export async function prepareBuild(target) {
 /** @type Map<string, Promise<Map<string, string>>> */
 const gnArgsCache = new Map();
 
-function gnArgsForTarget(target) {
+/**
+ * @param {string} target
+ */
+export function gnArgsForTarget(target) {
   let gnArgs = gnArgsCache.get(target);
   if (!gnArgs) {
     gnArgs = (async () => {
@@ -302,9 +326,23 @@ function gnArgsForTarget(target) {
       try {
         const cwd = rootPath();
         const gnExe = vpython3ExecutablePath();
-        const gnArgs = [gnPyPath(), '-q', 'args', outDir, '--json', '--list', '--short'];
+        const gnArgs = [
+          gnPyPath(),
+          '-q',
+          'args',
+          outDir,
+          '--json',
+          '--list',
+          '--short',
+        ];
         const {stdout} = await spawn(gnExe, gnArgs, {cwd});
-        return new Map(JSON.parse(stdout).map(arg => [arg.name, arg.current?.value ?? arg.default?.value]));
+        return new Map(
+            JSON.parse(stdout).map(
+                arg =>
+                    [arg.name,
+                     arg.current?.value ?? arg.default?.value,
+        ]),
+        );
       } catch {
         return new Map();
       }
@@ -338,17 +376,30 @@ function gnRefsForTarget(target, filename) {
   return gnRef;
 }
 
+/**
+ *
+ * @param {string} target
+ * @param {string[]=} filenames
+ * @returns {Promise<string[]>}
+ */
 async function computeBuildTargetsForFiles(target, filenames) {
   const SUPPORTED_EXTENSIONS = ['.css', '.ts'];
   if (filenames && filenames.length &&
-      filenames.every(filename => SUPPORTED_EXTENSIONS.includes(path.extname(filename)))) {
+      filenames.every(
+          filename => SUPPORTED_EXTENSIONS.includes(path.extname(filename)),
+          )) {
     if (isInChromiumDirectory().isInChromium) {
-      filenames = filenames.map(filename => path.join('third_party', 'devtools-frontend', 'src', filename));
+      filenames = filenames.map(
+          filename => path.join('third_party', 'devtools-frontend', 'src', filename),
+      );
     }
     const gnArgs = await gnArgsForTarget(target);
     if (gnArgs.get('devtools_bundle') === 'false') {
       try {
-        const gnRefs = (await Promise.all(filenames.map(filename => gnRefsForTarget(target, filename)))).flat();
+        const gnRefs = (await Promise.all(
+                            filenames.map(filename => gnRefsForTarget(target, filename)),
+                            ))
+                           .flat();
         if (gnRefs.length) {
           // If there are any changes to TypeScript files, we need to also rebuild the
           // `en-US.json`, as otherwise the changes to `UIStrings` aren't picked up.
@@ -362,27 +413,33 @@ async function computeBuildTargetsForFiles(target, filenames) {
       }
     }
   }
+
   return ['devtools_all_files'];
 }
 
 /**
- * @param target
- * @param signal
- * @param filenames
+ * @param {string} target
+ * @param {{ filenames?: string[], signal?: AbortSignal}} options
  * @returns a `BuildResult` with statistics for the build.
  */
-export async function build(target, signal, filenames) {
+export async function build(target, options) {
   const startTime = performance.now();
   const outDir = path.join(rootPath(), 'out', target);
 
   // Build just the devtools-frontend resources in |outDir|. This is important
   // since we might be running in a full Chromium checkout and certainly don't
   // want to build all of Chromium first.
-  const buildTargets = await computeBuildTargetsForFiles(target, filenames);
+  const buildTargets = await computeBuildTargetsForFiles(
+      target,
+      options?.filenames,
+  );
   try {
     const autoninjaExe = vpython3ExecutablePath();
     const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, ...buildTargets];
-    await spawn(autoninjaExe, autoninjaArgs, {shell: true, signal});
+    await spawn(autoninjaExe, autoninjaArgs, {
+      shell: true,
+      signal: options.signal,
+    });
   } catch (cause) {
     if (cause.name === 'AbortError') {
       throw cause;

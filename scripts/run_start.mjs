@@ -4,15 +4,16 @@
 
 import { computeSystemExecutablePath } from '@puppeteer/browsers';
 import childProcess from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { FeatureSet } from './devtools_build.mjs';
+import { FeatureSet, gnArgsForTarget } from './devtools_build.mjs';
 import {
   downloadedChromeBinaryPath,
   isInChromiumDirectory,
-  rootPath
+  rootPath,
 } from './devtools_paths.js';
 import { ENV, getEnvBoolean, getEnvString } from './env-utils.mjs';
 
@@ -20,20 +21,20 @@ import { ENV, getEnvBoolean, getEnvString } from './env-utils.mjs';
 const DEFAULT_FEATURE_SET = new FeatureSet();
 process.platform === 'darwin' && DEFAULT_FEATURE_SET.disable('MediaRouter');
 DEFAULT_FEATURE_SET.enable('DevToolsGdpProfiles', {
-  starter_badge_enabled: true
+  starter_badge_enabled: true,
 });
 DEFAULT_FEATURE_SET.enable('DevToolsGlobalAiButton', {
-  promotion_enabled: false
+  promotion_enabled: false,
 });
 DEFAULT_FEATURE_SET.enable('DevToolsAiCodeCompletion');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistancePerformanceAgent', {
-  insights_enabled: true
+  insights_enabled: true,
 });
 DEFAULT_FEATURE_SET.enable('DevToolsAiGeneratedTimelineLabels');
 DEFAULT_FEATURE_SET.enable('DevToolsCssValueTracing');
 DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {
   user_tier: 'TESTERS',
-  function_calling: true
+  function_calling: true,
 });
 DEFAULT_FEATURE_SET.enable('DevToolsWellKnown');
 DEFAULT_FEATURE_SET.enable('DevToolsVerticalDrawer');
@@ -48,66 +49,67 @@ const argv = yargs(hideBin(process.argv))
     // CfT is not downloaded in Chromium checkout
     default: getEnvString(
       ENV.BROWSER,
-      isInChromiumDirectory().isInChromium ? 'canary' : 'cft'
+      isInChromiumDirectory().isInChromium ? 'canary' : 'cft',
     ),
-    description: 'Launch in specified Chrome channel, CfT or a custom binary',
+    description:
+      'Launch in specified Chrome channel, CfT, chromium (checkout) or a custom binary',
     coerce(arg) {
       if (
         arg.includes(path.sep) ||
         arg.includes(path.posix.sep) ||
-        ['cft', 'stable', 'beta', 'dev', 'canary'].includes(arg)
+        ['chromium', 'cft', 'stable', 'beta', 'dev', 'canary'].includes(arg)
       ) {
         return arg;
       }
 
       throw new Error(`Unsupported channel "${arg}"`);
-    }
+    },
   })
   .option('unstable-features', {
     alias: 'u',
     type: 'boolean',
     default: getEnvBoolean(ENV.UNSTABLE_FEATURES, false),
-    description: 'Enable potentially unstable features'
+    description: 'Enable potentially unstable features',
   })
   .option('enable-features', {
     type: 'string',
     default: getEnvString(ENV.ENABLE_FEATURES, ''),
-    description: 'Enable specific features (just like with Chrome)'
+    description: 'Enable specific features (just like with Chrome)',
   })
   .option('disable-features', {
     type: 'string',
     default: getEnvString(ENV.DISABLE_FEATURES, ''),
-    description: 'Disable specific features (just like with Chrome)'
+    description: 'Disable specific features (just like with Chrome)',
   })
   .option('open', {
     type: 'boolean',
     default: getEnvBoolean(ENV.AUTO_OPEN_DEVTOOLS, true),
     description: 'Automatically open DevTools for new tabs',
-    alias: 'auto-open-devtools'
+    alias: 'auto-open-devtools',
   })
   .option('remote-debugging-port', {
     type: 'number',
-    description: 'Launch Chrome with the remote debugging port'
+    description: 'Launch Chrome with the remote debugging port',
   })
   .option('target', {
     alias: 't',
     type: 'string',
     default: getEnvString(ENV.TARGET, 'Default'),
-    description: 'Specify the target build subdirectory under //out'
+    description: 'Specify the target build subdirectory under //out',
   })
   .option('user-data-dir', {
     type: 'string',
     default: getEnvString(ENV.USER_DATA_DIR, ''),
-    description: 'Launch Chrome with the given profile directory'
+    description: 'Launch Chrome with the given profile directory',
   })
   .option('verbose', {
     type: 'boolean',
     default: false,
-    description: 'Enable verbose logging'
+    description: 'Enable verbose logging',
   })
   .group(
     ['unstable-features', 'enable-features', 'disable-features'],
-    'Feature options:'
+    'Feature options:',
   )
   .usage('npm start -- [options] [urls...]')
   .help('help')
@@ -123,13 +125,46 @@ const {
   remoteDebuggingPort,
   target,
   userDataDir,
-  verbose
+  verbose,
 } = argv;
 const cwd = process.cwd();
 const { env } = process;
 const runBuildPath = path.join(import.meta.dirname, 'run_build.mjs');
 
-function findBrowserBinary() {
+async function findBrowserBinary() {
+  if (browser === 'chromium') {
+    const result = isInChromiumDirectory();
+    if (!result.isInChromium) {
+      throw new Error('Not in Chromium checkout');
+    }
+    const args = await gnArgsForTarget(target);
+    const paths = {
+      linux: path.join('chrome'),
+      darwin:
+        args.get('is_chrome_branded') === 'true'
+          ? path.join('Chromium.app', 'Contents', 'MacOS', 'Chromium')
+          : path.join(
+              'Google Chrome.app',
+              'Contents',
+              'MacOS',
+              'Google Chrome',
+            ),
+      win32: path.join('chrome.exe'),
+    };
+    const binary = path.join(
+      result.chromiumDirectory,
+      'out',
+      target,
+      paths[os.platform()],
+    );
+
+    if (verbose) {
+      console.debug('Located Chrome build binary at %s.', binary);
+    }
+
+    return binary;
+  }
+
   if (browser === 'cft') {
     const binary = downloadedChromeBinaryPath();
     if (verbose) {
@@ -141,7 +176,7 @@ function findBrowserBinary() {
   if (['stable', 'beta', 'dev', 'canary'].includes(browser)) {
     const binary = computeSystemExecutablePath({
       browser: 'chrome',
-      channel: browser
+      channel: browser,
     });
 
     if (verbose) {
@@ -164,7 +199,7 @@ if (remoteDebuggingPort && browser !== 'cft' && !userDataDir) {
   console.error(
     'The `--remote-debugging-port` command line switch must be accompanied by the `--user-data-dir` switch\n' +
       'to point to a non-standard directory. See https://developer.chrome.com/blog/remote-debugging-port for\n' +
-      'more information.\n'
+      'more information.\n',
   );
   process.exit(1);
 }
@@ -176,16 +211,16 @@ const { status } = childProcess.spawnSync(
   {
     cwd,
     env,
-    stdio: 'inherit'
-  }
+    stdio: 'inherit',
+  },
 );
 if (status !== 0) {
   process.exit(1);
 }
 
 /** Launch Chrome with our custom DevTools front-end. **/
-function start() {
-  const binary = findBrowserBinary();
+async function start() {
+  const binary = await findBrowserBinary();
   /**
    * @type {string[]}
    */
@@ -247,7 +282,7 @@ function start() {
   childProcess.spawnSync(binary, args, {
     cwd,
     env,
-    stdio: verbose ? 'inherit' : 'ignore'
+    stdio: verbose ? 'inherit' : 'ignore',
   });
 }
 
@@ -256,11 +291,11 @@ function start() {
 const watcher = childProcess.spawn(
   process.argv[0],
   [runBuildPath, '--skip-initial-build', `--target=${target}`, '--watch'],
-  { cwd, env, stdio: 'inherit' }
+  { cwd, env, stdio: 'inherit' },
 );
 try {
   // Launch chrome.
-  start();
+  await start();
 } finally {
   watcher.kill();
 }

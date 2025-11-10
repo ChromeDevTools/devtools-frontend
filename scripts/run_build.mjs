@@ -9,7 +9,7 @@ import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
 import {build, prepareBuild} from './devtools_build.mjs';
-import { ENV, getEnvString } from './env-utils.mjs';
+import {ENV, getEnvString} from './env-utils.mjs';
 
 const argv = yargs(hideBin(process.argv))
                  .option('target', {
@@ -51,12 +51,14 @@ try {
     if (gnArgs.get('devtools_bundle') !== 'false') {
       spinner.info(
           'Using watch mode with full rebuilds. Use `gn gen out/' + target +
-          ' --args="devtools_bundle=false"` to enable fast rebuilds.');
+              ' --args="devtools_bundle=false"` to enable fast rebuilds.',
+      );
     } else {
       spinner.warn(
           'Using watch mode with fast rebuilds (since `devtools_bundle=false`' +
-          ' for //out/' + target + '). Be aware that fast rebuilds are a best' +
-          ' effort and might not work reliably in all cases.');
+              ' for //out/' + target + '). Be aware that fast rebuilds are a best' +
+              ' effort and might not work reliably in all cases.',
+      );
     }
   }
   spinner.clear();
@@ -80,9 +82,15 @@ if (!skipInitialBuild) {
 spinner.stop();
 
 if (watch) {
-  let timeoutId = -1;
+  /**
+   * @type {ReturnType<typeof setTimeout>}
+   */
+  let timeoutId;
   let buildPromise = Promise.resolve();
   let abortController = new AbortController();
+  /**
+   * @type {Set<string>}
+   */
   const changes = new Set();
 
   function watchCallback(eventType, filename) {
@@ -108,7 +116,7 @@ if (watch) {
     buildPromise = buildPromise.then(async () => {
       try {
         spinner.start('Rebuilding...');
-        const {time} = await build(target, signal, filenames);
+        const {time} = await build(target, {signal, filenames});
         spinner.succeed(`Rebuild successfully (${timeFormatter.format(time)})`);
       } catch (error) {
         if (error.name !== 'AbortError') {
@@ -120,10 +128,10 @@ if (watch) {
 
   const WATCHLIST = ['front_end', 'test'];
   for (const dirname of WATCHLIST) {
-    fs.watch(
-        dirname,
-        {recursive: true},
-        (eventType, filename) => watchCallback(eventType, path.join(dirname, filename)),
-    );
+    fs.watch(dirname, {recursive: true}, (eventType, filename) => {
+      if (filename) {
+        watchCallback(eventType, path.join(dirname, filename));
+      }
+    });
   }
 }

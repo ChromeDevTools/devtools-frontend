@@ -234,6 +234,26 @@ describe('Settings instance', () => {
       return event.data === 'new value';
     }));
   });
+
+  it('retrieves registered settings', () => {
+    const storage = new Common.Settings.SettingsStorage({});
+    const settings = new Common.Settings.Settings({
+      syncedStorage: storage,
+      globalStorage: storage,
+      localStorage: storage,
+      settingRegistrations: [{
+        category: Common.Settings.SettingCategory.CONSOLE,
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        settingName: 'test-setting',
+        defaultValue: false,
+      }],
+    });
+
+    const setting = settings.moduleSetting('test-setting');
+
+    assert.isFalse(setting.get());
+    assert.strictEqual(setting.category(), Common.Settings.SettingCategory.CONSOLE);
+  });
 });
 
 describe('VersionController', () => {

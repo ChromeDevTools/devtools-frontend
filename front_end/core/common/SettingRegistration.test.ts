@@ -44,13 +44,6 @@ describe('SettingRegistration', () => {
     setupSettings(false);
   });
 
-  it('retrieves a registered setting', () => {
-    const preRegisteredSetting = Common.Settings.Settings.instance().moduleSetting(settingName);
-    assert.strictEqual(preRegisteredSetting.title(), settingTitle, 'Setting title is not returned correctly');
-    assert.strictEqual(preRegisteredSetting.category(), settingCategory, 'Setting category is not returned correctly');
-    assert.isNotTrue(preRegisteredSetting.get(), 'Setting value is not returned correctly');
-  });
-
   it('throws an error when trying to register a duplicated setting name', () => {
     assert.throws(() => {
       Common.Settings.registerSettingExtension({

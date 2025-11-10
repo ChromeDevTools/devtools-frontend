@@ -395,9 +395,6 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         thirdPartyCookieHeuristicsEnabled: true,
         managedBlockThirdPartyCookies: 'Unset',
       },
-      devToolsIpProtectionPanelInDevTools: {
-        enabled: false,
-      },
       devToolsFlexibleLayout: {
         verticalDrawerEnabled: true,
       },

@@ -317,7 +317,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   responseReceivedPromiseResolve?: () => void;
   directSocketInfo?: DirectSocketInfo;
   readonly #directSocketChunks: DirectSocketChunk[] = [];
-  #isIpProtectionUsed: boolean;
   #isAdRelated: boolean;
   #appliedNetworkConditionsId?: string;
 
@@ -341,7 +340,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#loaderId = loaderId;
     this.#initiator = initiator;
     this.#hasUserGesture = hasUserGesture;
-    this.#isIpProtectionUsed = false;
     this.#isAdRelated = false;
   }
 
@@ -1830,14 +1828,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   isSameSite(): boolean|null {
     return this.#isSameSite;
-  }
-
-  setIsIpProtectionUsed(isIpProtectionUsed: boolean): void {
-    this.#isIpProtectionUsed = isIpProtectionUsed;
-  }
-
-  isIpProtectionUsed(): boolean|null {
-    return this.#isIpProtectionUsed;
   }
 
   setIsAdRelated(isAdRelated: boolean): void {

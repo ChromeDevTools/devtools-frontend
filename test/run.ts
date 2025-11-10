@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as childProcess from 'child_process';
-import * as fs from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
 import yargs from 'yargs';
@@ -11,8 +10,6 @@ import unparse from 'yargs-unparser';
 
 import {commandLineArgs} from './conductor/commandline.js';
 import {
-  BUILD_WITH_CHROMIUM,
-  CHECKOUT_ROOT,
   GEN_DIR,
   isContainedInDirectory,
   PathPair,
@@ -23,7 +20,8 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('skip-ninja', {
                       type: 'boolean',
                       default: false,
-                      desc: 'Skip rebuilding',
+                      hidden: true,
+                      desc: 'Deprecated. Do not use see warning bellow. Moved to `scripts/run_on_target.mjs`',
                     })
                     .options('debug-driver', {
                       type: 'boolean',
@@ -45,9 +43,11 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                       default: false,
                       desc: 'watch changes to files and run tests automatically on file change (only for unit tests)'
                     })
-                    .options(
-                        'node-unit-tests',
-                        {type: 'boolean', default: false, desc: 'whether to run unit tests in node (experimental)'})
+                    .options('node-unit-tests', {
+                      type: 'boolean',
+                      default: false,
+                      desc: 'whether to run unit tests in node (experimental)',
+                    })
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
@@ -58,7 +58,12 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .strict()
                     .parseSync();
 
-const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'v', 'watch'];
+const CONSUMED_OPTIONS = ['tests', 'debug-driver', 'verbose', 'v', 'watch'];
+
+if (options.skipNinja) {
+  console.warn('--skip-ninja is removed on this CLI.');
+  console.warn('Generated files should not try to rebuild. Moved to `scripts/run_on_target.mjs` ');
+}
 
 let logLevel = 'error';
 if (options['verbose'] === 1) {
@@ -95,26 +100,6 @@ function runProcess(exe: string, args: string[], options: childProcess.SpawnSync
     console.info(`Running '${exe}${args.length > 0 ? ` "${args.join('" "')}"` : ''}'`);
   }
   return childProcess.spawnSync(exe, args, options);
-}
-
-function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
-  let buildRoot = path.dirname(GEN_DIR);
-  while (!fs.existsSync(path.join(buildRoot, 'args.gn'))) {
-    const parent = path.dirname(buildRoot);
-    if (parent === buildRoot) {
-      throw new Error('Failed to find a build directory containing args.gn');
-    }
-    buildRoot = parent;
-  }
-  // autoninja can't always find ninja if not run from the checkout root, so
-  // run it from there and pass the build root as an argument.
-  const result =
-      runProcess('autoninja', ['-C', buildRoot, ...args], {encoding: 'utf-8', shell: true, cwd: CHECKOUT_ROOT, stdio});
-  if (result.error) {
-    throw result.error;
-  }
-  const {status, output: [, output]} = result;
-  return {status, output};
 }
 
 const MOCHA_BIN_PATH = path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha.js');
@@ -293,23 +278,6 @@ function main() {
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/build/tests')),
   ];
-
-  if (!options['skip-ninja']) {
-    // For a devtools only checkout, it is fast enough to build everything. For
-    // a chromium checkout we want to build only the targets that are needed.
-    const targets = BUILD_WITH_CHROMIUM ?
-        [
-          'chrome',
-          'third_party/devtools-frontend/src/test:test',
-          'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
-          'third_party/devtools-frontend/src/scripts/component_server:component_server',
-        ] :
-        [];
-    const {status} = ninja('inherit', ...targets);
-    if (status) {
-      return status;
-    }
-  }
 
   const suites = new Map<MochaTests, PathPair[]>();
   const testFiles = tests.flatMap(t => {

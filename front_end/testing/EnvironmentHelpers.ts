@@ -87,8 +87,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
   UI.ZoomManager.ZoomManager.instance(
       {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
 
-  // Initialize theme support and context menus.
-  Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
+  // Initialize context menus.
   UI.UIUtils.initializeUIUtils(document);
 }
 

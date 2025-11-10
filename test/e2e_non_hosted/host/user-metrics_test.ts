@@ -838,11 +838,7 @@ describe('User Metrics for clicking stylesheet request initiators', () => {
     actionName: 'DevTools.ActionTaken',
     actionCode: 80,  // StyleSheetInitiatorLinkClicked
   };
-  // Flaky test
-  it.skip('[crbug.com/456094035] dispatches an event when clicked in the console', async ({
-                                                                                     devToolsPage,
-                                                                                     inspectedPage
-                                                                                   }) => {
+  it('dispatches an event when clicked in the console', async ({devToolsPage, inspectedPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
     async function clickOnLinkWithText(text: string, root?: puppeteer.ElementHandle) {
       const element = await devToolsPage.click(`text/${text}`, {root});

@@ -5,7 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Root from '../../../core/root/root.js';
+import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
@@ -13,9 +13,12 @@ import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import {AiCodeCompletionTeaserPlaceholder} from './AiCodeCompletionTeaserPlaceholder.js';
 import {
+  acceptAiAutoCompleteSuggestion,
   aiAutoCompleteSuggestion,
   aiAutoCompleteSuggestionState,
+  hasActiveAiSuggestion,
   setAiAutoCompleteSuggestion,
+  showCompletionHint,
 } from './config.js';
 import type {TextEditor} from './TextEditor.js';
 
@@ -45,15 +48,18 @@ export interface AiCodeCompletionConfig {
   onFeatureDisabled: () => void;
   onSuggestionAccepted: () => void;
   onRequestTriggered: () => void;
+  // TODO(b/445394511): Move exposing citations to onSuggestionAccepted
   onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
+const MAX_PREFIX_SUFFIX_LENGTH = 20_000;
 
-// TODO(samiyac): Add code relevant to AiCodeCompletion and for triggering requests
 export class AiCodeCompletionProvider {
   #aidaClient?: Host.AidaClient.AidaClient;
+  #aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   #aiCodeCompletionTeaserDismissedSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
@@ -66,7 +72,8 @@ export class AiCodeCompletionProvider {
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
 
   constructor(aiCodeCompletionConfig: AiCodeCompletionConfig) {
-    if (!this.#isAiCodeCompletionEnabled()) {
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale)) {
       throw new Error('AI code completion feature is not enabled.');
     }
     this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
@@ -74,10 +81,12 @@ export class AiCodeCompletionProvider {
 
   extension(): CodeMirror.Extension[] {
     return [
+      CodeMirror.EditorView.updateListener.of(update => this.#triggerAiCodeCompletion(update)),
       this.#teaserCompartment.of([]),
       aiAutoCompleteSuggestion,
       aiCodeCompletionTeaserModeState,
       aiAutoCompleteSuggestionState,
+      CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap())),
     ];
   }
 
@@ -105,12 +114,21 @@ export class AiCodeCompletionProvider {
     void this.#updateAiCodeCompletionState();
   }
 
+  clearCache(): void {
+    this.#aiCodeCompletion?.clearCachedRequest();
+  }
+
   #setupAiCodeCompletion(): void {
     if (!this.#editor || !this.#aiCodeCompletionConfig) {
       return;
     }
     if (!this.#aidaClient) {
       this.#aidaClient = new Host.AidaClient.AidaClient();
+    }
+    if (!this.#aiCodeCompletion) {
+      this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+          {aidaClient: this.#aidaClient}, this.#aiCodeCompletionConfig.panel, undefined,
+          this.#aiCodeCompletionConfig.completionContext.stopSequences);
     }
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
@@ -123,6 +141,7 @@ export class AiCodeCompletionProvider {
     this.#editor?.dispatch({
       effects: setAiAutoCompleteSuggestion.of(null),
     });
+    this.#aiCodeCompletion = undefined;
     this.#aiCodeCompletionConfig?.onFeatureDisabled();
   }
 
@@ -145,6 +164,40 @@ export class AiCodeCompletionProvider {
     }
   }
 
+  #editorKeymap(): readonly CodeMirror.KeyBinding[] {
+    return [
+      {
+        key: 'Escape',
+        run: (): boolean => {
+          if (!this.#aiCodeCompletion || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
+            return false;
+          }
+          this.#editor.dispatch({
+            effects: setAiAutoCompleteSuggestion.of(null),
+          });
+          return true;
+        },
+      },
+      {
+        key: 'Tab',
+        run: (): boolean => {
+          if (!this.#aiCodeCompletion || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
+            return false;
+          }
+          const {accepted, suggestion} = acceptAiAutoCompleteSuggestion(this.#editor.editor);
+          if (!accepted) {
+            return false;
+          }
+          if (suggestion?.rpcGlobalId) {
+            this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+          }
+          this.#aiCodeCompletionConfig?.onSuggestionAccepted();
+          return true;
+        },
+      },
+    ];
+  }
+
   #detachTeaser(): void {
     if (!this.#teaser) {
       return;
@@ -152,18 +205,198 @@ export class AiCodeCompletionProvider {
     this.#editor?.editor.dispatch({effects: this.#teaserCompartment.reconfigure([])});
   }
 
-  // TODO(samiyac): Define static method in AiCodeCompletion and use that instead
-  #isAiCodeCompletionEnabled(): boolean {
-    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-    const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
-    if (!devtoolsLocale.locale.startsWith('en-')) {
-      return false;
+  #triggerAiCodeCompletion(update: CodeMirror.ViewUpdate): void {
+    if (!update.docChanged || !this.#editor || !this.#aiCodeCompletion) {
+      return;
     }
-    if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge ||
-        aidaAvailability.blockedByEnterprisePolicy) {
-      return false;
+    const {doc, selection} = update.state;
+    const query = doc.toString();
+    const cursor = selection.main.head;
+
+    let prefix = query.substring(0, cursor);
+    if (prefix.trim().length === 0) {
+      return;
     }
-    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+    const completionContextPrefix = this.#aiCodeCompletionConfig?.completionContext.getPrefix?.();
+    if (completionContextPrefix) {
+      prefix = completionContextPrefix + prefix;
+    }
+    if (prefix.length > MAX_PREFIX_SUFFIX_LENGTH) {
+      prefix = prefix.substring(prefix.length - MAX_PREFIX_SUFFIX_LENGTH);
+    }
+
+    const suffix = query.substring(cursor, cursor + MAX_PREFIX_SUFFIX_LENGTH);
+
+    this.#debouncedRequestAidaSuggestion(
+        prefix, suffix, cursor, this.#aiCodeCompletionConfig?.completionContext.inferenceLanguage,
+        this.#aiCodeCompletionConfig?.completionContext.additionalFiles);
+  }
+
+  #debouncedRequestAidaSuggestion = Common.Debouncer.debounce(
+      (prefix: string, suffix: string, cursorPositionAtRequest: number,
+       inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage,
+       additionalFiles?: Host.AidaClient.AdditionalFile[]) => {
+        void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
+      },
+      AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
+
+  async #requestAidaSuggestion(
+      prefix: string, suffix: string, cursorPositionAtRequest: number,
+      inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage,
+      additionalFiles?: Host.AidaClient.AdditionalFile[]): Promise<void> {
+    if (!this.#aiCodeCompletion) {
+      AiCodeCompletion.debugLog('Ai Code Completion is not initialized');
+      this.#aiCodeCompletionConfig?.onResponseReceived([]);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
+      return;
+    }
+
+    const startTime = performance.now();
+    this.#aiCodeCompletionConfig?.onRequestTriggered();
+    // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+
+    try {
+      const completionResponse = await this.#aiCodeCompletion.completeCode(
+          prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
+
+      if (!completionResponse) {
+        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        return;
+      }
+
+      const {response, fromCache} = completionResponse;
+
+      if (!response) {
+        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        return;
+      }
+
+      const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
+      if (!sampleResponse) {
+        this.#aiCodeCompletionConfig?.onResponseReceived([]);
+        return;
+      }
+
+      const {
+        suggestionText,
+        sampleId,
+        citations,
+        rpcGlobalId,
+      } = sampleResponse;
+      const remainingDelay = Math.max(
+          AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
+      this.#suggestionRenderingTimeout = window.setTimeout(() => {
+        const currentCursorPosition = this.#editor?.editor.state.selection.main.head;
+        if (currentCursorPosition !== cursorPositionAtRequest) {
+          this.#aiCodeCompletionConfig?.onResponseReceived([]);
+          return;
+        }
+        if (this.#aiCodeCompletion) {
+          this.#editor?.dispatch({
+            effects: setAiAutoCompleteSuggestion.of({
+              text: suggestionText,
+              from: cursorPositionAtRequest,
+              rpcGlobalId,
+              sampleId,
+              startTime,
+              clearCachedRequest: this.clearCache.bind(this),
+              onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion),
+            })
+          });
+        }
+        if (fromCache) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
+        }
+
+        AiCodeCompletion.debugLog(
+            'Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursorPositionAtRequest);
+        this.#aiCodeCompletionConfig?.onResponseReceived(citations);
+      }, remainingDelay);
+    } catch (e) {
+      AiCodeCompletion.debugLog('Error while fetching code completion suggestions from AIDA', e);
+      this.#aiCodeCompletionConfig?.onResponseReceived([]);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
+    }
+  }
+
+  async #generateSampleForRequest(response: Host.AidaClient.CompletionResponse, prefix: string, suffix?: string):
+      Promise<{
+        suggestionText: string,
+        citations: Host.AidaClient.Citation[],
+        rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+        sampleId?: number,
+      }|null> {
+    const suggestionSample = this.#pickSampleFromResponse(response);
+    if (!suggestionSample) {
+      return null;
+    }
+
+    const shouldBlock =
+        suggestionSample.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK;
+    if (shouldBlock) {
+      return null;
+    }
+
+    const isRepetitive = this.#checkIfSuggestionRepeatsExistingText(suggestionSample.generationString, prefix, suffix);
+    if (isRepetitive) {
+      return null;
+    }
+
+    const suggestionText = this.#trimSuggestionOverlap(suggestionSample.generationString, suffix);
+    if (suggestionText.length === 0) {
+      return null;
+    }
+
+    return {
+      suggestionText,
+      sampleId: suggestionSample.sampleId,
+      citations: suggestionSample.attributionMetadata?.citations ?? [],
+      rpcGlobalId: response.metadata.rpcGlobalId,
+    };
+  }
+
+  #pickSampleFromResponse(response: Host.AidaClient.CompletionResponse): Host.AidaClient.GenerationSample|null {
+    if (!response.generatedSamples.length) {
+      return null;
+    }
+
+    // `currentHint` is the portion of a standard autocomplete suggestion that the user has not yet typed.
+    // For example, if the user types `document.queryS` and the autocomplete suggests `document.querySelector`,
+    // the `currentHint` is `elector`.
+    const currentHintInMenu = this.#editor?.editor.plugin(showCompletionHint)?.currentHint;
+    if (!currentHintInMenu) {
+      return response.generatedSamples[0];
+    }
+
+    // TODO(ergunsh): This does not handle looking for `selectedCompletion`. The `currentHint` is `null`
+    // for the Sources panel case.
+    // Even though there is no match, we still return the first suggestion which will be displayed
+    // when the traditional autocomplete menu is closed.
+    return response.generatedSamples.find(sample => sample.generationString.startsWith(currentHintInMenu)) ??
+        response.generatedSamples[0];
+  }
+
+  #checkIfSuggestionRepeatsExistingText(generationString: string, prefix: string, suffix?: string): boolean {
+    return Boolean(prefix.includes(generationString.trim()) || suffix?.includes(generationString.trim()));
+  }
+
+  /**
+   * Removes the end of a suggestion if it overlaps with the start of the suffix.
+   */
+  #trimSuggestionOverlap(generationString: string, suffix?: string): string {
+    if (!suffix) {
+      return generationString;
+    }
+
+    // Iterate from the longest possible overlap down to the shortest
+    for (let i = Math.min(generationString.length, suffix.length); i > 0; i--) {
+      const overlapCandidate = suffix.substring(0, i);
+      if (generationString.endsWith(overlapCandidate)) {
+        return generationString.slice(0, -i);
+      }
+    }
+    return generationString;
   }
 }
 

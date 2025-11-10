@@ -157,6 +157,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   #stopSequences: string[];
   #renderingTimeout?: number;
   #aidaRequestCache?: CachedRequest;
+  // TODO(b/445394511): Remove panel from the class
   #panel: ContextFlavor;
   #callbacks?: Callbacks;
 
@@ -183,8 +184,8 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   #buildRequest(
       prefix: string, suffix: string,
-      inferenceLanguage: Host.AidaClient.AidaInferenceLanguage = Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT):
-      Host.AidaClient.CompletionRequest {
+      inferenceLanguage: Host.AidaClient.AidaInferenceLanguage = Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT,
+      additionalFiles?: Host.AidaClient.AdditionalFile[]): Host.AidaClient.CompletionRequest {
     const userTier = Host.AidaClient.convertToUserTierEnum(this.#userTier);
     function validTemperature(temperature: number|undefined): number|undefined {
       return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
@@ -192,13 +193,15 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
     prefix = '\n' + prefix;
 
-    const additionalFiles = this.#panel === ContextFlavor.CONSOLE ? [{
-      path: 'devtools-console-context.js',
-      content: consoleAdditionalContextFileContent,
-      included_reason: Host.AidaClient.Reason.RELATED_FILE,
-    }] :
-                                                                    undefined;
-
+    let additionalContextFiles = additionalFiles ?? undefined;
+    if (!additionalContextFiles) {
+      additionalContextFiles = this.#panel === ContextFlavor.CONSOLE ? [{
+        path: 'devtools-console-context.js',
+        content: consoleAdditionalContextFileContent,
+        included_reason: Host.AidaClient.Reason.RELATED_FILE,
+      }] :
+                                                                       undefined;
+    }
     return {
       client: Host.AidaClient.CLIENT_NAME,
       prefix,
@@ -215,7 +218,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
         user_tier: userTier,
         client_version: Root.Runtime.getChromeVersion(),
       },
-      additional_files: additionalFiles,
+      additional_files: additionalContextFiles,
     };
   }
 
@@ -344,7 +347,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
           rpcGlobalId,
           sampleId,
           startTime,
-          onImpression: this.#registerUserImpression.bind(this),
+          onImpression: this.registerUserImpression.bind(this),
           clearCachedRequest: this.clearCachedRequest.bind(this),
         });
 
@@ -427,7 +430,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.#aidaRequestCache = {request, response};
   }
 
-  #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number): void {
+  registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number): void {
     const seconds = Math.floor(latency / 1_000);
     const remainingMs = latency % 1_000;
     const nanos = Math.floor(remainingMs * 1_000_000);
@@ -479,12 +482,42 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage);
   }
 
+  async completeCode(
+      prefix: string, suffix: string, cursorPositionAtRequest: number,
+      inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage,
+      additionalFiles?: Host.AidaClient.AdditionalFile[]): Promise<{
+    response: Host.AidaClient.CompletionResponse | null,
+    fromCache: boolean,
+  }> {
+    const request = this.#buildRequest(prefix, suffix, inferenceLanguage, additionalFiles);
+    const {response, fromCache} = await this.#completeCodeCached(request);
+
+    debugLog('At cursor position', cursorPositionAtRequest, {request, response, fromCache});
+    if (!response) {
+      return {response: null, fromCache: false};
+    }
+
+    return {response, fromCache};
+  }
+
   remove(): void {
     if (this.#renderingTimeout) {
       clearTimeout(this.#renderingTimeout);
       this.#renderingTimeout = undefined;
     }
     this.#callbacks?.setAiAutoCompletion(null);
+  }
+
+  static isAiCodeCompletionEnabled(locale: string): boolean {
+    if (!locale.startsWith('en-')) {
+      return false;
+    }
+    const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
+    if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge ||
+        aidaAvailability.blockedByEnterprisePolicy) {
+      return false;
+    }
+    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 }
 

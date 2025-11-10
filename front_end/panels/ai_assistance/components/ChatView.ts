@@ -236,13 +236,12 @@ export interface Props {
   onLoadImage?: (file: File) => Promise<void>;
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
-  aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
-  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType;
+  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
   changeSummary?: string;
@@ -469,7 +468,6 @@ export class ChatView extends HTMLElement {
     const renderFooter = (): Lit.LitTemplate => {
       const classes = Lit.Directives.classMap({
         'chat-view-footer': true,
-        'has-conversation': !!this.#props.conversationType,
         'is-read-only': this.#props.isReadOnly,
       });
 
@@ -488,9 +486,8 @@ export class ChatView extends HTMLElement {
     };
 
     const renderInputOrReadOnlySection = (): Lit.LitTemplate => {
-      if (this.#props.conversationType && this.#props.isReadOnly) {
+      if (this.#props.isReadOnly) {
         return renderReadOnlySection({
-          conversationType: this.#props.conversationType,
           onNewConversation: this.#props.onNewConversation,
         });
       }
@@ -506,7 +503,6 @@ export class ChatView extends HTMLElement {
         multimodalInputEnabled: this.#props.multimodalInputEnabled,
         conversationType: this.#props.conversationType,
         imageInput: this.#props.imageInput,
-        aidaAvailability: this.#props.aidaAvailability,
         isTextInputEmpty: this.#props.isTextInputEmpty,
         uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
         onContextClick: this.#props.onContextClick,
@@ -957,12 +953,8 @@ function renderSelection({
   isTextInputDisabled: boolean,
   onContextClick: () => void | Promise<void>,
   onInspectElementClick: () => void,
-  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
+  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
 }): Lit.LitTemplate {
-  if (!conversationType) {
-    return Lit.nothing;
-  }
-
   // TODO: currently the picker behavior is SDKNode specific.
   const hasPickerBehavior = conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
 
@@ -1119,14 +1111,9 @@ function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}:
   // clang-format on
 }
 
-function renderReadOnlySection({onNewConversation, conversationType}: {
+function renderReadOnlySection({onNewConversation}: {
   onNewConversation: () => void,
-  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
 }): Lit.LitTemplate {
-  if (!conversationType) {
-    return Lit.nothing;
-  }
-
   // clang-format off
   return html`<div
     class="chat-readonly-container"
@@ -1355,7 +1342,6 @@ function renderChatInput({
   imageInput,
   isTextInputEmpty,
   uploadImageInputEnabled,
-  aidaAvailability,
   disclaimerText,
   onContextClick,
   onInspectElementClick,
@@ -1375,7 +1361,6 @@ function renderChatInput({
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
   isTextInputEmpty: boolean,
-  aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
   disclaimerText: string,
   onContextClick: () => void,
   onInspectElementClick: () => void,
@@ -1384,19 +1369,15 @@ function renderChatInput({
   onCancel: (ev: SubmitEvent) => void,
   onNewConversation: () => void,
   onTextInputChange: (input: string) => void,
+  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
   multimodalInputEnabled?: boolean,
-  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
   imageInput?: ImageInputData,
   uploadImageInputEnabled?: boolean,
   onTakeScreenshot?: () => void,
   onRemoveImageInput?: () => void,
   onImageUpload?: (ev: Event) => void,
 }): Lit.LitTemplate {
-  if (!conversationType) {
-    return Lit.nothing;
-  }
-
-  const shouldShowMultiLine = aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE && selectedContext;
+  const shouldShowMultiLine = selectedContext;
   const chatInputContainerCls = Lit.Directives.classMap({
     'chat-input-container': true,
     'single-line-layout': !shouldShowMultiLine,
@@ -1457,7 +1438,6 @@ function renderMainContents({
   suggestions,
   userInfo,
   markdownRenderer,
-  conversationType,
   changeSummary,
   changeManager,
   onSuggestionClick,
@@ -1478,13 +1458,9 @@ function renderMainContents({
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
-  conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType,
+  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
   changeSummary?: string,
 }): Lit.LitTemplate {
-  if (!conversationType) {
-    return Lit.nothing;
-  }
-
   if (messages.length > 0) {
     return renderMessages({
       messages,

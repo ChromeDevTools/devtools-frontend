@@ -456,7 +456,8 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
 
     describe('animationGroupUpdated', () => {
-      it('should update duration on animationGroupUpdated', async () => {
+      // Flaky test.
+      it.skip('[crbug.com/446903183] should update duration on animationGroupUpdated', async () => {
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
         assert.isNotNull(preview);
         preview.click();

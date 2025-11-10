@@ -29,6 +29,7 @@ describeWithEnvironment('ActionRegistration', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
     });
 
     UI.ActionRegistration.registerActionExtension({

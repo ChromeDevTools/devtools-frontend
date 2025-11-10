@@ -88,6 +88,7 @@ function createStubBreakpointManagerAndSettings() {
     syncedStorage: dummyStorage,
     globalStorage: dummyStorage,
     localStorage: dummyStorage,
+    settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
   });
   return {breakpointManager, settings};
 }

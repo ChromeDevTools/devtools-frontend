@@ -108,6 +108,7 @@ describe('SettingRegistration', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
     });
     const setting = Common.Settings.Settings.instance().moduleSetting(configSettingName);
     assert.isNotNull(setting);

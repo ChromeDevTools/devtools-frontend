@@ -89,6 +89,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       syncedStorage: settingsStorage,
       globalStorage: settingsStorage,
       localStorage: settingsStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
     });
   });
 

@@ -9,9 +9,12 @@ import * as Foundation from './foundation.js';
 describe('Universe', () => {
   it('can be instantiated', () => {
     new Foundation.Universe.Universe({
-      syncedStorage: new Common.Settings.SettingsStorage({}),
-      globalStorage: new Common.Settings.SettingsStorage({}),
-      localStorage: new Common.Settings.SettingsStorage({}),
+      settingsCreationOptions: {
+        syncedStorage: new Common.Settings.SettingsStorage({}),
+        globalStorage: new Common.Settings.SettingsStorage({}),
+        localStorage: new Common.Settings.SettingsStorage({}),
+        settingRegistrations: [],
+      },
     });
   });
 });

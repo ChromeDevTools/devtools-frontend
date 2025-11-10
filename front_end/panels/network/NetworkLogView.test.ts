@@ -61,6 +61,7 @@ describeWithMockConnection('NetworkLogView', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
     });
     registerNoopActions(['network.toggle-recording', 'inspector-main.reload']);
 

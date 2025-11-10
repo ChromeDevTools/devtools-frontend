@@ -10,7 +10,6 @@ import type {EventDescriptor, EventTargetEvent, GenericEvents} from './EventTarg
 import {ObjectWrapper} from './Object.js';
 import {
   getLocalizedSettingsCategory,
-  getRegisteredSettings as getRegisteredSettingsInternal,
   type LearnMore,
   maybeRemoveSettingExtension,
   type RegExpSettingItem,
@@ -29,6 +28,7 @@ export interface SettingsCreationOptions {
   syncedStorage: SettingsStorage;
   globalStorage: SettingsStorage;
   localStorage: SettingsStorage;
+  settingRegistrations: SettingRegistration[];
   logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
   runSettingsMigration?: boolean;
 }
@@ -38,6 +38,7 @@ export class Settings {
   readonly globalStorage: SettingsStorage;
   readonly localStorage: SettingsStorage;
 
+  readonly #settingRegistrations: SettingRegistration[];
   readonly #sessionStorage = new SettingsStorage({});
   settingNameSet = new Set<string>();
   orderValuesBySettingCategory = new Map<SettingCategory, Set<number>>();
@@ -46,14 +47,16 @@ export class Settings {
   readonly moduleSettings = new Map<string, Setting<unknown>>();
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
 
-  constructor({syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration}:
-                  SettingsCreationOptions) {
+  constructor(
+      {syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration}:
+          SettingsCreationOptions) {
     this.syncedStorage = syncedStorage;
     this.globalStorage = globalStorage;
     this.localStorage = localStorage;
+    this.#settingRegistrations = settingRegistrations;
     this.#logSettingAccess = logSettingAccess;
 
-    for (const registration of this.getRegisteredSettings()) {
+    for (const registration of this.#settingRegistrations) {
       const {settingName, defaultValue, storageType} = registration;
       const isRegex = registration.settingType === SettingType.REGEX;
 
@@ -78,7 +81,7 @@ export class Settings {
   }
 
   getRegisteredSettings(): SettingRegistration[] {
-    return getRegisteredSettingsInternal();
+    return this.#settingRegistrations;
   }
 
   static hasInstance(): boolean {
@@ -90,17 +93,27 @@ export class Settings {
     syncedStorage: SettingsStorage|null,
     globalStorage: SettingsStorage|null,
     localStorage: SettingsStorage|null,
+    settingRegistrations: SettingRegistration[]|null,
     logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>,
     runSettingsMigration?: boolean,
-  } = {forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null}): Settings {
-    const {forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration} = opts;
+  } = {forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null}):
+      Settings {
+    const {
+      forceNew,
+      syncedStorage,
+      globalStorage,
+      localStorage,
+      settingRegistrations,
+      logSettingAccess,
+      runSettingsMigration
+    } = opts;
     if (!settingsInstance || forceNew) {
-      if (!syncedStorage || !globalStorage || !localStorage) {
+      if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
 
-      settingsInstance =
-          new Settings({syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration});
+      settingsInstance = new Settings(
+          {syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration});
     }
 
     return settingsInstance;

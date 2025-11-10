@@ -69,8 +69,13 @@ describeWithMockConnection('InspectorMainImpl', () => {
       });
 
       const storage = Common.Settings.Settings.instance().localStorage;
-      Common.Settings.Settings.instance(
-          {forceNew: true, syncedStorage: storage, globalStorage: storage, localStorage: storage});
+      Common.Settings.Settings.instance({
+        forceNew: true,
+        syncedStorage: storage,
+        globalStorage: storage,
+        localStorage: storage,
+        settingRegistrations: Common.SettingRegistration.getRegisteredSettings()
+      });
     });
 
     function setBrowserConfig(

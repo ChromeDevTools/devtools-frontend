@@ -92,16 +92,22 @@ describe('Settings instance', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
     });
 
     assert.isOk(settings);
   });
 
   it('throws when constructed without storage', () => {
+    Common.Settings.Settings.removeInstance();  // Some tests don't clean up well.
     assert.throws(() => Common.Settings.Settings.instance());
-    assert.throws(
-        () => Common.Settings.Settings.instance(
-            {forceNew: true, syncedStorage: null, globalStorage: null, localStorage: null}));
+    assert.throws(() => Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: null,
+      globalStorage: null,
+      localStorage: null,
+      settingRegistrations: null
+    }));
   });
 
   it('stores synced settings in the correct storage', () => {
@@ -113,8 +119,12 @@ describe('Settings instance', () => {
       defaultValue: false,
       storageType: Common.Settings.SettingStorageType.SYNCED,
     });
-    const settings =
-        new Common.Settings.Settings({syncedStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
+    const settings = new Common.Settings.Settings({
+      syncedStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings()
+    });
 
     const dynamicSetting: Common.Settings.Setting<string> =
         settings.createSetting('dynamic-synced-setting', 'default val', Common.Settings.SettingStorageType.SYNCED);
@@ -141,8 +151,12 @@ describe('Settings instance', () => {
       defaultValue: false,
       storageType: Common.Settings.SettingStorageType.GLOBAL,
     });
-    const settings =
-        new Common.Settings.Settings({syncedStorage: storage, globalStorage: storage, localStorage: storage});
+    const settings = new Common.Settings.Settings({
+      syncedStorage: storage,
+      globalStorage: storage,
+      localStorage: storage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings()
+    });
     settings.createSetting('dynamic-local-setting', 42, Common.Settings.SettingStorageType.LOCAL);
     settings.createSetting('dynamic-synced-setting', 'foo', Common.Settings.SettingStorageType.SYNCED);
 
@@ -161,6 +175,7 @@ describe('Settings instance', () => {
            syncedStorage: settingsStorage,
            globalStorage: settingsStorage,
            localStorage: settingsStorage,
+           settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
          });
          const testSetting: Common.Settings.Setting<string> =
              settings.createSetting('test', 'default val', Common.Settings.SettingStorageType.GLOBAL);
@@ -188,6 +203,7 @@ describe('Settings instance', () => {
       syncedStorage: storage,
       globalStorage: storage,
       localStorage: storage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       runSettingsMigration: false,
     });
     const testSetting = settings.createSetting('test-setting', 'some value');
@@ -216,6 +232,7 @@ describe('VersionController', () => {
       syncedStorage,
       globalStorage,
       localStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       runSettingsMigration: false,
     });
   });
@@ -546,6 +563,7 @@ describe('updateVersionFrom37To38', () => {
       syncedStorage,
       globalStorage,
       localStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       runSettingsMigration: false,
     });
   });
@@ -613,6 +631,7 @@ describe('updateVersionFrom38To39', () => {
       syncedStorage,
       globalStorage,
       localStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       runSettingsMigration: false,
     });
     setting = settings.createSetting('preferred-network-condition', {title: 'Offline', i18nTitleKey: 'Offline'});
@@ -680,6 +699,7 @@ describe('updateVersionFrom38To39', () => {
         syncedStorage,
         globalStorage,
         localStorage,
+        settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
         runSettingsMigration: false,
       });
       customNetworkCondSetting = settings.moduleSetting('custom-network-conditions');
@@ -812,6 +832,7 @@ describe('access logging', () => {
       syncedStorage,
       globalStorage,
       localStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       logSettingAccess,
     });
   });

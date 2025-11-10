@@ -40,8 +40,13 @@ describeWithEnvironment('InspectorView', () => {
 
   beforeEach(() => {
     const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
-    Common.Settings.Settings.instance(
-        {forceNew: true, syncedStorage: storage, globalStorage: storage, localStorage: storage});
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: storage,
+      globalStorage: storage,
+      localStorage: storage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings()
+    });
     // `setIsDocked` resolves async and leaves elements in the body after the test is finished.
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setIsDocked');
   });

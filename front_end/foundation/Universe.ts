@@ -6,11 +6,7 @@ import * as Common from '../core/common/common.js';
 
 export interface CreationOptions {
   // Settings things
-  syncedStorage: Common.Settings.SettingsStorage;
-  globalStorage: Common.Settings.SettingsStorage;
-  localStorage: Common.Settings.SettingsStorage;
-  logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
-  runSettingsMigration?: boolean;
+  settingsCreationOptions: Common.Settings.SettingsCreationOptions;
 }
 
 export class Universe {
@@ -19,11 +15,7 @@ export class Universe {
     //                            For now the global is fine as we don't anticipate the MCP server to change settings.
     Common.Settings.Settings.instance({
       forceNew: true,
-      syncedStorage: options.syncedStorage,
-      globalStorage: options.globalStorage,
-      localStorage: options.localStorage,
-      logSettingAccess: options.logSettingAccess,
-      runSettingsMigration: options.runSettingsMigration,
+      ...options.settingsCreationOptions,
     });
   }
 }

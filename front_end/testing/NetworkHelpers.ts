@@ -28,6 +28,7 @@ export async function createNetworkPanelForMockConnection(): Promise<Network.Net
     syncedStorage: dummyStorage,
     globalStorage: dummyStorage,
     localStorage: dummyStorage,
+    settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
   });
   const networkPanel = Network.NetworkPanel.NetworkPanel.instance({forceNew: true, displayScreenshotDelay: 0});
   renderElementIntoDOM(networkPanel);

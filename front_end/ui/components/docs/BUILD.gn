@@ -15,7 +15,6 @@ group("docs") {
     "./expandable_list",
     "./input",
     "./report",
-    "./text_prompt",
     "./theme_colors",
     "./user_agent_client_hints",
   ]

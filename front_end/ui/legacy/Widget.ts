@@ -113,8 +113,10 @@ function cancelUpdate(widget: Widget): void {
 
 function runNextUpdate(): void {
   pendingAnimationFrame = null;
-  currentUpdateQueue = nextUpdateQueue;
-  nextUpdateQueue = new Map();
+  if (!currentUpdateQueue) {
+    currentUpdateQueue = nextUpdateQueue;
+    nextUpdateQueue = new Map();
+  }
   for (const [widget, {resolve}] of currentUpdateQueue) {
     currentlyProcessed.add(widget);
     void (async () => {
@@ -122,8 +124,15 @@ function runNextUpdate(): void {
       resolve();
     })();
   }
-  currentUpdateQueue = null;
-  currentlyProcessed.clear();
+  currentUpdateQueue.clear();
+  queueMicrotask(() => {
+    if (currentUpdateQueue && currentUpdateQueue.size > 0) {
+      runNextUpdate();
+    } else {
+      currentUpdateQueue = null;
+      currentlyProcessed.clear();
+    }
+  });
 }
 
 export class WidgetElement<WidgetT extends Widget> extends HTMLElement {

@@ -140,6 +140,48 @@ describe('Widget', () => {
 
       assert.strictEqual(performUpdate.callCount, 1, 'Expected exactly one call to `performUpdate`');
     });
+
+    it('runs nested updates in the same update cycle', async () => {
+      const parentWidget = new Widget();
+      const childWidget = new Widget();
+      childWidget.show(parentWidget.contentElement);
+
+      const parentPerformUpdate = sinon.stub(parentWidget, 'performUpdate');
+      parentPerformUpdate.callsFake(childWidget.requestUpdate.bind(childWidget));
+      const childPerformUpdate = sinon.stub(childWidget, 'performUpdate');
+
+      const animationFrame = sinon.spy();
+      requestAnimationFrame(animationFrame);
+
+      parentWidget.requestUpdate();
+      await parentWidget.updateComplete;
+
+      assert.strictEqual(parentPerformUpdate.callCount, 1, 'Expected exactly one call to `parentWidget.performUpdate`');
+      assert.strictEqual(childPerformUpdate.callCount, 1, 'Expected exactly one call to `childWidget.performUpdate`');
+      assert.strictEqual(animationFrame.callCount, 1, 'Expected exactly one call to `requestAnimationFrame`');
+    });
+
+    it('runs microtask updates in the same update cycle', async () => {
+      const parentWidget = new Widget();
+      const childWidget = new Widget();
+      childWidget.show(parentWidget.contentElement);
+
+      const parentPerformUpdate = sinon.stub(parentWidget, 'performUpdate');
+      parentPerformUpdate.callsFake(() => {
+        queueMicrotask(childWidget.requestUpdate.bind(childWidget));
+      });
+      const childPerformUpdate = sinon.stub(childWidget, 'performUpdate');
+
+      const animationFrame = sinon.spy();
+      requestAnimationFrame(animationFrame);
+
+      parentWidget.requestUpdate();
+      await parentWidget.updateComplete;
+
+      assert.strictEqual(parentPerformUpdate.callCount, 1, 'Expected exactly one call to `parentWidget.performUpdate`');
+      assert.strictEqual(childPerformUpdate.callCount, 1, 'Expected exactly one call to `childWidget.performUpdate`');
+      assert.strictEqual(animationFrame.callCount, 1, 'Expected exactly one call to `requestAnimationFrame`');
+    });
   });
 
   describe('updateComplete', () => {

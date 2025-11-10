@@ -248,11 +248,7 @@ ${tscErrors.join('\n')}
 ${output}
 `;
   }
-  return `Failed to build \`${target}' in \`${outDir}' (${
-      message.substring(
-          0,
-          message.indexOf('\n'),
-          )})`;
+  return `Failed to build \`${target}' in \`${outDir}' (${message})`;
 }
 
 /** @enum */
@@ -422,7 +418,7 @@ async function computeBuildTargetsForFiles(target, filenames) {
  * @param {{ filenames?: string[], signal?: AbortSignal}} options
  * @returns a `BuildResult` with statistics for the build.
  */
-export async function build(target, options) {
+export async function build(target, options = {}) {
   const startTime = performance.now();
   const outDir = path.join(rootPath(), 'out', target);
 
@@ -431,7 +427,7 @@ export async function build(target, options) {
   // want to build all of Chromium first.
   const buildTargets = await computeBuildTargetsForFiles(
       target,
-      options?.filenames,
+      options.filenames,
   );
   try {
     const autoninjaExe = vpython3ExecutablePath();

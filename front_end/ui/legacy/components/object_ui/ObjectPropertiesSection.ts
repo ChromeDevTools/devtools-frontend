@@ -48,7 +48,7 @@ import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {JavaScriptREPL} from './JavaScriptREPL.js';
 import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
 import objectValueStyles from './objectValue.css.js';
-import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
+import {RemoteObjectPreviewFormatter, renderNodeTitle} from './RemoteObjectPreviewFormatter.js';
 
 const {repeat, ifDefined} = Directives;
 const UIStrings = {
@@ -653,7 +653,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.classList.add('object-value-' + (subtype || type));
       if (value.preview && showPreview) {
         const previewFormatter = new RemoteObjectPreviewFormatter();
-        previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
+        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+        render(previewFormatter.renderObjectPreview(value.preview), valueElement);
         propertyValue = valueElement;
         UI.Tooltip.Tooltip.install(propertyValue as HTMLElement, description || '');
       } else if (description.length > maxRenderableStringLength) {
@@ -721,7 +722,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     function createNodeElement(): HTMLElement {
       const valueElement = document.createElement('span');
       valueElement.classList.add('object-value-node');
-      createSpansForNodeTitle(valueElement, (description));
+      /* eslint-disable-next-line @devtools/no-lit-render-outside-of-view */
+      render(renderNodeTitle(description), valueElement);
       valueElement.addEventListener('click', event => {
         void Common.Revealer.reveal(value);
         event.consume(true);
@@ -1360,6 +1362,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   private contextMenuFired(event: Event): void {
     const contextMenu = this.getContextMenu(event);
     void contextMenu.show();
+  }
+
+  get editing(): boolean {
+    return this.#editing;
   }
 
   private startEditing(): void {

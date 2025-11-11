@@ -58,6 +58,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Security from '../security/security.js';
 
@@ -867,7 +868,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     titleElement.classList.add('console-object');
     if (includePreview && obj.preview) {
       titleElement.classList.add('console-object-preview');
-      this.previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
+      /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+      render(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
       ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
     } else if (obj.type === 'function') {
       const functionElement = titleElement.createChild('span');
@@ -935,11 +937,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected renderPropertyPreviewOrAccessor(
       object: SDK.RemoteObject.RemoteObject|null, property: Protocol.Runtime.PropertyPreview, propertyPath: Array<{
         name: (string | symbol),
-      }>): HTMLElement {
+      }>): DocumentFragment|HTMLElement {
     if (property.type === 'accessor') {
       return this.formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
     }
-    return this.previewFormatter.renderPropertyPreview(
+    return this.renderPropertyPreview(
         property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
   }
 
@@ -1022,9 +1024,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return result;
   }
 
-  private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): HTMLElement {
-    return this.previewFormatter.renderPropertyPreview(
-        output.type, output.subtype, output.className, output.description);
+  private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): DocumentFragment {
+    return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+  }
+
+  private renderPropertyPreview(
+      type: string, subtype: string|undefined, className: string|null|undefined,
+      description: string|undefined): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+    render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
+    return fragment;
   }
 
   private formatAsAccessorProperty(
@@ -1059,8 +1069,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             description = Platform.StringUtilities.trimEndWithMaxLength(object.description, maxLength);
           }
         }
-        rootElement.appendChild(
-            this.previewFormatter.renderPropertyPreview(type, subtype, object.className, description));
+        rootElement.appendChild(this.renderPropertyPreview(type, subtype, object.className, description));
       }
     }
 
@@ -2253,7 +2262,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
 
         if (columnRendered) {
           const cellElement =
-              this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
+              this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty])
+                  .firstElementChild as HTMLElement;
           cellElement.classList.add('console-message-nowrap-below');
           rowValue.set(cellProperty.name, cellElement);
         }

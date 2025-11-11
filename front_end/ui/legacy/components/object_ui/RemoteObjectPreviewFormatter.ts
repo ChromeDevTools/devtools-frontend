@@ -1,14 +1,14 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
-import * as UI from '../../legacy.js';
+import {Directives, html, type LitTemplate, nothing} from '../../../lit/lit.js';
 
+const {ifDefined, repeat} = Directives;
 const UIStrings = {
   /**
    * @description Text shown in the console object preview. Shown when the user is inspecting a
@@ -31,6 +31,14 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+interface PropertyPreviewValue {
+  name?: string;
+  entry?: Protocol.Runtime.EntryPreview;
+  value?: Protocol.Runtime.PropertyPreview;
+  placeholder?: string;
+}
+
 export class RemoteObjectPreviewFormatter {
   private static objectPropertyComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview):
       number {
@@ -55,8 +63,7 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  appendObjectPreview(
-      parentElement: DocumentFragment|Element, preview: Protocol.Runtime.ObjectPreview, isEntry: boolean): void {
+  renderObjectPreview(preview: Protocol.Runtime.ObjectPreview): LitTemplate {
     const description = preview.description;
     const subTypesWithoutValuePreview = new Set<Protocol.Runtime.ObjectPreviewSubtype|'internal#entry'|'trustedtype'>([
       Protocol.Runtime.ObjectPreviewSubtype.Arraybuffer,
@@ -69,92 +76,91 @@ export class RemoteObjectPreviewFormatter {
       'trustedtype',
     ]);
     if (preview.type !== Protocol.Runtime.ObjectPreviewType.Object ||
-        (preview.subtype && subTypesWithoutValuePreview.has(preview.subtype)) || isEntry) {
-      parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, undefined, description));
-      return;
+        (preview.subtype && subTypesWithoutValuePreview.has(preview.subtype))) {
+      return this.renderPropertyPreview(preview.type, preview.subtype, undefined, description);
     }
     const isArrayOrTypedArray = preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Array ||
         preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Typedarray;
+    let objectDescription = '';
     if (description) {
-      let text;
       if (isArrayOrTypedArray) {
         const arrayLength = SDK.RemoteObject.RemoteObject.arrayLength(preview);
         const arrayLengthText = arrayLength > 1 ? ('(' + arrayLength + ')') : '';
         const arrayName = SDK.RemoteObject.RemoteObject.arrayNameFromDescription(description);
-        text = arrayName === 'Array' ? arrayLengthText : (arrayName + arrayLengthText);
+        objectDescription = arrayName === 'Array' ? arrayLengthText : (arrayName + arrayLengthText);
       } else {
         const hideDescription = description === 'Object';
-        text = hideDescription ? '' : description;
-      }
-      if (text.length > 0) {
-        parentElement.createChild('span', 'object-description').textContent = text + '\xA0';
+        objectDescription = hideDescription ? '' : description;
       }
     }
 
-    const propertiesElement = parentElement.createChild('span', 'object-properties-preview');
-    UI.UIUtils.createTextChild(propertiesElement, isArrayOrTypedArray ? '[' : '{');
-    if (preview.entries) {
-      this.appendEntriesPreview(propertiesElement, preview);
-    } else if (isArrayOrTypedArray) {
-      this.appendArrayPropertiesPreview(propertiesElement, preview);
-    } else {
-      this.appendObjectPropertiesPreview(propertiesElement, preview);
-    }
-    if (preview.overflow) {
-      const ellipsisText = propertiesElement.textContent && propertiesElement.textContent.length > 1 ? ',\xA0…' : '…';
-      propertiesElement.createChild('span').textContent = ellipsisText;
-    }
-    UI.UIUtils.createTextChild(propertiesElement, isArrayOrTypedArray ? ']' : '}');
+    const items = Array.from(
+        preview.entries         ? this.renderEntries(preview) :
+            isArrayOrTypedArray ? this.renderArrayProperties(preview) :
+                                  this.renderObjectProperties(preview));
+
+    // clang-format off
+    const renderName = (name: string): LitTemplate  => html`<span class=name>${
+      /^\s|\s$|^$|\n/.test(name)? '"' + name.replace(/\n/g, '\u21B5') + '"' : name}</span>`;
+
+    const renderPlaceholder = (placeholder: string): LitTemplate =>
+          html`<span class=object-value-undefined>${placeholder}</span>`;
+
+    const renderValue = (value: Protocol.Runtime.PropertyPreview): LitTemplate=>
+          this.renderPropertyPreview(value.type, value.subtype, value.name, value.value);
+
+    const renderEntry = (entry: Protocol.Runtime.EntryPreview): LitTemplate=> html`${entry.key &&
+          html`${this.renderPropertyPreview(entry.key.type, entry.key.subtype, undefined, entry.key.description)} => `}
+          ${this.renderPropertyPreview(entry.value.type, entry.value.subtype, undefined, entry.value.description)}`;
+
+    const renderItem = ({name, entry, value, placeholder}: PropertyPreviewValue, index: number): LitTemplate => html`${
+        index > 0 ? ', ' : ''}${
+        placeholder !== undefined ? renderPlaceholder(placeholder) : nothing}${
+        name !== undefined ? renderName(name) : nothing}${
+        name !== undefined && value ? ': ' : ''}${
+        value ? renderValue(value) : nothing}${
+        entry ? renderEntry(entry) : nothing}`;
+    // clang-format on
+
+    return html`${
+        objectDescription.length > 0 ?
+            html`<span class=object-description>${objectDescription + '\xA0'}</span>` :
+            nothing}<span class=object-properties-preview>${isArrayOrTypedArray ? '[' : '{'}${
+        repeat(items, renderItem)}${preview.overflow ? html`<span>${items.length > 0 ? ',\xA0…' : '…'}</span>` : ''}
+    ${isArrayOrTypedArray ? ']' : '}'}</span>`;
   }
 
-  private abbreviateFullQualifiedClassName(description: string): string {
-    const abbreviatedDescription = description.split('.');
-    for (let i = 0; i < abbreviatedDescription.length - 1; ++i) {
-      abbreviatedDescription[i] = Platform.StringUtilities.trimMiddle(abbreviatedDescription[i], 3);
-    }
-    return abbreviatedDescription.join('.');
-  }
-
-  private appendObjectPropertiesPreview(parentElement: Element, preview: Protocol.Runtime.ObjectPreview): void {
+  private * renderObjectProperties(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
     const properties = preview.properties.filter(p => p.type !== 'accessor')
                            .sort(RemoteObjectPreviewFormatter.objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
-      if (i > 0) {
-        UI.UIUtils.createTextChild(parentElement, ', ');
-      }
-
       const property = properties[i];
       const name = property.name;
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
       if (preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Promise && name === InternalName.PROMISE_STATE) {
-        parentElement.appendChild(this.renderDisplayName('<' + property.value + '>'));
-        const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
-        if (nextProperty && nextProperty.name === InternalName.PROMISE_RESULT) {
-          if (property.value !== 'pending') {
-            UI.UIUtils.createTextChild(parentElement, ': ');
-            parentElement.appendChild(this.renderPropertyPreviewOrAccessor([nextProperty]));
-          }
+        const promiseResult =
+            properties.at(i + 1)?.name === InternalName.PROMISE_RESULT ? properties.at(i + 1) : undefined;
+        if (promiseResult) {
           i++;
         }
+        yield {name: '<' + property.value + '>', value: property.value !== 'pending' ? promiseResult : undefined};
       } else if (preview.subtype === 'generator' && name === InternalName.GENERATOR_STATE) {
-        parentElement.appendChild(this.renderDisplayName('<' + property.value + '>'));
+        yield {name: '<' + property.value + '>'};
       } else if (name === InternalName.PRIMITIVE_VALUE) {
-        parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
+        yield {value: property};
       } else if (name === InternalName.WEAK_REF_TARGET) {
         if (property.type === Protocol.Runtime.PropertyPreviewType.Undefined) {
-          parentElement.appendChild(this.renderDisplayName('<cleared>'));
+          yield {name: '<cleared>'};
         } else {
-          parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
+          yield {value: property};
         }
       } else {
-        parentElement.appendChild(this.renderDisplayName(name));
-        UI.UIUtils.createTextChild(parentElement, ': ');
-        parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
+        yield {name, value: property};
       }
     }
   }
 
-  private appendArrayPropertiesPreview(parentElement: Element, preview: Protocol.Runtime.ObjectPreview): void {
+  private * renderArrayProperties(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
     const arrayLength = SDK.RemoteObject.RemoteObject.arrayLength(preview);
     const indexProperties = preview.properties.filter(p => toArrayIndex(p.name) !== -1).sort(arrayEntryComparator);
     const otherProperties = preview.properties.filter(p => toArrayIndex(p.name) === -1)
@@ -179,133 +185,65 @@ export class RemoteObjectPreviewFormatter {
 
     // Gaps can be shown when all properties are guaranteed to be in the preview.
     const canShowGaps = !preview.overflow;
-    let lastNonEmptyArrayIndex = -1;
-    let elementsAdded = false;
-    for (let i = 0; i < indexProperties.length; ++i) {
-      if (elementsAdded) {
-        UI.UIUtils.createTextChild(parentElement, ', ');
-      }
 
-      const property = indexProperties[i];
+    const indexedProperties:
+        Array<{property: Protocol.Runtime.PropertyPreview, index: number, gap: number, hasGaps: boolean}> = [];
+    for (const property of indexProperties) {
       const index = toArrayIndex(property.name);
-      if (canShowGaps && index - lastNonEmptyArrayIndex > 1) {
-        appendUndefined(index);
-        UI.UIUtils.createTextChild(parentElement, ', ');
+      const gap = index - (indexedProperties.at(-1)?.index ?? -1) - 1;
+      const hasGaps = index !== indexedProperties.length;
+      indexedProperties.push({property, index, gap, hasGaps});
+    }
+    const trailingGap = arrayLength - (indexedProperties.at(-1)?.index ?? -1) - 1;
+
+    // TODO(l10n): Plurals. Tricky because of a bug in the presubmit check for plurals.
+    const renderGap = (count: number): {placeholder: string} =>
+        ({placeholder: count !== 1 ? i18nString(UIStrings.emptyD, {PH1: count}) : i18nString(UIStrings.empty)});
+    for (const {property, gap, hasGaps} of indexedProperties) {
+      if (canShowGaps && gap > 0) {
+        yield renderGap(gap);
       }
-      if (!canShowGaps && i !== index) {
-        parentElement.appendChild(this.renderDisplayName(property.name));
-        UI.UIUtils.createTextChild(parentElement, ': ');
-      }
-      parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
-      lastNonEmptyArrayIndex = index;
-      elementsAdded = true;
+      yield {name: !canShowGaps && hasGaps ? property.name : undefined, value: property};
+    }
+    if (canShowGaps && trailingGap > 0) {
+      yield renderGap(trailingGap);
     }
 
-    if (canShowGaps && arrayLength - lastNonEmptyArrayIndex > 1) {
-      if (elementsAdded) {
-        UI.UIUtils.createTextChild(parentElement, ', ');
-      }
-      appendUndefined(arrayLength);
-    }
-
-    for (let i = 0; i < otherProperties.length; ++i) {
-      if (elementsAdded) {
-        UI.UIUtils.createTextChild(parentElement, ', ');
-      }
-
-      const property = otherProperties[i];
-      parentElement.appendChild(this.renderDisplayName(property.name));
-      UI.UIUtils.createTextChild(parentElement, ': ');
-      parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
-      elementsAdded = true;
-    }
-
-    function appendUndefined(index: number): void {
-      const span = parentElement.createChild('span', 'object-value-undefined');
-      const count = index - lastNonEmptyArrayIndex - 1;
-      // TODO(l10n): Plurals. Tricky because of a bug in the presubmit check for plurals.
-      span.textContent = count !== 1 ? i18nString(UIStrings.emptyD, {PH1: count}) : i18nString(UIStrings.empty);
-      elementsAdded = true;
+    for (const property of otherProperties) {
+      yield {name: property.name, value: property};
     }
   }
 
-  private appendEntriesPreview(parentElement: Element, preview: Protocol.Runtime.ObjectPreview): void {
-    if (!preview.entries) {
-      return;
-    }
-    for (let i = 0; i < preview.entries.length; ++i) {
-      if (i > 0) {
-        UI.UIUtils.createTextChild(parentElement, ', ');
-      }
-
-      const entry = preview.entries[i];
-      if (entry.key) {
-        this.appendObjectPreview(parentElement, entry.key, true /* isEntry */);
-        UI.UIUtils.createTextChild(parentElement, ' => ');
-      }
-      this.appendObjectPreview(parentElement, entry.value, true /* isEntry */);
+  private * renderEntries(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
+    for (const entry of preview.entries ?? []) {
+      yield {entry};
     }
   }
 
-  private renderDisplayName(name: string): Element {
-    const result = document.createElement('span');
-    result.classList.add('name');
-    const needsQuotes = /^\s|\s$|^$|\n/.test(name);
-    result.textContent = needsQuotes ? '"' + name.replace(/\n/g, '\u21B5') + '"' : name;
-    return result;
-  }
+  renderPropertyPreview(type: string, subtype?: string, className?: string|null, description?: string): LitTemplate {
+    const title = type === 'accessor'   ? i18nString(UIStrings.thePropertyIsComputedWithAGetter) :
+        (type === 'object' && !subtype) ? description :
+                                          undefined;
 
-  private renderPropertyPreviewOrAccessor(propertyPath: Protocol.Runtime.PropertyPreview[]): Element {
-    const property = propertyPath[propertyPath.length - 1];
-    if (!property) {
-      throw new Error('Could not find property');
-    }
-    return this.renderPropertyPreview(property.type, (property.subtype as string), property.name, property.value);
-  }
-
-  renderPropertyPreview(type: string, subtype?: string, className?: string|null, description?: string): HTMLElement {
-    const span = document.createElement('span');
-    span.classList.add('object-value-' + (subtype || type));
-    description = description || '';
-
-    if (type === 'accessor') {
-      span.textContent = '(...)';
-      UI.Tooltip.Tooltip.install(span, i18nString(UIStrings.thePropertyIsComputedWithAGetter));
-      return span;
-    }
-
-    if (type === 'function') {
-      span.textContent = '\u0192';
-      return span;
-    }
-
-    if (type === 'object' && subtype === 'trustedtype' && className) {
-      createSpanForTrustedType(span, description, className);
-      return span;
-    }
-
-    if (type === 'object' && subtype === 'node' && description) {
-      createSpansForNodeTitle(span, description);
-      return span;
-    }
-
-    if (type === 'string') {
-      UI.UIUtils.createTextChildren(span, Platform.StringUtilities.formatAsJSLiteral(description));
-      return span;
-    }
-
-    if (type === 'object' && !subtype) {
-      let preview = this.abbreviateFullQualifiedClassName(description);
-      if (preview === 'Object') {
-        preview = '{…}';
+    const abbreviateFullQualifiedClassName = (description: string): string => {
+      const abbreviatedDescription = description.split('.');
+      for (let i = 0; i < abbreviatedDescription.length - 1; ++i) {
+        abbreviatedDescription[i] = Platform.StringUtilities.trimMiddle(abbreviatedDescription[i], 3);
       }
-      span.textContent = preview;
-      UI.Tooltip.Tooltip.install(span, description);
-      return span;
-    }
+      return abbreviatedDescription.length === 1 && abbreviatedDescription[0] === 'Object' ?
+          '{…}' :
+          abbreviatedDescription.join('.');
+    };
 
-    span.textContent = description;
-    return span;
+    const preview = (): string|LitTemplate|undefined|null => type === 'accessor' ? '(...)' :
+        type === 'function'                                                      ? '\u0192' :
+        type === 'object' && subtype === 'trustedtype' && className ? renderTrustedType(description ?? '', className) :
+        type === 'object' && subtype === 'node' && description      ? renderNodeTitle(description) :
+        type === 'string'             ? Platform.StringUtilities.formatAsJSLiteral(description ?? '') :
+        type === 'object' && !subtype ? abbreviateFullQualifiedClassName(description ?? '') :
+                                        description;
+
+    return html`<span class='object-value-${(subtype || type)}' title=${ifDefined(title)}>${preview()}</span>`;
   }
 }
 
@@ -317,24 +255,16 @@ const enum InternalName {
   WEAK_REF_TARGET = '[[WeakRefTarget]]',
 }
 
-export const createSpansForNodeTitle = function(container: Element, nodeTitle: string): void {
+export function renderNodeTitle(nodeTitle: string): LitTemplate|null {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
   if (!match) {
-    return;
+    return null;
   }
-  container.createChild('span', 'webkit-html-tag-name').textContent = match[1];
-  if (match[2]) {
-    container.createChild('span', 'webkit-html-attribute-value').textContent = match[2];
-  }
-  if (match[3]) {
-    container.createChild('span', 'webkit-html-attribute-name').textContent = match[3];
-  }
-};
+  return html`<span class=webkit-html-tag-name>${match[1]}</span>${
+      match[2] && html`<span class=webkit-html-attribute-value>${match[2]}</span>`}${
+      match[3] && html`<span class=webkit-html-attribute-name>${match[3]}</span>`}`;
+}
 
-export const createSpanForTrustedType = function(span: Element, description: string, className: string): void {
-  UI.UIUtils.createTextChildren(span, `${className} `);
-  const trustedContentSpan = document.createElement('span');
-  trustedContentSpan.classList.add('object-value-string');
-  UI.UIUtils.createTextChildren(trustedContentSpan, '"', description.replace(/\n/g, '\u21B5'), '"');
-  span.appendChild(trustedContentSpan);
-};
+export function renderTrustedType(description: string, className: string): LitTemplate {
+  return html`${className} <span class=object-value-string>"${description.replace(/\n/g, '\u21B5')}"</span>`;
+}

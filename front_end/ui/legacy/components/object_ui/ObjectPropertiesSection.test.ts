@@ -7,6 +7,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../../../testing/ExpectStubCall.js';
 
 import * as ObjectUI from './object_ui.js';
 
@@ -56,10 +57,11 @@ describe('ObjectPropertiesSection', () => {
 
 describeWithEnvironment('ObjectPropertyTreeElement', () => {
   it('can edit values', async () => {
+    const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.TreeElementViewInput, object, HTMLElement]>();
     const property = new SDK.RemoteObject.RemoteObjectProperty(
         'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(
-        new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property));
+        new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property), undefined, viewFunction);
     section.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
 
     const promptStub =
@@ -67,9 +69,13 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     promptStub.returns(document.createElement('div'));
     renderElementIntoDOM(section.listItemElement);
     section.update();
+    section.listItemElement.appendChild(section.valueElement);
+
+    const expectedCall = expectCall(viewFunction);
     const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
     section.valueElement.dispatchEvent(event);
-    sinon.assert.calledOnce(promptStub);
+    const [input] = await expectedCall;
+    assert.isTrue(input.editing);
   });
 
   it('shows expandable text contents for lengthy strings', async () => {

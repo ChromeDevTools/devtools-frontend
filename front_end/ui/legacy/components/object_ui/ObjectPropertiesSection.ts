@@ -50,7 +50,7 @@ import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
 import objectValueStyles from './objectValue.css.js';
 import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
-const {ifDefined} = Directives;
+const {repeat, ifDefined} = Directives;
 const UIStrings = {
   /**
    * @description Text in Object Properties Section
@@ -914,6 +914,45 @@ export class RootElement extends UI.TreeOutline.TreeElement {
  **/
 export const InitialVisibleChildrenLimit = 200;
 
+export interface TreeElementViewInput {
+  onAutoComplete(expression: string, filter: string, force: boolean): unknown;
+  completions: string[];
+  expandedValueElement: HTMLElement|undefined;
+  expanded: boolean;
+  editing: boolean;
+  editingEnded(): unknown;
+  editingCommitted(detail: string): unknown;
+  node: ObjectTreeNode;
+  nameElement: HTMLElement;
+  valueElement: HTMLElement;
+}
+type TreeElementView = (input: TreeElementViewInput, output: object, target: HTMLElement) => void;
+export const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView = (input, output, target) => {
+  const isInternalEntries = input.node.property.synthetic && input.node.name === '[[Entries]]';
+  if (isInternalEntries) {
+    render(html`<span class=name-and-value>${input.nameElement}</span>`, target);
+  } else {
+    const completionsId = `completions-${input.node.parent?.object?.objectId?.replaceAll('.', '-')}-${input.node.name}`;
+    const onAutoComplete = async(e: UI.TextPrompt.TextPromptElement.BeforeAutoCompleteEvent): Promise<void> => {
+      if (!(e.target instanceof UI.TextPrompt.TextPromptElement)) {
+        return;
+      }
+      input.onAutoComplete(e.detail.expression, e.detail.filter, e.detail.force);
+    };
+    // clang-format off
+      render(html`<span class=name-and-value>${input.nameElement}<span class='separator'>: </span><devtools-prompt
+             @commit=${(e: UI.TextPrompt.TextPromptElement.CommitEvent) => input.editingCommitted(e.detail)}
+             @cancel=${() => input.editingEnded()}
+             @beforeautocomplete=${onAutoComplete}
+             completions=${completionsId}
+             placeholder=${i18nString(UIStrings.stringIsTooLargeToEdit)}
+             ?editing=${input.editing}>
+               ${input.expanded && input.expandedValueElement || input.valueElement}
+               <datalist id=${completionsId}>${repeat(input.completions, c => html`<option>${c}</option>`)}</datalist>
+             </devtools-prompt></span><span>`, target);
+    // clang-format on
+  }
+};
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   property: ObjectTreeNode;
   override toggleOnClick: boolean;
@@ -922,16 +961,19 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly maxNumPropertiesToShow: number;
   nameElement!: HTMLElement;
   valueElement!: HTMLElement;
-  private rowContainer!: HTMLElement;
   readOnly!: boolean;
   private prompt!: ObjectPropertyPrompt|undefined;
   private editableDiv!: HTMLElement;
   propertyValue?: HTMLElement;
-  expandedValueElement?: Element|null;
-  constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier) {
+  expandedValueElement?: HTMLElement;
+  #editing = false;
+  readonly #view: TreeElementView;
+  #completions: string[] = [];
+  constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier, view = TREE_ELEMENT_DEFAULT_VIEW) {
     // Pass an empty title, the title gets made later in onattach.
     super();
 
+    this.#view = view;
     this.property = property;
     this.toggleOnClick = true;
     this.highlightChanges = [];
@@ -1168,29 +1210,19 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override onexpand(): void {
-    this.showExpandedValueElement(true);
+    this.performUpdate();
   }
 
   override oncollapse(): void {
-    this.showExpandedValueElement(false);
+    this.performUpdate();
   }
 
-  private showExpandedValueElement(value: boolean): void {
-    if (!this.expandedValueElement) {
-      return;
-    }
-    if (value) {
-      this.rowContainer.replaceChild(this.expandedValueElement, this.valueElement);
-    } else {
-      this.rowContainer.replaceChild(this.valueElement, this.expandedValueElement);
-    }
-  }
-
-  private createExpandedValueElement(value: SDK.RemoteObject.RemoteObject, isSyntheticProperty: boolean): Element|null {
+  private createExpandedValueElement(value: SDK.RemoteObject.RemoteObject, isSyntheticProperty: boolean): HTMLElement
+      |undefined {
     const needsAlternateValue = value.hasChildren && !value.customPreview() && value.subtype !== 'node' &&
         value.type !== 'function' && (value.type !== 'object' || value.preview);
     if (!needsAlternateValue) {
-      return null;
+      return undefined;
     }
 
     const valueElement = document.createElement('span');
@@ -1264,24 +1296,29 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandedValueElement =
           this.createExpandedValueElement(this.property.object, this.property.property.synthetic);
     }
+    this.performUpdate();
+  }
 
-    const adorner: Element|string = '';
-    let container: Element;
+  async #updateCompletions(expression: string, filter: string, force: boolean): Promise<void> {
+    const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
+    this.#completions = suggestions.map(v => v.text);
+    this.performUpdate();
+  }
 
-    if (isInternalEntries) {
-      container = UI.Fragment.html`
-        <span class='name-and-value'>${adorner}${this.nameElement}</span>
-      `;
-    } else {
-      container = UI.Fragment.html`
-        <span class='name-and-value'>${adorner}${this.nameElement}<span class='separator'>: </span>${
-          this.valueElement}</span>
-      `;
-    }
-
-    this.listItemElement.removeChildren();
-    this.rowContainer = (container as HTMLElement);
-    this.listItemElement.appendChild(this.rowContainer);
+  performUpdate(): void {
+    const input: TreeElementViewInput = {
+      expandedValueElement: this.expandedValueElement,
+      expanded: this.expanded,
+      editing: this.#editing,
+      editingEnded: this.editingEnded.bind(this),
+      editingCommitted: this.editingCommitted.bind(this),
+      node: this.property,
+      nameElement: this.nameElement,
+      valueElement: this.valueElement,
+      completions: this.#editing ? this.#completions : [],
+      onAutoComplete: this.#updateCompletions.bind(this),
+    };
+    this.#view(input, {}, this.listItemElement);
   }
 
   getContextMenu(event: Event): UI.ContextMenu.ContextMenu {
@@ -1326,68 +1363,23 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private startEditing(): void {
-    const treeOutline = (this.treeOutline as ObjectPropertiesSectionsTreeOutline | null);
-    if (this.prompt || !treeOutline || !treeOutline.editable || this.readOnly) {
-      return;
+    if (!this.readOnly) {
+      this.#editing = true;
+      this.performUpdate();
     }
-    this.editableDiv = this.rowContainer.createChild('span', 'editable-div');
-
-    if (this.property.object) {
-      let text: string|(string | undefined) = this.property.object.description;
-      if (this.property.object.type === 'string' && typeof text === 'string') {
-        text = `"${text}"`;
-      }
-
-      this.editableDiv.setTextContentTruncatedIfNeeded(text, i18nString(UIStrings.stringIsTooLargeToEdit));
-    }
-
-    const originalContent = this.editableDiv.textContent || '';
-
-    // Lie about our children to prevent expanding on double click and to collapse subproperties.
-    this.setExpandable(false);
-    this.listItemElement.classList.add('editing-sub-part');
-    this.valueElement.classList.add('hidden');
-
-    this.prompt = new ObjectPropertyPrompt();
-
-    const proxyElement =
-        this.prompt.attachAndStartEditing(this.editableDiv, this.editingCommitted.bind(this, originalContent));
-    proxyElement.classList.add('property-prompt');
-
-    const selection = this.listItemElement.getComponentSelection();
-
-    if (selection) {
-      selection.selectAllChildren(this.editableDiv);
-    }
-    proxyElement.addEventListener('keydown', this.promptKeyDown.bind(this, originalContent), false);
   }
 
   private editingEnded(): void {
-    if (this.prompt) {
-      this.prompt.detach();
-      delete this.prompt;
-    }
-    this.editableDiv.remove();
+    this.#completions = [];
+    this.#editing = false;
+    this.performUpdate();
     this.updateExpandable();
-    this.listItemElement.scrollLeft = 0;
-    this.listItemElement.classList.remove('editing-sub-part');
     this.select();
   }
 
-  private editingCancelled(): void {
-    this.valueElement.classList.remove('hidden');
+  private async editingCommitted(newContent: string): Promise<void> {
     this.editingEnded();
-  }
-
-  private async editingCommitted(originalContent: string): Promise<void> {
-    const userInput = this.prompt ? this.prompt.text() : '';
-    if (userInput === originalContent) {
-      this.editingCancelled();  // nothing changed, so cancel
-      return;
-    }
-
-    this.editingEnded();
-    await this.applyExpression(userInput);
+    await this.applyExpression(newContent);
   }
 
   private promptKeyDown(originalContent: string, event: Event): void {
@@ -1399,7 +1391,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       keyboardEvent.consume();
-      this.editingCancelled();
+      this.editingEnded();
       return;
     }
   }

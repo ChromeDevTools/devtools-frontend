@@ -185,13 +185,19 @@ export class BuiltInAi {
   async * getConsoleInsight(prompt: string, abortController: AbortController): AsyncGenerator<string> {
     // Clone the session to start a fresh conversation for each answer. Otherwise
     // previous dialog would pollute the context resulting in worse answers.
-    const session = await this.#consoleInsightsSession.clone();
-    const stream = session.promptStreaming(prompt, {
-      signal: abortController.signal,
-    });
-    for await (const chunk of stream) {
-      yield chunk;
+    let session: LanguageModel|null = null;
+    try {
+      session = await this.#consoleInsightsSession.clone();
+      const stream = session.promptStreaming(prompt, {
+        signal: abortController.signal,
+      });
+      for await (const chunk of stream) {
+        yield chunk;
+      }
+    } finally {
+      if (session) {
+        session.destroy();
+      }
     }
-    session.destroy();
   }
 }

@@ -415,27 +415,23 @@ async function computeBuildTargetsForFiles(target, filenames) {
 
 /**
  * @param {string} target
- * @param {{ filenames?: string[], signal?: AbortSignal, extraBuildTargets?: string[]}} options
+ * @param {{ filenames?: string[], signal?: AbortSignal}} options
  * @returns a `BuildResult` with statistics for the build.
  */
 export async function build(target, options = {}) {
   const startTime = performance.now();
   const outDir = path.join(rootPath(), 'out', target);
-  const extraBuildTargets = options.extraBuildTargets ?? [];
 
   // Build just the devtools-frontend resources in |outDir|. This is important
   // since we might be running in a full Chromium checkout and certainly don't
   // want to build all of Chromium first.
-  const buildTargets = await computeBuildTargetsForFiles(target, options.filenames);
+  const buildTargets = await computeBuildTargetsForFiles(
+      target,
+      options.filenames,
+  );
   try {
     const autoninjaExe = vpython3ExecutablePath();
-    const autoninjaArgs = [
-      autoninjaPyPath(),
-      '-C',
-      outDir,
-      ...buildTargets,
-      ...extraBuildTargets,
-    ];
+    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, ...buildTargets];
     await spawn(autoninjaExe, autoninjaArgs, {
       shell: true,
       signal: options.signal,

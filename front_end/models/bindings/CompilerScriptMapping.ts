@@ -45,6 +45,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   readonly #uiSourceCodeToSourceMaps =
       new Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, SDK.SourceMap.SourceMap>();
   readonly #debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  readonly #ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
 
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl,
@@ -52,6 +53,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     this.#sourceMapManager = debuggerModel.sourceMapManager();
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this.#debuggerModel = debuggerModel;
+    this.#ignoreListManager = debuggerWorkspaceBinding.ignoreListManager;
 
     this.#stubProject = new ContentProviderBasedProject(
         workspace, 'jsSourceMaps:stub:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Service, '',
@@ -362,8 +364,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     // Create stub UISourceCode for the time source mapping is being loaded.
     this.addStubUISourceCode(script);
     void this.#debuggerWorkspaceBinding.updateLocations(script);
-    if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
-            script.sourceURL, {isContentScript: script.isContentScript()})) {
+    if (this.#ignoreListManager.isUserIgnoreListedURL(script.sourceURL, {isContentScript: script.isContentScript()})) {
       this.#sourceMapManager.cancelAttachSourceMap(script);
     }
   }

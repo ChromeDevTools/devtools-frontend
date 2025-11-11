@@ -27,11 +27,13 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   readonly #debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
   readonly #liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   readonly pluginManager: DebuggerLanguagePluginManager;
+  readonly ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
 
   private constructor(
       resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager,
       ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager) {
     this.resourceMapping = resourceMapping;
+    this.ignoreListManager = ignoreListManager;
 
     this.#debuggerModelToData = new Map();
     targetManager.addModelListener(
@@ -39,7 +41,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     targetManager.addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
-    ignoreListManager.addEventListener(
+    this.ignoreListManager.addEventListener(
         Workspace.IgnoreListManager.Events.IGNORED_SCRIPT_RANGES_UPDATED, event => this.updateLocations(event.data));
 
     this.#liveLocationPromises = new Set();

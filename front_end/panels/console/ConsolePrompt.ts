@@ -75,7 +75,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   private boundOnAidaAvailabilityChange?: () => Promise<void>;
   private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
-  private teaser?: PanelCommon.AiCodeCompletionTeaser;
+  teaser?: PanelCommon.AiCodeCompletionTeaser;
   private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
   private aiCodeCompletionSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);

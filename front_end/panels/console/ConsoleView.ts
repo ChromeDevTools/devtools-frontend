@@ -1453,6 +1453,9 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private async keyDown(event: Event): Promise<void> {
+    if (!this.prompt.teaser?.isShowing()) {
+      return;
+    }
     const keyboardEvent = (event as KeyboardEvent);
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
       if (keyboardEvent.key === 'i') {

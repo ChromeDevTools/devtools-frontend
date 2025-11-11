@@ -13,7 +13,6 @@ describe('The Classes pane', () => {
   it('can add a class to the element', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
-    await devToolsPage.raf();
 
     await typeInClassesPaneInput('foo', devToolsPage);
     await assertSelectedNodeClasses(['foo'], devToolsPage);
@@ -22,7 +21,6 @@ describe('The Classes pane', () => {
   it('can add multiple classes at once', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
-    await devToolsPage.raf();
 
     await typeInClassesPaneInput('foo bar', devToolsPage);
     await assertSelectedNodeClasses(['foo', 'bar'], devToolsPage);
@@ -31,7 +29,6 @@ describe('The Classes pane', () => {
   it('can toggle classes', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
-    await devToolsPage.raf();
 
     await typeInClassesPaneInput('on off', devToolsPage);
     await assertSelectedNodeClasses(['on', 'off'], devToolsPage);
@@ -47,7 +44,6 @@ describe('The Classes pane', () => {
   it('removes the previewed classes on ESC', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
-    await devToolsPage.raf();
 
     await typeInClassesPaneInput('foo', devToolsPage);
     await typeInClassesPaneInput('bar', devToolsPage, 'Escape', false);

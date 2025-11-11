@@ -990,8 +990,10 @@ export const clickOnFirstLinkInStylesPanel = async (devToolsPage: DevToolsPage) 
 };
 
 export const toggleClassesPane = async (devToolsPage: DevToolsPage) => {
-  await devToolsPage.click(CLS_BUTTON_SELECTOR);
-  // animation happening here
+  const stylesPane = await devToolsPage.waitFor('div.styles-pane');
+  await devToolsPage.waitFor(CLS_BUTTON_SELECTOR, stylesPane);
+  await devToolsPage.click(CLS_BUTTON_SELECTOR, {root: stylesPane});
+  await devToolsPage.waitFor('.styles-element-classes-pane .text-prompt', stylesPane);  // wait for the animation
   await expectVeEvents(
       [
         veClick('Panel: elements > Pane: styles > ToggleSubpane: elements-classes'),

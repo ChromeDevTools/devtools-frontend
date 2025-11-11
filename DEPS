@@ -12,13 +12,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'afca68d9c90771bdd2365e2d5bee188159828448',
+  'build_revision': 'c02d5459d47e7390ddf8435889a36152ccdceea4',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '628cf12465dae2a157524a23608a58b525d30623',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'b26ab6e9d582e8aac2bc647151eb04fd0ee9b226',
+  'depot_tools_revision': 'ee1cf58691930daecb5bbe19893746b8916b185c',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '679b33a98ae546ff521eee2ea28d8d5bf28872ba',
@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:91909dc02061c88edd084ca23f4293716b1626b3',
+  'siso_version': 'git_revision:15344993da1a5e600ab5c8df4d3d9b17712a23c0',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

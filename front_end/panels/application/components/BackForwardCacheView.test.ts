@@ -7,6 +7,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {
   dispatchClickEvent,
+  raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
@@ -199,6 +200,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
 
     const details = component.contentElement.querySelector('.details-list devtools-expandable-list');
     details!.shadowRoot!.querySelector('button')!.click();
+    await raf();
     const items = details!.shadowRoot!.querySelectorAll('.expandable-list-items .devtools-link');
     const detailsText = Array.from(items).map(detail => detail.textContent?.trim());
     assert.deepEqual(detailsText, ['www.example.com/index.html:11:6', 'www.example.com/script.js:16:21']);

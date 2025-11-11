@@ -17,6 +17,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import type * as IconButton from '../../../components/icon_button/icon_button.js';
+import {html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -229,7 +230,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     let fallbackAnchor: HTMLElement|null = null;
     const linkifyURLOptions: LinkifyURLOptions = {
       lineNumber,
-      maxLength: this.maxLength,
+      maxLength: options?.maxLength ?? this.maxLength,
       columnNumber: options?.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
@@ -1148,6 +1149,7 @@ export interface LinkifyOptions {
    * {@link LinkDisplayOptions.revealBreakpoint}
    */
   revealBreakpoint?: boolean;
+  maxLength?: number;
 }
 
 interface CreateLinkOptions {
@@ -1206,4 +1208,42 @@ export const enum Events {
 
 export interface EventTypes {
   [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation;
+}
+
+const linkifier = new Linkifier();
+
+interface ScriptLocationViewInput {
+  target?: SDK.Target.Target;
+  scriptId?: Protocol.Runtime.ScriptId;
+  sourceURL: Platform.DevToolsPath.UrlString;
+  lineNumber?: number;
+  options?: LinkifyOptions;
+}
+
+type ScriptLocationView = (input: ScriptLocationViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_SCRIPT_LOCATION_VIEW: ScriptLocationView = (input, _output, target) => {
+  render(
+      html`${
+          linkifier.linkifyScriptLocation(
+              input.target ?? null, input.scriptId ?? null, input.sourceURL, input.lineNumber, input.options)}`,
+      target);
+};
+
+export class ScriptLocationLink extends UI.Widget.Widget {
+  target?: SDK.Target.Target;
+  scriptId?: Protocol.Runtime.ScriptId;
+  sourceURL = '' as Platform.DevToolsPath.UrlString;
+  lineNumber?: number;
+  options?: LinkifyOptions;
+  #view: ScriptLocationView;
+
+  constructor(element: HTMLElement, view = DEFAULT_SCRIPT_LOCATION_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override performUpdate(): void {
+    this.#view(this, undefined, this.contentElement);
+  }
 }

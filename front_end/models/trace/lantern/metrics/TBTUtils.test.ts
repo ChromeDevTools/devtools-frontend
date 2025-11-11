@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(crbug.com/348449529): refactor to proper devtools module
-// eslint-disable-next-line @devtools/es-modules-import
-import {calculateSumOfBlockingTime} from './TBTUtils.js';
+import * as Metrics from './metrics.js';
+
+const {calculateSumOfBlockingTime} = Metrics.TBTUtils;
 
 describe('TotalBlockingTime utils', () => {
   it('reports 0 when no task is longer than 50ms', () => {

@@ -10,8 +10,7 @@ import {
 import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as Models from '../models/models.js';
-// eslint-disable-next-line @devtools/es-modules-import
-import * as RecorderHelpers from '../testing/RecorderHelpers.js';
+import {installMocksForRecordingPlayer} from '../testing/RecorderHelpers.js';
 
 import type * as Components from './components.js';
 
@@ -135,7 +134,7 @@ describeWithLocale('StepEditor', () => {
   }
 
   beforeEach(() => {
-    RecorderHelpers.installMocksForRecordingPlayer();
+    installMocksForRecordingPlayer();
   });
 
   it('should edit step type', async () => {

@@ -1012,3 +1012,27 @@ export function makeTimingEventWithConsoleExtensionData(
     ph: Trace.Types.Events.Phase.INSTANT,
   };
 }
+
+export async function createTraceExtensionDataFromPerformanceAPITestInput(
+    extensionData: PerformanceAPIExtensionTestData[]):
+    Promise<Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData> {
+  const events = extensionData.flatMap(makeTimingEventWithPerformanceExtensionData).sort((e1, e2) => e1.ts - e2.ts);
+  return await createTraceExtensionDataFromEvents(events);
+}
+
+export async function createTraceExtensionDataFromEvents(events: Trace.Types.Events.Event[]):
+    Promise<Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData> {
+  Trace.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate(events);
+
+  Trace.Handlers.ModelHandlers.UserTimings.reset();
+  for (const event of events) {
+    Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+  }
+  await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+
+  Trace.Handlers.ModelHandlers.ExtensionTraceData.reset();
+  // ExtensionTraceData handler doesn't need to handle events since
+  // it only consumes the output of the user timings handler.
+  await Trace.Handlers.ModelHandlers.ExtensionTraceData.finalize();
+  return Trace.Handlers.ModelHandlers.ExtensionTraceData.data();
+}

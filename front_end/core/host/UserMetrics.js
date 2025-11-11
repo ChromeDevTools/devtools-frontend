@@ -225,6 +225,9 @@ export class UserMetrics {
     consoleInsightTeaserGenerated(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserGenerationTime', timeInMilliseconds);
     }
+    consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds) {
+        InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
+    }
 }
 /**
  * The numeric enum values are not necessarily continuous! It is possible that

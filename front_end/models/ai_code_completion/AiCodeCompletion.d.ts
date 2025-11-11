@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 export declare const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export declare const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 /**
@@ -11,6 +10,19 @@ interface AgentOptions {
     aidaClient: Host.AidaClient.AidaClient;
     serverSideLoggingEnabled?: boolean;
     confirmSideEffectForTest?: typeof Promise.withResolvers;
+}
+export interface Callbacks {
+    getSelectionHead: () => number;
+    getCompletionHint: () => string | undefined | null;
+    setAiAutoCompletion: (args: {
+        text: string;
+        from: number;
+        startTime: number;
+        onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void;
+        clearCachedRequest: () => void;
+        rpcGlobalId?: Host.AidaClient.RpcGlobalId;
+        sampleId?: number;
+    } | null) => void;
 }
 /**
  * The AiCodeCompletion class is responsible for fetching code completion suggestions
@@ -29,11 +41,17 @@ interface AgentOptions {
  */
 export declare class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, panel: ContextFlavor, stopSequences?: string[]);
+    constructor(opts: AgentOptions, panel: ContextFlavor, callbacks?: Callbacks, stopSequences?: string[]);
+    registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number): void;
     registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId?: number): void;
     clearCachedRequest(): void;
     onTextChanged(prefix: string, suffix: string, cursorPositionAtRequest: number, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage): void;
+    completeCode(prefix: string, suffix: string, cursorPositionAtRequest: number, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage, additionalFiles?: Host.AidaClient.AdditionalFile[]): Promise<{
+        response: Host.AidaClient.CompletionResponse | null;
+        fromCache: boolean;
+    }>;
     remove(): void;
+    static isAiCodeCompletionEnabled(locale: string): boolean;
 }
 export declare const enum ContextFlavor {
     CONSOLE = "console",// generated code can contain console specific APIs like `$0`.

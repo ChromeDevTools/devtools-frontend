@@ -7,11 +7,13 @@ import * as Types from '../types/types.js';
 import { data as metaHandlerData } from './MetaHandler.js';
 import { data as networkRequestsHandlerData } from './NetworkRequestsHandler.js';
 let scriptById = new Map();
+let frameIdByIsolate = new Map();
 export function deps() {
     return ['Meta', 'NetworkRequests'];
 }
 export function reset() {
     scriptById = new Map();
+    frameIdByIsolate = new Map();
 }
 export function handleEvent(event) {
     const getOrMakeScript = (isolate, scriptIdAsNumber) => {
@@ -29,6 +31,9 @@ export function handleEvent(event) {
     if (Types.Events.isRundownScript(event)) {
         const { isolate, scriptId, url, sourceUrl, sourceMapUrl, sourceMapUrlElided } = event.args.data;
         const script = getOrMakeScript(isolate, scriptId);
+        if (!script.frame) {
+            script.frame = frameIdByIsolate.get(String(isolate)) ?? '';
+        }
         script.url = url;
         script.ts = event.ts;
         if (sourceUrl) {
@@ -58,6 +63,25 @@ export function handleEvent(event) {
         const script = getOrMakeScript(isolate, scriptId);
         script.content = (script.content ?? '') + sourceText;
         return;
+    }
+    // Setup frameIdByIsolate, which is used only in the case that we are missing
+    // rundown events for a script. We won't get a frame association from the rundown
+    // events if the recording started only after the script was first compiled. In
+    // that scenario, derive the frame via the isolate / FunctionCall events.
+    // TODO: ideally, we put the frame on ScriptCatchup event. So much easier. This approach has some
+    // issues.
+    if (Types.Events.isFunctionCall(event) && event.args.data?.isolate && event.args.data.frame) {
+        const { isolate, frame } = event.args.data;
+        const existingValue = frameIdByIsolate.get(isolate);
+        if (existingValue !== frame) {
+            frameIdByIsolate.set(isolate, frame);
+            // Update the scripts we discovered but without knowing their frame.
+            for (const script of scriptById.values()) {
+                if (!script.frame && script.isolate === isolate) {
+                    script.frame = frame;
+                }
+            }
+        }
     }
 }
 function findFrame(meta, frameId) {

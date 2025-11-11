@@ -4015,11 +4015,13 @@ import * as Common from "./../../../core/common/common.js";
 import * as Platform14 from "./../../../core/platform/platform.js";
 import * as Types27 from "./../types/types.js";
 var scriptById = /* @__PURE__ */ new Map();
+var frameIdByIsolate = /* @__PURE__ */ new Map();
 function deps14() {
   return ["Meta", "NetworkRequests"];
 }
 function reset26() {
   scriptById = /* @__PURE__ */ new Map();
+  frameIdByIsolate = /* @__PURE__ */ new Map();
 }
 function handleEvent26(event) {
   const getOrMakeScript = (isolate, scriptIdAsNumber) => {
@@ -4037,6 +4039,9 @@ function handleEvent26(event) {
   if (Types27.Events.isRundownScript(event)) {
     const { isolate, scriptId, url, sourceUrl, sourceMapUrl, sourceMapUrlElided } = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
+    if (!script.frame) {
+      script.frame = frameIdByIsolate.get(String(isolate)) ?? "";
+    }
     script.url = url;
     script.ts = event.ts;
     if (sourceUrl) {
@@ -4060,6 +4065,18 @@ function handleEvent26(event) {
     const script = getOrMakeScript(isolate, scriptId);
     script.content = (script.content ?? "") + sourceText;
     return;
+  }
+  if (Types27.Events.isFunctionCall(event) && event.args.data?.isolate && event.args.data.frame) {
+    const { isolate, frame } = event.args.data;
+    const existingValue = frameIdByIsolate.get(isolate);
+    if (existingValue !== frame) {
+      frameIdByIsolate.set(isolate, frame);
+      for (const script of scriptById.values()) {
+        if (!script.frame && script.isolate === isolate) {
+          script.frame = frame;
+        }
+      }
+    }
   }
 }
 function findFrame(meta, frameId) {

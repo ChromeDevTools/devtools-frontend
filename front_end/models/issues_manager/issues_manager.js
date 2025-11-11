@@ -4250,54 +4250,6 @@ var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
   }
 };
 
-// gen/front_end/models/issues_manager/UserReidentificationIssue.js
-var UserReidentificationIssue = class _UserReidentificationIssue extends Issue {
-  #issueDetails;
-  constructor(issueDetails, issuesModel) {
-    super("UserReidentificationIssue", issuesModel);
-    this.#issueDetails = issueDetails;
-  }
-  primaryKey() {
-    const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : "no-request";
-    return `${this.code()}-(${requestId})`;
-  }
-  requests() {
-    return this.#issueDetails.request ? [this.#issueDetails.request] : [];
-  }
-  getCategory() {
-    return "Other";
-  }
-  getDescription() {
-    const description = issueDescriptions10.get(this.code());
-    if (!description) {
-      return null;
-    }
-    return resolveLazyDescription(description);
-  }
-  getKind() {
-    return "Improvement";
-  }
-  static fromInspectorIssue(issuesModel, inspectorIssue) {
-    const userReidentificationIssueDetails = inspectorIssue.details.userReidentificationIssueDetails;
-    if (!userReidentificationIssueDetails) {
-      console.warn("User Reidentification issue without details received.");
-      return [];
-    }
-    return [new _UserReidentificationIssue(userReidentificationIssueDetails, issuesModel)];
-  }
-};
-var issueDescriptions10 = /* @__PURE__ */ new Map([
-  [
-    "UserReidentificationIssue",
-    {
-      file: "userReidentificationBlocked.md",
-      // TODO(https://g-issues.chromium.org/issues/409596758): Add
-      // internationalized learn more link text.
-      links: []
-    }
-  ]
-]);
-
 // gen/front_end/models/issues_manager/IssuesManager.js
 var issuesManagerInstance = null;
 function createIssuesForBlockedByResponseIssue(issuesModel, inspectorIssue) {
@@ -4400,10 +4352,6 @@ var issueCodeHandlers = /* @__PURE__ */ new Map([
   [
     "UnencodedDigestIssue",
     UnencodedDigestIssue.fromInspectorIssue
-  ],
-  [
-    "UserReidentificationIssue",
-    UserReidentificationIssue.fromInspectorIssue
   ]
 ]);
 function createIssuesFromProtocolIssue(issuesModel, inspectorIssue) {

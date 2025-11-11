@@ -19,10 +19,7 @@ export class IOModel extends SDKModel {
         return result.data;
     }
     async close(handle) {
-        const result = await this.target().ioAgent().invoke_close({ handle });
-        if (result.getError()) {
-            console.error('Could not close stream.');
-        }
+        await this.target().ioAgent().invoke_close({ handle });
     }
     async resolveBlob(objectOrObjectId) {
         const objectId = objectOrObjectId instanceof RemoteObject ? objectOrObjectId.objectId : objectOrObjectId;

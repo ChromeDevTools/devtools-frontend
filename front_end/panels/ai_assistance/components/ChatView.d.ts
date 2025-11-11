@@ -56,13 +56,12 @@ export interface Props {
     onLoadImage?: (file: File) => Promise<void>;
     changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
-    aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
     messages: ChatMessage[];
     selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     isLoading: boolean;
     canShowFeedbackForm: boolean;
     userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountFullName'>;
-    conversationType?: AiAssistanceModel.AiHistoryStorage.ConversationType;
+    conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     isReadOnly: boolean;
     blockedByCrossOrigin: boolean;
     changeSummary?: string;

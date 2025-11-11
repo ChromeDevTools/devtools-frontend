@@ -46,6 +46,7 @@ export declare class UserMetrics {
     performanceAIMainThreadActivityResponseSize(bytes: number): void;
     builtInAiAvailability(availability: BuiltInAiAvailability): void;
     consoleInsightTeaserGenerated(timeInMilliseconds: number): void;
+    consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds: number): void;
 }
 /**
  * The numeric enum values are not necessarily continuous! It is possible that

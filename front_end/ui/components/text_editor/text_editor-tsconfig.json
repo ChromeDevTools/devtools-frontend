@@ -66,6 +66,9 @@
       "path": "../../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../../models/ai_code_completion/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../models/formatter/bundle-tsconfig.json"
     },
     {

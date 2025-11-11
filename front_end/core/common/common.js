@@ -5412,6 +5412,7 @@ var Settings = class _Settings {
   syncedStorage;
   globalStorage;
   localStorage;
+  #settingRegistrations;
   #sessionStorage = new SettingsStorage({});
   settingNameSet = /* @__PURE__ */ new Set();
   orderValuesBySettingCategory = /* @__PURE__ */ new Map();
@@ -5419,12 +5420,13 @@ var Settings = class _Settings {
   #registry = /* @__PURE__ */ new Map();
   moduleSettings = /* @__PURE__ */ new Map();
   #logSettingAccess;
-  constructor(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration) {
+  constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration }) {
     this.syncedStorage = syncedStorage;
     this.globalStorage = globalStorage;
     this.localStorage = localStorage;
+    this.#settingRegistrations = settingRegistrations;
     this.#logSettingAccess = logSettingAccess;
-    for (const registration of this.getRegisteredSettings()) {
+    for (const registration of this.#settingRegistrations) {
       const { settingName, defaultValue, storageType } = registration;
       const isRegex = registration.settingType === "regex";
       const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
@@ -5441,18 +5443,18 @@ var Settings = class _Settings {
     }
   }
   getRegisteredSettings() {
-    return getRegisteredSettings();
+    return this.#settingRegistrations;
   }
   static hasInstance() {
     return typeof settingsInstance !== "undefined";
   }
-  static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null }) {
-    const { forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration } = opts;
+  static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
+    const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
     if (!settingsInstance || forceNew) {
-      if (!syncedStorage || !globalStorage || !localStorage) {
+      if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
-      settingsInstance = new _Settings(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration);
+      settingsInstance = new _Settings({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration });
     }
     return settingsInstance;
   }

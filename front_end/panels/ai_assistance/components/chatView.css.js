@@ -299,7 +299,7 @@ footer.chat-view-footer {
     The footer (for active conversations) is hidden by default on wider screens
     because the disclaimer is shown inline within the chat input actions. Show it only on narrow widths (< 400px).
   */
-  &.has-conversation:not(.is-read-only) {
+  &:not(.is-read-only) {
     display: none;
     border: none;
 

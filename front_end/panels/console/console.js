@@ -4150,11 +4150,16 @@ var ConsoleInsightTeaser = class extends UI3.Widget.Widget {
     this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
     const startTime = performance.now();
     let teaserText = "";
+    let firstChunkReceived = false;
     try {
       for await (const chunk of this.#getOnDeviceInsight()) {
         teaserText += chunk;
         this.#mainText = teaserText;
         this.requestUpdate();
+        if (!firstChunkReceived) {
+          firstChunkReceived = true;
+          Host2.userMetrics.consoleInsightTeaserFirstChunkGenerated(performance.now() - startTime);
+        }
       }
     } catch (err) {
       if (err.name !== "AbortError") {
@@ -7772,7 +7777,13 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
       this.detachAiCodeCompletionTeaser();
       this.teaser = void 0;
     }
-    this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.aidaClient }, this.editor, "console", ["\n\n"]);
+    this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.aidaClient }, "console", {
+      getSelectionHead: () => this.editor.editor.state.selection.main.head,
+      getCompletionHint: () => this.editor.editor.plugin(TextEditor3.Config.showCompletionHint)?.currentHint,
+      setAiAutoCompletion: (suggestion) => {
+        this.editor.dispatch({ effects: TextEditor3.Config.setAiAutoCompleteSuggestion.of(suggestion) });
+      }
+    }, ["\n\n"]);
     this.aiCodeCompletion.addEventListener("ResponseReceived", (event) => {
       this.aiCodeCompletionCitations = event.data.citations;
       this.dispatchEventToListeners("AiCodeCompletionResponseReceived", event.data);

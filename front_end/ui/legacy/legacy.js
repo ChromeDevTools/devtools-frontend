@@ -2378,8 +2378,10 @@ function cancelUpdate(widget) {
 }
 function runNextUpdate() {
   pendingAnimationFrame = null;
-  currentUpdateQueue = nextUpdateQueue;
-  nextUpdateQueue = /* @__PURE__ */ new Map();
+  if (!currentUpdateQueue) {
+    currentUpdateQueue = nextUpdateQueue;
+    nextUpdateQueue = /* @__PURE__ */ new Map();
+  }
   for (const [widget, { resolve }] of currentUpdateQueue) {
     currentlyProcessed.add(widget);
     void (async () => {
@@ -2387,8 +2389,15 @@ function runNextUpdate() {
       resolve();
     })();
   }
-  currentUpdateQueue = null;
-  currentlyProcessed.clear();
+  currentUpdateQueue.clear();
+  queueMicrotask(() => {
+    if (currentUpdateQueue && currentUpdateQueue.size > 0) {
+      runNextUpdate();
+    } else {
+      currentUpdateQueue = null;
+      currentlyProcessed.clear();
+    }
+  });
 }
 var WidgetElement = class extends HTMLElement {
   #widgetClass;

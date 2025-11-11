@@ -559,6 +559,19 @@ var Importer = class _Importer {
     const isBase64 = entry.response.content.encoding === "base64";
     const { mimeType, charset } = Platform.MimeType.parseContentType(entry.response.content.mimeType);
     request.setContentDataProvider(async () => new TextUtils.ContentData.ContentData(contentText ?? "", isBase64, mimeType ?? "", charset ?? void 0));
+    if (request.mimeType === "text/event-stream" && contentText) {
+      const issueTime2 = entry.startedDateTime.getTime() / 1e3;
+      const onEvent = (eventName, data, eventId) => {
+        request.addEventSourceMessage(issueTime2, eventName, eventId, data);
+      };
+      const parser = new SDK2.ServerSentEventProtocol.ServerSentEventsParser(onEvent, charset ?? void 0);
+      let text = contentText;
+      if (isBase64) {
+        const bytes = Common.Base64.decode(contentText);
+        text = new TextDecoder(charset ?? void 0).decode(bytes);
+      }
+      parser.addTextChunk(text);
+    }
     _Importer.setupTiming(request, issueTime, entry.time, entry.timings);
     request.setRemoteAddress(entry.serverIPAddress || "", Number(entry.connection) || 80);
     request.setResourceType(_Importer.getResourceType(request, entry, pageLoad));

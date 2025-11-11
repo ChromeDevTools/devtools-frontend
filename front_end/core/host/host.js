@@ -1811,6 +1811,9 @@ var UserMetrics = class {
   consoleInsightTeaserGenerated(timeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserGenerationTime", timeInMilliseconds);
   }
+  consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds) {
+    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserFirstChunkGenerationTime", timeInMilliseconds);
+  }
 };
 var Action;
 (function(Action2) {

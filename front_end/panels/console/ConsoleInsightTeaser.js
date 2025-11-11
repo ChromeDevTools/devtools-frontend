@@ -314,11 +314,16 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
         const startTime = performance.now();
         let teaserText = '';
+        let firstChunkReceived = false;
         try {
             for await (const chunk of this.#getOnDeviceInsight()) {
                 teaserText += chunk;
                 this.#mainText = teaserText;
                 this.requestUpdate();
+                if (!firstChunkReceived) {
+                    firstChunkReceived = true;
+                    Host.userMetrics.consoleInsightTeaserFirstChunkGenerated(performance.now() - startTime);
+                }
             }
         }
         catch (err) {

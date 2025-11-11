@@ -482,7 +482,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
             this.detachAiCodeCompletionTeaser();
             this.teaser = undefined;
         }
-        this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.aidaClient }, this.editor, "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */, ['\n\n']);
+        this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.aidaClient }, "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */, {
+            getSelectionHead: () => this.editor.editor.state.selection.main.head,
+            getCompletionHint: () => this.editor.editor.plugin(TextEditor.Config.showCompletionHint)?.currentHint,
+            setAiAutoCompletion: (suggestion) => {
+                this.editor.dispatch({ effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(suggestion) });
+            }
+        }, ['\n\n']);
         this.aiCodeCompletion.addEventListener("ResponseReceived" /* AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED */, event => {
             this.aiCodeCompletionCitations = event.data.citations;
             this.dispatchEventToListeners("AiCodeCompletionResponseReceived" /* Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED */, event.data);

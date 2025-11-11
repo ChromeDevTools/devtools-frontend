@@ -63,8 +63,7 @@ export async function initializeGlobalVars({ reset = true } = {}) {
     // Dynamically import UI after the rest of the environment is set up, otherwise it will fail.
     UI = await import('../ui/legacy/legacy.js');
     UI.ZoomManager.ZoomManager.instance({ forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance });
-    // Initialize theme support and context menus.
-    Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
+    // Initialize context menus.
     UI.UIUtils.initializeUIUtils(document);
 }
 export async function deinitializeGlobalVars() {

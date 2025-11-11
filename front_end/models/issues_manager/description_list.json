@@ -182,6 +182,5 @@
   "unencodedDigestIncorrectDigestLength.md",
   "unencodedDigestIncorrectDigestType.md",
   "unencodedDigestMalformedDictionary.md",
-  "unencodedDigestUnknownAlgorithm.md",
-  "userReidentificationBlocked.md"
+  "unencodedDigestUnknownAlgorithm.md"
 ]

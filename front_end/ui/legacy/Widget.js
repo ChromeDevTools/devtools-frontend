@@ -95,8 +95,10 @@ function cancelUpdate(widget) {
 }
 function runNextUpdate() {
     pendingAnimationFrame = null;
-    currentUpdateQueue = nextUpdateQueue;
-    nextUpdateQueue = new Map();
+    if (!currentUpdateQueue) {
+        currentUpdateQueue = nextUpdateQueue;
+        nextUpdateQueue = new Map();
+    }
     for (const [widget, { resolve }] of currentUpdateQueue) {
         currentlyProcessed.add(widget);
         void (async () => {
@@ -104,8 +106,16 @@ function runNextUpdate() {
             resolve();
         })();
     }
-    currentUpdateQueue = null;
-    currentlyProcessed.clear();
+    currentUpdateQueue.clear();
+    queueMicrotask(() => {
+        if (currentUpdateQueue && currentUpdateQueue.size > 0) {
+            runNextUpdate();
+        }
+        else {
+            currentUpdateQueue = null;
+            currentlyProcessed.clear();
+        }
+    });
 }
 export class WidgetElement extends HTMLElement {
     #widgetClass;

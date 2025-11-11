@@ -14,4 +14,5 @@ export declare class ServerSentEventsParser {
     #private;
     constructor(callback: (eventType: string, data: string, eventId: string) => void, encodingLabel?: string);
     addBase64Chunk(raw: Protocol.binary): Promise<void>;
+    addTextChunk(chunk: string): void;
 }

@@ -5,12 +5,13 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import { Console } from './Console.js';
 import { ObjectWrapper } from './Object.js';
-import { getLocalizedSettingsCategory, getRegisteredSettings as getRegisteredSettingsInternal, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, } from './SettingRegistration.js';
+import { getLocalizedSettingsCategory, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, } from './SettingRegistration.js';
 let settingsInstance;
 export class Settings {
     syncedStorage;
     globalStorage;
     localStorage;
+    #settingRegistrations;
     #sessionStorage = new SettingsStorage({});
     settingNameSet = new Set();
     orderValuesBySettingCategory = new Map();
@@ -18,12 +19,13 @@ export class Settings {
     #registry = new Map();
     moduleSettings = new Map();
     #logSettingAccess;
-    constructor(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration) {
+    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration }) {
         this.syncedStorage = syncedStorage;
         this.globalStorage = globalStorage;
         this.localStorage = localStorage;
+        this.#settingRegistrations = settingRegistrations;
         this.#logSettingAccess = logSettingAccess;
-        for (const registration of this.getRegisteredSettings()) {
+        for (const registration of this.#settingRegistrations) {
             const { settingName, defaultValue, storageType } = registration;
             const isRegex = registration.settingType === "regex" /* SettingType.REGEX */;
             const evaluatedDefaultValue = typeof defaultValue === 'function' ? defaultValue(Root.Runtime.hostConfig) : defaultValue;
@@ -42,19 +44,18 @@ export class Settings {
         }
     }
     getRegisteredSettings() {
-        return getRegisteredSettingsInternal();
+        return this.#settingRegistrations;
     }
     static hasInstance() {
         return typeof settingsInstance !== 'undefined';
     }
-    static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null }) {
-        const { forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration } = opts;
+    static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
+        const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
         if (!settingsInstance || forceNew) {
-            if (!syncedStorage || !globalStorage || !localStorage) {
+            if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
                 throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
             }
-            settingsInstance =
-                new Settings(syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration);
+            settingsInstance = new Settings({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration });
         }
         return settingsInstance;
     }

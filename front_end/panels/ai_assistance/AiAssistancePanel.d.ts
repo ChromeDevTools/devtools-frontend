@@ -18,10 +18,18 @@ export declare const enum ViewState {
     CHAT_VIEW = "chat-view",
     EXPLORE_VIEW = "explore-view"
 }
-interface PanelViewProps {
-    state: ViewState;
-}
-export type ViewInput = ChatViewProps & ToolbarViewInput & PanelViewProps;
+type PanelViewInput = {
+    state: ViewState.CHAT_VIEW;
+    props: ChatViewProps;
+} | {
+    state: ViewState.DISABLED_VIEW;
+    props: {
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
+    };
+} | {
+    state: ViewState.EXPLORE_VIEW;
+};
+export type ViewInput = ToolbarViewInput & PanelViewInput;
 export interface PanelViewOutput {
     chatView?: ChatView;
 }

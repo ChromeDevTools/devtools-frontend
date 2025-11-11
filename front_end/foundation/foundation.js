@@ -14,11 +14,7 @@ var Universe = class {
   constructor(options) {
     Common.Settings.Settings.instance({
       forceNew: true,
-      syncedStorage: options.syncedStorage,
-      globalStorage: options.globalStorage,
-      localStorage: options.localStorage,
-      logSettingAccess: options.logSettingAccess,
-      runSettingsMigration: options.runSettingsMigration
+      ...options.settingsCreationOptions
     });
   }
 };

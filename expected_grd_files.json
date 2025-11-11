@@ -584,7 +584,6 @@
   "front_end/models/issues_manager/descriptions/unencodedDigestIncorrectDigestType.md",
   "front_end/models/issues_manager/descriptions/unencodedDigestMalformedDictionary.md",
   "front_end/models/issues_manager/descriptions/unencodedDigestUnknownAlgorithm.md",
-  "front_end/models/issues_manager/descriptions/userReidentificationBlocked.md",
   "front_end/models/issues_manager/issues_manager.js",
   "front_end/models/javascript_metadata/javascript_metadata.js",
   "front_end/models/live-metrics/live-metrics.js",

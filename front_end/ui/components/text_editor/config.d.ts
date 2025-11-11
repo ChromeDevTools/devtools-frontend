@@ -41,7 +41,7 @@ export declare const showCompletionHint: CM.ViewPlugin<{
 }>;
 export declare function contentIncludingHint(view: CM.EditorView): string;
 export declare const setAiAutoCompleteSuggestion: CM.StateEffectType<ActiveSuggestion | null>;
-interface ActiveSuggestion {
+export interface ActiveSuggestion {
     text: string;
     from: number;
     sampleId?: number;
@@ -57,4 +57,3 @@ export declare function acceptAiAutoCompleteSuggestion(view: CM.EditorView): {
     suggestion?: ActiveSuggestion;
 };
 export declare const aiAutoCompleteSuggestion: CM.Extension;
-export {};

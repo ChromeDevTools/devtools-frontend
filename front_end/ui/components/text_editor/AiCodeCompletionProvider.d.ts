@@ -1,4 +1,5 @@
 import * as Host from '../../../core/host/host.js';
+import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import type { TextEditor } from './TextEditor.js';
 export declare enum AiCodeCompletionTeaserMode {
@@ -20,6 +21,7 @@ export interface AiCodeCompletionConfig {
     onSuggestionAccepted: () => void;
     onRequestTriggered: () => void;
     onResponseReceived: (citations: Host.AidaClient.Citation[]) => void;
+    panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 export declare const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export declare const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
@@ -29,4 +31,5 @@ export declare class AiCodeCompletionProvider {
     extension(): CodeMirror.Extension[];
     dispose(): void;
     editorInitialized(editor: TextEditor): void;
+    clearCache(): void;
 }

@@ -49,9 +49,6 @@
     },
     {
       "path": "../../core/root/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/components/text_editor/bundle-tsconfig.json"
     }
   ]
 }

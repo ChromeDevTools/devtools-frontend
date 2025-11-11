@@ -3,6 +3,14 @@ import * as Root from '../root/root.js';
 import type { EventDescriptor, EventTargetEvent, GenericEvents } from './EventTarget.js';
 import { ObjectWrapper } from './Object.js';
 import { getLocalizedSettingsCategory, type LearnMore, maybeRemoveSettingExtension, type RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, type SettingExtensionOption, type SettingRegistration, SettingType } from './SettingRegistration.js';
+export interface SettingsCreationOptions {
+    syncedStorage: SettingsStorage;
+    globalStorage: SettingsStorage;
+    localStorage: SettingsStorage;
+    settingRegistrations: SettingRegistration[];
+    logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
+    runSettingsMigration?: boolean;
+}
 export declare class Settings {
     #private;
     readonly syncedStorage: SettingsStorage;
@@ -11,7 +19,7 @@ export declare class Settings {
     settingNameSet: Set<string>;
     orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
     readonly moduleSettings: Map<string, Setting<unknown>>;
-    private constructor();
+    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration }: SettingsCreationOptions);
     getRegisteredSettings(): SettingRegistration[];
     static hasInstance(): boolean;
     static instance(opts?: {
@@ -19,6 +27,7 @@ export declare class Settings {
         syncedStorage: SettingsStorage | null;
         globalStorage: SettingsStorage | null;
         localStorage: SettingsStorage | null;
+        settingRegistrations: SettingRegistration[] | null;
         logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
         runSettingsMigration?: boolean;
     }): Settings;

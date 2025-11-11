@@ -4,6 +4,7 @@
     const components = {
       'Button': () => import('../../front_end/ui/components/buttons/Button.docs.js'),
 'Icon': () => import('../../front_end/ui/components/icon_button/Icon.docs.js'),
+'MarkdownView': () => import('../../front_end/ui/components/markdown_view/MarkdownView.docs.js'),
 'Snackbars': () => import('../../front_end/ui/components/snackbars/Snackbars.docs.js'),
 'Spinners': () => import('../../front_end/ui/components/spinners/Spinners.docs.js'),
 'SurveyLink': () => import('../../front_end/ui/components/survey_link/SurveyLink.docs.js'),

@@ -4,7 +4,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import { debugLog } from './debug.js';
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
@@ -116,38 +115,42 @@ const console = {
  *    the suggestion is displayed.
  */
 export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
-    #editor;
     #stopSequences;
     #renderingTimeout;
     #aidaRequestCache;
+    // TODO(b/445394511): Remove panel from the class
     #panel;
+    #callbacks;
     #sessionId = crypto.randomUUID();
     #aidaClient;
     #serverSideLoggingEnabled;
-    constructor(opts, editor, panel, stopSequences) {
+    constructor(opts, panel, callbacks, stopSequences) {
         super();
         this.#aidaClient = opts.aidaClient;
         this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-        this.#editor = editor;
         this.#panel = panel;
         this.#stopSequences = stopSequences ?? [];
+        this.#callbacks = callbacks;
     }
     #debouncedRequestAidaSuggestion = Common.Debouncer.debounce((prefix, suffix, cursorPositionAtRequest, inferenceLanguage) => {
         void this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix, inferenceLanguage), cursorPositionAtRequest);
     }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
-    #buildRequest(prefix, suffix, inferenceLanguage = "JAVASCRIPT" /* Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT */) {
+    #buildRequest(prefix, suffix, inferenceLanguage = "JAVASCRIPT" /* Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT */, additionalFiles) {
         const userTier = Host.AidaClient.convertToUserTierEnum(this.#userTier);
         function validTemperature(temperature) {
             return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
         }
         // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
         prefix = '\n' + prefix;
-        const additionalFiles = this.#panel === "console" /* ContextFlavor.CONSOLE */ ? [{
-                path: 'devtools-console-context.js',
-                content: consoleAdditionalContextFileContent,
-                included_reason: Host.AidaClient.Reason.RELATED_FILE,
-            }] :
-            undefined;
+        let additionalContextFiles = additionalFiles ?? undefined;
+        if (!additionalContextFiles) {
+            additionalContextFiles = this.#panel === "console" /* ContextFlavor.CONSOLE */ ? [{
+                    path: 'devtools-console-context.js',
+                    content: consoleAdditionalContextFileContent,
+                    included_reason: Host.AidaClient.Reason.RELATED_FILE,
+                }] :
+                undefined;
+        }
         return {
             client: Host.AidaClient.CLIENT_NAME,
             prefix,
@@ -164,7 +167,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
                 user_tier: userTier,
                 client_version: Root.Runtime.getChromeVersion(),
             },
-            additional_files: additionalFiles,
+            additional_files: additionalContextFiles,
         };
     }
     async #completeCodeCached(request) {
@@ -192,7 +195,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
         // `currentHint` is the portion of a standard autocomplete suggestion that the user has not yet typed.
         // For example, if the user types `document.queryS` and the autocomplete suggests `document.querySelector`,
         // the `currentHint` is `elector`.
-        const currentHintInMenu = this.#editor.editor.plugin(TextEditor.Config.showCompletionHint)?.currentHint;
+        const currentHintInMenu = this.#callbacks?.getCompletionHint();
         // TODO(ergunsh): We should not do this check here. Instead, the AI code suggestions should be provided
         // as it is to the view plugin. The view plugin should choose which one to use based on the completion hint
         // and selected completion.
@@ -250,21 +253,19 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
             const { suggestionText, sampleId, fromCache, citations, rpcGlobalId, } = sampleResponse;
             const remainingDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
             this.#renderingTimeout = window.setTimeout(() => {
-                const currentCursorPosition = this.#editor.editor.state.selection.main.head;
+                const currentCursorPosition = this.#callbacks?.getSelectionHead();
                 if (currentCursorPosition !== cursorPositionAtRequest) {
                     this.dispatchEventToListeners("ResponseReceived" /* Events.RESPONSE_RECEIVED */, {});
                     return;
                 }
-                this.#editor.dispatch({
-                    effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({
-                        text: suggestionText,
-                        from: cursorPositionAtRequest,
-                        rpcGlobalId,
-                        sampleId,
-                        startTime,
-                        onImpression: this.#registerUserImpression.bind(this),
-                        clearCachedRequest: this.clearCachedRequest.bind(this),
-                    })
+                this.#callbacks?.setAiAutoCompletion({
+                    text: suggestionText,
+                    from: cursorPositionAtRequest,
+                    rpcGlobalId,
+                    sampleId,
+                    startTime,
+                    onImpression: this.registerUserImpression.bind(this),
+                    clearCachedRequest: this.clearCachedRequest.bind(this),
                 });
                 if (fromCache) {
                     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
@@ -336,7 +337,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
     #updateCachedRequest(request, response) {
         this.#aidaRequestCache = { request, response };
     }
-    #registerUserImpression(rpcGlobalId, latency, sampleId) {
+    registerUserImpression(rpcGlobalId, latency, sampleId) {
         const seconds = Math.floor(latency / 1_000);
         const remainingMs = latency % 1_000;
         const nanos = Math.floor(remainingMs * 1_000_000);
@@ -381,14 +382,32 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper {
     onTextChanged(prefix, suffix, cursorPositionAtRequest, inferenceLanguage) {
         this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage);
     }
+    async completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
+        const request = this.#buildRequest(prefix, suffix, inferenceLanguage, additionalFiles);
+        const { response, fromCache } = await this.#completeCodeCached(request);
+        debugLog('At cursor position', cursorPositionAtRequest, { request, response, fromCache });
+        if (!response) {
+            return { response: null, fromCache: false };
+        }
+        return { response, fromCache };
+    }
     remove() {
         if (this.#renderingTimeout) {
             clearTimeout(this.#renderingTimeout);
             this.#renderingTimeout = undefined;
         }
-        this.#editor.dispatch({
-            effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
-        });
+        this.#callbacks?.setAiAutoCompletion(null);
+    }
+    static isAiCodeCompletionEnabled(locale) {
+        if (!locale.startsWith('en-')) {
+            return false;
+        }
+        const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
+        if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge ||
+            aidaAvailability.blockedByEnterprisePolicy) {
+            return false;
+        }
+        return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
     }
 }
 //# sourceMappingURL=AiCodeCompletion.js.map

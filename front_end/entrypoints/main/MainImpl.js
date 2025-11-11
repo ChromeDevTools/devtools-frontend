@@ -157,9 +157,12 @@ export class MainImpl {
         this.#initializeGlobalsForLayoutTests();
         Object.assign(Root.Runtime.hostConfig, config);
         const creationOptions = {
-            ...this.createSettingsStorage(prefs),
-            logSettingAccess: VisualLogging.logSettingAccess,
-            runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
+            settingsCreationOptions: {
+                ...this.createSettingsStorage(prefs),
+                settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+                logSettingAccess: VisualLogging.logSettingAccess,
+                runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
+            },
         };
         new Foundation.Universe.Universe(creationOptions);
         await this.requestAndRegisterLocaleData();

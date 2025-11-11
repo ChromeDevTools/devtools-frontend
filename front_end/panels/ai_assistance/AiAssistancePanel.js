@@ -319,7 +319,7 @@ function defaultView(input, output, target) {
         switch (input.state) {
             case "chat-view" /* ViewState.CHAT_VIEW */:
                 return html `<devtools-ai-chat-view
-          .props=${input}
+          .props=${input.props}
           ${Lit.Directives.ref((el) => {
                     if (!el || !(el instanceof ChatView)) {
                         return;
@@ -335,9 +335,7 @@ function defaultView(input, output, target) {
             case "disabled-view" /* ViewState.DISABLED_VIEW */:
                 return html `<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI.Widget.widgetConfig(DisabledWidget, {
-                    aidaAvailability: input.aidaAvailability,
-                })}
+          .widgetConfig=${UI.Widget.widgetConfig(DisabledWidget, input.props)}
         ></devtools-widget>`;
         }
     }
@@ -447,16 +445,68 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted" /* AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED */, this.#onHistoryDeleted, this);
     }
-    #getChatUiState() {
+    async #getPanelViewInput() {
         const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
         if (this.#aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */ ||
             !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
-            return "disabled-view" /* ViewState.DISABLED_VIEW */;
+            return {
+                state: "disabled-view" /* ViewState.DISABLED_VIEW */,
+                props: {
+                    aidaAvailability: this.#aidaAvailability,
+                },
+            };
         }
         if (this.#conversation?.type) {
-            return "chat-view" /* ViewState.CHAT_VIEW */;
+            const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
+            const markdownRenderer = getMarkdownRenderer(this.#selectedContext, this.#conversation);
+            return {
+                state: "chat-view" /* ViewState.CHAT_VIEW */,
+                props: {
+                    blockedByCrossOrigin: this.#blockedByCrossOrigin,
+                    isLoading: this.#isLoading,
+                    messages: this.#messages,
+                    selectedContext: this.#selectedContext,
+                    conversationType: this.#conversation.type,
+                    isReadOnly: this.#conversation.isReadOnly ?? false,
+                    changeSummary: this.#getChangeSummary(),
+                    inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
+                    userInfo: this.#userInfo,
+                    canShowFeedbackForm: this.#serverSideLoggingEnabled,
+                    multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
+                        this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
+                    imageInput: this.#imageInput,
+                    isTextInputDisabled: this.#isTextInputDisabled(),
+                    emptyStateSuggestions,
+                    inputPlaceholder: this.#getChatInputPlaceholder(),
+                    disclaimerText: this.#getDisclaimerText(),
+                    isTextInputEmpty: this.#isTextInputEmpty,
+                    changeManager: this.#changeManager,
+                    uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
+                        this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
+                    markdownRenderer,
+                    onTextSubmit: async (text, imageInput, multimodalInputType) => {
+                        this.#imageInput = undefined;
+                        this.#isTextInputEmpty = true;
+                        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+                        await this.#startConversation(text, imageInput, multimodalInputType);
+                    },
+                    onInspectElementClick: this.#handleSelectElementClick.bind(this),
+                    onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
+                    onCancelClick: this.#cancel.bind(this),
+                    onContextClick: this.#handleContextClick.bind(this),
+                    onNewConversation: this.#handleNewChatRequest.bind(this),
+                    onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
+                    onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
+                        undefined,
+                    onCopyResponseClick: this.#onCopyResponseClick.bind(this),
+                    onTextInputChange: this.#handleTextInputChange.bind(this),
+                    onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : undefined,
+                }
+            };
         }
-        return "explore-view" /* ViewState.EXPLORE_VIEW */;
+        return {
+            state: "explore-view" /* ViewState.EXPLORE_VIEW */,
+        };
     }
     #getAiAssistanceEnabledSetting() {
         try {
@@ -496,15 +546,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#timelinePanelInstance.addEventListener("IsViewingTrace" /* TimelinePanel.TimelinePanel.Events.IS_VIEWING_TRACE */, this.requestUpdate, this);
         }
     }
-    // We select the default agent based on the open panels if
-    // there isn't any active conversation.
-    #selectDefaultAgentIfNeeded() {
-        // If there already is an agent and if it is not empty,
-        // we don't automatically change the agent. In addition to this,
-        // we don't change the current agent when there is a message in flight.
-        if ((this.#conversationAgent && this.#conversation && !this.#conversation.isEmpty) || this.#isLoading) {
-            return;
-        }
+    #getDefaultConversationType() {
         const { hostConfig } = Root.Runtime;
         const viewManager = UI.ViewManager.ViewManager.instance();
         const isElementsPanelVisible = viewManager.isViewVisible('elements');
@@ -524,6 +566,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
             targetConversationType = "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */;
         }
+        return targetConversationType;
+    }
+    // We select the default agent based on the open panels if
+    // there isn't any active conversation.
+    #selectDefaultAgentIfNeeded() {
+        // If there already is an agent and if it is not empty,
+        // we don't automatically change the agent. In addition to this,
+        // we don't change the current agent when there is a message in flight.
+        if ((this.#conversationAgent && this.#conversation && !this.#conversation.isEmpty) || this.#isLoading) {
+            return;
+        }
+        const targetConversationType = this.#getDefaultConversationType();
         if (this.#conversation?.type === targetConversationType) {
             // The above if makes sure even if we have an active agent it's empty
             // So we can just reuse it
@@ -545,7 +599,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             // If we get a new agent we need to
             // create a new conversation along side it
             if (opts?.agent) {
-                this.#conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(agentToConversationType(opts?.agent), [], opts?.agent.id, false);
+                this.#conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(agentToConversationType(opts.agent), [], opts.agent.id, false);
             }
         }
         if (!opts?.agent) {
@@ -556,11 +610,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             // but conversation is
             // update with history conversation
             if (opts?.conversation) {
-                this.#conversation = opts?.conversation;
+                this.#conversation = opts.conversation;
             }
         }
         if (!this.#conversationAgent && !this.#conversation) {
-            this.#selectDefaultAgentIfNeeded();
+            const conversationType = this.#getDefaultConversationType();
+            if (conversationType) {
+                const agent = this.#conversationHandler.createAgent(conversationType, this.#changeManager);
+                this.#updateConversationState({ agent });
+                return;
+            }
         }
         this.#onContextSelectionChanged();
         this.requestUpdate();
@@ -687,36 +746,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         return this.#changeManager.formatChangesForPatching(this.#conversationAgent.id, /* includeSourceLocation= */ true);
     }
-    async performUpdate() {
-        const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
-        const markdownRenderer = getMarkdownRenderer(this.#selectedContext, this.#conversation);
-        this.view({
-            state: this.#getChatUiState(),
-            blockedByCrossOrigin: this.#blockedByCrossOrigin,
-            aidaAvailability: this.#aidaAvailability,
+    #getToolbarInput() {
+        return {
             isLoading: this.#isLoading,
-            messages: this.#messages,
-            selectedContext: this.#selectedContext,
-            conversationType: this.#conversation?.type,
-            isReadOnly: this.#conversation?.isReadOnly ?? false,
-            changeSummary: this.#getChangeSummary(),
-            inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
-            userInfo: this.#userInfo,
-            canShowFeedbackForm: this.#serverSideLoggingEnabled,
-            multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
-                this.#conversation?.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
-            imageInput: this.#imageInput,
             showChatActions: this.#shouldShowChatActions(),
             showActiveConversationActions: Boolean(this.#conversation && !this.#conversation.isEmpty),
-            isTextInputDisabled: this.#isTextInputDisabled(),
-            emptyStateSuggestions,
-            inputPlaceholder: this.#getChatInputPlaceholder(),
-            disclaimerText: this.#getDisclaimerText(),
-            isTextInputEmpty: this.#isTextInputEmpty,
-            changeManager: this.#changeManager,
-            uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
-                this.#conversation?.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
-            markdownRenderer,
             onNewChatClick: this.#handleNewChatRequest.bind(this),
             populateHistoryMenu: this.#populateHistoryMenu.bind(this),
             onDeleteClick: this.#onDeleteClicked.bind(this),
@@ -727,23 +761,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             onSettingsClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
             },
-            onTextSubmit: async (text, imageInput, multimodalInputType) => {
-                this.#imageInput = undefined;
-                this.#isTextInputEmpty = true;
-                Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-                await this.#startConversation(text, imageInput, multimodalInputType);
-            },
-            onInspectElementClick: this.#handleSelectElementClick.bind(this),
-            onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
-            onCancelClick: this.#cancel.bind(this),
-            onContextClick: this.#handleContextClick.bind(this),
-            onNewConversation: this.#handleNewChatRequest.bind(this),
-            onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
-            onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
-                undefined,
-            onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-            onTextInputChange: this.#handleTextInputChange.bind(this),
-            onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : undefined,
+        };
+    }
+    async performUpdate() {
+        this.view({
+            ...this.#getToolbarInput(),
+            ...await this.#getPanelViewInput(),
         }, this.#viewOutput, this.contentElement);
     }
     #onCopyResponseClick(message) {
@@ -760,18 +783,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         void this.#toggleSearchElementAction?.execute();
     }
     #isTextInputDisabled() {
-        // If the `aiAssistanceSetting` is not enabled
-        // or if the user is blocked by age, the text input is disabled.
-        const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-        const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
-        if (!aiAssistanceSetting || isBlockedByAge) {
-            return true;
-        }
-        // If the Aida is not available, the text input is disabled.
-        const isAidaAvailable = this.#aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */;
-        if (!isAidaAvailable) {
-            return true;
-        }
         // If sending a new message is blocked by cross origin context
         // the text input is disabled.
         if (this.#blockedByCrossOrigin) {
@@ -797,8 +808,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         return true;
     }
     #getChatInputPlaceholder() {
-        const state = this.#getChatUiState();
-        if (state === "disabled-view" /* ViewState.DISABLED_VIEW */ || !this.#conversation) {
+        if (!this.#conversation) {
             return i18nString(UIStrings.followTheSteps);
         }
         if (this.#blockedByCrossOrigin) {
@@ -826,8 +836,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
     }
     #getDisclaimerText() {
-        const state = this.#getChatUiState();
-        if (state === "disabled-view" /* ViewState.DISABLED_VIEW */ || !this.#conversation || this.#conversation.isReadOnly) {
+        if (!this.#conversation || this.#conversation.isReadOnly) {
             return i18nString(UIStrings.inputDisclaimerForEmptyState);
         }
         const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===

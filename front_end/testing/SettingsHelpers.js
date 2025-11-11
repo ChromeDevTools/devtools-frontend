@@ -162,7 +162,13 @@ export function setupSettings(reset) {
     Common.Settings.registerSettingsForTest(settings, reset);
     // Instantiate the storage.
     const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
-    Common.Settings.Settings.instance({ forceNew: reset, syncedStorage: storage, globalStorage: storage, localStorage: storage });
+    Common.Settings.Settings.instance({
+        forceNew: reset,
+        syncedStorage: storage,
+        globalStorage: storage,
+        localStorage: storage,
+        settingRegistrations: Common.SettingRegistration.getRegisteredSettings()
+    });
 }
 export function cleanupSettings() {
     Common.Settings.resetSettings();

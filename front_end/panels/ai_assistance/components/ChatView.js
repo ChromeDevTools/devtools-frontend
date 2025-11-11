@@ -338,7 +338,6 @@ export class ChatView extends HTMLElement {
         const renderFooter = () => {
             const classes = Lit.Directives.classMap({
                 'chat-view-footer': true,
-                'has-conversation': !!this.#props.conversationType,
                 'is-read-only': this.#props.isReadOnly,
             });
             // clang-format off
@@ -355,9 +354,8 @@ export class ChatView extends HTMLElement {
             // clang-format on
         };
         const renderInputOrReadOnlySection = () => {
-            if (this.#props.conversationType && this.#props.isReadOnly) {
+            if (this.#props.isReadOnly) {
                 return renderReadOnlySection({
-                    conversationType: this.#props.conversationType,
                     onNewConversation: this.#props.onNewConversation,
                 });
             }
@@ -372,7 +370,6 @@ export class ChatView extends HTMLElement {
                 multimodalInputEnabled: this.#props.multimodalInputEnabled,
                 conversationType: this.#props.conversationType,
                 imageInput: this.#props.imageInput,
-                aidaAvailability: this.#props.aidaAvailability,
                 isTextInputEmpty: this.#props.isTextInputEmpty,
                 uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
                 onContextClick: this.#props.onContextClick,
@@ -724,9 +721,6 @@ function renderContextTitle(context, disabled) {
     return context.getTitle();
 }
 function renderSelection({ selectedContext, inspectElementToggled, conversationType, isTextInputDisabled, onContextClick, onInspectElementClick, }) {
-    if (!conversationType) {
-        return Lit.nothing;
-    }
     // TODO: currently the picker behavior is SDKNode specific.
     const hasPickerBehavior = conversationType === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
     const resourceClass = Lit.Directives.classMap({
@@ -838,10 +832,7 @@ function renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick 
   </div>`;
     // clang-format on
 }
-function renderReadOnlySection({ onNewConversation, conversationType }) {
-    if (!conversationType) {
-        return Lit.nothing;
-    }
+function renderReadOnlySection({ onNewConversation }) {
     // clang-format off
     return html `<div
     class="chat-readonly-container"
@@ -998,11 +989,8 @@ function renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltip
   `;
     // clang-format on
 }
-function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled, inputPlaceholder, selectedContext, inspectElementToggled, multimodalInputEnabled, conversationType, imageInput, isTextInputEmpty, uploadImageInputEnabled, aidaAvailability, disclaimerText, onContextClick, onInspectElementClick, onSubmit, onTextAreaKeyDown, onCancel, onNewConversation, onTakeScreenshot, onRemoveImageInput, onTextInputChange, onImageUpload, }) {
-    if (!conversationType) {
-        return Lit.nothing;
-    }
-    const shouldShowMultiLine = aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */ && selectedContext;
+function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled, inputPlaceholder, selectedContext, inspectElementToggled, multimodalInputEnabled, conversationType, imageInput, isTextInputEmpty, uploadImageInputEnabled, disclaimerText, onContextClick, onInspectElementClick, onSubmit, onTextAreaKeyDown, onCancel, onNewConversation, onTakeScreenshot, onRemoveImageInput, onTextInputChange, onImageUpload, }) {
+    const shouldShowMultiLine = selectedContext;
     const chatInputContainerCls = Lit.Directives.classMap({
         'chat-input-container': true,
         'single-line-layout': !shouldShowMultiLine,
@@ -1050,10 +1038,7 @@ function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled,
   </form>`;
     // clang-format on
 }
-function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackForm, isTextInputDisabled, suggestions, userInfo, markdownRenderer, conversationType, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef, }) {
-    if (!conversationType) {
-        return Lit.nothing;
-    }
+function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackForm, isTextInputDisabled, suggestions, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef, }) {
     if (messages.length > 0) {
         return renderMessages({
             messages,

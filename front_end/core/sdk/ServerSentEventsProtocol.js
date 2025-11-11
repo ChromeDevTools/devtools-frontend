@@ -28,6 +28,9 @@ export class ServerSentEventsParser {
     async addBase64Chunk(raw) {
         await this.#decoder.addBase64Chunk(raw);
     }
+    addTextChunk(chunk) {
+        this.#onTextChunk(chunk);
+    }
     #onTextChunk(chunk) {
         // A line consists of "this.#line" plus a slice of "chunk[start:<next new cr/lf>]".
         let start = 0;

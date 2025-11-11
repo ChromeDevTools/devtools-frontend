@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowUmdGlobalAccess": true,
     "checkJs": true,
     "composite": true,
     "declaration": true,
@@ -24,30 +25,38 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": "../../../../../scripts/component_docs",
+    "rootDir": "../../../../../../../front_end/ui/components/markdown_view",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "docs_environment-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
+    "tsBuildInfoFile": "docs_ts-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../../node_modules/@types"
+    ],
+    "types": [
+      "mocha",
+      "chai",
+      "sinon",
+      "karma-chai-sinon"
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../scripts/component_docs/docs_environment.ts",
-    "../../../../../front_end/legacy/legacy-defs.d.ts",
-    "../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../../front_end/ui/components/markdown_view/MarkdownView.docs.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "../../front_end/core/common/bundle-tsconfig.json"
+      "path": "./bundle-tsconfig.json"
     },
     {
-      "path": "../../front_end/testing/testing-tsconfig.json"
+      "path": "../../../third_party/marked/bundle-tsconfig.json"
     },
     {
-      "path": "../../front_end/ui/legacy/theme_support/bundle-tsconfig.json"
+      "path": "../../lit/bundle-tsconfig.json"
     }
   ]
 }

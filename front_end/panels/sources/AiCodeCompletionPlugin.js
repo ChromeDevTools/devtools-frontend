@@ -17,6 +17,13 @@ const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
 const DISCLAIMER_TOOLTIP_ID = 'sources-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'sources-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'sources-ai-code-completion-citations-tooltip';
+function createCallbacks(editor) {
+    return {
+        getSelectionHead: () => editor.editor.state.selection.main.head,
+        getCompletionHint: () => editor.editor.plugin(TextEditor.Config.showCompletionHint)?.currentHint,
+        setAiAutoCompletion: (args) => editor.editor.dispatch({ effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(args) }),
+    };
+}
 export class AiCodeCompletionPlugin extends Plugin {
     #aidaClient;
     #aidaAvailability;
@@ -193,7 +200,7 @@ export class AiCodeCompletionPlugin extends Plugin {
             const contextFlavor = this.uiSourceCode.url().startsWith('snippet://') ?
                 "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */ :
                 "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */;
-            this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#editor, contextFlavor);
+            this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, contextFlavor, createCallbacks(this.#editor));
             this.#aiCodeCompletion.addEventListener("RequestTriggered" /* AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED */, this.#onAiRequestTriggered, this);
             this.#aiCodeCompletion.addEventListener("ResponseReceived" /* AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED */, this.#onAiResponseReceived, this);
         }

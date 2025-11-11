@@ -68,7 +68,6 @@
     "../../../../../../front_end/models/issues_manager/SourceFrameIssuesManager.ts",
     "../../../../../../front_end/models/issues_manager/StylesheetLoadingIssue.ts",
     "../../../../../../front_end/models/issues_manager/UnencodedDigestIssue.ts",
-    "../../../../../../front_end/models/issues_manager/UserReidentificationIssue.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"

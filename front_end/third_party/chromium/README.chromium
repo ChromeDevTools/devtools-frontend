@@ -1,5 +1,5 @@
 Name: Dependencies sourced from the upstream `chromium` repository
-URL: https://chromium.googlesource.com/chromium/src
+URL: Internal
 Version: N/A
 Revision: 68abf80f61173a7def1da1fad60f72a52ea0531e
 Update Mechanism: Manual (https://crbug.com/428069060)
@@ -11,6 +11,8 @@ License Android Compatible: yes
 
 Description:
 This subdirectory is reserved for dependencies that are part of the upstream `chromium` repository.
+Sourced from https://source.chromium.org/chromium/chromium/src/+/main:components/variations/proto/devtools/.
+The Revision is the chromium revision these have been taken from.
 
 To update these dependencies, run this from the root of the `devtools-frontend` repository:
 

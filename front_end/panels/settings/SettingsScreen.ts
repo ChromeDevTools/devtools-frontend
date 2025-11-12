@@ -235,6 +235,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
 
     this.containerElement.classList.add('settings-multicolumn-card-container');
+    this.syncSection.markAsRoot();
 
     // AI, GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
     // AI settings are displayed in their own tab.
@@ -316,11 +317,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
         new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
             resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve))
             .then(syncInfo => {
-              this.syncSection.data = {
-                syncInfo,
-                syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
-                receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
-              };
+              this.syncSection.syncInfo = syncInfo;
               if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
                 this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
               }
@@ -342,7 +339,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
     } else if (category === Common.Settings.SettingCategory.ACCOUNT && settings.length > 0) {
       const syncCard = createSettingsCard(
           Common.SettingRegistration.getLocalizedSettingsCategory(Common.SettingRegistration.SettingCategory.ACCOUNT),
-          this.syncSection);
+          this.syncSection.element);
       this.containerElement.appendChild(syncCard);
     } else if (settings.length > 0) {
       this.createStandardSectionElement(category, settings);

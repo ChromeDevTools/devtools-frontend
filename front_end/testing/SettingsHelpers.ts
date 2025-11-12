@@ -214,6 +214,8 @@ export function setupSettings(reset: boolean) {
         Common.Settings.SettingCategory.ELEMENTS, 'show-css-property-documentation-on-hover', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
+        Common.Settings.SettingCategory.ACCOUNT, 'sync-preferences', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
         Common.Settings.SettingCategory.AI, 'ai-assistance-enabled', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.AI, 'ai-annotations-enabled', false, Common.Settings.SettingType.BOOLEAN),

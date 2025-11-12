@@ -4,215 +4,126 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {createFakeSetting, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as SettingComponents from '../../../ui/components/settings/settings.js';
+import {
+  renderElementIntoDOM,
+} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as PanelCommon from '../../common/common.js';
 
-import * as PanelComponents from './components.js';
+import * as Components from './components.js';
 
-/**
- * TODO(crbug.com/442543412): Add tests for calling `UserBadges.initialize()` and recording an action after
- * the setting is enabled. We currently don't have tests for these because we'll need to re-write them
- * anyways with the widget framework (and using `view.onSettingChanged` kind of approach instead of
- * emitting the change custom event).
- **/
-async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionData):
-    Promise<{section: PanelComponents.SyncSection.SyncSection, shadowRoot: ShadowRoot}> {
-  const section = new PanelComponents.SyncSection.SyncSection();
-  renderElementIntoDOM(section);
-  section.data = data;
-  await RenderCoordinator.done();
-  assert.isNotNull(section.shadowRoot);
-  return {section, shadowRoot: section.shadowRoot};
-}
+describeWithEnvironment('SyncSection', () => {
+  const MOCK_SYNC_INFO_NOT_SIGNED_IN: Host.InspectorFrontendHostAPI.SyncInformation = {
+    isSyncActive: false,
+  };
 
-describeWithLocale('SyncSection', () => {
+  const MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON: Host.InspectorFrontendHostAPI.SyncInformation = {
+    isSyncActive: true,
+    arePreferencesSynced: true,
+    accountEmail: 'test@google.com',
+    accountImage: 'data:image/png;base64,test',
+  };
+
+  const MOCK_SYNC_INFO_SIGNED_IN_SYNC_OFF: Host.InspectorFrontendHostAPI.SyncInformation = {
+    ...MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON,
+    isSyncActive: false,
+  };
+
+  const MOCK_SYNC_INFO_SIGNED_IN_PREFERENCES_OFF: Host.InspectorFrontendHostAPI.SyncInformation = {
+    ...MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON,
+    arePreferencesSynced: false,
+  };
+
+  const MOCK_GDP_PROFILE: Host.GdpClient.Profile = {
+    name: 'test',
+    activeSubscription: {
+      subscriptionTier: Host.GdpClient.SubscriptionTier.PREMIUM_ANNUAL,
+      subscriptionStatus: Host.GdpClient.SubscriptionStatus.ENABLED,
+    },
+  };
+
+  let getProfileStub: sinon.SinonStub;
+
   beforeEach(() => {
-    updateHostConfig({
-      devToolsGdpProfiles: {
-        enabled: true,
-        badgesEnabled: true,
-        starterBadgeEnabled: true,
-      },
-      devToolsGdpProfilesAvailability: {
-        enabled: true,
-        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
-      },
+    getProfileStub = sinon.stub(Host.GdpClient.GdpClient.instance(), 'getProfile');
+    // Default to no profile.
+    getProfileStub.resolves(null);
+  });
+
+  async function createWidget() {
+    const view = createViewFunctionStub(Components.SyncSection.SyncSection);
+    const widget = new Components.SyncSection.SyncSection(undefined, view);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget);
+    await view.nextInput;
+    return {view, widget};
+  }
+
+  describe('rendering', () => {
+    it('shows "not signed in" when no user is signed into Chrome', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_NOT_SIGNED_IN;
+      const input = await view.nextInput;
+      assert.deepEqual(input.syncInfo, MOCK_SYNC_INFO_NOT_SIGNED_IN);
+      assert.isUndefined(input.gdpProfile);
+    });
+
+    it('shows account info when user is signed in', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      const input = await view.nextInput;
+      assert.deepEqual(input.syncInfo, MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON);
+    });
+
+    it('disables sync checkbox when sync is off', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_OFF;
+      const input = await view.nextInput;
+      assert.isTrue(input.syncSetting.disabled());
+    });
+
+    it('disables sync checkbox when preferences sync is off', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_PREFERENCES_OFF;
+      const input = await view.nextInput;
+      assert.isTrue(input.syncSetting.disabled());
+    });
+
+    it('enables sync checkbox when sync is fully on', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      const input = await view.nextInput;
+      assert.isFalse(input.syncSetting.disabled());
+    });
+
+    it('passes SYNC_DISABLED warning type when sync is off', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_OFF;
+      const input = await view.nextInput;
+      assert.strictEqual(input.warningType, Components.SyncSection.WarningType.SYNC_DISABLED);
+    });
+
+    it('passes PREFERENCES_SYNC_DISABLED warning type when preferences sync is off', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_PREFERENCES_OFF;
+      const input = await view.nextInput;
+      assert.strictEqual(input.warningType, Components.SyncSection.WarningType.PREFERENCES_SYNC_DISABLED);
+    });
+
+    it('passes no warning type when sync is fully on', async () => {
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      const input = await view.nextInput;
+      assert.isUndefined(input.warningType);
     });
   });
 
-  it('shows a warning tooltip when sync is not active and the user is signed in', async () => {
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: false,
-        accountEmail: 'user@gmail.com',
-      },
-      syncSetting,
-      receiveBadgesSetting,
-    });
-    const warning = shadowRoot.querySelector('devtools-tooltip');
-    assert.instanceOf(warning, HTMLElement);
-    assert.include(warning.innerText, 'To turn this setting on');
-  });
-
-  it('shows a warning tooltip when sync is active but preferences bucket is not synced', async () => {
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: true,
-        arePreferencesSynced: false,
-        accountEmail: 'user@gmail.com',
-      },
-      receiveBadgesSetting,
-      syncSetting,
-    });
-
-    const warning = shadowRoot.querySelector('devtools-tooltip');
-    assert.instanceOf(warning, HTMLElement);
-    assert.include(warning.innerText, 'You need to first enable saving Chrome settings in your Google account.');
-  });
-
-  it('disables the checkbox when sync is not active', async () => {
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: false,
-        accountEmail: 'user@gmail.com',
-      },
-      receiveBadgesSetting,
-      syncSetting,
-    });
-
-    const settingCheckbox = shadowRoot.querySelector('setting-checkbox');
-    assert.instanceOf(settingCheckbox, SettingComponents.SettingCheckbox.SettingCheckbox);
-    assert.isNotNull(settingCheckbox.shadowRoot);
-
-    const checkbox = settingCheckbox.shadowRoot.querySelector('input');
-    assert.instanceOf(checkbox, HTMLInputElement);
-
-    assert.isTrue(checkbox.disabled);
-  });
-
-  it('shows the avatar and email of the logged in user', async () => {
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: true,
-        arePreferencesSynced: true,
-        accountEmail: 'user@gmail.com',
-        accountImage: '<png encoded as base64>',
-      },
-      receiveBadgesSetting,
-      syncSetting,
-    });
-
-    const image = shadowRoot.querySelector('img');
-    assert.instanceOf(image, HTMLImageElement);
-
-    const email = shadowRoot.querySelector('.account-email');
-    assert.instanceOf(email, HTMLElement);
-
-    assert.include(email.innerText, 'user@gmail.com');
-  });
-
-  it('shows not signed in if the user is not logged in', async () => {
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: false,
-        arePreferencesSynced: false,
-      },
-      receiveBadgesSetting,
-      syncSetting,
-    });
-
-    const email = shadowRoot.querySelector('.not-signed-in');
-    assert.instanceOf(email, HTMLElement);
-
-    assert.include(email.innerText, 'not signed into Chrome');
-  });
-
-  it('does not render the GDP section if the feature is disabled', async () => {
-    updateHostConfig({
-      devToolsGdpProfiles: {
-        enabled: false,
-      },
-    });
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: true,
-        arePreferencesSynced: true,
-        accountEmail: 'user@gmail.com',
-      },
-      syncSetting,
-      receiveBadgesSetting,
-    });
-    const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-    assert.isNull(gdpSection);
-  });
-
-  it('does not render the GDP section on non-branded builds', async () => {
-    updateHostConfig({
-      devToolsGdpProfilesAvailability: {
-        enabled: false,
-        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
-      },
-    });
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: true,
-        arePreferencesSynced: true,
-        accountEmail: 'user@gmail.com',
-      },
-      syncSetting,
-      receiveBadgesSetting,
-    });
-    const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-    assert.isNull(gdpSection);
-  });
-
-  it('does not render the GDP section if enterprise policy disables the feature', async () => {
-    updateHostConfig({
-      devToolsGdpProfilesAvailability: {
-        enabled: true,
-        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED,
-      },
-    });
-    const syncSetting = createFakeSetting<boolean>('setting', true);
-    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-    const {shadowRoot} = await renderSyncSection({
-      syncInfo: {
-        isSyncActive: true,
-        arePreferencesSynced: true,
-        accountEmail: 'user@gmail.com',
-      },
-      syncSetting,
-      receiveBadgesSetting,
-    });
-    const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-    assert.isNull(gdpSection);
-  });
-
-  describe('Google Developer Program profile', () => {
+  describe('GDP profile', () => {
     beforeEach(() => {
       updateHostConfig({
         devToolsGdpProfiles: {
           enabled: true,
-          badgesEnabled: true,
-          starterBadgeEnabled: true,
         },
         devToolsGdpProfilesAvailability: {
           enabled: true,
@@ -221,267 +132,48 @@ describeWithLocale('SyncSection', () => {
       });
     });
 
-    afterEach(() => {
-      updateHostConfig({});
+    it('fetches GDP profile when user is signed in', async () => {
+      const {widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      sinon.assert.calledOnce(getProfileStub);
     });
 
-    it('renders the sign-up state when the user does not have a GDP profile but is eligible to create one',
-       async () => {
-         const gdpClient = Host.GdpClient.GdpClient.instance();
-         sinon.stub(gdpClient, 'getProfile').resolves({profile: null, isEligible: true});
-
-         const syncSetting = createFakeSetting<boolean>('setting', true);
-         const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-         const {shadowRoot} = await renderSyncSection({
-           syncInfo: {
-             isSyncActive: true,
-             arePreferencesSynced: true,
-             accountEmail: 'user@gmail.com',
-           },
-           syncSetting,
-           receiveBadgesSetting,
-         });
-         const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-         assert.instanceOf(gdpSection, HTMLElement);
-
-         const signUpButton = gdpSection.querySelector('devtools-button');
-         assert.instanceOf(signUpButton, HTMLElement);
-         assert.strictEqual(signUpButton.innerText, 'Sign up');
-       });
-
-    it('does not render the GDP section when the user does not have a GDP profile and is not eligible to create one',
-       async () => {
-         const gdpClient = Host.GdpClient.GdpClient.instance();
-         sinon.stub(gdpClient, 'getProfile').resolves({profile: null, isEligible: false});
-
-         const syncSetting = createFakeSetting<boolean>('setting', true);
-         const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-         const {shadowRoot} = await renderSyncSection({
-           syncInfo: {
-             isSyncActive: true,
-             arePreferencesSynced: true,
-             accountEmail: 'user@gmail.com',
-           },
-           syncSetting,
-           receiveBadgesSetting,
-         });
-         const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-         assert.isNull(gdpSection);
-       });
-
-    it('renders the profile details with standard plan', async () => {
-      const gdpClient = Host.GdpClient.GdpClient.instance();
-      sinon.stub(gdpClient, 'getProfile').resolves({
-        profile: {
-          name: 'test-profile',
-          activeSubscription: undefined,
-        },
-        isEligible: true
-      });
-
-      const syncSetting = createFakeSetting<boolean>('setting', true);
-      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-      const {shadowRoot} = await renderSyncSection({
-        syncInfo: {
-          isSyncActive: true,
-          arePreferencesSynced: true,
-          accountEmail: 'user@gmail.com',
-        },
-        syncSetting,
-        receiveBadgesSetting,
-      });
-
-      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-      assert.instanceOf(gdpSection, HTMLElement);
-
-      const planDetails = gdpSection.querySelector('.plan-details');
-      assert.instanceOf(planDetails, HTMLElement);
-      assert.include(planDetails.innerText, 'Standard plan');
-
-      const viewProfileLink = gdpSection.querySelector('x-link');
-      assert.instanceOf(viewProfileLink, HTMLElement);
-      assert.strictEqual(viewProfileLink.innerText, 'View profile');
-
-      const receiveBadgesCheckbox = gdpSection.querySelector('setting-checkbox');
-      assert.instanceOf(receiveBadgesCheckbox, SettingComponents.SettingCheckbox.SettingCheckbox);
+    it('does not fetch GDP profile when user is not signed in', async () => {
+      const {widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_NOT_SIGNED_IN;
+      sinon.assert.notCalled(getProfileStub);
     });
 
-    it('renders the profile details without badges if badges are blocked by enterprise policy', async () => {
-      updateHostConfig({
-        devToolsGdpProfiles: {
-          enabled: true,
-        },
-        devToolsGdpProfilesAvailability: {
-          enabled: true,
-          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED_WITHOUT_BADGES,
-        },
-      });
-      const gdpClient = Host.GdpClient.GdpClient.instance();
-      sinon.stub(gdpClient, 'getProfile').resolves({
-        profile: {
-          name: 'test-profile',
-          activeSubscription: undefined,
-        },
-        isEligible: true
-      });
-
-      const syncSetting = createFakeSetting<boolean>('setting', true);
-      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-      const {shadowRoot} = await renderSyncSection({
-        syncInfo: {
-          isSyncActive: true,
-          arePreferencesSynced: true,
-          accountEmail: 'user@gmail.com',
-        },
-        syncSetting,
-        receiveBadgesSetting,
-      });
-
-      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-      assert.instanceOf(gdpSection, HTMLElement);
-
-      const planDetails = gdpSection.querySelector('.plan-details');
-      assert.instanceOf(planDetails, HTMLElement);
-      assert.include(planDetails.innerText, 'Standard plan');
-
-      const viewProfileLink = gdpSection.querySelector('x-link');
-      assert.instanceOf(viewProfileLink, HTMLElement);
-      assert.strictEqual(viewProfileLink.innerText, 'View profile');
-
-      const receiveBadgesCheckbox = gdpSection.querySelector('setting-checkbox');
-      assert.isNull(receiveBadgesCheckbox);
+    it('shows sign up button if user is eligible and has no profile', async () => {
+      getProfileStub.resolves({profile: null, isEligible: true});
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      const input = await view.nextInput;
+      assert.isTrue(input.isEligibleToCreateGdpProfile);
+      assert.isUndefined(input.gdpProfile);
     });
 
-    it('renders the profile details without badges if badges are disabled by the flag', async () => {
-      updateHostConfig({
-        devToolsGdpProfiles: {
-          enabled: true,
-          badgesEnabled: false,
-        },
-        devToolsGdpProfilesAvailability: {
-          enabled: true,
-          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
-        },
-      });
-      const gdpClient = Host.GdpClient.GdpClient.instance();
-      sinon.stub(gdpClient, 'getProfile').resolves({
-        profile: {
-          name: 'test-profile',
-          activeSubscription: undefined,
-        },
-        isEligible: true,
-      });
-
-      const syncSetting = createFakeSetting<boolean>('setting', true);
-      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-      const {shadowRoot} = await renderSyncSection({
-        syncInfo: {
-          isSyncActive: true,
-          arePreferencesSynced: true,
-          accountEmail: 'user@gmail.com',
-        },
-        syncSetting,
-        receiveBadgesSetting,
-      });
-
-      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-      assert.instanceOf(gdpSection, HTMLElement);
-
-      const planDetails = gdpSection.querySelector('.plan-details');
-      assert.instanceOf(planDetails, HTMLElement);
-      assert.include(planDetails.innerText, 'Standard plan');
-
-      const viewProfileLink = gdpSection.querySelector('x-link');
-      assert.instanceOf(viewProfileLink, HTMLElement);
-      assert.strictEqual(viewProfileLink.innerText, 'View profile');
-
-      const receiveBadgesCheckbox = gdpSection.querySelector('setting-checkbox');
-      assert.isNull(receiveBadgesCheckbox);
+    it('shows profile details if user has a profile', async () => {
+      getProfileStub.resolves({profile: MOCK_GDP_PROFILE, isEligible: true});
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      const input = await view.nextInput;
+      assert.isTrue(input.isEligibleToCreateGdpProfile);
+      assert.deepEqual(input.gdpProfile, MOCK_GDP_PROFILE);
     });
 
-    const subscriptionTiers = [
-      {
-        tier: Host.GdpClient.SubscriptionTier.PREMIUM_ANNUAL,
-        expectedText: 'Premium',
-      },
-      {
-        tier: Host.GdpClient.SubscriptionTier.PREMIUM_MONTHLY,
-        expectedText: 'Premium',
-      },
-      {
-        tier: Host.GdpClient.SubscriptionTier.PRO_ANNUAL,
-        expectedText: 'Pro',
-      },
-      {
-        tier: Host.GdpClient.SubscriptionTier.PRO_MONTHLY,
-        expectedText: 'Pro',
-      },
-      {
-        tier: 'unknown-tier',
-        expectedText: 'Unknown plan',
-      },
-    ];
-    for (const {tier, expectedText} of subscriptionTiers) {
-      it(`renders the profile details with ${expectedText} plan`, async () => {
-        const gdpClient = Host.GdpClient.GdpClient.instance();
-        sinon.stub(gdpClient, 'getProfile').resolves({
-          profile: {
-            name: 'test-profile',
-            activeSubscription: {
-              subscriptionTier: tier as Host.GdpClient.SubscriptionTier,
-              subscriptionStatus: Host.GdpClient.SubscriptionStatus.ENABLED,
-            },
-          },
-          isEligible: true
-        });
-
-        const syncSetting = createFakeSetting<boolean>('setting', true);
-        const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-        const {shadowRoot} = await renderSyncSection({
-          syncInfo: {
-            isSyncActive: true,
-            arePreferencesSynced: true,
-            accountEmail: 'user@gmail.com',
-          },
-          syncSetting,
-          receiveBadgesSetting,
-        });
-
-        const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-        assert.instanceOf(gdpSection, HTMLElement);
-
-        const planDetails = gdpSection.querySelector('.plan-details');
-        assert.instanceOf(planDetails, HTMLElement);
-        assert.include(planDetails.innerText, expectedText);
-      });
-    }
-
-    it('refetches the GDP profile details after a successful sign-up', async () => {
-      const gdpClient = Host.GdpClient.GdpClient.instance();
-      const getProfileStub = sinon.stub(gdpClient, 'getProfile').resolves({profile: null, isEligible: true});
+    it('refetches GDP profile on sign-up success', async () => {
+      getProfileStub.resolves({profile: null, isEligible: true});
       const showStub = sinon.stub(PanelCommon.GdpSignUpDialog, 'show').callsFake(options => {
         options?.onSuccess?.();
       });
-      const syncSetting = createFakeSetting<boolean>('setting', true);
-      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
 
-      const {shadowRoot} = await renderSyncSection({
-        syncInfo: {
-          isSyncActive: true,
-          arePreferencesSynced: true,
-          accountEmail: 'user@gmail.com',
-        },
-        syncSetting,
-        receiveBadgesSetting,
-      });
-      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-      assert.instanceOf(gdpSection, HTMLElement);
-      const signUpButton = gdpSection.querySelector('devtools-button');
-      assert.instanceOf(signUpButton, HTMLElement);
+      const {view, widget} = await createWidget();
+      widget.syncInfo = MOCK_SYNC_INFO_SIGNED_IN_SYNC_ON;
+      const input = await view.nextInput;
       // The first call happens on render.
       sinon.assert.calledOnce(getProfileStub);
-      signUpButton.click();
-
+      input.onSignUpClick();
       sinon.assert.calledOnce(showStub);
       // The second call is triggered by the `onSuccess` callback.
       sinon.assert.calledTwice(getProfileStub);

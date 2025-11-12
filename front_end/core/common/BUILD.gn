@@ -30,7 +30,6 @@ devtools_module("common") {
     "Object.ts",
     "ParsedURL.ts",
     "Progress.ts",
-    "QueryParamHandler.ts",
     "ResolverBase.ts",
     "ResourceType.ts",
     "ReturnToPanel.ts",

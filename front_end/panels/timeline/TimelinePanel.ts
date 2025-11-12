@@ -3201,27 +3201,6 @@ export interface TimelineModeViewDelegate {
   highlightEvent(event: Trace.Types.Events.Event|null): void;
 }
 
-export let loadTimelineHandlerInstance: LoadTimelineHandler;
-
-export class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamHandler {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): LoadTimelineHandler {
-    const {forceNew} = opts;
-    if (!loadTimelineHandlerInstance || forceNew) {
-      loadTimelineHandlerInstance = new LoadTimelineHandler();
-    }
-
-    return loadTimelineHandlerInstance;
-  }
-
-  handleQueryParam(value: string): void {
-    void UI.ViewManager.ViewManager.instance().showView('timeline').then(async () => {
-      await TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value) as Platform.DevToolsPath.UrlString);
-    });
-  }
-}
-
 export class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.TraceObject> {
   async reveal(trace: SDK.TraceObject.TraceObject): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('timeline');

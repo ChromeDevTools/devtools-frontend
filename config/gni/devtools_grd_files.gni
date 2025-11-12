@@ -851,7 +851,6 @@ grd_files_unbundled_sources = [
   "front_end/core/common/Object.js",
   "front_end/core/common/ParsedURL.js",
   "front_end/core/common/Progress.js",
-  "front_end/core/common/QueryParamHandler.js",
   "front_end/core/common/ResolverBase.js",
   "front_end/core/common/ResourceType.js",
   "front_end/core/common/ReturnToPanel.js",

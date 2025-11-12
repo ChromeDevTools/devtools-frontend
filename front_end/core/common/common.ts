@@ -21,7 +21,6 @@ import * as Mutex from './Mutex.js';
 import * as ObjectWrapper from './Object.js';
 import * as ParsedURL from './ParsedURL.js';
 import * as Progress from './Progress.js';
-import * as QueryParamHandler from './QueryParamHandler.js';
 import * as ResolverBase from './ResolverBase.js';
 import * as ResourceType from './ResourceType.js';
 import * as ReturnToPanel from './ReturnToPanel.js';
@@ -63,7 +62,6 @@ export {
   ObjectWrapper,
   ParsedURL,
   Progress,
-  QueryParamHandler,
   ResolverBase,
   ResourceType,
   ReturnToPanel,

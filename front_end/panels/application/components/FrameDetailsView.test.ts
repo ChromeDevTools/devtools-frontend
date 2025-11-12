@@ -10,6 +10,7 @@ import {
   getCleanTextContentFromElements,
   getElementsWithinComponent,
   getElementWithinComponent,
+  raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
@@ -254,6 +255,7 @@ report-uri: https://www.example.com/csp`,
     const adScriptAncestryExpandableButton = adScriptAncestryList.shadowRoot!.querySelector('button');
     assert.exists(adScriptAncestryExpandableButton);
     adScriptAncestryExpandableButton!.click();
+    await raf();
 
     const adScriptAncestryItems =
         adScriptAncestryList!.shadowRoot!.querySelectorAll('.expandable-list-items .devtools-link');

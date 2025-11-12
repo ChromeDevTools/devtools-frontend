@@ -9,7 +9,7 @@ import './StackTrace.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -24,7 +24,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
@@ -35,7 +35,7 @@ import {
 } from './PermissionsPolicySection.js';
 import type {StackTraceData} from './StackTrace.js';
 
-const {html} = Lit;
+const {until} = Directives;
 const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
@@ -286,7 +286,6 @@ interface FrameDetailsViewInput {
   permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null;
   protocolMonitorExperimentEnabled: boolean;
   trials: Protocol.Page.OriginTrial[]|null;
-  linkifier: Components.Linkifier.Linkifier;
   securityIsolationInfo?: Promise<Protocol.Network.SecurityIsolationStatus|null>;
   onRevealInSources: () => void;
 }
@@ -296,7 +295,7 @@ function renderFrameDetailsView(input: FrameDetailsViewInput, target: ShadowRoot
     return;
   }
   // clang-format off
-  Lit.render(html`
+  render(html`
     <style>${frameDetailsReportViewStyles}</style>
     <devtools-report .data=${{reportTitle: input.frame.displayName()} as ReportView.ReportView.ReportData}
     jslog=${VisualLogging.pane('frames')}>
@@ -304,20 +303,20 @@ function renderFrameDetailsView(input: FrameDetailsViewInput, target: ShadowRoot
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
-      ${Lit.Directives.until(input.permissionsPolicies?.then?.(policies =>
+      ${until(input.permissionsPolicies?.then?.(policies =>
         html`
           <devtools-resources-permissions-policy-section .data=${{policies, showDetails: false} as PermissionsPolicySectionData}>
           </devtools-resources-permissions-policy-section>
-        `), Lit.nothing)}
-      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : Lit.nothing}
+        `), nothing)}
+      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing}
     </devtools-report>
   `, target);
   // clang-format on
 }
 
-function renderOriginTrial(trials: Protocol.Page.OriginTrial[]|null): Lit.LitTemplate {
+function renderOriginTrial(trials: Protocol.Page.OriginTrial[]|null): LitTemplate {
   if (!trials) {
-    return Lit.nothing;
+    return nothing;
   }
 
   const data = {trials};
@@ -341,9 +340,9 @@ function renderOriginTrial(trials: Protocol.Page.OriginTrial[]|null): Lit.LitTem
   // clang-format on
 }
 
-function renderDocumentSection(input: FrameDetailsViewInput): Lit.LitTemplate {
+function renderDocumentSection(input: FrameDetailsViewInput): LitTemplate {
   if (!input.frame) {
-    return Lit.nothing;
+    return nothing;
   }
 
   return html`
@@ -358,20 +357,18 @@ function renderDocumentSection(input: FrameDetailsViewInput): Lit.LitTemplate {
       </devtools-report-value>
       ${maybeRenderUnreachableURL(input.frame)}
       ${maybeRenderOrigin(input.frame)}
-      ${
-      Lit.Directives.until(
-          input.linkTargetDOMNode?.then?.(value => renderOwnerElement(input.frame, value)), Lit.nothing)}
+      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(input.frame, value)), nothing)}
       ${maybeRenderCreationStacktrace(input.frame)}
       ${maybeRenderAdStatus(input.frame)}
-      ${maybeRenderCreatorAdScriptAncestry(input.frame, input.target, input.adScriptAncestry, input.linkifier)}
+      ${maybeRenderCreatorAdScriptAncestry(input.frame, input.target, input.adScriptAncestry)}
       <devtools-report-divider></devtools-report-divider>
     `;
 }
 
 function maybeRenderSourcesLinkForURL(
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, onRevealInSources: () => void): Lit.LitTemplate {
+    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, onRevealInSources: () => void): LitTemplate {
   if (!frame || frame.unreachableUrl()) {
-    return Lit.nothing;
+    return nothing;
   }
   return renderIconLink(
       'label',
@@ -381,7 +378,7 @@ function maybeRenderSourcesLinkForURL(
   );
 }
 
-function maybeRenderNetworkLinkForURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function maybeRenderNetworkLinkForURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (frame) {
     const resource = frame.resourceForURL(frame.url);
     if (resource?.request) {
@@ -393,12 +390,12 @@ function maybeRenderNetworkLinkForURL(frame: SDK.ResourceTreeModel.ResourceTreeF
       }, 'reveal-in-network');
     }
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function maybeRenderUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function maybeRenderUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (!frame?.unreachableUrl()) {
-    return Lit.nothing;
+    return nothing;
   }
   return html`
       <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
@@ -411,7 +408,7 @@ function maybeRenderUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFram
     `;
 }
 
-function renderNetworkLinkForUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function renderNetworkLinkForUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (frame) {
     const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(frame.unreachableUrl());
     if (unreachableUrl) {
@@ -435,10 +432,10 @@ function renderNetworkLinkForUnreachableURL(frame: SDK.ResourceTreeModel.Resourc
       );
     }
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function maybeRenderOrigin(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function maybeRenderOrigin(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (frame?.securityOrigin && frame?.securityOrigin !== '://') {
     return html`
         <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
@@ -447,12 +444,11 @@ function maybeRenderOrigin(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null):
         </devtools-report-value>
       `;
   }
-  return Lit.nothing;
+  return nothing;
 }
 
 function renderOwnerElement(
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
-    linkTargetDOMNode: SDK.DOMModel.DOMNode|null): Lit.LitTemplate {
+    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, linkTargetDOMNode: SDK.DOMModel.DOMNode|null): LitTemplate {
   if (linkTargetDOMNode) {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -473,10 +469,10 @@ function renderOwnerElement(
       `;
     // clang-format on
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function maybeRenderCreationStacktrace(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function maybeRenderCreationStacktrace(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   const creationStackTraceData = frame?.getCreationStackTraceData();
   if (creationStackTraceData?.creationStackTrace) {
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -496,7 +492,7 @@ function maybeRenderCreationStacktrace(frame: SDK.ResourceTreeModel.ResourceTree
       `;
     // clang-format on
   }
-  return Lit.nothing;
+  return nothing;
 }
 
 function getAdFrameTypeStrings(type: Protocol.Page.AdFrameType.Child|Protocol.Page.AdFrameType.Root):
@@ -520,13 +516,13 @@ function getAdFrameExplanationString(explanation: Protocol.Page.AdFrameExplanati
   }
 }
 
-function maybeRenderAdStatus(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function maybeRenderAdStatus(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (!frame) {
-    return Lit.nothing;
+    return nothing;
   }
   const adFrameType = frame.adFrameType();
   if (adFrameType === Protocol.Page.AdFrameType.None) {
-    return Lit.nothing;
+    return nothing;
   }
   const typeStrings = getAdFrameTypeStrings(adFrameType);
   const rows = [html`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
@@ -548,31 +544,28 @@ function maybeRenderAdStatus(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null
 
 function maybeRenderCreatorAdScriptAncestry(
     frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, target: SDK.Target.Target|null,
-    adScriptAncestry: Protocol.Page.AdScriptAncestry|null, linkifier: Components.Linkifier.Linkifier): Lit.LitTemplate {
+    adScriptAncestry: Protocol.Page.AdScriptAncestry|null): LitTemplate {
   if (!frame) {
-    return Lit.nothing;
+    return nothing;
   }
   const adFrameType = frame.adFrameType();
   if (adFrameType === Protocol.Page.AdFrameType.None) {
-    return Lit.nothing;
+    return nothing;
   }
 
   if (!target || !adScriptAncestry || adScriptAncestry.ancestryChain.length === 0) {
-    return Lit.nothing;
+    return nothing;
   }
 
   const rows = adScriptAncestry.ancestryChain.map(adScriptId => {
-    const adScriptLinkElement = linkifier.linkifyScriptLocation(
-        target,
-        adScriptId.scriptId || null,
-        Platform.DevToolsPath.EmptyUrlString,
-        undefined,
-        undefined,
-    );
-
-    adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link('ad-script').track({click: true})}`);
-
-    return html`<div>${adScriptLinkElement}</div>`;
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`<div>
+      <devtools-widget .widgetConfig=${widgetConfig(Components.Linkifier.ScriptLocationLink, {
+        target, scriptId: adScriptId.scriptId, options: {jslogContext: 'ad-script'}})}>
+      </devtools-widget>
+    </div>`;
+    // clang-format on
   });
 
   const shouldRenderFilterlistRule = (adScriptAncestry.rootScriptFilterlistRule !== undefined);
@@ -589,14 +582,14 @@ function maybeRenderCreatorAdScriptAncestry(
       ${shouldRenderFilterlistRule ? html`
         <devtools-report-key>${i18nString(UIStrings.rootScriptFilterlistRule)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging.section('root-script-filterlist-rule')}>${adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
-      ` : Lit.nothing}
+      ` : nothing}
     `;
   // clang-format on
 }
 
-function renderIsolationSection(input: FrameDetailsViewInput): Lit.LitTemplate {
+function renderIsolationSection(input: FrameDetailsViewInput): LitTemplate {
   if (!input.frame) {
-    return Lit.nothing;
+    return nothing;
   }
   return html`
       <devtools-report-section-header>${i18nString(UIStrings.securityIsolation)}</devtools-report-section-header>
@@ -609,19 +602,17 @@ function renderIsolationSection(input: FrameDetailsViewInput): Lit.LitTemplate {
       <devtools-report-value>
         ${input.frame.isCrossOriginIsolated() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
       </devtools-report-value>
-      ${
-      Lit.Directives.until(
-          input.securityIsolationInfo?.then?.(value => maybeRenderCoopCoepCSPStatus(value)), Lit.nothing)}
+      ${until(input.securityIsolationInfo?.then?.(value => maybeRenderCoopCoepCSPStatus(value)), nothing)}
       <devtools-report-divider></devtools-report-divider>
     `;
 }
 
-function maybeRenderSecureContextExplanation(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function maybeRenderSecureContextExplanation(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   const explanation = getSecureContextExplanation(frame);
   if (explanation) {
     return html`<span class="inline-comment">${explanation}</span>`;
   }
-  return Lit.nothing;
+  return nothing;
 }
 
 function getSecureContextExplanation(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null):
@@ -639,8 +630,7 @@ function getSecureContextExplanation(frame: SDK.ResourceTreeModel.ResourceTreeFr
   return null;
 }
 
-async function maybeRenderCoopCoepCSPStatus(info: Protocol.Network.SecurityIsolationStatus|null):
-    Promise<Lit.LitTemplate> {
+async function maybeRenderCoopCoepCSPStatus(info: Protocol.Network.SecurityIsolationStatus|null): Promise<LitTemplate> {
   if (info) {
     return html`
           ${
@@ -654,16 +644,16 @@ async function maybeRenderCoopCoepCSPStatus(info: Protocol.Network.SecurityIsola
           ${renderCSPSection(info.csp)}
         `;
   }
-  return Lit.nothing;
+  return nothing;
 }
 
 function maybeRenderCrossOriginStatus(
     info: Protocol.Network.CrossOriginEmbedderPolicyStatus|Protocol.Network.CrossOriginOpenerPolicyStatus|undefined,
     policyName: string,
     noneValue: Protocol.Network.CrossOriginEmbedderPolicyValue|
-    Protocol.Network.CrossOriginOpenerPolicyValue): Lit.LitTemplate {
+    Protocol.Network.CrossOriginOpenerPolicyValue): LitTemplate {
   if (!info) {
-    return Lit.nothing;
+    return nothing;
   }
   function crossOriginValueToString(
       value: Protocol.Network.CrossOriginEmbedderPolicyValue|Protocol.Network.CrossOriginOpenerPolicyValue): string {
@@ -698,14 +688,13 @@ function maybeRenderCrossOriginStatus(
       <devtools-report-key>${policyName}</devtools-report-key>
       <devtools-report-value>
         ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
-        ${isReportOnly ? html`<span class="inline-comment">report-only</span>` : Lit.nothing}
-        ${
-      endpoint ? html`<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` : Lit.nothing}
+        ${isReportOnly ? html`<span class="inline-comment">report-only</span>` : nothing}
+        ${endpoint ? html`<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` : nothing}
       </devtools-report-value>
     `;
 }
 
-function renderEffectiveDirectives(directives: string): Lit.LitTemplate[] {
+function renderEffectiveDirectives(directives: string): LitTemplate[] {
   const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
   const result = [];
   for (const directive in parsedDirectives) {
@@ -721,7 +710,7 @@ function renderEffectiveDirectives(directives: string): Lit.LitTemplate[] {
   return result;
 }
 
-function renderSingleCSP(cspInfo: Protocol.Network.ContentSecurityPolicyStatus, divider: boolean): Lit.LitTemplate {
+function renderSingleCSP(cspInfo: Protocol.Network.ContentSecurityPolicyStatus, divider: boolean): LitTemplate {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
     return html`
@@ -742,12 +731,12 @@ function renderSingleCSP(cspInfo: Protocol.Network.ContentSecurityPolicyStatus, 
           i18n.i18n.lockedString('HTTP header') : i18n.i18n.lockedString('Meta tag')}
         ${renderEffectiveDirectives(cspInfo.effectiveDirectives)}
       </devtools-report-value>
-      ${divider ? html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : Lit.nothing}
+      ${divider ? html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing}
     `;
   // clang-format on
 }
 
-function renderCSPSection(cspInfos: Protocol.Network.ContentSecurityPolicyStatus[]|undefined): Lit.LitTemplate {
+function renderCSPSection(cspInfos: Protocol.Network.ContentSecurityPolicyStatus[]|undefined): LitTemplate {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
     return html`
@@ -767,9 +756,9 @@ function renderCSPSection(cspInfos: Protocol.Network.ContentSecurityPolicyStatus
   // clang-format on
 }
 
-function renderApiAvailabilitySection(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function renderApiAvailabilitySection(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (!frame) {
-    return Lit.nothing;
+    return nothing;
   }
 
   // Disabled until https://crbug.com/1079231 is fixed.
@@ -794,7 +783,7 @@ function renderApiAvailabilitySection(frame: SDK.ResourceTreeModel.ResourceTreeF
   // clang-format on
 }
 
-function renderSharedArrayBufferAvailability(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function renderSharedArrayBufferAvailability(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (frame) {
     const features = frame.getGatedAPIFeatures();
     if (features) {
@@ -808,10 +797,10 @@ function renderSharedArrayBufferAvailability(frame: SDK.ResourceTreeModel.Resour
           i18nString(UIStrings.sharedarraybufferConstructorIs) :
           (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
 
-      function renderHint(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Lit.LitTemplate {
+      function renderHint(frame: SDK.ResourceTreeModel.ResourceTreeFrame): LitTemplate {
         switch (frame.getCrossOriginIsolatedContextType()) {
           case Protocol.Page.CrossOriginIsolatedContextType.Isolated:
-            return Lit.nothing;
+            return nothing;
           case Protocol.Page.CrossOriginIsolatedContextType.NotIsolated:
             if (sabAvailable) {
               // clang-format off
@@ -834,7 +823,7 @@ function renderSharedArrayBufferAvailability(frame: SDK.ResourceTreeModel.Resour
             }
             break;
         }
-        return Lit.nothing;
+        return nothing;
       }
 
       // SharedArrayBuffer is an API name, so we don't translate it.
@@ -846,10 +835,10 @@ function renderSharedArrayBufferAvailability(frame: SDK.ResourceTreeModel.Resour
         `;
     }
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function renderMeasureMemoryAvailability(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function renderMeasureMemoryAvailability(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (frame) {
     const measureMemoryAvailable = frame.isCrossOriginIsolated();
     const availabilityText =
@@ -866,12 +855,12 @@ function renderMeasureMemoryAvailability(frame: SDK.ResourceTreeModel.ResourceTr
         </devtools-report-value>
       `;
   }
-  return Lit.nothing;
+  return nothing;
 }
 
-function renderAdditionalInfoSection(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Lit.LitTemplate {
+function renderAdditionalInfoSection(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
   if (!frame) {
-    return Lit.nothing;
+    return nothing;
   }
 
   return html`

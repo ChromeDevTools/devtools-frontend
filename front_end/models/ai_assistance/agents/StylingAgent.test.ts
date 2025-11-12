@@ -626,11 +626,12 @@ describeWithEnvironment('StylingAgent', function() {
   });
 
   describe('enhanceQuery', () => {
-    const agent = new StylingAgent.StylingAgent({
-      aidaClient: mockAidaClient(),
-    });
+    let agent: AiAssistance.StylingAgent.StylingAgent;
 
     beforeEach(() => {
+      agent = new StylingAgent.StylingAgent({
+        aidaClient: mockAidaClient(),
+      });
       element.simpleSelector.returns('div#myElement');
       element.getChildNodesPromise.resolves(null);
     });

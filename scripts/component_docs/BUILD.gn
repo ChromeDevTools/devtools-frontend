@@ -19,7 +19,11 @@ generated_file("component_docs_sources") {
 }
 
 ts_library("docs_environment") {
-  sources = [ "docs_environment.ts" ]
+  sources = [
+    "docs_environment.ts",
+    "toggle_dark_mode.ts",
+    "toggle_fonts.ts",
+  ]
   deps = [
     "../../front_end/core/common:bundle",
     "../../front_end/testing",

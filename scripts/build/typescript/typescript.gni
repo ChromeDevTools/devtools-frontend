@@ -171,6 +171,7 @@ template("ts_library") {
     }
 
     if (defined(invoker.runs_in)) {
+      assert(invoker.runs_in == "node_cjs" || invoker.runs_in == "node_esm")
       args += [ "--runs-in=" + invoker.runs_in ]
     }
 
@@ -270,7 +271,7 @@ set_defaults("ts_library") {
 
 template("node_ts_library") {
   ts_library(target_name) {
-    runs_in = "node"
+    runs_in = "node_cjs"
     testonly = true
     reset_timestamps = true
 

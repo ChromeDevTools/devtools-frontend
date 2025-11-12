@@ -159,7 +159,7 @@ def runEsbuild(opts, tsconfig_output_location, tsconfig_output_directory):
     ]
 
     # TODO: Remove once we switch the repo to ESM
-    if opts.runs_in == 'node':
+    if opts.runs_in == 'node_cjs':
         cmd += ['--format=cjs']
 
     cmd += opts.sources
@@ -235,7 +235,8 @@ def main():
                                          opts.tsconfig_output_location)
     tsconfig_output_directory = path.dirname(tsconfig_output_location)
     tsbuildinfo_name = path.basename(tsconfig_output_location) + '.tsbuildinfo'
-    runs_in_node_environment = opts.runs_in == 'node'
+    runs_in_node_cjs_environment = opts.runs_in == 'node_cjs'
+    runs_in_node_esm_environment = opts.runs_in == 'node_esm'
 
     def get_relative_path_from_output_directory(file_to_resolve):
         return path.relpath(path.join(os.getcwd(), file_to_resolve),
@@ -256,34 +257,40 @@ def main():
 
     if (opts.deps is not None):
         tsconfig['references'] = [{'path': src} for src in opts.deps]
-    tsconfig['compilerOptions'][
-        'module'] = 'nodenext' if runs_in_node_environment else "esnext"
     if (not opts.verify_lib_check):
         tsconfig['compilerOptions']['skipLibCheck'] = True
     tsconfig['compilerOptions'][
         'rootDir'] = get_relative_path_from_output_directory(
             opts.front_end_directory)
-    tsconfig['compilerOptions']['typeRoots'] = (
-        opts.test_only or runs_in_node_environment
-    ) and [
-        get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)
-    ] or []
+
+    tsconfig['compilerOptions']['typeRoots'] = []
+    if runs_in_node_cjs_environment or runs_in_node_esm_environment or opts.test_only:
+        tsconfig['compilerOptions']['typeRoots'] += [
+            get_relative_path_from_output_directory(
+                TYPES_NODE_MODULES_DIRECTORY)
+        ]
+
     if opts.test_only:
         tsconfig['compilerOptions']['types'] = [
             "mocha", "chai", "sinon",
         ]
         # We only want to add these types for Unit test
         # Else we will get run time errors if we don't import chai
-        if runs_in_node_environment is False:
+        if runs_in_node_cjs_environment is False:
             tsconfig['compilerOptions']['types'].append(
                 "karma-chai-sinon"
             )
         # Required for sinon global access.
         tsconfig['compilerOptions']['allowUmdGlobalAccess'] = True
-        if runs_in_node_environment:
-            tsconfig['compilerOptions']['types'] += ["node"]
-    if runs_in_node_environment:
+
+    if runs_in_node_cjs_environment:
+        tsconfig['compilerOptions']['module'] = 'nodenext'
         tsconfig['compilerOptions']['moduleResolution'] = 'nodenext'
+    else:
+        tsconfig['compilerOptions']['module'] = 'esnext'
+
+    if runs_in_node_cjs_environment or runs_in_node_esm_environment:
+        tsconfig['compilerOptions']['types'] += ["node"]
 
     if opts.no_emit:
         tsconfig['compilerOptions']['emitDeclarationOnly'] = True

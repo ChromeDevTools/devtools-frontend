@@ -458,9 +458,6 @@ export class MainImpl {
       resourceMapping,
       targetManager,
     });
-    Workspace.IgnoreListManager.IgnoreListManager.instance({
-      forceNew: true,
-    });
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,

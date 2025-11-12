@@ -18,12 +18,16 @@ export class Universe {
   constructor(options: CreationOptions) {
     // TODO(crbug.com/458180550): Store instance on a "DevToolsContext" instead.
     //                            For now the global is fine as we don't anticipate the MCP server to change settings.
-    Common.Settings.Settings.instance({
+    const settings = Common.Settings.Settings.instance({
       forceNew: true,
       ...options.settingsCreationOptions,
     });
 
-    this.context.set(SDK.TargetManager.TargetManager, new SDK.TargetManager.TargetManager());
+    const targetManager = new SDK.TargetManager.TargetManager();
+    this.context.set(SDK.TargetManager.TargetManager, targetManager);
     this.context.set(Workspace.Workspace.WorkspaceImpl, new Workspace.Workspace.WorkspaceImpl());
+
+    const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
+    this.context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
   }
 }

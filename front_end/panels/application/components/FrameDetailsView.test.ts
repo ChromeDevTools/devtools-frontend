@@ -104,6 +104,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       resourceMapping: new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace),
       targetManager,
       ignoreListManager,
+      workspace,
     });
 
     const target = createTarget();

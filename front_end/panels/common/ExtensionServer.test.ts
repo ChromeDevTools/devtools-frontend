@@ -105,6 +105,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
         resourceMapping,
         targetManager,
         ignoreListManager,
+        workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       });
     });
 
@@ -933,6 +934,7 @@ describeWithDevtoolsExtension('Wasm extension API', {}, context => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
 
     const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
@@ -1067,6 +1069,7 @@ for (const allowFileAccess of [true, false]) {
             resourceMapping,
             targetManager,
             ignoreListManager,
+            workspace: Workspace.Workspace.WorkspaceImpl.instance(),
           });
         });
 
@@ -1134,6 +1137,7 @@ describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     const backend = new MockProtocolBackend();
 

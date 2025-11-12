@@ -43,6 +43,7 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
     resourceMapping,
     targetManager,
     ignoreListManager,
+    workspace,
   });
 
   const backend = new MockProtocolBackend();
@@ -235,6 +236,7 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     ignoreRegex('youtube*');
     const url = urlString`https://www.youtube.com/s/desktop/2ebf714b/jsbin/desktop_polymer.vflset/desktop_polymer.js`;

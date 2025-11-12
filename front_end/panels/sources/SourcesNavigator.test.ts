@@ -43,6 +43,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});

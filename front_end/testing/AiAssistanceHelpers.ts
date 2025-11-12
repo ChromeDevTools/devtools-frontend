@@ -283,6 +283,7 @@ export function initializePersistenceImplForTests(): void {
     targetManager: SDK.TargetManager.TargetManager.instance(),
     resourceMapping:
         new Bindings.ResourceMapping.ResourceMapping(SDK.TargetManager.TargetManager.instance(), workspace),
+    workspace,
     ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true}),
   });
   const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({

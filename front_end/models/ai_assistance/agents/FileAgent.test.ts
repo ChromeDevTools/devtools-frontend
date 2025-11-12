@@ -35,6 +35,7 @@ describeWithMockConnection('FileAgent', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
   });
 

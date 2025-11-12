@@ -26,6 +26,7 @@ describeWithMockConnection('ScopeChainModel', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
 
     stubPluginManager = sinon.createStubInstance(

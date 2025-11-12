@@ -40,6 +40,7 @@ describeWithEnvironment('SourcesView', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
@@ -182,6 +183,7 @@ describeWithMockConnection('SourcesView', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});

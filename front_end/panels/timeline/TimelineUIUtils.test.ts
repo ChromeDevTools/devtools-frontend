@@ -81,6 +81,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
   });
 

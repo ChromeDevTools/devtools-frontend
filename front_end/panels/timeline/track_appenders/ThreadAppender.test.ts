@@ -379,6 +379,7 @@ describeWithEnvironment('ThreadAppender', function() {
         resourceMapping,
         targetManager,
         ignoreListManager,
+        workspace,
       });
     });
     afterEach(() => {
@@ -492,6 +493,7 @@ describeWithEnvironment('ThreadAppender', function() {
         resourceMapping,
         targetManager,
         ignoreListManager,
+        workspace,
       });
     });
     afterEach(() => {
@@ -537,6 +539,7 @@ describeWithEnvironment('ThreadAppender', function() {
         resourceMapping,
         targetManager,
         ignoreListManager,
+        workspace,
       });
     });
 

@@ -49,6 +49,7 @@ describeWithEnvironment('TimelinePanel', function() {
       resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
       ignoreListManager,
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     Timeline.ModificationsManager.ModificationsManager.reset();
     traceModel = Trace.TraceModel.Model.createWithAllHandlers();

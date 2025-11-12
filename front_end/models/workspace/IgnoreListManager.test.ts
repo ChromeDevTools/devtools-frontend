@@ -143,6 +143,7 @@ describeWithMockConnection('IgnoreListManager', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
 
     // Inject the HTML document resource.

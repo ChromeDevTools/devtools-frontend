@@ -59,6 +59,7 @@ describeWithEnvironment('Ignore List Setting', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
   });
 

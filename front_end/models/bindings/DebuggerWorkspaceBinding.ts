@@ -28,12 +28,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   readonly #liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   readonly pluginManager: DebuggerLanguagePluginManager;
   readonly ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
+  readonly workspace: Workspace.Workspace.WorkspaceImpl;
 
   private constructor(
       resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager,
-      ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager) {
+      ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.resourceMapping = resourceMapping;
     this.ignoreListManager = ignoreListManager;
+    this.workspace = workspace;
 
     this.#debuggerModelToData = new Map();
     targetManager.addModelListener(
@@ -62,17 +64,19 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     resourceMapping: ResourceMapping|null,
     targetManager: SDK.TargetManager.TargetManager|null,
     ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager|null,
-  } = {forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null}): DebuggerWorkspaceBinding {
-    const {forceNew, resourceMapping, targetManager, ignoreListManager} = opts;
+    workspace: Workspace.Workspace.WorkspaceImpl|null,
+  } = {forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null, workspace: null}):
+      DebuggerWorkspaceBinding {
+    const {forceNew, resourceMapping, targetManager, ignoreListManager, workspace} = opts;
     if (!debuggerWorkspaceBindingInstance || forceNew) {
-      if (!resourceMapping || !targetManager || !ignoreListManager) {
+      if (!resourceMapping || !targetManager || !ignoreListManager || !workspace) {
         throw new Error(
             `Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${
                 new Error().stack}`);
       }
 
       debuggerWorkspaceBindingInstance =
-          new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager);
+          new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
     }
 
     return debuggerWorkspaceBindingInstance;
@@ -271,11 +275,10 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   waitForUISourceCodeAdded(url: Platform.DevToolsPath.UrlString, target: SDK.Target.Target):
       Promise<Workspace.UISourceCode.UISourceCode> {
     return new Promise(resolve => {
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-      const descriptor = workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, event => {
+      const descriptor = this.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, event => {
         const uiSourceCode = event.data;
         if (uiSourceCode.url() === url && NetworkProject.targetForUISourceCode(uiSourceCode) === target) {
-          workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, descriptor.listener);
+          this.workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, descriptor.listener);
           resolve(uiSourceCode);
         }
       });

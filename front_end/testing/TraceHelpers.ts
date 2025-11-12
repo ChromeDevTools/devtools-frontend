@@ -87,6 +87,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
     forceNew: true,
     resourceMapping,
     targetManager,
+    workspace,
     ignoreListManager,
   });
 
@@ -875,6 +876,7 @@ export function setupIgnoreListManagerEnvironment(): {
     forceNew: true,
     resourceMapping,
     targetManager,
+    workspace,
     ignoreListManager,
   });
 

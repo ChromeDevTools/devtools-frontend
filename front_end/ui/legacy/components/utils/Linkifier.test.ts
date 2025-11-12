@@ -51,6 +51,7 @@ describeWithMockConnection('Linkifier', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew, targetManager, workspace, debuggerWorkspaceBinding});

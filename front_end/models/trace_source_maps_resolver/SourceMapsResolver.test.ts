@@ -51,6 +51,7 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
     resourceMapping,
     targetManager,
     ignoreListManager,
+    workspace,
   });
 
   const backend = new MockProtocolBackend();

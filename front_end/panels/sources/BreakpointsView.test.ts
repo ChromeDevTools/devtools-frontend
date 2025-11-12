@@ -735,6 +735,7 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
@@ -922,6 +923,7 @@ describeWithMockConnection('BreakpointsView', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});

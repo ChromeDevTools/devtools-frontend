@@ -304,6 +304,7 @@ describeWithMockConnection('TextEditor autocompletion', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     const testScript = debuggerModel.parsedScriptSource(
         '1' as Protocol.Runtime.ScriptId, urlString`script://1`, 0, 0, 0, 0, executionContext.id, '', undefined, false,

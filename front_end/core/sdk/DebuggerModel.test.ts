@@ -291,6 +291,7 @@ describeWithMockConnection('DebuggerModel', () => {
         resourceMapping,
         targetManager,
         ignoreListManager,
+        workspace,
       });
       backend = new MockProtocolBackend();
     });

@@ -77,6 +77,7 @@ describeWithMockConnection('ResourceMapping', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
 
     // Inject the HTML document resource.

@@ -27,6 +27,7 @@ describeWithMockConnection('JSPresentationUtils (legacy stack trace)', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     return {target, linkifier};
   }
@@ -69,6 +70,7 @@ describeWithMockConnection('JSPresentationUtils', () => {
       resourceMapping,
       targetManager,
       ignoreListManager,
+      workspace,
     });
     return {target, debuggerWorkspaceBinding, linkifier};
   }

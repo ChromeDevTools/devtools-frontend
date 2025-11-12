@@ -467,6 +467,7 @@ export class MainImpl {
       resourceMapping,
       targetManager,
       ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance(),
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     targetManager.setScopeTarget(targetManager.primaryPageTarget());
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, ({data}) => {

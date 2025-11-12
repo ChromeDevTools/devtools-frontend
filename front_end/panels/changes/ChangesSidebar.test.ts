@@ -63,7 +63,7 @@ describeWithEnvironment('ChangesSidebar', () => {
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-        {forceNew: true, resourceMapping, targetManager, ignoreListManager});
+        {forceNew: true, resourceMapping, targetManager, ignoreListManager, workspace});
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});

@@ -88,7 +88,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     forceNew: null,
   }): IgnoreListManager {
     const {forceNew} = opts;
-    if (!Root.DevToolsContext.globalInstance().has(IgnoreListManager) || forceNew) {
+    if (forceNew) {
       Root.DevToolsContext.globalInstance().set(
           IgnoreListManager,
           new IgnoreListManager(

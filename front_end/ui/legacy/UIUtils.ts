@@ -1923,7 +1923,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
       break;
     }
 
-    parentWidget.defaultFocusedChild = widget;
+    parentWidget.setDefaultFocusedChild(widget);
     widget = parentWidget;
   }
 }

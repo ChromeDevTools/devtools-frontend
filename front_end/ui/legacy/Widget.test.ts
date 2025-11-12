@@ -339,7 +339,6 @@ describe('Widget', () => {
 
       const child2 = new Widget();
       const child2Input = document.createElement('input');
-      child2.element.setAttribute('autofocus', '');  // This should be ignored by parent.
       child2.contentElement.appendChild(child2Input);
 
       parent.markAsRoot();
@@ -353,6 +352,26 @@ describe('Widget', () => {
       // is not its own. Then it should focus the first child (child1).
       // child1 will then focus its default element.
       assert.strictEqual(document.activeElement, child1Input);
+    });
+
+    it('gives focus an autofocus element of a child widget', () => {
+      const parent = new Widget();
+      const child1 = new Widget();
+      const child1Input = document.createElement('input');
+      child1.setDefaultFocusedElement(child1Input);
+      child1.contentElement.appendChild(child1Input);
+
+      const child2 = new Widget();
+      child2.element.setAttribute('autofocus', '');
+      child2.element.tabIndex = 0;
+
+      renderElementIntoDOM(parent);
+      child1.show(parent.contentElement);
+      child2.show(parent.contentElement);
+
+      parent.focus();
+
+      assert.strictEqual(document.activeElement, child2.element);
     });
   });
 

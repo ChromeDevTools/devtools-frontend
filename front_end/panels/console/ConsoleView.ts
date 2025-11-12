@@ -1324,7 +1324,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
     this.updateFilterStatus();
     this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
-    this.jumpToMatch(this.currentMatchRangeIndex);  // Re-highlight current match.
+    this.highlightMatch(this.currentMatchRangeIndex, false);  // Re-highlight current match without scrolling.
     this.viewport.invalidate();
     this.messagesCountElement.setAttribute(
         'aria-label', i18nString(UIStrings.filteredMessagesInConsole, {PH1: this.visibleViewMessages.length}));
@@ -1564,7 +1564,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
     if (typeof this.searchShouldJumpBackwards !== 'undefined' && this.regexMatchRanges.length) {
-      this.jumpToMatch(this.searchShouldJumpBackwards ? -1 : 0);
+      this.highlightMatch(this.searchShouldJumpBackwards ? -1 : 0);
       delete this.searchShouldJumpBackwards;
     }
 
@@ -1589,11 +1589,11 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   jumpToNextSearchResult(): void {
-    this.jumpToMatch(this.currentMatchRangeIndex + 1);
+    this.highlightMatch(this.currentMatchRangeIndex + 1);
   }
 
   jumpToPreviousSearchResult(): void {
-    this.jumpToMatch(this.currentMatchRangeIndex - 1);
+    this.highlightMatch(this.currentMatchRangeIndex - 1);
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -1608,7 +1608,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     return true;
   }
 
-  private jumpToMatch(index: number): void {
+  private highlightMatch(index: number, scrollIntoView = true): void {
     if (!this.regexMatchRanges.length) {
       return;
     }
@@ -1628,8 +1628,10 @@ export class ConsoleView extends UI.Widget.VBox implements
     const message = this.visibleViewMessages[matchRange.messageIndex];
     const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
     highlightNode.classList.add(UI.UIUtils.highlightedCurrentSearchResultClassName);
-    this.viewport.scrollItemIntoView(matchRange.messageIndex);
-    highlightNode.scrollIntoViewIfNeeded();
+    if (scrollIntoView) {
+      this.viewport.scrollItemIntoView(matchRange.messageIndex);
+      highlightNode.scrollIntoViewIfNeeded();
+    }
   }
 
   private updateStickToBottomOnPointerDown(isRightClick?: boolean): void {

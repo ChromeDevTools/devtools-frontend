@@ -505,4 +505,59 @@ describe('The Console Tab', () => {
          assert.isOk(arrayBufferMemoryIcon);
        });
   });
+
+  describe('Console search scroll behavior', () => {
+    it('should not auto-scroll to search result when console messages are updated',
+       async ({devToolsPage, inspectedPage}) => {
+         await navigateToConsoleTab(devToolsPage);
+
+         await inspectedPage.evaluate(() => {
+           console.log('search-term-initial');
+           for (let i = 0; i < 25; i++) {
+             console.log(`background-message-${i}`);
+           }
+         });
+
+         await devToolsPage.waitForFunction(async () => {
+           const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+           return messages.length >= 26;
+         });
+
+         await devToolsPage.pressKey('f', {control: true});
+         await devToolsPage.waitFor('.search-bar:not(.hidden)');
+         await devToolsPage.typeText('search-term-initial');
+
+         await devToolsPage.waitFor('.search-results-matches');
+
+         const initialScrollPosition = await devToolsPage.evaluate(() => {
+           const viewport = document.querySelector('.console-viewport');
+           if (viewport) {
+             viewport.scrollTop = 400;
+             return viewport.scrollTop;
+           }
+           return 0;
+         });
+
+         await inspectedPage.evaluate(() => {
+           for (let i = 0; i < 10; i++) {
+             console.log(`new-message-${i}-after-search`);
+           }
+         });
+
+         await devToolsPage.waitForFunction(async () => {
+           const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+           return messages.length >= 36;
+         });
+
+         const finalScrollPosition = await devToolsPage.evaluate(() => {
+           const viewport = document.querySelector('.console-viewport');
+           return viewport ? viewport.scrollTop : 0;
+         });
+
+         const scrollDifference = Math.abs(finalScrollPosition - initialScrollPosition);
+         assert.isBelow(
+             scrollDifference, 50,
+             `Scroll position should be maintained when new messages arrive. Difference: ${scrollDifference}px`);
+       });
+  });
 });

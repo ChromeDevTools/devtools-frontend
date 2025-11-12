@@ -4248,12 +4248,9 @@ UI9.Toolbar.registerToolbarItem({
 UI9.Toolbar.registerToolbarItem({
   condition(config) {
     const isFlagEnabled = config?.devToolsGlobalAiButton?.enabled;
-    const devtoolsLocale = i18n22.DevToolsLocale.DevToolsLocale.instance();
-    const isLocaleRestricted3 = !devtoolsLocale.locale.startsWith("en-");
     const isGeoRestricted3 = config?.aidaAvailability?.blockedByGeo === true;
     const isPolicyRestricted3 = config?.aidaAvailability?.blockedByEnterprisePolicy === true;
-    const isAgeRestricted = Boolean(config?.aidaAvailability?.blockedByAge);
-    return Boolean(isFlagEnabled && !isLocaleRestricted3 && !isGeoRestricted3 && !isPolicyRestricted3 && !isAgeRestricted);
+    return Boolean(isFlagEnabled && !isGeoRestricted3 && !isPolicyRestricted3);
   },
   async loadItem() {
     const Main = await loadMainModule();

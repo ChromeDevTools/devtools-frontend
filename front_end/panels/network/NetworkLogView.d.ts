@@ -27,7 +27,6 @@ export declare class NetworkLogView extends NetworkLogView_base implements SDK.T
     private readonly networkOnlyThirdPartySetting;
     private readonly networkResourceTypeFiltersSetting;
     private readonly networkShowOptionsToGenerateHarWithSensitiveData;
-    private readonly networkOnlyIPProtectedRequestsSetting;
     private readonly progressBarContainer;
     private readonly networkLogLargeRowsSetting;
     private rowHeightInternal;
@@ -219,7 +218,6 @@ export declare class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWr
     private networkShowBlockedCookiesOnlySetting;
     private networkOnlyBlockedRequestsSetting;
     private networkOnlyThirdPartySetting;
-    private networkOnlyIPProtectedRequestsSetting;
     private activeFiltersCount;
     private activeFiltersCountAdorner;
     constructor();

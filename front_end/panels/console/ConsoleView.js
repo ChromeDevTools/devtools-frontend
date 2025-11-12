@@ -1218,6 +1218,9 @@ export class ConsoleView extends UI.Widget.VBox {
         }
     }
     async keyDown(event) {
+        if (!this.prompt.teaser?.isShowing()) {
+            return;
+        }
         const keyboardEvent = event;
         if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
             if (keyboardEvent.key === 'i') {

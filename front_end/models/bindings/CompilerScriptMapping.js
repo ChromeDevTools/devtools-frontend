@@ -40,10 +40,12 @@ export class CompilerScriptMapping {
     #sourceMapToProject = new Map();
     #uiSourceCodeToSourceMaps = new Platform.MapUtilities.Multimap();
     #debuggerModel;
+    #ignoreListManager;
     constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
         this.#sourceMapManager = debuggerModel.sourceMapManager();
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
         this.#debuggerModel = debuggerModel;
+        this.#ignoreListManager = debuggerWorkspaceBinding.ignoreListManager;
         this.#stubProject = new ContentProviderBasedProject(workspace, 'jsSourceMaps:stub:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Service, '', true /* isServiceProject */);
         this.#eventListeners = [
             this.#sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapWillAttach, this.sourceMapWillAttach, this),
@@ -298,7 +300,7 @@ export class CompilerScriptMapping {
         // Create stub UISourceCode for the time source mapping is being loaded.
         this.addStubUISourceCode(script);
         void this.#debuggerWorkspaceBinding.updateLocations(script);
-        if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(script.sourceURL, { isContentScript: script.isContentScript() })) {
+        if (this.#ignoreListManager.isUserIgnoreListedURL(script.sourceURL, { isContentScript: script.isContentScript() })) {
             this.#sourceMapManager.cancelAttachSourceMap(script);
         }
     }

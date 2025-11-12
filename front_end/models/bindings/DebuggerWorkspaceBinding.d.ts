@@ -12,6 +12,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     #private;
     readonly resourceMapping: ResourceMapping;
     readonly pluginManager: DebuggerLanguagePluginManager;
+    readonly ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
     private constructor();
     setFunctionRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, ranges: SDK.SourceMapFunctionRanges.NamedFunctionRange[]): void;
     static instance(opts?: {

@@ -12703,7 +12703,6 @@ export declare namespace Page {
         OtpCredentials = "otp-credentials",
         Payment = "payment",
         PictureInPicture = "picture-in-picture",
-        Popins = "popins",
         PrivateAggregation = "private-aggregation",
         PrivateStateTokenIssuance = "private-state-token-issuance",
         PrivateStateTokenRedemption = "private-state-token-redemption",

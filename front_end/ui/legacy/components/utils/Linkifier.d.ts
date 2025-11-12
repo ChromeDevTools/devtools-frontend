@@ -139,6 +139,7 @@ export interface LinkifyOptions {
      * {@link LinkDisplayOptions.revealBreakpoint}
      */
     revealBreakpoint?: boolean;
+    maxLength?: number;
 }
 /**
  * The filter function for the openResourceHandlers. Returns true if the `url`
@@ -160,5 +161,26 @@ export declare const enum Events {
 }
 export interface EventTypes {
     [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation;
+}
+interface ScriptLocationViewInput {
+    target?: SDK.Target.Target;
+    scriptId?: Protocol.Runtime.ScriptId;
+    sourceURL: Platform.DevToolsPath.UrlString;
+    lineNumber?: number;
+    options?: LinkifyOptions;
+    linkifier: Linkifier;
+}
+type ScriptLocationView = (input: ScriptLocationViewInput, output: undefined, target: HTMLElement) => void;
+export declare class ScriptLocationLink extends UI.Widget.Widget {
+    #private;
+    target?: SDK.Target.Target;
+    scriptId?: Protocol.Runtime.ScriptId;
+    sourceURL: Platform.DevToolsPath.UrlString;
+    lineNumber?: number;
+    options?: LinkifyOptions;
+    linkifier: Linkifier;
+    constructor(element: HTMLElement, view?: ScriptLocationView);
+    performUpdate(): void;
+    onDetach(): void;
 }
 export {};

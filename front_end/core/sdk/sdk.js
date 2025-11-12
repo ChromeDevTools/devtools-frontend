@@ -10689,11 +10689,6 @@ var NetworkDispatcher = class {
     if (response.securityDetails) {
       networkRequest.setSecurityDetails(response.securityDetails);
     }
-    if (Root2.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled) {
-      if (response.isIpProtectionUsed) {
-        networkRequest.setIsIpProtectionUsed(response.isIpProtectionUsed);
-      }
-    }
     const newResourceType = Common5.ResourceType.ResourceType.fromMimeTypeOverride(networkRequest.mimeType);
     if (newResourceType) {
       networkRequest.setResourceType(newResourceType);
@@ -28118,7 +28113,6 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   responseReceivedPromiseResolve;
   directSocketInfo;
   #directSocketChunks = [];
-  #isIpProtectionUsed;
   #isAdRelated;
   #appliedNetworkConditionsId;
   constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture) {
@@ -28131,7 +28125,6 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
     this.#loaderId = loaderId;
     this.#initiator = initiator;
     this.#hasUserGesture = hasUserGesture;
-    this.#isIpProtectionUsed = false;
     this.#isAdRelated = false;
   }
   static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture) {
@@ -29191,12 +29184,6 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   }
   isSameSite() {
     return this.#isSameSite;
-  }
-  setIsIpProtectionUsed(isIpProtectionUsed) {
-    this.#isIpProtectionUsed = isIpProtectionUsed;
-  }
-  isIpProtectionUsed() {
-    return this.#isIpProtectionUsed;
   }
   setIsAdRelated(isAdRelated) {
     this.#isAdRelated = isAdRelated;

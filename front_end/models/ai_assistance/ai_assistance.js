@@ -6663,14 +6663,20 @@ var BuiltInAi = class _BuiltInAi {
     builtInAiInstance = void 0;
   }
   async *getConsoleInsight(prompt, abortController) {
-    const session = await this.#consoleInsightsSession.clone();
-    const stream = session.promptStreaming(prompt, {
-      signal: abortController.signal
-    });
-    for await (const chunk of stream) {
-      yield chunk;
+    let session = null;
+    try {
+      session = await this.#consoleInsightsSession.clone();
+      const stream = session.promptStreaming(prompt, {
+        signal: abortController.signal
+      });
+      for await (const chunk of stream) {
+        yield chunk;
+      }
+    } finally {
+      if (session) {
+        session.destroy();
+      }
     }
-    session.destroy();
   }
 };
 

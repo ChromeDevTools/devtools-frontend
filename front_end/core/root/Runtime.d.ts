@@ -186,9 +186,6 @@ export interface HostConfigThirdPartyCookieControls {
     thirdPartyCookieHeuristicsEnabled: boolean;
     managedBlockThirdPartyCookies: string | boolean;
 }
-export interface HostConfigIPProtection {
-    enabled: boolean;
-}
 interface AiGeneratedTimelineLabels {
     enabled: boolean;
 }
@@ -198,9 +195,6 @@ interface AllowPopoverForcing {
 interface AiSubmenuPrompts {
     enabled: boolean;
     featureName?: string;
-}
-interface IpProtectionInDevTools {
-    enabled: boolean;
 }
 interface AiDebugWithAi {
     enabled: boolean;
@@ -272,7 +266,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsWellKnown: HostConfigWellKnown;
     devToolsPrivacyUI: HostConfigPrivacyUI;
     devToolsIndividualRequestThrottling: DevToolsIndividualRequestThrottling;
-    devToolsIpProtectionPanelInDevTools: HostConfigIPProtection;
     /**
      * OffTheRecord here indicates that the user's profile is either incognito,
      * or guest mode, rather than a "normal" profile.
@@ -284,7 +277,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels;
     devToolsAllowPopoverForcing: AllowPopoverForcing;
     devToolsAiSubmenuPrompts: AiSubmenuPrompts;
-    devToolsIpProtectionInDevTools: IpProtectionInDevTools;
     devToolsGlobalAiButton: GlobalAiButton;
     devToolsGdpProfiles: GdpProfiles;
     devToolsGdpProfilesAvailability: GdpProfilesAvailability;

@@ -1,5 +1,6 @@
 [
   "../../front_end/ui/components/buttons/Button.docs.js",
+  "../../front_end/ui/components/expandable_list/ExpandableList.docs.js",
   "../../front_end/ui/components/icon_button/Icon.docs.js",
   "../../front_end/ui/components/markdown_view/MarkdownView.docs.js",
   "../../front_end/ui/components/snackbars/Snackbars.docs.js",

@@ -19,13 +19,15 @@ export class DebuggerWorkspaceBinding {
     #debuggerModelToData;
     #liveLocationPromises;
     pluginManager;
+    ignoreListManager;
     constructor(resourceMapping, targetManager, ignoreListManager) {
         this.resourceMapping = resourceMapping;
+        this.ignoreListManager = ignoreListManager;
         this.#debuggerModelToData = new Map();
         targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
         targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
         targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
-        ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED" /* Workspace.IgnoreListManager.Events.IGNORED_SCRIPT_RANGES_UPDATED */, event => this.updateLocations(event.data));
+        this.ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED" /* Workspace.IgnoreListManager.Events.IGNORED_SCRIPT_RANGES_UPDATED */, event => this.updateLocations(event.data));
         this.#liveLocationPromises = new Set();
         this.pluginManager = new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this);
     }

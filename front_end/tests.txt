@@ -499,7 +499,6 @@ panels/search/SearchResultsPane.test.js
 panels/search/SearchView.test.js
 panels/security/CookieControlsView.test.js
 panels/security/CookieReportView.test.js
-panels/security/IPProtectionView.test.js
 panels/security/SecurityModel.test.js
 panels/security/SecurityPanel.test.js
 panels/settings/AISettingsTab.test.js

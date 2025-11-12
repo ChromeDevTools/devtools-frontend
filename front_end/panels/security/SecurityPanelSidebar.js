@@ -9,7 +9,6 @@ import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { CookieControlsTreeElement } from './CookieControlsTreeElement.js';
 import { CookieReportTreeElement } from './CookieReportTreeElement.js';
-import { IPProtectionTreeElement } from './IPProtectionTreeElement.js';
 import lockIconStyles from './lockIcon.css.js';
 import { OriginTreeElement } from './OriginTreeElement.js';
 import { createHighlightedUrl, getSecurityStateIconForDetailedView, getSecurityStateIconForOverview, OriginGroup, } from './SecurityPanel.js';
@@ -31,10 +30,6 @@ const UIStrings = {
      * @description Sidebar element text in the Security panel
      */
     flagControls: 'Controls',
-    /**
-     * @description Sidebar element text in the Security panel
-     */
-    ipProtection: 'IP Protection',
     /**
      * @description Text in Security Panel of the Security panel
      */
@@ -70,7 +65,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     securityOverviewElement;
     #cookieControlsTreeElement;
     cookieReportTreeElement;
-    ipProtectionTreeElement;
     #elementsByOrigin;
     #mainViewReloadMessage;
     #mainOrigin;
@@ -90,10 +84,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
             privacyTreeSection.appendChild(this.#cookieControlsTreeElement);
             this.cookieReportTreeElement = new CookieReportTreeElement(i18nString(UIStrings.cookieReport), 'cookie-report');
             privacyTreeSection.appendChild(this.cookieReportTreeElement);
-            if (Root.Runtime.hostConfig.devToolsIpProtectionPanelInDevTools?.enabled) {
-                this.ipProtectionTreeElement = new IPProtectionTreeElement(i18nString(UIStrings.ipProtection), 'ip-protection');
-                privacyTreeSection.appendChild(this.ipProtectionTreeElement);
-            }
             // If this if the first time this setting is set, go to the controls tool
             if (this.#securitySidebarLastItemSetting.get() === '') {
                 this.#securitySidebarLastItemSetting.set(this.#cookieControlsTreeElement.elemId);
@@ -158,11 +148,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
             this.#securitySidebarLastItemSetting.get() === this.cookieReportTreeElement.elemId) {
             this.cookieReportTreeElement.select();
             this.cookieReportTreeElement.showElement();
-        }
-        else if (this.ipProtectionTreeElement &&
-            this.#securitySidebarLastItemSetting.get() === this.ipProtectionTreeElement.elemId) {
-            this.ipProtectionTreeElement.select();
-            this.ipProtectionTreeElement.showElement();
         }
         else {
             this.securityOverviewElement.select();

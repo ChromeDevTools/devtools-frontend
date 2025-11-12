@@ -863,12 +863,9 @@ UI.Toolbar.registerToolbarItem({
 UI.Toolbar.registerToolbarItem({
     condition(config) {
         const isFlagEnabled = config?.devToolsGlobalAiButton?.enabled;
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        const isLocaleRestricted = !devtoolsLocale.locale.startsWith('en-');
         const isGeoRestricted = config?.aidaAvailability?.blockedByGeo === true;
         const isPolicyRestricted = config?.aidaAvailability?.blockedByEnterprisePolicy === true;
-        const isAgeRestricted = Boolean(config?.aidaAvailability?.blockedByAge);
-        return Boolean(isFlagEnabled && !isLocaleRestricted && !isGeoRestricted && !isPolicyRestricted && !isAgeRestricted);
+        return Boolean(isFlagEnabled && !isGeoRestricted && !isPolicyRestricted);
     },
     async loadItem() {
         const Main = await loadMainModule();

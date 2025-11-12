@@ -560,12 +560,6 @@ export class NetworkDispatcher {
         if (response.securityDetails) {
             networkRequest.setSecurityDetails(response.securityDetails);
         }
-        // TODO(crbug.com/425645896): Remove this guard once IP Protection is fully launched.
-        if (Root.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled) {
-            if (response.isIpProtectionUsed) {
-                networkRequest.setIsIpProtectionUsed(response.isIpProtectionUsed);
-            }
-        }
         const newResourceType = Common.ResourceType.ResourceType.fromMimeTypeOverride(networkRequest.mimeType);
         if (newResourceType) {
             networkRequest.setResourceType(newResourceType);

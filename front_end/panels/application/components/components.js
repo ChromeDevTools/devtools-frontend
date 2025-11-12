@@ -888,6 +888,7 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/application/components/BackForwardCacheView.ts", UIStrings2);
 var i18nString = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var { widgetConfig } = UI.Widget;
 function renderMainFrameInformation(frame, frameTreeData, reasonToFramesMap, screenStatus, navigateAwayAndBack) {
   if (!frame) {
     return html`
@@ -1073,13 +1074,18 @@ function maybeRenderJavaScriptDetails(details) {
     return nothing;
   }
   const maxLengthForDisplayedURLs = 50;
-  const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
   const rows = [html`<div>${i18nString(UIStrings2.filesPerIssue, { n: details.length })}</div>`];
-  rows.push(...details.map((detail) => html`${linkifier.linkifyScriptLocation(null, null, detail.url, detail.lineNumber, {
-    columnNumber: detail.columnNumber,
-    showColumnNumber: true,
-    inlineFrameIndex: 0
-  })}`));
+  rows.push(...details.map((detail) => html`
+          <devtools-widget .widgetConfig=${widgetConfig(Components.Linkifier.ScriptLocationLink, {
+    sourceURL: detail.url,
+    lineNumber: detail.lineNumber,
+    options: {
+      columnNumber: detail.columnNumber,
+      showColumnNumber: true,
+      inlineFrameIndex: 0,
+      maxLength: maxLengthForDisplayedURLs
+    }
+  })}></devtools-widget>`));
   return html`
       <div class="details-list">
         <devtools-expandable-list .data=${{ rows }}></devtools-expandable-list>
@@ -2040,7 +2046,7 @@ var originTrialTreeView_css_default = `/*
 
 // gen/front_end/panels/application/components/OriginTrialTreeView.js
 var { classMap } = Directives;
-var { widgetConfig } = UI3.Widget;
+var { widgetConfig: widgetConfig2 } = UI3.Widget;
 var UIStrings6 = {
   /**
    * @description Label for the 'origin' field in a parsed Origin Trial Token.
@@ -2128,7 +2134,7 @@ function renderTokenNode(token) {
 function renderTokenDetails(token) {
   return html5`
     <li role="treeitem">
-      <devtools-widget .widgetConfig=${widgetConfig(OriginTrialTokenRows, { data: token })}>
+      <devtools-widget .widgetConfig=${widgetConfig2(OriginTrialTokenRows, { data: token })}>
       </devtools-widget>
     </li>`;
 }
@@ -2535,7 +2541,7 @@ customElements.define("devtools-resources-permissions-policy-section", Permissio
 
 // gen/front_end/panels/application/components/FrameDetailsView.js
 var { html: html7 } = Lit5;
-var { widgetConfig: widgetConfig2 } = UI4.Widget;
+var { widgetConfig: widgetConfig3 } = UI4.Widget;
 var UIStrings8 = {
   /**
    * @description Section header in the Frame Details view
@@ -2834,7 +2840,7 @@ var FrameDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.Wrappabl
         </x-link>
       </span>
     </devtools-report-section>
-    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig2(OriginTrialTreeView, { data })}>
+    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig3(OriginTrialTreeView, { data })}>
     </devtools-widget>
     <devtools-report-divider></devtools-report-divider>`;
   }

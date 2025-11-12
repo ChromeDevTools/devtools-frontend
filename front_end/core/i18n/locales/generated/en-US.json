@@ -962,8 +962,8 @@
   "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
     "message": "Frame Rendering Stats"
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "Highlight ad frames"
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAds": {
+    "message": "Highlight ads"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
     "message": "Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy."
@@ -971,11 +971,11 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
     "message": "Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy."
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsRedDetectedToBe": {
+    "message": "Highlights elements (red) detected to be ads."
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "Highlights frames (red) detected to be ads."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Layer borders"
@@ -1312,12 +1312,6 @@
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "generated/Deprecation.ts | MediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the updateend event instead. abort() is intended to only abort an asynchronous media append or reset parser state."
-  },
-  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
   },
   "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
@@ -9818,9 +9812,6 @@
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Redirect"
   },
-  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
-    "message": "This request was sent through IP Protection proxies."
-  },
   "panels/network/NetworkDataGridNode.ts | script": {
     "message": "Script"
   },
@@ -10097,9 +10088,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Inverts the search filter"
   },
-  "panels/network/NetworkLogView.ts | ippRequests": {
-    "message": "IP Protected requests"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Load: {PH1}"
   },
@@ -10114,9 +10102,6 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Show only blocked requests"
-  },
-  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "Show only requests sent to IP Protection proxies. Has no effect in regular browsing."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Show only requests with blocked response cookies"
@@ -12260,66 +12245,6 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
-  "panels/security/IPProtectionView.ts | AuthTokensUnavailable": {
-    "message": "Limit for authentication tokens was reached. IP Protection will be paused."
-  },
-  "panels/security/IPProtectionView.ts | Available": {
-    "message": "IP Protection is enabled and active."
-  },
-  "panels/security/IPProtectionView.ts | bypassDescription": {
-    "message": "Temporarily bypass IP protection for testing"
-  },
-  "panels/security/IPProtectionView.ts | BypassedByDevTools": {
-    "message": "IP Protection is being bypassed by DevTools."
-  },
-  "panels/security/IPProtectionView.ts | bypassTitle": {
-    "message": "Bypass IP Protection"
-  },
-  "panels/security/IPProtectionView.ts | cardTitle": {
-    "message": "IP Protection Proxy Status"
-  },
-  "panels/security/IPProtectionView.ts | FeatureNotEnabled": {
-    "message": "IP Protection feature is not enabled."
-  },
-  "panels/security/IPProtectionView.ts | idColumn": {
-    "message": "ID"
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotEnabled": {
-    "message": "Masked Domain List feature is not enabled."
-  },
-  "panels/security/IPProtectionView.ts | MaskedDomainListNotPopulated": {
-    "message": "Masked Domain List is not populated."
-  },
-  "panels/security/IPProtectionView.ts | methodColumn": {
-    "message": "Method"
-  },
-  "panels/security/IPProtectionView.ts | notInIncognito": {
-    "message": "IP proxy unavailable"
-  },
-  "panels/security/IPProtectionView.ts | openIncognito": {
-    "message": "IP proxy is only available within incognito mode. Open site in incognito."
-  },
-  "panels/security/IPProtectionView.ts | proxyRequests": {
-    "message": "Proxy Requests"
-  },
-  "panels/security/IPProtectionView.ts | statusColumn": {
-    "message": "Status"
-  },
-  "panels/security/IPProtectionView.ts | statusUnknown": {
-    "message": "Status unknown"
-  },
-  "panels/security/IPProtectionView.ts | Unavailable": {
-    "message": "IP Protection is unavailable."
-  },
-  "panels/security/IPProtectionView.ts | urlColumn": {
-    "message": "URL"
-  },
-  "panels/security/IPProtectionView.ts | viewExplanation": {
-    "message": "Test how this site will perform if IP Proxy is enabled in Chrome"
-  },
-  "panels/security/IPProtectionView.ts | viewTitle": {
-    "message": "IP Protection Proxy Controls"
-  },
   "panels/security/security-meta.ts | PrivacyAndSecurity": {
     "message": "Privacy and security"
   },
@@ -12637,9 +12562,6 @@
   },
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Controls"
-  },
-  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
-    "message": "IP Protection"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Main origin"

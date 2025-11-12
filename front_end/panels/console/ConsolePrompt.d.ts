@@ -3,6 +3,7 @@ import * as Host from '../../core/host/host.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelCommon from '../common/common.js';
 declare const ConsolePrompt_base: (new (...args: any[]) => {
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
@@ -29,7 +30,7 @@ export declare class ConsolePrompt extends ConsolePrompt_base {
     private aidaAvailability?;
     private boundOnAidaAvailabilityChange?;
     private aiCodeCompletion?;
-    private teaser?;
+    teaser?: PanelCommon.AiCodeCompletionTeaser;
     private placeholderCompartment;
     private aiCodeCompletionSetting;
     private aiCodeCompletionCitations?;

@@ -59,13 +59,13 @@ const UIStrings = {
     highlightsElementsTealThatCan: 'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.',
     /**
      * @description The name of a checkbox setting in the Rendering tool. This setting highlights the
-     * rendering frames for ads that are found on the page.
+     * rendering elements for ads that are found on the page.
      */
-    highlightAdFrames: 'Highlight ad frames',
+    highlightAds: 'Highlight ads',
     /**
-     * @description Explanation text for the 'Highlight ad frames' setting in the Rendering tool.
+     * @description Explanation text for the 'Highlight ads' setting in the Rendering tool.
      */
-    highlightsFramesRedDetectedToBe: 'Highlights frames (red) detected to be ads.',
+    highlightsElementsRedDetectedToBe: 'Highlights elements (red) detected to be ads.',
     /**
      * @description The name of a checkbox setting in the Rendering tool. This setting prevents the
      * webpage from loading 'local' fonts. Local fonts are fonts that are installed on the user's
@@ -183,7 +183,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         this.#appendCheckbox(i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd), Common.Settings.Settings.instance().moduleSetting('show-debug-borders'));
         this.#appendCheckbox(i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped), Common.Settings.Settings.instance().moduleSetting('show-fps-counter'));
         this.#appendCheckbox(i18nString(UIStrings.scrollingPerformanceIssues), i18nString(UIStrings.highlightsElementsTealThatCan), Common.Settings.Settings.instance().moduleSetting('show-scroll-bottleneck-rects'));
-        this.#appendCheckbox(i18nString(UIStrings.highlightAdFrames), i18nString(UIStrings.highlightsFramesRedDetectedToBe), Common.Settings.Settings.instance().moduleSetting('show-ad-highlights'));
+        this.#appendCheckbox(i18nString(UIStrings.highlightAds), i18nString(UIStrings.highlightsElementsRedDetectedToBe), Common.Settings.Settings.instance().moduleSetting('show-ad-highlights'));
         this.#appendCheckbox(i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface), Common.Settings.Settings.instance().moduleSetting('local-fonts-disabled'));
         this.#appendCheckbox(i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage), Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'), { toggle: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab });
         this.#appendCheckbox(i18nString(UIStrings.emulateAutoDarkMode), i18nString(UIStrings.emulatesAutoDarkMode), Common.Settings.Settings.instance().moduleSetting('emulate-auto-dark-mode'));

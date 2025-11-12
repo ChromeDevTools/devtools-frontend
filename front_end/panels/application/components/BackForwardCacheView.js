@@ -134,6 +134,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { widgetConfig } = UI.Widget;
 function renderMainFrameInformation(frame, frameTreeData, reasonToFramesMap, screenStatus, navigateAwayAndBack) {
     if (!frame) {
         // clang-format of
@@ -338,13 +339,18 @@ function maybeRenderJavaScriptDetails(details) {
         return nothing;
     }
     const maxLengthForDisplayedURLs = 50;
-    const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
     const rows = [html `<div>${i18nString(UIStrings.filesPerIssue, { n: details.length })}</div>`];
-    rows.push(...details.map(detail => html `${linkifier.linkifyScriptLocation(null, null, detail.url, detail.lineNumber, {
-        columnNumber: detail.columnNumber,
-        showColumnNumber: true,
-        inlineFrameIndex: 0,
-    })}`));
+    rows.push(...details.map(detail => html `
+          <devtools-widget .widgetConfig=${widgetConfig(Components.Linkifier.ScriptLocationLink, {
+        sourceURL: detail.url,
+        lineNumber: detail.lineNumber,
+        options: {
+            columnNumber: detail.columnNumber,
+            showColumnNumber: true,
+            inlineFrameIndex: 0,
+            maxLength: maxLengthForDisplayedURLs,
+        }
+    })}></devtools-widget>`));
     return html `
       <div class="details-list">
         <devtools-expandable-list .data=${{ rows }}></devtools-expandable-list>

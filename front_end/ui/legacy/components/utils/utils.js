@@ -378,7 +378,8 @@ __export(Linkifier_exports, {
   ContentProviderContextMenuProvider: () => ContentProviderContextMenuProvider,
   LinkContextMenuProvider: () => LinkContextMenuProvider,
   LinkHandlerSettingUI: () => LinkHandlerSettingUI,
-  Linkifier: () => Linkifier
+  Linkifier: () => Linkifier,
+  ScriptLocationLink: () => ScriptLocationLink
 });
 import * as Common2 from "./../../../../core/common/common.js";
 import * as Host2 from "./../../../../core/host/host.js";
@@ -389,6 +390,7 @@ import * as Bindings from "./../../../../models/bindings/bindings.js";
 import * as Breakpoints from "./../../../../models/breakpoints/breakpoints.js";
 import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../../../models/workspace/workspace.js";
+import { html, render } from "./../../../lit/lit.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI from "./../../legacy.js";
 var UIStrings2 = {
@@ -570,7 +572,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     let fallbackAnchor = null;
     const linkifyURLOptions = {
       lineNumber,
-      maxLength: this.maxLength,
+      maxLength: options?.maxLength ?? this.maxLength,
       columnNumber: options?.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
@@ -1240,6 +1242,28 @@ var ContentProviderContextMenuProvider = class {
     } else {
       contextMenu.clipboardSection().appendItem(UI.UIUtils.copyFileNameLabel(), () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName), { jslogContext: "copy-file-name" });
     }
+  }
+};
+var DEFAULT_SCRIPT_LOCATION_VIEW = (input, _output, target) => {
+  render(html`${input.linkifier.linkifyScriptLocation(input.target ?? null, input.scriptId ?? null, input.sourceURL, input.lineNumber, input.options)}`, target);
+};
+var ScriptLocationLink = class extends UI.Widget.Widget {
+  target;
+  scriptId;
+  sourceURL = "";
+  lineNumber;
+  options;
+  linkifier = new Linkifier();
+  #view;
+  constructor(element, view = DEFAULT_SCRIPT_LOCATION_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  performUpdate() {
+    this.#view(this, void 0, this.contentElement);
+  }
+  onDetach() {
+    this.linkifier.dispose();
   }
 };
 

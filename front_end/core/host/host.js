@@ -618,9 +618,6 @@ var InspectorFrontendHostStub = class {
         thirdPartyCookieHeuristicsEnabled: true,
         managedBlockThirdPartyCookies: "Unset"
       },
-      devToolsIpProtectionPanelInDevTools: {
-        enabled: false
-      },
       devToolsFlexibleLayout: {
         verticalDrawerEnabled: true
       },

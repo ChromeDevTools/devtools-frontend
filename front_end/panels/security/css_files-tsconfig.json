@@ -6,7 +6,6 @@
     "files": [
         "cookieControlsView.css.js",
         "cookieReportView.css.js",
-        "ipProtectionView.css.js",
         "lockIcon.css.js",
         "mainView.css.js",
         "originView.css.js",

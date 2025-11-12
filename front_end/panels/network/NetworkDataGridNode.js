@@ -309,7 +309,6 @@ const UIStrings = {
     /**
      * @description Tooltip to explain why the request has an IPP icon
      */
-    responseIsIpProtectedToolTip: 'This request was sent through IP Protection proxies.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1003,12 +1002,6 @@ export class NetworkRequestNode extends NetworkNode {
             });
             cell.addEventListener('focus', () => this.parentView().resetFocus());
             // render icons
-            if (this.requestInternal.isIpProtectionUsed()) {
-                const ippIcon = IconButton.Icon.create('shield', 'icon');
-                ippIcon.title = i18nString(UIStrings.responseIsIpProtectedToolTip);
-                ippIcon.style.color = 'var(--sys-color-on-surface-subtle);';
-                cell.appendChild(ippIcon);
-            }
             const iconElement = PanelUtils.getIconForNetworkRequest(this.requestInternal);
             // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
             render(iconElement, cell);

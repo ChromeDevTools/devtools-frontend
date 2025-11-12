@@ -543,10 +543,12 @@ var CompilerScriptMapping = class {
   #sourceMapToProject = /* @__PURE__ */ new Map();
   #uiSourceCodeToSourceMaps = new Platform2.MapUtilities.Multimap();
   #debuggerModel;
+  #ignoreListManager;
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this.#sourceMapManager = debuggerModel.sourceMapManager();
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this.#debuggerModel = debuggerModel;
+    this.#ignoreListManager = debuggerWorkspaceBinding.ignoreListManager;
     this.#stubProject = new ContentProviderBasedProject(
       workspace,
       "jsSourceMaps:stub:" + debuggerModel.target().id(),
@@ -798,7 +800,7 @@ var CompilerScriptMapping = class {
     const { client: script } = event.data;
     this.addStubUISourceCode(script);
     void this.#debuggerWorkspaceBinding.updateLocations(script);
-    if (Workspace3.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(script.sourceURL, { isContentScript: script.isContentScript() })) {
+    if (this.#ignoreListManager.isUserIgnoreListedURL(script.sourceURL, { isContentScript: script.isContentScript() })) {
       this.#sourceMapManager.cancelAttachSourceMap(script);
     }
   }
@@ -3287,13 +3289,15 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   #debuggerModelToData;
   #liveLocationPromises;
   pluginManager;
+  ignoreListManager;
   constructor(resourceMapping, targetManager, ignoreListManager) {
     this.resourceMapping = resourceMapping;
+    this.ignoreListManager = ignoreListManager;
     this.#debuggerModelToData = /* @__PURE__ */ new Map();
     targetManager.addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
     targetManager.addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     targetManager.observeModels(SDK11.DebuggerModel.DebuggerModel, this);
-    ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED", (event) => this.updateLocations(event.data));
+    this.ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED", (event) => this.updateLocations(event.data));
     this.#liveLocationPromises = /* @__PURE__ */ new Set();
     this.pluginManager = new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this);
   }

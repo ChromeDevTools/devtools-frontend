@@ -246,8 +246,6 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     trustTokenOperationDoneEvent(): Protocol.Network.TrustTokenOperationDoneEvent | undefined;
     setIsSameSite(isSameSite: boolean): void;
     isSameSite(): boolean | null;
-    setIsIpProtectionUsed(isIpProtectionUsed: boolean): void;
-    isIpProtectionUsed(): boolean | null;
     setIsAdRelated(isAdRelated: boolean): void;
     isAdRelated(): boolean;
     getAssociatedData(key: string): object | null;

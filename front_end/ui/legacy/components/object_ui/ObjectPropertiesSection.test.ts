@@ -33,7 +33,7 @@ describe('ObjectPropertiesSection', () => {
         const div = document.createElement('div');
         assert.isFalse(div.hasChildNodes());
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
-        assert.isFalse(div.hasChildNodes());
+        assert.strictEqual(div.childElementCount, 0);
       });
 
       it('triggers the correct revealer upon \'click\'', () => {

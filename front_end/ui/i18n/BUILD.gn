@@ -11,6 +11,7 @@ devtools_entrypoint("bundle") {
   deps = [
     "../../core/i18n:bundle",
     "../../third_party/i18n:bundle",
+    "../../ui/lit:bundle",
   ]
 
   visibility = [

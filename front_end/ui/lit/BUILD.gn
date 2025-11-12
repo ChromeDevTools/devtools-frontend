@@ -33,6 +33,7 @@ devtools_entrypoint("bundle") {
     "../../panels/*",
     "../../testing/*",
     "../../ui/components/*",
+    "../../ui/i18n/*",
     "../../ui/legacy/*",
   ]
 

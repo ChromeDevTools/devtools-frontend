@@ -21,6 +21,7 @@ devtools_module("workspace") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
   ]
@@ -35,6 +36,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../core/sdk:unittests",
     "../../entrypoints/main/*",
+    "../../foundation/*",
     "../../legacy_test_runner/*",
     "../../panels/ai_assistance/*",
     "../../panels/application/*",

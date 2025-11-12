@@ -12,6 +12,7 @@ devtools_foundation_module("foundation") {
     "../core/common:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",
+    "../models/workspace:bundle",
   ]
 }
 

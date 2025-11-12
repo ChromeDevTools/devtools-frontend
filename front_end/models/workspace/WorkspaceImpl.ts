@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
 import type {SearchConfig} from './SearchConfig.js';
@@ -183,27 +184,21 @@ export abstract class ProjectStore implements Project {
       progress: Common.Progress.Progress): Promise<Map<UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>>;
 }
 
-let workspaceInstance: WorkspaceImpl|undefined;
-
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #projects = new Map<string, Project>();
   #hasResourceContentTrackingExtensions = false;
 
-  private constructor() {
-    super();
-  }
-
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceImpl {
     const {forceNew} = opts;
-    if (!workspaceInstance || forceNew) {
-      workspaceInstance = new WorkspaceImpl();
+    if (!Root.DevToolsContext.globalInstance().has(WorkspaceImpl) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(WorkspaceImpl, new WorkspaceImpl());
     }
 
-    return workspaceInstance;
+    return Root.DevToolsContext.globalInstance().get(WorkspaceImpl);
   }
 
   static removeInstance(): void {
-    workspaceInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(WorkspaceImpl);
   }
 
   uiSourceCode(projectId: string, url: Platform.DevToolsPath.UrlString): UISourceCode|null {

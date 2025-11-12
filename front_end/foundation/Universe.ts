@@ -5,6 +5,7 @@
 import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as Workspace from '../models/workspace/workspace.js';
 
 export interface CreationOptions {
   // Settings things
@@ -23,5 +24,6 @@ export class Universe {
     });
 
     this.context.set(SDK.TargetManager.TargetManager, new SDK.TargetManager.TargetManager());
+    this.context.set(Workspace.Workspace.WorkspaceImpl, new Workspace.Workspace.WorkspaceImpl());
   }
 }

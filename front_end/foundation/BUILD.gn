@@ -8,7 +8,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_foundation_module("foundation") {
   sources = [ "Universe.ts" ]
 
-  deps = [ "../core/common:bundle" ]
+  deps = [
+    "../core/common:bundle",
+    "../core/root:bundle",
+    "../core/sdk:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

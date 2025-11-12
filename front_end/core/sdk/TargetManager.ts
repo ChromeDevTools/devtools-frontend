@@ -13,7 +13,6 @@ import * as Root from '../root/root.js';
 import {SDKModel} from './SDKModel.js';
 import {Target, Type as TargetType} from './Target.js';
 
-let targetManagerInstance: TargetManager|undefined;
 type ModelClass<T = SDKModel> = new (arg1: Target) => T;
 
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -35,7 +34,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #defaultScopeSet: boolean;
   readonly #scopeChangeListeners: Set<() => void>;
 
-  private constructor() {
+  constructor() {
     super();
     this.#targets = new Set();
     this.#observers = new Set();
@@ -52,15 +51,15 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   static instance({forceNew}: {
     forceNew: boolean,
   } = {forceNew: false}): TargetManager {
-    if (!targetManagerInstance || forceNew) {
-      targetManagerInstance = new TargetManager();
+    if (!Root.DevToolsContext.globalInstance().has(TargetManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(TargetManager, new TargetManager());
     }
 
-    return targetManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(TargetManager);
   }
 
   static removeInstance(): void {
-    targetManagerInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(TargetManager);
   }
 
   onInspectedURLChange(target: Target): void {

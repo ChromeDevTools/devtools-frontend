@@ -903,6 +903,7 @@ grd_files_unbundled_sources = [
   "front_end/core/protocol_client/ConnectionTransport.js",
   "front_end/core/protocol_client/DevToolsCDPConnection.js",
   "front_end/core/protocol_client/InspectorBackend.js",
+  "front_end/core/root/DevToolsContext.js",
   "front_end/core/root/Runtime.js",
   "front_end/core/sdk/AccessibilityModel.js",
   "front_end/core/sdk/AnimationModel.js",

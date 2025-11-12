@@ -175,7 +175,8 @@ export class MainImpl {
         runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
       },
     };
-    new Foundation.Universe.Universe(creationOptions);
+    const universe = new Foundation.Universe.Universe(creationOptions);
+    Root.DevToolsContext.setGlobalInstance(universe.context);
 
     await this.requestAndRegisterLocaleData();
 

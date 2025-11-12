@@ -7,7 +7,10 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("root") {
-  sources = [ "Runtime.ts" ]
+  sources = [
+    "DevToolsContext.ts",
+    "Runtime.ts",
+  ]
 
   deps = [ "../../core/platform:bundle" ]
 }

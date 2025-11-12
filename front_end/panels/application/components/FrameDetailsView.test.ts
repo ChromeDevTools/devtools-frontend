@@ -40,7 +40,7 @@ const makeFrame = (target: SDK.Target.Target) => {
     getGatedAPIFeatures: () =>
         [Protocol.Page.GatedAPIFeatures.SharedArrayBuffers,
          Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed],
-    getOwnerDOMNodeOrDocument: () => ({
+    getOwnerDOMNodeOrDocument: () => Promise.resolve({
       nodeName: () => 'iframe',
     }),
     resourceTreeModel: () => target.model(SDK.ResourceTreeModel.ResourceTreeModel),

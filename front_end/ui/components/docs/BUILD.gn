@@ -13,7 +13,6 @@ group("docs") {
     "../../../Images",
     "../../../panels/timeline/fixtures/traces",
     "./input",
-    "./report",
     "./theme_colors",
     "./user_agent_client_hints",
   ]

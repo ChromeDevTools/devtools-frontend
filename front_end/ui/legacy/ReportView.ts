@@ -13,11 +13,6 @@ import reportViewStyles from './reportView.css.js';
 import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {VBox} from './Widget.js';
-
-/**
- * @deprecated Please consider using the web component version of this widget
- *             (`ui/components/report_view/ReportView.ts`) for new code.
- */
 export class ReportView extends VBox {
   private readonly contentBox: HTMLElement;
   private headerElement: HTMLElement;

@@ -202,7 +202,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     });
     this.registerRequiredCSS(serviceWorkersViewStyles);
 
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service workers'));
     this.currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
@@ -221,7 +220,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
     const othersDiv = this.contentElement.createChild('div', 'service-workers-other-origin');
     othersDiv.setAttribute('jslog', `${VisualLogging.section('other-origin')}`);
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     const othersView = new UI.ReportView.ReportView();
     othersView.setHeaderVisible(false);
     othersView.show(othersDiv);

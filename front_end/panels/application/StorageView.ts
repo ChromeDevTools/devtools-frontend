@@ -181,7 +181,6 @@ export class StorageView extends UI.Widget.VBox {
       [Protocol.Storage.StorageType.Service_workers, 'rgb(255, 167, 36)'],  // orange
     ]);
 
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
     this.reportView.registerRequiredCSS(storageViewStyles);
 

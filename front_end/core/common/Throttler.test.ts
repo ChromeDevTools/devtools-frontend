@@ -14,7 +14,6 @@ describe('Throttler class', () => {
   const TIMEOUT = 10;
 
   beforeEach(async () => {
-    // @ts-expect-error missing types in devtools_foundation_module.
     consoleStub = sinon.stub(console, 'error');
     clock = sinon.useFakeTimers();
     // When nothing was run, throttler has 0 as the last exectution time.

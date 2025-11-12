@@ -18,7 +18,6 @@ describe('Debouncer', () => {
     debouncedIncrement();
 
     // Then wait a while before checking the value.
-    // @ts-expect-error missing types in devtools_foundation_module.
     setTimeout(() => {
       assert.strictEqual(count, 1);
       done();

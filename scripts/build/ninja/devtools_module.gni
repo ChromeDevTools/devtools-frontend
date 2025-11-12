@@ -22,12 +22,39 @@ template("devtools_module") {
 
 # A module that can run in any runtime we support. As such, it must only use
 # features and APIs shared across all supported runtimes.
+#
+# To check for this we type-check both against browser and node runtime APIs.
 template("devtools_foundation_module") {
-  devtools_base_module(target_name) {
-    forward_variables_from(invoker, "*")
+  if (!devtools_skip_typecheck) {
+    _node_type_check_target = target_name + "_node_typecheck"
+
+    ts_library(_node_type_check_target) {
+      forward_variables_from(invoker, "*", [ "visibility" ])
+
+      es_target = "es2023"
+      es_libs = []
+
+      no_emit = true
+      runs_in = "node_esm"
+    }
+  }
+
+  ts_library(target_name) {
+    forward_variables_from(invoker, "*", [ "visibility" ])
+
+    reset_timestamps = true
 
     es_target = "es2023"
-    es_libs = []
+    es_libs = [
+      "dom",
+      "dom.iterable",
+    ]
+
+    visibility += [ ":*" ]
+
+    if (!devtools_skip_typecheck) {
+      public_deps += [ ":$_node_type_check_target" ]
+    }
   }
 }
 

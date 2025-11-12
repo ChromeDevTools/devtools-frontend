@@ -6,7 +6,6 @@ import * as Common from './common.js';
 
 describe('Mutex', () => {
   async function triggerMicroTaskQueue(): Promise<void> {
-    // @ts-expect-error missing types in devtools_foundation_module.
     await new Promise(resolve => setTimeout(resolve, 0));
   }
 

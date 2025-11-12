@@ -6,7 +6,6 @@ import * as Common from './common.js';
 
 describe('Base64 decoder', () => {
   function decode(str: string) {
-    // @ts-expect-error missing types in devtools_foundation_module.
     const encoded = btoa(str);
     const decoded = Common.Base64.decode(encoded);
     const view = new DataView(decoded.buffer);

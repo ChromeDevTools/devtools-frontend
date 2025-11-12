@@ -196,9 +196,6 @@ template("ts_library") {
 
       foreach(src, sources) {
         _extension = get_path_info(src, "extension")
-        _relative_file_name = rebase_path(src, _rootdir)
-        _fileName = get_path_info(_relative_file_name, "dir") + "/" +
-                    get_path_info(_relative_file_name, "name")
 
         # Any .d.ts file does not generate a corresponding a .js file, but we
         # copy it over into the generated build folder instead, as tsc doesn't
@@ -210,6 +207,10 @@ template("ts_library") {
           # generating a js file in the gen folder
         } else if (_extension == "js" || _extension == "ts") {
           if (!_no_emit) {
+            _relative_file_name = rebase_path(src, _rootdir)
+            _fileName = get_path_info(_relative_file_name, "dir") + "/" +
+                        get_path_info(_relative_file_name, "name")
+
             output_files += [
               "$target_gen_dir/$_fileName.js",
               "$target_gen_dir/$_fileName.js.map",
@@ -220,7 +221,7 @@ template("ts_library") {
                  "Incorrect extension on '$src' with extension '$_extension'")
         }
 
-        if (!devtools_skip_typecheck) {
+        if (!devtools_skip_typecheck && !_no_emit) {
           output_files += [ "$target_gen_dir/$_fileName.d.ts" ]
         }
       }

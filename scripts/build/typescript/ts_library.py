@@ -263,6 +263,7 @@ def main():
         'rootDir'] = get_relative_path_from_output_directory(
             opts.front_end_directory)
 
+    tsconfig['compilerOptions']['types'] = []
     tsconfig['compilerOptions']['typeRoots'] = []
     if runs_in_node_cjs_environment or runs_in_node_esm_environment or opts.test_only:
         tsconfig['compilerOptions']['typeRoots'] += [
@@ -271,8 +272,10 @@ def main():
         ]
 
     if opts.test_only:
-        tsconfig['compilerOptions']['types'] = [
-            "mocha", "chai", "sinon",
+        tsconfig['compilerOptions']['types'] += [
+            "mocha",
+            "chai",
+            "sinon",
         ]
         # We only want to add these types for Unit test
         # Else we will get run time errors if we don't import chai
@@ -293,7 +296,7 @@ def main():
         tsconfig['compilerOptions']['types'] += ["node"]
 
     if opts.no_emit:
-        tsconfig['compilerOptions']['emitDeclarationOnly'] = True
+        tsconfig['compilerOptions']['noEmit'] = True
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     tsconfig['compilerOptions']['target'] = opts.es_target

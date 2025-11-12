@@ -315,5 +315,6 @@ group("docs") {
     "ui/components/tooltips:docs",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:docs",
+    "ui/legacy/theme_support:docs",
   ]
 }

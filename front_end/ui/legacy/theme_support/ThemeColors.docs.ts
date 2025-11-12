@@ -2,12 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Lit from '../../../lit/lit.js';
-import * as ComponentHelpers from '../../helpers/helpers.js';
+import * as Lit from '../../lit/lit.js';
 
 const {html} = Lit;
-
-await ComponentHelpers.ComponentServerSetup.setup();
 
 const THEME_VARIABLES_NAMES = new Set([
   '--sys-color-base',
@@ -30,6 +27,7 @@ const THEME_VARIABLES_NAMES = new Set([
   '--sys-color-gradient-tertiary',
   '--sys-color-green',
   '--sys-color-green-bright',
+  '--sys-color-header-container',
   '--sys-color-inverse-on-surface',
   '--sys-color-inverse-primary',
   '--sys-color-inverse-surface',
@@ -82,9 +80,12 @@ const THEME_VARIABLES_NAMES = new Set([
   '--sys-color-state-hover-on-prominent',
   '--sys-color-state-hover-on-subtle',
   '--sys-color-state-on-header-hover',
+  '--sys-color-state-on-text-highlight',
   '--sys-color-state-ripple-neutral-on-prominent',
   '--sys-color-state-ripple-neutral-on-subtle',
   '--sys-color-state-ripple-primary',
+  '--sys-color-state-scrim',
+  '--sys-color-state-text-highlight',
   '--sys-color-surface',
   '--sys-color-surface1',
   '--sys-color-surface2',
@@ -125,34 +126,43 @@ const THEME_VARIABLES_NAMES = new Set([
   '--sys-color-yellow-bright',
   '--sys-color-yellow-container',
   '--sys-color-yellow-outline',
-  '--sys-elevation-level1',
-  '--sys-elevation-level2',
-  '--sys-elevation-level3',
-  '--sys-elevation-level4',
-  '--sys-elevation-level5',
 ]);
 
-function appendStyles() {
-  const container = document.getElementById('container') as HTMLElement;
+export function render(container: HTMLElement): void {
   const items = Array.from(THEME_VARIABLES_NAMES).map(varName => {
     const value = getComputedStyle(container).getPropertyValue(varName);
     if (!value) {
       throw new Error(`Could not find value for CSS variable ${varName}.`);
     }
-
-    let styles = {};
-    if (varName.includes('--sys-elevation')) {
-      styles = {boxShadow: `var(${varName})`, borderBottomWidth: 0};
-    } else {
-      styles = {borderBottomColor: `var(${varName})`};
-    }
-    const style = Lit.Directives.styleMap(styles);
+    const style = Lit.Directives.styleMap({borderBottomColor: `var(${varName})`});
     return html`
       <div style=${style}><code>${varName}: ${value}</code></div>
-      <div style=${style} class='theme-with-dark-background'><code>${varName}: ${value}</code></div>
     `;
   });
-  Lit.render(html`${items}`, container);
-}
+  Lit.render(
+      html`
+        <style>
+          .theme {
+            width: 600px;
+            display: flex;
+            flex-direction: column;
+            row-gap: var(--sys-size-5);
 
-appendStyles();
+            > span {
+              font: var(--sys-typescale-headline1);
+            }
+
+            > div {
+              display: block;
+              border-bottom-width: var(--sys-size-9);
+              border-bottom-style: solid;
+              font: var(--sys-typescale-body1-regular);
+              margin-bottom: var(--sys-size-5);
+            }
+          }
+        </style>
+        <div class="theme">
+          ${items}
+        </div>`,
+      container);
+}

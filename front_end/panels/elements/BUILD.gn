@@ -129,6 +129,7 @@ devtools_entrypoint("bundle") {
     "../../models/ai_assistance/*",
     "../../panels/profiler/*",
     "../../panels/recorder/*",
+    "../../panels/timeline/*",
     "../../ui/components/docs/computed_style_property/*",
     "../../ui/components/docs/computed_style_trace/*",
     "../../ui/components/docs/elements_breadcrumbs/*",

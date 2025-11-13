@@ -163,7 +163,8 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    * DOM nodes can't be sent over a runtime binding, so we have to retrieve
    * them separately.
    */
-  async #resolveNodeRef(index: number, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<NodeRef|null> {
+  async #resolveNodeRef(index: number, executionContextId: Protocol.Runtime.ExecutionContextId):
+      Promise<SDK.DOMModel.DOMNode|null> {
     if (!this.#target) {
       return null;
     }
@@ -195,8 +196,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         return null;
       }
 
-      const link = await Common.Linkifier.Linkifier.linkify(node);
-      return {node, link};
+      return node;
     } catch {
       return null;
     } finally {
@@ -236,26 +236,23 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       ...this.#layoutShifts.flatMap(shift => shift.affectedNodeRefs),
     ].filter(nodeRef => !!nodeRef);
 
-    const idsToRefresh = new Set(toRefresh.map(nodeRef => nodeRef.node.backendNodeId()));
+    const idsToRefresh = new Set(toRefresh.map(nodeRef => nodeRef.backendNodeId()));
     const nodes = await domModel.pushNodesByBackendIdsToFrontend(idsToRefresh);
     if (!nodes) {
       return;
     }
 
-    const allPromises = toRefresh.map(async nodeRef => {
-      const refreshedNode = nodes.get(nodeRef.node.backendNodeId());
+    for (let i = 0; i < toRefresh.length; i++) {
+      const refreshedNode = nodes.get(toRefresh[i].backendNodeId());
 
       // It is possible for the refreshed node to be undefined even though it was defined previously.
       // We should keep the affected nodes consistent from the user perspective, so we will just keep the stale node instead of removing it.
       if (!refreshedNode) {
-        return;
+        continue;
       }
 
-      nodeRef.node = refreshedNode;
-      nodeRef.link = await Common.Linkifier.Linkifier.linkify(refreshedNode);
-    });
-
-    await Promise.all(allPromises);
+      toRefresh[i] = refreshedNode;
+    }
 
     this.#sendStatusUpdate();
   }
@@ -599,14 +596,9 @@ export interface MetricValue {
   warnings?: string[];
 }
 
-export interface NodeRef {
-  node: SDK.DOMModel.DOMNode;
-  link: Node;
-}
-
 export interface LcpValue extends MetricValue {
   phases: Spec.LcpPhases;
-  nodeRef?: NodeRef;
+  nodeRef?: SDK.DOMModel.DOMNode;
 }
 
 export interface InpValue extends MetricValue {
@@ -621,7 +613,7 @@ export interface ClsValue extends MetricValue {
 export interface LayoutShift {
   score: number;
   uniqueLayoutShiftId: Spec.UniqueLayoutShiftId;
-  affectedNodeRefs: NodeRef[];
+  affectedNodeRefs: SDK.DOMModel.DOMNode[];
 }
 
 export interface Interaction {
@@ -633,7 +625,7 @@ export interface Interaction {
   nextPaintTime: number;
   phases: Spec.InpPhases;
   longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
-  nodeRef?: NodeRef;
+  nodeRef?: SDK.DOMModel.DOMNode;
 }
 
 export interface StatusEvent {

@@ -30,6 +30,7 @@ import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as ElementsPanel from '../../elements/elements.js';
 import {getThrottlingRecommendations} from '../utils/Helpers.js';
 
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
@@ -449,7 +450,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #renderLcpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
-    const nodeLink = this.#lcpValue?.nodeRef?.link;
+    const nodeLink =
+        this.#lcpValue?.nodeRef && ElementsPanel.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
     const phases = this.#lcpValue?.phases;
 
     const fieldPhases = this.#getLcpFieldPhases();
@@ -946,6 +948,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
           const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
           const isInp = this.#inpValue?.interactionId === interaction.interactionId;
+          const nodeLink = interaction.nodeRef ? ElementsPanel.DOMLinkifier.Linkifier.instance().linkify(interaction.nodeRef) : Lit.nothing;
 
           return html`
             <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
@@ -956,7 +959,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                       html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
                     : nothing}
                   </span>
-                  <span class="interaction-node">${interaction.nodeRef?.link}</span>
+                  <span class="interaction-node">${nodeLink}</span>
                   ${isP98Excluded ? html`<devtools-icon
                     class="interaction-info"
                     name="info"
@@ -1062,8 +1065,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
-                ${layoutShift.affectedNodeRefs.map(({link}) => html`
-                  <div class="layout-shift-node">${link}</div>
+                ${layoutShift.affectedNodeRefs.map(node => html`
+                  <div class="layout-shift-node">${ElementsPanel.DOMLinkifier.Linkifier.instance().linkify(node)}</div>
                 `)}
               </div>
             </li>

@@ -84,6 +84,7 @@ devtools_ui_module("components") {
     "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
+    "../../elements:bundle",
     "../../emulation:bundle",
     "../../mobile_throttling:bundle",
     "../overlays:bundle",

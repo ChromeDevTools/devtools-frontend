@@ -474,7 +474,7 @@ function agentToConversationType(agent: AiAssistanceModel.AiAgent.AiAgent<unknow
   }
 
   if (agent instanceof AiAssistanceModel.PerformanceAgent.PerformanceAgent) {
-    return agent.getConversationType();
+    return AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE;
   }
 
   throw new Error('Provided agent does not have a corresponding conversation type');

@@ -10,7 +10,6 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Trace from '../../trace/trace.js';
-import {ConversationType} from '../AiHistoryStorage.js';
 import {
   PerformanceInsightFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
@@ -321,10 +320,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       temperature,
       modelId,
     };
-  }
-
-  getConversationType(): ConversationType {
-    return ConversationType.PERFORMANCE;
   }
 
   async *

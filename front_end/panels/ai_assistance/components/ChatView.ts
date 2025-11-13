@@ -532,7 +532,6 @@ export class ChatView extends HTMLElement {
             suggestions: this.#props.emptyStateSuggestions,
             userInfo: this.#props.userInfo,
             markdownRenderer: this.#props.markdownRenderer,
-            conversationType: this.#props.conversationType,
             changeSummary: this.#props.changeSummary,
             changeManager: this.#props.changeManager,
             onSuggestionClick: this.#handleSuggestionClick,
@@ -1458,7 +1457,6 @@ function renderMainContents({
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
-  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
   changeSummary?: string,
 }): Lit.LitTemplate {
   if (messages.length > 0) {

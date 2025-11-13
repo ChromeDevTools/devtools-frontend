@@ -151,7 +151,13 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
         return {
           result: {
             matches: await this.#project.searchFiles(
-                args.query, args.caseSensitive, args.isRegex, {signal: options?.signal}),
+                args.query,
+                args.caseSensitive,
+                args.isRegex,
+                {
+                  signal: options?.signal,
+                },
+                ),
           }
         };
       },

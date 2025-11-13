@@ -21,9 +21,10 @@ import {
   ConversationContext,
   type ConversationSuggestions,
   type FunctionCallHandlerResult,
+  type FunctionHandlerOptions,
   MultimodalInputType,
   type RequestOptions,
-  ResponseType,
+  ResponseType
 } from './AiAgent.js';
 
 /*
@@ -268,11 +269,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   #createExtensionScope: CreateExtensionScopeFunction;
 
   constructor(opts: AgentOptions) {
-    super({
-      aidaClient: opts.aidaClient,
-      serverSideLoggingEnabled: opts.serverSideLoggingEnabled,
-      confirmSideEffectForTest: opts.confirmSideEffectForTest,
-    });
+    super(opts);
 
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
@@ -633,8 +630,7 @@ const data = {
     };
   }
 
-  async executeAction(action: string, options?: {signal?: AbortSignal, approved?: boolean}):
-      Promise<FunctionCallHandlerResult<unknown>> {
+  async executeAction(action: string, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>> {
     debugLog(`Action to execute: ${action}`);
 
     if (options?.approved === false) {

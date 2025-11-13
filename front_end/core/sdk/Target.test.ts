@@ -5,20 +5,22 @@
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('Target', () => {
+describe('Target', () => {
   let browserTarget: SDK.Target.Target;
   let tabTarget: SDK.Target.Target;
   let mainFrameTargetUnderTab: SDK.Target.Target;
   let subframeTarget: SDK.Target.Target;
+
+  setupRuntimeHooks();
+  setupSettingsHooks();
 
   beforeEach(() => {
     browserTarget = createTarget({type: SDK.Target.Type.BROWSER});

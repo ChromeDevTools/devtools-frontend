@@ -23,6 +23,7 @@ ts_library("testing") {
     "InsightHelpers.ts",
     "LanguagePluginHelpers.ts",
     "LocaleHelpers.ts",
+    "MockCDPConnection.ts",
     "MockConnection.ts",
     "MockExecutionContext.ts",
     "MockIssuesManager.ts",

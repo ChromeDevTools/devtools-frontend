@@ -8,6 +8,7 @@ import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './Insp
 export enum ErrorType {
   HTTP_RESPONSE_UNAVAILABLE = 'HTTP_RESPONSE_UNAVAILABLE',
   NOT_FOUND = 'NOT_FOUND',
+  ABORT = 'ABORT',
 }
 
 export class DispatchHttpRequestError extends Error {
@@ -16,9 +17,23 @@ export class DispatchHttpRequestError extends Error {
   }
 }
 
-export async function makeHttpRequest<R>(request: DispatchHttpRequestRequest): Promise<R> {
-  const response = await new Promise<DispatchHttpRequestResult>(resolve => {
-    InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
+export async function makeHttpRequest<R>(
+    request: DispatchHttpRequestRequest, options?: {signal?: AbortSignal}): Promise<R> {
+  const signal = options?.signal;
+  if (signal?.aborted) {
+    throw new DispatchHttpRequestError(ErrorType.ABORT);
+  }
+
+  const response = await new Promise<DispatchHttpRequestResult>((resolve, reject) => {
+    const onAbort = (): void => {
+      reject(new DispatchHttpRequestError(ErrorType.ABORT));
+    };
+
+    signal?.addEventListener('abort', onAbort, {once: true});
+    InspectorFrontendHostInstance.dispatchHttpRequest(request, result => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve(result);
+    });
   });
 
   debugLog({request, response});

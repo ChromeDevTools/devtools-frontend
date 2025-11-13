@@ -73,6 +73,7 @@ export class AiCodeGeneration {
         inference_language: inferenceLanguage,
         temperature: validTemperature(this.#options.temperature),
         model_id: this.#options.modelId || undefined,
+        expect_code_output: true,
       },
       metadata: {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
@@ -139,10 +140,11 @@ export class AiCodeGeneration {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationSuggestionAccepted);
   }
 
-  async generateCode(prompt: string, preamble: string, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage):
-      Promise<Host.AidaClient.GenerateCodeResponse|null> {
+  async generateCode(
+      prompt: string, preamble: string, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage,
+      options?: {signal?: AbortSignal}): Promise<Host.AidaClient.GenerateCodeResponse|null> {
     const request = this.#buildRequest(prompt, preamble, inferenceLanguage);
-    const response = await this.#aidaClient.generateCode(request);
+    const response = await this.#aidaClient.generateCode(request, options);
 
     debugLog({request, response});
 

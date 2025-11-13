@@ -707,13 +707,16 @@ export class AidaClient {
     return {generatedSamples, metadata};
   }
 
-  async generateCode(request: GenerateCodeRequest): Promise<GenerateCodeResponse|null> {
-    const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateCodeResponse>({
-      service: SERVICE_NAME,
-      path: '/v1/aida:generateCode',
-      method: 'POST',
-      body: JSON.stringify(request),
-    });
+  async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}):
+      Promise<GenerateCodeResponse|null> {
+    const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateCodeResponse>(
+        {
+          service: SERVICE_NAME,
+          path: '/v1/aida:generateCode',
+          method: 'POST',
+          body: JSON.stringify(request),
+        },
+        options);
 
     return response;
   }

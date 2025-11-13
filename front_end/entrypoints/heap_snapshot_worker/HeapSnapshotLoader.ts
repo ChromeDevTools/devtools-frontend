@@ -46,6 +46,8 @@ export class HeapSnapshotLoader {
   }
 
   async buildSnapshot(secondWorker: MessagePort): Promise<JSHeapSnapshot> {
+    await this.parsingComplete;
+
     this.#snapshot = this.#snapshot || {};
 
     this.#progress.updateStatus('Processing snapshot…');

@@ -38,7 +38,10 @@ export class CdpHTTPRequest extends HTTPRequest {
         this._redirectChain = redirectChain;
         this.#initiator = data.initiator;
         this.interception.enabled = allowInterception;
-        for (const [key, value] of Object.entries(data.request.headers)) {
+        this.updateHeaders(data.request.headers);
+    }
+    updateHeaders(headers) {
+        for (const [key, value] of Object.entries(headers)) {
             this.#headers[key.toLowerCase()] = value;
         }
     }

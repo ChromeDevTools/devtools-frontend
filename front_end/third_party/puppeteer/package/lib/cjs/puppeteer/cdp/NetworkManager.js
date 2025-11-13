@@ -37,6 +37,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         ['Fetch.requestPaused', this.#onRequestPaused],
         ['Fetch.authRequired', this.#onAuthRequired],
         ['Network.requestWillBeSent', this.#onRequestWillBeSent],
+        ['Network.requestWillBeSentExtraInfo', this.#onRequestWillBeSentExtraInfo],
         ['Network.requestServedFromCache', this.#onRequestServedFromCache],
         ['Network.responseReceived', this.#onResponseReceived],
         ['Network.loadingFinished', this.#onLoadingFinished],
@@ -398,16 +399,37 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             if (request) {
                 this.#handleRequestRedirect(client, request, event.redirectResponse, redirectResponseExtraInfo);
                 redirectChain = request._redirectChain;
+                const extraInfo = this.#networkEventManager
+                    .requestExtraInfo(event.requestId)
+                    .shift();
+                if (extraInfo) {
+                    request.updateHeaders(extraInfo.headers);
+                }
             }
         }
         const frame = event.frameId
             ? this.#frameManager.frame(event.frameId)
             : null;
         const request = new HTTPRequest_js_1.CdpHTTPRequest(client, frame, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain);
+        const extraInfo = this.#networkEventManager
+            .requestExtraInfo(event.requestId)
+            .shift();
+        if (extraInfo) {
+            request.updateHeaders(extraInfo.headers);
+        }
         request._fromMemoryCache = fromMemoryCache;
         this.#networkEventManager.storeRequest(event.requestId, request);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
+    }
+    #onRequestWillBeSentExtraInfo(_client, event) {
+        const request = this.#networkEventManager.getRequest(event.requestId);
+        if (request) {
+            request.updateHeaders(event.headers);
+        }
+        else {
+            this.#networkEventManager.requestExtraInfo(event.requestId).push(event);
+        }
     }
     #onRequestServedFromCache(client, event) {
         const requestWillBeSentEvent = this.#networkEventManager.getRequestWillBeSent(event.requestId);

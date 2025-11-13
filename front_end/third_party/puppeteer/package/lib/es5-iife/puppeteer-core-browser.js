@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.29.1';
+  const packageVersion = '24.30.0';
   // x-release-please-end
 
   /**
@@ -17140,7 +17140,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       this._redirectChain = redirectChain;
       _classPrivateFieldSet(_initiator, this, data.initiator);
       this.interception.enabled = allowInterception;
-      for (const [key, value] of Object.entries(data.request.headers)) {
+      this.updateHeaders(data.request.headers);
+    }
+    updateHeaders(headers) {
+      for (const [key, value] of Object.entries(headers)) {
         _classPrivateFieldGet(_headers, this)[key.toLowerCase()] = value;
       }
     }
@@ -17487,6 +17490,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _requestWillBeSentMap = /*#__PURE__*/new WeakMap();
   var _requestPausedMap = /*#__PURE__*/new WeakMap();
   var _httpRequestsMap = /*#__PURE__*/new WeakMap();
+  var _requestWillBeSentExtraInfoMap = /*#__PURE__*/new WeakMap();
   var _responseReceivedExtraInfoMap = /*#__PURE__*/new WeakMap();
   var _queuedRedirectInfoMap = /*#__PURE__*/new WeakMap();
   var _queuedEventGroupMap = /*#__PURE__*/new WeakMap();
@@ -17527,6 +17531,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _requestWillBeSentMap, new Map());
       _classPrivateFieldInitSpec(this, _requestPausedMap, new Map());
       _classPrivateFieldInitSpec(this, _httpRequestsMap, new Map());
+      _classPrivateFieldInitSpec(this, _requestWillBeSentExtraInfoMap, new Map());
       /*
        * The below maps are used to reconcile Network.responseReceivedExtraInfo
        * events with their corresponding request. Each response and redirect
@@ -17543,9 +17548,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     forget(networkRequestId) {
       _classPrivateFieldGet(_requestWillBeSentMap, this).delete(networkRequestId);
       _classPrivateFieldGet(_requestPausedMap, this).delete(networkRequestId);
+      _classPrivateFieldGet(_requestWillBeSentExtraInfoMap, this).delete(networkRequestId);
       _classPrivateFieldGet(_queuedEventGroupMap, this).delete(networkRequestId);
       _classPrivateFieldGet(_queuedRedirectInfoMap, this).delete(networkRequestId);
       _classPrivateFieldGet(_responseReceivedExtraInfoMap, this).delete(networkRequestId);
+    }
+    requestExtraInfo(networkRequestId) {
+      if (!_classPrivateFieldGet(_requestWillBeSentExtraInfoMap, this).has(networkRequestId)) {
+        _classPrivateFieldGet(_requestWillBeSentExtraInfoMap, this).set(networkRequestId, []);
+      }
+      return _classPrivateFieldGet(_requestWillBeSentExtraInfoMap, this).get(networkRequestId);
     }
     responseExtraInfo(networkRequestId) {
       if (!_classPrivateFieldGet(_responseReceivedExtraInfoMap, this).has(networkRequestId)) {
@@ -17674,7 +17686,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _userAgent, void 0);
       _classPrivateFieldInitSpec(this, _userAgentMetadata, void 0);
       _classPrivateFieldInitSpec(this, _platform, void 0);
-      _classPrivateFieldInitSpec(this, _handlers3, [['Fetch.requestPaused', _assertClassBrand(_NetworkManager_brand, this, _onRequestPaused)], ['Fetch.authRequired', _assertClassBrand(_NetworkManager_brand, this, _onAuthRequired)], ['Network.requestWillBeSent', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSent)], ['Network.requestServedFromCache', _assertClassBrand(_NetworkManager_brand, this, _onRequestServedFromCache)], ['Network.responseReceived', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceived)], ['Network.loadingFinished', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFinished)], ['Network.loadingFailed', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFailed)], ['Network.responseReceivedExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceivedExtraInfo)], [exports.CDPSessionEvent.Disconnected, _assertClassBrand(_NetworkManager_brand, this, _removeClient)]]);
+      _classPrivateFieldInitSpec(this, _handlers3, [['Fetch.requestPaused', _assertClassBrand(_NetworkManager_brand, this, _onRequestPaused)], ['Fetch.authRequired', _assertClassBrand(_NetworkManager_brand, this, _onAuthRequired)], ['Network.requestWillBeSent', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSent)], ['Network.requestWillBeSentExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSentExtraInfo)], ['Network.requestServedFromCache', _assertClassBrand(_NetworkManager_brand, this, _onRequestServedFromCache)], ['Network.responseReceived', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceived)], ['Network.loadingFinished', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFinished)], ['Network.loadingFailed', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFailed)], ['Network.responseReceivedExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceivedExtraInfo)], [exports.CDPSessionEvent.Disconnected, _assertClassBrand(_NetworkManager_brand, this, _removeClient)]]);
       _classPrivateFieldInitSpec(this, _clients, new Map());
       _classPrivateFieldInitSpec(this, _networkEnabled, true);
       _classPrivateFieldSet(_frameManager, this, frameManager);
@@ -18006,14 +18018,30 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (request) {
         _assertClassBrand(_NetworkManager_brand, this, _handleRequestRedirect).call(this, client, request, event.redirectResponse, redirectResponseExtraInfo);
         redirectChain = request._redirectChain;
+        const extraInfo = _classPrivateFieldGet(_networkEventManager, this).requestExtraInfo(event.requestId).shift();
+        if (extraInfo) {
+          request.updateHeaders(extraInfo.headers);
+        }
       }
     }
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
     const request = new CdpHTTPRequest(client, frame, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain);
+    const extraInfo = _classPrivateFieldGet(_networkEventManager, this).requestExtraInfo(event.requestId).shift();
+    if (extraInfo) {
+      request.updateHeaders(extraInfo.headers);
+    }
     request._fromMemoryCache = fromMemoryCache;
     _classPrivateFieldGet(_networkEventManager, this).storeRequest(event.requestId, request);
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
+  }
+  function _onRequestWillBeSentExtraInfo(_client, event) {
+    const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
+    if (request) {
+      request.updateHeaders(event.headers);
+    } else {
+      _classPrivateFieldGet(_networkEventManager, this).requestExtraInfo(event.requestId).push(event);
+    }
   }
   function _onRequestServedFromCache(client, event) {
     const requestWillBeSentEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(event.requestId);
@@ -24853,9 +24881,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '142.0.7444.61',
-    'chrome-headless-shell': '142.0.7444.61',
-    firefox: 'stable_144.0.2'
+    chrome: '142.0.7444.162',
+    'chrome-headless-shell': '142.0.7444.162',
+    firefox: 'stable_145.0'
   });
 
   /**

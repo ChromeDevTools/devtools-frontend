@@ -36,6 +36,7 @@ export type NetworkRequestId = string;
 export declare class NetworkEventManager {
     #private;
     forget(networkRequestId: NetworkRequestId): void;
+    requestExtraInfo(networkRequestId: NetworkRequestId): Protocol.Network.RequestWillBeSentExtraInfoEvent[];
     responseExtraInfo(networkRequestId: NetworkRequestId): Protocol.Network.ResponseReceivedExtraInfoEvent[];
     private queuedRedirectInfo;
     queueRedirectInfo(fetchRequestId: FetchRequestId, redirectInfo: RedirectInfo): void;

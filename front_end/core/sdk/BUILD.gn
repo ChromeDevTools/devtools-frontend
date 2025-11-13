@@ -169,7 +169,6 @@ ts_library("unittests") {
     "RehydratingConnection.test.ts",
     "RemoteObject.test.ts",
     "ResourceTreeModel.test.ts",
-    "RuntimeModel.test.ts",
     "ScopeTreeCache.test.ts",
     "ScreenCaptureModel.test.ts",
     "Script.test.ts",
@@ -208,6 +207,7 @@ devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
+    "RuntimeModel.test.ts",
     "Target.test.ts",
     "TargetManager.test.ts",
   ]
@@ -215,6 +215,7 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../testing",
+    "../host:bundle",
     "../platform:bundle",
     "../root:bundle",
   ]

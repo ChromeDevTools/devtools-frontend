@@ -6,16 +6,18 @@ import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('ExecutionContext', () => {
+describe('ExecutionContext', () => {
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
   function createExecutionContext(target: SDK.Target.Target, name?: string, isDefault?: boolean) {
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     assert.exists(runtimeModel);

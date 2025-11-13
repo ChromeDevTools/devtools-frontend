@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as StackTrace from '../stack_trace/stack_trace.js';
@@ -20,8 +21,6 @@ import {NetworkProject} from './NetworkProject.js';
 import type {ResourceMapping} from './ResourceMapping.js';
 import {type ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';
 
-let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding|undefined;
-
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly resourceMapping: ResourceMapping;
   readonly #debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
@@ -30,7 +29,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   readonly ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
   readonly workspace: Workspace.Workspace.WorkspaceImpl;
 
-  private constructor(
+  constructor(
       resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager,
       ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.resourceMapping = resourceMapping;
@@ -69,22 +68,23 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   } = {forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null, workspace: null}):
       DebuggerWorkspaceBinding {
     const {forceNew, resourceMapping, targetManager, ignoreListManager, workspace} = opts;
-    if (!debuggerWorkspaceBindingInstance || forceNew) {
+    if (forceNew) {
       if (!resourceMapping || !targetManager || !ignoreListManager || !workspace) {
         throw new Error(
             `Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${
                 new Error().stack}`);
       }
 
-      debuggerWorkspaceBindingInstance =
-          new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
+      Root.DevToolsContext.globalInstance().set(
+          DebuggerWorkspaceBinding,
+          new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace));
     }
 
-    return debuggerWorkspaceBindingInstance;
+    return Root.DevToolsContext.globalInstance().get(DebuggerWorkspaceBinding);
   }
 
   static removeInstance(): void {
-    debuggerWorkspaceBindingInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(DebuggerWorkspaceBinding);
   }
 
   private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):

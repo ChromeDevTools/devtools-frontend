@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
@@ -16,14 +17,12 @@ import type {ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';
 
-let cssWorkspaceBindingInstance: CSSWorkspaceBinding|undefined;
-
 export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
   readonly #resourceMapping: ResourceMapping;
   readonly #modelToInfo: Map<SDK.CSSModel.CSSModel, ModelInfo>;
   readonly #liveLocationPromises: Set<Promise<unknown>>;
 
-  private constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
+  constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
     this.#resourceMapping = resourceMapping;
     this.#resourceMapping.cssWorkspaceBinding = this;
     this.#modelToInfo = new Map();
@@ -38,20 +37,21 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
     targetManager: SDK.TargetManager.TargetManager|null,
   } = {forceNew: null, resourceMapping: null, targetManager: null}): CSSWorkspaceBinding {
     const {forceNew, resourceMapping, targetManager} = opts;
-    if (!cssWorkspaceBindingInstance || forceNew) {
+    if (forceNew) {
       if (!resourceMapping || !targetManager) {
         throw new Error(`Unable to create CSSWorkspaceBinding: resourceMapping and targetManager must be provided: ${
             new Error().stack}`);
       }
 
-      cssWorkspaceBindingInstance = new CSSWorkspaceBinding(resourceMapping, targetManager);
+      Root.DevToolsContext.globalInstance().set(
+          CSSWorkspaceBinding, new CSSWorkspaceBinding(resourceMapping, targetManager));
     }
 
-    return cssWorkspaceBindingInstance;
+    return Root.DevToolsContext.globalInstance().get(CSSWorkspaceBinding);
   }
 
   static removeInstance(): void {
-    cssWorkspaceBindingInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(CSSWorkspaceBinding);
   }
 
   get modelToInfo(): Map<SDK.CSSModel.CSSModel, ModelInfo> {

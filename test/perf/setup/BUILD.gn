@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("setup") {
+ts_e2e_library("setup") {
   sources = [ "test_setup.ts" ]
   deps = [ "../report" ]
 }

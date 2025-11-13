@@ -4,12 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("application") {
+ts_e2e_library("application") {
   sources = [ "boot-perf_test.ts" ]
 
   deps = [
     "../../shared",
-    "../helpers",
     "../report",
   ]
 }

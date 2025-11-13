@@ -34,6 +34,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager,
       ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.resourceMapping = resourceMapping;
+    this.resourceMapping.debuggerWorkspaceBinding = this;
     this.ignoreListManager = ignoreListManager;
     this.workspace = workspace;
 

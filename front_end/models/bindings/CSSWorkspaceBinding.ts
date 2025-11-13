@@ -25,6 +25,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
 
   private constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
     this.#resourceMapping = resourceMapping;
+    this.#resourceMapping.cssWorkspaceBinding = this;
     this.#modelToInfo = new Map();
     targetManager.observeModels(SDK.CSSModel.CSSModel, this);
 

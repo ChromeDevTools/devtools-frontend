@@ -30,9 +30,42 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
   readonly workspace: Workspace.Workspace.WorkspaceImpl;
   readonly #modelToInfo = new Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>();
 
+  #debuggerWorkspaceBinding: DebuggerWorkspaceBinding|null = null;
+  #cssWorkspaceBinding: CSSWorkspaceBinding|null = null;
+
   constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.workspace = workspace;
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
+  }
+
+  get debuggerWorkspaceBinding(): DebuggerWorkspaceBinding {
+    if (!this.#debuggerWorkspaceBinding) {
+      throw new Error('No DebuggerWorkspaceBinding instance set on ResourceMapping');
+    }
+    return this.#debuggerWorkspaceBinding;
+  }
+
+  /* {@link DebuggerWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
+  set debuggerWorkspaceBinding(debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
+    if (this.#debuggerWorkspaceBinding) {
+      throw new Error('DebuggerWorkspaceBinding already set');
+    }
+    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+  }
+
+  get cssWorkspaceBinding(): CSSWorkspaceBinding {
+    if (!this.#cssWorkspaceBinding) {
+      throw new Error('No CSSWorkspaceBinding instance set on ResourceMapping');
+    }
+    return this.#cssWorkspaceBinding;
+  }
+
+  /* {@link CSSWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
+  set cssWorkspaceBinding(cssWorkspaceBinding: CSSWorkspaceBinding) {
+    if (this.#cssWorkspaceBinding) {
+      throw new Error('CSSWorkspaceBinding already set');
+    }
+    this.#cssWorkspaceBinding = cssWorkspaceBinding;
   }
 
   modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {

@@ -43,8 +43,8 @@ import { CustomPreviewComponent } from './CustomPreviewComponent.js';
 import { JavaScriptREPL } from './JavaScriptREPL.js';
 import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
 import objectValueStyles from './objectValue.css.js';
-import { createSpansForNodeTitle, RemoteObjectPreviewFormatter } from './RemoteObjectPreviewFormatter.js';
-const { ifDefined } = Directives;
+import { RemoteObjectPreviewFormatter, renderNodeTitle } from './RemoteObjectPreviewFormatter.js';
+const { repeat, ifDefined } = Directives;
 const UIStrings = {
     /**
      * @description Text in Object Properties Section
@@ -570,7 +570,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             valueElement.classList.add('object-value-' + (subtype || type));
             if (value.preview && showPreview) {
                 const previewFormatter = new RemoteObjectPreviewFormatter();
-                previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
+                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+                render(previewFormatter.renderObjectPreview(value.preview), valueElement);
                 propertyValue = valueElement;
                 UI.Tooltip.Tooltip.install(propertyValue, description || '');
             }
@@ -636,7 +637,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         function createNodeElement() {
             const valueElement = document.createElement('span');
             valueElement.classList.add('object-value-node');
-            createSpansForNodeTitle(valueElement, (description));
+            /* eslint-disable-next-line @devtools/no-lit-render-outside-of-view */
+            render(renderNodeTitle(description), valueElement);
             valueElement.addEventListener('click', event => {
                 void Common.Revealer.reveal(value);
                 event.consume(true);
@@ -777,6 +779,33 @@ export class RootElement extends UI.TreeOutline.TreeElement {
  * Remaining children are shown as soon as requested via a show more properties button.
  **/
 export const InitialVisibleChildrenLimit = 200;
+export const TREE_ELEMENT_DEFAULT_VIEW = (input, output, target) => {
+    const isInternalEntries = input.node.property.synthetic && input.node.name === '[[Entries]]';
+    if (isInternalEntries) {
+        render(html `<span class=name-and-value>${input.nameElement}</span>`, target);
+    }
+    else {
+        const completionsId = `completions-${input.node.parent?.object?.objectId?.replaceAll('.', '-')}-${input.node.name}`;
+        const onAutoComplete = async (e) => {
+            if (!(e.target instanceof UI.TextPrompt.TextPromptElement)) {
+                return;
+            }
+            input.onAutoComplete(e.detail.expression, e.detail.filter, e.detail.force);
+        };
+        // clang-format off
+        render(html `<span class=name-and-value>${input.nameElement}<span class='separator'>: </span><devtools-prompt
+             @commit=${(e) => input.editingCommitted(e.detail)}
+             @cancel=${() => input.editingEnded()}
+             @beforeautocomplete=${onAutoComplete}
+             completions=${completionsId}
+             placeholder=${i18nString(UIStrings.stringIsTooLargeToEdit)}
+             ?editing=${input.editing}>
+               ${input.expanded && input.expandedValueElement || input.valueElement}
+               <datalist id=${completionsId}>${repeat(input.completions, c => html `<option>${c}</option>`)}</datalist>
+             </devtools-prompt></span><span>`, target);
+        // clang-format on
+    }
+};
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     property;
     toggleOnClick;
@@ -785,15 +814,18 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     maxNumPropertiesToShow;
     nameElement;
     valueElement;
-    rowContainer;
     readOnly;
     prompt;
     editableDiv;
     propertyValue;
     expandedValueElement;
-    constructor(property, linkifier) {
+    #editing = false;
+    #view;
+    #completions = [];
+    constructor(property, linkifier, view = TREE_ELEMENT_DEFAULT_VIEW) {
         // Pass an empty title, the title gets made later in onattach.
         super();
+        this.#view = view;
         this.property = property;
         this.toggleOnClick = true;
         this.highlightChanges = [];
@@ -989,27 +1021,16 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.updateExpandable();
     }
     onexpand() {
-        this.showExpandedValueElement(true);
+        this.performUpdate();
     }
     oncollapse() {
-        this.showExpandedValueElement(false);
-    }
-    showExpandedValueElement(value) {
-        if (!this.expandedValueElement) {
-            return;
-        }
-        if (value) {
-            this.rowContainer.replaceChild(this.expandedValueElement, this.valueElement);
-        }
-        else {
-            this.rowContainer.replaceChild(this.valueElement, this.expandedValueElement);
-        }
+        this.performUpdate();
     }
     createExpandedValueElement(value, isSyntheticProperty) {
         const needsAlternateValue = value.hasChildren && !value.customPreview() && value.subtype !== 'node' &&
             value.type !== 'function' && (value.type !== 'object' || value.preview);
         if (!needsAlternateValue) {
-            return null;
+            return undefined;
         }
         const valueElement = document.createElement('span');
         valueElement.classList.add('value');
@@ -1081,21 +1102,27 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             this.expandedValueElement =
                 this.createExpandedValueElement(this.property.object, this.property.property.synthetic);
         }
-        const adorner = '';
-        let container;
-        if (isInternalEntries) {
-            container = UI.Fragment.html `
-        <span class='name-and-value'>${adorner}${this.nameElement}</span>
-      `;
-        }
-        else {
-            container = UI.Fragment.html `
-        <span class='name-and-value'>${adorner}${this.nameElement}<span class='separator'>: </span>${this.valueElement}</span>
-      `;
-        }
-        this.listItemElement.removeChildren();
-        this.rowContainer = container;
-        this.listItemElement.appendChild(this.rowContainer);
+        this.performUpdate();
+    }
+    async #updateCompletions(expression, filter, force) {
+        const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
+        this.#completions = suggestions.map(v => v.text);
+        this.performUpdate();
+    }
+    performUpdate() {
+        const input = {
+            expandedValueElement: this.expandedValueElement,
+            expanded: this.expanded,
+            editing: this.#editing,
+            editingEnded: this.editingEnded.bind(this),
+            editingCommitted: this.editingCommitted.bind(this),
+            node: this.property,
+            nameElement: this.nameElement,
+            valueElement: this.valueElement,
+            completions: this.#editing ? this.#completions : [],
+            onAutoComplete: this.#updateCompletions.bind(this),
+        };
+        this.#view(input, {}, this.listItemElement);
     }
     getContextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1129,56 +1156,25 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         const contextMenu = this.getContextMenu(event);
         void contextMenu.show();
     }
+    get editing() {
+        return this.#editing;
+    }
     startEditing() {
-        const treeOutline = this.treeOutline;
-        if (this.prompt || !treeOutline || !treeOutline.editable || this.readOnly) {
-            return;
+        if (!this.readOnly) {
+            this.#editing = true;
+            this.performUpdate();
         }
-        this.editableDiv = this.rowContainer.createChild('span', 'editable-div');
-        if (this.property.object) {
-            let text = this.property.object.description;
-            if (this.property.object.type === 'string' && typeof text === 'string') {
-                text = `"${text}"`;
-            }
-            this.editableDiv.setTextContentTruncatedIfNeeded(text, i18nString(UIStrings.stringIsTooLargeToEdit));
-        }
-        const originalContent = this.editableDiv.textContent || '';
-        // Lie about our children to prevent expanding on double click and to collapse subproperties.
-        this.setExpandable(false);
-        this.listItemElement.classList.add('editing-sub-part');
-        this.valueElement.classList.add('hidden');
-        this.prompt = new ObjectPropertyPrompt();
-        const proxyElement = this.prompt.attachAndStartEditing(this.editableDiv, this.editingCommitted.bind(this, originalContent));
-        proxyElement.classList.add('property-prompt');
-        const selection = this.listItemElement.getComponentSelection();
-        if (selection) {
-            selection.selectAllChildren(this.editableDiv);
-        }
-        proxyElement.addEventListener('keydown', this.promptKeyDown.bind(this, originalContent), false);
     }
     editingEnded() {
-        if (this.prompt) {
-            this.prompt.detach();
-            delete this.prompt;
-        }
-        this.editableDiv.remove();
+        this.#completions = [];
+        this.#editing = false;
+        this.performUpdate();
         this.updateExpandable();
-        this.listItemElement.scrollLeft = 0;
-        this.listItemElement.classList.remove('editing-sub-part');
         this.select();
     }
-    editingCancelled() {
-        this.valueElement.classList.remove('hidden');
+    async editingCommitted(newContent) {
         this.editingEnded();
-    }
-    async editingCommitted(originalContent) {
-        const userInput = this.prompt ? this.prompt.text() : '';
-        if (userInput === originalContent) {
-            this.editingCancelled(); // nothing changed, so cancel
-            return;
-        }
-        this.editingEnded();
-        await this.applyExpression(userInput);
+        await this.applyExpression(newContent);
     }
     promptKeyDown(originalContent, event) {
         const keyboardEvent = event;
@@ -1189,7 +1185,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
             keyboardEvent.consume();
-            this.editingCancelled();
+            this.editingEnded();
             return;
         }
     }

@@ -3290,9 +3290,11 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   #liveLocationPromises;
   pluginManager;
   ignoreListManager;
-  constructor(resourceMapping, targetManager, ignoreListManager) {
+  workspace;
+  constructor(resourceMapping, targetManager, ignoreListManager, workspace) {
     this.resourceMapping = resourceMapping;
     this.ignoreListManager = ignoreListManager;
+    this.workspace = workspace;
     this.#debuggerModelToData = /* @__PURE__ */ new Map();
     targetManager.addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
     targetManager.addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
@@ -3306,13 +3308,13 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       modelData.compilerMapping.setFunctionRanges(uiSourceCode, ranges);
     }
   }
-  static instance(opts = { forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null }) {
-    const { forceNew, resourceMapping, targetManager, ignoreListManager } = opts;
+  static instance(opts = { forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null, workspace: null }) {
+    const { forceNew, resourceMapping, targetManager, ignoreListManager, workspace } = opts;
     if (!debuggerWorkspaceBindingInstance || forceNew) {
-      if (!resourceMapping || !targetManager || !ignoreListManager) {
+      if (!resourceMapping || !targetManager || !ignoreListManager || !workspace) {
         throw new Error(`Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${new Error().stack}`);
       }
-      debuggerWorkspaceBindingInstance = new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager);
+      debuggerWorkspaceBindingInstance = new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
     }
     return debuggerWorkspaceBindingInstance;
   }
@@ -3464,11 +3466,10 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   }
   waitForUISourceCodeAdded(url, target) {
     return new Promise((resolve) => {
-      const workspace = Workspace17.Workspace.WorkspaceImpl.instance();
-      const descriptor = workspace.addEventListener(Workspace17.Workspace.Events.UISourceCodeAdded, (event) => {
+      const descriptor = this.workspace.addEventListener(Workspace17.Workspace.Events.UISourceCodeAdded, (event) => {
         const uiSourceCode = event.data;
         if (uiSourceCode.url() === url && NetworkProject.targetForUISourceCode(uiSourceCode) === target) {
-          workspace.removeEventListener(Workspace17.Workspace.Events.UISourceCodeAdded, descriptor.listener);
+          this.workspace.removeEventListener(Workspace17.Workspace.Events.UISourceCodeAdded, descriptor.listener);
           resolve(uiSourceCode);
         }
       });

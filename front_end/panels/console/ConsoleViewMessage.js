@@ -24,6 +24,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Security from '../security/security.js';
 import { format, updateStyle } from './ConsoleFormat.js';
@@ -753,7 +754,8 @@ export class ConsoleViewMessage {
         titleElement.classList.add('console-object');
         if (includePreview && obj.preview) {
             titleElement.classList.add('console-object-preview');
-            this.previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
+            /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+            render(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
             ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
         }
         else if (obj.type === 'function') {
@@ -816,7 +818,7 @@ export class ConsoleViewMessage {
         if (property.type === 'accessor') {
             return this.formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
         }
-        return this.previewFormatter.renderPropertyPreview(property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
+        return this.renderPropertyPreview(property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
     }
     formatParameterAsNode(remoteObject) {
         const result = document.createElement('span');
@@ -889,7 +891,13 @@ export class ConsoleViewMessage {
         return result;
     }
     formatAsArrayEntry(output) {
-        return this.previewFormatter.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+        return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+    }
+    renderPropertyPreview(type, subtype, className, description) {
+        const fragment = document.createDocumentFragment();
+        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+        render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
+        return fragment;
     }
     formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
         const rootElement = ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
@@ -922,7 +930,7 @@ export class ConsoleViewMessage {
                         description = Platform.StringUtilities.trimEndWithMaxLength(object.description, maxLength);
                     }
                 }
-                rootElement.appendChild(this.previewFormatter.renderPropertyPreview(type, subtype, object.className, description));
+                rootElement.appendChild(this.renderPropertyPreview(type, subtype, object.className, description));
             }
         }
         return rootElement;
@@ -1966,7 +1974,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
                     columnNames.push(cellProperty.name);
                 }
                 if (columnRendered) {
-                    const cellElement = this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
+                    const cellElement = this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty])
+                        .firstElementChild;
                     cellElement.classList.add('console-message-nowrap-below');
                     rowValue.set(cellProperty.name, cellElement);
                 }

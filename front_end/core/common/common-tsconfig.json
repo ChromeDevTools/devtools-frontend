@@ -31,6 +31,7 @@
     "target": "ES2023",
     "tsBuildInfoFile": "common-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -52,7 +53,6 @@
     "../../../../../../front_end/core/common/Object.ts",
     "../../../../../../front_end/core/common/ParsedURL.ts",
     "../../../../../../front_end/core/common/Progress.ts",
-    "../../../../../../front_end/core/common/QueryParamHandler.ts",
     "../../../../../../front_end/core/common/ResolverBase.ts",
     "../../../../../../front_end/core/common/ResourceType.ts",
     "../../../../../../front_end/core/common/ReturnToPanel.ts",

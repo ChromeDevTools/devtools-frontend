@@ -10,12 +10,21 @@ __export(Universe_exports, {
   Universe: () => Universe
 });
 import * as Common from "./../core/common/common.js";
+import * as Root from "./../core/root/root.js";
+import * as SDK from "./../core/sdk/sdk.js";
+import * as Workspace from "./../models/workspace/workspace.js";
 var Universe = class {
+  context = new Root.DevToolsContext.DevToolsContext();
   constructor(options) {
-    Common.Settings.Settings.instance({
+    const settings = Common.Settings.Settings.instance({
       forceNew: true,
       ...options.settingsCreationOptions
     });
+    const targetManager = new SDK.TargetManager.TargetManager();
+    this.context.set(SDK.TargetManager.TargetManager, targetManager);
+    this.context.set(Workspace.Workspace.WorkspaceImpl, new Workspace.Workspace.WorkspaceImpl());
+    const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
+    this.context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
   }
 };
 export {

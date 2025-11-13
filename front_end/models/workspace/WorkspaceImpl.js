@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import { UISourceCode } from './UISourceCode.js';
 /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
 export var projectTypes;
@@ -92,22 +93,18 @@ export class ProjectStore {
     indexContent(_progress) {
     }
 }
-let workspaceInstance;
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
     #projects = new Map();
     #hasResourceContentTrackingExtensions = false;
-    constructor() {
-        super();
-    }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
-        if (!workspaceInstance || forceNew) {
-            workspaceInstance = new WorkspaceImpl();
+        if (!Root.DevToolsContext.globalInstance().has(WorkspaceImpl) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(WorkspaceImpl, new WorkspaceImpl());
         }
-        return workspaceInstance;
+        return Root.DevToolsContext.globalInstance().get(WorkspaceImpl);
     }
     static removeInstance() {
-        workspaceInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(WorkspaceImpl);
     }
     uiSourceCode(projectId, url) {
         const project = this.#projects.get(projectId);

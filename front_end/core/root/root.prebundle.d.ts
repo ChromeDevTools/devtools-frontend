@@ -1,2 +1,3 @@
+import * as DevToolsContext from './DevToolsContext.js';
 import * as Runtime from './Runtime.js';
-export { Runtime };
+export { DevToolsContext, Runtime, };

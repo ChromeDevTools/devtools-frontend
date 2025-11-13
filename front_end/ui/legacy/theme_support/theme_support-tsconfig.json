@@ -31,6 +31,7 @@
     "target": "esnext",
     "tsBuildInfoFile": "theme_support-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [

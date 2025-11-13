@@ -7,7 +7,6 @@ import '../../../ui/components/report_view/report_view.js';
 import './StackTrace.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -19,12 +18,12 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import { OriginTrialTreeView } from './OriginTrialTreeView.js';
 import { renderIconLink, } from './PermissionsPolicySection.js';
-const { html } = Lit;
+const { until } = Directives;
 const { widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
@@ -251,13 +250,521 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+function renderFrameDetailsView(input, target) {
+    if (!input.frame) {
+        return;
+    }
+    // clang-format off
+    render(html `
+    <style>${frameDetailsReportViewStyles}</style>
+    <devtools-report .data=${{ reportTitle: input.frame.displayName() }}
+    jslog=${VisualLogging.pane('frames')}>
+      ${renderDocumentSection(input)}
+      ${renderIsolationSection(input)}
+      ${renderApiAvailabilitySection(input.frame)}
+      ${renderOriginTrial(input.trials)}
+      ${until(input.permissionsPolicies?.then?.(policies => html `
+          <devtools-resources-permissions-policy-section .data=${{ policies, showDetails: false }}>
+          </devtools-resources-permissions-policy-section>
+        `), nothing)}
+      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing}
+    </devtools-report>
+  `, target);
+    // clang-format on
+}
+function renderOriginTrial(trials) {
+    if (!trials) {
+        return nothing;
+    }
+    const data = { trials };
+    // clang-format off
+    return html `
+    <devtools-report-section-header>
+      ${i18n.i18n.lockedString('Origin trials')}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <span class="report-section">
+        ${i18nString(UIStrings.originTrialsExplanation)}
+        <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
+                jslog=${VisualLogging.link('learn-more.origin-trials').track({ click: true })}>
+          ${i18nString(UIStrings.learnMore)}
+        </x-link>
+      </span>
+    </devtools-report-section>
+    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig(OriginTrialTreeView, { data })}>
+    </devtools-widget>
+    <devtools-report-divider></devtools-report-divider>`;
+    // clang-format on
+}
+function renderDocumentSection(input) {
+    if (!input.frame) {
+        return nothing;
+    }
+    return html `
+      <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="inline-items">
+          ${maybeRenderSourcesLinkForURL(input.frame, input.onRevealInSources)}
+          ${maybeRenderNetworkLinkForURL(input.frame)}
+          <div class="text-ellipsis" title=${input.frame.url}>${input.frame.url}</div>
+        </div>
+      </devtools-report-value>
+      ${maybeRenderUnreachableURL(input.frame)}
+      ${maybeRenderOrigin(input.frame)}
+      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(input.frame, value)), nothing)}
+      ${maybeRenderCreationStacktrace(input.frame)}
+      ${maybeRenderAdStatus(input.frame)}
+      ${maybeRenderCreatorAdScriptAncestry(input.frame, input.target, input.adScriptAncestry)}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+}
+function maybeRenderSourcesLinkForURL(frame, onRevealInSources) {
+    if (!frame || frame.unreachableUrl()) {
+        return nothing;
+    }
+    return renderIconLink('label', i18nString(UIStrings.clickToOpenInSourcesPanel), onRevealInSources, 'reveal-in-sources');
+}
+function maybeRenderNetworkLinkForURL(frame) {
+    if (frame) {
+        const resource = frame.resourceForURL(frame.url);
+        if (resource?.request) {
+            const request = resource.request;
+            return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
+                const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(request, "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */);
+                return Common.Revealer.reveal(requestLocation);
+            }, 'reveal-in-network');
+        }
+    }
+    return nothing;
+}
+function maybeRenderUnreachableURL(frame) {
+    if (!frame?.unreachableUrl()) {
+        return nothing;
+    }
+    return html `
+      <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="inline-items">
+          ${renderNetworkLinkForUnreachableURL(frame)}
+          <div class="text-ellipsis" title=${frame.unreachableUrl()}>${frame.unreachableUrl()}</div>
+        </div>
+      </devtools-report-value>
+    `;
+}
+function renderNetworkLinkForUnreachableURL(frame) {
+    if (frame) {
+        const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(frame.unreachableUrl());
+        if (unreachableUrl) {
+            return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanelMight), () => {
+                void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+                    {
+                        filterType: NetworkForward.UIFilter.FilterType.Domain,
+                        filterValue: unreachableUrl.domain(),
+                    },
+                    {
+                        filterType: null,
+                        filterValue: unreachableUrl.path,
+                    },
+                ]));
+            }, 'unreachable-url.reveal-in-network');
+        }
+    }
+    return nothing;
+}
+function maybeRenderOrigin(frame) {
+    if (frame?.securityOrigin && frame?.securityOrigin !== '://') {
+        return html `
+        <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
+        <devtools-report-value>
+          <div class="text-ellipsis" title=${frame.securityOrigin}>${frame.securityOrigin}</div>
+        </devtools-report-value>
+      `;
+    }
+    return nothing;
+}
+function renderOwnerElement(frame, linkTargetDOMNode) {
+    if (linkTargetDOMNode) {
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        return html `
+        <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
+        <devtools-report-value class="without-min-width">
+          <div class="inline-items">
+            <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
+              @mouseenter=${() => frame?.highlight()}
+              @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+              @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}
+              jslog=${VisualLogging.action('reveal-in-elements').track({ click: true })}
+            >
+              &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
+            </button>
+          </div>
+        </devtools-report-value>
+      `;
+        // clang-format on
+    }
+    return nothing;
+}
+function maybeRenderCreationStacktrace(frame) {
+    const creationStackTraceData = frame?.getCreationStackTraceData();
+    if (creationStackTraceData?.creationStackTrace) {
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        return html `
+        <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
+        <devtools-report-value
+        jslog=${VisualLogging.section('frame-creation-stack-trace')}
+        >
+          <devtools-resources-stack-trace .data=${{
+            frame,
+            buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
+        }}>
+          </devtools-resources-stack-trace>
+        </devtools-report-value>
+      `;
+        // clang-format on
+    }
+    return nothing;
+}
+function getAdFrameTypeStrings(type) {
+    switch (type) {
+        case "child" /* Protocol.Page.AdFrameType.Child */:
+            return { value: i18nString(UIStrings.child), description: i18nString(UIStrings.childDescription) };
+        case "root" /* Protocol.Page.AdFrameType.Root */:
+            return { value: i18nString(UIStrings.root), description: i18nString(UIStrings.rootDescription) };
+    }
+}
+function getAdFrameExplanationString(explanation) {
+    switch (explanation) {
+        case "CreatedByAdScript" /* Protocol.Page.AdFrameExplanation.CreatedByAdScript */:
+            return i18nString(UIStrings.createdByAdScriptExplanation);
+        case "MatchedBlockingRule" /* Protocol.Page.AdFrameExplanation.MatchedBlockingRule */:
+            return i18nString(UIStrings.matchedBlockingRuleExplanation);
+        case "ParentIsAd" /* Protocol.Page.AdFrameExplanation.ParentIsAd */:
+            return i18nString(UIStrings.parentIsAdExplanation);
+    }
+}
+function maybeRenderAdStatus(frame) {
+    if (!frame) {
+        return nothing;
+    }
+    const adFrameType = frame.adFrameType();
+    if (adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
+        return nothing;
+    }
+    const typeStrings = getAdFrameTypeStrings(adFrameType);
+    const rows = [html `<div title=${typeStrings.description}>${typeStrings.value}</div>`];
+    for (const explanation of frame.adFrameStatus()?.explanations || []) {
+        rows.push(html `<div>${getAdFrameExplanationString(explanation)}</div>`);
+    }
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+      <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
+      <devtools-report-value class="ad-status-list" jslog=${VisualLogging.section('ad-status')}>
+        <devtools-expandable-list .data=${{ rows, title: i18nString(UIStrings.adStatus) }}>
+        </devtools-expandable-list>
+      </devtools-report-value>`;
+    // clang-format on
+}
+function maybeRenderCreatorAdScriptAncestry(frame, target, adScriptAncestry) {
+    if (!frame) {
+        return nothing;
+    }
+    const adFrameType = frame.adFrameType();
+    if (adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
+        return nothing;
+    }
+    if (!target || !adScriptAncestry || adScriptAncestry.ancestryChain.length === 0) {
+        return nothing;
+    }
+    const rows = adScriptAncestry.ancestryChain.map(adScriptId => {
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        return html `<div>
+      <devtools-widget .widgetConfig=${widgetConfig(Components.Linkifier.ScriptLocationLink, {
+            target, scriptId: adScriptId.scriptId, options: { jslogContext: 'ad-script' }
+        })}>
+      </devtools-widget>
+    </div>`;
+        // clang-format on
+    });
+    const shouldRenderFilterlistRule = (adScriptAncestry.rootScriptFilterlistRule !== undefined);
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+      <devtools-report-key>${i18nString(UIStrings.creatorAdScriptAncestry)}</devtools-report-key>
+      <devtools-report-value class="creator-ad-script-ancestry-list" jslog=${VisualLogging.section('creator-ad-script-ancestry')}>
+        <devtools-expandable-list .data=${{ rows, title: i18nString(UIStrings.creatorAdScriptAncestry) }}>
+        </devtools-expandable-list>
+      </devtools-report-value>
+      ${shouldRenderFilterlistRule ? html `
+        <devtools-report-key>${i18nString(UIStrings.rootScriptFilterlistRule)}</devtools-report-key>
+        <devtools-report-value jslog=${VisualLogging.section('root-script-filterlist-rule')}>${adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
+      ` : nothing}
+    `;
+    // clang-format on
+}
+function renderIsolationSection(input) {
+    if (!input.frame) {
+        return nothing;
+    }
+    return html `
+      <devtools-report-section-header>${i18nString(UIStrings.securityIsolation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.secureContext)}</devtools-report-key>
+      <devtools-report-value>
+        ${input.frame.isSecureContext() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}\xA0${maybeRenderSecureContextExplanation(input.frame)}
+      </devtools-report-value>
+      <devtools-report-key>${i18nString(UIStrings.crossoriginIsolated)}</devtools-report-key>
+      <devtools-report-value>
+        ${input.frame.isCrossOriginIsolated() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+      </devtools-report-value>
+      ${until(input.securityIsolationInfo?.then?.(value => maybeRenderCoopCoepCSPStatus(value)), nothing)}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+}
+function maybeRenderSecureContextExplanation(frame) {
+    const explanation = getSecureContextExplanation(frame);
+    if (explanation) {
+        return html `<span class="inline-comment">${explanation}</span>`;
+    }
+    return nothing;
+}
+function getSecureContextExplanation(frame) {
+    switch (frame?.getSecureContextType()) {
+        case "Secure" /* Protocol.Page.SecureContextType.Secure */:
+            return null;
+        case "SecureLocalhost" /* Protocol.Page.SecureContextType.SecureLocalhost */:
+            return i18nString(UIStrings.localhostIsAlwaysASecureContext);
+        case "InsecureAncestor" /* Protocol.Page.SecureContextType.InsecureAncestor */:
+            return i18nString(UIStrings.aFrameAncestorIsAnInsecure);
+        case "InsecureScheme" /* Protocol.Page.SecureContextType.InsecureScheme */:
+            return i18nString(UIStrings.theFramesSchemeIsInsecure);
+    }
+    return null;
+}
+async function maybeRenderCoopCoepCSPStatus(info) {
+    if (info) {
+        return html `
+          ${maybeRenderCrossOriginStatus(info.coep, i18n.i18n.lockedString('Cross-Origin Embedder Policy (COEP)'), "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */)}
+          ${maybeRenderCrossOriginStatus(info.coop, i18n.i18n.lockedString('Cross-Origin Opener Policy (COOP)'), "UnsafeNone" /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */)}
+          ${renderCSPSection(info.csp)}
+        `;
+    }
+    return nothing;
+}
+function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
+    if (!info) {
+        return nothing;
+    }
+    function crossOriginValueToString(value) {
+        switch (value) {
+            case "Credentialless" /* Protocol.Network.CrossOriginEmbedderPolicyValue.Credentialless */:
+                return 'credentialless';
+            case "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */:
+                return 'none';
+            case "RequireCorp" /* Protocol.Network.CrossOriginEmbedderPolicyValue.RequireCorp */:
+                return 'require-corp';
+            case "NoopenerAllowPopups" /* Protocol.Network.CrossOriginOpenerPolicyValue.NoopenerAllowPopups */:
+                return 'noopenener-allow-popups';
+            case "SameOrigin" /* Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin */:
+                return 'same-origin';
+            case "SameOriginAllowPopups" /* Protocol.Network.CrossOriginOpenerPolicyValue.SameOriginAllowPopups */:
+                return 'same-origin-allow-popups';
+            case "SameOriginPlusCoep" /* Protocol.Network.CrossOriginOpenerPolicyValue.SameOriginPlusCoep */:
+                return 'same-origin-plus-coep';
+            case "RestrictProperties" /* Protocol.Network.CrossOriginOpenerPolicyValue.RestrictProperties */:
+                return 'restrict-properties';
+            case "RestrictPropertiesPlusCoep" /* Protocol.Network.CrossOriginOpenerPolicyValue.RestrictPropertiesPlusCoep */:
+                return 'restrict-properties-plus-coep';
+            case "UnsafeNone" /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */:
+                return 'unsafe-none';
+        }
+    }
+    const isEnabled = info.value !== noneValue;
+    const isReportOnly = (!isEnabled && info.reportOnlyValue !== noneValue);
+    const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
+    return html `
+      <devtools-report-key>${policyName}</devtools-report-key>
+      <devtools-report-value>
+        ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
+        ${isReportOnly ? html `<span class="inline-comment">report-only</span>` : nothing}
+        ${endpoint ? html `<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` : nothing}
+      </devtools-report-value>
+    `;
+}
+function renderEffectiveDirectives(directives) {
+    const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
+    const result = [];
+    for (const directive in parsedDirectives) {
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        result.push(html `
+          <div>
+            <span class="bold">${directive}</span>
+            ${': ' + parsedDirectives[directive]?.join(', ')}
+          </div>`);
+        // clang-format on
+    }
+    return result;
+}
+function renderSingleCSP(cspInfo, divider) {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+      <devtools-report-key>
+        ${cspInfo.isEnforced ? i18n.i18n.lockedString('Content-Security-Policy') : html `
+          ${i18n.i18n.lockedString('Content-Security-Policy-Report-Only')}
+          <devtools-button
+            .iconName=${'help'}
+            class='help-button'
+            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+            .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+            @click=${() => { window.location.href = 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only'; }}
+            jslog=${VisualLogging.link('learn-more.csp-report-only').track({ click: true })}
+            ></devtools-button>`}
+      </devtools-report-key>
+      <devtools-report-value>
+        ${cspInfo.source === "HTTP" /* Protocol.Network.ContentSecurityPolicySource.HTTP */ ?
+        i18n.i18n.lockedString('HTTP header') : i18n.i18n.lockedString('Meta tag')}
+        ${renderEffectiveDirectives(cspInfo.effectiveDirectives)}
+      </devtools-report-value>
+      ${divider ? html `<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing}
+    `;
+    // clang-format on
+}
+function renderCSPSection(cspInfos) {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+      <devtools-report-divider></devtools-report-divider>
+      <devtools-report-section-header>
+        ${i18nString(UIStrings.contentSecurityPolicy)}
+      </devtools-report-section-header>
+      ${(cspInfos?.length) ? cspInfos.map((cspInfo, index) => renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html `
+        <devtools-report-key>
+          ${i18n.i18n.lockedString('Content-Security-Policy')}
+        </devtools-report-key>
+        <devtools-report-value>
+          ${i18nString(UIStrings.none)}
+        </devtools-report-value>
+      `}
+    `;
+    // clang-format on
+}
+function renderApiAvailabilitySection(frame) {
+    if (!frame) {
+        return nothing;
+    }
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+      <devtools-report-section-header>
+        ${i18nString(UIStrings.apiAvailability)}
+      </devtools-report-section-header>
+      <devtools-report-section>
+        <span class="report-section">
+          ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
+          <x-link
+            href="https://web.dev/why-coop-coep/" class="link"
+            jslog=${VisualLogging.link('learn-more.coop-coep').track({ click: true })}>
+            ${i18nString(UIStrings.learnMore)}
+          </x-link>
+        </span>
+      </devtools-report-section>
+      ${renderSharedArrayBufferAvailability(frame)}
+      ${renderMeasureMemoryAvailability(frame)}
+      <devtools-report-divider></devtools-report-divider>`;
+    // clang-format on
+}
+function renderSharedArrayBufferAvailability(frame) {
+    if (frame) {
+        const features = frame.getGatedAPIFeatures();
+        if (features) {
+            const sabAvailable = features.includes("SharedArrayBuffers" /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffers */);
+            const sabTransferAvailable = sabAvailable && features.includes("SharedArrayBuffersTransferAllowed" /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed */);
+            const availabilityText = sabTransferAvailable ?
+                i18nString(UIStrings.availableTransferable) :
+                (sabAvailable ? i18nString(UIStrings.availableNotTransferable) : i18nString(UIStrings.unavailable));
+            const tooltipText = sabTransferAvailable ?
+                i18nString(UIStrings.sharedarraybufferConstructorIs) :
+                (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
+            function renderHint(frame) {
+                switch (frame.getCrossOriginIsolatedContextType()) {
+                    case "Isolated" /* Protocol.Page.CrossOriginIsolatedContextType.Isolated */:
+                        return nothing;
+                    case "NotIsolated" /* Protocol.Page.CrossOriginIsolatedContextType.NotIsolated */:
+                        if (sabAvailable) {
+                            // clang-format off
+                            return html `
+                  <span class="inline-comment">
+                    ${i18nString(UIStrings.willRequireCrossoriginIsolated)}
+                  </span>`;
+                            // clang-format on
+                        }
+                        return html `<span class="inline-comment">${i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`;
+                    case "NotIsolatedFeatureDisabled" /* Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled */:
+                        if (!sabTransferAvailable) {
+                            // clang-format off
+                            return html `
+                  <span class="inline-comment">
+                    ${i18nString(UIStrings.transferRequiresCrossoriginIsolatedPermission)}
+                    <code> cross-origin-isolated</code>
+                  </span>`;
+                            // clang-format on
+                        }
+                        break;
+                }
+                return nothing;
+            }
+            // SharedArrayBuffer is an API name, so we don't translate it.
+            return html `
+          <devtools-report-key>SharedArrayBuffers</devtools-report-key>
+          <devtools-report-value title=${tooltipText}>
+            ${availabilityText}\xA0${renderHint(frame)}
+          </devtools-report-value>
+        `;
+        }
+    }
+    return nothing;
+}
+function renderMeasureMemoryAvailability(frame) {
+    if (frame) {
+        const measureMemoryAvailable = frame.isCrossOriginIsolated();
+        const availabilityText = measureMemoryAvailable ? i18nString(UIStrings.available) : i18nString(UIStrings.unavailable);
+        const tooltipText = measureMemoryAvailable ? i18nString(UIStrings.thePerformanceAPI) :
+            i18nString(UIStrings.thePerformancemeasureuseragentspecificmemory);
+        return html `
+        <devtools-report-key>${i18nString(UIStrings.measureMemory)}</devtools-report-key>
+        <devtools-report-value>
+          <span title=${tooltipText}>${availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${VisualLogging.link('learn-more.monitor-memory-usage').track({ click: true })}>${i18nString(UIStrings.learnMore)}</x-link>
+        </devtools-report-value>
+      `;
+    }
+    return nothing;
+}
+function renderAdditionalInfoSection(frame) {
+    if (!frame) {
+        return nothing;
+    }
+    return html `
+      <devtools-report-section-header
+        title=${i18nString(UIStrings.thisAdditionalDebugging)}
+      >${i18nString(UIStrings.additionalInformation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.frameId)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="text-ellipsis" title=${frame.id}>${frame.id}</div>
+      </devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+    `;
+}
 export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     #shadow = this.attachShadow({ mode: 'open' });
     #frame;
     #target = null;
     #protocolMonitorExperimentEnabled = false;
     #permissionsPolicies = null;
-    #permissionsPolicySectionData = { policies: [], showDetails: false };
     #linkifier = new Components.Linkifier.Linkifier();
     #adScriptAncestry = null;
     constructor(frame) {
@@ -287,105 +794,32 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
             this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
         }
         await RenderCoordinator.write('FrameDetailsView render', async () => {
-            if (!this.#frame) {
+            const frame = this.#frame;
+            if (!frame) {
                 return;
             }
-            // Disabled until https://crbug.com/1079231 is fixed.
-            // clang-format off
-            Lit.render(html `
-        <style>${frameDetailsReportViewStyles}</style>
-        <devtools-report .data=${{ reportTitle: this.#frame.displayName() }}
-        jslog=${VisualLogging.pane('frames')}>
-          ${this.#renderDocumentSection()}
-          ${this.#renderIsolationSection()}
-          ${this.#renderApiAvailabilitySection()}
-          ${await this.#renderOriginTrial()}
-          ${Lit.Directives.until(this.#permissionsPolicies?.then(policies => {
-                this.#permissionsPolicySectionData.policies = policies || [];
-                return html `
-              <devtools-resources-permissions-policy-section
-                .data=${this.#permissionsPolicySectionData}
-              >
-              </devtools-resources-permissions-policy-section>
-            `;
-            }), Lit.nothing)}
-          ${this.#protocolMonitorExperimentEnabled ? this.#renderAdditionalInfoSection() : Lit.nothing}
-        </devtools-report>
-      `, this.#shadow, { host: this });
-            // clang-format on
+            const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+            const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
+            const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
+            const input = {
+                frame,
+                target: this.#target,
+                protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
+                permissionsPolicies: this.#permissionsPolicies,
+                adScriptAncestry: this.#adScriptAncestry,
+                linkifier: this.#linkifier,
+                linkTargetDOMNode,
+                trials: await frame.getOriginTrials(),
+                securityIsolationInfo,
+                onRevealInSources: async () => {
+                    const sourceCode = this.#uiSourceCodeForFrame(frame);
+                    if (sourceCode) {
+                        await Common.Revealer.reveal(sourceCode);
+                    }
+                },
+            };
+            renderFrameDetailsView(input, this.#shadow);
         });
-    }
-    async #renderOriginTrial() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        const data = { trials: await this.#frame.getOriginTrials() };
-        // clang-format off
-        return html `
-    <devtools-report-section-header>
-      ${i18n.i18n.lockedString('Origin trials')}
-    </devtools-report-section-header>
-    <devtools-report-section>
-      <span class="report-section">
-        ${i18nString(UIStrings.originTrialsExplanation)}
-        <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-                jslog=${VisualLogging.link('learn-more.origin-trials').track({ click: true })}>
-          ${i18nString(UIStrings.learnMore)}
-        </x-link>
-      </span>
-    </devtools-report-section>
-    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig(OriginTrialTreeView, { data })}>
-    </devtools-widget>
-    <devtools-report-divider></devtools-report-divider>`;
-        // clang-format on
-    }
-    #renderDocumentSection() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        return html `
-      <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="inline-items">
-          ${this.#maybeRenderSourcesLinkForURL()}
-          ${this.#maybeRenderNetworkLinkForURL()}
-          <div class="text-ellipsis" title=${this.#frame.url}>${this.#frame.url}</div>
-        </div>
-      </devtools-report-value>
-      ${this.#maybeRenderUnreachableURL()}
-      ${this.#maybeRenderOrigin()}
-      ${Lit.Directives.until(this.#renderOwnerElement(), Lit.nothing)}
-      ${this.#maybeRenderCreationStacktrace()}
-      ${this.#maybeRenderAdStatus()}
-      ${this.#maybeRenderCreatorAdScriptAncestry()}
-      <devtools-report-divider></devtools-report-divider>
-    `;
-    }
-    #maybeRenderSourcesLinkForURL() {
-        const frame = this.#frame;
-        if (!frame || frame.unreachableUrl()) {
-            return Lit.nothing;
-        }
-        return renderIconLink('label', i18nString(UIStrings.clickToOpenInSourcesPanel), async () => {
-            const sourceCode = this.#uiSourceCodeForFrame(frame);
-            if (sourceCode) {
-                await Common.Revealer.reveal(sourceCode);
-            }
-        }, 'reveal-in-sources');
-    }
-    #maybeRenderNetworkLinkForURL() {
-        if (this.#frame) {
-            const resource = this.#frame.resourceForURL(this.#frame.url);
-            if (resource?.request) {
-                const request = resource.request;
-                return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
-                    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(request, "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */);
-                    return Common.Revealer.reveal(requestLocation);
-                }, 'reveal-in-network');
-            }
-        }
-        return Lit.nothing;
     }
     #uiSourceCodeForFrame(frame) {
         for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
@@ -398,428 +832,6 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
             }
         }
         return null;
-    }
-    #maybeRenderUnreachableURL() {
-        if (!this.#frame || !this.#frame.unreachableUrl()) {
-            return Lit.nothing;
-        }
-        return html `
-      <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="inline-items">
-          ${this.#renderNetworkLinkForUnreachableURL()}
-          <div class="text-ellipsis" title=${this.#frame.unreachableUrl()}>${this.#frame.unreachableUrl()}</div>
-        </div>
-      </devtools-report-value>
-    `;
-    }
-    #renderNetworkLinkForUnreachableURL() {
-        if (this.#frame) {
-            const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(this.#frame.unreachableUrl());
-            if (unreachableUrl) {
-                return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanelMight), () => {
-                    void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
-                        {
-                            filterType: NetworkForward.UIFilter.FilterType.Domain,
-                            filterValue: unreachableUrl.domain(),
-                        },
-                        {
-                            filterType: null,
-                            filterValue: unreachableUrl.path,
-                        },
-                    ]));
-                }, 'unreachable-url.reveal-in-network');
-            }
-        }
-        return Lit.nothing;
-    }
-    #maybeRenderOrigin() {
-        if (this.#frame && this.#frame.securityOrigin && this.#frame.securityOrigin !== '://') {
-            return html `
-        <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
-        <devtools-report-value>
-          <div class="text-ellipsis" title=${this.#frame.securityOrigin}>${this.#frame.securityOrigin}</div>
-        </devtools-report-value>
-      `;
-        }
-        return Lit.nothing;
-    }
-    async #renderOwnerElement() {
-        if (this.#frame) {
-            const linkTargetDOMNode = await this.#frame.getOwnerDOMNodeOrDocument();
-            if (linkTargetDOMNode) {
-                // Disabled until https://crbug.com/1079231 is fixed.
-                // clang-format off
-                return html `
-          <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
-          <devtools-report-value class="without-min-width">
-            <div class="inline-items">
-              <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
-                @mouseenter=${() => this.#frame?.highlight()}
-                @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-                @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}
-                jslog=${VisualLogging.action('reveal-in-elements').track({ click: true })}
-              >
-                &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
-              </button>
-            </div>
-          </devtools-report-value>
-        `;
-                // clang-format on
-            }
-        }
-        return Lit.nothing;
-    }
-    #maybeRenderCreationStacktrace() {
-        const creationStackTraceData = this.#frame?.getCreationStackTraceData();
-        if (creationStackTraceData?.creationStackTrace) {
-            // Disabled until https://crbug.com/1079231 is fixed.
-            // clang-format off
-            return html `
-        <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
-        <devtools-report-value
-        jslog=${VisualLogging.section('frame-creation-stack-trace')}
-        >
-          <devtools-resources-stack-trace .data=${{
-                frame: this.#frame,
-                buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
-            }}>
-          </devtools-resources-stack-trace>
-        </devtools-report-value>
-      `;
-            // clang-format on
-        }
-        return Lit.nothing;
-    }
-    #getAdFrameTypeStrings(type) {
-        switch (type) {
-            case "child" /* Protocol.Page.AdFrameType.Child */:
-                return { value: i18nString(UIStrings.child), description: i18nString(UIStrings.childDescription) };
-            case "root" /* Protocol.Page.AdFrameType.Root */:
-                return { value: i18nString(UIStrings.root), description: i18nString(UIStrings.rootDescription) };
-        }
-    }
-    #getAdFrameExplanationString(explanation) {
-        switch (explanation) {
-            case "CreatedByAdScript" /* Protocol.Page.AdFrameExplanation.CreatedByAdScript */:
-                return i18nString(UIStrings.createdByAdScriptExplanation);
-            case "MatchedBlockingRule" /* Protocol.Page.AdFrameExplanation.MatchedBlockingRule */:
-                return i18nString(UIStrings.matchedBlockingRuleExplanation);
-            case "ParentIsAd" /* Protocol.Page.AdFrameExplanation.ParentIsAd */:
-                return i18nString(UIStrings.parentIsAdExplanation);
-        }
-    }
-    #maybeRenderAdStatus() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        const adFrameType = this.#frame.adFrameType();
-        if (adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
-            return Lit.nothing;
-        }
-        const typeStrings = this.#getAdFrameTypeStrings(adFrameType);
-        const rows = [html `<div title=${typeStrings.description}>${typeStrings.value}</div>`];
-        for (const explanation of this.#frame.adFrameStatus()?.explanations || []) {
-            rows.push(html `<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
-        }
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        return html `
-      <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
-      <devtools-report-value class="ad-status-list" jslog=${VisualLogging.section('ad-status')}>
-        <devtools-expandable-list .data=${{ rows, title: i18nString(UIStrings.adStatus) }}>
-        </devtools-expandable-list>
-      </devtools-report-value>`;
-        // clang-format on
-    }
-    #maybeRenderCreatorAdScriptAncestry() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        const adFrameType = this.#frame.adFrameType();
-        if (adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
-            return Lit.nothing;
-        }
-        if (!this.#target || !this.#adScriptAncestry || this.#adScriptAncestry.ancestryChain.length === 0) {
-            return Lit.nothing;
-        }
-        const rows = this.#adScriptAncestry.ancestryChain.map(adScriptId => {
-            const adScriptLinkElement = this.#linkifier.linkifyScriptLocation(this.#target, adScriptId.scriptId || null, Platform.DevToolsPath.EmptyUrlString, undefined, undefined);
-            adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link('ad-script').track({ click: true })}`);
-            return html `<div>${adScriptLinkElement}</div>`;
-        });
-        const shouldRenderFilterlistRule = (this.#adScriptAncestry.rootScriptFilterlistRule !== undefined);
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        return html `
-      <devtools-report-key>${i18nString(UIStrings.creatorAdScriptAncestry)}</devtools-report-key>
-      <devtools-report-value class="creator-ad-script-ancestry-list" jslog=${VisualLogging.section('creator-ad-script-ancestry')}>
-        <devtools-expandable-list .data=${{ rows, title: i18nString(UIStrings.creatorAdScriptAncestry) }}>
-        </devtools-expandable-list>
-      </devtools-report-value>
-      ${shouldRenderFilterlistRule ? html `
-        <devtools-report-key>${i18nString(UIStrings.rootScriptFilterlistRule)}</devtools-report-key>
-        <devtools-report-value jslog=${VisualLogging.section('root-script-filterlist-rule')}>${this.#adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
-      ` : Lit.nothing}
-    `;
-        // clang-format on
-    }
-    #renderIsolationSection() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        return html `
-      <devtools-report-section-header>${i18nString(UIStrings.securityIsolation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.secureContext)}</devtools-report-key>
-      <devtools-report-value>
-        ${this.#frame.isSecureContext() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}\xA0${this.#maybeRenderSecureContextExplanation()}
-      </devtools-report-value>
-      <devtools-report-key>${i18nString(UIStrings.crossoriginIsolated)}</devtools-report-key>
-      <devtools-report-value>
-        ${this.#frame.isCrossOriginIsolated() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
-      </devtools-report-value>
-      ${Lit.Directives.until(this.#maybeRenderCoopCoepCSPStatus(), Lit.nothing)}
-      <devtools-report-divider></devtools-report-divider>
-    `;
-    }
-    #maybeRenderSecureContextExplanation() {
-        const explanation = this.#getSecureContextExplanation();
-        if (explanation) {
-            return html `<span class="inline-comment">${explanation}</span>`;
-        }
-        return Lit.nothing;
-    }
-    #getSecureContextExplanation() {
-        switch (this.#frame?.getSecureContextType()) {
-            case "Secure" /* Protocol.Page.SecureContextType.Secure */:
-                return null;
-            case "SecureLocalhost" /* Protocol.Page.SecureContextType.SecureLocalhost */:
-                return i18nString(UIStrings.localhostIsAlwaysASecureContext);
-            case "InsecureAncestor" /* Protocol.Page.SecureContextType.InsecureAncestor */:
-                return i18nString(UIStrings.aFrameAncestorIsAnInsecure);
-            case "InsecureScheme" /* Protocol.Page.SecureContextType.InsecureScheme */:
-                return i18nString(UIStrings.theFramesSchemeIsInsecure);
-        }
-        return null;
-    }
-    async #maybeRenderCoopCoepCSPStatus() {
-        if (this.#frame) {
-            const model = this.#frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-            const info = model && await model.getSecurityIsolationStatus(this.#frame.id);
-            if (info) {
-                return html `
-          ${this.#maybeRenderCrossOriginStatus(info.coep, i18n.i18n.lockedString('Cross-Origin Embedder Policy (COEP)'), "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */)}
-          ${this.#maybeRenderCrossOriginStatus(info.coop, i18n.i18n.lockedString('Cross-Origin Opener Policy (COOP)'), "UnsafeNone" /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */)}
-          ${this.#renderCSPSection(info.csp)}
-        `;
-            }
-        }
-        return Lit.nothing;
-    }
-    #maybeRenderCrossOriginStatus(info, policyName, noneValue) {
-        if (!info) {
-            return Lit.nothing;
-        }
-        function crossOriginValueToString(value) {
-            switch (value) {
-                case "Credentialless" /* Protocol.Network.CrossOriginEmbedderPolicyValue.Credentialless */:
-                    return 'credentialless';
-                case "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */:
-                    return 'none';
-                case "RequireCorp" /* Protocol.Network.CrossOriginEmbedderPolicyValue.RequireCorp */:
-                    return 'require-corp';
-                case "NoopenerAllowPopups" /* Protocol.Network.CrossOriginOpenerPolicyValue.NoopenerAllowPopups */:
-                    return 'noopenener-allow-popups';
-                case "SameOrigin" /* Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin */:
-                    return 'same-origin';
-                case "SameOriginAllowPopups" /* Protocol.Network.CrossOriginOpenerPolicyValue.SameOriginAllowPopups */:
-                    return 'same-origin-allow-popups';
-                case "SameOriginPlusCoep" /* Protocol.Network.CrossOriginOpenerPolicyValue.SameOriginPlusCoep */:
-                    return 'same-origin-plus-coep';
-                case "RestrictProperties" /* Protocol.Network.CrossOriginOpenerPolicyValue.RestrictProperties */:
-                    return 'restrict-properties';
-                case "RestrictPropertiesPlusCoep" /* Protocol.Network.CrossOriginOpenerPolicyValue.RestrictPropertiesPlusCoep */:
-                    return 'restrict-properties-plus-coep';
-                case "UnsafeNone" /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */:
-                    return 'unsafe-none';
-            }
-        }
-        const isEnabled = info.value !== noneValue;
-        const isReportOnly = (!isEnabled && info.reportOnlyValue !== noneValue);
-        const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-        return html `
-      <devtools-report-key>${policyName}</devtools-report-key>
-      <devtools-report-value>
-        ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
-        ${isReportOnly ? html `<span class="inline-comment">report-only</span>` : Lit.nothing}
-        ${endpoint ? html `<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` : Lit.nothing}
-      </devtools-report-value>
-    `;
-    }
-    #renderEffectiveDirectives(directives) {
-        const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
-        const result = [];
-        for (const directive in parsedDirectives) {
-            // Disabled until https://crbug.com/1079231 is fixed.
-            // clang-format off
-            result.push(html `
-          <div>
-            <span class="bold">${directive}</span>
-            ${': ' + parsedDirectives[directive]?.join(', ')}
-          </div>`);
-            // clang-format on
-        }
-        return result;
-    }
-    #renderSingleCSP(cspInfo, divider) {
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        return html `
-      <devtools-report-key>
-        ${cspInfo.isEnforced ? i18n.i18n.lockedString('Content-Security-Policy') : html `
-          ${i18n.i18n.lockedString('Content-Security-Policy-Report-Only')}
-          <devtools-button
-            .iconName=${'help'}
-            class='help-button'
-            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-            .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-            @click=${() => { window.location.href = 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only'; }}
-            jslog=${VisualLogging.link('learn-more.csp-report-only').track({ click: true })}
-            ></devtools-button>`}
-      </devtools-report-key>
-      <devtools-report-value>
-        ${cspInfo.source === "HTTP" /* Protocol.Network.ContentSecurityPolicySource.HTTP */ ?
-            i18n.i18n.lockedString('HTTP header') : i18n.i18n.lockedString('Meta tag')}
-        ${this.#renderEffectiveDirectives(cspInfo.effectiveDirectives)}
-      </devtools-report-value>
-      ${divider ? html `<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : Lit.nothing}
-    `;
-        // clang-format on
-    }
-    #renderCSPSection(cspInfos) {
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        return html `
-      <devtools-report-divider></devtools-report-divider>
-      <devtools-report-section-header>
-        ${i18nString(UIStrings.contentSecurityPolicy)}
-      </devtools-report-section-header>
-      ${(cspInfos?.length) ? cspInfos.map((cspInfo, index) => this.#renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html `
-        <devtools-report-key>
-          ${i18n.i18n.lockedString('Content-Security-Policy')}
-        </devtools-report-key>
-        <devtools-report-value>
-          ${i18nString(UIStrings.none)}
-        </devtools-report-value>
-      `}
-    `;
-        // clang-format on
-    }
-    #renderApiAvailabilitySection() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        return html `
-      <devtools-report-section-header>
-        ${i18nString(UIStrings.apiAvailability)}
-      </devtools-report-section-header>
-      <devtools-report-section>
-        <span class="report-section">
-          ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
-          <x-link
-            href="https://web.dev/why-coop-coep/" class="link"
-            jslog=${VisualLogging.link('learn-more.coop-coep').track({ click: true })}>
-            ${i18nString(UIStrings.learnMore)}
-          </x-link>
-        </span>
-      </devtools-report-section>
-      ${this.#renderSharedArrayBufferAvailability()}
-      ${this.#renderMeasureMemoryAvailability()}
-      <devtools-report-divider></devtools-report-divider>`;
-        // clang-format on
-    }
-    #renderSharedArrayBufferAvailability() {
-        if (this.#frame) {
-            const features = this.#frame.getGatedAPIFeatures();
-            if (features) {
-                const sabAvailable = features.includes("SharedArrayBuffers" /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffers */);
-                const sabTransferAvailable = sabAvailable && features.includes("SharedArrayBuffersTransferAllowed" /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed */);
-                const availabilityText = sabTransferAvailable ?
-                    i18nString(UIStrings.availableTransferable) :
-                    (sabAvailable ? i18nString(UIStrings.availableNotTransferable) : i18nString(UIStrings.unavailable));
-                const tooltipText = sabTransferAvailable ?
-                    i18nString(UIStrings.sharedarraybufferConstructorIs) :
-                    (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
-                function renderHint(frame) {
-                    switch (frame.getCrossOriginIsolatedContextType()) {
-                        case "Isolated" /* Protocol.Page.CrossOriginIsolatedContextType.Isolated */:
-                            return Lit.nothing;
-                        case "NotIsolated" /* Protocol.Page.CrossOriginIsolatedContextType.NotIsolated */:
-                            if (sabAvailable) {
-                                // clang-format off
-                                return html `
-                  <span class="inline-comment">
-                    ${i18nString(UIStrings.willRequireCrossoriginIsolated)}
-                  </span>`;
-                                // clang-format on
-                            }
-                            return html `<span class="inline-comment">${i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`;
-                        case "NotIsolatedFeatureDisabled" /* Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled */:
-                            if (!sabTransferAvailable) {
-                                // clang-format off
-                                return html `
-                  <span class="inline-comment">
-                    ${i18nString(UIStrings.transferRequiresCrossoriginIsolatedPermission)}
-                    <code> cross-origin-isolated</code>
-                  </span>`;
-                                // clang-format on
-                            }
-                            break;
-                    }
-                    return Lit.nothing;
-                }
-                // SharedArrayBuffer is an API name, so we don't translate it.
-                return html `
-          <devtools-report-key>SharedArrayBuffers</devtools-report-key>
-          <devtools-report-value title=${tooltipText}>
-            ${availabilityText}\xA0${renderHint(this.#frame)}
-          </devtools-report-value>
-        `;
-            }
-        }
-        return Lit.nothing;
-    }
-    #renderMeasureMemoryAvailability() {
-        if (this.#frame) {
-            const measureMemoryAvailable = this.#frame.isCrossOriginIsolated();
-            const availabilityText = measureMemoryAvailable ? i18nString(UIStrings.available) : i18nString(UIStrings.unavailable);
-            const tooltipText = measureMemoryAvailable ? i18nString(UIStrings.thePerformanceAPI) :
-                i18nString(UIStrings.thePerformancemeasureuseragentspecificmemory);
-            return html `
-        <devtools-report-key>${i18nString(UIStrings.measureMemory)}</devtools-report-key>
-        <devtools-report-value>
-          <span title=${tooltipText}>${availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${VisualLogging.link('learn-more.monitor-memory-usage').track({ click: true })}>${i18nString(UIStrings.learnMore)}</x-link>
-        </devtools-report-value>
-      `;
-        }
-        return Lit.nothing;
-    }
-    #renderAdditionalInfoSection() {
-        if (!this.#frame) {
-            return Lit.nothing;
-        }
-        return html `
-      <devtools-report-section-header
-        title=${i18nString(UIStrings.thisAdditionalDebugging)}
-      >${i18nString(UIStrings.additionalInformation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.frameId)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="text-ellipsis" title=${this.#frame.id}>${this.#frame.id}</div>
-      </devtools-report-value>
-      <devtools-report-divider></devtools-report-divider>
-    `;
     }
 }
 customElements.define('devtools-resources-frame-details-view', FrameDetailsReportView);

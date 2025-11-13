@@ -6,7 +6,7 @@ import { Target, Type as TargetType } from './Target.js';
 type ModelClass<T = SDKModel> = new (arg1: Target) => T;
 export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    private constructor();
+    constructor();
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): TargetManager;

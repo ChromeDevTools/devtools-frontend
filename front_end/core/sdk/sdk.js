@@ -9784,7 +9784,6 @@ var Type;
 })(Type || (Type = {}));
 
 // gen/front_end/core/sdk/TargetManager.js
-var targetManagerInstance;
 var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWrapper {
   #targets;
   #observers;
@@ -9812,13 +9811,13 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
     this.#scopeChangeListeners = /* @__PURE__ */ new Set();
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!targetManagerInstance || forceNew) {
-      targetManagerInstance = new _TargetManager();
+    if (!Root.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager());
     }
-    return targetManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(_TargetManager);
   }
   static removeInstance() {
-    targetManagerInstance = void 0;
+    Root.DevToolsContext.globalInstance().delete(_TargetManager);
   }
   onInspectedURLChange(target) {
     if (target !== this.#scopeTarget) {

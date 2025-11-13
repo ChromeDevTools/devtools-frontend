@@ -53,47 +53,81 @@ import { cloneCustomElement, ElementFocusRestorer } from './UIUtils.js';
  *
  * @property completionTimeout Sets the delay for showing the autocomplete suggestion box.
  * @event commit Editing is done and the result was accepted.
- * @event expand Editing was canceled.
+ * @event cancel Editing was canceled.
  * @event beforeautocomplete This is sent before the autocomplete suggestion box is triggered and before the <datalist>
  *                           is read.
  * @attribute editing Setting/removing this attribute starts/stops editing.
  * @attribute completions Sets the `id` of the <datalist> containing the autocomplete options.
+ * @attribute placeholder Sets a placeholder that's shown in place of the text contents when editing if the text is too
+ *            large.
  */
 export class TextPromptElement extends HTMLElement {
-    static observedAttributes = ['editing', 'completions'];
+    static observedAttributes = ['editing', 'completions', 'placeholder'];
     #shadow = this.attachShadow({ mode: 'open' });
     #entrypoint = this.#shadow.createChild('span');
     #slot = this.#entrypoint.createChild('slot');
     #textPrompt = new TextPrompt();
     #completionTimeout = null;
+    #completionObserver = new MutationObserver(this.#onMutate.bind(this));
     constructor() {
         super();
         this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
     }
+    #onMutate(changes) {
+        const listId = this.getAttribute('completions');
+        if (!listId) {
+            return;
+        }
+        const checkIfNodeIsInCompletionList = (node) => {
+            if (node instanceof HTMLDataListElement) {
+                return node.id === listId;
+            }
+            if (node instanceof HTMLOptionElement) {
+                return Boolean(node.parentElement && checkIfNodeIsInCompletionList(node.parentElement));
+            }
+            return false;
+        };
+        const affectsCompletionList = (change) => change.addedNodes.values().some(checkIfNodeIsInCompletionList) ||
+            change.removedNodes.values().some(checkIfNodeIsInCompletionList) ||
+            checkIfNodeIsInCompletionList(change.target);
+        if (changes.some(affectsCompletionList)) {
+            this.#updateCompletions();
+        }
+    }
     attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue === newValue || !this.isConnected) {
+        if (oldValue === newValue) {
             return;
         }
         switch (name) {
             case 'editing':
-                if (newValue !== null && newValue !== 'false' && oldValue === null) {
-                    this.#startEditing();
-                }
-                else {
-                    this.#stopEditing();
+                if (this.isConnected) {
+                    if (newValue !== null && newValue !== 'false' && oldValue === null) {
+                        this.#startEditing();
+                    }
+                    else {
+                        this.#stopEditing();
+                    }
                 }
                 break;
             case 'completions':
-                if (this.#textPrompt.isSuggestBoxVisible()) {
-                    void this.#textPrompt.complete(/* force=*/ true);
+                if (this.getAttribute('completions')) {
+                    this.#completionObserver.observe(this, { childList: true, subtree: true });
+                    this.#updateCompletions();
+                }
+                else {
+                    this.#textPrompt.clearAutocomplete();
+                    this.#completionObserver.disconnect();
                 }
                 break;
         }
     }
-    async #willAutoComplete(expression, filter, force) {
-        if (!force) {
-            this.dispatchEvent(new TextPromptElement.BeforeAutoCompleteEvent({ expression, filter }));
+    #updateCompletions() {
+        if (this.isConnected) {
+            void this.#textPrompt.complete(/* force=*/ true);
         }
+    }
+    async #willAutoComplete(expression, filter, force) {
+        this.dispatchEvent(new TextPromptElement.BeforeAutoCompleteEvent({ expression, filter, force }));
         const listId = this.getAttribute('completions');
         if (!listId) {
             return [];
@@ -102,15 +136,20 @@ export class TextPromptElement extends HTMLElement {
         if (!datalist?.length) {
             return [];
         }
-        filter = filter?.toLowerCase();
         return datalist.values()
-            .filter(option => option.textContent.startsWith(filter ?? ''))
+            .filter(option => option.textContent.startsWith(filter.toLowerCase()))
             .map(option => ({ text: option.textContent }))
             .toArray();
     }
     #startEditing() {
+        const truncatedTextPlaceholder = this.getAttribute('placeholder');
         const placeholder = this.#entrypoint.createChild('span');
-        placeholder.textContent = this.#slot.deepInnerText();
+        if (truncatedTextPlaceholder === null) {
+            placeholder.textContent = this.#slot.deepInnerText();
+        }
+        else {
+            placeholder.setTextContentTruncatedIfNeeded(this.#slot.deepInnerText(), truncatedTextPlaceholder);
+        }
         this.#slot.remove();
         const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ true));
         proxy.addEventListener('keydown', this.#editingValueKeyDown.bind(this));

@@ -31,6 +31,7 @@
     "target": "esnext",
     "tsBuildInfoFile": "panel_feedback-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [

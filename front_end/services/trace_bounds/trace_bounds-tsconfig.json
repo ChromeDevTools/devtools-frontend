@@ -31,6 +31,7 @@
     "target": "ES2023",
     "tsBuildInfoFile": "trace_bounds-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [

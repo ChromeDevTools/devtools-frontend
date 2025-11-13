@@ -41,15 +41,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/InspectorMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let inspectorMainImplInstance;
 export class InspectorMainImpl {
-    static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
-        if (!inspectorMainImplInstance || forceNew) {
-            inspectorMainImplInstance = new InspectorMainImpl();
-        }
-        return inspectorMainImplInstance;
-    }
     async run() {
         let firstCall = true;
         await SDK.Connections.initMainConnection(async () => {
@@ -134,7 +126,7 @@ export class InspectorMainImpl {
         }
     }
 }
-Common.Runnable.registerEarlyInitializationRunnable(InspectorMainImpl.instance);
+Common.Runnable.registerEarlyInitializationRunnable(() => new InspectorMainImpl());
 export class ReloadActionDelegate {
     handleAction(_context, actionId) {
         switch (actionId) {

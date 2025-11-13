@@ -31,6 +31,7 @@
     "target": "esnext",
     "tsBuildInfoFile": "settings-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [

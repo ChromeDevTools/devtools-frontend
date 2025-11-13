@@ -8,6 +8,8 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
     "lib": [
+      "dom",
+      "dom.iterable",
       "ES2023",
       "ES2024.Promise",
       "ESNext.Iterator",
@@ -29,6 +31,7 @@
     "target": "es2023",
     "tsBuildInfoFile": "foundation-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -40,6 +43,15 @@
   "references": [
     {
       "path": "../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../core/root/bundle-tsconfig.json"
+    },
+    {
+      "path": "../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../models/workspace/bundle-tsconfig.json"
     }
   ]
 }

@@ -36,6 +36,7 @@ export async function loadBasicSourceMapExample(target) {
         forceNew: true,
         resourceMapping,
         targetManager,
+        workspace,
         ignoreListManager,
     });
     SDK.PageResourceLoader.PageResourceLoader.instance({

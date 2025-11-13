@@ -156,6 +156,7 @@ __export(TraceEvents_exports, {
   SampleIndex: () => SampleIndex,
   SelectorTimingsKey: () => SelectorTimingsKey,
   ThreadID: () => ThreadID,
+  VALID_PROFILE_SOURCES: () => VALID_PROFILE_SOURCES,
   WorkerId: () => WorkerId,
   eventIsPageLoadEvent: () => eventIsPageLoadEvent,
   isAbortPostTaskCallback: () => isAbortPostTaskCallback,
@@ -322,6 +323,7 @@ function isFlowPhase(phase) {
 function objectIsCallFrame(object) {
   return "functionName" in object && typeof object.functionName === "string" && ("scriptId" in object && (typeof object.scriptId === "string" || typeof object.scriptId === "number")) && ("columnNumber" in object && typeof object.columnNumber === "number") && ("lineNumber" in object && typeof object.lineNumber === "number") && ("url" in object && typeof object.url === "string");
 }
+var VALID_PROFILE_SOURCES = ["Inspector", "SelfProfiling", "Internal"];
 function isRunTask(event) {
   return event.name === "RunTask" && event.ph === "X";
 }

@@ -17,7 +17,8 @@ export function setUpEnvironment() {
         forceNew: true,
         resourceMapping,
         targetManager,
-        ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance({ forceNew: true })
+        workspace,
+        ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance({ forceNew: true }),
     });
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({ forceNew: true, targetManager, workspace, debuggerWorkspaceBinding });
     Persistence.Persistence.PersistenceImpl.instance({ forceNew: true, workspace, breakpointManager });

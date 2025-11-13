@@ -13,6 +13,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     readonly resourceMapping: ResourceMapping;
     readonly pluginManager: DebuggerLanguagePluginManager;
     readonly ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
+    readonly workspace: Workspace.Workspace.WorkspaceImpl;
     private constructor();
     setFunctionRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, ranges: SDK.SourceMapFunctionRanges.NamedFunctionRange[]): void;
     static instance(opts?: {
@@ -20,6 +21,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
         resourceMapping: ResourceMapping | null;
         targetManager: SDK.TargetManager.TargetManager | null;
         ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager | null;
+        workspace: Workspace.Workspace.WorkspaceImpl | null;
     }): DebuggerWorkspaceBinding;
     static removeInstance(): void;
     private computeAutoStepRanges;

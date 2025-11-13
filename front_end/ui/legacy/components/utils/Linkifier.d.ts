@@ -130,7 +130,7 @@ export interface LinkifyOptions {
     className?: string;
     columnNumber?: number;
     showColumnNumber?: boolean;
-    inlineFrameIndex: number;
+    inlineFrameIndex?: number;
     tabStop?: boolean;
     userMetric?: Host.UserMetrics.Action;
     jslogContext?: string;

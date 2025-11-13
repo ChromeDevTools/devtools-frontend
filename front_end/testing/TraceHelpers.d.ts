@@ -223,3 +223,5 @@ export interface ConsoleAPIExtensionTestData {
 }
 export declare function makeTimingEventWithPerformanceExtensionData({ name, ts: tsMicro, detail, dur: durMicro }: PerformanceAPIExtensionTestData): Trace.Types.Events.Event[];
 export declare function makeTimingEventWithConsoleExtensionData({ name, ts, start, end, track, trackGroup, color }: ConsoleAPIExtensionTestData): Trace.Types.Events.ConsoleTimeStamp;
+export declare function createTraceExtensionDataFromPerformanceAPITestInput(extensionData: PerformanceAPIExtensionTestData[]): Promise<Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData>;
+export declare function createTraceExtensionDataFromEvents(events: Trace.Types.Events.Event[]): Promise<Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData>;

@@ -418,6 +418,7 @@ var GenericSettingsTab = class _GenericSettingsTab extends UI.Widget.VBox {
     this.element.id = "preferences-tab-content";
     this.containerElement = this.contentElement.createChild("div", "settings-card-container-wrapper").createChild("div");
     this.containerElement.classList.add("settings-multicolumn-card-container");
+    this.syncSection.markAsRoot();
     const explicitSectionOrder = [
       "",
       "APPEARANCE",
@@ -478,11 +479,7 @@ var GenericSettingsTab = class _GenericSettingsTab extends UI.Widget.VBox {
       this.#updateSyncSectionTimerId = -1;
     }
     this.#syncSectionUpdatePromise = new Promise((resolve) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve)).then((syncInfo) => {
-      this.syncSection.data = {
-        syncInfo,
-        syncSetting: Common.Settings.moduleSetting("sync-preferences"),
-        receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting("receive-gdp-badges")
-      };
+      this.syncSection.syncInfo = syncInfo;
       if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
         this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
       }
@@ -501,7 +498,7 @@ var GenericSettingsTab = class _GenericSettingsTab extends UI.Widget.VBox {
       const syncCard = createSettingsCard(Common.SettingRegistration.getLocalizedSettingsCategory(
         "ACCOUNT"
         /* Common.SettingRegistration.SettingCategory.ACCOUNT */
-      ), this.syncSection);
+      ), this.syncSection.element);
       this.containerElement.appendChild(syncCard);
     } else if (settings.length > 0) {
       this.createStandardSectionElement(category, settings);

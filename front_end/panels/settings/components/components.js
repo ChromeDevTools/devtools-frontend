@@ -12,13 +12,13 @@ __export(SyncSection_exports, {
 import "./../../../ui/components/chrome_link/chrome_link.js";
 import "./../../../ui/components/settings/settings.js";
 import "./../../../ui/components/tooltips/tooltips.js";
+import * as Common from "./../../../core/common/common.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as SDK from "./../../../core/sdk/sdk.js";
 import * as Badges from "./../../../models/badges/badges.js";
 import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
-import * as uiI18n from "./../../../ui/i18n/i18n.js";
+import * as UI from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon from "./../../common/common.js";
@@ -31,63 +31,65 @@ var syncSection_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  break-inside: avoid;
-  display: block;
-  width: 100%;
-  position: relative;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    break-inside: avoid;
+    display: block;
+    width: 100%;
+    position: relative;
+  }
 
-fieldset {
-  border: 0;
-  padding: 0;
-  padding: 4px 0 0;
-}
+  fieldset {
+    border: 0;
+    padding: 0;
+    padding: 4px 0 0;
+  }
 
-.link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: 2px;
-}
+  .link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: 2px;
+  }
 
-.account-avatar {
-  border: 0;
-  border-radius: var(--sys-shape-corner-full);
-  display: block;
-  height: var(--sys-size-9);
-  width: var(--sys-size-9);
-}
+  .account-avatar {
+    border: 0;
+    border-radius: var(--sys-shape-corner-full);
+    display: block;
+    height: var(--sys-size-9);
+    width: var(--sys-size-9);
+  }
 
-.account-info {
-  display: flex;
-  align-items: center;
-}
+  .account-info {
+    display: flex;
+    align-items: center;
+  }
 
-.account-email {
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-}
+  .account-email {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+  }
 
-.not-signed-in {
-  padding-bottom: 4px;
-}
+  .not-signed-in {
+    padding-bottom: 4px;
+  }
 
-.setting-checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-2);
-}
+  .setting-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+  }
 
-.setting-checkbox {
-  display: inline-block;
-}
+  .setting-checkbox {
+    display: inline-block;
+  }
 
-.gdp-profile-container {
-  padding-bottom: var(--sys-size-4);
+  .gdp-profile-container {
+    padding-bottom: var(--sys-size-4);
+  }
 
-  & .divider {
+  .gdp-profile-container .divider {
     left: 0;
     position: absolute;
     width: 100%;
@@ -95,58 +97,57 @@ fieldset {
     background: var(--sys-color-divider);
   }
 
-  & .gdp-profile-header {
+  .gdp-profile-container .gdp-profile-header {
     display: flex;
     align-items: center;
     gap: var(--sys-size-5);
     font-family: "Google Sans", system-ui;
     font-size: var(--sys-typescale-body3-size);
     height: var(--sys-size-11);
-
-    & .gdp-logo {
-      background-image: var(--image-file-gdp-logo-light);
-      background-size: contain;
-      width: 203px;
-      height: 18px;
-      background-repeat: no-repeat;
-    }
-
-    :host-context(.theme-with-dark-background) & .gdp-logo {
-      background-image: var(--image-file-gdp-logo-dark);
-    }
   }
 
-  & .gdp-profile-sign-up-content {
+  .gdp-profile-container .gdp-profile-header .gdp-logo {
+    background-image: var(--image-file-gdp-logo-light);
+    background-size: contain;
+    width: 203px;
+    height: 18px;
+    background-repeat: no-repeat;
+  }
+
+  :host-context(.theme-with-dark-background) & .gdp-profile-container .gdp-profile-header .gdp-logo {
+    background-image: var(--image-file-gdp-logo-dark);
+  }
+
+  .gdp-profile-container .gdp-profile-sign-up-content {
     padding-top: var(--sys-size-7);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  & .gdp-profile-details-content {
+  .gdp-profile-container .gdp-profile-details-content {
     padding-top: var(--sys-size-7);
     font: var(--sys-typescale-body4-regular);
+  }
 
-    & .plan-details {
-      margin-top: var(--sys-size-3);
-      height: 18px;
-      display: flex;
-      align-items: center;
-    }
+  .gdp-profile-container .gdp-profile-details-content .plan-details {
+    margin-top: var(--sys-size-3);
+    height: 18px;
+    display: flex;
+    align-items: center;
+  }
 
-    & .setting-container {
-      /* \\'<settigns-checkbox>\\' already provides 6px margin and we want to get rid of it here */
-      margin: calc(var(--sys-size-3) - 6px) -6px -6px;
-      display: flex;
-      align-items: center;
-      gap: var(--sys-size-2);
-    }
+  .gdp-profile-container .gdp-profile-details-content .setting-container {
+    margin: calc(var(--sys-size-3) - 6px) 0 -6px;
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+  }
 
-    & .tooltip-content {
-      max-width: 278px;
-      padding: var(--sys-size-2) var(--sys-size-3);
-      font: var(--sys-typescale-body5-regular);
-    }
+  .gdp-profile-container .gdp-profile-details-content .tooltip-content {
+    max-width: 278px;
+    padding: var(--sys-size-2) var(--sys-size-3);
+    font: var(--sys-typescale-body5-regular);
   }
 }
 
@@ -218,29 +219,8 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/settings/components/SyncSection.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var { html, Directives: { ref, createRef } } = Lit;
-var cachedTooltipElement;
-function renderDataDisclaimer() {
-  if (cachedTooltipElement) {
-    return cachedTooltipElement;
-  }
-  const relevantDataTooltipTemplate = html`
-    <span
-      tabIndex="0"
-      class="link"
-      aria-details="gdp-profile-tooltip"
-      aria-describedby="gdp-profile-tooltip"
-      >${i18nString(UIStrings.relevantData)}</span>
-    <devtools-tooltip id="gdp-profile-tooltip" variant="rich">
-      <div class="tooltip-content" tabindex="0">${i18nString(UIStrings.tooltipDisclaimerText)}</div>
-    </devtools-tooltip>`;
-  const container = document.createElement("span");
-  Lit.render(relevantDataTooltipTemplate, container);
-  cachedTooltipElement = uiI18n.getFormatLocalizedString(str_, UIStrings.dataDisclaimer, {
-    PH1: container
-  });
-  return cachedTooltipElement;
-}
+var i18nTemplate2 = Lit.i18nTemplate.bind(void 0, str_);
+var { html, render, Directives: { ref } } = Lit;
 function getGdpSubscriptionText(profile) {
   if (!profile.activeSubscription || profile.activeSubscription.subscriptionStatus !== Host.GdpClient.SubscriptionStatus.ENABLED) {
     return i18nString(UIStrings.gdpStandardPlan);
@@ -256,50 +236,198 @@ function getGdpSubscriptionText(profile) {
       return i18nString(UIStrings.gdpUnknownSubscription);
   }
 }
-var SyncSection = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW = (input, output, target) => {
+  const renderSettingCheckboxIfNeeded = () => {
+    if (!input.syncInfo.accountEmail) {
+      return Lit.nothing;
+    }
+    const warningText = input.warningType === "SYNC_DISABLED" ? i18nString(UIStrings.syncDisabled) : i18nString(UIStrings.preferencesSyncDisabled);
+    return html`
+      <div class="setting-checkbox-container">
+        <setting-checkbox class="setting-checkbox"
+          .data=${{ setting: input.syncSetting }}>
+        </setting-checkbox>
+        ${input.warningType ? html`
+          <devtools-button
+            aria-details="settings-sync-info"
+            .iconName=${"info"}
+            .variant=${"icon"}
+            .size=${"SMALL"}
+            @click=${input.onWarningClick}>
+          </devtools-button>
+          <devtools-tooltip
+              id="settings-sync-info"
+              variant="rich">
+            ${warningText}
+          </devtools-tooltip>` : Lit.nothing}
+      </div>
+    `;
+  };
+  const renderAccountInfo = () => {
+    if (!input.syncInfo.accountEmail) {
+      return html`
+        <div class="not-signed-in">${i18nString(UIStrings.notSignedIn)}</div>
+      `;
+    }
+    return html`
+      <div class="account-info">
+        <img class="account-avatar" src="data:image/png;base64, ${input.syncInfo.accountImage}"
+          alt="Account avatar" />
+        <div class="account-email">
+          <span>${i18nString(UIStrings.signedIn)}</span>
+          <span>${input.syncInfo.accountEmail}</span>
+        </div>
+      </div>`;
+  };
+  const renderGdpSectionIfNeeded = () => {
+    if (!input.isEligibleToCreateGdpProfile && !input.gdpProfile) {
+      return Lit.nothing;
+    }
+    const hasReceiveBadgesCheckbox = Host.GdpClient.isBadgesEnabled() && input.receiveBadgesSetting;
+    const renderBrand = () => {
+      return html`
+        <div class="gdp-profile-header">
+          <div class="gdp-logo" role="img" aria-label="Google Developer Program"></div>
+        </div>
+      `;
+    };
+    return html`
+      <div class="gdp-profile-container" .jslog=${VisualLogging.section().context("gdp-profile")}>
+        <div class="divider"></div>
+        ${input.gdpProfile ? html`
+          <div class="gdp-profile-details-content">
+            ${renderBrand()}
+            <div class="plan-details">
+              ${getGdpSubscriptionText(input.gdpProfile)}
+              &nbsp;·&nbsp;
+              <x-link
+                .jslog=${VisualLogging.link().track({ click: true, keydown: "Enter|Space" }).context("view-profile")}
+                class="link"
+                href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
+                ${i18nString(UIStrings.viewProfile)}
+              </x-link></div>
+              ${hasReceiveBadgesCheckbox ? html`
+                <div class="setting-container" ${ref((el) => {
+      output.highlightReceiveBadgesSetting = () => {
+        if (el) {
+          PanelUtils.PanelUtils.highlightElement(el);
+        }
+      };
+    })}>
+                  <setting-checkbox class="setting-checkbox"
+                    .data=${{ setting: input.receiveBadgesSetting }}
+                    @change=${(e) => input.onReceiveBadgesSettingClick(e)}>
+                  </setting-checkbox>
+                  <span>${i18nTemplate2(UIStrings.dataDisclaimer, { PH1: html`
+                    <span class="link" tabindex="0" aria-details="gdp-profile-tooltip">
+                      ${i18nString(UIStrings.relevantData)}</span>
+                    <devtools-tooltip id="gdp-profile-tooltip" variant="rich">
+                      <div class="tooltip-content" tabindex="0">
+                      ${i18nString(UIStrings.tooltipDisclaimerText)}</div>
+                    </devtools-tooltip>` })}
+                  </span>
+                </div>
+              ` : Lit.nothing}
+          </div>
+        ` : html`
+          <div class="gdp-profile-sign-up-content">
+            ${renderBrand()}
+            <devtools-button
+              @click=${input.onSignUpClick}
+              .jslogContext=${"open-sign-up-dialog"}
+              .variant=${"outlined"}>
+                ${i18nString(UIStrings.signUp)}
+            </devtools-button>
+          </div>
+        `}
+      </div>
+    `;
+  };
+  render(html`
+    <style>${syncSection_css_default}</style>
+    <fieldset>
+      ${renderAccountInfo()}
+      ${renderSettingCheckboxIfNeeded()}
+      ${renderGdpSectionIfNeeded()}
+    </fieldset>
+  `, target);
+};
+var SyncSection = class extends UI.Widget.Widget {
   #syncInfo = { isSyncActive: false };
   #syncSetting;
   #receiveBadgesSetting;
-  #receiveBadgesSettingContainerRef = createRef();
   #isEligibleToCreateGdpProfile = false;
   #gdpProfile;
-  set data(data) {
-    this.#syncInfo = data.syncInfo;
-    this.#syncSetting = data.syncSetting;
-    this.#receiveBadgesSetting = data.receiveBadgesSetting;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-    if (data.syncInfo.accountEmail) {
+  #view;
+  #viewOutput = {};
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting("receive-gdp-badges");
+    this.#syncSetting = Common.Settings.moduleSetting("sync-preferences");
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  set syncInfo(syncInfo) {
+    this.#syncInfo = syncInfo;
+    this.requestUpdate();
+    if (syncInfo.accountEmail) {
       void this.#fetchGdpDetails();
     }
   }
   async highlightReceiveBadgesSetting() {
-    await ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-    const element = this.#receiveBadgesSettingContainerRef.value;
-    if (element) {
-      PanelUtils.PanelUtils.highlightElement(element);
-    }
+    this.requestUpdate();
+    await this.updateComplete;
+    this.#viewOutput.highlightReceiveBadgesSetting?.();
   }
-  #render() {
-    if (!this.#syncSetting) {
-      throw new Error("SyncSection is not properly initialized");
-    }
+  performUpdate() {
     const checkboxDisabled = !this.#syncInfo.isSyncActive || !this.#syncInfo.arePreferencesSynced;
     this.#syncSetting?.setDisabled(checkboxDisabled);
-    Lit.render(html`
-      <style>${syncSection_css_default}</style>
-      <fieldset>
-        ${renderAccountInfo(this.#syncInfo)}
-        ${renderSettingCheckboxIfNeeded(this.#syncInfo, this.#syncSetting)}
-        ${renderGdpSectionIfNeeded({
+    let warningType;
+    if (!this.#syncInfo.isSyncActive) {
+      warningType = "SYNC_DISABLED";
+    } else if (!this.#syncInfo.arePreferencesSynced) {
+      warningType = "PREFERENCES_SYNC_DISABLED";
+    }
+    const viewInput = {
+      syncInfo: this.#syncInfo,
+      syncSetting: this.#syncSetting,
       receiveBadgesSetting: this.#receiveBadgesSetting,
-      receiveBadgesSettingContainerRef: this.#receiveBadgesSettingContainerRef,
       gdpProfile: this.#gdpProfile,
-      isEligibleToCreateProfile: this.#isEligibleToCreateGdpProfile,
-      onSignUpSuccess: this.#fetchGdpDetails.bind(this)
-    })}
-      </fieldset>
-    `, this.#shadow, { host: this });
+      isEligibleToCreateGdpProfile: Host.GdpClient.isGdpProfilesAvailable() && this.#isEligibleToCreateGdpProfile,
+      onSignUpClick: this.#onSignUpClick.bind(this),
+      onReceiveBadgesSettingClick: this.#onReceiveBadgesSettingClick.bind(this),
+      onWarningClick: this.#onWarningClick.bind(this),
+      warningType
+    };
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
+  }
+  #onSignUpClick() {
+    PanelCommon.GdpSignUpDialog.show({ onSuccess: this.#fetchGdpDetails.bind(this) });
+  }
+  #onReceiveBadgesSettingClick(e) {
+    const settingCheckbox = e.target;
+    void Badges.UserBadges.instance().initialize().then(() => {
+      if (!settingCheckbox.checked) {
+        return;
+      }
+      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECEIVE_BADGES_SETTING_ENABLED);
+    });
+  }
+  #onWarningClick(event) {
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (rootTarget === null) {
+      return;
+    }
+    const warningLink = !this.#syncInfo.isSyncActive ? "chrome://settings/syncSetup" : "chrome://settings/syncSetup/advanced";
+    void rootTarget.targetAgent().invoke_createTarget({ url: warningLink }).then((result) => {
+      if (result.getError()) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(warningLink);
+      }
+    });
+    event.consume();
   }
   async #fetchGdpDetails() {
     if (!Host.GdpClient.isGdpProfilesAvailable()) {
@@ -311,129 +439,9 @@ var SyncSection = class extends HTMLElement {
     }
     this.#gdpProfile = getProfileResponse.profile ?? void 0;
     this.#isEligibleToCreateGdpProfile = getProfileResponse.isEligible;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
 };
-function renderSettingCheckboxIfNeeded(syncInfo, syncSetting) {
-  if (!syncInfo.accountEmail) {
-    return Lit.nothing;
-  }
-  return html`
-    <div class="setting-checkbox-container">
-      <setting-checkbox class="setting-checkbox" .data=${{ setting: syncSetting }}>
-      </setting-checkbox>
-      ${renderWarningIfNeeded(syncInfo)}
-    </div>
-  `;
-}
-function renderWarningIfNeeded(syncInfo) {
-  const hasWarning = !syncInfo.isSyncActive || !syncInfo.arePreferencesSynced;
-  if (!hasWarning) {
-    return Lit.nothing;
-  }
-  const warningLink = !syncInfo.isSyncActive ? "chrome://settings/syncSetup" : "chrome://settings/syncSetup/advanced";
-  const warningText = !syncInfo.isSyncActive ? i18nString(UIStrings.syncDisabled) : i18nString(UIStrings.preferencesSyncDisabled);
-  const handleClick = (event) => {
-    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
-    if (rootTarget === null) {
-      return;
-    }
-    void rootTarget.targetAgent().invoke_createTarget({ url: warningLink }).then((result) => {
-      if (result.getError()) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(warningLink);
-      }
-    });
-    event.consume();
-  };
-  return html`
-    <devtools-button
-      aria-describedby=settings-sync-info
-      .title=${warningText}
-      .iconName=${"info"}
-      .variant=${"icon"}
-      .size=${"SMALL"}
-      @click=${handleClick}>
-    </devtools-button>
-    <devtools-tooltip
-        id=settings-sync-info
-        variant=simple>
-      ${warningText}
-    </devtools-tooltip>
-  `;
-}
-function renderAccountInfo(syncInfo) {
-  if (!syncInfo.accountEmail) {
-    return html`
-      <div class="not-signed-in">${i18nString(UIStrings.notSignedIn)}</div>
-    `;
-  }
-  return html`
-    <div class="account-info">
-      <img class="account-avatar" src="data:image/png;base64, ${syncInfo.accountImage}" alt="Account avatar" />
-      <div class="account-email">
-        <span>${i18nString(UIStrings.signedIn)}</span>
-        <span>${syncInfo.accountEmail}</span>
-      </div>
-    </div>`;
-}
-function renderGdpSectionIfNeeded({ receiveBadgesSetting, receiveBadgesSettingContainerRef, gdpProfile, isEligibleToCreateProfile, onSignUpSuccess }) {
-  if (!Host.GdpClient.isGdpProfilesAvailable() || !gdpProfile && !isEligibleToCreateProfile) {
-    return Lit.nothing;
-  }
-  const hasReceiveBadgesCheckbox = Host.GdpClient.isBadgesEnabled() && receiveBadgesSetting;
-  function renderBrand() {
-    return html`
-      <div class="gdp-profile-header">
-        <div class="gdp-logo" role="img" aria-label="Google Developer Program"></div>
-      </div>
-    `;
-  }
-  return html`
-    <div class="gdp-profile-container" jslog=${VisualLogging.section().context("gdp-profile")}>
-      <div class="divider"></div>
-      ${gdpProfile ? html`
-        <div class="gdp-profile-details-content">
-          ${renderBrand()}
-          <div class="plan-details">
-            ${getGdpSubscriptionText(gdpProfile)}
-            &nbsp;·&nbsp;
-            <x-link
-              jslog=${VisualLogging.link().track({ click: true, keydown: "Enter|Space" }).context("view-profile")}
-              class="link"
-              href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
-              ${i18nString(UIStrings.viewProfile)}
-            </x-link></div>
-            ${hasReceiveBadgesCheckbox ? html`
-              <div class="setting-container"  ${ref(receiveBadgesSettingContainerRef)}>
-                <setting-checkbox class="setting-checkbox" .data=${{ setting: receiveBadgesSetting }} @change=${(e) => {
-    const settingCheckbox = e.target;
-    void Badges.UserBadges.instance().initialize().then(() => {
-      if (!settingCheckbox.checked) {
-        return;
-      }
-      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECEIVE_BADGES_SETTING_ENABLED);
-    });
-  }}></setting-checkbox>
-                ${renderDataDisclaimer()}
-              </div>` : Lit.nothing}
-        </div>
-      ` : html`
-        <div class="gdp-profile-sign-up-content">
-          ${renderBrand()}
-          <devtools-button
-            @click=${() => PanelCommon.GdpSignUpDialog.show({
-    onSuccess: onSignUpSuccess
-  })}
-            .jslogContext=${"open-sign-up-dialog"}
-            .variant=${"outlined"}>
-              ${i18nString(UIStrings.signUp)}
-          </devtools-button>
-        </div>
-      `}
-    </div>
-  `;
-}
-customElements.define("devtools-sync-section", SyncSection);
 export {
   SyncSection_exports as SyncSection
 };

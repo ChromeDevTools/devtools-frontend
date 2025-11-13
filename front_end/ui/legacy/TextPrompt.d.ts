@@ -14,11 +14,13 @@ import { SuggestBox, type SuggestBoxDelegate, type Suggestion } from './SuggestB
  *
  * @property completionTimeout Sets the delay for showing the autocomplete suggestion box.
  * @event commit Editing is done and the result was accepted.
- * @event expand Editing was canceled.
+ * @event cancel Editing was canceled.
  * @event beforeautocomplete This is sent before the autocomplete suggestion box is triggered and before the <datalist>
  *                           is read.
  * @attribute editing Setting/removing this attribute starts/stops editing.
  * @attribute completions Sets the `id` of the <datalist> containing the autocomplete options.
+ * @attribute placeholder Sets a placeholder that's shown in place of the text contents when editing if the text is too
+ *            large.
  */
 export declare class TextPromptElement extends HTMLElement {
     #private;
@@ -37,12 +39,14 @@ export declare namespace TextPromptElement {
         constructor();
     }
     class BeforeAutoCompleteEvent extends CustomEvent<{
-        expression?: string;
-        filter?: string;
+        expression: string;
+        filter: string;
+        force: boolean;
     }> {
         constructor(detail: {
-            expression?: string;
-            filter?: string;
+            expression: string;
+            filter: string;
+            force: boolean;
         });
     }
 }
@@ -79,7 +83,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     private completeTimeout?;
     jslogContext: string | undefined;
     constructor();
-    initialize(completions: (this: null, expression: string, filter: string, force?: boolean | undefined) => Promise<Suggestion[]>, stopCharacters?: string, usesSuggestionBuilder?: boolean): void;
+    initialize(completions: (this: null, expression: string, filter: string, force: boolean) => Promise<Suggestion[]>, stopCharacters?: string, usesSuggestionBuilder?: boolean): void;
     setAutocompletionTimeout(timeout: number): void;
     renderAsBlock(): void;
     /**

@@ -164,7 +164,8 @@ export class MainImpl {
                 runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
             },
         };
-        new Foundation.Universe.Universe(creationOptions);
+        const universe = new Foundation.Universe.Universe(creationOptions);
+        Root.DevToolsContext.setGlobalInstance(universe.context);
         await this.requestAndRegisterLocaleData();
         Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting('sync-preferences').get());
         const veLogging = config.devToolsVeLogging;
@@ -366,7 +367,6 @@ export class MainImpl {
         const targetManager = SDK.TargetManager.TargetManager.instance();
         targetManager.addEventListener("SuspendStateChanged" /* SDK.TargetManager.Events.SUSPEND_STATE_CHANGED */, this.#onSuspendStateChanged.bind(this));
         Workspace.FileManager.FileManager.instance({ forceNew: true });
-        Workspace.Workspace.WorkspaceImpl.instance();
         Bindings.NetworkProject.NetworkProjectManager.instance();
         const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, Workspace.Workspace.WorkspaceImpl.instance());
         new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
@@ -375,14 +375,12 @@ export class MainImpl {
             resourceMapping,
             targetManager,
         });
-        Workspace.IgnoreListManager.IgnoreListManager.instance({
-            forceNew: true,
-        });
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
             forceNew: true,
             resourceMapping,
             targetManager,
             ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance(),
+            workspace: Workspace.Workspace.WorkspaceImpl.instance(),
         });
         targetManager.setScopeTarget(targetManager.primaryPageTarget());
         UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, ({ data }) => {

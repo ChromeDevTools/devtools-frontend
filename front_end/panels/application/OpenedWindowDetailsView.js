@@ -142,7 +142,6 @@ export class OpenedWindowDetailsView extends UI.Widget.VBox {
         this.targetInfo = targetInfo;
         this.isWindowClosed = isWindowClosed;
         this.contentElement.classList.add('frame-details-container');
-        // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
         this.reportView = new UI.ReportView.ReportView(this.buildTitle());
         this.reportView.show(this.contentElement);
         this.reportView.registerRequiredCSS(openedWindowDetailsViewStyles);
@@ -199,7 +198,6 @@ export class WorkerDetailsView extends UI.Widget.VBox {
         this.registerRequiredCSS(openedWindowDetailsViewStyles);
         this.targetInfo = targetInfo;
         this.contentElement.classList.add('frame-details-container');
-        // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
         this.reportView =
             new UI.ReportView.ReportView(this.targetInfo.title || this.targetInfo.url || i18nString(UIStrings.worker));
         this.reportView.show(this.contentElement);

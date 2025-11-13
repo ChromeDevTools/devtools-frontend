@@ -4199,6 +4199,7 @@ import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as SourceFrame13 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
+import { render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/SourcesPanel.js
@@ -6926,8 +6927,7 @@ var PerformanceProfilePlugin = makeLineLevelProfilePlugin(
 // gen/front_end/panels/sources/ResourceOriginPlugin.js
 var ResourceOriginPlugin_exports = {};
 __export(ResourceOriginPlugin_exports, {
-  ResourceOriginPlugin: () => ResourceOriginPlugin,
-  linkifier: () => linkifier
+  ResourceOriginPlugin: () => ResourceOriginPlugin
 });
 import * as i18n24 from "./../../core/i18n/i18n.js";
 import * as Bindings6 from "./../../models/bindings/bindings.js";
@@ -6949,6 +6949,7 @@ var UIStrings12 = {
 var str_12 = i18n24.i18n.registerUIStrings("panels/sources/ResourceOriginPlugin.ts", UIStrings12);
 var i18nString11 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 var ResourceOriginPlugin = class extends Plugin {
+  #linkifier = new Components.Linkifier.Linkifier();
   static accepts(uiSourceCode) {
     const contentType = uiSourceCode.contentType();
     return contentType.hasScripts() || contentType.isFromSourceMap();
@@ -6984,14 +6985,16 @@ var ResourceOriginPlugin = class extends Plugin {
     }
     for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
       if (script.originStackTrace?.callFrames.length) {
-        const link2 = linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
+        const link2 = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
         return [new UI12.Toolbar.ToolbarItem(uiI18n2.getFormatLocalizedString(str_12, UIStrings12.fromS, { PH1: link2 }))];
       }
     }
     return [];
   }
+  dispose() {
+    this.#linkifier.dispose();
+  }
 };
-var linkifier = new Components.Linkifier.Linkifier();
 
 // gen/front_end/panels/sources/SnippetsPlugin.js
 var SnippetsPlugin_exports = {};
@@ -11979,12 +11982,7 @@ var ValueDecoration = class extends CodeMirror7.WidgetType {
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
       if (value2.preview && propertyCount + entryCount < 10) {
-        formatter.appendObjectPreview(
-          nameValuePair,
-          value2.preview,
-          false
-          /* isEntry */
-        );
+        render3(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
       } else {
         const propertyValue = ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
           value2,
@@ -14757,7 +14755,7 @@ var WatchExpression = class _WatchExpression extends Common20.ObjectWrapper.Obje
   textPrompt;
   result;
   preventClickTimeout;
-  constructor(expression, expandController, linkifier2) {
+  constructor(expression, expandController, linkifier) {
     super();
     this.#expression = expression;
     this.expandController = expandController;
@@ -14765,7 +14763,7 @@ var WatchExpression = class _WatchExpression extends Common20.ObjectWrapper.Obje
     this.element.classList.add("watch-expression");
     this.element.classList.add("monospace");
     this.editing = false;
-    this.linkifier = linkifier2;
+    this.linkifier = linkifier;
     this.createWatchExpression();
     this.update();
   }

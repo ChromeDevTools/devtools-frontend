@@ -141,7 +141,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     supportsCaseSensitiveSearch(): boolean;
     supportsWholeWordSearch(): boolean;
     supportsRegexSearch(): boolean;
-    private jumpToMatch;
+    private highlightMatch;
     private updateStickToBottomOnPointerDown;
     private updateStickToBottomOnPointerUp;
     private updateViewportStickinessForTest;

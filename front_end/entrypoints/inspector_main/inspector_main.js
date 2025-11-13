@@ -356,15 +356,7 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("entrypoints/inspector_main/InspectorMain.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var inspectorMainImplInstance;
-var InspectorMainImpl = class _InspectorMainImpl {
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!inspectorMainImplInstance || forceNew) {
-      inspectorMainImplInstance = new _InspectorMainImpl();
-    }
-    return inspectorMainImplInstance;
-  }
+var InspectorMainImpl = class {
   async run() {
     let firstCall = true;
     await SDK.Connections.initMainConnection(async () => {
@@ -436,7 +428,7 @@ var InspectorMainImpl = class _InspectorMainImpl {
     }
   }
 };
-Common2.Runnable.registerEarlyInitializationRunnable(InspectorMainImpl.instance);
+Common2.Runnable.registerEarlyInitializationRunnable(() => new InspectorMainImpl());
 var ReloadActionDelegate2 = class {
   handleAction(_context, actionId) {
     switch (actionId) {

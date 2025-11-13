@@ -84,7 +84,6 @@ export declare abstract class ProjectStore implements Project {
 }
 export declare class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
     }): WorkspaceImpl;

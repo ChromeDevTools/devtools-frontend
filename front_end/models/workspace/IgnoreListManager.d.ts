@@ -9,7 +9,7 @@ export interface IgnoreListGeneralRules {
 }
 export declare class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
     #private;
-    private constructor();
+    constructor(settings: Common.Settings.Settings, targetManager: SDK.TargetManager.TargetManager);
     static instance(opts?: {
         forceNew: boolean | null;
         settings?: Common.Settings.Settings;

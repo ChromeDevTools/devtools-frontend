@@ -78,6 +78,7 @@ __export(IgnoreListManager_exports, {
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/workspace/WorkspaceImpl.js
@@ -89,6 +90,7 @@ __export(WorkspaceImpl_exports, {
   projectTypes: () => projectTypes
 });
 import * as Common3 from "./../../core/common/common.js";
+import * as Root from "./../../core/root/root.js";
 
 // gen/front_end/models/workspace/UISourceCode.js
 var UISourceCode_exports = {};
@@ -716,22 +718,18 @@ var ProjectStore = class {
   indexContent(_progress) {
   }
 };
-var workspaceInstance;
 var WorkspaceImpl = class _WorkspaceImpl extends Common3.ObjectWrapper.ObjectWrapper {
   #projects = /* @__PURE__ */ new Map();
   #hasResourceContentTrackingExtensions = false;
-  constructor() {
-    super();
-  }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!workspaceInstance || forceNew) {
-      workspaceInstance = new _WorkspaceImpl();
+    if (!Root.DevToolsContext.globalInstance().has(_WorkspaceImpl) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_WorkspaceImpl, new _WorkspaceImpl());
     }
-    return workspaceInstance;
+    return Root.DevToolsContext.globalInstance().get(_WorkspaceImpl);
   }
   static removeInstance() {
-    workspaceInstance = void 0;
+    Root.DevToolsContext.globalInstance().delete(_WorkspaceImpl);
   }
   uiSourceCode(projectId, url) {
     const project = this.#projects.get(projectId);
@@ -854,7 +852,6 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("models/workspace/IgnoreListManager.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var ignoreListManagerInstance;
 var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.ObjectWrapper {
   #settings;
   #targetManager;
@@ -879,13 +876,13 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
     forceNew: null
   }) {
     const { forceNew } = opts;
-    if (!ignoreListManagerInstance || forceNew) {
-      ignoreListManagerInstance = new _IgnoreListManager(opts.settings ?? Common4.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance());
+    if (forceNew) {
+      Root2.DevToolsContext.globalInstance().set(_IgnoreListManager, new _IgnoreListManager(opts.settings ?? Common4.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
     }
-    return ignoreListManagerInstance;
+    return Root2.DevToolsContext.globalInstance().get(_IgnoreListManager);
   }
   static removeInstance() {
-    ignoreListManagerInstance = void 0;
+    Root2.DevToolsContext.globalInstance().delete(_IgnoreListManager);
   }
   addChangeListener(listener) {
     this.#listeners.add(listener);

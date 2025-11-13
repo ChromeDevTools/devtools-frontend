@@ -4,6 +4,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { projectTypes } from './WorkspaceImpl.js';
 const UIStrings = {
@@ -34,7 +35,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/workspace/IgnoreListManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let ignoreListManagerInstance;
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
     #settings;
     #targetManager;
@@ -60,13 +60,13 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
         forceNew: null,
     }) {
         const { forceNew } = opts;
-        if (!ignoreListManagerInstance || forceNew) {
-            ignoreListManagerInstance = new IgnoreListManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance());
+        if (forceNew) {
+            Root.DevToolsContext.globalInstance().set(IgnoreListManager, new IgnoreListManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
         }
-        return ignoreListManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(IgnoreListManager);
     }
     static removeInstance() {
-        ignoreListManagerInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(IgnoreListManager);
     }
     addChangeListener(listener) {
         this.#listeners.add(listener);

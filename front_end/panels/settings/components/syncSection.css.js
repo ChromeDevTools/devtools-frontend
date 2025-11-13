@@ -9,63 +9,65 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  break-inside: avoid;
-  display: block;
-  width: 100%;
-  position: relative;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    break-inside: avoid;
+    display: block;
+    width: 100%;
+    position: relative;
+  }
 
-fieldset {
-  border: 0;
-  padding: 0;
-  padding: 4px 0 0;
-}
+  fieldset {
+    border: 0;
+    padding: 0;
+    padding: 4px 0 0;
+  }
 
-.link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: 2px;
-}
+  .link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: 2px;
+  }
 
-.account-avatar {
-  border: 0;
-  border-radius: var(--sys-shape-corner-full);
-  display: block;
-  height: var(--sys-size-9);
-  width: var(--sys-size-9);
-}
+  .account-avatar {
+    border: 0;
+    border-radius: var(--sys-shape-corner-full);
+    display: block;
+    height: var(--sys-size-9);
+    width: var(--sys-size-9);
+  }
 
-.account-info {
-  display: flex;
-  align-items: center;
-}
+  .account-info {
+    display: flex;
+    align-items: center;
+  }
 
-.account-email {
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-}
+  .account-email {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+  }
 
-.not-signed-in {
-  padding-bottom: 4px;
-}
+  .not-signed-in {
+    padding-bottom: 4px;
+  }
 
-.setting-checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-2);
-}
+  .setting-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+  }
 
-.setting-checkbox {
-  display: inline-block;
-}
+  .setting-checkbox {
+    display: inline-block;
+  }
 
-.gdp-profile-container {
-  padding-bottom: var(--sys-size-4);
+  .gdp-profile-container {
+    padding-bottom: var(--sys-size-4);
+  }
 
-  & .divider {
+  .gdp-profile-container .divider {
     left: 0;
     position: absolute;
     width: 100%;
@@ -73,58 +75,57 @@ fieldset {
     background: var(--sys-color-divider);
   }
 
-  & .gdp-profile-header {
+  .gdp-profile-container .gdp-profile-header {
     display: flex;
     align-items: center;
     gap: var(--sys-size-5);
     font-family: "Google Sans", system-ui;
     font-size: var(--sys-typescale-body3-size);
     height: var(--sys-size-11);
-
-    & .gdp-logo {
-      background-image: var(--image-file-gdp-logo-light);
-      background-size: contain;
-      width: 203px;
-      height: 18px;
-      background-repeat: no-repeat;
-    }
-
-    :host-context(.theme-with-dark-background) & .gdp-logo {
-      background-image: var(--image-file-gdp-logo-dark);
-    }
   }
 
-  & .gdp-profile-sign-up-content {
+  .gdp-profile-container .gdp-profile-header .gdp-logo {
+    background-image: var(--image-file-gdp-logo-light);
+    background-size: contain;
+    width: 203px;
+    height: 18px;
+    background-repeat: no-repeat;
+  }
+
+  :host-context(.theme-with-dark-background) & .gdp-profile-container .gdp-profile-header .gdp-logo {
+    background-image: var(--image-file-gdp-logo-dark);
+  }
+
+  .gdp-profile-container .gdp-profile-sign-up-content {
     padding-top: var(--sys-size-7);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  & .gdp-profile-details-content {
+  .gdp-profile-container .gdp-profile-details-content {
     padding-top: var(--sys-size-7);
     font: var(--sys-typescale-body4-regular);
+  }
 
-    & .plan-details {
-      margin-top: var(--sys-size-3);
-      height: 18px;
-      display: flex;
-      align-items: center;
-    }
+  .gdp-profile-container .gdp-profile-details-content .plan-details {
+    margin-top: var(--sys-size-3);
+    height: 18px;
+    display: flex;
+    align-items: center;
+  }
 
-    & .setting-container {
-      /* \\'<settigns-checkbox>\\' already provides 6px margin and we want to get rid of it here */
-      margin: calc(var(--sys-size-3) - 6px) -6px -6px;
-      display: flex;
-      align-items: center;
-      gap: var(--sys-size-2);
-    }
+  .gdp-profile-container .gdp-profile-details-content .setting-container {
+    margin: calc(var(--sys-size-3) - 6px) 0 -6px;
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+  }
 
-    & .tooltip-content {
-      max-width: 278px;
-      padding: var(--sys-size-2) var(--sys-size-3);
-      font: var(--sys-typescale-body5-regular);
-    }
+  .gdp-profile-container .gdp-profile-details-content .tooltip-content {
+    max-width: 278px;
+    padding: var(--sys-size-2) var(--sys-size-3);
+    font: var(--sys-typescale-body5-regular);
   }
 }
 

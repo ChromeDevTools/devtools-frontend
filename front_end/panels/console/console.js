@@ -892,6 +892,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/console/ConsoleViewMessage.js
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
+import { render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as Security from "./../security/security.js";
 
@@ -2379,12 +2380,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     titleElement.classList.add("console-object");
     if (includePreview && obj.preview) {
       titleElement.classList.add("console-object-preview");
-      this.previewFormatter.appendObjectPreview(
-        titleElement,
-        obj.preview,
-        false
-        /* isEntry */
-      );
+      render(this.previewFormatter.renderObjectPreview(obj.preview), titleElement);
       ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
     } else if (obj.type === "function") {
       const functionElement = titleElement.createChild("span");
@@ -2441,7 +2437,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (property.type === "accessor") {
       return this.formatAsAccessorProperty(object, propertyPath.map((property2) => property2.name.toString()), false);
     }
-    return this.previewFormatter.renderPropertyPreview(property.type, "subtype" in property ? property.subtype : void 0, null, property.value);
+    return this.renderPropertyPreview(property.type, "subtype" in property ? property.subtype : void 0, null, property.value);
   }
   formatParameterAsNode(remoteObject) {
     const result = document.createElement("span");
@@ -2516,7 +2512,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return result;
   }
   formatAsArrayEntry(output) {
-    return this.previewFormatter.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+    return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+  }
+  renderPropertyPreview(type, subtype, className, description) {
+    const fragment = document.createDocumentFragment();
+    render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
+    return fragment;
   }
   formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
     const rootElement = ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
@@ -2545,7 +2546,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
             description = Platform2.StringUtilities.trimEndWithMaxLength(object2.description, maxLength);
           }
         }
-        rootElement.appendChild(this.previewFormatter.renderPropertyPreview(type, subtype, object2.className, description));
+        rootElement.appendChild(this.renderPropertyPreview(type, subtype, object2.className, description));
       }
     }
     return rootElement;
@@ -3553,7 +3554,7 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
           columnNames.push(cellProperty.name);
         }
         if (columnRendered) {
-          const cellElement = this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
+          const cellElement = this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]).firstElementChild;
           cellElement.classList.add("console-message-nowrap-below");
           rowValue.set(cellProperty.name, cellElement);
         }
@@ -3861,7 +3862,7 @@ function formatStackTrace(message) {
 }
 
 // gen/front_end/panels/console/ConsoleInsightTeaser.js
-var { render, html } = Lit;
+var { render: render2, html } = Lit;
 var UIStringsNotTranslate = {
   /**
    * @description Link text in the disclaimer dialog, linking to a settings page containing more information
@@ -3931,11 +3932,11 @@ var EXPLAIN_TEASER_ACTION_ID = "explain.console-message.teaser";
 var SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
 var DEFAULT_VIEW = (input, _output, target) => {
   if (input.isInactive) {
-    render(Lit.nothing, target);
+    render2(Lit.nothing, target);
     return;
   }
   const showPlaceholder = !Boolean(input.mainText);
-  render(html`
+  render2(html`
     <style>${consoleInsightTeaser_css_default}</style>
     <devtools-tooltip
       id=${"teaser-" + input.uuid}
@@ -4791,7 +4792,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render2, html: html2, nothing: nothing2, Directives } = Lit2;
+var { render: render3, html: html2, nothing: nothing2, Directives } = Lit2;
 var GROUP_ICONS = {
   [
     "message"
@@ -4826,7 +4827,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       input.onSelectionChanged(filter);
     }
   };
-  render2(html2`<devtools-tree
+  render3(html2`<devtools-tree
         navigation-variant
         hide-overflow
         @select=${onSelectionChanged}
@@ -6648,7 +6649,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     }
     this.updateFilterStatus();
     this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
-    this.jumpToMatch(this.currentMatchRangeIndex);
+    this.highlightMatch(this.currentMatchRangeIndex, false);
     this.viewport.invalidate();
     this.messagesCountElement.setAttribute("aria-label", i18nString5(UIStrings5.filteredMessagesInConsole, { PH1: this.visibleViewMessages.length }));
   }
@@ -6842,7 +6843,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     }
     this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
     if (typeof this.searchShouldJumpBackwards !== "undefined" && this.regexMatchRanges.length) {
-      this.jumpToMatch(this.searchShouldJumpBackwards ? -1 : 0);
+      this.highlightMatch(this.searchShouldJumpBackwards ? -1 : 0);
       delete this.searchShouldJumpBackwards;
     }
     if (index === this.visibleViewMessages.length) {
@@ -6863,10 +6864,10 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     }
   }
   jumpToNextSearchResult() {
-    this.jumpToMatch(this.currentMatchRangeIndex + 1);
+    this.highlightMatch(this.currentMatchRangeIndex + 1);
   }
   jumpToPreviousSearchResult() {
-    this.jumpToMatch(this.currentMatchRangeIndex - 1);
+    this.highlightMatch(this.currentMatchRangeIndex - 1);
   }
   supportsCaseSensitiveSearch() {
     return true;
@@ -6877,7 +6878,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
   supportsRegexSearch() {
     return true;
   }
-  jumpToMatch(index) {
+  highlightMatch(index, scrollIntoView = true) {
     if (!this.regexMatchRanges.length) {
       return;
     }
@@ -6894,8 +6895,10 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     const message = this.visibleViewMessages[matchRange.messageIndex];
     const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
     highlightNode.classList.add(UI7.UIUtils.highlightedCurrentSearchResultClassName);
-    this.viewport.scrollItemIntoView(matchRange.messageIndex);
-    highlightNode.scrollIntoViewIfNeeded();
+    if (scrollIntoView) {
+      this.viewport.scrollItemIntoView(matchRange.messageIndex);
+      highlightNode.scrollIntoViewIfNeeded();
+    }
   }
   updateStickToBottomOnPointerDown(isRightClick) {
     this.muteViewportUpdates = !isRightClick;

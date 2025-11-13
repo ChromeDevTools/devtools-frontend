@@ -1,0 +1,25 @@
+export type ConstructorT<T> = new (...args: any[]) => T;
+/**
+ * Container for singletons scoped to a single DevTools universe.
+ */
+export declare class DevToolsContext {
+    #private;
+    get<T>(ctor: ConstructorT<T>): T;
+    /** @deprecated Should only be used by existing `instance` accessors. */
+    has<T>(ctor: ConstructorT<T>): boolean;
+    /**
+     * @deprecated Should only be used by existing `instance` accessors and the bootstrapper.
+     * Exists on the public interface only for migration purposes for now.
+     */
+    set<T>(ctor: ConstructorT<T>, instance: T): void;
+    /** @deprecated Should only be used by existing `removeInstance` static methods. */
+    delete<T>(ctor: ConstructorT<T>): void;
+}
+/**
+ * @deprecated Exists to migrate instance() methods.
+ */
+export declare function globalInstance(): DevToolsContext;
+/**
+ * @deprecated Should only be called by test setup and MainImpl
+ */
+export declare function setGlobalInstance(context: DevToolsContext | null): void;

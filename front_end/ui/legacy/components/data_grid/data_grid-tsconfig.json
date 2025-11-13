@@ -31,6 +31,7 @@
     "target": "esnext",
     "tsBuildInfoFile": "data_grid-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [

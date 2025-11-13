@@ -950,7 +950,6 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
         this.setLeadingIcons([icon]);
         self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
         const emptyView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected), i18nString(UIStrings.manifestDescription));
-        // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
         const reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
         this.view = new AppManifestView(emptyView, reportView, new Common.Throttler.Throttler(1000));
         UI.ARIAUtils.setLabel(this.listItemElement, i18nString(UIStrings.onInvokeManifestAlert));

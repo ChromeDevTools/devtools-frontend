@@ -19,6 +19,7 @@ export function objectIsCallFrame(object) {
         ('lineNumber' in object && typeof object.lineNumber === 'number') &&
         ('url' in object && typeof object.url === 'string');
 }
+export const VALID_PROFILE_SOURCES = ['Inspector', 'SelfProfiling', 'Internal'];
 export function isRunTask(event) {
     return event.name === "RunTask" /* Name.RUN_TASK */ && event.ph === "X" /* Phase.COMPLETE */;
 }

@@ -195,6 +195,7 @@ export class GenericSettingsTab extends UI.Widget.VBox {
         this.containerElement =
             this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
         this.containerElement.classList.add('settings-multicolumn-card-container');
+        this.syncSection.markAsRoot();
         // AI, GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
         // AI settings are displayed in their own tab.
         const explicitSectionOrder = [
@@ -260,11 +261,7 @@ export class GenericSettingsTab extends UI.Widget.VBox {
         this.#syncSectionUpdatePromise =
             new Promise(resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve))
                 .then(syncInfo => {
-                this.syncSection.data = {
-                    syncInfo,
-                    syncSetting: Common.Settings.moduleSetting('sync-preferences'),
-                    receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
-                };
+                this.syncSection.syncInfo = syncInfo;
                 if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
                     this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
                 }
@@ -282,7 +279,7 @@ export class GenericSettingsTab extends UI.Widget.VBox {
             this.createExtensionSection(settings);
         }
         else if (category === "ACCOUNT" /* Common.Settings.SettingCategory.ACCOUNT */ && settings.length > 0) {
-            const syncCard = createSettingsCard(Common.SettingRegistration.getLocalizedSettingsCategory("ACCOUNT" /* Common.SettingRegistration.SettingCategory.ACCOUNT */), this.syncSection);
+            const syncCard = createSettingsCard(Common.SettingRegistration.getLocalizedSettingsCategory("ACCOUNT" /* Common.SettingRegistration.SettingCategory.ACCOUNT */), this.syncSection.element);
             this.containerElement.appendChild(syncCard);
         }
         else if (settings.length > 0) {

@@ -4565,9 +4565,6 @@ var ProgressProxy = class {
   }
 };
 
-// gen/front_end/core/common/QueryParamHandler.js
-var QueryParamHandler_exports = {};
-
 // gen/front_end/core/common/ResolverBase.js
 var ResolverBase_exports = {};
 __export(ResolverBase_exports, {
@@ -7010,7 +7007,6 @@ export {
   Object_exports as ObjectWrapper,
   ParsedURL_exports as ParsedURL,
   Progress_exports as Progress,
-  QueryParamHandler_exports as QueryParamHandler,
   ResolverBase_exports as ResolverBase,
   ResourceType_exports as ResourceType,
   ReturnToPanel_exports as ReturnToPanel,

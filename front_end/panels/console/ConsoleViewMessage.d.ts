@@ -78,12 +78,13 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private contextMenuEventFired;
     protected renderPropertyPreviewOrAccessor(object: SDK.RemoteObject.RemoteObject | null, property: Protocol.Runtime.PropertyPreview, propertyPath: Array<{
         name: (string | symbol);
-    }>): HTMLElement;
+    }>): DocumentFragment | HTMLElement;
     private formatParameterAsNode;
     private formattedParameterAsNodeForTest;
     private formatParameterAsString;
     private formatParameterAsError;
     private formatAsArrayEntry;
+    private renderPropertyPreview;
     private formatAsAccessorProperty;
     private formatWithSubstitutionString;
     matchesFilterRegex(regexObject: RegExp): boolean;

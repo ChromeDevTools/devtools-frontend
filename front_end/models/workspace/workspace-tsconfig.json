@@ -31,6 +31,7 @@
     "target": "ES2023",
     "tsBuildInfoFile": "workspace-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -55,6 +56,9 @@
     },
     {
       "path": "../../core/platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.json"
     },
     {
       "path": "../../core/sdk/bundle-tsconfig.json"

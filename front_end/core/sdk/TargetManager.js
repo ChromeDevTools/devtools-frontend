@@ -8,7 +8,6 @@ import { assertNotNullOrUndefined } from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import { SDKModel } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
-let targetManagerInstance;
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     #targets;
     #observers;
@@ -36,13 +35,13 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#scopeChangeListeners = new Set();
     }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!targetManagerInstance || forceNew) {
-            targetManagerInstance = new TargetManager();
+        if (!Root.DevToolsContext.globalInstance().has(TargetManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(TargetManager, new TargetManager());
         }
-        return targetManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(TargetManager);
     }
     static removeInstance() {
-        targetManagerInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(TargetManager);
     }
     onInspectedURLChange(target) {
         if (target !== this.#scopeTarget) {

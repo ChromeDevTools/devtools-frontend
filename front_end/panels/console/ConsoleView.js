@@ -1110,7 +1110,7 @@ export class ConsoleView extends UI.Widget.VBox {
         }
         this.updateFilterStatus();
         this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
-        this.jumpToMatch(this.currentMatchRangeIndex); // Re-highlight current match.
+        this.highlightMatch(this.currentMatchRangeIndex, false); // Re-highlight current match without scrolling.
         this.viewport.invalidate();
         this.messagesCountElement.setAttribute('aria-label', i18nString(UIStrings.filteredMessagesInConsole, { PH1: this.visibleViewMessages.length }));
     }
@@ -1306,7 +1306,7 @@ export class ConsoleView extends UI.Widget.VBox {
         }
         this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
         if (typeof this.searchShouldJumpBackwards !== 'undefined' && this.regexMatchRanges.length) {
-            this.jumpToMatch(this.searchShouldJumpBackwards ? -1 : 0);
+            this.highlightMatch(this.searchShouldJumpBackwards ? -1 : 0);
             delete this.searchShouldJumpBackwards;
         }
         if (index === this.visibleViewMessages.length) {
@@ -1327,10 +1327,10 @@ export class ConsoleView extends UI.Widget.VBox {
         }
     }
     jumpToNextSearchResult() {
-        this.jumpToMatch(this.currentMatchRangeIndex + 1);
+        this.highlightMatch(this.currentMatchRangeIndex + 1);
     }
     jumpToPreviousSearchResult() {
-        this.jumpToMatch(this.currentMatchRangeIndex - 1);
+        this.highlightMatch(this.currentMatchRangeIndex - 1);
     }
     supportsCaseSensitiveSearch() {
         return true;
@@ -1341,7 +1341,7 @@ export class ConsoleView extends UI.Widget.VBox {
     supportsRegexSearch() {
         return true;
     }
-    jumpToMatch(index) {
+    highlightMatch(index, scrollIntoView = true) {
         if (!this.regexMatchRanges.length) {
             return;
         }
@@ -1359,8 +1359,10 @@ export class ConsoleView extends UI.Widget.VBox {
         const message = this.visibleViewMessages[matchRange.messageIndex];
         const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
         highlightNode.classList.add(UI.UIUtils.highlightedCurrentSearchResultClassName);
-        this.viewport.scrollItemIntoView(matchRange.messageIndex);
-        highlightNode.scrollIntoViewIfNeeded();
+        if (scrollIntoView) {
+            this.viewport.scrollItemIntoView(matchRange.messageIndex);
+            highlightNode.scrollIntoViewIfNeeded();
+        }
     }
     updateStickToBottomOnPointerDown(isRightClick) {
         this.muteViewportUpdates = !isRightClick;

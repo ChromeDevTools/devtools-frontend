@@ -9,6 +9,9 @@ import reportSectionStyles from './reportSection.css.js';
 import reportSectionDividerStyles from './reportSectionDivider.css.js';
 import reportSectionHeaderStyles from './reportSectionHeader.css.js';
 import reportValueStyles from './reportValue.css.js';
+/**
+ * @deprecated Use UI.ReportView.ReportView instead.
+ */
 export class Report extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #reportTitle = '';

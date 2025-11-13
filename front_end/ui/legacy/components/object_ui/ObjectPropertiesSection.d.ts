@@ -110,7 +110,22 @@ export declare class RootElement extends UI.TreeOutline.TreeElement {
  * Remaining children are shown as soon as requested via a show more properties button.
  **/
 export declare const InitialVisibleChildrenLimit = 200;
+export interface TreeElementViewInput {
+    onAutoComplete(expression: string, filter: string, force: boolean): unknown;
+    completions: string[];
+    expandedValueElement: HTMLElement | undefined;
+    expanded: boolean;
+    editing: boolean;
+    editingEnded(): unknown;
+    editingCommitted(detail: string): unknown;
+    node: ObjectTreeNode;
+    nameElement: HTMLElement;
+    valueElement: HTMLElement;
+}
+type TreeElementView = (input: TreeElementViewInput, output: object, target: HTMLElement) => void;
+export declare const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView;
 export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
+    #private;
     property: ObjectTreeNode;
     toggleOnClick: boolean;
     private highlightChanges;
@@ -118,13 +133,12 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private readonly maxNumPropertiesToShow;
     nameElement: HTMLElement;
     valueElement: HTMLElement;
-    private rowContainer;
     readOnly: boolean;
     private prompt;
     private editableDiv;
     propertyValue?: HTMLElement;
-    expandedValueElement?: Element | null;
-    constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier);
+    expandedValueElement?: HTMLElement;
+    constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier, view?: TreeElementView);
     static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
     static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, { properties, internalProperties }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
     private static appendEmptyPlaceholderIfNeeded;
@@ -140,14 +154,14 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     onattach(): void;
     onexpand(): void;
     oncollapse(): void;
-    private showExpandedValueElement;
     private createExpandedValueElement;
     update(): void;
+    performUpdate(): void;
     getContextMenu(event: Event): UI.ContextMenu.ContextMenu;
     private contextMenuFired;
+    get editing(): boolean;
     private startEditing;
     private editingEnded;
-    private editingCancelled;
     private editingCommitted;
     private promptKeyDown;
     private applyExpression;

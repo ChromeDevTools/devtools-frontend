@@ -4763,12 +4763,10 @@ __export(TimelinePanel_exports, {
   ActionDelegate: () => ActionDelegate,
   EventRevealer: () => EventRevealer,
   InsightRevealer: () => InsightRevealer,
-  LoadTimelineHandler: () => LoadTimelineHandler,
   SelectedInsight: () => SelectedInsight,
   TimelinePanel: () => TimelinePanel,
   TraceRevealer: () => TraceRevealer,
   headerHeight: () => headerHeight,
-  loadTimelineHandlerInstance: () => loadTimelineHandlerInstance,
   rowHeight: () => rowHeight
 });
 import "./../../ui/legacy/legacy.js";
@@ -10427,21 +10425,6 @@ ${responseTextForPassedInsights}`;
 };
 var rowHeight = 18;
 var headerHeight = 20;
-var loadTimelineHandlerInstance;
-var LoadTimelineHandler = class _LoadTimelineHandler {
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!loadTimelineHandlerInstance || forceNew) {
-      loadTimelineHandlerInstance = new _LoadTimelineHandler();
-    }
-    return loadTimelineHandlerInstance;
-  }
-  handleQueryParam(value) {
-    void UI10.ViewManager.ViewManager.instance().showView("timeline").then(async () => {
-      await TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value));
-    });
-  }
-};
 var TraceRevealer = class {
   async reveal(trace) {
     await UI10.ViewManager.ViewManager.instance().showView("timeline");

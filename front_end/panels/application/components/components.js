@@ -1818,7 +1818,6 @@ customElements.define("devtools-resources-stack-trace", StackTrace);
 // gen/front_end/panels/application/components/FrameDetailsView.js
 import * as Common3 from "./../../../core/common/common.js";
 import * as i18n15 from "./../../../core/i18n/i18n.js";
-import * as Platform from "./../../../core/platform/platform.js";
 import * as Root from "./../../../core/root/root.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Bindings from "./../../../models/bindings/bindings.js";
@@ -1830,7 +1829,7 @@ import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as Components3 from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI4 from "./../../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
+import { Directives as Directives3, html as html7, nothing as nothing6, render as render7 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/frameDetailsReportView.css.js
@@ -2540,7 +2539,7 @@ var PermissionsPolicySection = class extends HTMLElement {
 customElements.define("devtools-resources-permissions-policy-section", PermissionsPolicySection);
 
 // gen/front_end/panels/application/components/FrameDetailsView.js
-var { html: html7 } = Lit5;
+var { until } = Directives3;
 var { widgetConfig: widgetConfig3 } = UI4.Widget;
 var UIStrings8 = {
   /**
@@ -2767,13 +2766,503 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/application/components/FrameDetailsView.ts", UIStrings8);
 var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+function renderFrameDetailsView(input, target) {
+  if (!input.frame) {
+    return;
+  }
+  render7(html7`
+    <style>${frameDetailsReportView_css_default}</style>
+    <devtools-report .data=${{ reportTitle: input.frame.displayName() }}
+    jslog=${VisualLogging6.pane("frames")}>
+      ${renderDocumentSection(input)}
+      ${renderIsolationSection(input)}
+      ${renderApiAvailabilitySection(input.frame)}
+      ${renderOriginTrial(input.trials)}
+      ${until(input.permissionsPolicies?.then?.((policies) => html7`
+          <devtools-resources-permissions-policy-section .data=${{ policies, showDetails: false }}>
+          </devtools-resources-permissions-policy-section>
+        `), nothing6)}
+      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing6}
+    </devtools-report>
+  `, target);
+}
+function renderOriginTrial(trials) {
+  if (!trials) {
+    return nothing6;
+  }
+  const data = { trials };
+  return html7`
+    <devtools-report-section-header>
+      ${i18n15.i18n.lockedString("Origin trials")}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <span class="report-section">
+        ${i18nString7(UIStrings8.originTrialsExplanation)}
+        <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
+                jslog=${VisualLogging6.link("learn-more.origin-trials").track({ click: true })}>
+          ${i18nString7(UIStrings8.learnMore)}
+        </x-link>
+      </span>
+    </devtools-report-section>
+    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig3(OriginTrialTreeView, { data })}>
+    </devtools-widget>
+    <devtools-report-divider></devtools-report-divider>`;
+}
+function renderDocumentSection(input) {
+  if (!input.frame) {
+    return nothing6;
+  }
+  return html7`
+      <devtools-report-section-header>${i18nString7(UIStrings8.document)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString7(UIStrings8.url)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="inline-items">
+          ${maybeRenderSourcesLinkForURL(input.frame, input.onRevealInSources)}
+          ${maybeRenderNetworkLinkForURL(input.frame)}
+          <div class="text-ellipsis" title=${input.frame.url}>${input.frame.url}</div>
+        </div>
+      </devtools-report-value>
+      ${maybeRenderUnreachableURL(input.frame)}
+      ${maybeRenderOrigin(input.frame)}
+      ${until(input.linkTargetDOMNode?.then?.((value) => renderOwnerElement(input.frame, value)), nothing6)}
+      ${maybeRenderCreationStacktrace(input.frame)}
+      ${maybeRenderAdStatus(input.frame)}
+      ${maybeRenderCreatorAdScriptAncestry(input.frame, input.target, input.adScriptAncestry)}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+}
+function maybeRenderSourcesLinkForURL(frame, onRevealInSources) {
+  if (!frame || frame.unreachableUrl()) {
+    return nothing6;
+  }
+  return renderIconLink("label", i18nString7(UIStrings8.clickToOpenInSourcesPanel), onRevealInSources, "reveal-in-sources");
+}
+function maybeRenderNetworkLinkForURL(frame) {
+  if (frame) {
+    const resource = frame.resourceForURL(frame.url);
+    if (resource?.request) {
+      const request = resource.request;
+      return renderIconLink("arrow-up-down-circle", i18nString7(UIStrings8.clickToOpenInNetworkPanel), () => {
+        const requestLocation = NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
+          request,
+          "headers-component"
+          /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
+        );
+        return Common3.Revealer.reveal(requestLocation);
+      }, "reveal-in-network");
+    }
+  }
+  return nothing6;
+}
+function maybeRenderUnreachableURL(frame) {
+  if (!frame?.unreachableUrl()) {
+    return nothing6;
+  }
+  return html7`
+      <devtools-report-key>${i18nString7(UIStrings8.unreachableUrl)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="inline-items">
+          ${renderNetworkLinkForUnreachableURL(frame)}
+          <div class="text-ellipsis" title=${frame.unreachableUrl()}>${frame.unreachableUrl()}</div>
+        </div>
+      </devtools-report-value>
+    `;
+}
+function renderNetworkLinkForUnreachableURL(frame) {
+  if (frame) {
+    const unreachableUrl = Common3.ParsedURL.ParsedURL.fromString(frame.unreachableUrl());
+    if (unreachableUrl) {
+      return renderIconLink("arrow-up-down-circle", i18nString7(UIStrings8.clickToOpenInNetworkPanelMight), () => {
+        void Common3.Revealer.reveal(NetworkForward2.UIFilter.UIRequestFilter.filters([
+          {
+            filterType: NetworkForward2.UIFilter.FilterType.Domain,
+            filterValue: unreachableUrl.domain()
+          },
+          {
+            filterType: null,
+            filterValue: unreachableUrl.path
+          }
+        ]));
+      }, "unreachable-url.reveal-in-network");
+    }
+  }
+  return nothing6;
+}
+function maybeRenderOrigin(frame) {
+  if (frame?.securityOrigin && frame?.securityOrigin !== "://") {
+    return html7`
+        <devtools-report-key>${i18nString7(UIStrings8.origin)}</devtools-report-key>
+        <devtools-report-value>
+          <div class="text-ellipsis" title=${frame.securityOrigin}>${frame.securityOrigin}</div>
+        </devtools-report-value>
+      `;
+  }
+  return nothing6;
+}
+function renderOwnerElement(frame, linkTargetDOMNode) {
+  if (linkTargetDOMNode) {
+    return html7`
+        <devtools-report-key>${i18nString7(UIStrings8.ownerElement)}</devtools-report-key>
+        <devtools-report-value class="without-min-width">
+          <div class="inline-items">
+            <button class="link text-link" role="link" tabindex=0 title=${i18nString7(UIStrings8.clickToOpenInElementsPanel)}
+              @mouseenter=${() => frame?.highlight()}
+              @mouseleave=${() => SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+              @click=${() => Common3.Revealer.reveal(linkTargetDOMNode)}
+              jslog=${VisualLogging6.action("reveal-in-elements").track({ click: true })}
+            >
+              &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
+            </button>
+          </div>
+        </devtools-report-value>
+      `;
+  }
+  return nothing6;
+}
+function maybeRenderCreationStacktrace(frame) {
+  const creationStackTraceData = frame?.getCreationStackTraceData();
+  if (creationStackTraceData?.creationStackTrace) {
+    return html7`
+        <devtools-report-key title=${i18nString7(UIStrings8.creationStackTraceExplanation)}>${i18nString7(UIStrings8.creationStackTrace)}</devtools-report-key>
+        <devtools-report-value
+        jslog=${VisualLogging6.section("frame-creation-stack-trace")}
+        >
+          <devtools-resources-stack-trace .data=${{
+      frame,
+      buildStackTraceRows: Components3.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
+    }}>
+          </devtools-resources-stack-trace>
+        </devtools-report-value>
+      `;
+  }
+  return nothing6;
+}
+function getAdFrameTypeStrings(type) {
+  switch (type) {
+    case "child":
+      return { value: i18nString7(UIStrings8.child), description: i18nString7(UIStrings8.childDescription) };
+    case "root":
+      return { value: i18nString7(UIStrings8.root), description: i18nString7(UIStrings8.rootDescription) };
+  }
+}
+function getAdFrameExplanationString(explanation) {
+  switch (explanation) {
+    case "CreatedByAdScript":
+      return i18nString7(UIStrings8.createdByAdScriptExplanation);
+    case "MatchedBlockingRule":
+      return i18nString7(UIStrings8.matchedBlockingRuleExplanation);
+    case "ParentIsAd":
+      return i18nString7(UIStrings8.parentIsAdExplanation);
+  }
+}
+function maybeRenderAdStatus(frame) {
+  if (!frame) {
+    return nothing6;
+  }
+  const adFrameType = frame.adFrameType();
+  if (adFrameType === "none") {
+    return nothing6;
+  }
+  const typeStrings = getAdFrameTypeStrings(adFrameType);
+  const rows = [html7`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
+  for (const explanation of frame.adFrameStatus()?.explanations || []) {
+    rows.push(html7`<div>${getAdFrameExplanationString(explanation)}</div>`);
+  }
+  return html7`
+      <devtools-report-key>${i18nString7(UIStrings8.adStatus)}</devtools-report-key>
+      <devtools-report-value class="ad-status-list" jslog=${VisualLogging6.section("ad-status")}>
+        <devtools-expandable-list .data=${{ rows, title: i18nString7(UIStrings8.adStatus) }}>
+        </devtools-expandable-list>
+      </devtools-report-value>`;
+}
+function maybeRenderCreatorAdScriptAncestry(frame, target, adScriptAncestry) {
+  if (!frame) {
+    return nothing6;
+  }
+  const adFrameType = frame.adFrameType();
+  if (adFrameType === "none") {
+    return nothing6;
+  }
+  if (!target || !adScriptAncestry || adScriptAncestry.ancestryChain.length === 0) {
+    return nothing6;
+  }
+  const rows = adScriptAncestry.ancestryChain.map((adScriptId) => {
+    return html7`<div>
+      <devtools-widget .widgetConfig=${widgetConfig3(Components3.Linkifier.ScriptLocationLink, {
+      target,
+      scriptId: adScriptId.scriptId,
+      options: { jslogContext: "ad-script" }
+    })}>
+      </devtools-widget>
+    </div>`;
+  });
+  const shouldRenderFilterlistRule = adScriptAncestry.rootScriptFilterlistRule !== void 0;
+  return html7`
+      <devtools-report-key>${i18nString7(UIStrings8.creatorAdScriptAncestry)}</devtools-report-key>
+      <devtools-report-value class="creator-ad-script-ancestry-list" jslog=${VisualLogging6.section("creator-ad-script-ancestry")}>
+        <devtools-expandable-list .data=${{ rows, title: i18nString7(UIStrings8.creatorAdScriptAncestry) }}>
+        </devtools-expandable-list>
+      </devtools-report-value>
+      ${shouldRenderFilterlistRule ? html7`
+        <devtools-report-key>${i18nString7(UIStrings8.rootScriptFilterlistRule)}</devtools-report-key>
+        <devtools-report-value jslog=${VisualLogging6.section("root-script-filterlist-rule")}>${adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
+      ` : nothing6}
+    `;
+}
+function renderIsolationSection(input) {
+  if (!input.frame) {
+    return nothing6;
+  }
+  return html7`
+      <devtools-report-section-header>${i18nString7(UIStrings8.securityIsolation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString7(UIStrings8.secureContext)}</devtools-report-key>
+      <devtools-report-value>
+        ${input.frame.isSecureContext() ? i18nString7(UIStrings8.yes) : i18nString7(UIStrings8.no)}\xA0${maybeRenderSecureContextExplanation(input.frame)}
+      </devtools-report-value>
+      <devtools-report-key>${i18nString7(UIStrings8.crossoriginIsolated)}</devtools-report-key>
+      <devtools-report-value>
+        ${input.frame.isCrossOriginIsolated() ? i18nString7(UIStrings8.yes) : i18nString7(UIStrings8.no)}
+      </devtools-report-value>
+      ${until(input.securityIsolationInfo?.then?.((value) => maybeRenderCoopCoepCSPStatus(value)), nothing6)}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+}
+function maybeRenderSecureContextExplanation(frame) {
+  const explanation = getSecureContextExplanation(frame);
+  if (explanation) {
+    return html7`<span class="inline-comment">${explanation}</span>`;
+  }
+  return nothing6;
+}
+function getSecureContextExplanation(frame) {
+  switch (frame?.getSecureContextType()) {
+    case "Secure":
+      return null;
+    case "SecureLocalhost":
+      return i18nString7(UIStrings8.localhostIsAlwaysASecureContext);
+    case "InsecureAncestor":
+      return i18nString7(UIStrings8.aFrameAncestorIsAnInsecure);
+    case "InsecureScheme":
+      return i18nString7(UIStrings8.theFramesSchemeIsInsecure);
+  }
+  return null;
+}
+async function maybeRenderCoopCoepCSPStatus(info) {
+  if (info) {
+    return html7`
+          ${maybeRenderCrossOriginStatus(
+      info.coep,
+      i18n15.i18n.lockedString("Cross-Origin Embedder Policy (COEP)"),
+      "None"
+      /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */
+    )}
+          ${maybeRenderCrossOriginStatus(
+      info.coop,
+      i18n15.i18n.lockedString("Cross-Origin Opener Policy (COOP)"),
+      "UnsafeNone"
+      /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */
+    )}
+          ${renderCSPSection(info.csp)}
+        `;
+  }
+  return nothing6;
+}
+function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
+  if (!info) {
+    return nothing6;
+  }
+  function crossOriginValueToString(value) {
+    switch (value) {
+      case "Credentialless":
+        return "credentialless";
+      case "None":
+        return "none";
+      case "RequireCorp":
+        return "require-corp";
+      case "NoopenerAllowPopups":
+        return "noopenener-allow-popups";
+      case "SameOrigin":
+        return "same-origin";
+      case "SameOriginAllowPopups":
+        return "same-origin-allow-popups";
+      case "SameOriginPlusCoep":
+        return "same-origin-plus-coep";
+      case "RestrictProperties":
+        return "restrict-properties";
+      case "RestrictPropertiesPlusCoep":
+        return "restrict-properties-plus-coep";
+      case "UnsafeNone":
+        return "unsafe-none";
+    }
+  }
+  const isEnabled = info.value !== noneValue;
+  const isReportOnly = !isEnabled && info.reportOnlyValue !== noneValue;
+  const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
+  return html7`
+      <devtools-report-key>${policyName}</devtools-report-key>
+      <devtools-report-value>
+        ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
+        ${isReportOnly ? html7`<span class="inline-comment">report-only</span>` : nothing6}
+        ${endpoint ? html7`<span class="inline-name">${i18nString7(UIStrings8.reportingTo)}</span>${endpoint}` : nothing6}
+      </devtools-report-value>
+    `;
+}
+function renderEffectiveDirectives(directives) {
+  const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
+  const result = [];
+  for (const directive in parsedDirectives) {
+    result.push(html7`
+          <div>
+            <span class="bold">${directive}</span>
+            ${": " + parsedDirectives[directive]?.join(", ")}
+          </div>`);
+  }
+  return result;
+}
+function renderSingleCSP(cspInfo, divider) {
+  return html7`
+      <devtools-report-key>
+        ${cspInfo.isEnforced ? i18n15.i18n.lockedString("Content-Security-Policy") : html7`
+          ${i18n15.i18n.lockedString("Content-Security-Policy-Report-Only")}
+          <devtools-button
+            .iconName=${"help"}
+            class='help-button'
+            .variant=${"icon"}
+            .size=${"SMALL"}
+            @click=${() => {
+    window.location.href = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only";
+  }}
+            jslog=${VisualLogging6.link("learn-more.csp-report-only").track({ click: true })}
+            ></devtools-button>`}
+      </devtools-report-key>
+      <devtools-report-value>
+        ${cspInfo.source === "HTTP" ? i18n15.i18n.lockedString("HTTP header") : i18n15.i18n.lockedString("Meta tag")}
+        ${renderEffectiveDirectives(cspInfo.effectiveDirectives)}
+      </devtools-report-value>
+      ${divider ? html7`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing6}
+    `;
+}
+function renderCSPSection(cspInfos) {
+  return html7`
+      <devtools-report-divider></devtools-report-divider>
+      <devtools-report-section-header>
+        ${i18nString7(UIStrings8.contentSecurityPolicy)}
+      </devtools-report-section-header>
+      ${cspInfos?.length ? cspInfos.map((cspInfo, index) => renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html7`
+        <devtools-report-key>
+          ${i18n15.i18n.lockedString("Content-Security-Policy")}
+        </devtools-report-key>
+        <devtools-report-value>
+          ${i18nString7(UIStrings8.none)}
+        </devtools-report-value>
+      `}
+    `;
+}
+function renderApiAvailabilitySection(frame) {
+  if (!frame) {
+    return nothing6;
+  }
+  return html7`
+      <devtools-report-section-header>
+        ${i18nString7(UIStrings8.apiAvailability)}
+      </devtools-report-section-header>
+      <devtools-report-section>
+        <span class="report-section">
+          ${i18nString7(UIStrings8.availabilityOfCertainApisDepends)}
+          <x-link
+            href="https://web.dev/why-coop-coep/" class="link"
+            jslog=${VisualLogging6.link("learn-more.coop-coep").track({ click: true })}>
+            ${i18nString7(UIStrings8.learnMore)}
+          </x-link>
+        </span>
+      </devtools-report-section>
+      ${renderSharedArrayBufferAvailability(frame)}
+      ${renderMeasureMemoryAvailability(frame)}
+      <devtools-report-divider></devtools-report-divider>`;
+}
+function renderSharedArrayBufferAvailability(frame) {
+  if (frame) {
+    const features = frame.getGatedAPIFeatures();
+    if (features) {
+      let renderHint = function(frame2) {
+        switch (frame2.getCrossOriginIsolatedContextType()) {
+          case "Isolated":
+            return nothing6;
+          case "NotIsolated":
+            if (sabAvailable) {
+              return html7`
+                  <span class="inline-comment">
+                    ${i18nString7(UIStrings8.willRequireCrossoriginIsolated)}
+                  </span>`;
+            }
+            return html7`<span class="inline-comment">${i18nString7(UIStrings8.requiresCrossoriginIsolated)}</span>`;
+          case "NotIsolatedFeatureDisabled":
+            if (!sabTransferAvailable) {
+              return html7`
+                  <span class="inline-comment">
+                    ${i18nString7(UIStrings8.transferRequiresCrossoriginIsolatedPermission)}
+                    <code> cross-origin-isolated</code>
+                  </span>`;
+            }
+            break;
+        }
+        return nothing6;
+      };
+      const sabAvailable = features.includes(
+        "SharedArrayBuffers"
+        /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffers */
+      );
+      const sabTransferAvailable = sabAvailable && features.includes(
+        "SharedArrayBuffersTransferAllowed"
+        /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed */
+      );
+      const availabilityText = sabTransferAvailable ? i18nString7(UIStrings8.availableTransferable) : sabAvailable ? i18nString7(UIStrings8.availableNotTransferable) : i18nString7(UIStrings8.unavailable);
+      const tooltipText = sabTransferAvailable ? i18nString7(UIStrings8.sharedarraybufferConstructorIs) : sabAvailable ? i18nString7(UIStrings8.sharedarraybufferConstructorIsAvailable) : "";
+      return html7`
+          <devtools-report-key>SharedArrayBuffers</devtools-report-key>
+          <devtools-report-value title=${tooltipText}>
+            ${availabilityText}\xA0${renderHint(frame)}
+          </devtools-report-value>
+        `;
+    }
+  }
+  return nothing6;
+}
+function renderMeasureMemoryAvailability(frame) {
+  if (frame) {
+    const measureMemoryAvailable = frame.isCrossOriginIsolated();
+    const availabilityText = measureMemoryAvailable ? i18nString7(UIStrings8.available) : i18nString7(UIStrings8.unavailable);
+    const tooltipText = measureMemoryAvailable ? i18nString7(UIStrings8.thePerformanceAPI) : i18nString7(UIStrings8.thePerformancemeasureuseragentspecificmemory);
+    return html7`
+        <devtools-report-key>${i18nString7(UIStrings8.measureMemory)}</devtools-report-key>
+        <devtools-report-value>
+          <span title=${tooltipText}>${availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${VisualLogging6.link("learn-more.monitor-memory-usage").track({ click: true })}>${i18nString7(UIStrings8.learnMore)}</x-link>
+        </devtools-report-value>
+      `;
+  }
+  return nothing6;
+}
+function renderAdditionalInfoSection(frame) {
+  if (!frame) {
+    return nothing6;
+  }
+  return html7`
+      <devtools-report-section-header
+        title=${i18nString7(UIStrings8.thisAdditionalDebugging)}
+      >${i18nString7(UIStrings8.additionalInformation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString7(UIStrings8.frameId)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="text-ellipsis" title=${frame.id}>${frame.id}</div>
+      </devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+    `;
+}
 var FrameDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #frame;
   #target = null;
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies = null;
-  #permissionsPolicySectionData = { policies: [], showDetails: false };
   #linkifier = new Components3.Linkifier.Linkifier();
   #adScriptAncestry = null;
   constructor(frame) {
@@ -2797,104 +3286,32 @@ var FrameDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.Wrappabl
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
     await RenderCoordinator2.write("FrameDetailsView render", async () => {
-      if (!this.#frame) {
+      const frame = this.#frame;
+      if (!frame) {
         return;
       }
-      Lit5.render(html7`
-        <style>${frameDetailsReportView_css_default}</style>
-        <devtools-report .data=${{ reportTitle: this.#frame.displayName() }}
-        jslog=${VisualLogging6.pane("frames")}>
-          ${this.#renderDocumentSection()}
-          ${this.#renderIsolationSection()}
-          ${this.#renderApiAvailabilitySection()}
-          ${await this.#renderOriginTrial()}
-          ${Lit5.Directives.until(this.#permissionsPolicies?.then((policies) => {
-        this.#permissionsPolicySectionData.policies = policies || [];
-        return html7`
-              <devtools-resources-permissions-policy-section
-                .data=${this.#permissionsPolicySectionData}
-              >
-              </devtools-resources-permissions-policy-section>
-            `;
-      }), Lit5.nothing)}
-          ${this.#protocolMonitorExperimentEnabled ? this.#renderAdditionalInfoSection() : Lit5.nothing}
-        </devtools-report>
-      `, this.#shadow, { host: this });
+      const networkManager = frame.resourceTreeModel().target().model(SDK4.NetworkManager.NetworkManager);
+      const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
+      const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
+      const input = {
+        frame,
+        target: this.#target,
+        protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
+        permissionsPolicies: this.#permissionsPolicies,
+        adScriptAncestry: this.#adScriptAncestry,
+        linkifier: this.#linkifier,
+        linkTargetDOMNode,
+        trials: await frame.getOriginTrials(),
+        securityIsolationInfo,
+        onRevealInSources: async () => {
+          const sourceCode = this.#uiSourceCodeForFrame(frame);
+          if (sourceCode) {
+            await Common3.Revealer.reveal(sourceCode);
+          }
+        }
+      };
+      renderFrameDetailsView(input, this.#shadow);
     });
-  }
-  async #renderOriginTrial() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    const data = { trials: await this.#frame.getOriginTrials() };
-    return html7`
-    <devtools-report-section-header>
-      ${i18n15.i18n.lockedString("Origin trials")}
-    </devtools-report-section-header>
-    <devtools-report-section>
-      <span class="report-section">
-        ${i18nString7(UIStrings8.originTrialsExplanation)}
-        <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-                jslog=${VisualLogging6.link("learn-more.origin-trials").track({ click: true })}>
-          ${i18nString7(UIStrings8.learnMore)}
-        </x-link>
-      </span>
-    </devtools-report-section>
-    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig3(OriginTrialTreeView, { data })}>
-    </devtools-widget>
-    <devtools-report-divider></devtools-report-divider>`;
-  }
-  #renderDocumentSection() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-section-header>${i18nString7(UIStrings8.document)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString7(UIStrings8.url)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="inline-items">
-          ${this.#maybeRenderSourcesLinkForURL()}
-          ${this.#maybeRenderNetworkLinkForURL()}
-          <div class="text-ellipsis" title=${this.#frame.url}>${this.#frame.url}</div>
-        </div>
-      </devtools-report-value>
-      ${this.#maybeRenderUnreachableURL()}
-      ${this.#maybeRenderOrigin()}
-      ${Lit5.Directives.until(this.#renderOwnerElement(), Lit5.nothing)}
-      ${this.#maybeRenderCreationStacktrace()}
-      ${this.#maybeRenderAdStatus()}
-      ${this.#maybeRenderCreatorAdScriptAncestry()}
-      <devtools-report-divider></devtools-report-divider>
-    `;
-  }
-  #maybeRenderSourcesLinkForURL() {
-    const frame = this.#frame;
-    if (!frame || frame.unreachableUrl()) {
-      return Lit5.nothing;
-    }
-    return renderIconLink("label", i18nString7(UIStrings8.clickToOpenInSourcesPanel), async () => {
-      const sourceCode = this.#uiSourceCodeForFrame(frame);
-      if (sourceCode) {
-        await Common3.Revealer.reveal(sourceCode);
-      }
-    }, "reveal-in-sources");
-  }
-  #maybeRenderNetworkLinkForURL() {
-    if (this.#frame) {
-      const resource = this.#frame.resourceForURL(this.#frame.url);
-      if (resource?.request) {
-        const request = resource.request;
-        return renderIconLink("arrow-up-down-circle", i18nString7(UIStrings8.clickToOpenInNetworkPanel), () => {
-          const requestLocation = NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
-            request,
-            "headers-component"
-            /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
-          );
-          return Common3.Revealer.reveal(requestLocation);
-        }, "reveal-in-network");
-      }
-    }
-    return Lit5.nothing;
   }
   #uiSourceCodeForFrame(frame) {
     for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
@@ -2908,411 +3325,6 @@ var FrameDetailsReportView = class extends LegacyWrapper3.LegacyWrapper.Wrappabl
     }
     return null;
   }
-  #maybeRenderUnreachableURL() {
-    if (!this.#frame || !this.#frame.unreachableUrl()) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-key>${i18nString7(UIStrings8.unreachableUrl)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="inline-items">
-          ${this.#renderNetworkLinkForUnreachableURL()}
-          <div class="text-ellipsis" title=${this.#frame.unreachableUrl()}>${this.#frame.unreachableUrl()}</div>
-        </div>
-      </devtools-report-value>
-    `;
-  }
-  #renderNetworkLinkForUnreachableURL() {
-    if (this.#frame) {
-      const unreachableUrl = Common3.ParsedURL.ParsedURL.fromString(this.#frame.unreachableUrl());
-      if (unreachableUrl) {
-        return renderIconLink("arrow-up-down-circle", i18nString7(UIStrings8.clickToOpenInNetworkPanelMight), () => {
-          void Common3.Revealer.reveal(NetworkForward2.UIFilter.UIRequestFilter.filters([
-            {
-              filterType: NetworkForward2.UIFilter.FilterType.Domain,
-              filterValue: unreachableUrl.domain()
-            },
-            {
-              filterType: null,
-              filterValue: unreachableUrl.path
-            }
-          ]));
-        }, "unreachable-url.reveal-in-network");
-      }
-    }
-    return Lit5.nothing;
-  }
-  #maybeRenderOrigin() {
-    if (this.#frame && this.#frame.securityOrigin && this.#frame.securityOrigin !== "://") {
-      return html7`
-        <devtools-report-key>${i18nString7(UIStrings8.origin)}</devtools-report-key>
-        <devtools-report-value>
-          <div class="text-ellipsis" title=${this.#frame.securityOrigin}>${this.#frame.securityOrigin}</div>
-        </devtools-report-value>
-      `;
-    }
-    return Lit5.nothing;
-  }
-  async #renderOwnerElement() {
-    if (this.#frame) {
-      const linkTargetDOMNode = await this.#frame.getOwnerDOMNodeOrDocument();
-      if (linkTargetDOMNode) {
-        return html7`
-          <devtools-report-key>${i18nString7(UIStrings8.ownerElement)}</devtools-report-key>
-          <devtools-report-value class="without-min-width">
-            <div class="inline-items">
-              <button class="link text-link" role="link" tabindex=0 title=${i18nString7(UIStrings8.clickToOpenInElementsPanel)}
-                @mouseenter=${() => this.#frame?.highlight()}
-                @mouseleave=${() => SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-                @click=${() => Common3.Revealer.reveal(linkTargetDOMNode)}
-                jslog=${VisualLogging6.action("reveal-in-elements").track({ click: true })}
-              >
-                &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
-              </button>
-            </div>
-          </devtools-report-value>
-        `;
-      }
-    }
-    return Lit5.nothing;
-  }
-  #maybeRenderCreationStacktrace() {
-    const creationStackTraceData = this.#frame?.getCreationStackTraceData();
-    if (creationStackTraceData?.creationStackTrace) {
-      return html7`
-        <devtools-report-key title=${i18nString7(UIStrings8.creationStackTraceExplanation)}>${i18nString7(UIStrings8.creationStackTrace)}</devtools-report-key>
-        <devtools-report-value
-        jslog=${VisualLogging6.section("frame-creation-stack-trace")}
-        >
-          <devtools-resources-stack-trace .data=${{
-        frame: this.#frame,
-        buildStackTraceRows: Components3.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
-      }}>
-          </devtools-resources-stack-trace>
-        </devtools-report-value>
-      `;
-    }
-    return Lit5.nothing;
-  }
-  #getAdFrameTypeStrings(type) {
-    switch (type) {
-      case "child":
-        return { value: i18nString7(UIStrings8.child), description: i18nString7(UIStrings8.childDescription) };
-      case "root":
-        return { value: i18nString7(UIStrings8.root), description: i18nString7(UIStrings8.rootDescription) };
-    }
-  }
-  #getAdFrameExplanationString(explanation) {
-    switch (explanation) {
-      case "CreatedByAdScript":
-        return i18nString7(UIStrings8.createdByAdScriptExplanation);
-      case "MatchedBlockingRule":
-        return i18nString7(UIStrings8.matchedBlockingRuleExplanation);
-      case "ParentIsAd":
-        return i18nString7(UIStrings8.parentIsAdExplanation);
-    }
-  }
-  #maybeRenderAdStatus() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    const adFrameType = this.#frame.adFrameType();
-    if (adFrameType === "none") {
-      return Lit5.nothing;
-    }
-    const typeStrings = this.#getAdFrameTypeStrings(adFrameType);
-    const rows = [html7`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
-    for (const explanation of this.#frame.adFrameStatus()?.explanations || []) {
-      rows.push(html7`<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
-    }
-    return html7`
-      <devtools-report-key>${i18nString7(UIStrings8.adStatus)}</devtools-report-key>
-      <devtools-report-value class="ad-status-list" jslog=${VisualLogging6.section("ad-status")}>
-        <devtools-expandable-list .data=${{ rows, title: i18nString7(UIStrings8.adStatus) }}>
-        </devtools-expandable-list>
-      </devtools-report-value>`;
-  }
-  #maybeRenderCreatorAdScriptAncestry() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    const adFrameType = this.#frame.adFrameType();
-    if (adFrameType === "none") {
-      return Lit5.nothing;
-    }
-    if (!this.#target || !this.#adScriptAncestry || this.#adScriptAncestry.ancestryChain.length === 0) {
-      return Lit5.nothing;
-    }
-    const rows = this.#adScriptAncestry.ancestryChain.map((adScriptId) => {
-      const adScriptLinkElement = this.#linkifier.linkifyScriptLocation(this.#target, adScriptId.scriptId || null, Platform.DevToolsPath.EmptyUrlString, void 0, void 0);
-      adScriptLinkElement?.setAttribute("jslog", `${VisualLogging6.link("ad-script").track({ click: true })}`);
-      return html7`<div>${adScriptLinkElement}</div>`;
-    });
-    const shouldRenderFilterlistRule = this.#adScriptAncestry.rootScriptFilterlistRule !== void 0;
-    return html7`
-      <devtools-report-key>${i18nString7(UIStrings8.creatorAdScriptAncestry)}</devtools-report-key>
-      <devtools-report-value class="creator-ad-script-ancestry-list" jslog=${VisualLogging6.section("creator-ad-script-ancestry")}>
-        <devtools-expandable-list .data=${{ rows, title: i18nString7(UIStrings8.creatorAdScriptAncestry) }}>
-        </devtools-expandable-list>
-      </devtools-report-value>
-      ${shouldRenderFilterlistRule ? html7`
-        <devtools-report-key>${i18nString7(UIStrings8.rootScriptFilterlistRule)}</devtools-report-key>
-        <devtools-report-value jslog=${VisualLogging6.section("root-script-filterlist-rule")}>${this.#adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
-      ` : Lit5.nothing}
-    `;
-  }
-  #renderIsolationSection() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-section-header>${i18nString7(UIStrings8.securityIsolation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString7(UIStrings8.secureContext)}</devtools-report-key>
-      <devtools-report-value>
-        ${this.#frame.isSecureContext() ? i18nString7(UIStrings8.yes) : i18nString7(UIStrings8.no)}\xA0${this.#maybeRenderSecureContextExplanation()}
-      </devtools-report-value>
-      <devtools-report-key>${i18nString7(UIStrings8.crossoriginIsolated)}</devtools-report-key>
-      <devtools-report-value>
-        ${this.#frame.isCrossOriginIsolated() ? i18nString7(UIStrings8.yes) : i18nString7(UIStrings8.no)}
-      </devtools-report-value>
-      ${Lit5.Directives.until(this.#maybeRenderCoopCoepCSPStatus(), Lit5.nothing)}
-      <devtools-report-divider></devtools-report-divider>
-    `;
-  }
-  #maybeRenderSecureContextExplanation() {
-    const explanation = this.#getSecureContextExplanation();
-    if (explanation) {
-      return html7`<span class="inline-comment">${explanation}</span>`;
-    }
-    return Lit5.nothing;
-  }
-  #getSecureContextExplanation() {
-    switch (this.#frame?.getSecureContextType()) {
-      case "Secure":
-        return null;
-      case "SecureLocalhost":
-        return i18nString7(UIStrings8.localhostIsAlwaysASecureContext);
-      case "InsecureAncestor":
-        return i18nString7(UIStrings8.aFrameAncestorIsAnInsecure);
-      case "InsecureScheme":
-        return i18nString7(UIStrings8.theFramesSchemeIsInsecure);
-    }
-    return null;
-  }
-  async #maybeRenderCoopCoepCSPStatus() {
-    if (this.#frame) {
-      const model = this.#frame.resourceTreeModel().target().model(SDK4.NetworkManager.NetworkManager);
-      const info = model && await model.getSecurityIsolationStatus(this.#frame.id);
-      if (info) {
-        return html7`
-          ${this.#maybeRenderCrossOriginStatus(
-          info.coep,
-          i18n15.i18n.lockedString("Cross-Origin Embedder Policy (COEP)"),
-          "None"
-          /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */
-        )}
-          ${this.#maybeRenderCrossOriginStatus(
-          info.coop,
-          i18n15.i18n.lockedString("Cross-Origin Opener Policy (COOP)"),
-          "UnsafeNone"
-          /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */
-        )}
-          ${this.#renderCSPSection(info.csp)}
-        `;
-      }
-    }
-    return Lit5.nothing;
-  }
-  #maybeRenderCrossOriginStatus(info, policyName, noneValue) {
-    if (!info) {
-      return Lit5.nothing;
-    }
-    function crossOriginValueToString(value) {
-      switch (value) {
-        case "Credentialless":
-          return "credentialless";
-        case "None":
-          return "none";
-        case "RequireCorp":
-          return "require-corp";
-        case "NoopenerAllowPopups":
-          return "noopenener-allow-popups";
-        case "SameOrigin":
-          return "same-origin";
-        case "SameOriginAllowPopups":
-          return "same-origin-allow-popups";
-        case "SameOriginPlusCoep":
-          return "same-origin-plus-coep";
-        case "RestrictProperties":
-          return "restrict-properties";
-        case "RestrictPropertiesPlusCoep":
-          return "restrict-properties-plus-coep";
-        case "UnsafeNone":
-          return "unsafe-none";
-      }
-    }
-    const isEnabled = info.value !== noneValue;
-    const isReportOnly = !isEnabled && info.reportOnlyValue !== noneValue;
-    const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-    return html7`
-      <devtools-report-key>${policyName}</devtools-report-key>
-      <devtools-report-value>
-        ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
-        ${isReportOnly ? html7`<span class="inline-comment">report-only</span>` : Lit5.nothing}
-        ${endpoint ? html7`<span class="inline-name">${i18nString7(UIStrings8.reportingTo)}</span>${endpoint}` : Lit5.nothing}
-      </devtools-report-value>
-    `;
-  }
-  #renderEffectiveDirectives(directives) {
-    const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
-    const result = [];
-    for (const directive in parsedDirectives) {
-      result.push(html7`
-          <div>
-            <span class="bold">${directive}</span>
-            ${": " + parsedDirectives[directive]?.join(", ")}
-          </div>`);
-    }
-    return result;
-  }
-  #renderSingleCSP(cspInfo, divider) {
-    return html7`
-      <devtools-report-key>
-        ${cspInfo.isEnforced ? i18n15.i18n.lockedString("Content-Security-Policy") : html7`
-          ${i18n15.i18n.lockedString("Content-Security-Policy-Report-Only")}
-          <devtools-button
-            .iconName=${"help"}
-            class='help-button'
-            .variant=${"icon"}
-            .size=${"SMALL"}
-            @click=${() => {
-      window.location.href = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only";
-    }}
-            jslog=${VisualLogging6.link("learn-more.csp-report-only").track({ click: true })}
-            ></devtools-button>`}
-      </devtools-report-key>
-      <devtools-report-value>
-        ${cspInfo.source === "HTTP" ? i18n15.i18n.lockedString("HTTP header") : i18n15.i18n.lockedString("Meta tag")}
-        ${this.#renderEffectiveDirectives(cspInfo.effectiveDirectives)}
-      </devtools-report-value>
-      ${divider ? html7`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : Lit5.nothing}
-    `;
-  }
-  #renderCSPSection(cspInfos) {
-    return html7`
-      <devtools-report-divider></devtools-report-divider>
-      <devtools-report-section-header>
-        ${i18nString7(UIStrings8.contentSecurityPolicy)}
-      </devtools-report-section-header>
-      ${cspInfos?.length ? cspInfos.map((cspInfo, index) => this.#renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html7`
-        <devtools-report-key>
-          ${i18n15.i18n.lockedString("Content-Security-Policy")}
-        </devtools-report-key>
-        <devtools-report-value>
-          ${i18nString7(UIStrings8.none)}
-        </devtools-report-value>
-      `}
-    `;
-  }
-  #renderApiAvailabilitySection() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-section-header>
-        ${i18nString7(UIStrings8.apiAvailability)}
-      </devtools-report-section-header>
-      <devtools-report-section>
-        <span class="report-section">
-          ${i18nString7(UIStrings8.availabilityOfCertainApisDepends)}
-          <x-link
-            href="https://web.dev/why-coop-coep/" class="link"
-            jslog=${VisualLogging6.link("learn-more.coop-coep").track({ click: true })}>
-            ${i18nString7(UIStrings8.learnMore)}
-          </x-link>
-        </span>
-      </devtools-report-section>
-      ${this.#renderSharedArrayBufferAvailability()}
-      ${this.#renderMeasureMemoryAvailability()}
-      <devtools-report-divider></devtools-report-divider>`;
-  }
-  #renderSharedArrayBufferAvailability() {
-    if (this.#frame) {
-      const features = this.#frame.getGatedAPIFeatures();
-      if (features) {
-        let renderHint = function(frame) {
-          switch (frame.getCrossOriginIsolatedContextType()) {
-            case "Isolated":
-              return Lit5.nothing;
-            case "NotIsolated":
-              if (sabAvailable) {
-                return html7`
-                  <span class="inline-comment">
-                    ${i18nString7(UIStrings8.willRequireCrossoriginIsolated)}
-                  </span>`;
-              }
-              return html7`<span class="inline-comment">${i18nString7(UIStrings8.requiresCrossoriginIsolated)}</span>`;
-            case "NotIsolatedFeatureDisabled":
-              if (!sabTransferAvailable) {
-                return html7`
-                  <span class="inline-comment">
-                    ${i18nString7(UIStrings8.transferRequiresCrossoriginIsolatedPermission)}
-                    <code> cross-origin-isolated</code>
-                  </span>`;
-              }
-              break;
-          }
-          return Lit5.nothing;
-        };
-        const sabAvailable = features.includes(
-          "SharedArrayBuffers"
-          /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffers */
-        );
-        const sabTransferAvailable = sabAvailable && features.includes(
-          "SharedArrayBuffersTransferAllowed"
-          /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed */
-        );
-        const availabilityText = sabTransferAvailable ? i18nString7(UIStrings8.availableTransferable) : sabAvailable ? i18nString7(UIStrings8.availableNotTransferable) : i18nString7(UIStrings8.unavailable);
-        const tooltipText = sabTransferAvailable ? i18nString7(UIStrings8.sharedarraybufferConstructorIs) : sabAvailable ? i18nString7(UIStrings8.sharedarraybufferConstructorIsAvailable) : "";
-        return html7`
-          <devtools-report-key>SharedArrayBuffers</devtools-report-key>
-          <devtools-report-value title=${tooltipText}>
-            ${availabilityText}\xA0${renderHint(this.#frame)}
-          </devtools-report-value>
-        `;
-      }
-    }
-    return Lit5.nothing;
-  }
-  #renderMeasureMemoryAvailability() {
-    if (this.#frame) {
-      const measureMemoryAvailable = this.#frame.isCrossOriginIsolated();
-      const availabilityText = measureMemoryAvailable ? i18nString7(UIStrings8.available) : i18nString7(UIStrings8.unavailable);
-      const tooltipText = measureMemoryAvailable ? i18nString7(UIStrings8.thePerformanceAPI) : i18nString7(UIStrings8.thePerformancemeasureuseragentspecificmemory);
-      return html7`
-        <devtools-report-key>${i18nString7(UIStrings8.measureMemory)}</devtools-report-key>
-        <devtools-report-value>
-          <span title=${tooltipText}>${availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${VisualLogging6.link("learn-more.monitor-memory-usage").track({ click: true })}>${i18nString7(UIStrings8.learnMore)}</x-link>
-        </devtools-report-value>
-      `;
-    }
-    return Lit5.nothing;
-  }
-  #renderAdditionalInfoSection() {
-    if (!this.#frame) {
-      return Lit5.nothing;
-    }
-    return html7`
-      <devtools-report-section-header
-        title=${i18nString7(UIStrings8.thisAdditionalDebugging)}
-      >${i18nString7(UIStrings8.additionalInformation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString7(UIStrings8.frameId)}</devtools-report-key>
-      <devtools-report-value>
-        <div class="text-ellipsis" title=${this.#frame.id}>${this.#frame.id}</div>
-      </devtools-report-value>
-      <devtools-report-divider></devtools-report-divider>
-    `;
-  }
 };
 customElements.define("devtools-resources-frame-details-view", FrameDetailsReportView);
 
@@ -3325,7 +3337,7 @@ __export(InterestGroupAccessGrid_exports, {
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n17 from "./../../../core/i18n/i18n.js";
 import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../ui/lit/lit.js";
+import * as Lit5 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/interestGroupAccessGrid.css.js
 var interestGroupAccessGrid_css_default = `/*
@@ -3359,7 +3371,7 @@ devtools-data-grid {
 /*# sourceURL=${import.meta.resolve("./interestGroupAccessGrid.css")} */`;
 
 // gen/front_end/panels/application/components/InterestGroupAccessGrid.js
-var { html: html8 } = Lit6;
+var { html: html8 } = Lit5;
 var UIStrings9 = {
   /**
    * @description Hover text for an info icon in the Interest Group Event panel
@@ -3421,7 +3433,7 @@ var InterestGroupAccessGrid = class extends HTMLElement {
     this.#render();
   }
   #render() {
-    Lit6.render(html8`
+    Lit5.render(html8`
       <style>${interestGroupAccessGrid_css_default}</style>
       <style>${UI5.inspectorCommonStyles}</style>
       ${this.#datastores.length === 0 ? html8`
@@ -3470,12 +3482,12 @@ __export(ProtocolHandlersView_exports, {
 import "./../../../ui/components/icon_button/icon_button.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n19 from "./../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../core/platform/platform.js";
+import * as Platform from "./../../../core/platform/platform.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n from "./../../../ui/i18n/i18n.js";
 import * as UI6 from "./../../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../../ui/lit/lit.js";
+import * as Lit6 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/protocolHandlersView.css.js
@@ -3540,7 +3552,7 @@ input.devtools-text-input[type="text"]::placeholder {
 /*# sourceURL=${import.meta.resolve("./protocolHandlersView.css")} */`;
 
 // gen/front_end/panels/application/components/ProtocolHandlersView.js
-var { html: html9 } = Lit7;
+var { html: html9 } = Lit6;
 var PROTOCOL_DOCUMENT_URL = "https://web.dev/url-protocol-handler/";
 var UIStrings10 = {
   /**
@@ -3588,7 +3600,7 @@ var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var ProtocolHandlersView = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #protocolHandlers = [];
-  #manifestLink = Platform2.DevToolsPath.EmptyUrlString;
+  #manifestLink = Platform.DevToolsPath.EmptyUrlString;
   #selectedProtocolState = "";
   #queryInputState = "";
   set data(data) {
@@ -3620,7 +3632,7 @@ var ProtocolHandlersView = class extends HTMLElement {
   }
   #renderProtocolTest() {
     if (this.#protocolHandlers.length === 0) {
-      return Lit7.nothing;
+      return Lit6.nothing;
     }
     const protocolOptions = this.#protocolHandlers.filter((p) => p.protocol).map((p) => html9`<option value=${p.protocol} jslog=${VisualLogging7.item(p.protocol).track({
       click: true
@@ -3652,7 +3664,7 @@ var ProtocolHandlersView = class extends HTMLElement {
   };
   #render() {
     const protocolDocLink = UI6.XLink.XLink.create(PROTOCOL_DOCUMENT_URL, i18nString9(UIStrings10.protocolHandlerRegistrations), void 0, void 0, "learn-more");
-    Lit7.render(html9`
+    Lit6.render(html9`
       <style>${protocolHandlersView_css_default}</style>
       <style>${UI6.inspectorCommonStyles}</style>
       <style>${Input.textInputStyles}</style>
@@ -3677,7 +3689,7 @@ import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as Root2 from "./../../../core/root/root.js";
 import * as UI7 from "./../../../ui/legacy/legacy.js";
-import * as Lit8 from "./../../../ui/lit/lit.js";
+import * as Lit7 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/reportsGrid.css.js
@@ -3752,7 +3764,7 @@ var UIStrings11 = {
 };
 var str_11 = i18n21.i18n.registerUIStrings("panels/application/components/ReportsGrid.ts", UIStrings11);
 var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
-var { render: render10, html: html10 } = Lit8;
+var { render: render10, html: html10 } = Lit7;
 var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilities/web-apis/reporting-api";
 var DEFAULT_VIEW4 = (input, output, target) => {
   render10(html10`
@@ -3835,7 +3847,7 @@ __export(ServiceWorkerRouterView_exports, {
   ServiceWorkerRouterView: () => ServiceWorkerRouterView
 });
 import * as LegacyWrapper5 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as Lit9 from "./../../../ui/lit/lit.js";
+import * as Lit8 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/serviceWorkerRouterView.css.js
 var serviceWorkerRouterView_css_default = `/*
@@ -3897,7 +3909,7 @@ var serviceWorkerRouterView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./serviceWorkerRouterView.css")} */`;
 
 // gen/front_end/panels/application/components/ServiceWorkerRouterView.js
-var { html: html11, render: render11 } = Lit9;
+var { html: html11, render: render11 } = Lit8;
 var ServiceWorkerRouterView = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #rules = [];
@@ -3945,7 +3957,7 @@ __export(SharedStorageAccessGrid_exports, {
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as UI8 from "./../../../ui/legacy/legacy.js";
-import * as Lit10 from "./../../../ui/lit/lit.js";
+import * as Lit9 from "./../../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/sharedStorageAccessGrid.css.js
@@ -3983,7 +3995,7 @@ var sharedStorageAccessGrid_css_default = `/*
 
 // gen/front_end/panels/application/components/SharedStorageAccessGrid.js
 var SHARED_STORAGE_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/private-advertising/shared-storage";
-var { render: render12, html: html12 } = Lit10;
+var { render: render12, html: html12 } = Lit9;
 var UIStrings12 = {
   /**
    * @description Text in Shared Storage Events View of the Application panel
@@ -4140,7 +4152,7 @@ __export(SharedStorageMetadataView_exports, {
 import "./../../../ui/components/icon_button/icon_button.js";
 import * as i18n27 from "./../../../core/i18n/i18n.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
-import * as Lit12 from "./../../../ui/lit/lit.js";
+import * as Lit11 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/sharedStorageMetadataView.css.js
 var sharedStorageMetadataView_css_default = `/*
@@ -4187,7 +4199,7 @@ import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyWrapper7 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI9 from "./../../../ui/legacy/legacy.js";
-import * as Lit11 from "./../../../ui/lit/lit.js";
+import * as Lit10 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
 var storageMetadataView_css_default = `/*
@@ -4203,7 +4215,7 @@ var storageMetadataView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./storageMetadataView.css")} */`;
 
 // gen/front_end/panels/application/components/StorageMetadataView.js
-var { html: html13 } = Lit11;
+var { html: html13 } = Lit10;
 var UIStrings13 = {
   /**
    * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
@@ -4324,7 +4336,7 @@ var StorageMetadataView = class extends LegacyWrapper7.LegacyWrapper.WrappableCo
   }
   render() {
     return RenderCoordinator3.write("StorageMetadataView render", async () => {
-      Lit11.render(html13`
+      Lit10.render(html13`
         <style>
           ${storageMetadataView_css_default}
         </style>
@@ -4349,7 +4361,7 @@ var StorageMetadataView = class extends LegacyWrapper7.LegacyWrapper.WrappableCo
   }
   async renderReportContent() {
     if (!this.#storageKey) {
-      return Lit11.nothing;
+      return Lit10.nothing;
     }
     const origin = this.#storageKey.origin;
     const ancestorChainHasCrossSite = Boolean(this.#storageKey.components.get(
@@ -4372,16 +4384,16 @@ var StorageMetadataView = class extends LegacyWrapper7.LegacyWrapper.WrappableCo
     const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
     return html13`
         ${isIframeOrEmbedded ? html13`${this.key(i18nString12(UIStrings13.origin))}
-            ${this.value(html13`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : Lit11.nothing}
-        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString12(UIStrings13.topLevelSite)) : Lit11.nothing}
-        ${topLevelSite ? this.value(topLevelSite) : Lit11.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString12(UIStrings13.opaque)) : Lit11.nothing}
-        ${thirdPartyReason ? html13`${this.key(i18nString12(UIStrings13.isThirdParty))}${this.value(thirdPartyReason)}` : Lit11.nothing}
-        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString12(UIStrings13.isOpaque)) : Lit11.nothing}
-        ${hasNonce ? this.value(i18nString12(UIStrings13.yes)) : Lit11.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString12(UIStrings13.yesBecauseTopLevelIsOpaque)) : Lit11.nothing}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : Lit11.nothing}
-        ${this.#storageBucketsModel ? this.#renderBucketControls() : Lit11.nothing}`;
+            ${this.value(html13`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : Lit10.nothing}
+        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString12(UIStrings13.topLevelSite)) : Lit10.nothing}
+        ${topLevelSite ? this.value(topLevelSite) : Lit10.nothing}
+        ${topLevelSiteIsOpaque ? this.value(i18nString12(UIStrings13.opaque)) : Lit10.nothing}
+        ${thirdPartyReason ? html13`${this.key(i18nString12(UIStrings13.isThirdParty))}${this.value(thirdPartyReason)}` : Lit10.nothing}
+        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString12(UIStrings13.isOpaque)) : Lit10.nothing}
+        ${hasNonce ? this.value(i18nString12(UIStrings13.yes)) : Lit10.nothing}
+        ${topLevelSiteIsOpaque ? this.value(i18nString12(UIStrings13.yesBecauseTopLevelIsOpaque)) : Lit10.nothing}
+        ${this.#storageBucket ? this.#renderStorageBucketInfo() : Lit10.nothing}
+        ${this.#storageBucketsModel ? this.#renderBucketControls() : Lit10.nothing}`;
   }
   #renderStorageBucketInfo() {
     if (!this.#storageBucket) {
@@ -4446,7 +4458,7 @@ var StorageMetadataView = class extends LegacyWrapper7.LegacyWrapper.WrappableCo
 customElements.define("devtools-storage-metadata-view", StorageMetadataView);
 
 // gen/front_end/panels/application/components/SharedStorageMetadataView.js
-var { html: html14 } = Lit12;
+var { html: html14 } = Lit11;
 var UIStrings14 = {
   /**
    * @description Text in SharedStorage Metadata View of the Application panel
@@ -4554,7 +4566,7 @@ import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyWrapper9 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator4 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI10 from "./../../../ui/legacy/legacy.js";
-import * as Lit13 from "./../../../ui/lit/lit.js";
+import * as Lit12 from "./../../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/trustTokensView.css.js
@@ -4596,7 +4608,7 @@ devtools-icon {
 
 // gen/front_end/panels/application/components/TrustTokensView.js
 var PRIVATE_STATE_TOKENS_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/protections/private-state-tokens";
-var { html: html15 } = Lit13;
+var { html: html15 } = Lit12;
 var UIStrings15 = {
   /**
    * @description Text for the issuer of an item
@@ -4655,7 +4667,7 @@ var TrustTokensView = class extends LegacyWrapper9.LegacyWrapper.WrappableCompon
     const { tokens } = await mainTarget.storageAgent().invoke_getTrustTokens();
     tokens.sort((a, b) => a.issuerOrigin.localeCompare(b.issuerOrigin));
     await RenderCoordinator4.write("Render TrustTokensView", () => {
-      Lit13.render(html15`
+      Lit12.render(html15`
         <style>${trustTokensView_css_default}</style>
         <style>${UI10.inspectorCommonStyles}</style>
         ${this.#renderGridOrNoDataMessage(tokens)}

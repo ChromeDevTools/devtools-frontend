@@ -6,6 +6,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../../../models/source_map_scopes/source_map_scopes.js';
 import * as Acorn from '../../../../third_party/acorn/acorn.js';
+import { render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { RemoteObjectPreviewFormatter } from './RemoteObjectPreviewFormatter.js';
 export class JavaScriptREPL {
@@ -86,11 +87,12 @@ export class JavaScriptREPL {
         const formatter = new RemoteObjectPreviewFormatter();
         const { preview, type, subtype, className, description } = result.object;
         if (preview && type === 'object' && subtype !== 'node' && subtype !== 'trustedtype') {
-            formatter.appendObjectPreview(fragment, preview, false /* isEntry */);
+            /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+            render(formatter.renderObjectPreview(preview), fragment);
         }
         else {
-            const nonObjectPreview = formatter.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || '', 400));
-            fragment.appendChild(nonObjectPreview);
+            /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+            render(formatter.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || '', 400)), fragment);
         }
         return fragment;
     }

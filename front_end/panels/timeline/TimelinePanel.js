@@ -2691,21 +2691,6 @@ ${responseTextForPassedInsights}`;
 /** Define row and header height, should be in sync with styles for timeline graphs. **/
 export const rowHeight = 18;
 export const headerHeight = 20;
-export let loadTimelineHandlerInstance;
-export class LoadTimelineHandler {
-    static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
-        if (!loadTimelineHandlerInstance || forceNew) {
-            loadTimelineHandlerInstance = new LoadTimelineHandler();
-        }
-        return loadTimelineHandlerInstance;
-    }
-    handleQueryParam(value) {
-        void UI.ViewManager.ViewManager.instance().showView('timeline').then(async () => {
-            await TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value));
-        });
-    }
-}
 export class TraceRevealer {
     async reveal(trace) {
         await UI.ViewManager.ViewManager.instance().showView('timeline');

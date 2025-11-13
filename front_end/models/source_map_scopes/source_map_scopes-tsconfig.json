@@ -31,6 +31,7 @@
     "target": "ES2023",
     "tsBuildInfoFile": "source_map_scopes-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
+    "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [

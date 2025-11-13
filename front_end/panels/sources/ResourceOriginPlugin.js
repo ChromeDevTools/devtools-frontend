@@ -23,6 +23,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ResourceOriginPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ResourceOriginPlugin extends Plugin {
+    #linkifier = new Components.Linkifier.Linkifier();
     static accepts(uiSourceCode) {
         const contentType = uiSourceCode.contentType();
         return contentType.hasScripts() || contentType.isFromSourceMap();
@@ -60,12 +61,14 @@ export class ResourceOriginPlugin extends Plugin {
         // Handle anonymous scripts with an originStackTrace.
         for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
             if (script.originStackTrace?.callFrames.length) {
-                const link = linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
+                const link = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
                 return [new UI.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_, UIStrings.fromS, { PH1: link }))];
             }
         }
         return [];
     }
+    dispose() {
+        this.#linkifier.dispose();
+    }
 }
-export const linkifier = new Components.Linkifier.Linkifier();
 //# sourceMappingURL=ResourceOriginPlugin.js.map

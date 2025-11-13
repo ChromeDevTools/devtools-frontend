@@ -209,13 +209,6 @@ export interface TimelineModeViewDelegate {
     selectEntryAtTime(events: Trace.Types.Events.Event[] | null, time: number): void;
     highlightEvent(event: Trace.Types.Events.Event | null): void;
 }
-export declare let loadTimelineHandlerInstance: LoadTimelineHandler;
-export declare class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamHandler {
-    static instance(opts?: {
-        forceNew: boolean | null;
-    }): LoadTimelineHandler;
-    handleQueryParam(value: string): void;
-}
 export declare class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.TraceObject> {
     reveal(trace: SDK.TraceObject.TraceObject): Promise<void>;
 }

@@ -20,7 +20,7 @@ function createEditorWithProvider(doc: string, config: AiCodeCompletionProvider.
   onResponseReceived: () => {},
   panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
 }): {editor: TextEditor.TextEditor, provider: AiCodeCompletionProvider.AiCodeCompletionProvider} {
-  const provider = new AiCodeCompletionProvider.AiCodeCompletionProvider(config);
+  const provider = AiCodeCompletionProvider.AiCodeCompletionProvider.createInstance(config);
   const editor = new TextEditor.TextEditor(
       CodeMirror.EditorState.create({
         doc,

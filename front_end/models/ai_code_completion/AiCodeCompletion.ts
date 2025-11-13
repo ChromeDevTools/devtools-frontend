@@ -46,7 +46,7 @@ export interface Callbacks {
 }
 
 /* clang-format off */
-const consoleAdditionalContextFileContent = `/**
+export const consoleAdditionalContextFileContent = `/**
  * This file describes the execution environment of the Chrome DevTools Console.
  * The code is JavaScript, but with special global functions and variables.
  * Top-level await is available.

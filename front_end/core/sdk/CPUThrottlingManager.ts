@@ -184,10 +184,6 @@ export interface EventTypes {
   [Events.HARDWARE_CONCURRENCY_CHANGED]: number;
 }
 
-export function throttlingManager(): CPUThrottlingManager {
-  return CPUThrottlingManager.instance();
-}
-
 export enum CPUThrottlingRates {
   NO_THROTTLING = 1,
   MID_TIER_MOBILE = 4,

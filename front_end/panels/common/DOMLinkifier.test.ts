@@ -7,7 +7,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
-import * as Elements from './elements.js';
+import * as PanelsCommon from './common.js';
 
 describeWithEnvironment('DOMLinkifier', () => {
   describe('linking view transition pseudo nodes', () => {
@@ -25,7 +25,7 @@ describeWithEnvironment('DOMLinkifier', () => {
       viewTransitionNode.isViewTransitionPseudoNode.returns(true);
     });
     it('includes pseudo identifier in the label', async () => {
-      const domLinkifier = Elements.DOMLinkifier.Linkifier.instance({forceNew: true});
+      const domLinkifier = PanelsCommon.DOMLinkifier.Linkifier.instance({forceNew: true});
       const el = domLinkifier.linkify(viewTransitionNode) as HTMLElement;
       renderElementIntoDOM(el);
       await raf();
@@ -34,7 +34,7 @@ describeWithEnvironment('DOMLinkifier', () => {
     });
 
     it('does not include ancestor name for a view transition pseudo', async () => {
-      const domLinkifier = Elements.DOMLinkifier.Linkifier.instance({forceNew: true});
+      const domLinkifier = PanelsCommon.DOMLinkifier.Linkifier.instance({forceNew: true});
 
       const el = domLinkifier.linkify(viewTransitionNode) as HTMLElement;
       renderElementIntoDOM(el);
@@ -45,7 +45,7 @@ describeWithEnvironment('DOMLinkifier', () => {
   });
 
   it('can linkify DOM node with text content correctly', async () => {
-    const domLinkifier = Elements.DOMLinkifier.Linkifier.instance({forceNew: true});
+    const domLinkifier = PanelsCommon.DOMLinkifier.Linkifier.instance({forceNew: true});
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
       nodeType: Node.ELEMENT_NODE,
     });

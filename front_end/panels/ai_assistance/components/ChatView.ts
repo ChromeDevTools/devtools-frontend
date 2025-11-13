@@ -12,7 +12,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
-import * as ElementsPanel from '../../../panels/elements/elements.js';
+import * as PanelsCommon from '../../../panels/common/common.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -932,7 +932,7 @@ function renderContextTitle(
     // FIXME: move this to the model code.
     const hiddenClassList = item.classNames().filter(
         className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME));
-    return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ElementsPanel.DOMLinkifier.DOMNodeLink, {
+    return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
       node: item,
       options: {hiddenClassList, disabled}
     })}></devtools-widget>`;

@@ -5,7 +5,6 @@
 import './InspectElementModeController.js';
 import './ColorSwatchPopoverIcon.js';
 import './ComputedStyleModel.js';
-import './DOMLinkifier.js';
 import './DOMPath.js';
 import './ElementsSidebarPane.js';
 import './ElementsTreeElement.js';
@@ -37,7 +36,6 @@ import * as ComputedStyleModel from './ComputedStyleModel.js';
 import * as ComputedStyleWidget from './ComputedStyleWidget.js';
 import * as CSSRuleValidator from './CSSRuleValidator.js';
 import * as CSSValueTraceView from './CSSValueTraceView.js';
-import * as DOMLinkifier from './DOMLinkifier.js';
 import * as DOMPath from './DOMPath.js';
 import * as ElementsPanel from './ElementsPanel.js';
 import * as ElementsSidebarPane from './ElementsSidebarPane.js';
@@ -73,7 +71,6 @@ export {
   ComputedStyleWidget,
   CSSRuleValidator,
   CSSValueTraceView,
-  DOMLinkifier,
   DOMPath,
   ElementsPanel,
   ElementsSidebarPane,

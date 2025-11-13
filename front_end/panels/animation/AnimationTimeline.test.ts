@@ -13,7 +13,7 @@ import {
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as Elements from '../elements/elements.js';
+import * as PanelsCommon from '../common/common.js';
 
 import * as Animation from './animation.js';
 
@@ -144,7 +144,7 @@ describeWithMockConnection('AnimationTimeline', () => {
         return [SDK.DOMModel.DOMNode];
       },
       async loadLinkifier() {
-        return Elements.DOMLinkifier.Linkifier.instance();
+        return PanelsCommon.DOMLinkifier.Linkifier.instance();
       },
     });
 

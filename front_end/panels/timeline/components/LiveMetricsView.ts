@@ -30,7 +30,7 @@ import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import * as ElementsPanel from '../../elements/elements.js';
+import * as PanelsCommon from '../../common/common.js';
 import {getThrottlingRecommendations} from '../utils/Helpers.js';
 
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
@@ -451,7 +451,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderLcpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const nodeLink =
-        this.#lcpValue?.nodeRef && ElementsPanel.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
+        this.#lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
     const phases = this.#lcpValue?.phases;
 
     const fieldPhases = this.#getLcpFieldPhases();
@@ -948,7 +948,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
           const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
           const isInp = this.#inpValue?.interactionId === interaction.interactionId;
-          const nodeLink = interaction.nodeRef ? ElementsPanel.DOMLinkifier.Linkifier.instance().linkify(interaction.nodeRef) : Lit.nothing;
+          const nodeLink = interaction.nodeRef ? PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(interaction.nodeRef) : Lit.nothing;
 
           return html`
             <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
@@ -1066,7 +1066,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
                 ${layoutShift.affectedNodeRefs.map(node => html`
-                  <div class="layout-shift-node">${ElementsPanel.DOMLinkifier.Linkifier.instance().linkify(node)}</div>
+                  <div class="layout-shift-node">${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node)}</div>
                 `)}
               </div>
             </li>

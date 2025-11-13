@@ -21,7 +21,7 @@ const UIStrings = {
    */
   node: '<node>',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/common/DOMLinkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Options extends Common.Linkifier.Options {

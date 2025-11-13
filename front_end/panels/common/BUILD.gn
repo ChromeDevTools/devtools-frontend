@@ -15,6 +15,7 @@ generate_css("css_files") {
     "aiCodeCompletionTeaser.css",
     "badgeNotification.css",
     "common.css",
+    "domLinkifier.css",
     "freDialog.css",
     "gdpSignUpDialog.css",
   ]
@@ -26,6 +27,7 @@ devtools_ui_module("common") {
     "AiCodeCompletionSummaryToolbar.ts",
     "AiCodeCompletionTeaser.ts",
     "BadgeNotification.ts",
+    "DOMLinkifier.ts",
     "ExtensionPanel.ts",
     "ExtensionServer.ts",
     "ExtensionView.ts",
@@ -87,6 +89,7 @@ devtools_ui_module("unittests") {
     "AiCodeCompletionSummaryToolbar.test.ts",
     "AiCodeCompletionTeaser.test.ts",
     "BadgeNotification.test.ts",
+    "DOMLinkifier.test.ts",
     "ExtensionServer.test.ts",
     "GdpSignUpDialog.test.ts",
   ]

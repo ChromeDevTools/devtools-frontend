@@ -17,6 +17,7 @@
   },
   "include": [
     "../../front_end/**/*.ts",
+    "../../mcp/**/*.ts",
     "../../inspector_overlay/**/*.ts",
     "../../scripts/**/*.ts",
     "../../test/**/*.ts",

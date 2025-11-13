@@ -358,7 +358,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       propertyRules: matchedStylesResponse.cssPropertyRules ?? [],
       functionRules: matchedStylesResponse.cssFunctionRules ?? [],
       cssPropertyRegistrations: matchedStylesResponse.cssPropertyRegistrations ?? [],
-      fontPaletteValuesRule: matchedStylesResponse.cssFontPaletteValuesRule,
+      atRules: matchedStylesResponse.cssAtRules ?? [],
       activePositionFallbackIndex: matchedStylesResponse.activePositionFallbackIndex ?? -1,
       animationStylesPayload: animatedStylesResponse?.animationStyles || [],
       inheritedAnimatedPayload: animatedStylesResponse?.inherited || [],

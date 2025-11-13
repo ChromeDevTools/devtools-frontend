@@ -58,8 +58,8 @@ import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import * as LayersWidget from './LayersWidget.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {
+  AtRuleSection,
   BlankStylePropertiesSection,
-  FontPaletteValuesRuleSection,
   FunctionRuleSection,
   HighlightPseudoStylePropertiesSection,
   KeyframePropertiesSection,
@@ -139,6 +139,8 @@ const MIN_FOLDED_SECTIONS_COUNT = 5;
 export const REGISTERED_PROPERTY_SECTION_NAME = '@property';
 /** Title of the function section **/
 export const FUNCTION_SECTION_NAME = '@function';
+/** Title of the general at-rule section */
+export const AT_RULE_SECTION_NAME = '@font-*';
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
@@ -352,6 +354,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   jumpToFunctionDefinition(functionName: string): void {
     this.jumpToSection(functionName, FUNCTION_SECTION_NAME);
+  }
+
+  jumpToFontPaletteDefinition(paletteName: string): void {
+    this.jumpToSection(`@font-palette-values ${paletteName}`, AT_RULE_SECTION_NAME);
   }
 
   forceUpdate(): void {
@@ -1153,14 +1159,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       blocks.push(block);
     }
 
-    const fontPaletteValuesRule = matchedStyles.fontPaletteValuesRule();
-    if (fontPaletteValuesRule) {
-      const block = SectionBlock.createFontPaletteValuesRuleBlock(fontPaletteValuesRule.name().text);
-      this.idleCallbackManager.schedule(() => {
-        block.sections.push(
-            new FontPaletteValuesRuleSection(this, matchedStyles, fontPaletteValuesRule.style, sectionIdx));
-        sectionIdx++;
-      });
+    const atRules = matchedStyles.atRules();
+    if (atRules.length > 0) {
+      const expandedByDefault = atRules.length <= MIN_FOLDED_SECTIONS_COUNT;
+      const block = SectionBlock.createAtRuleBlock(expandedByDefault);
+      for (const atRule of atRules) {
+        this.idleCallbackManager.schedule(() => {
+          block.sections.push(new AtRuleSection(this, matchedStyles, atRule.style, sectionIdx, expandedByDefault));
+          sectionIdx++;
+        });
+      }
       blocks.push(block);
     }
 
@@ -1575,11 +1583,12 @@ export class SectionBlock {
     return new SectionBlock(separatorElement);
   }
 
-  static createFontPaletteValuesRuleBlock(name: string): SectionBlock {
+  static createAtRuleBlock(expandedByDefault: boolean): SectionBlock {
     const separatorElement = document.createElement('div');
+    const block = new SectionBlock(separatorElement, true, expandedByDefault);
     separatorElement.className = 'sidebar-separator';
-    separatorElement.textContent = `@font-palette-values ${name}`;
-    return new SectionBlock(separatorElement);
+    separatorElement.appendChild(document.createTextNode(AT_RULE_SECTION_NAME));
+    return block;
   }
 
   static createPositionTryBlock(positionTryName: string): SectionBlock {

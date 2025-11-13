@@ -1088,8 +1088,9 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         return {
           jslogContext: 'css-font-palette',
           metric: null,
-          ruleBlock: '@font-palette-values',
-          isDefined: this.#matchedStyles.fontPaletteValuesRule()?.name().text === match.text,
+          ruleBlock: '@font-*',
+          isDefined: Boolean(this.#matchedStyles.atRules().find(
+              ar => ar.type() === 'font-palette-values' && ar.name()?.text === match.text)),
         };
       case SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY:
       case SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS:
@@ -1111,7 +1112,11 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
       isDefined,
       onLinkActivate: (): void => {
         metric && Host.userMetrics.swatchActivated(metric);
-        this.#stylesPane.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
+        if (match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.FONT_PALETTE) {
+          this.#stylesPane.jumpToFontPaletteDefinition(match.text);
+        } else {
+          this.#stylesPane.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
+        }
       },
       jslogContext,
     };

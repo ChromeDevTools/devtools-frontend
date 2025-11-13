@@ -41,7 +41,7 @@ import {
   VariableMatcher
 } from './CSSPropertyParserMatchers.js';
 import {
-  CSSFontPaletteValuesRule,
+  CSSAtRule,
   CSSFunctionRule,
   CSSKeyframeRule,
   CSSKeyframesRule,
@@ -210,7 +210,7 @@ export interface CSSMatchedStylesPayload {
   positionTryRules: Protocol.CSS.CSSPositionTryRule[];
   propertyRules: Protocol.CSS.CSSPropertyRule[];
   cssPropertyRegistrations: Protocol.CSS.CSSPropertyRegistration[];
-  fontPaletteValuesRule: Protocol.CSS.CSSFontPaletteValuesRule|undefined;
+  atRules: Protocol.CSS.CSSAtRule[];
   animationStylesPayload: Protocol.CSS.CSSAnimationStyle[];
   transitionsStylePayload: Protocol.CSS.CSSStyle|null;
   inheritedAnimatedPayload: Protocol.CSS.InheritedAnimatedStyleEntry[];
@@ -305,8 +305,8 @@ export class CSSMatchedStyles {
   #pseudoDOMCascades?: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
   #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
   #functionRules: CSSFunctionRule[];
+  #atRules: CSSAtRule[];
   #functionRuleMap = new Map<string, CSSFunctionRule>();
-  readonly #fontPaletteValuesRule: CSSFontPaletteValuesRule|undefined;
   #environmentVariables: Record<string, string> = {};
 
   static async create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles> {
@@ -323,9 +323,9 @@ export class CSSMatchedStyles {
     positionTryRules,
     propertyRules,
     cssPropertyRegistrations,
-    fontPaletteValuesRule,
     activePositionFallbackIndex,
     functionRules,
+    atRules,
   }: CSSMatchedStylesPayload) {
     this.#cssModel = cssModel;
     this.#node = node;
@@ -338,11 +338,9 @@ export class CSSMatchedStyles {
     }
     this.#positionTryRules = positionTryRules.map(rule => new CSSPositionTryRule(cssModel, rule));
     this.#parentLayoutNodeId = parentLayoutNodeId;
-    this.#fontPaletteValuesRule =
-        fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : undefined;
-
     this.#activePositionFallbackIndex = activePositionFallbackIndex;
     this.#functionRules = functionRules.map(rule => new CSSFunctionRule(cssModel, rule));
+    this.#atRules = atRules.map(rule => new CSSAtRule(cssModel, rule));
   }
 
   private async init({
@@ -799,8 +797,8 @@ export class CSSMatchedStyles {
     return this.#functionRules;
   }
 
-  fontPaletteValuesRule(): CSSFontPaletteValuesRule|undefined {
-    return this.#fontPaletteValuesRule;
+  atRules(): CSSAtRule[] {
+    return this.#atRules;
   }
 
   keyframes(): CSSKeyframesRule[] {

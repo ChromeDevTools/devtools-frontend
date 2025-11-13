@@ -268,20 +268,32 @@ export class CSSPropertyRule extends CSSRule {
   }
 }
 
-export class CSSFontPaletteValuesRule extends CSSRule {
-  readonly #paletteName: CSSValue;
-  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSFontPaletteValuesRule) {
+export class CSSAtRule extends CSSRule {
+  readonly #name: CSSValue|null;
+  readonly #type: string;
+  readonly #subsection: string|null;
+  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSAtRule) {
     super(cssModel, {
       origin: payload.origin,
       style: payload.style,
       header: styleSheetHeaderForRule(cssModel, payload),
       originTreeScopeNodeId: undefined
     });
-    this.#paletteName = new CSSValue(payload.fontPaletteName);
+    this.#name = payload.name ? new CSSValue(payload.name) : null;
+    this.#type = payload.type;
+    this.#subsection = payload.subsection ?? null;
   }
 
-  name(): CSSValue {
-    return this.#paletteName;
+  name(): CSSValue|null {
+    return this.#name;
+  }
+
+  type(): string {
+    return this.#type;
+  }
+
+  subsection(): string|null {
+    return this.#subsection;
   }
 }
 

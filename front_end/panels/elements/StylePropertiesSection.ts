@@ -635,6 +635,17 @@ export class StylePropertiesSection {
     if (this.styleInternal.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
       return this.styleInternal.parentRule.selectorText();
     }
+    if (this.styleInternal.parentRule instanceof SDK.CSSRule.CSSAtRule) {
+      if (this.styleInternal.parentRule.subsection()) {
+        return '@' + this.styleInternal.parentRule.subsection();
+      }
+      const atRule = '@' + this.styleInternal.parentRule.type();
+      const name = this.styleInternal.parentRule.name();
+      if (name) {
+        return atRule + ' ' + name.text;
+      }
+      return atRule;
+    }
     return '';
   }
 
@@ -815,11 +826,36 @@ export class StylePropertiesSection {
       // We reduce one level since no selector means one less pair of braces are added for declarations.
       this.nestingLevel--;
     }
+  }
 
-    let curNestingLevel = 0;
-    for (const element of this.#ancestorRuleListElement.children) {
-      this.indentElement(element as HTMLElement, curNestingLevel);
-      curNestingLevel++;
+  protected createAtRuleAncestor(rule: SDK.CSSRule.CSSAtRule): void {
+    if (rule.subsection()) {
+      const atRuleElement = new ElementsComponents.CSSQuery.CSSQuery();
+      atRuleElement.data = {
+        queryPrefix: '@' + rule.type(),
+        queryText: rule.name()?.text ?? '',
+        jslogContext: 'at-rule-' + rule.type(),
+      };
+
+      this.#ancestorRuleListElement.prepend(atRuleElement);
+      this.#ancestorClosingBracesElement.prepend(this.indentElement(this.createClosingBrace(), 0));
+      this.nestingLevel++;
+    }
+  }
+
+  protected maybeCreateAncestorRules(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration): void {
+    if (style.parentRule) {
+      if (style.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
+        this.createAncestorRules(style.parentRule);
+      } else if (style.parentRule instanceof SDK.CSSRule.CSSAtRule) {
+        this.createAtRuleAncestor(style.parentRule);
+      }
+
+      let curNestingLevel = 0;
+      for (const element of this.#ancestorRuleListElement.children) {
+        this.indentElement(element as HTMLElement, curNestingLevel);
+        curNestingLevel++;
+      }
     }
   }
 
@@ -996,9 +1032,7 @@ export class StylePropertiesSection {
   private updateAncestorRuleList(): void {
     this.#ancestorRuleListElement.removeChildren();
     this.#ancestorClosingBracesElement.removeChildren();
-    if (this.styleInternal.parentRule && this.styleInternal.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
-      this.createAncestorRules(this.styleInternal.parentRule);
-    }
+    this.maybeCreateAncestorRules(this.styleInternal);
     this.#styleRuleElement.style.paddingLeft = `${this.nestingLevel}ch`;
   }
 
@@ -1642,9 +1676,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     this.selectorRefElement.removeChildren();
     this.selectorRefElement.appendChild(StylePropertiesSection.linkifyRuleLocation(
         cssModel, this.parentPane.linkifier, styleSheetHeader, this.actualRuleLocation()));
-    if (insertAfterStyle?.parentRule && insertAfterStyle.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
-      this.createAncestorRules(insertAfterStyle.parentRule);
-    }
+    this.maybeCreateAncestorRules(insertAfterStyle);
     this.element.classList.add('blank-section');
   }
 
@@ -1832,12 +1864,15 @@ export class FunctionRuleSection extends StylePropertiesSection {
   }
 }
 
-export class FontPaletteValuesRuleSection extends StylePropertiesSection {
+export class AtRuleSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, expandedByDefault: boolean) {
     super(stylesPane, matchedStyles, style, sectionIdx, null, null);
     this.selectorElement.className = 'font-palette-values-key';
+    if (!expandedByDefault) {
+      this.element.classList.add('hidden');
+    }
   }
 }
 

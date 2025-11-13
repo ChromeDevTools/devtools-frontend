@@ -150,7 +150,7 @@ export function getMatchedStyles(
     positionTryRules: [],
     propertyRules: [],
     cssPropertyRegistrations: [],
-    fontPaletteValuesRule: undefined,
+    atRules: [],
     activePositionFallbackIndex: -1,
     animationStylesPayload: [],
     transitionsStylePayload: null,

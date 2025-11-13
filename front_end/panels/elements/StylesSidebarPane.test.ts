@@ -94,30 +94,59 @@ describe('StylesSidebarPane', () => {
       });
     });
 
-    it('should add @font-palette-values section to the end', async () => {
+    it('should add @font-* section to the end', async () => {
       const stylesSidebarPane =
           new Elements.StylesSidebarPane.StylesSidebarPane(new Elements.ComputedStyleModel.ComputedStyleModel());
       const matchedStyles = await getMatchedStyles({
         cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
         node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
-        fontPaletteValuesRule: {
-          fontPaletteName: {text: '--palette'},
-          origin: Protocol.CSS.StyleSheetOrigin.Regular,
-          style: {
-            cssProperties: [{name: 'font-family', value: 'Bixa'}, {name: 'override-colors', value: '0 red'}],
-            shorthandEntries: [],
-
+        atRules: [
+          {
+            name: {text: '--palette'},
+            type: Protocol.CSS.CSSAtRuleType.FontPaletteValues,
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [{name: 'font-family', value: 'Bixa'}, {name: 'override-colors', value: '0 red'}],
+              shorthandEntries: [],
+            },
           },
-        },
+          {
+            type: Protocol.CSS.CSSAtRuleType.FontFace,
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [{name: 'font-family', value: 'Bixa'}, {name: 'src', value: 'local(Bixa)'}],
+              shorthandEntries: [],
+            },
+          },
+          {
+            type: Protocol.CSS.CSSAtRuleType.FontFeatureValues,
+            name: {text: 'Bixa'},
+            subsection: Protocol.CSS.CSSAtRuleSubsection.Swash,
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [{name: 'fancy', value: '1'}],
+              shorthandEntries: [],
+            },
+          },
+        ],
       });
 
       const sectionBlocks =
           await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map());
 
       assert.lengthOf(sectionBlocks, 2);
-      assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@font-palette-values --palette');
-      assert.lengthOf(sectionBlocks[1].sections, 1);
-      assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.FontPaletteValuesRuleSection);
+      assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@font-*');
+      assert.lengthOf(sectionBlocks[1].sections, 3);
+      const contents = [
+        '@font-palette-values --palette {    font-family: Bixa;    override-colors: 0 red;}',
+        '@font-face {    font-family: Bixa;    src: local(Bixa);}',
+        '@font-feature-values Bixa {    @swash {        fancy: 1;    }}',
+      ];
+      for (let i = 0; i < 3; i++) {
+        const section = sectionBlocks[1].sections[i];
+        assert.instanceOf(section, Elements.StylePropertiesSection.AtRuleSection);
+        assert.strictEqual(section.element.deepTextContent(), contents[i]);
+      }
     });
 
     it('should add @function section to the end', async () => {

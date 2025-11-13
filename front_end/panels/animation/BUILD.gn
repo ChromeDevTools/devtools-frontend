@@ -30,6 +30,7 @@ devtools_ui_module("animation") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/visual_logging:bundle",
+    "../common:bundle",
   ]
 }
 

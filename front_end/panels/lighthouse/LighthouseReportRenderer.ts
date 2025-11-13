@@ -13,6 +13,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import type {
   NodeDetailsJSON, ReportJSON, RunnerResultArtifacts, SourceLocationDetailsJSON} from './LighthouseReporterTypes.js';
@@ -148,7 +149,7 @@ export class LighthouseReportRenderer {
         continue;
       }
 
-      const element = await Common.Linkifier.Linkifier.linkify(
+      const element = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
           node, {tooltip: detailsItem.snippet, preventKeyboardFocus: undefined});
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
 

@@ -5,7 +5,7 @@
 
 // TODO: move to ui/components/node_link?
 
-import * as Common from '../../../../core/common/common.js';
+import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -13,6 +13,7 @@ import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../../ui/lit/lit.js';
+import * as PanelsCommon from '../../../common/common.js';
 
 const {html} = Lit;
 
@@ -92,7 +93,7 @@ export class NodeLink extends HTMLElement {
 
     // TODO: it'd be nice if we could specify what attributes to render,
     // ex for the Viewport insight: <meta content="..."> (instead of just <meta>)
-    const linkedNode = await Common.Linkifier.Linkifier.linkify(node, this.#options);
+    const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#options);
     this.#linkifiedNodeForBackendId.set(this.#backendNodeId, linkedNode);
     return linkedNode;
   }

@@ -17,6 +17,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
 import type {GlobalStyleStats} from './CSSOverviewModel.js';
@@ -984,7 +985,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
       if ('nodeId' in item && visibility.has('node-id')) {
         const frontendNode = relatedNodesMap?.get(item.nodeId) ?? null;
         if (frontendNode) {
-          link = await Common.Linkifier.Linkifier.linkify(frontendNode) as HTMLElement;
+          link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(frontendNode);
           showNode = () => frontendNode.scrollIntoView();
         }
       }

@@ -18,6 +18,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import animationTimelineStyles from './animationTimeline.css.js';
@@ -1222,13 +1223,12 @@ export class NodeUI {
     }
     this.#node = node;
     this.nodeChanged();
-    void Common.Linkifier.Linkifier.linkify(node).then(link => {
-      link.addEventListener('click', () => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimatedNodeDescriptionClicked);
-      });
-
-      this.#description.appendChild(link);
+    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node);
+    link.addEventListener('click', () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimatedNodeDescriptionClicked);
     });
+
+    this.#description.appendChild(link);
     if (!node.ownerDocument) {
       this.nodeRemoved();
     }

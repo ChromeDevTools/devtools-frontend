@@ -138,6 +138,7 @@ devtools_ui_module("timeline") {
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
+    "../common:bundle",
     "./components:bundle",
     "./extensions:bundle",
     "./overlays:bundle",

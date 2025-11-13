@@ -8,6 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelsCommon from '../common/common.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -19,7 +20,8 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
   let linkElement: HTMLElement;
   const PATH = 'TEST_PATH';
   const NODE_ID = 42 as Protocol.DOM.NodeId;
-  const NODE = {id: NODE_ID} as SDK.DOMModel.DOMNode;
+  const NODE = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+  NODE.id = NODE_ID;
   const SNIPPET = 'SNIPPET';
   const LH_NODE_HTML = (path: string, snippet: string) =>
       `<div class="lh-node" data-path="${path}" data-snippet="${snippet}"></div>`;
@@ -40,9 +42,9 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     assert.exists(domModel);
     sinon.stub(domModel, 'pushNodeByPathToFrontend').withArgs(PATH).returns(Promise.resolve(NODE_ID));
     sinon.stub(domModel, 'nodeForId').withArgs(NODE_ID).returns(NODE);
-    sinon.stub(Common.Linkifier.Linkifier, 'linkify')
+    sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify')
         .withArgs(NODE, {tooltip: SNIPPET, preventKeyboardFocus: undefined})
-        .returns(Promise.resolve(linkElement));
+        .returns(linkElement);
 
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
 
@@ -54,7 +56,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     assert.exists(domModel);
     const pushNodeByPathToFrontend = sinon.stub(domModel, 'pushNodeByPathToFrontend');
     const nodeForId = sinon.stub(domModel, 'nodeForId');
-    const linkify = sinon.stub(Common.Linkifier.Linkifier, 'linkify');
+    const linkify = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify');
     const NUM_NODES = 3;
     for (let i = 1; i <= NUM_NODES; ++i) {
       sourceElement.innerHTML += LH_NODE_HTML(PATH + i, SNIPPET + i);
@@ -63,8 +65,9 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
       const node = {id: nodeId} as SDK.DOMModel.DOMNode;
       pushNodeByPathToFrontend.withArgs(PATH + i).returns(Promise.resolve(nodeId));
       nodeForId.withArgs(nodeId).returns(node);
-      linkify.withArgs(node, {tooltip: SNIPPET + i, preventKeyboardFocus: undefined})
-          .returns(Promise.resolve(document.createTextNode(`link${i}`)));
+      const link = document.createElement('div');
+      link.textContent = `link${i}`;
+      linkify.withArgs(node, {tooltip: SNIPPET + i, preventKeyboardFocus: undefined}).returns(link);
     }
 
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
@@ -97,7 +100,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     assert.exists(domModel);
     sinon.stub(domModel, 'pushNodeByPathToFrontend').returns(Promise.resolve(NODE_ID));
     sinon.stub(domModel, 'nodeForId').returns(NODE);
-    sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(linkElement));
+    sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(linkElement);
 
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
 

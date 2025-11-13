@@ -8,6 +8,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as PanelsCommon from '../../common/common.js';
 
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
 
@@ -84,7 +85,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
       return;
     }
 
-    const linkedNode = await Common.Linkifier.Linkifier.linkify(node, {textContent: label});
+    const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {textContent: label});
     return linkedNode;
   }
 }

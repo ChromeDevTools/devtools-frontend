@@ -10,6 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import accessibilityNodeStyles from './accessibilityNode.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
@@ -587,8 +588,11 @@ export class AXRelatedNodeElement {
       const valueElement = document.createElement('span');
       element.appendChild(valueElement);
       void this.deferredNode.resolvePromise().then(node => {
-        void Common.Linkifier.Linkifier.linkify(node, {tooltip: undefined, preventKeyboardFocus: true})
-            .then(linkfied => valueElement.appendChild(linkfied));
+        if (!node) {
+          return;
+        }
+        valueElement.appendChild(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
+            node, {tooltip: undefined, preventKeyboardFocus: true}));
       });
     } else if (this.idref) {
       element.classList.add('invalid');

@@ -49,6 +49,7 @@ devtools_ui_module("css_overview") {
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
+    "../common:bundle",
   ]
 }
 

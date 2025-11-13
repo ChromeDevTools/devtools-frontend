@@ -42,6 +42,7 @@ devtools_ui_module("accessibility") {
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
+    "../common:bundle",
   ]
 }
 

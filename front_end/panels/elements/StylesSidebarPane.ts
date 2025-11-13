@@ -49,6 +49,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import * as ElementsComponents from './components/components.js';
 import type {ComputedStyleModel, CSSModelChangedEvent} from './ComputedStyleModel.js';
@@ -1551,7 +1552,7 @@ export class SectionBlock {
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}));
-    const link = await Common.Linkifier.Linkifier.linkify(node, {
+    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
       preventKeyboardFocus: true,
       tooltip: undefined,
     });
@@ -1604,7 +1605,7 @@ export class SectionBlock {
     separatorElement.className = 'sidebar-separator';
     separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('inherited')}`);
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFroms));
-    const link = await Common.Linkifier.Linkifier.linkify(node, {
+    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
       preventKeyboardFocus: true,
       tooltip: undefined,
     });

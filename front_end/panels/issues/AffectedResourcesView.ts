@@ -17,6 +17,7 @@ import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 
 import type {IssueView} from './IssueView.js';
 
@@ -230,7 +231,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     }
 
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchorElement = (await Common.Linkifier.Linkifier.linkify(deferredDOMNode)) as HTMLElement;
+    const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode) as HTMLElement;
     anchorElement.textContent = nodeName;
     anchorElement.addEventListener('click', () => sendTelemetry());
     anchorElement.addEventListener('keydown', (event: Event) => {

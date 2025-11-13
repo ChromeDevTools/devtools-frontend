@@ -58,6 +58,7 @@ devtools_ui_module("issues") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
+    "../common:bundle",
     "./components:bundle",
   ]
 }

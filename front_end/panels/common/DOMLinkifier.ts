@@ -247,15 +247,15 @@ export class Linkifier implements Common.Linkifier.Linkifier {
 
     return linkifierInstance;
   }
-  linkify(object: Object, options?: Options): Node {
-    if (object instanceof SDK.DOMModel.DOMNode) {
+  linkify(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode, options?: Options): HTMLElement {
+    if (node instanceof SDK.DOMModel.DOMNode) {
       const link = document.createElement('devtools-widget') as UI.Widget.WidgetElement<DOMNodeLink>;
-      link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, object, options));
+      link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, node, options));
       return link;
     }
-    if (object instanceof SDK.DOMModel.DeferredDOMNode) {
+    if (node instanceof SDK.DOMModel.DeferredDOMNode) {
       const link = document.createElement('devtools-widget') as UI.Widget.WidgetElement<DeferredDOMNodeLink>;
-      link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, object, options));
+      link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, node, options));
       return link;
     }
     throw new Error('Can\'t linkify non-node');

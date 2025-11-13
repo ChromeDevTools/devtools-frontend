@@ -60,6 +60,7 @@ devtools_ui_module("insights") {
     "../../../../ui/components/linkifier:bundle",
     "../../../../ui/components/markdown_view:bundle",
     "../../../../ui/lit:bundle",
+    "../../../common:bundle",
     "../../overlays:bundle",
     "../../utils:bundle",
   ]

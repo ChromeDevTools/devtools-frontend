@@ -34,6 +34,7 @@ devtools_ui_module("browser_debugger") {
     "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
     "../../ui/visual_logging:bundle",
+    "../common:bundle",
   ]
 }
 

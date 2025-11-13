@@ -9,8 +9,8 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-import {CSSWorkspaceBinding} from './CSSWorkspaceBinding.js';
-import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+import type {CSSWorkspaceBinding} from './CSSWorkspaceBinding.js';
+import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
@@ -38,10 +38,10 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
-  get debuggerWorkspaceBinding(): DebuggerWorkspaceBinding {
-    if (!this.#debuggerWorkspaceBinding) {
-      throw new Error('No DebuggerWorkspaceBinding instance set on ResourceMapping');
-    }
+  get debuggerWorkspaceBinding(): DebuggerWorkspaceBinding|null {
+    // TODO(crbug.com/458180550): Throw when this.#debuggerWorkspaceBinding is null and never return null.
+    //                            The only reason we don't throw and return an instance unconditionally
+    //                            is that unit tests often don't set-up both the *WorkspaceBindings.
     return this.#debuggerWorkspaceBinding;
   }
 
@@ -53,10 +53,10 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
   }
 
-  get cssWorkspaceBinding(): CSSWorkspaceBinding {
-    if (!this.#cssWorkspaceBinding) {
-      throw new Error('No CSSWorkspaceBinding instance set on ResourceMapping');
-    }
+  get cssWorkspaceBinding(): CSSWorkspaceBinding|null {
+    // TODO(crbug.com/458180550): Throw when this.#cssWorkspaceBinding is null and never return null.
+    //                            The only reason we don't throw and return an instance unconditionally
+    //                            is that unit tests often don't set-up both the *WorkspaceBindings.
     return this.#cssWorkspaceBinding;
   }
 
@@ -69,7 +69,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
   }
 
   modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
-    const info = new ModelInfo(this.workspace, resourceTreeModel);
+    const info = new ModelInfo(this, resourceTreeModel);
     this.#modelToInfo.set(resourceTreeModel, info);
   }
 
@@ -283,11 +283,13 @@ class ModelInfo {
   readonly #bindings = new Map<string, Binding>();
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
-  constructor(
-      workspace: Workspace.Workspace.WorkspaceImpl, resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel) {
+  readonly resourceMapping: ResourceMapping;
+
+  constructor(resourceMapping: ResourceMapping, resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel) {
     const target = resourceTreeModel.target();
+    this.resourceMapping = resourceMapping;
     this.project = new ContentProviderBasedProject(
-        workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
+        resourceMapping.workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
     NetworkProject.setTargetForProject(this.project, target);
 
@@ -365,7 +367,7 @@ class ModelInfo {
 
     let binding = this.#bindings.get(resource.url);
     if (!binding) {
-      binding = new Binding(this.project, resource);
+      binding = new Binding(this, resource);
       this.#bindings.set(resource.url, binding);
     } else {
       binding.addResource(resource);
@@ -429,9 +431,16 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader,
     edit: SDK.CSSModel.Edit|null,
   }> = [];
-  constructor(project: ContentProviderBasedProject, resource: SDK.Resource.Resource) {
+
+  readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding|null;
+  readonly #cssWorkspaceBinding: CSSWorkspaceBinding|null;
+
+  constructor(modelInfo: ModelInfo, resource: SDK.Resource.Resource) {
     this.resources = new Set([resource]);
-    this.#project = project;
+    this.#project = modelInfo.project;
+    this.#debuggerWorkspaceBinding = modelInfo.resourceMapping.debuggerWorkspaceBinding;
+    this.#cssWorkspaceBinding = modelInfo.resourceMapping.cssWorkspaceBinding;
+
     this.#uiSourceCode = this.#project.createUISourceCode(resource.url, resource.contentType());
     boundUISourceCodes.add(this.#uiSourceCode);
     if (resource.frameId) {
@@ -440,8 +449,8 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     this.#project.addUISourceCodeWithProvider(this.#uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
 
     void Promise.all([
-      ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
-      ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),
+      ...this.inlineScripts().map(script => this.#debuggerWorkspaceBinding?.updateLocations(script)),
+      ...this.inlineStyles().map(style => this.#cssWorkspaceBinding?.updateLocations(style)),
     ]);
   }
 
@@ -511,7 +520,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
           continue;
         }
         scriptRangeMap.set(script, range.rebaseAfterTextEdit(oldRange, newRange));
-        updatePromises.push(DebuggerWorkspaceBinding.instance().updateLocations(script));
+        updatePromises.push(this.#debuggerWorkspaceBinding?.updateLocations(script));
       }
       for (const style of styles) {
         const range = styleSheetRangeMap.get(style) ?? computeStyleSheetRange(style);
@@ -519,7 +528,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
           continue;
         }
         styleSheetRangeMap.set(style, range.rebaseAfterTextEdit(oldRange, newRange));
-        updatePromises.push(CSSWorkspaceBinding.instance().updateLocations(style));
+        updatePromises.push(this.#cssWorkspaceBinding?.updateLocations(style));
       }
       await Promise.all(updatePromises);
     }
@@ -543,8 +552,8 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
   dispose(): void {
     this.#project.removeUISourceCode(this.#uiSourceCode.url());
     void Promise.all([
-      ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
-      ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),
+      ...this.inlineScripts().map(script => this.#debuggerWorkspaceBinding?.updateLocations(script)),
+      ...this.inlineStyles().map(style => this.#cssWorkspaceBinding?.updateLocations(style)),
     ]);
   }
 

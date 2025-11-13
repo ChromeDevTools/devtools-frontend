@@ -45,11 +45,3 @@ devtools_ui_module("unittests") {
     "../../lit:bundle",
   ]
 }
-
-component_doc("docs") {
-  sources = [ "ExpandableList.docs.ts" ]
-  deps = [
-    ":bundle",
-    "../../lit:bundle",
-  ]
-}

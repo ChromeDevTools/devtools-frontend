@@ -13,7 +13,7 @@ import {SDKModel} from './SDKModel.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 import {StorageKeyManager} from './StorageKeyManager.js';
 import {Capability, type Target, Type} from './Target.js';
-import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
+import {Events as TargetManagerEvents, type TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
@@ -126,7 +126,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   private fireAvailableTargetsChanged(): void {
-    TargetManager.instance().dispatchEventToListeners(
+    this.#targetManager.dispatchEventToListeners(
         TargetManagerEvents.AVAILABLE_TARGETS_CHANGED, [...this.#targetInfos.values()]);
   }
 

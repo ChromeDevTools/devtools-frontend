@@ -448,23 +448,7 @@ export class MainImpl {
     Workspace.FileManager.FileManager.instance({forceNew: true});
 
     Bindings.NetworkProject.NetworkProjectManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(
-        targetManager,
-        Workspace.Workspace.WorkspaceImpl.instance(),
-    );
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
-    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-    });
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-    });
     targetManager.setScopeTarget(targetManager.primaryPageTarget());
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, ({data}) => {
       const outermostTarget = data?.outermostTarget();

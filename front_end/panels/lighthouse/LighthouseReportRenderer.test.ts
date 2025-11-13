@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -83,7 +82,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     assert.exists(domModel);
     sinon.stub(domModel, 'pushNodeByPathToFrontend').returns(Promise.resolve(NODE_ID));
     sinon.stub(domModel, 'nodeForId').returns(NODE);
-    sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(linkElement));
+    sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(linkElement);
     const installTooltip = sinon.spy(UI.Tooltip.Tooltip, 'install');
 
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);

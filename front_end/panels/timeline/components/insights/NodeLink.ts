@@ -5,7 +5,6 @@
 
 // TODO: move to ui/components/node_link?
 
-import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -20,7 +19,7 @@ const {html} = Lit;
 export interface NodeLinkData {
   backendNodeId: Protocol.DOM.BackendNodeId;
   frame: string;
-  options?: Common.Linkifier.Options;
+  options?: PanelsCommon.DOMLinkifier.Options;
   /**
    * URL to display if backendNodeId cannot be resolved (ie for traces loaded from disk).
    * Will be given to linkifyURL. Use this or one of the other fallback fields.
@@ -42,7 +41,7 @@ export class NodeLink extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   #frame?: string;
-  #options?: Common.Linkifier.Options;
+  #options?: PanelsCommon.DOMLinkifier.Options;
   #fallbackUrl?: Platform.DevToolsPath.UrlString;
   #fallbackHtmlSnippet?: string;
   #fallbackText?: string;

@@ -7,7 +7,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as PanelsCommon from '../common/common.js';
 
 import type * as Elements from './elements.js';
 
@@ -176,14 +175,6 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (elementsModul
     return [];
   }
   return getClassCallBack(loadedElementsModule);
-}
-
-let loadedPanelsCommonModule: (typeof PanelsCommon|undefined);
-async function loadPanelsCommonModule(): Promise<typeof PanelsCommon> {
-  if (!loadedPanelsCommonModule) {
-    loadedPanelsCommonModule = await import('../common/common.js');
-  }
-  return loadedPanelsCommonModule;
 }
 
 UI.ViewManager.registerViewExtension({
@@ -696,18 +687,5 @@ UI.UIUtils.registerRenderer({
   async loadRenderer() {
     const Elements = await loadElementsModule();
     return Elements.ElementsTreeOutlineRenderer.Renderer.instance();
-  },
-});
-
-Common.Linkifier.registerLinkifier({
-  contextTypes() {
-    return [
-      SDK.DOMModel.DOMNode,
-      SDK.DOMModel.DeferredDOMNode,
-    ];
-  },
-  async loadLinkifier() {
-    const PanelsCommon = await loadPanelsCommonModule();
-    return PanelsCommon.DOMLinkifier.Linkifier.instance();
   },
 });

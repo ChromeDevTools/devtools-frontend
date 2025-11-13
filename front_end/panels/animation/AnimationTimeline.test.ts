@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -13,7 +12,6 @@ import {
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as PanelsCommon from '../common/common.js';
 
 import * as Animation from './animation.js';
 
@@ -139,15 +137,6 @@ describeWithMockConnection('AnimationTimeline', () => {
   let view: Animation.AnimationTimeline.AnimationTimeline;
 
   beforeEach(() => {
-    Common.Linkifier.registerLinkifier({
-      contextTypes() {
-        return [SDK.DOMModel.DOMNode];
-      },
-      async loadLinkifier() {
-        return PanelsCommon.DOMLinkifier.Linkifier.instance();
-      },
-    });
-
     stubNoopSettings();
     target = createTarget();
 

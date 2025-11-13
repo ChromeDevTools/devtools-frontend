@@ -24,7 +24,6 @@ devtools_module("common") {
     "Gzip.ts",
     "JavaScriptMetaData.ts",
     "Lazy.ts",
-    "Linkifier.ts",
     "MapWithDefault.ts",
     "Mutex.ts",
     "Object.ts",

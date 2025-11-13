@@ -6,7 +6,6 @@ import * as AnimationsTrackAppender from './AnimationsTrackAppender.js';
 import * as AnnotationHelpers from './AnnotationHelpers.js';
 import * as AppenderUtils from './AppenderUtils.js';
 import * as BenchmarkEvents from './BenchmarkEvents.js';
-import * as CLSLinkifier from './CLSLinkifier.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
 import * as CountersGraph from './CountersGraph.js';
 import * as EntriesFilter from './EntriesFilter.js';
@@ -51,7 +50,6 @@ export {
   AnnotationHelpers,
   AppenderUtils,
   BenchmarkEvents,
-  CLSLinkifier,
   CompatibilityTracksAppender,
   CountersGraph,
   EntriesFilter,

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -17,6 +16,7 @@ import {describeWithMockConnection, setMockConnectionResponseHandler} from '../.
 import {getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelsCommon from '../common/common.js';
 
 import * as Elements from './elements.js';
 
@@ -226,7 +226,7 @@ describe('StylesSidebarPane', () => {
       }
 
       beforeEach(() => {
-        sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(document.createTextNode('link')));
+        sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(document.createElement('div'));
         updateHostConfig({
           devToolsAnimationStylesInStylesTab: {
             enabled: true,

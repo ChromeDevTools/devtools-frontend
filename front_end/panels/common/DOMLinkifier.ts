@@ -24,7 +24,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/common/DOMLinkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface Options extends Common.Linkifier.Options {
+export interface Options {
+  tooltip?: string;
+  preventKeyboardFocus?: boolean;
+  textContent?: string;
+  // Dynamic links include hyperlinks and anchorlinks -- links that navigate the content.
+  isDynamicLink?: boolean;
   hiddenClassList?: string[];
   disabled?: boolean;
 }
@@ -236,7 +241,7 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
 
 let linkifierInstance: Linkifier;
 
-export class Linkifier implements Common.Linkifier.Linkifier {
+export class Linkifier {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): Linkifier {

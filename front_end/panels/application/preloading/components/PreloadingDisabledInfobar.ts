@@ -14,7 +14,7 @@ import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
-import * as UI from '../../../../ui/legacy/legacy.js';
+import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
@@ -98,6 +98,8 @@ const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDisabledInfobar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const LINK = 'https://developer.chrome.com/blog/prerender-pages/';
+
 export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: Protocol.Preload.PreloadEnabledStateUpdatedEvent = {
@@ -168,14 +170,6 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
   }
 
   #dialogContents(): Lit.LitTemplate {
-    const LINK = 'https://developer.chrome.com/blog/prerender-pages/';
-
-    const learnMoreLink =
-        UI.XLink.XLink.create(LINK, i18nString(UIStrings.footerLearnMore), undefined, undefined, 'learn-more');
-    const iconLink = UI.Fragment.html`
-      <x-link class="icon-link devtools-link" tabindex="0" href="${LINK}"></x-link>
-    ` as UI.XLink.XLink;
-
     return html`
       <div id='contents'>
         <devtools-report>
@@ -186,8 +180,10 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
           ${this.#maybeDisableByHoldbackPrerenderSpeculationRules()}
         </devtools-report>
         <div id='footer'>
-          ${learnMoreLink}
-          ${iconLink}
+          <x-link class="devtools-link" tabindex="0" href=${LINK} 
+          jslog=${VisualLogging.link().track({click: true, keydown: 'Enter|Space'}).context('learn-more')}
+          >${i18nString(UIStrings.footerLearnMore)}</x-link>
+          <x-link class="icon-link devtools-link" tabindex="0" href=${LINK}></x-link>
         </div>
       </div>
     `;

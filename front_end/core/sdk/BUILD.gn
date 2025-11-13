@@ -185,7 +185,6 @@ ts_library("unittests") {
     "SourceMapScopesInfo.test.ts",
     "StorageBucketsModel.test.ts",
     "StorageKeyManager.test.ts",
-    "Target.test.ts",
     "TargetManager.test.ts",
     "TraceObject.test.ts",
   ]
@@ -203,5 +202,17 @@ ts_library("unittests") {
     "../common:bundle",
     "../protocol_client:bundle",
     "../root:bundle",
+  ]
+}
+
+devtools_foundation_module("foundation_unittests") {
+  testonly = true
+
+  sources = [ "Target.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+    "../platform:bundle",
   ]
 }

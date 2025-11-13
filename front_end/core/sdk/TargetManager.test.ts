@@ -5,21 +5,34 @@
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('TargetManager', () => {
+describe('TargetManager', () => {
   let targetManager: SDK.TargetManager.TargetManager;
+  let inspectedURLChangedHostApi: sinon.SinonStub;
+
+  setupRuntimeHooks();
+  setupSettingsHooks();
 
   beforeEach(() => {
-    targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+
+    // TODO(crbug.com/451502260): Add Node.js specific host bindings. For now, we don't execute
+    //                            the InspectorFrontendHostStub, it only updates the document.title anyway.
+    inspectedURLChangedHostApi =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'inspectedURLChanged');
+  });
+
+  afterEach(() => {
+    Root.DevToolsContext.setGlobalInstance(null);
   });
 
   function resourceTreeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {
@@ -241,8 +254,6 @@ describeWithMockConnection('TargetManager', () => {
 
   it('notifies about inspected URL change', () => {
     const targets = [createTarget(), createTarget()];
-    const inspectedURLChangedHostApi =
-        sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'inspectedURLChanged');
     const inspectedURLChangedEventListener = sinon.spy();
     targetManager.addEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, inspectedURLChangedEventListener);
 

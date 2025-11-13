@@ -8,10 +8,11 @@ import {ContextMenu} from './legacy.js';
 
 const {html} = Lit;
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
+  const menuDocs = container.createChild('div', 'menu-docs');
   const style = document.createElement('style');
   style.textContent = `
-      #container > div {
+      .menu-docs > div {
         width: var(--sys-size-34);
         padding: var(--sys-size-11);
         display: flex;
@@ -27,13 +28,13 @@ export async function render(container: HTMLElement) {
         }
       }
     `;
-  container.appendChild(style);
+  menuDocs.appendChild(style);
 
   const menuButtonSection = document.createElement('div');
   const menuButtonHeader = document.createElement('header');
   menuButtonHeader.textContent = 'DevTools menu button (lit-html)';
-  container.appendChild(menuButtonHeader);
-  container.appendChild(menuButtonSection);
+  menuDocs.appendChild(menuButtonHeader);
+  menuDocs.appendChild(menuButtonSection);
 
   Lit.render(
       html`
@@ -53,8 +54,8 @@ export async function render(container: HTMLElement) {
   simpleItemsSection.innerHTML = '<p>Right-click here</p>';
   const simpleItemsHeader = document.createElement('header');
   simpleItemsHeader.textContent = 'Various simple menu items (imperative API)';
-  container.appendChild(simpleItemsHeader);
-  container.appendChild(simpleItemsSection);
+  menuDocs.appendChild(simpleItemsHeader);
+  menuDocs.appendChild(simpleItemsSection);
 
   let checked = true;
   simpleItemsSection.addEventListener('contextmenu', onSimpleMenu);
@@ -93,8 +94,8 @@ export async function render(container: HTMLElement) {
   customSection.innerHTML = '<p>Right-click here</p>';
   const customSectionHeader = document.createElement('header');
   customSectionHeader.textContent = 'Custom sections (imperative API)';
-  container.appendChild(customSectionHeader);
-  container.appendChild(customSection);
+  menuDocs.appendChild(customSectionHeader);
+  menuDocs.appendChild(customSection);
 
   customSection.addEventListener('contextmenu', onCustomSectionMenu);
 
@@ -117,8 +118,8 @@ export async function render(container: HTMLElement) {
   subMenuSection.innerHTML = '<p>Right-click here</p>';
   const subMenuHeader = document.createElement('header');
   subMenuHeader.textContent = 'Sub menu (imperative API)';
-  container.appendChild(subMenuHeader);
-  container.appendChild(subMenuSection);
+  menuDocs.appendChild(subMenuHeader);
+  menuDocs.appendChild(subMenuSection);
 
   subMenuSection.addEventListener('contextmenu', onSubMenu);
 

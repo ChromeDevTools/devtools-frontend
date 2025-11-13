@@ -31,5 +31,8 @@ devtools_entrypoint("bundle") {
 
 component_doc("docs") {
   sources = [ "Spinners.docs.ts" ]
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../../ui/lit:bundle",
+  ]
 }

@@ -4,7 +4,7 @@
 
 import {Switch} from './switch.js';
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
   function switchExample({checked, disabled}: {checked: boolean, disabled: boolean}): HTMLElement {
     const example = document.createElement('div');
     example.style.marginTop = '20px';

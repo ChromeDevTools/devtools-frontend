@@ -9,7 +9,7 @@ import {UIUtils} from './legacy.js';
 
 const {html} = Lit;
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
   function createDivWithP(text: string): HTMLDivElement {
     const div = document.createElement('div');
     div.style.paddingLeft = '25px';

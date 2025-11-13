@@ -4,11 +4,11 @@
 
 import * as Lit from '../../lit/lit.js';
 
-import {Tooltip} from './Tooltip.js';
+import {Tooltip} from './tooltips.js';
 
 const {html} = Lit;
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
   Lit.render(
       html`
     <div style="position: relative; z-index: 0;">
@@ -44,7 +44,7 @@ export async function render(container: HTMLElement) {
       container);
 
   const anchor = container.querySelector('.anchor') as HTMLElement;
-  const programmaticTooltip = new Tooltip({id: 'programatic', variant: 'rich', anchor});
+  const programmaticTooltip = new Tooltip.Tooltip({id: 'programatic', variant: 'rich', anchor});
   programmaticTooltip.append('Text content');
   anchor.insertAdjacentElement('afterend', programmaticTooltip);
 

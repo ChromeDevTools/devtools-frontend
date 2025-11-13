@@ -218,5 +218,9 @@ component_doc("docs") {
     "SelectMenu.docs.ts",
     "Slider.docs.ts",
   ]
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../lit:bundle",
+    "../visual_logging:bundle",
+  ]
 }

@@ -47,5 +47,8 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [ "Tooltip.docs.ts" ]
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../lit:bundle",
+  ]
 }

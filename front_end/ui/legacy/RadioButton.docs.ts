@@ -4,7 +4,7 @@
 
 import {UIUtils} from './legacy.js';
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
   const styleElement = document.createElement('style');
   styleElement.textContent = 'fieldset { label { display: block; } }';
   container.appendChild(styleElement);

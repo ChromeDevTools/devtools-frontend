@@ -4,7 +4,7 @@
 
 import {UIUtils} from './legacy.js';
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
   function sliderExample({min, max, tabIndex, disabled}: {
     min: number,
     max: number,

@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import {SurveyLink} from '../survey_link/survey_link.js';
+
+import {SurveyLink} from './survey_link.js';
 
 export function render(container: HTMLElement): void {
   const link = new SurveyLink.SurveyLink();

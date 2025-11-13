@@ -4,10 +4,11 @@
 
 import {Button, FloatingButton} from './buttons.js';
 
-export async function render(container: HTMLElement) {
+export function render(container: HTMLElement) {
+  const buttonDocs = container.createChild('div', 'button-docs');
   const style = document.createElement('style');
   style.textContent = `
-      #container > div {
+      .button-docs > div {
         width: 80%;
         padding: var(--sys-size-11);
         display: flex;
@@ -16,13 +17,13 @@ export async function render(container: HTMLElement) {
         gap: var(--sys-size-5);
       }
     `;
-  container.appendChild(style);
+  buttonDocs.appendChild(style);
 
   const appendSection = (headerText: string, sectionElement: HTMLElement) => {
     const header = document.createElement('header');
     header.textContent = headerText;
-    container.appendChild(header);
-    container.appendChild(sectionElement);
+    buttonDocs.appendChild(header);
+    buttonDocs.appendChild(sectionElement);
   };
 
   const buttonsSection = document.createElement('div');

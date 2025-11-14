@@ -1629,6 +1629,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     );
   }
 
+  setAppliedNetworkConditions(appliedNetworkConditionsId: string): void {
+    this.#appliedNetworkConditionsId = appliedNetworkConditionsId;
+  }
+
   hasExtraRequestInfo(): boolean {
     return this.#hasExtraRequestInfo;
   }

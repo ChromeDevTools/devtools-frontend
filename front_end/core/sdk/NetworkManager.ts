@@ -1035,6 +1035,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       appliedNetworkConditionsId,
     };
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
+
+    const networkRequest = this.#requestsById.get(requestId);
+    if (appliedNetworkConditionsId && networkRequest) {
+      networkRequest.setAppliedNetworkConditions(appliedNetworkConditionsId);
+      this.updateNetworkRequest(networkRequest);
+    }
   }
 
   responseReceivedEarlyHints({

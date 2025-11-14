@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
+import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
@@ -13,6 +14,7 @@ import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { deinitializeGlobalLocaleVars, initializeGlobalLocaleVars } from './LocaleHelpers.js';
+import { MockCDPConnection } from './MockCDPConnection.js';
 import { cleanupRuntime, setupRuntime } from './RuntimeHelpers.js';
 import { cleanupSettings, setupSettings } from './SettingsHelpers.js';
 // Don't import UI at this stage because it will fail without
@@ -21,7 +23,7 @@ import { cleanupSettings, setupSettings } from './SettingsHelpers.js';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let UI;
 let uniqueTargetId = 0;
-export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTarget, subtype, url = 'http://example.com' } = {}) {
+export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTarget, subtype, url = 'http://example.com', connection } = {}) {
     if (!id) {
         if (!uniqueTargetId++) {
             id = 'test';
@@ -31,9 +33,19 @@ export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTar
         }
     }
     const targetManager = SDK.TargetManager.TargetManager.instance();
+    if (!ProtocolClient.ConnectionTransport.ConnectionTransport.getFactory()) {
+        // We are not running with `describeWithMockConnection` so create a fresh mock connection.
+        // Because child targets inherit the SessionRouter/CDPConnection from the parent, we'll throw if a
+        // connection is passed together with a parent target as it would have no effect.
+        if (parentTarget && connection) {
+            throw new Error('Can\'t create child targets with it\'s own connection. Child targets share the connection with their parent.');
+        }
+        if (!connection && !parentTarget) {
+            connection = new MockCDPConnection([]);
+        }
+    }
     return targetManager.createTarget(id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined, 
-    /* suspended=*/ false, 
-    /* connection=*/ undefined, { targetId: id, url, subtype });
+    /* suspended=*/ false, connection, { targetId: id, url, subtype });
 }
 export { stubNoopSettings } from './SettingsHelpers.js';
 export function registerActions(actions) {

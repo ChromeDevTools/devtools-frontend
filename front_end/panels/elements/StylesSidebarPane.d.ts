@@ -17,6 +17,8 @@ import { WebCustomData } from './WebCustomData.js';
 export declare const REGISTERED_PROPERTY_SECTION_NAME = "@property";
 /** Title of the function section **/
 export declare const FUNCTION_SECTION_NAME = "@function";
+/** Title of the general at-rule section */
+export declare const AT_RULE_SECTION_NAME = "@font-*";
 declare const StylesSidebarPane_base: (new (...args: any[]) => {
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
@@ -72,6 +74,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base {
     jumpToSection(sectionName: string, blockName: string): void;
     jumpToSectionBlock(section: string): void;
     jumpToFunctionDefinition(functionName: string): void;
+    jumpToFontPaletteDefinition(paletteName: string): void;
     forceUpdate(): void;
     private sectionsContainerKeyDown;
     private sectionsContainerFocusChanged;
@@ -138,7 +141,7 @@ export declare class SectionBlock {
     static createRegisteredPropertiesBlock(expandedByDefault: boolean): SectionBlock;
     static createFunctionBlock(expandedByDefault: boolean): SectionBlock;
     static createKeyframesBlock(keyframesName: string): SectionBlock;
-    static createFontPaletteValuesRuleBlock(name: string): SectionBlock;
+    static createAtRuleBlock(expandedByDefault: boolean): SectionBlock;
     static createPositionTryBlock(positionTryName: string): SectionBlock;
     static createInheritedNodeBlock(node: SDK.DOMModel.DOMNode): Promise<SectionBlock>;
     static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule): SectionBlock;

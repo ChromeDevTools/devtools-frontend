@@ -54,6 +54,9 @@
       "path": "../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../models/bindings/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/workspace/bundle-tsconfig.json"
     }
   ]

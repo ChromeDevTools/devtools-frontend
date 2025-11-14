@@ -29,6 +29,9 @@ core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
 core/i18n/time-utilities.test.js
+core/sdk/RuntimeModel.test.js
+core/sdk/Target.test.js
+core/sdk/TargetManager.test.js
 foundation/Universe.test.js
 models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
@@ -50,6 +53,7 @@ models/issues_manager/UnencodedDigestIssue.test.js
 core/common/Base64.browser.test.js
 core/dom_extension/DOMExtension.test.js
 core/host/AidaClient.test.js
+core/host/DispatchHttpRequestClient.test.js
 core/host/GdpClient.test.js
 core/i18n/i18nImpl.test.js
 core/platform/ArrayUtilities.test.js
@@ -96,7 +100,6 @@ core/sdk/PreloadingModel.test.js
 core/sdk/RehydratingConnection.test.js
 core/sdk/RemoteObject.test.js
 core/sdk/ResourceTreeModel.test.js
-core/sdk/RuntimeModel.test.js
 core/sdk/ScopeTreeCache.test.js
 core/sdk/ScreenCaptureModel.test.js
 core/sdk/Script.test.js
@@ -112,8 +115,6 @@ core/sdk/SourceMapScopeChainEntry.test.js
 core/sdk/SourceMapScopesInfo.test.js
 core/sdk/StorageBucketsModel.test.js
 core/sdk/StorageKeyManager.test.js
-core/sdk/Target.test.js
-core/sdk/TargetManager.test.js
 core/sdk/TraceObject.test.js
 entrypoints/formatter_worker/CSSFormatter.test.js
 entrypoints/formatter_worker/FormattedContentBuilder.test.js
@@ -360,6 +361,7 @@ panels/common/AiCodeCompletionDisclaimer.test.js
 panels/common/AiCodeCompletionSummaryToolbar.test.js
 panels/common/AiCodeCompletionTeaser.test.js
 panels/common/BadgeNotification.test.js
+panels/common/DOMLinkifier.test.js
 panels/common/ExtensionServer.test.js
 panels/common/GdpSignUpDialog.test.js
 panels/console/ConsoleContextSelector.test.js
@@ -400,7 +402,6 @@ panels/elements/ClassesPaneWidget.test.js
 panels/elements/ColorSwatchPopoverIcon.test.js
 panels/elements/ComputedStyleModel.test.js
 panels/elements/ComputedStyleWidget.test.js
-panels/elements/DOMLinkifier.test.js
 panels/elements/DOMTreeWidget.test.js
 panels/elements/ElementStatePaneWidget.test.js
 panels/elements/ElementsPanel.test.js

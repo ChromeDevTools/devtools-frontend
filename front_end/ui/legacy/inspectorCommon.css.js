@@ -62,10 +62,6 @@ code, kbd, samp, pre {
   ) !important; /* stylelint-disable-line declaration-no-important */
 
   white-space: pre-wrap;
-
-  &:not(input)::selection {
-    color: var(--sys-color-on-surface);
-  }
 }
 
 .source-code.breakpoint {

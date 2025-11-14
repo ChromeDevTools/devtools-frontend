@@ -39,6 +39,6 @@ export declare class Linkifier implements Common.Linkifier.Linkifier {
     static instance(opts?: {
         forceNew: boolean | null;
     }): Linkifier;
-    linkify(object: Object, options?: Options): Node;
+    linkify(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode, options?: Options): HTMLElement;
 }
 export {};

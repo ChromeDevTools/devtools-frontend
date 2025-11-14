@@ -6,6 +6,7 @@ export var ErrorType;
 (function (ErrorType) {
     ErrorType["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
     ErrorType["NOT_FOUND"] = "NOT_FOUND";
+    ErrorType["ABORT"] = "ABORT";
 })(ErrorType || (ErrorType = {}));
 export class DispatchHttpRequestError extends Error {
     type;
@@ -14,9 +15,20 @@ export class DispatchHttpRequestError extends Error {
         this.type = type;
     }
 }
-export async function makeHttpRequest(request) {
-    const response = await new Promise(resolve => {
-        InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
+export async function makeHttpRequest(request, options) {
+    const signal = options?.signal;
+    if (signal?.aborted) {
+        throw new DispatchHttpRequestError(ErrorType.ABORT);
+    }
+    const response = await new Promise((resolve, reject) => {
+        const onAbort = () => {
+            reject(new DispatchHttpRequestError(ErrorType.ABORT));
+        };
+        signal?.addEventListener('abort', onAbort, { once: true });
+        InspectorFrontendHostInstance.dispatchHttpRequest(request, result => {
+            signal?.removeEventListener('abort', onAbort);
+            resolve(result);
+        });
     });
     debugLog({ request, response });
     if (response.statusCode === 404) {

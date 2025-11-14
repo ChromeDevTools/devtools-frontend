@@ -1621,7 +1621,7 @@ function updateWidgetfocusWidgetForNode(node) {
         if (!parentWidget) {
             break;
         }
-        parentWidget.defaultFocusedChild = widget;
+        parentWidget.setDefaultFocusedChild(widget);
         widget = parentWidget;
     }
 }

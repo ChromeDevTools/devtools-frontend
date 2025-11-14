@@ -44,7 +44,6 @@
     "../../../../../../front_end/panels/elements/ColorSwatchPopoverIcon.ts",
     "../../../../../../front_end/panels/elements/ComputedStyleModel.ts",
     "../../../../../../front_end/panels/elements/ComputedStyleWidget.ts",
-    "../../../../../../front_end/panels/elements/DOMLinkifier.ts",
     "../../../../../../front_end/panels/elements/DOMPath.ts",
     "../../../../../../front_end/panels/elements/ElementIssueUtils.ts",
     "../../../../../../front_end/panels/elements/ElementStatePaneWidget.ts",

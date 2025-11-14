@@ -8,7 +8,6 @@
         "classesPaneWidget.css.js",
         "computedStyleSidebarPane.css.js",
         "cssValueTraceView.css.js",
-        "domLinkifier.css.js",
         "elementStatePaneWidget.css.js",
         "elementsPanel.css.js",
         "elementsTreeOutline.css.js",

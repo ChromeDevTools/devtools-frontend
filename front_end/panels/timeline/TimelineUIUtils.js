@@ -53,6 +53,7 @@ import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.cs
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as PanelsCommon from '../common/common.js';
 import { getDurationString } from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
@@ -1313,7 +1314,7 @@ export class TimelineUIUtils {
         const relatedNodes = relatedNodesMap?.values() || [];
         for (const relatedNode of relatedNodes) {
             if (relatedNode) {
-                const nodeSpan = await Common.Linkifier.Linkifier.linkify(relatedNode);
+                const nodeSpan = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode);
                 contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode), nodeSpan);
             }
         }
@@ -1620,7 +1621,7 @@ export class TimelineUIUtils {
                 null;
             if (node) {
                 const nodeSpan = document.createElement('span');
-                void Common.Linkifier.Linkifier.linkify(node).then(link => nodeSpan.appendChild(link));
+                nodeSpan.appendChild(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node));
                 return nodeSpan;
             }
             if (invalidation.args.data.nodeName) {

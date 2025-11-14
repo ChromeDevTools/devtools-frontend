@@ -24,7 +24,6 @@ export interface EventTypes {
     [Events.RATE_CHANGED]: number;
     [Events.HARDWARE_CONCURRENCY_CHANGED]: number;
 }
-export declare function throttlingManager(): CPUThrottlingManager;
 export declare enum CPUThrottlingRates {
     NO_THROTTLING = 1,
     MID_TIER_MOBILE = 4,

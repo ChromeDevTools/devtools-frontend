@@ -3,7 +3,6 @@
 
     const components = {
       'Button': () => import('../../front_end/ui/components/buttons/Button.docs.js'),
-'ExpandableList': () => import('../../front_end/ui/components/expandable_list/ExpandableList.docs.js'),
 'Icon': () => import('../../front_end/ui/components/icon_button/Icon.docs.js'),
 'MarkdownView': () => import('../../front_end/ui/components/markdown_view/MarkdownView.docs.js'),
 'Snackbars': () => import('../../front_end/ui/components/snackbars/Snackbars.docs.js'),

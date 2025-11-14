@@ -148,9 +148,6 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         // Implemented as a requirement for being a SDKModelObserver.
     }
 }
-export function throttlingManager() {
-    return CPUThrottlingManager.instance();
-}
 export var CPUThrottlingRates;
 (function (CPUThrottlingRates) {
     CPUThrottlingRates[CPUThrottlingRates["NO_THROTTLING"] = 1] = "NO_THROTTLING";

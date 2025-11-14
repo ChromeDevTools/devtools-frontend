@@ -148,6 +148,14 @@ export type FunctionCallHandlerResult<Result> = {
 } | {
     error: string;
 };
+export interface FunctionHandlerOptions {
+    /**
+     * Shows that the user approved
+     * the execution if it was required
+     */
+    approved?: boolean;
+    signal?: AbortSignal;
+}
 export interface FunctionDeclaration<Args extends Record<string, unknown>, ReturnType> {
     /**
      * Description of function, this is send to the LLM
@@ -173,14 +181,7 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
     /**
      * Function implementation that the LLM will try to execute,
      */
-    handler: (args: Args, options?: {
-        /**
-         * Shows that the user approved
-         * the execution if it was required
-         */
-        approved?: boolean;
-        signal?: AbortSignal;
-    }) => Promise<FunctionCallHandlerResult<ReturnType>>;
+    handler: (args: Args, options?: FunctionHandlerOptions) => Promise<FunctionCallHandlerResult<ReturnType>>;
 }
 /**
  * AiAgent is a base class for implementing an interaction with AIDA

@@ -139,6 +139,9 @@
       "path": "../../../ui/visual_logging/bundle-tsconfig.json"
     },
     {
+      "path": "../../common/bundle-tsconfig.json"
+    },
+    {
       "path": "../../emulation/bundle-tsconfig.json"
     },
     {

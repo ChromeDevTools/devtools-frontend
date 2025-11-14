@@ -41,7 +41,6 @@ export class XLink extends XElement {
             if (this.#href) {
                 openInNewTab(this.#href);
             }
-            this.dispatchEvent(new Event('x-link-invoke'));
         };
         this.onKeyDown = (event) => {
             if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
@@ -50,7 +49,6 @@ export class XLink extends XElement {
                     openInNewTab(this.#href);
                 }
             }
-            this.dispatchEvent(new Event('x-link-invoke'));
         };
     }
     static get observedAttributes() {

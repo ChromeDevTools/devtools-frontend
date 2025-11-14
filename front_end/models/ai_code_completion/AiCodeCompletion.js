@@ -8,7 +8,7 @@ import { debugLog } from './debug.js';
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 /* clang-format off */
-const consoleAdditionalContextFileContent = `/**
+export const consoleAdditionalContextFileContent = `/**
  * This file describes the execution environment of the Chrome DevTools Console.
  * The code is JavaScript, but with special global functions and variables.
  * Top-level await is available.

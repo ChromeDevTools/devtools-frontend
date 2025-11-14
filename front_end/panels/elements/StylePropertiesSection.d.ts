@@ -73,6 +73,8 @@ export declare class StylePropertiesSection {
     private onNewRuleClick;
     styleSheetEdited(edit: SDK.CSSModel.Edit): void;
     protected createAncestorRules(rule: SDK.CSSRule.CSSStyleRule): void;
+    protected createAtRuleAncestor(rule: SDK.CSSRule.CSSAtRule): void;
+    protected maybeCreateAncestorRules(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration): void;
     protected createClosingBrace(): HTMLElement;
     protected indentElement(element: HTMLElement, nestingLevel: number, clipboardOnly?: boolean): HTMLElement;
     protected createMediaElement(media: SDK.CSSMedia.CSSMedia): ElementsComponents.CSSQuery.CSSQuery | undefined;
@@ -155,8 +157,8 @@ export declare class FunctionRuleSection extends StylePropertiesSection {
     positionNestingElement(element: HTMLElement): HTMLElement;
     addChildren(children: SDK.CSSRule.CSSNestedStyle[], parent: TreeElementParent): void;
 }
-export declare class FontPaletteValuesRuleSection extends StylePropertiesSection {
-    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number);
+export declare class AtRuleSection extends StylePropertiesSection {
+    constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, expandedByDefault: boolean);
 }
 export declare class PositionTryRuleSection extends StylePropertiesSection {
     constructor(stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, active: boolean);

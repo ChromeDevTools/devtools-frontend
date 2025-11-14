@@ -11743,7 +11743,7 @@ var NetworkLogView = class _NetworkLogView extends Common16.ObjectWrapper.eventM
     const ignoredHeaders = /* @__PURE__ */ new Set(["accept-encoding", "host", "method", "path", "scheme", "version", "authority", "protocol"]);
     function escapeStringWin(str) {
       const encapsChars = '^"';
-      return encapsChars + str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, "^$&").replace(/%(?=[a-zA-Z0-9_])/g, "%^").replace(/[^\S \r\n]/g, " ").replace(/\r?\n|\r/g, "^\n\n") + encapsChars;
+      return encapsChars + str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, "^$&").replace(/%(?=[a-zA-Z0-9_])/g, "%^").replace(/[^ -~\r\n]/g, " ").replace(/\r?\n|\r/g, "^\n\n") + encapsChars;
     }
     function escapeStringPosix(str) {
       function escapeCharacter(x) {

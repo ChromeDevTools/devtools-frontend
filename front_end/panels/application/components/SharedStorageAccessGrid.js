@@ -80,7 +80,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <div class="empty-state-header">${i18nString(UIStrings.noEvents)}</div>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.sharedStorageDescription)}</span>
-            ${UI.XLink.XLink.create(SHARED_STORAGE_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+            <x-link
+              class="x-link devtools-link"
+              href=${SHARED_STORAGE_EXPLANATION_URL}
+              jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}
+            >${i18nString(UIStrings.learnMore)}</x-link>
           </div>
         </div>`
         : html `

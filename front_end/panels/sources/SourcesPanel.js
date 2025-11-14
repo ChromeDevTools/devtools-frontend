@@ -233,8 +233,13 @@ export class SourcesPanel extends UI.Panel.Panel {
         const initialDebugSidebarWidth = 225;
         this.splitWidget =
             new UI.SplitWidget.SplitWidget(true, true, 'sources-panel-split-view-state', initialDebugSidebarWidth);
-        this.splitWidget.enableShowModeSaving();
         this.splitWidget.show(this.element);
+        if (Root.Runtime.Runtime.isTraceApp()) {
+            this.splitWidget.hideSidebar();
+        }
+        else {
+            this.splitWidget.enableShowModeSaving();
+        }
         // Create scripts navigator
         const initialNavigatorWidth = 225;
         this.editorView =

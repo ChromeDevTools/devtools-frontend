@@ -592,6 +592,7 @@ import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html3, nothing, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "./../common/common.js";
 
 // gen/front_end/panels/css_overview/cssOverviewCompletedView.css.js
 var cssOverviewCompletedView_css_default = `/**
@@ -1939,7 +1940,7 @@ var ElementDetailsView = class extends UI3.Widget.Widget {
       if ("nodeId" in item2 && visibility.has("node-id")) {
         const frontendNode = relatedNodesMap?.get(item2.nodeId) ?? null;
         if (frontendNode) {
-          link = await Common2.Linkifier.Linkifier.linkify(frontendNode);
+          link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(frontendNode);
           showNode = () => frontendNode.scrollIntoView();
         }
       }

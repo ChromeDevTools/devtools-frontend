@@ -104,6 +104,9 @@
       "path": "../../../../ui/lit/bundle-tsconfig.json"
     },
     {
+      "path": "../../../common/bundle-tsconfig.json"
+    },
+    {
       "path": "../../overlays/bundle-tsconfig.json"
     },
     {

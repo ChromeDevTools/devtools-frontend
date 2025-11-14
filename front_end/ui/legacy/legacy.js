@@ -2537,7 +2537,6 @@ var UPDATE_COMPLETE = Promise.resolve();
 var Widget = class _Widget {
   element;
   contentElement;
-  defaultFocusedChild = null;
   #shadowRoot;
   #visible = false;
   #isRoot = false;
@@ -2778,6 +2777,10 @@ var Widget = class _Widget {
         originalAppendChild.call(parentElement, this.element);
       }
     }
+    const focusedElementsCount = this.#parentWidget?.getDefaultFocusedElements?.()?.length ?? 0;
+    if (this.element.hasAttribute("autofocus") && focusedElementsCount > 1) {
+      this.element.removeAttribute("autofocus");
+    }
     if (!wasVisible && this.parentIsShowing()) {
       this.processWasShown();
     }
@@ -2834,9 +2837,6 @@ var Widget = class _Widget {
       const childIndex = this.#parentWidget.#children.indexOf(this);
       assert(childIndex >= 0, "Attempt to remove non-child widget");
       this.#parentWidget.#children.splice(childIndex, 1);
-      if (this.#parentWidget.defaultFocusedChild === this) {
-        this.#parentWidget.defaultFocusedChild = null;
-      }
       this.#parentWidget.childWasDetached(this);
       this.#parentWidget = null;
     } else {
@@ -2914,19 +2914,43 @@ var Widget = class _Widget {
   }
   setDefaultFocusedChild(child) {
     assert(child.#parentWidget === this, "Attempt to set non-child widget as default focused.");
-    this.defaultFocusedChild = child;
+    const defaultFocusedElement = this.getDefaultFocusedElement();
+    if (defaultFocusedElement) {
+      defaultFocusedElement.removeAttribute("autofocus");
+    }
+    child.element.setAttribute("autofocus", "");
+  }
+  getDefaultFocusedElements() {
+    const autofocusElements = [...this.contentElement.querySelectorAll("[autofocus]")];
+    if (this.contentElement !== this.element) {
+      if (this.contentElement.hasAttribute("autofocus")) {
+        autofocusElements.push(this.contentElement);
+      }
+      if (autofocusElements.length === 0) {
+        autofocusElements.push(...this.element.querySelectorAll("[autofocus]"));
+      }
+    }
+    return autofocusElements.filter((autofocusElement) => {
+      let widgetElement = autofocusElement;
+      while (widgetElement) {
+        const widget = _Widget.get(widgetElement);
+        if (widget) {
+          if (widgetElement === autofocusElement && widget.#parentWidget === this && widget.#visible) {
+            return true;
+          }
+          return widget === this;
+        }
+        widgetElement = widgetElement.parentElementOrShadowHost();
+      }
+      return false;
+    });
   }
   getDefaultFocusedElement() {
-    const autofocusElement = this.contentElement.hasAttribute("autofocus") ? this.contentElement : this.contentElement.querySelector("[autofocus]");
-    let widgetElement = autofocusElement;
-    while (widgetElement) {
-      const widget = _Widget.get(widgetElement);
-      if (widget) {
-        return widget === this ? autofocusElement : null;
-      }
-      widgetElement = widgetElement.parentElementOrShadowHost();
+    const elements = this.getDefaultFocusedElements();
+    if (elements.length > 1) {
+      console.error("Multiple autofocus elements found", this.constructor.name, ...elements.map((e) => Platform5.StringUtilities.trimMiddle(e.outerHTML, 250)));
     }
-    return null;
+    return elements[0] || null;
   }
   focus() {
     if (!this.isShowing()) {
@@ -2934,18 +2958,22 @@ var Widget = class _Widget {
     }
     const autofocusElement = this.getDefaultFocusedElement();
     if (autofocusElement) {
-      autofocusElement.focus();
+      const widget = _Widget.get(autofocusElement);
+      if (widget && widget !== this) {
+        widget.focus();
+      } else {
+        autofocusElement.focus();
+      }
       return;
     }
-    if (this.defaultFocusedChild && this.defaultFocusedChild.#visible) {
-      this.defaultFocusedChild.focus();
-    } else {
-      for (const child of this.#children) {
-        if (child.#visible) {
-          child.focus();
-          return;
-        }
+    for (const child of this.#children) {
+      if (child.#visible) {
+        child.focus();
+        return;
       }
+    }
+    if (this.element === this.contentElement && this.element.hasAttribute("autofocus")) {
+      this.element.focus();
     }
   }
   hasFocus() {
@@ -12228,10 +12256,6 @@ code, kbd, samp, pre {
   ) !important; /* stylelint-disable-line declaration-no-important */
 
   white-space: pre-wrap;
-
-  &:not(input)::selection {
-    color: var(--sys-color-on-surface);
-  }
 }
 
 .source-code.breakpoint {
@@ -15003,7 +15027,7 @@ function updateWidgetfocusWidgetForNode(node) {
     if (!parentWidget) {
       break;
     }
-    parentWidget.defaultFocusedChild = widget;
+    parentWidget.setDefaultFocusedChild(widget);
     widget = parentWidget;
   }
 }
@@ -16654,7 +16678,6 @@ var XLink = class extends XElement {
       if (this.#href) {
         openInNewTab(this.#href);
       }
-      this.dispatchEvent(new Event("x-link-invoke"));
     };
     this.onKeyDown = (event) => {
       if (Platform17.KeyboardUtilities.isEnterOrSpaceKey(event)) {
@@ -16663,7 +16686,6 @@ var XLink = class extends XElement {
           openInNewTab(this.#href);
         }
       }
-      this.dispatchEvent(new Event("x-link-invoke"));
     };
   }
   static get observedAttributes() {

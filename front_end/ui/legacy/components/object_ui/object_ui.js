@@ -12,7 +12,7 @@ __export(CustomPreviewComponent_exports, {
 });
 import * as Common2 from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as IconButton2 from "./../../../components/icon_button/icon_button.js";
+import * as IconButton from "./../../../components/icon_button/icon_button.js";
 import * as UI3 from "./../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/customPreviewComponent.css.js
@@ -68,9 +68,8 @@ import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
 import * as uiI18n from "./../../../i18n/i18n.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
 import * as TextEditor from "./../../../components/text_editor/text_editor.js";
-import { Directives as Directives2, html as html2, render as render2 } from "./../../../lit/lit.js";
+import { Directives as Directives2, html as html2, nothing as nothing2, render as render2 } from "./../../../lit/lit.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI2 from "./../../legacy.js";
 
@@ -989,74 +988,67 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     }
     return UI2.Fragment.html`<span class="name">${name}</span>`;
   }
-  static valueElementForFunctionDescription(description, includePreview, defaultName) {
-    const valueElement = document.createElement("span");
-    valueElement.classList.add("object-value-function");
-    description = description || "";
-    const text = description.replace(/^function [gs]et /, "function ").replace(/^function [gs]et\(/, "function(").replace(/^[gs]et /, "");
-    defaultName = defaultName || "";
-    const asyncMatch = text.match(/^(async\s+function)/);
-    const isGenerator = text.startsWith("function*");
-    const isGeneratorShorthand = text.startsWith("*");
-    const isBasic = !isGenerator && text.startsWith("function");
-    const isClass = text.startsWith("class ") || text.startsWith("class{");
-    const firstArrowIndex = text.indexOf("=>");
-    const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
-    let textAfterPrefix;
-    if (isClass) {
-      textAfterPrefix = text.substring("class".length);
-      const classNameMatch = /^[^{\s]+/.exec(textAfterPrefix.trim());
-      let className = defaultName;
-      if (classNameMatch) {
-        className = classNameMatch[0].trim() || defaultName;
+  static valueElementForFunctionDescription(description, includePreview, defaultName, className) {
+    const contents = (description2, defaultName2) => {
+      const text = description2.replace(/^function [gs]et /, "function ").replace(/^function [gs]et\(/, "function(").replace(/^[gs]et /, "");
+      const asyncMatch = text.match(/^(async\s+function)/);
+      const isGenerator = text.startsWith("function*");
+      const isGeneratorShorthand = text.startsWith("*");
+      const isBasic = !isGenerator && text.startsWith("function");
+      const isClass = text.startsWith("class ") || text.startsWith("class{");
+      const firstArrowIndex = text.indexOf("=>");
+      const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
+      if (isClass) {
+        const body2 = text.substring("class".length);
+        const classNameMatch = /^[^{\s]+/.exec(body2.trim());
+        let className2 = defaultName2;
+        if (classNameMatch) {
+          className2 = classNameMatch[0].trim() || defaultName2;
+        }
+        return { prefix: "class", body: body2, abbreviation: className2 };
       }
-      addElements("class", textAfterPrefix, className);
-    } else if (asyncMatch) {
-      textAfterPrefix = text.substring(asyncMatch[1].length);
-      addElements("async \u0192", textAfterPrefix, nameAndArguments(textAfterPrefix));
-    } else if (isGenerator) {
-      textAfterPrefix = text.substring("function*".length);
-      addElements("\u0192*", textAfterPrefix, nameAndArguments(textAfterPrefix));
-    } else if (isGeneratorShorthand) {
-      textAfterPrefix = text.substring("*".length);
-      addElements("\u0192*", textAfterPrefix, nameAndArguments(textAfterPrefix));
-    } else if (isBasic) {
-      textAfterPrefix = text.substring("function".length);
-      addElements("\u0192", textAfterPrefix, nameAndArguments(textAfterPrefix));
-    } else if (isArrow) {
-      const maxArrowFunctionCharacterLength = 60;
-      let abbreviation = text;
-      if (defaultName) {
-        abbreviation = defaultName + "()";
-      } else if (text.length > maxArrowFunctionCharacterLength) {
-        abbreviation = text.substring(0, firstArrowIndex + 2) + " {\u2026}";
+      if (asyncMatch) {
+        const body2 = text.substring(asyncMatch[1].length);
+        return { prefix: "async \u0192", body: body2, abbreviation: nameAndArguments(body2) };
       }
-      addElements("", text, abbreviation);
-    } else {
-      addElements("\u0192", text, nameAndArguments(text));
-    }
-    UI2.Tooltip.Tooltip.install(valueElement, Platform3.StringUtilities.trimEndWithMaxLength(description, 500));
-    return valueElement;
-    function nameAndArguments(contents) {
-      const startOfArgumentsIndex = contents.indexOf("(");
-      const endOfArgumentsMatch = contents.match(/\)\s*{/);
+      if (isGenerator) {
+        const body2 = text.substring("function*".length);
+        return { prefix: "\u0192*", body: body2, abbreviation: nameAndArguments(body2) };
+      }
+      if (isGeneratorShorthand) {
+        const body2 = text.substring("*".length);
+        return { prefix: "\u0192*", body: body2, abbreviation: nameAndArguments(body2) };
+      }
+      if (isBasic) {
+        const body2 = text.substring("function".length);
+        return { prefix: "\u0192", body: body2, abbreviation: nameAndArguments(body2) };
+      }
+      if (isArrow) {
+        const maxArrowFunctionCharacterLength = 60;
+        let abbreviation2 = text;
+        if (defaultName2) {
+          abbreviation2 = defaultName2 + "()";
+        } else if (text.length > maxArrowFunctionCharacterLength) {
+          abbreviation2 = text.substring(0, firstArrowIndex + 2) + " {\u2026}";
+        }
+        return { prefix: "", body: text, abbreviation: abbreviation2 };
+      }
+      return { prefix: "\u0192", body: text, abbreviation: nameAndArguments(text) };
+    };
+    const { prefix, body, abbreviation } = contents(description ?? "", defaultName ?? "");
+    const maxFunctionBodyLength = 200;
+    return html2`<span
+      class="object-value-function ${className ?? ""}"
+      title=${Platform3.StringUtilities.trimEndWithMaxLength(description ?? "", 500)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform3.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
+    function nameAndArguments(contents2) {
+      const startOfArgumentsIndex = contents2.indexOf("(");
+      const endOfArgumentsMatch = contents2.match(/\)\s*{/);
       if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== void 0 && endOfArgumentsMatch.index > startOfArgumentsIndex) {
-        const name = contents.substring(0, startOfArgumentsIndex).trim() || defaultName;
-        const args = contents.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
+        const name = contents2.substring(0, startOfArgumentsIndex).trim() || (defaultName ?? "");
+        const args = contents2.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
         return name + args;
       }
       return defaultName + "()";
-    }
-    function addElements(prefix, body, abbreviation) {
-      const maxFunctionBodyLength = 200;
-      if (prefix.length) {
-        valueElement.createChild("span", "object-value-function-prefix").textContent = prefix + " ";
-      }
-      if (includePreview) {
-        UI2.UIUtils.createTextChild(valueElement, Platform3.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength));
-      } else {
-        UI2.UIUtils.createTextChild(valueElement, abbreviation.replace(/\n/g, " "));
-      }
     }
   }
   static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName) {
@@ -1067,122 +1059,76 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     }
     return _ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
   }
-  static appendMemoryIcon(element, object, expression) {
-    if (!object.isLinearMemoryInspectable()) {
-      return;
-    }
-    const memoryIcon = new IconButton.Icon.Icon();
-    memoryIcon.name = "memory";
-    memoryIcon.style.width = "var(--sys-size-8)";
-    memoryIcon.style.height = "13px";
-    memoryIcon.addEventListener("click", (event) => {
+  static getMemoryIcon(object, expression) {
+    return !object.isLinearMemoryInspectable() ? nothing2 : html2`<devtools-icon
+      name=memory
+      style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
+      @click=${(event) => {
       event.consume();
       void Common.Revealer.reveal(new SDK3.RemoteObject.LinearMemoryInspectable(object, expression));
-    });
-    memoryIcon.setAttribute("jslog", `${VisualLogging.action("open-memory-inspector").track({ click: true })}`);
-    const revealText = i18nString2(UIStrings2.openInMemoryInpector);
-    UI2.Tooltip.Tooltip.install(memoryIcon, revealText);
-    UI2.ARIAUtils.setLabel(memoryIcon, revealText);
-    memoryIcon.style.setProperty("vertical-align", "sub");
-    memoryIcon.style.setProperty("cursor", "pointer");
-    element.appendChild(memoryIcon);
+    }}
+      jslog=${VisualLogging.action("open-memory-inspector").track({ click: true })}
+      title=${i18nString2(UIStrings2.openInMemoryInpector)}
+      aria-label=${i18nString2(UIStrings2.openInMemoryInpector)}></devtools-icon>`;
+  }
+  static appendMemoryIcon(element, object, expression) {
+    const fragment = document.createDocumentFragment();
+    render2(_ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
+    element.appendChild(fragment);
   }
   static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName) {
-    let propertyValue;
+    const propertyValue = document.createDocumentFragment();
     const type = value.type;
     const subtype = value.subtype;
     const description = value.description || "";
     const className = value.className;
-    if (type === "object" && subtype === "internal#location") {
-      const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
-      if (rawLocation && linkifier) {
-        return linkifier.linkifyRawLocation(rawLocation, Platform3.DevToolsPath.EmptyUrlString);
+    const contents = () => {
+      if (type === "object" && subtype === "internal#location") {
+        const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
+        if (rawLocation && linkifier) {
+          return html2`${linkifier.linkifyRawLocation(rawLocation, Platform3.DevToolsPath.EmptyUrlString, "value")}`;
+        }
+        return html2`<span class=value title=${description}>${"<" + i18nString2(UIStrings2.unknown) + ">"}</span>`;
       }
-      propertyValue = createUnknownInternalLocationElement();
-    } else if (type === "string" && typeof description === "string") {
-      propertyValue = createStringElement();
-    } else if (type === "object" && subtype === "trustedtype") {
-      propertyValue = createTrustedTypeElement();
-    } else if (type === "function") {
-      propertyValue = _ObjectPropertiesSection.valueElementForFunctionDescription(description);
-    } else if (type === "object" && subtype === "node" && description) {
-      propertyValue = createNodeElement();
-    } else {
-      const valueElement = document.createElement("span");
-      valueElement.classList.add("object-value-" + (subtype || type));
-      if (value.preview && showPreview) {
-        const previewFormatter = new RemoteObjectPreviewFormatter();
-        render2(previewFormatter.renderObjectPreview(value.preview), valueElement);
-        propertyValue = valueElement;
-        UI2.Tooltip.Tooltip.install(propertyValue, description || "");
-      } else if (description.length > maxRenderableStringLength) {
-        propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH).element;
-      } else {
-        propertyValue = valueElement;
-        propertyValue.textContent = description;
-        UI2.Tooltip.Tooltip.install(propertyValue, description);
+      if (type === "string" && typeof description === "string") {
+        const text = JSON.stringify(description);
+        const tooLong = description.length > maxRenderableStringLength;
+        return html2`<span class="value object-value-string" title=${ifDefined2(tooLong ? void 0 : description)}>${tooLong ? new ExpandableTextPropertyValue(text, EXPANDABLE_MAX_LENGTH).element : text}</span>`;
       }
-      if (!isSyntheticProperty) {
-        this.appendMemoryIcon(valueElement, value, variableName);
+      if (type === "object" && subtype === "trustedtype") {
+        const text = `${className} '${description}'`;
+        const tooLong = text.length > maxRenderableStringLength;
+        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? new ExpandableTextPropertyValue(text, EXPANDABLE_MAX_LENGTH).element : html2`${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
       }
-    }
-    if (wasThrown) {
-      const wrapperElement = document.createElement("span");
-      wrapperElement.classList.add("error");
-      wrapperElement.classList.add("value");
-      wrapperElement.appendChild(uiI18n.getFormatLocalizedString(str_2, UIStrings2.exceptionS, { PH1: propertyValue }));
-      propertyValue = wrapperElement;
-    }
-    propertyValue.classList.add("value");
-    return propertyValue;
-    function createUnknownInternalLocationElement() {
-      const valueElement = document.createElement("span");
-      valueElement.textContent = "<" + i18nString2(UIStrings2.unknown) + ">";
-      UI2.Tooltip.Tooltip.install(valueElement, description || "");
-      return valueElement;
-    }
-    function createStringElement() {
-      const valueElement = document.createElement("span");
-      valueElement.classList.add("object-value-string");
-      const text = JSON.stringify(description);
-      let propertyValue2;
+      if (type === "function") {
+        return _ObjectPropertiesSection.valueElementForFunctionDescription(description, void 0, void 0, "value");
+      }
+      if (type === "object" && subtype === "node" && description) {
+        return html2`<span class="value object-value-node"
+            @click=${(event) => {
+          void Common.Revealer.reveal(value);
+          event.consume(true);
+        }}
+            @mousemove=${() => SDK3.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value)}
+            @mouseleave=${() => SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+          >${renderNodeTitle(description)}</span>`;
+      }
       if (description.length > maxRenderableStringLength) {
-        propertyValue2 = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH).element;
-      } else {
-        UI2.UIUtils.createTextChild(valueElement, text);
-        propertyValue2 = valueElement;
-        UI2.Tooltip.Tooltip.install(valueElement, description);
+        return html2`<span class="value object-value-${subtype || type}" title=${description}>${new ExpandableTextPropertyValue(description, EXPANDABLE_MAX_LENGTH).element}</span>`;
       }
-      return propertyValue2;
+      const hasPreview = value.preview && showPreview;
+      return html2`<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) : description}${isSyntheticProperty ? nothing2 : this.getMemoryIcon(value, variableName)}</span>`;
+    };
+    if (wasThrown) {
+      render2(html2`<span class="error value">${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.exceptionS, { PH1: contents() })}</span>`, propertyValue);
+    } else {
+      render2(contents(), propertyValue);
     }
-    function createTrustedTypeElement() {
-      const valueElement = document.createElement("span");
-      valueElement.classList.add("object-value-trustedtype");
-      const text = `${className} "${description}"`;
-      let propertyValue2;
-      if (text.length > maxRenderableStringLength) {
-        propertyValue2 = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH).element;
-      } else {
-        const contentString = createStringElement();
-        UI2.UIUtils.createTextChild(valueElement, `${className} `);
-        valueElement.appendChild(contentString);
-        propertyValue2 = valueElement;
-        UI2.Tooltip.Tooltip.install(valueElement, text);
-      }
-      return propertyValue2;
+    const child = propertyValue.firstElementChild;
+    if (!(child instanceof HTMLElement)) {
+      throw new Error("Expected an HTML element");
     }
-    function createNodeElement() {
-      const valueElement = document.createElement("span");
-      valueElement.classList.add("object-value-node");
-      render2(renderNodeTitle(description), valueElement);
-      valueElement.addEventListener("click", (event) => {
-        void Common.Revealer.reveal(value);
-        event.consume(true);
-      }, false);
-      valueElement.addEventListener("mousemove", () => SDK3.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value), false);
-      valueElement.addEventListener("mouseleave", () => SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
-      return valueElement;
-    }
+    return child;
   }
   static formatObjectAsFunction(func, element, linkify, includePreview) {
     return func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
@@ -1198,7 +1144,8 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (response?.functionName) {
         defaultName = response.functionName;
       }
-      const valueElement = _ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName);
+      const valueElement = document.createDocumentFragment();
+      render2(_ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName), valueElement);
       element.appendChild(valueElement);
     }
   }
@@ -1344,7 +1291,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   readOnly;
   prompt;
   editableDiv;
-  propertyValue;
   expandedValueElement;
   #editing = false;
   #view;
@@ -1582,7 +1528,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       this.valueElement.classList.add("value");
     } else if (this.property.object) {
       const showPreview = this.property.name !== "[[Prototype]]";
-      this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
+      this.valueElement = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
         this.property.object,
         this.property.property.wasThrown,
         showPreview,
@@ -1591,7 +1537,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
         this.property.path
         /* variableName */
       );
-      this.valueElement = this.propertyValue;
     } else if (this.property.property.getter) {
       this.valueElement = document.createElement("span");
       const element = this.valueElement.createChild("span");
@@ -2020,8 +1965,8 @@ var ExpandableTextPropertyValue = class {
   #byteCount;
   #expanded = false;
   #element;
-  constructor(element, text, maxLength) {
-    this.#element = element;
+  constructor(text, maxLength) {
+    this.#element = document.createDocumentFragment();
     this.text = text;
     this.maxLength = maxLength;
     this.maxDisplayableTextLength = 1e7;
@@ -2131,7 +2076,7 @@ var CustomPreviewSection = class _CustomPreviewSection {
         this.header.classList.add("custom-expandable-section-header");
       }
       this.header.addEventListener("click", this.onClick.bind(this), false);
-      this.expandIcon = IconButton2.Icon.create("triangle-right", "custom-expand-icon");
+      this.expandIcon = IconButton.Icon.create("triangle-right", "custom-expand-icon");
       this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
     this.sectionElement.appendChild(this.header);
@@ -2280,6 +2225,7 @@ import * as i18n7 from "./../../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../../core/platform/platform.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
 import * as Geometry from "./../../../../models/geometry/geometry.js";
+import { render as render3 } from "./../../../lit/lit.js";
 import * as UI4 from "./../../legacy.js";
 import * as Components from "./../utils/utils.js";
 
@@ -2382,7 +2328,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
         const titleElement = popoverContentElement.createChild("div", "object-popover-title");
         if (result.type === "function") {
           titleElement.classList.add("source-code");
-          titleElement.appendChild(ObjectPropertiesSection.valueElementForFunctionDescription(result.description));
+          render3(ObjectPropertiesSection.valueElementForFunctionDescription(result.description), titleElement);
         } else {
           titleElement.classList.add("monospace");
           titleElement.createChild("span").textContent = description;

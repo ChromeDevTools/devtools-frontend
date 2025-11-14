@@ -51,18 +51,19 @@ export class Runtime {
     static removeInstance() {
         runtimeInstance = undefined;
     }
-    static queryParamsObject;
-    static getSearchParams() {
-        if (!Runtime.queryParamsObject) {
-            Runtime.queryParamsObject = new URLSearchParams(location.search);
+    static #queryParamsObject;
+    static #getSearchParams() {
+        // TODO(crbug.com/451502260): Find a more explicit way to support running in Node.js
+        if (!Runtime.#queryParamsObject && 'location' in globalThis) {
+            Runtime.#queryParamsObject = new URLSearchParams(location.search);
         }
-        return Runtime.queryParamsObject;
+        return Runtime.#queryParamsObject;
     }
     static queryParam(name) {
-        return Runtime.getSearchParams().get(name);
+        return Runtime.#getSearchParams()?.get(name) ?? null;
     }
     static setQueryParamForTesting(name, value) {
-        Runtime.getSearchParams().set(name, value);
+        Runtime.#getSearchParams()?.set(name, value);
     }
     static isNode() {
         if (isNode === undefined) {

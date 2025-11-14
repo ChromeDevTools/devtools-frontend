@@ -1257,7 +1257,6 @@ import * as Dialogs from "./../../../../ui/components/dialogs/dialogs.js";
 import * as LegacyWrapper5 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator2 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n from "./../../../../ui/i18n/i18n.js";
-import * as UI2 from "./../../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../../ui/visual_logging/visual_logging.js";
 
@@ -1373,6 +1372,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/application/preloading/components/PreloadingDisabledInfobar.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var LINK = "https://developer.chrome.com/blog/prerender-pages/";
 var PreloadingDisabledInfobar = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #data = {
@@ -1431,11 +1431,6 @@ var PreloadingDisabledInfobar = class extends LegacyWrapper5.LegacyWrapper.Wrapp
     `;
   }
   #dialogContents() {
-    const LINK = "https://developer.chrome.com/blog/prerender-pages/";
-    const learnMoreLink = UI2.XLink.XLink.create(LINK, i18nString4(UIStrings4.footerLearnMore), void 0, void 0, "learn-more");
-    const iconLink = UI2.Fragment.html`
-      <x-link class="icon-link devtools-link" tabindex="0" href="${LINK}"></x-link>
-    `;
     return html3`
       <div id='contents'>
         <devtools-report>
@@ -1446,8 +1441,10 @@ var PreloadingDisabledInfobar = class extends LegacyWrapper5.LegacyWrapper.Wrapp
           ${this.#maybeDisableByHoldbackPrerenderSpeculationRules()}
         </devtools-report>
         <div id='footer'>
-          ${learnMoreLink}
-          ${iconLink}
+          <x-link class="devtools-link" tabindex="0" href=${LINK} 
+          jslog=${VisualLogging2.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+          >${i18nString4(UIStrings4.footerLearnMore)}</x-link>
+          <x-link class="icon-link devtools-link" tabindex="0" href=${LINK}></x-link>
         </div>
       </div>
     `;
@@ -1728,7 +1725,7 @@ import * as CodeHighlighter from "./../../../../ui/components/code_highlighter/c
 import * as LegacyWrapper11 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator3 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
 import * as TextEditor from "./../../../../ui/components/text_editor/text_editor.js";
-import * as UI3 from "./../../../../ui/legacy/legacy.js";
+import * as UI2 from "./../../../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.css.js
@@ -1798,7 +1795,7 @@ var RuleSetDetailsView = class extends LegacyWrapper11.LegacyWrapper.WrappableCo
       if (this.#data === null) {
         Lit6.render(html6`
           <style>${RuleSetDetailsView_css_default}</style>
-          <style>${UI3.inspectorCommonStyles}</style>
+          <style>${UI2.inspectorCommonStyles}</style>
           <div class="placeholder">
             <div class="empty-state">
               <span class="empty-state-header">${i18nString7(UIStrings7.noElementSelected)}</span>
@@ -1811,7 +1808,7 @@ var RuleSetDetailsView = class extends LegacyWrapper11.LegacyWrapper.WrappableCo
       const sourceText = await this.#getSourceText();
       Lit6.render(html6`
         <style>${RuleSetDetailsView_css_default}</style>
-        <style>${UI3.inspectorCommonStyles}</style>
+        <style>${UI2.inspectorCommonStyles}</style>
         <div class="content">
           <div class="ruleset-header" id="ruleset-url">${this.#data?.url || SDK5.TargetManager.TargetManager.instance().inspectedURL()}</div>
           ${this.#maybeError()}
@@ -2068,7 +2065,6 @@ import { assertNotNullOrUndefined as assertNotNullOrUndefined5 } from "./../../.
 import * as SDK7 from "./../../../../core/sdk/sdk.js";
 import * as LegacyWrapper15 from "./../../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator4 from "./../../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI4 from "./../../../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as PreloadingHelper3 from "./../helper/helper.js";
@@ -2276,7 +2272,11 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
         <devtools-report-divider></devtools-report-divider>
 
         <devtools-report-section>
-          ${UI4.XLink.XLink.create("https://developer.chrome.com/blog/prerender-pages/", i18nString9(UIStrings9.learnMore), "link", void 0, "learn-more")}
+          <x-link
+            class="link devtools-link"
+            href=${"https://developer.chrome.com/blog/prerender-pages/"}
+            jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+          >${i18nString9(UIStrings9.learnMore)}</x-link>
         </devtools-report-section>
       </devtools-report>
     `;
@@ -2395,7 +2395,11 @@ var UsedPreloadingView = class extends LegacyWrapper15.LegacyWrapper.WrappableCo
     return html8`
       <devtools-report-section-header>${i18nString9(UIStrings9.currentURL)}</devtools-report-section-header>
       <devtools-report-section>
-        ${UI4.XLink.XLink.create(this.#data.pageURL, void 0, "link", void 0, "current-url")}
+        <x-link
+          class="link devtools-link"
+          href=${this.#data.pageURL}
+          jslog=${VisualLogging4.link().track({ click: true, keydown: "Enter|Space" }).context("current-url")}
+        >${this.#data.pageURL}</x-link>
       </devtools-report-section>
 
       <devtools-report-section-header>${i18nString9(UIStrings9.preloadedURLs)}</devtools-report-section-header>

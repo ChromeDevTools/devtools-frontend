@@ -28,7 +28,8 @@ var AiCodeCompletion_exports = {};
 __export(AiCodeCompletion_exports, {
   AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS: () => AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS,
   AiCodeCompletion: () => AiCodeCompletion,
-  DELAY_BEFORE_SHOWING_RESPONSE_MS: () => DELAY_BEFORE_SHOWING_RESPONSE_MS
+  DELAY_BEFORE_SHOWING_RESPONSE_MS: () => DELAY_BEFORE_SHOWING_RESPONSE_MS,
+  consoleAdditionalContextFileContent: () => consoleAdditionalContextFileContent
 });
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";

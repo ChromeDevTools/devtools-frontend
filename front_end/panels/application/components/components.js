@@ -1033,9 +1033,9 @@ function renderExplanations(category, explainerText, explanations, reasonToFrame
 }
 function maybeRenderReasonContext(explanation) {
   if (explanation.reason === "EmbedderExtensionSentMessageToCachedFrame" && explanation.context) {
-    const link4 = "chrome://extensions/?id=" + explanation.context;
+    const link6 = "chrome://extensions/?id=" + explanation.context;
     return html`${i18nString(UIStrings2.blockingExtensionId)}
-      <devtools-chrome-link .href=${link4}>${explanation.context}</devtools-chrome-link>`;
+      <devtools-chrome-link .href=${link6}>${explanation.context}</devtools-chrome-link>`;
   }
   return nothing;
 }
@@ -3812,7 +3812,11 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           <span class="empty-state-header">${i18nString10(UIStrings11.noReportsToDisplay)}</span>
           <div class="empty-state-description">
             <span>${i18nString10(UIStrings11.reportingApiDescription)}</span>
-            ${UI7.XLink.XLink.create(REPORTING_API_EXPLANATION_URL, i18nString10(UIStrings11.learnMore), void 0, void 0, "learn-more")}
+            <x-link
+              class="devtools-link"
+              href=${REPORTING_API_EXPLANATION_URL}
+              jslog=${VisualLogging8.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+            >${i18nString10(UIStrings11.learnMore)}</x-link>
           </div>
         </div>
       `}
@@ -4065,7 +4069,11 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
           <div class="empty-state-header">${i18nString11(UIStrings12.noEvents)}</div>
           <div class="empty-state-description">
             <span>${i18nString11(UIStrings12.sharedStorageDescription)}</span>
-            ${UI8.XLink.XLink.create(SHARED_STORAGE_EXPLANATION_URL, i18nString11(UIStrings12.learnMore), "x-link", void 0, "learn-more")}
+            <x-link
+              class="x-link devtools-link"
+              href=${SHARED_STORAGE_EXPLANATION_URL}
+              jslog=${VisualLogging9.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+            >${i18nString11(UIStrings12.learnMore)}</x-link>
           </div>
         </div>` : html12`
         <div jslog=${VisualLogging9.section("events-table")}>
@@ -4684,7 +4692,11 @@ var TrustTokensView = class extends LegacyWrapper9.LegacyWrapper.WrappableCompon
           <div class="empty-state-header">${i18nString14(UIStrings15.noTrustTokens)}</div>
           <div class="empty-state-description">
             <span>${i18nString14(UIStrings15.trustTokensDescription)}</span>
-            ${UI10.XLink.XLink.create(PRIVATE_STATE_TOKENS_EXPLANATION_URL, i18nString14(UIStrings15.learnMore), "x-link", void 0, "learn-more")}
+            <x-link
+              class="x-link devtools-link"
+              href=${PRIVATE_STATE_TOKENS_EXPLANATION_URL}
+              jslog=${VisualLogging10.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+            >${i18nString14(UIStrings15.learnMore)}</x-link>
           </div>
         </div>
       `;

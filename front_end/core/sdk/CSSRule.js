@@ -227,8 +227,10 @@ export class CSSPropertyRule extends CSSRule {
         return this.cssModelInternal.setPropertyRulePropertyName(styleSheetId, range, newPropertyName);
     }
 }
-export class CSSFontPaletteValuesRule extends CSSRule {
-    #paletteName;
+export class CSSAtRule extends CSSRule {
+    #name;
+    #type;
+    #subsection;
     constructor(cssModel, payload) {
         super(cssModel, {
             origin: payload.origin,
@@ -236,10 +238,18 @@ export class CSSFontPaletteValuesRule extends CSSRule {
             header: styleSheetHeaderForRule(cssModel, payload),
             originTreeScopeNodeId: undefined
         });
-        this.#paletteName = new CSSValue(payload.fontPaletteName);
+        this.#name = payload.name ? new CSSValue(payload.name) : null;
+        this.#type = payload.type;
+        this.#subsection = payload.subsection ?? null;
     }
     name() {
-        return this.#paletteName;
+        return this.#name;
+    }
+    type() {
+        return this.#type;
+    }
+    subsection() {
+        return this.#subsection;
     }
 }
 export class CSSKeyframesRule {

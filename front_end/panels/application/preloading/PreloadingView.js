@@ -212,7 +212,11 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           <span class="empty-state-header">${i18nString(UIStrings.noRulesDetected)}</span>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.rulesDescription)}</span>
-            ${UI.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+            <x-link
+              class="x-link devtools-link"
+              href=${SPECULATION_EXPLANATION_URL}
+              jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}
+            >${i18nString(UIStrings.learnMore)}</x-link>
           </div>
         </div>
         <devtools-split-view sidebar-position="second">
@@ -342,7 +346,11 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
           <span class="empty-state-header">${i18nString(UIStrings.noPrefetchAttempts)}</span>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.prefetchDescription)}</span>
-            ${UI.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+            <x-link
+              class="x-link devtools-link"
+              href=${SPECULATION_EXPLANATION_URL}
+              jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('learn-more')}
+            >${i18nString(UIStrings.learnMore)}</x-link>
           </div>
         </div>
         <devtools-split-view sidebar-position="second">

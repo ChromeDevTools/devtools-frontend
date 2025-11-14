@@ -77,4 +77,5 @@ export * as ExtensionPanel from './ExtensionPanel.js';
 export * as ExtensionServer from './ExtensionServer.js';
 export * as ExtensionView from './ExtensionView.js';
 export * as PersistenceUtils from './PersistenceUtils.js';
+export * as DOMLinkifier from './DOMLinkifier.js';
 //# sourceMappingURL=common.prebundle.js.map

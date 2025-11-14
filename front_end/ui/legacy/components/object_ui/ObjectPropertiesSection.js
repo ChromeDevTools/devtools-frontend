@@ -34,9 +34,8 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
-import { Directives, html, render } from '../../../lit/lit.js';
+import { Directives, html, nothing, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import { CustomPreviewComponent } from './CustomPreviewComponent.js';
@@ -427,87 +426,74 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         }
         return UI.Fragment.html `<span class="name">${name}</span>`;
     }
-    static valueElementForFunctionDescription(description, includePreview, defaultName) {
-        const valueElement = document.createElement('span');
-        valueElement.classList.add('object-value-function');
-        description = description || '';
-        const text = description.replace(/^function [gs]et /, 'function ')
-            .replace(/^function [gs]et\(/, 'function\(')
-            .replace(/^[gs]et /, '');
-        defaultName = defaultName || '';
-        // This set of best-effort regular expressions captures common function descriptions.
-        // Ideally, some parser would provide prefix, arguments, function body text separately.
-        const asyncMatch = text.match(/^(async\s+function)/);
-        const isGenerator = text.startsWith('function*');
-        const isGeneratorShorthand = text.startsWith('*');
-        const isBasic = !isGenerator && text.startsWith('function');
-        const isClass = text.startsWith('class ') || text.startsWith('class{');
-        const firstArrowIndex = text.indexOf('=>');
-        const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
-        let textAfterPrefix;
-        if (isClass) {
-            textAfterPrefix = text.substring('class'.length);
-            const classNameMatch = /^[^{\s]+/.exec(textAfterPrefix.trim());
-            let className = defaultName;
-            if (classNameMatch) {
-                className = classNameMatch[0].trim() || defaultName;
+    static valueElementForFunctionDescription(description, includePreview, defaultName, className) {
+        const contents = (description, defaultName) => {
+            const text = description.replace(/^function [gs]et /, 'function ')
+                .replace(/^function [gs]et\(/, 'function\(')
+                .replace(/^[gs]et /, '');
+            // This set of best-effort regular expressions captures common function descriptions.
+            // Ideally, some parser would provide prefix, arguments, function body text separately.
+            const asyncMatch = text.match(/^(async\s+function)/);
+            const isGenerator = text.startsWith('function*');
+            const isGeneratorShorthand = text.startsWith('*');
+            const isBasic = !isGenerator && text.startsWith('function');
+            const isClass = text.startsWith('class ') || text.startsWith('class{');
+            const firstArrowIndex = text.indexOf('=>');
+            const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
+            if (isClass) {
+                const body = text.substring('class'.length);
+                const classNameMatch = /^[^{\s]+/.exec(body.trim());
+                let className = defaultName;
+                if (classNameMatch) {
+                    className = classNameMatch[0].trim() || defaultName;
+                }
+                return { prefix: 'class', body, abbreviation: className };
             }
-            addElements('class', textAfterPrefix, className);
-        }
-        else if (asyncMatch) {
-            textAfterPrefix = text.substring(asyncMatch[1].length);
-            addElements('async \u0192', textAfterPrefix, nameAndArguments(textAfterPrefix));
-        }
-        else if (isGenerator) {
-            textAfterPrefix = text.substring('function*'.length);
-            addElements('\u0192*', textAfterPrefix, nameAndArguments(textAfterPrefix));
-        }
-        else if (isGeneratorShorthand) {
-            textAfterPrefix = text.substring('*'.length);
-            addElements('\u0192*', textAfterPrefix, nameAndArguments(textAfterPrefix));
-        }
-        else if (isBasic) {
-            textAfterPrefix = text.substring('function'.length);
-            addElements('\u0192', textAfterPrefix, nameAndArguments(textAfterPrefix));
-        }
-        else if (isArrow) {
-            const maxArrowFunctionCharacterLength = 60;
-            let abbreviation = text;
-            if (defaultName) {
-                abbreviation = defaultName + '()';
+            if (asyncMatch) {
+                const body = text.substring(asyncMatch[1].length);
+                return { prefix: 'async \u0192', body, abbreviation: nameAndArguments(body) };
             }
-            else if (text.length > maxArrowFunctionCharacterLength) {
-                abbreviation = text.substring(0, firstArrowIndex + 2) + ' {…}';
+            if (isGenerator) {
+                const body = text.substring('function*'.length);
+                return { prefix: '\u0192*', body, abbreviation: nameAndArguments(body) };
             }
-            addElements('', text, abbreviation);
-        }
-        else {
-            addElements('\u0192', text, nameAndArguments(text));
-        }
-        UI.Tooltip.Tooltip.install(valueElement, Platform.StringUtilities.trimEndWithMaxLength(description, 500));
-        return valueElement;
+            if (isGeneratorShorthand) {
+                const body = text.substring('*'.length);
+                return { prefix: '\u0192*', body, abbreviation: nameAndArguments(body) };
+            }
+            if (isBasic) {
+                const body = text.substring('function'.length);
+                return { prefix: '\u0192', body, abbreviation: nameAndArguments(body) };
+            }
+            if (isArrow) {
+                const maxArrowFunctionCharacterLength = 60;
+                let abbreviation = text;
+                if (defaultName) {
+                    abbreviation = defaultName + '()';
+                }
+                else if (text.length > maxArrowFunctionCharacterLength) {
+                    abbreviation = text.substring(0, firstArrowIndex + 2) + ' {…}';
+                }
+                return { prefix: '', body: text, abbreviation };
+            }
+            return { prefix: '\u0192', body: text, abbreviation: nameAndArguments(text) };
+        };
+        const { prefix, body, abbreviation } = contents(description ?? '', defaultName ?? '');
+        const maxFunctionBodyLength = 200;
+        return html `<span
+      class="object-value-function ${className ?? ''}"
+      title=${Platform.StringUtilities.trimEndWithMaxLength(description ?? '', 500)}>${prefix && html `<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) :
+            abbreviation.replace(/\n/g, ' ')}</span>`;
         function nameAndArguments(contents) {
             const startOfArgumentsIndex = contents.indexOf('(');
             const endOfArgumentsMatch = contents.match(/\)\s*{/);
             if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== undefined &&
                 endOfArgumentsMatch.index > startOfArgumentsIndex) {
-                const name = contents.substring(0, startOfArgumentsIndex).trim() || defaultName;
+                const name = contents.substring(0, startOfArgumentsIndex).trim() || (defaultName ?? '');
                 const args = contents.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
                 return name + args;
             }
             return defaultName + '()';
-        }
-        function addElements(prefix, body, abbreviation) {
-            const maxFunctionBodyLength = 200;
-            if (prefix.length) {
-                valueElement.createChild('span', 'object-value-function-prefix').textContent = prefix + ' ';
-            }
-            if (includePreview) {
-                UI.UIUtils.createTextChild(valueElement, Platform.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength));
-            }
-            else {
-                UI.UIUtils.createTextChild(valueElement, abbreviation.replace(/\n/g, ' '));
-            }
         }
     }
     static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName) {
@@ -518,135 +504,86 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         }
         return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
     }
-    static appendMemoryIcon(element, object, expression) {
-        if (!object.isLinearMemoryInspectable()) {
-            return;
-        }
-        const memoryIcon = new IconButton.Icon.Icon();
-        memoryIcon.name = 'memory';
-        memoryIcon.style.width = 'var(--sys-size-8)';
-        memoryIcon.style.height = '13px';
-        memoryIcon.addEventListener('click', event => {
+    static getMemoryIcon(object, expression) {
+        // Directly set styles on memory icon, so that the memory icon is also
+        // styled within the context of code mirror.
+        // clang-format off
+        return !object.isLinearMemoryInspectable() ? nothing : html `<devtools-icon
+      name=memory
+      style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
+      @click=${(event) => {
             event.consume();
             void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
-        });
-        memoryIcon.setAttribute('jslog', `${VisualLogging.action('open-memory-inspector').track({ click: true })}`);
-        const revealText = i18nString(UIStrings.openInMemoryInpector);
-        UI.Tooltip.Tooltip.install(memoryIcon, revealText);
-        UI.ARIAUtils.setLabel(memoryIcon, revealText);
-        // Directly set property on memory icon, so that the memory icon is also
-        // styled within the context of code mirror.
-        memoryIcon.style.setProperty('vertical-align', 'sub');
-        memoryIcon.style.setProperty('cursor', 'pointer');
-        element.appendChild(memoryIcon);
+        }}
+      jslog=${VisualLogging.action('open-memory-inspector').track({ click: true })}
+      title=${i18nString(UIStrings.openInMemoryInpector)}
+      aria-label=${i18nString(UIStrings.openInMemoryInpector)}></devtools-icon>`;
+        // clang-format on
+    }
+    static appendMemoryIcon(element, object, expression) {
+        const fragment = document.createDocumentFragment();
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
+        element.appendChild(fragment);
     }
     static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName) {
-        let propertyValue;
+        const propertyValue = document.createDocumentFragment();
         const type = value.type;
         const subtype = value.subtype;
         const description = value.description || '';
         const className = value.className;
-        if (type === 'object' && subtype === 'internal#location') {
-            const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
-            if (rawLocation && linkifier) {
-                return linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString);
+        const contents = () => {
+            if (type === 'object' && subtype === 'internal#location') {
+                const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
+                if (rawLocation && linkifier) {
+                    return html `${linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString, 'value')}`;
+                }
+                return html `<span class=value title=${description}>${'<' + i18nString(UIStrings.unknown) + '>'}</span>`;
             }
-            propertyValue = createUnknownInternalLocationElement();
-        }
-        else if (type === 'string' && typeof description === 'string') {
-            propertyValue = createStringElement();
-        }
-        else if (type === 'object' && subtype === 'trustedtype') {
-            propertyValue = createTrustedTypeElement();
-        }
-        else if (type === 'function') {
-            propertyValue = ObjectPropertiesSection.valueElementForFunctionDescription(description);
-        }
-        else if (type === 'object' && subtype === 'node' && description) {
-            propertyValue = createNodeElement();
+            if (type === 'string' && typeof description === 'string') {
+                const text = JSON.stringify(description);
+                const tooLong = description.length > maxRenderableStringLength;
+                return html `<span class="value object-value-string" title=${ifDefined(tooLong ? undefined : description)}>${tooLong ? new ExpandableTextPropertyValue(text, EXPANDABLE_MAX_LENGTH).element : text}</span>`;
+            }
+            if (type === 'object' && subtype === 'trustedtype') {
+                const text = `${className} '${description}'`;
+                const tooLong = text.length > maxRenderableStringLength;
+                return html `<span class="value object-value-trustedtype" title=${ifDefined(tooLong ? undefined : text)}>${tooLong ? new ExpandableTextPropertyValue(text, EXPANDABLE_MAX_LENGTH).element :
+                    html `${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
+            }
+            if (type === 'function') {
+                return ObjectPropertiesSection.valueElementForFunctionDescription(description, undefined, undefined, 'value');
+            }
+            if (type === 'object' && subtype === 'node' && description) {
+                return html `<span class="value object-value-node"
+            @click=${(event) => {
+                    void Common.Revealer.reveal(value);
+                    event.consume(true);
+                }}
+            @mousemove=${() => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value)}
+            @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+          >${renderNodeTitle(description)}</span>`;
+            }
+            if (description.length > maxRenderableStringLength) {
+                return html `<span class="value object-value-${subtype || type}" title=${description}>${new ExpandableTextPropertyValue(description, EXPANDABLE_MAX_LENGTH).element}</span>`;
+            }
+            const hasPreview = value.preview && showPreview;
+            return html `<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) :
+                description}${isSyntheticProperty ? nothing : this.getMemoryIcon(value, variableName)}</span>`;
+        };
+        if (wasThrown) {
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(html `<span class="error value">${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.exceptionS, { PH1: contents() })}</span>`, propertyValue);
         }
         else {
-            const valueElement = document.createElement('span');
-            valueElement.classList.add('object-value-' + (subtype || type));
-            if (value.preview && showPreview) {
-                const previewFormatter = new RemoteObjectPreviewFormatter();
-                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-                render(previewFormatter.renderObjectPreview(value.preview), valueElement);
-                propertyValue = valueElement;
-                UI.Tooltip.Tooltip.install(propertyValue, description || '');
-            }
-            else if (description.length > maxRenderableStringLength) {
-                propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH).element;
-            }
-            else {
-                propertyValue = valueElement;
-                propertyValue.textContent = description;
-                UI.Tooltip.Tooltip.install(propertyValue, description);
-            }
-            if (!isSyntheticProperty) {
-                this.appendMemoryIcon(valueElement, value, variableName);
-            }
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(contents(), propertyValue);
         }
-        if (wasThrown) {
-            const wrapperElement = document.createElement('span');
-            wrapperElement.classList.add('error');
-            wrapperElement.classList.add('value');
-            wrapperElement.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.exceptionS, { PH1: propertyValue }));
-            propertyValue = wrapperElement;
+        const child = propertyValue.firstElementChild;
+        if (!(child instanceof HTMLElement)) {
+            throw new Error('Expected an HTML element');
         }
-        propertyValue.classList.add('value');
-        return propertyValue;
-        function createUnknownInternalLocationElement() {
-            const valueElement = document.createElement('span');
-            valueElement.textContent = '<' + i18nString(UIStrings.unknown) + '>';
-            UI.Tooltip.Tooltip.install(valueElement, description || '');
-            return valueElement;
-        }
-        function createStringElement() {
-            const valueElement = document.createElement('span');
-            valueElement.classList.add('object-value-string');
-            const text = JSON.stringify(description);
-            let propertyValue;
-            if (description.length > maxRenderableStringLength) {
-                propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH).element;
-            }
-            else {
-                UI.UIUtils.createTextChild(valueElement, text);
-                propertyValue = valueElement;
-                UI.Tooltip.Tooltip.install(valueElement, description);
-            }
-            return propertyValue;
-        }
-        function createTrustedTypeElement() {
-            const valueElement = document.createElement('span');
-            valueElement.classList.add('object-value-trustedtype');
-            const text = `${className} "${description}"`;
-            let propertyValue;
-            if (text.length > maxRenderableStringLength) {
-                propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH).element;
-            }
-            else {
-                const contentString = createStringElement();
-                UI.UIUtils.createTextChild(valueElement, `${className} `);
-                valueElement.appendChild(contentString);
-                propertyValue = valueElement;
-                UI.Tooltip.Tooltip.install(valueElement, text);
-            }
-            return propertyValue;
-        }
-        function createNodeElement() {
-            const valueElement = document.createElement('span');
-            valueElement.classList.add('object-value-node');
-            /* eslint-disable-next-line @devtools/no-lit-render-outside-of-view */
-            render(renderNodeTitle(description), valueElement);
-            valueElement.addEventListener('click', event => {
-                void Common.Revealer.reveal(value);
-                event.consume(true);
-            }, false);
-            valueElement.addEventListener('mousemove', () => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value), false);
-            valueElement.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
-            return valueElement;
-        }
+        return child;
     }
     static formatObjectAsFunction(func, element, linkify, includePreview) {
         return func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
@@ -663,7 +600,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             if (response?.functionName) {
                 defaultName = response.functionName;
             }
-            const valueElement = ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName);
+            const valueElement = document.createDocumentFragment();
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName), valueElement);
             element.appendChild(valueElement);
         }
     }
@@ -817,7 +756,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     readOnly;
     prompt;
     editableDiv;
-    propertyValue;
     expandedValueElement;
     #editing = false;
     #view;
@@ -1067,8 +1005,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         else if (this.property.object) {
             const showPreview = this.property.name !== '[[Prototype]]';
-            this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(this.property.object, this.property.property.wasThrown, showPreview, this.linkifier, this.property.property.synthetic, this.property.path /* variableName */);
-            this.valueElement = this.propertyValue;
+            this.valueElement = ObjectPropertiesSection.createPropertyValueWithCustomSupport(this.property.object, this.property.property.wasThrown, showPreview, this.linkifier, this.property.property.synthetic, this.property.path /* variableName */);
         }
         else if (this.property.property.getter) {
             this.valueElement = document.createElement('span');
@@ -1529,8 +1466,8 @@ export class ExpandableTextPropertyValue {
     #byteCount;
     #expanded = false;
     #element;
-    constructor(element, text, maxLength) {
-        this.#element = element;
+    constructor(text, maxLength) {
+        this.#element = document.createDocumentFragment();
         this.text = text;
         this.maxLength = maxLength;
         this.maxDisplayableTextLength = 10000000;

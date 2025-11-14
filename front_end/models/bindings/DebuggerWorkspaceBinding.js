@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
@@ -13,7 +14,6 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
-let debuggerWorkspaceBindingInstance;
 export class DebuggerWorkspaceBinding {
     resourceMapping;
     #debuggerModelToData;
@@ -23,6 +23,7 @@ export class DebuggerWorkspaceBinding {
     workspace;
     constructor(resourceMapping, targetManager, ignoreListManager, workspace) {
         this.resourceMapping = resourceMapping;
+        this.resourceMapping.debuggerWorkspaceBinding = this;
         this.ignoreListManager = ignoreListManager;
         this.workspace = workspace;
         this.#debuggerModelToData = new Map();
@@ -40,17 +41,16 @@ export class DebuggerWorkspaceBinding {
     }
     static instance(opts = { forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null, workspace: null }) {
         const { forceNew, resourceMapping, targetManager, ignoreListManager, workspace } = opts;
-        if (!debuggerWorkspaceBindingInstance || forceNew) {
+        if (forceNew) {
             if (!resourceMapping || !targetManager || !ignoreListManager || !workspace) {
                 throw new Error(`Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${new Error().stack}`);
             }
-            debuggerWorkspaceBindingInstance =
-                new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
+            Root.DevToolsContext.globalInstance().set(DebuggerWorkspaceBinding, new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace));
         }
-        return debuggerWorkspaceBindingInstance;
+        return Root.DevToolsContext.globalInstance().get(DebuggerWorkspaceBinding);
     }
     static removeInstance() {
-        debuggerWorkspaceBindingInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(DebuggerWorkspaceBinding);
     }
     async computeAutoStepRanges(mode, callFrame) {
         function contained(location, range) {

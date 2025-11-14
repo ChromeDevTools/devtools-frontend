@@ -12,13 +12,12 @@ export declare function getPathName(): string;
 export declare function isNodeEntry(pathname: string): boolean;
 export declare const getChromeVersion: () => string;
 export declare class Runtime {
+    #private;
     private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
     } | undefined): Runtime;
     static removeInstance(): void;
-    static queryParamsObject: URLSearchParams;
-    static getSearchParams(): URLSearchParams;
     static queryParam(name: string): string | null;
     static setQueryParamForTesting(name: string, value: string): void;
     static isNode(): boolean;

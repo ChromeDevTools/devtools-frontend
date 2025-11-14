@@ -14531,7 +14531,7 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
 // gen/front_end/core/sdk/CSSRule.js
 var CSSRule_exports = {};
 __export(CSSRule_exports, {
-  CSSFontPaletteValuesRule: () => CSSFontPaletteValuesRule,
+  CSSAtRule: () => CSSAtRule,
   CSSFunctionRule: () => CSSFunctionRule,
   CSSKeyframeRule: () => CSSKeyframeRule,
   CSSKeyframesRule: () => CSSKeyframesRule,
@@ -15376,8 +15376,10 @@ var CSSPropertyRule = class extends CSSRule {
     return this.cssModelInternal.setPropertyRulePropertyName(styleSheetId, range, newPropertyName);
   }
 };
-var CSSFontPaletteValuesRule = class extends CSSRule {
-  #paletteName;
+var CSSAtRule = class extends CSSRule {
+  #name;
+  #type;
+  #subsection;
   constructor(cssModel, payload) {
     super(cssModel, {
       origin: payload.origin,
@@ -15385,10 +15387,18 @@ var CSSFontPaletteValuesRule = class extends CSSRule {
       header: styleSheetHeaderForRule(cssModel, payload),
       originTreeScopeNodeId: void 0
     });
-    this.#paletteName = new CSSValue(payload.fontPaletteName);
+    this.#name = payload.name ? new CSSValue(payload.name) : null;
+    this.#type = payload.type;
+    this.#subsection = payload.subsection ?? null;
   }
   name() {
-    return this.#paletteName;
+    return this.#name;
+  }
+  type() {
+    return this.#type;
+  }
+  subsection() {
+    return this.#subsection;
   }
 };
 var CSSKeyframesRule = class {
@@ -15710,15 +15720,15 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
   #pseudoDOMCascades;
   #customHighlightPseudoDOMCascades;
   #functionRules;
+  #atRules;
   #functionRuleMap = /* @__PURE__ */ new Map();
-  #fontPaletteValuesRule;
   #environmentVariables = {};
   static async create(payload) {
     const cssMatchedStyles = new _CSSMatchedStyles(payload);
     await cssMatchedStyles.init(payload);
     return cssMatchedStyles;
   }
-  constructor({ cssModel, node, animationsPayload, parentLayoutNodeId, positionTryRules, propertyRules, cssPropertyRegistrations, fontPaletteValuesRule, activePositionFallbackIndex, functionRules }) {
+  constructor({ cssModel, node, animationsPayload, parentLayoutNodeId, positionTryRules, propertyRules, cssPropertyRegistrations, activePositionFallbackIndex, functionRules, atRules }) {
     this.#cssModel = cssModel;
     this.#node = node;
     this.#registeredProperties = [
@@ -15730,9 +15740,9 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     }
     this.#positionTryRules = positionTryRules.map((rule) => new CSSPositionTryRule(cssModel, rule));
     this.#parentLayoutNodeId = parentLayoutNodeId;
-    this.#fontPaletteValuesRule = fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : void 0;
     this.#activePositionFallbackIndex = activePositionFallbackIndex;
     this.#functionRules = functionRules.map((rule) => new CSSFunctionRule(cssModel, rule));
+    this.#atRules = atRules.map((rule) => new CSSAtRule(cssModel, rule));
   }
   async init({ matchedPayload, inheritedPayload, inlinePayload, attributesPayload, pseudoPayload, inheritedPseudoPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload }) {
     matchedPayload = cleanUserAgentPayload(matchedPayload);
@@ -16101,8 +16111,8 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
   functionRules() {
     return this.#functionRules;
   }
-  fontPaletteValuesRule() {
-    return this.#fontPaletteValuesRule;
+  atRules() {
+    return this.#atRules;
   }
   keyframes() {
     return this.#keyframes;
@@ -20223,7 +20233,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       propertyRules: matchedStylesResponse.cssPropertyRules ?? [],
       functionRules: matchedStylesResponse.cssFunctionRules ?? [],
       cssPropertyRegistrations: matchedStylesResponse.cssPropertyRegistrations ?? [],
-      fontPaletteValuesRule: matchedStylesResponse.cssFontPaletteValuesRule,
+      atRules: matchedStylesResponse.cssAtRules ?? [],
       activePositionFallbackIndex: matchedStylesResponse.activePositionFallbackIndex ?? -1,
       animationStylesPayload: animatedStylesResponse?.animationStyles || [],
       inheritedAnimatedPayload: animatedStylesResponse?.inherited || [],
@@ -30782,7 +30792,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     }
   }
   fireAvailableTargetsChanged() {
-    TargetManager.instance().dispatchEventToListeners("AvailableTargetsChanged", [...this.#targetInfos.values()]);
+    this.#targetManager.dispatchEventToListeners("AvailableTargetsChanged", [...this.#targetInfos.values()]);
   }
   async getParentTargetId() {
     if (!this.#parentTargetId) {
@@ -32670,8 +32680,7 @@ __export(CPUThrottlingManager_exports, {
   LowTierThrottlingOption: () => LowTierThrottlingOption,
   MidTierThrottlingOption: () => MidTierThrottlingOption,
   NoThrottlingOption: () => NoThrottlingOption,
-  calibrationErrorToString: () => calibrationErrorToString,
-  throttlingManager: () => throttlingManager
+  calibrationErrorToString: () => calibrationErrorToString
 });
 import * as Common37 from "./../common/common.js";
 import * as i18n35 from "./../i18n/i18n.js";
@@ -33311,9 +33320,6 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
   modelRemoved(_emulationModel) {
   }
 };
-function throttlingManager() {
-  return CPUThrottlingManager.instance();
-}
 var CPUThrottlingRates;
 (function(CPUThrottlingRates2) {
   CPUThrottlingRates2[CPUThrottlingRates2["NO_THROTTLING"] = 1] = "NO_THROTTLING";

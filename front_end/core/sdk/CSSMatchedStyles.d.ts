@@ -4,7 +4,7 @@ import type { CSSModel } from './CSSModel.js';
 import { CSSProperty } from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
 import type { Match, Matcher } from './CSSPropertyParser.js';
-import { CSSFontPaletteValuesRule, CSSFunctionRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule } from './CSSRule.js';
+import { CSSAtRule, CSSFunctionRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule } from './CSSRule.js';
 import { CSSStyleDeclaration } from './CSSStyleDeclaration.js';
 import type { DOMNode } from './DOMModel.js';
 export interface CSSMatchedStylesPayload {
@@ -22,7 +22,7 @@ export interface CSSMatchedStylesPayload {
     positionTryRules: Protocol.CSS.CSSPositionTryRule[];
     propertyRules: Protocol.CSS.CSSPropertyRule[];
     cssPropertyRegistrations: Protocol.CSS.CSSPropertyRegistration[];
-    fontPaletteValuesRule: Protocol.CSS.CSSFontPaletteValuesRule | undefined;
+    atRules: Protocol.CSS.CSSAtRule[];
     animationStylesPayload: Protocol.CSS.CSSAnimationStyle[];
     transitionsStylePayload: Protocol.CSS.CSSStyle | null;
     inheritedAnimatedPayload: Protocol.CSS.InheritedAnimatedStyleEntry[];
@@ -76,7 +76,7 @@ export declare class CSSMatchedStyles {
     getRegisteredProperty(name: string): CSSRegisteredProperty | undefined;
     getRegisteredFunction(name: string): string | undefined;
     functionRules(): CSSFunctionRule[];
-    fontPaletteValuesRule(): CSSFontPaletteValuesRule | undefined;
+    atRules(): CSSAtRule[];
     keyframes(): CSSKeyframesRule[];
     positionTryRules(): CSSPositionTryRule[];
     activePositionFallbackIndex(): number;

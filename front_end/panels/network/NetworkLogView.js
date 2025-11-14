@@ -2071,7 +2071,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
                     .replace(/"/g, '\\"')
                     .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, '^$&')
                     .replace(/%(?=[a-zA-Z0-9_])/g, '%^')
-                    .replace(/[^\S \r\n]/g, ' ')
+                    .replace(/[^ -~\r\n]/g, ' ')
                     .replace(/\r?\n|\r/g, '^\n\n') +
                 encapsChars;
         }

@@ -11,7 +11,7 @@ import { debugLog } from '../debug.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
 import { ExtensionScope } from '../ExtensionScope.js';
 import { FREESTYLER_WORLD_NAME } from '../injected.js';
-import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { AiAgent, ConversationContext } from './AiAgent.js';
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -205,11 +205,7 @@ export class StylingAgent extends AiAgent {
     #changes;
     #createExtensionScope;
     constructor(opts) {
-        super({
-            aidaClient: opts.aidaClient,
-            serverSideLoggingEnabled: opts.serverSideLoggingEnabled,
-            confirmSideEffectForTest: opts.confirmSideEffectForTest,
-        });
+        super(opts);
         this.#changes = opts.changeManager || new ChangeManager();
         this.#execJs = opts.execJs ?? executeJsCode;
         this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {

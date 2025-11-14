@@ -118,7 +118,9 @@ export class PatchAgent extends AiAgent {
             handler: async (args, options) => {
                 return {
                     result: {
-                        matches: await this.#project.searchFiles(args.query, args.caseSensitive, args.isRegex, { signal: options?.signal }),
+                        matches: await this.#project.searchFiles(args.query, args.caseSensitive, args.isRegex, {
+                            signal: options?.signal,
+                        }),
                     }
                 };
             },

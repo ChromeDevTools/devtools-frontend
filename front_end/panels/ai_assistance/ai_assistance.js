@@ -74,7 +74,7 @@ import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
-import * as ElementsPanel from "./../elements/elements.js";
+import * as PanelsCommon from "./../common/common.js";
 import * as PanelUtils from "./../utils/utils.js";
 import * as Marked from "./../../third_party/marked/marked.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
@@ -2904,7 +2904,6 @@ var ChatView = class extends HTMLElement {
       suggestions: this.#props.emptyStateSuggestions,
       userInfo: this.#props.userInfo,
       markdownRenderer: this.#props.markdownRenderer,
-      conversationType: this.#props.conversationType,
       changeSummary: this.#props.changeSummary,
       changeManager: this.#props.changeManager,
       onSuggestionClick: this.#handleSuggestionClick,
@@ -3172,7 +3171,7 @@ function renderContextTitle(context, disabled) {
   const item = context.getItem();
   if (item instanceof SDK.DOMModel.DOMNode) {
     const hiddenClassList = item.classNames().filter((className) => className.startsWith(AiAssistanceModel2.Injected.AI_ASSISTANCE_CSS_CLASS_NAME));
-    return html4`<devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(ElementsPanel.DOMLinkifier.DOMNodeLink, {
+    return html4`<devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
       node: item,
       options: { hiddenClassList, disabled }
     })}></devtools-widget>`;
@@ -4000,6 +3999,7 @@ import * as Common4 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Trace from "./../../models/trace/trace.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
+import * as PanelsCommon2 from "./../common/common.js";
 var { html: html7 } = Lit3;
 var { ref: ref3, createRef } = Lit3.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
@@ -4062,7 +4062,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     if (node.frameId() !== this.mainFrameId) {
       return;
     }
-    const linkedNode = await Common4.Linkifier.Linkifier.linkify(node, { textContent: label });
+    const linkedNode = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
     return linkedNode;
   }
 };
@@ -4410,7 +4410,7 @@ function agentToConversationType(agent) {
     return "drjones-file";
   }
   if (agent instanceof AiAssistanceModel3.PerformanceAgent.PerformanceAgent) {
-    return agent.getConversationType();
+    return "drjones-performance-full";
   }
   throw new Error("Provided agent does not have a corresponding conversation type");
 }

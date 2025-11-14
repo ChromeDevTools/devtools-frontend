@@ -66,7 +66,6 @@ export declare class Widget {
     #private;
     readonly element: HTMLElement;
     contentElement: HTMLElement;
-    defaultFocusedChild: Widget | null;
     /**
      * Constructs a new `Widget` with the given `options`.
      *
@@ -134,6 +133,7 @@ export declare class Widget {
     private collectWidgetHierarchy;
     setDefaultFocusedElement(element: Element | null): void;
     setDefaultFocusedChild(child: Widget): void;
+    getDefaultFocusedElements(): HTMLElement[];
     getDefaultFocusedElement(): HTMLElement | null;
     focus(): void;
     hasFocus(): boolean;

@@ -46,6 +46,9 @@
     },
     {
       "path": "../../third_party/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../lit/bundle-tsconfig.json"
     }
   ]
 }

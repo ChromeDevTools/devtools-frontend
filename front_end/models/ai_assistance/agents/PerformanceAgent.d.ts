@@ -1,6 +1,5 @@
 import * as Host from '../../../core/host/host.js';
 import * as Trace from '../../trace/trace.js';
-import { ConversationType } from '../AiHistoryStorage.js';
 import { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
 import { AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
@@ -30,7 +29,6 @@ export declare class PerformanceAgent extends AiAgent<AgentFocus> {
     get clientFeature(): Host.AidaClient.ClientFeature;
     get userTier(): string | undefined;
     get options(): RequestOptions;
-    getConversationType(): ConversationType;
     handleContextDetails(context: ConversationContext<AgentFocus> | null): AsyncGenerator<ContextResponse, void, void>;
     parseTextResponse(response: string): ParsedResponse;
     enhanceQuery(query: string, context: PerformanceTraceContext | null): Promise<string>;

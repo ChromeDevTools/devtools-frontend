@@ -6,8 +6,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { ContentProviderBasedProject } from './ContentProviderBasedProject.js';
-import { CSSWorkspaceBinding } from './CSSWorkspaceBinding.js';
-import { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
 import { NetworkProject } from './NetworkProject.js';
 import { resourceMetadata } from './ResourceUtils.js';
 const styleSheetRangeMap = new WeakMap();
@@ -22,12 +20,40 @@ function computeStyleSheetRange(header) {
 export class ResourceMapping {
     workspace;
     #modelToInfo = new Map();
+    #debuggerWorkspaceBinding = null;
+    #cssWorkspaceBinding = null;
     constructor(targetManager, workspace) {
         this.workspace = workspace;
         targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
     }
+    get debuggerWorkspaceBinding() {
+        // TODO(crbug.com/458180550): Throw when this.#debuggerWorkspaceBinding is null and never return null.
+        //                            The only reason we don't throw and return an instance unconditionally
+        //                            is that unit tests often don't set-up both the *WorkspaceBindings.
+        return this.#debuggerWorkspaceBinding;
+    }
+    /* {@link DebuggerWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
+    set debuggerWorkspaceBinding(debuggerWorkspaceBinding) {
+        if (this.#debuggerWorkspaceBinding) {
+            throw new Error('DebuggerWorkspaceBinding already set');
+        }
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    }
+    get cssWorkspaceBinding() {
+        // TODO(crbug.com/458180550): Throw when this.#cssWorkspaceBinding is null and never return null.
+        //                            The only reason we don't throw and return an instance unconditionally
+        //                            is that unit tests often don't set-up both the *WorkspaceBindings.
+        return this.#cssWorkspaceBinding;
+    }
+    /* {@link CSSWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
+    set cssWorkspaceBinding(cssWorkspaceBinding) {
+        if (this.#cssWorkspaceBinding) {
+            throw new Error('CSSWorkspaceBinding already set');
+        }
+        this.#cssWorkspaceBinding = cssWorkspaceBinding;
+    }
     modelAdded(resourceTreeModel) {
-        const info = new ModelInfo(this.workspace, resourceTreeModel);
+        const info = new ModelInfo(this, resourceTreeModel);
         this.#modelToInfo.set(resourceTreeModel, info);
     }
     modelRemoved(resourceTreeModel) {
@@ -225,9 +251,11 @@ class ModelInfo {
     #bindings = new Map();
     #cssModel;
     #eventListeners;
-    constructor(workspace, resourceTreeModel) {
+    resourceMapping;
+    constructor(resourceMapping, resourceTreeModel) {
         const target = resourceTreeModel.target();
-        this.project = new ContentProviderBasedProject(workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
+        this.resourceMapping = resourceMapping;
+        this.project = new ContentProviderBasedProject(resourceMapping.workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
         NetworkProject.setTargetForProject(this.project, target);
         const cssModel = target.model(SDK.CSSModel.CSSModel);
         console.assert(Boolean(cssModel));
@@ -293,7 +321,7 @@ class ModelInfo {
         }
         let binding = this.#bindings.get(resource.url);
         if (!binding) {
-            binding = new Binding(this.project, resource);
+            binding = new Binding(this, resource);
             this.#bindings.set(resource.url, binding);
         }
         else {
@@ -347,9 +375,13 @@ class Binding {
     #project;
     #uiSourceCode;
     #edits = [];
-    constructor(project, resource) {
+    #debuggerWorkspaceBinding;
+    #cssWorkspaceBinding;
+    constructor(modelInfo, resource) {
         this.resources = new Set([resource]);
-        this.#project = project;
+        this.#project = modelInfo.project;
+        this.#debuggerWorkspaceBinding = modelInfo.resourceMapping.debuggerWorkspaceBinding;
+        this.#cssWorkspaceBinding = modelInfo.resourceMapping.cssWorkspaceBinding;
         this.#uiSourceCode = this.#project.createUISourceCode(resource.url, resource.contentType());
         boundUISourceCodes.add(this.#uiSourceCode);
         if (resource.frameId) {
@@ -357,8 +389,8 @@ class Binding {
         }
         this.#project.addUISourceCodeWithProvider(this.#uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
         void Promise.all([
-            ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
-            ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),
+            ...this.inlineScripts().map(script => this.#debuggerWorkspaceBinding?.updateLocations(script)),
+            ...this.inlineStyles().map(style => this.#cssWorkspaceBinding?.updateLocations(style)),
         ]);
     }
     inlineStyles() {
@@ -421,7 +453,7 @@ class Binding {
                     continue;
                 }
                 scriptRangeMap.set(script, range.rebaseAfterTextEdit(oldRange, newRange));
-                updatePromises.push(DebuggerWorkspaceBinding.instance().updateLocations(script));
+                updatePromises.push(this.#debuggerWorkspaceBinding?.updateLocations(script));
             }
             for (const style of styles) {
                 const range = styleSheetRangeMap.get(style) ?? computeStyleSheetRange(style);
@@ -429,7 +461,7 @@ class Binding {
                     continue;
                 }
                 styleSheetRangeMap.set(style, range.rebaseAfterTextEdit(oldRange, newRange));
-                updatePromises.push(CSSWorkspaceBinding.instance().updateLocations(style));
+                updatePromises.push(this.#cssWorkspaceBinding?.updateLocations(style));
             }
             await Promise.all(updatePromises);
         }
@@ -450,8 +482,8 @@ class Binding {
     dispose() {
         this.#project.removeUISourceCode(this.#uiSourceCode.url());
         void Promise.all([
-            ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
-            ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),
+            ...this.inlineScripts().map(script => this.#debuggerWorkspaceBinding?.updateLocations(script)),
+            ...this.inlineStyles().map(style => this.#cssWorkspaceBinding?.updateLocations(style)),
         ]);
     }
     firstResource() {

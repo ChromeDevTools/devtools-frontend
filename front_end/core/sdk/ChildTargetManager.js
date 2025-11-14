@@ -9,7 +9,6 @@ import { SDKModel } from './SDKModel.js';
 import { SecurityOriginManager } from './SecurityOriginManager.js';
 import { StorageKeyManager } from './StorageKeyManager.js';
 import { Type } from './Target.js';
-import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
      * @description Text that refers to the main target. The main target is the primary webpage that
@@ -107,7 +106,7 @@ export class ChildTargetManager extends SDKModel {
         }
     }
     fireAvailableTargetsChanged() {
-        TargetManager.instance().dispatchEventToListeners("AvailableTargetsChanged" /* TargetManagerEvents.AVAILABLE_TARGETS_CHANGED */, [...this.#targetInfos.values()]);
+        this.#targetManager.dispatchEventToListeners("AvailableTargetsChanged" /* TargetManagerEvents.AVAILABLE_TARGETS_CHANGED */, [...this.#targetInfos.values()]);
     }
     async getParentTargetId() {
         if (!this.#parentTargetId) {

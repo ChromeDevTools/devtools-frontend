@@ -5,6 +5,7 @@ import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as PanelsCommon from '../../common/common.js';
 import { MarkdownRendererWithCodeBlock } from './MarkdownRendererWithCodeBlock.js';
 const { html } = Lit;
 const { ref, createRef } = Lit.Directives;
@@ -70,7 +71,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
         if (node.frameId() !== this.mainFrameId) {
             return;
         }
-        const linkedNode = await Common.Linkifier.Linkifier.linkify(node, { textContent: label });
+        const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
         return linkedNode;
     }
 }

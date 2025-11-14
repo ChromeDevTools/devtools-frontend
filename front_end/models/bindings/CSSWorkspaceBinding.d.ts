@@ -5,7 +5,7 @@ import { type LiveLocation as LiveLocationInterface, type LiveLocationPool, Live
 import type { ResourceMapping } from './ResourceMapping.js';
 export declare class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
     #private;
-    private constructor();
+    constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager);
     static instance(opts?: {
         forceNew: boolean | null;
         resourceMapping: ResourceMapping | null;

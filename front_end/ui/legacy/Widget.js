@@ -253,7 +253,6 @@ const UPDATE_COMPLETE = Promise.resolve();
 export class Widget {
     element;
     contentElement;
-    defaultFocusedChild = null;
     #shadowRoot;
     #visible = false;
     #isRoot = false;
@@ -501,6 +500,10 @@ export class Widget {
                 originalAppendChild.call(parentElement, this.element);
             }
         }
+        const focusedElementsCount = this.#parentWidget?.getDefaultFocusedElements?.()?.length ?? 0;
+        if (this.element.hasAttribute('autofocus') && focusedElementsCount > 1) {
+            this.element.removeAttribute('autofocus');
+        }
         if (!wasVisible && this.parentIsShowing()) {
             this.processWasShown();
         }
@@ -568,9 +571,6 @@ export class Widget {
             const childIndex = this.#parentWidget.#children.indexOf(this);
             assert(childIndex >= 0, 'Attempt to remove non-child widget');
             this.#parentWidget.#children.splice(childIndex, 1);
-            if (this.#parentWidget.defaultFocusedChild === this) {
-                this.#parentWidget.defaultFocusedChild = null;
-            }
             this.#parentWidget.childWasDetached(this);
             this.#parentWidget = null;
         }
@@ -650,21 +650,43 @@ export class Widget {
     }
     setDefaultFocusedChild(child) {
         assert(child.#parentWidget === this, 'Attempt to set non-child widget as default focused.');
-        this.defaultFocusedChild = child;
+        const defaultFocusedElement = this.getDefaultFocusedElement();
+        if (defaultFocusedElement) {
+            defaultFocusedElement.removeAttribute('autofocus');
+        }
+        child.element.setAttribute('autofocus', '');
+    }
+    getDefaultFocusedElements() {
+        const autofocusElements = [...this.contentElement.querySelectorAll('[autofocus]')];
+        if (this.contentElement !== this.element) {
+            if (this.contentElement.hasAttribute('autofocus')) {
+                autofocusElements.push(this.contentElement);
+            }
+            if (autofocusElements.length === 0) {
+                autofocusElements.push(...this.element.querySelectorAll('[autofocus]'));
+            }
+        }
+        return autofocusElements.filter(autofocusElement => {
+            let widgetElement = autofocusElement;
+            while (widgetElement) {
+                const widget = Widget.get(widgetElement);
+                if (widget) {
+                    if (widgetElement === autofocusElement && widget.#parentWidget === this && widget.#visible) {
+                        return true;
+                    }
+                    return widget === this;
+                }
+                widgetElement = widgetElement.parentElementOrShadowHost();
+            }
+            return false;
+        });
     }
     getDefaultFocusedElement() {
-        const autofocusElement = this.contentElement.hasAttribute('autofocus') ?
-            this.contentElement :
-            this.contentElement.querySelector('[autofocus]');
-        let widgetElement = autofocusElement;
-        while (widgetElement) {
-            const widget = Widget.get(widgetElement);
-            if (widget) {
-                return widget === this ? autofocusElement : null;
-            }
-            widgetElement = widgetElement.parentElementOrShadowHost();
+        const elements = this.getDefaultFocusedElements();
+        if (elements.length > 1) {
+            console.error('Multiple autofocus elements found', this.constructor.name, ...elements.map(e => Platform.StringUtilities.trimMiddle(e.outerHTML, 250)));
         }
-        return null;
+        return elements[0] || null;
     }
     focus() {
         if (!this.isShowing()) {
@@ -672,19 +694,23 @@ export class Widget {
         }
         const autofocusElement = this.getDefaultFocusedElement();
         if (autofocusElement) {
-            autofocusElement.focus();
+            const widget = Widget.get(autofocusElement);
+            if (widget && widget !== this) {
+                widget.focus();
+            }
+            else {
+                autofocusElement.focus();
+            }
             return;
         }
-        if (this.defaultFocusedChild && this.defaultFocusedChild.#visible) {
-            this.defaultFocusedChild.focus();
-        }
-        else {
-            for (const child of this.#children) {
-                if (child.#visible) {
-                    child.focus();
-                    return;
-                }
+        for (const child of this.#children) {
+            if (child.#visible) {
+                child.focus();
+                return;
             }
+        }
+        if (this.element === this.contentElement && this.element.hasAttribute('autofocus')) {
+            this.element.focus();
         }
     }
     hasFocus() {

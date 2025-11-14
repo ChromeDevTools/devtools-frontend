@@ -90,7 +90,13 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <span class="empty-state-header">${i18nString(UIStrings.noReportsToDisplay)}</span>
           <div class="empty-state-description">
             <span>${i18nString(UIStrings.reportingApiDescription)}</span>
-            ${UI.XLink.XLink.create(REPORTING_API_EXPLANATION_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
+            <x-link
+              class="devtools-link"
+              href=${REPORTING_API_EXPLANATION_URL}
+              jslog=${VisualLogging.link()
+        .track({ click: true, keydown: 'Enter|Space' })
+        .context('learn-more')}
+            >${i18nString(UIStrings.learnMore)}</x-link>
           </div>
         </div>
       `}

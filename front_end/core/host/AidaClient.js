@@ -368,13 +368,13 @@ export class AidaClient {
         }
         return { generatedSamples, metadata };
     }
-    async generateCode(request) {
+    async generateCode(request, options) {
         const response = await DispatchHttpRequestClient.makeHttpRequest({
             service: SERVICE_NAME,
             path: '/v1/aida:generateCode',
             method: 'POST',
             body: JSON.stringify(request),
-        });
+        }, options);
         return response;
     }
 }

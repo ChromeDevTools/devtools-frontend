@@ -6,6 +6,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Geometry from '../../../../models/geometry/geometry.js';
+import { render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import * as Components from '../utils/utils.js';
 import { CustomPreviewComponent } from './CustomPreviewComponent.js';
@@ -57,7 +58,8 @@ export class ObjectPopoverHelper {
                 const titleElement = popoverContentElement.createChild('div', 'object-popover-title');
                 if (result.type === 'function') {
                     titleElement.classList.add('source-code');
-                    titleElement.appendChild(ObjectPropertiesSection.valueElementForFunctionDescription(result.description));
+                    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+                    render(ObjectPropertiesSection.valueElementForFunctionDescription(result.description), titleElement);
                 }
                 else {
                     titleElement.classList.add('monospace');

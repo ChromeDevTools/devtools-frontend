@@ -17,7 +17,7 @@ const UIStrings = {
      */
     node: '<node>',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/common/DOMLinkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
@@ -191,15 +191,15 @@ export class Linkifier {
         }
         return linkifierInstance;
     }
-    linkify(object, options) {
-        if (object instanceof SDK.DOMModel.DOMNode) {
+    linkify(node, options) {
+        if (node instanceof SDK.DOMModel.DOMNode) {
             const link = document.createElement('devtools-widget');
-            link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, object, options));
+            link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, node, options));
             return link;
         }
-        if (object instanceof SDK.DOMModel.DeferredDOMNode) {
+        if (node instanceof SDK.DOMModel.DeferredDOMNode) {
             const link = document.createElement('devtools-widget');
-            link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, object, options));
+            link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, node, options));
             return link;
         }
         throw new Error('Can\'t linkify non-node');

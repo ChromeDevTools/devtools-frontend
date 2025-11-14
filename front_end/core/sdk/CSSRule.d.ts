@@ -69,10 +69,12 @@ export declare class CSSPropertyRule extends CSSRule {
     inherits(): boolean;
     setPropertyName(newPropertyName: string): Promise<boolean>;
 }
-export declare class CSSFontPaletteValuesRule extends CSSRule {
+export declare class CSSAtRule extends CSSRule {
     #private;
-    constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSFontPaletteValuesRule);
-    name(): CSSValue;
+    constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSAtRule);
+    name(): CSSValue | null;
+    type(): string;
+    subsection(): string | null;
 }
 export declare class CSSKeyframesRule {
     #private;

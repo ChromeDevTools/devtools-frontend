@@ -812,6 +812,7 @@ var ErrorType;
 (function(ErrorType2) {
   ErrorType2["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
   ErrorType2["NOT_FOUND"] = "NOT_FOUND";
+  ErrorType2["ABORT"] = "ABORT";
 })(ErrorType || (ErrorType = {}));
 var DispatchHttpRequestError = class extends Error {
   type;
@@ -820,9 +821,20 @@ var DispatchHttpRequestError = class extends Error {
     this.type = type;
   }
 };
-async function makeHttpRequest(request) {
-  const response = await new Promise((resolve) => {
-    InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
+async function makeHttpRequest(request, options) {
+  const signal = options?.signal;
+  if (signal?.aborted) {
+    throw new DispatchHttpRequestError(ErrorType.ABORT);
+  }
+  const response = await new Promise((resolve, reject) => {
+    const onAbort = () => {
+      reject(new DispatchHttpRequestError(ErrorType.ABORT));
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+    InspectorFrontendHostInstance.dispatchHttpRequest(request, (result) => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve(result);
+    });
   });
   debugLog({ request, response });
   if (response.statusCode === 404) {
@@ -1158,13 +1170,13 @@ var AidaClient = class {
     }
     return { generatedSamples, metadata };
   }
-  async generateCode(request) {
+  async generateCode(request, options) {
     const response = await makeHttpRequest({
       service: SERVICE_NAME,
       path: "/v1/aida:generateCode",
       method: "POST",
       body: JSON.stringify(request)
-    });
+    }, options);
     return response;
   }
 };

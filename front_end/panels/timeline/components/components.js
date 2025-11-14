@@ -4154,6 +4154,7 @@ import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
 import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit12 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "./../../common/common.js";
 
 // gen/front_end/panels/timeline/utils/Helpers.js
 import * as Platform6 from "./../../../core/platform/platform.js";
@@ -4942,7 +4943,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   #renderLcpCard() {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData("largest_contentful_paint");
-    const nodeLink = this.#lcpValue?.nodeRef?.link;
+    const nodeLink = this.#lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
     const phases = this.#lcpValue?.phases;
     const fieldPhases = this.#getLcpFieldPhases();
     return html12`
@@ -5345,6 +5346,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       const metricValue = renderMetricValue("timeline.landing.interaction-event-timing", interaction.duration, INP_THRESHOLDS, (v) => i18n27.TimeUtilities.preciseMillisToString(v), { dim: true });
       const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
       const isInp = this.#inpValue?.interactionId === interaction.interactionId;
+      const nodeLink = interaction.nodeRef ? PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(interaction.nodeRef) : Lit12.nothing;
       return html12`
             <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
               <details>
@@ -5352,7 +5354,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
                   <span class="interaction-type">
                     ${interaction.interactionType} ${isInp ? html12`<span class="interaction-inp-chip" title=${i18nString13(UIStrings14.inpInteraction)}>INP</span>` : nothing11}
                   </span>
-                  <span class="interaction-node">${interaction.nodeRef?.link}</span>
+                  <span class="interaction-node">${nodeLink}</span>
                   ${isP98Excluded ? html12`<devtools-icon
                     class="interaction-info"
                     name="info"
@@ -5448,8 +5450,8 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
             <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
-                ${layoutShift.affectedNodeRefs.map(({ link }) => html12`
-                  <div class="layout-shift-node">${link}</div>
+                ${layoutShift.affectedNodeRefs.map((node) => html12`
+                  <div class="layout-shift-node">${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node)}</div>
                 `)}
               </div>
             </li>

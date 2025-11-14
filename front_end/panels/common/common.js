@@ -6,10 +6,10 @@ var __export = (target, all) => {
 
 // gen/front_end/panels/common/common.prebundle.js
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as UI12 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/common.css.js
 var common_css_default = `/*
@@ -3405,8 +3405,272 @@ var LinkDecorator = class extends Common5.ObjectWrapper.ObjectWrapper {
   }
 };
 
-// gen/front_end/panels/common/common.prebundle.js
+// gen/front_end/panels/common/DOMLinkifier.js
+var DOMLinkifier_exports = {};
+__export(DOMLinkifier_exports, {
+  DOMNodeLink: () => DOMNodeLink,
+  DeferredDOMNodeLink: () => DeferredDOMNodeLink,
+  Linkifier: () => Linkifier2
+});
+import * as Common6 from "./../../core/common/common.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as UI11 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html8, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/common/domLinkifier.css.js
+var domLinkifier_css_default = `/*
+ * Copyright 2018 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    display: inline;
+  }
+
+  .node-link {
+    cursor: pointer;
+    display: inline;
+    pointer-events: auto;
+    outline-offset: 2px;
+
+    /* If the element has lots of classes, don't let the label get too wide */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: min(100%, 550px);
+
+    &:focus-visible {
+      outline-width: unset;
+    }
+
+    &.dynamic-link:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .node-link.disabled {
+    .node-label-name,
+    .node-label-class,
+    .node-label-pseudo,
+    .node-label-name .dynamic-link,
+    .node-label-id {
+      color: var(--sys-color-state-disabled);
+    }
+  }
+
+  .node-label-name {
+    color: var(--sys-color-token-tag);
+
+    .dynamic-link & {
+      color: var(--text-link);
+    }
+  }
+
+  .node-label-class,
+  .node-label-pseudo {
+    color: var(--sys-color-token-attribute);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./domLinkifier.css")} */`;
+
+// gen/front_end/panels/common/DOMLinkifier.js
+var { classMap } = Directives3;
 var UIStrings5 = {
+  /**
+   * @description Text displayed when trying to create a link to a node in the UI, but the node
+   * location could not be found so we display this placeholder instead. Node refers to a DOM node.
+   * This should be translated if appropriate.
+   */
+  node: "<node>"
+};
+var str_5 = i18n17.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
+var i18nString5 = i18n17.i18n.getLocalizedString.bind(void 0, str_5);
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render8(html8`${input.tagName || input.pseudo ? html8`
+    <style>${domLinkifier_css_default}</style>
+    <span class="monospace">
+      <button class="node-link text-button link-style ${classMap({
+    "dynamic-link": Boolean(input.dynamic),
+    disabled: Boolean(input.disabled)
+  })}"
+          jslog=${VisualLogging5.link("node").track({ click: true, keydown: "Enter" })}
+          tabindex=${input.preventKeyboardFocus ? -1 : 0}
+          @click=${input.onClick}
+          @mouseover=${input.onMouseOver}
+          @mouseleave=${input.onMouseLeave}
+          title=${[
+    input.tagName ?? "",
+    input.id ? `#${input.id}` : "",
+    ...input.classes.map((c) => `.${c}`),
+    input.pseudo ? `::${input.pseudo}` : ""
+  ].join(" ")}>${[
+    input.tagName ? html8`<span class="node-label-name">${input.tagName}</span>` : nothing4,
+    input.id ? html8`<span class="node-label-id">#${input.id}</span>` : nothing4,
+    ...input.classes.map((className) => html8`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html8`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing4
+  ]}</button>
+    </span>` : i18nString5(UIStrings5.node)}`, target);
+};
+var DOMNodeLink = class extends UI11.Widget.Widget {
+  #node = void 0;
+  #options = void 0;
+  #view;
+  constructor(element, node, options, view = DEFAULT_VIEW5) {
+    super(element, { useShadowDom: true });
+    this.element.classList.remove("vbox");
+    this.#node = node;
+    this.#options = options;
+    this.#view = view;
+    this.performUpdate();
+  }
+  set node(node) {
+    this.#node = node;
+    this.performUpdate();
+  }
+  set options(options) {
+    this.#options = options;
+    this.performUpdate();
+  }
+  performUpdate() {
+    const options = this.#options ?? {
+      tooltip: void 0,
+      preventKeyboardFocus: void 0,
+      textContent: void 0,
+      isDynamicLink: false,
+      disabled: false
+    };
+    const viewInput = {
+      dynamic: options.isDynamicLink,
+      disabled: options.disabled,
+      preventKeyboardFocus: options.preventKeyboardFocus,
+      classes: [],
+      onClick: () => {
+        void Common6.Revealer.reveal(this.#node);
+        void this.#node?.scrollIntoView();
+        return false;
+      },
+      onMouseOver: () => {
+        this.#node?.highlight?.();
+      },
+      onMouseLeave: () => {
+        SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      }
+    };
+    if (!this.#node) {
+      this.#view(viewInput, {}, this.contentElement);
+      return;
+    }
+    let node = this.#node;
+    const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
+    if (isPseudo && node.parentNode) {
+      node = node.parentNode;
+    }
+    if (node.isViewTransitionPseudoNode()) {
+      viewInput.pseudo = `::${this.#node.pseudoType()}(${this.#node.pseudoIdentifier()})`;
+      this.#view(viewInput, {}, this.contentElement);
+      return;
+    }
+    if (options.textContent) {
+      viewInput.tagName = options.textContent;
+      this.#view(viewInput, {}, this.contentElement);
+      return;
+    }
+    viewInput.tagName = node.nodeNameInCorrectCase();
+    const idAttribute = node.getAttribute("id");
+    if (idAttribute) {
+      viewInput.id = idAttribute;
+    }
+    const classAttribute = node.getAttribute("class");
+    if (classAttribute) {
+      const classes = classAttribute.split(/\s+/);
+      if (classes.length) {
+        const foundClasses = /* @__PURE__ */ new Set();
+        for (let i = 0; i < classes.length; ++i) {
+          const className = classes[i];
+          if (className && !options.hiddenClassList?.includes(className) && !foundClasses.has(className)) {
+            foundClasses.add(className);
+          }
+        }
+        viewInput.classes = [...foundClasses];
+      }
+    }
+    if (isPseudo) {
+      const pseudoIdentifier = this.#node.pseudoIdentifier();
+      let pseudoText = "::" + this.#node.pseudoType();
+      if (pseudoIdentifier) {
+        pseudoText += `(${pseudoIdentifier})`;
+      }
+      viewInput.pseudo = pseudoText;
+    }
+    this.#view(viewInput, {}, this.contentElement);
+  }
+};
+var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
+  render8(html8`
+      <style>${domLinkifier_css_default}</style>
+      <button class="node-link text-button link-style"
+          jslog=${VisualLogging5.link("node").track({ click: true })}
+          tabindex=${input.preventKeyboardFocus ? -1 : 0}
+          @click=${input.onClick}
+          @mousedown=${(e) => e.consume()}>
+        <slot></slot>
+      </button>`, target);
+};
+var DeferredDOMNodeLink = class extends UI11.Widget.Widget {
+  #deferredNode = void 0;
+  #options = void 0;
+  #view;
+  constructor(element, deferredNode, options, view = DEFERRED_DEFAULT_VIEW) {
+    super(element, { useShadowDom: true });
+    this.element.classList.remove("vbox");
+    this.#deferredNode = deferredNode;
+    this.#options = options;
+    this.#view = view;
+    this.performUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      preventKeyboardFocus: this.#options?.preventKeyboardFocus,
+      onClick: () => {
+        this.#deferredNode?.resolve?.((node) => {
+          void Common6.Revealer.reveal(node);
+          void node?.scrollIntoView();
+        });
+      }
+    };
+    this.#view(viewInput, {}, this.contentElement);
+  }
+};
+var linkifierInstance;
+var Linkifier2 = class _Linkifier {
+  static instance(opts = { forceNew: null }) {
+    const { forceNew } = opts;
+    if (!linkifierInstance || forceNew) {
+      linkifierInstance = new _Linkifier();
+    }
+    return linkifierInstance;
+  }
+  linkify(node, options) {
+    if (node instanceof SDK3.DOMModel.DOMNode) {
+      const link5 = document.createElement("devtools-widget");
+      link5.widgetConfig = UI11.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
+      return link5;
+    }
+    if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
+      const link5 = document.createElement("devtools-widget");
+      link5.widgetConfig = UI11.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
+      return link5;
+    }
+    throw new Error("Can't linkify non-node");
+  }
+};
+
+// gen/front_end/panels/common/common.prebundle.js
+var UIStrings6 = {
   /**
    * @description Text for the cancel button in the dialog.
    */
@@ -3416,18 +3680,18 @@ var UIStrings5 = {
    */
   allow: "Allow"
 };
-var str_5 = i18n17.i18n.registerUIStrings("panels/common/common.ts", UIStrings5);
-var i18nString5 = i18n17.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n19.i18n.registerUIStrings("panels/common/common.ts", UIStrings6);
+var i18nString6 = i18n19.i18n.getLocalizedString.bind(void 0, str_6);
 var TypeToAllowDialog = class {
   static async show(options) {
-    const dialog2 = new UI11.Dialog.Dialog(options.jslogContext.dialog);
+    const dialog2 = new UI12.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry2.Size(504, 340));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
       /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
     );
     dialog2.setDimmed(true);
-    const shadowRoot = UI11.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
+    const shadowRoot = UI12.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
     const content = shadowRoot.createChild("div", "type-to-allow-dialog");
     const result = await new Promise((resolve) => {
       const header = content.createChild("div", "header");
@@ -3444,12 +3708,12 @@ var TypeToAllowDialog = class {
         /* Buttons.Button.Size.SMALL */
       );
       content.createChild("div", "message").textContent = options.message;
-      const input = UI11.UIUtils.createInput("text-input", "text", options.jslogContext.input);
+      const input = UI12.UIUtils.createInput("text-input", "text", options.jslogContext.input);
       input.placeholder = options.inputPlaceholder;
       content.appendChild(input);
       const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI11.UIUtils.createTextButton(i18nString5(UIStrings5.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI11.UIUtils.createTextButton(i18nString5(UIStrings5.allow), () => {
+      const cancelButton = UI12.UIUtils.createTextButton(i18nString6(UIStrings6.cancel), () => resolve(false), { jslogContext: "cancel" });
+      const allowButton = UI12.UIUtils.createTextButton(i18nString6(UIStrings6.allow), () => {
         resolve(input.value === options.typePhrase);
       }, {
         jslogContext: "confirm",
@@ -3480,6 +3744,7 @@ export {
   AiCodeCompletionSummaryToolbar,
   AiCodeCompletionTeaser,
   BadgeNotification,
+  DOMLinkifier_exports as DOMLinkifier,
   ExtensionPanel_exports as ExtensionPanel,
   ExtensionServer_exports as ExtensionServer,
   ExtensionView_exports as ExtensionView,

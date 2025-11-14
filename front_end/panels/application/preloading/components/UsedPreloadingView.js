@@ -12,7 +12,6 @@ import { assertNotNullOrUndefined } from '../../../../core/platform/platform.js'
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
@@ -146,7 +145,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
         <devtools-report-divider></devtools-report-divider>
 
         <devtools-report-section>
-          ${UI.XLink.XLink.create('https://developer.chrome.com/blog/prerender-pages/', i18nString(UIStrings.learnMore), 'link', undefined, 'learn-more')}
+          <x-link
+            class="link devtools-link"
+            href=${'https://developer.chrome.com/blog/prerender-pages/'}
+            jslog=${VisualLogging.link()
+            .track({ click: true, keydown: 'Enter|Space' })
+            .context('learn-more')}
+          >${i18nString(UIStrings.learnMore)}</x-link>
         </devtools-report-section>
       </devtools-report>
     `;
@@ -280,7 +285,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
         return html `
       <devtools-report-section-header>${i18nString(UIStrings.currentURL)}</devtools-report-section-header>
       <devtools-report-section>
-        ${UI.XLink.XLink.create(this.#data.pageURL, undefined, 'link', undefined, 'current-url')}
+        <x-link
+          class="link devtools-link"
+          href=${this.#data.pageURL}
+          jslog=${VisualLogging.link()
+            .track({ click: true, keydown: 'Enter|Space' })
+            .context('current-url')}
+        >${this.#data.pageURL}</x-link>
       </devtools-report-section>
 
       <devtools-report-section-header>${i18nString(UIStrings.preloadedURLs)}</devtools-report-section-header>

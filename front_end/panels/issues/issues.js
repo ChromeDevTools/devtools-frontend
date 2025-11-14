@@ -751,6 +751,7 @@ import * as RequestLinkIcon from "./../../ui/components/request_link_icon/reques
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "./../common/common.js";
 var UIStrings3 = {
   /**
    * @description Text in Object Properties Section
@@ -925,7 +926,7 @@ var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
       );
     }
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchorElement = await Common2.Linkifier.Linkifier.linkify(deferredDOMNode);
+    const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode);
     anchorElement.textContent = nodeName;
     anchorElement.addEventListener("click", () => sendTelemetry());
     anchorElement.addEventListener("keydown", (event) => {

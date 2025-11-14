@@ -595,7 +595,7 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("panels/explain/components/ConsoleInsight.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var i18nTemplate2 = Lit.i18nTemplate.bind(void 0, str_);
-var { render, html, Directives: Directives2 } = Lit;
+var { render, html, Directives } = Lit;
 var CloseEvent = class _CloseEvent extends Event {
   static eventName = "close";
   constructor() {
@@ -657,7 +657,7 @@ function renderLearnMoreAboutInsights() {
     ${i18nString(UIStrings.learnMore)}
   </x-link>`;
 }
-function maybeRenderSources(directCitationUrls) {
+function maybeRenderSources(directCitationUrls, output) {
   if (!directCitationUrls.length) {
     return Lit.nothing;
   }
@@ -668,8 +668,10 @@ function maybeRenderSources(directCitationUrls) {
           <x-link
             href=${url}
             class="link"
-            data-index=${index + 1}
             jslog=${VisualLogging.link("references.console-insights").track({ click: true })}
+            ${Directives.ref((e) => {
+    output.citationLinks[index] = e;
+  })}
           >
             ${url}
           </x-link>
@@ -718,9 +720,9 @@ function renderInsight(insight, renderer, disableAnimations, callbacks, output) 
           </devtools-markdown-view>` : insight.explanation}
         ${insight.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}
         ${isSearchRagResponse(insight.metadata) ? html`
-          <details class="references" ${Directives2.ref(output.referenceDetailsRef)} @toggle=${callbacks.onToggleReferenceDetails} jslog=${VisualLogging.expand("references").track({ click: true })}>
+          <details class="references" ${Directives.ref(output.referenceDetailsRef)} @toggle=${callbacks.onToggleReferenceDetails} jslog=${VisualLogging.expand("references").track({ click: true })}>
             <summary>${i18nString(UIStrings.references)}</summary>
-            ${maybeRenderSources(insight.directCitationUrls)}
+            ${maybeRenderSources(insight.directCitationUrls, output)}
             ${maybeRenderRelatedContent(insight.relatedUrls, insight.directCitationUrls)}
           </details>
         ` : Lit.nothing}
@@ -869,7 +871,7 @@ function renderInsightFooter(noLogging, selectedRating, callbacks) {
       .toggled=${selectedRating === true}
       .title=${i18nString(UIStrings.goodResponse)}
       .jslogContext=${"thumbs-up"}
-      @click=${callbacks.onRating}
+      @click=${() => callbacks.onRating(true)}
     ></devtools-button>
     <devtools-button
       data-rating="false"
@@ -883,7 +885,7 @@ function renderInsightFooter(noLogging, selectedRating, callbacks) {
       .toggled=${selectedRating === false}
       .title=${i18nString(UIStrings.badResponse)}
       .jslogContext=${"thumbs-down"}
-      @click=${callbacks.onRating}
+      @click=${() => callbacks.onRating(false)}
     ></devtools-button>
     <devtools-button
       .iconName=${"report"}
@@ -902,12 +904,12 @@ function renderHeaderIcon() {
       </devtools-icon>
     </div>`;
 }
-function renderHeader({ headerText, showIcon = false, showSpinner = false, onClose }) {
+function renderHeader({ headerText, showIcon = false, showSpinner = false, onClose }, headerRef) {
   return html`
     <header>
       ${showIcon ? renderHeaderIcon() : Lit.nothing}
       <div class="filler">
-        <h2 tabindex="-1">
+        <h2 tabindex="-1" ${Directives.ref(headerRef)}>
           ${headerText}
         </h2>
         ${showSpinner ? html`<devtools-spinner></devtools-spinner>` : Lit.nothing}
@@ -937,7 +939,9 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #renderer;
   // Main state.
   #state;
-  #referenceDetailsRef = Lit.Directives.createRef();
+  #referenceDetailsRef = Directives.createRef();
+  #headerRef = Directives.createRef();
+  #citationLinks = [];
   #areReferenceDetailsOpen = false;
   // Rating sub-form state.
   #selectedRating;
@@ -977,7 +981,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     const areDetailsAlreadyExpanded = this.#referenceDetailsRef.value.open;
     this.#areReferenceDetailsOpen = true;
     this.#render();
-    const highlightedElement = this.#shadow.querySelector(`.sources-list x-link[data-index="${index}"]`);
+    const highlightedElement = this.#citationLinks[index - 1];
     if (highlightedElement) {
       UI.UIUtils.runCSSAnimationOnce(highlightedElement, "highlighted");
       if (areDetailsAlreadyExpanded) {
@@ -1120,7 +1124,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     }, { once: true });
     this.classList.add("closing");
   }
-  #onRating(event) {
+  #onRating(isPositive) {
     if (this.#state.type !== "insight") {
       throw new Error("Unexpected state");
     }
@@ -1130,7 +1134,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     if (this.#selectedRating !== void 0) {
       return;
     }
-    this.#selectedRating = event.target.dataset.rating === "true";
+    this.#selectedRating = isPositive;
     this.#render();
     if (this.#selectedRating) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
@@ -1295,7 +1299,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   }
   #focusHeader() {
     this.addEventListener("animationend", () => {
-      this.#shadow.querySelector("header h2")?.focus();
+      this.#headerRef.value?.focus();
     }, { once: true });
   }
   #onToggleReferenceDetails() {
@@ -1335,7 +1339,9 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       }
     };
     const output = {
-      referenceDetailsRef: this.#referenceDetailsRef
+      referenceDetailsRef: this.#referenceDetailsRef,
+      headerRef: this.#headerRef,
+      citationLinks: []
     };
     const { state, noLogging, callbacks } = input;
     const { onClose, onDisclaimerSettingsLink } = callbacks;
@@ -1346,21 +1352,21 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     let footer;
     switch (state.type) {
       case "loading":
-        header = renderHeader({ headerText: i18nString(UIStrings.generating), onClose });
+        header = renderHeader({ headerText: i18nString(UIStrings.generating), onClose }, output.headerRef);
         main = renderLoading();
         break;
       case "insight":
-        header = renderHeader({ headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed });
+        header = renderHeader({ headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed }, output.headerRef);
         main = renderInsight(state, input.renderer, input.disableAnimations, callbacks, output);
         footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
         break;
       case "error":
-        header = renderHeader({ headerText: i18nString(UIStrings.error), onClose });
+        header = renderHeader({ headerText: i18nString(UIStrings.error), onClose }, output.headerRef);
         main = renderError(i18nString(UIStrings.errorBody));
         footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
         break;
       case "consent-reminder":
-        header = renderHeader({ headerText: "Understand console messages with AI", onClose, showIcon: true });
+        header = renderHeader({ headerText: "Understand console messages with AI", onClose, showIcon: true }, output.headerRef);
         mainClasses["reminder-container"] = true;
         main = renderConsentReminder(noLogging);
         footer = renderConsentReminderFooter(callbacks.onReminderSettingsLink, callbacks.onConsentReminderConfirmed);
@@ -1371,12 +1377,12 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
         break;
       case "not-logged-in":
       case "sync-is-paused":
-        header = renderHeader({ headerText: i18nString(UIStrings.signInToUse), onClose });
+        header = renderHeader({ headerText: i18nString(UIStrings.signInToUse), onClose }, output.headerRef);
         main = renderNotLoggedIn();
         footer = renderSignInFooter(callbacks.onGoToSignIn);
         break;
       case "offline":
-        header = renderHeader({ headerText: i18nString(UIStrings.offlineHeader), onClose });
+        header = renderHeader({ headerText: i18nString(UIStrings.offlineHeader), onClose }, output.headerRef);
         main = renderError(i18nString(UIStrings.offline));
         footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
         break;
@@ -1387,7 +1393,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       <div class="wrapper" jslog=${VisualLogging.pane("console-insights").track({ resize: true })}>
         <div class="animation-wrapper">
           ${header}
-          <main jslog=${jslog} class=${Directives2.classMap(mainClasses)}>
+          <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>
             ${main}
           </main>
           ${footer ? html`<footer jslog=${VisualLogging.section("footer")}>
@@ -1398,6 +1404,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     `, this.#shadow, {
       host: this
     });
+    this.#citationLinks = output.citationLinks;
     if (this.#referenceDetailsRef.value) {
       this.#referenceDetailsRef.value.open = this.#areReferenceDetailsOpen;
     }
@@ -1412,7 +1419,7 @@ var ConsoleInsightSourcesList = class extends HTMLElement {
       <style>${consoleInsightSourcesList_css_default}</style>
       <style>${Input.checkboxStyles}</style>
       <ul>
-        ${Directives2.repeat(this.#sources, (item) => item.value, (item) => {
+        ${Directives.repeat(this.#sources, (item) => item.value, (item) => {
       return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link("source-" + item.type).track({ click: true })}>
             <devtools-icon name="open-externally"></devtools-icon>
             ${localizeType(item.type)}

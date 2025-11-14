@@ -1,10 +1,13 @@
 import type { DispatchHttpRequestRequest } from './InspectorFrontendHostAPI.js';
 export declare enum ErrorType {
     HTTP_RESPONSE_UNAVAILABLE = "HTTP_RESPONSE_UNAVAILABLE",
-    NOT_FOUND = "NOT_FOUND"
+    NOT_FOUND = "NOT_FOUND",
+    ABORT = "ABORT"
 }
 export declare class DispatchHttpRequestError extends Error {
     readonly type: ErrorType;
     constructor(type: ErrorType, options?: ErrorOptions);
 }
-export declare function makeHttpRequest<R>(request: DispatchHttpRequestRequest): Promise<R>;
+export declare function makeHttpRequest<R>(request: DispatchHttpRequestRequest, options?: {
+    signal?: AbortSignal;
+}): Promise<R>;

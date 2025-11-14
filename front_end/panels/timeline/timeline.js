@@ -3138,6 +3138,7 @@ var imagePreview_css_default = `/*
 import * as LegacyComponents from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport19 from "./../../ui/legacy/theme_support/theme_support.js";
+import * as PanelsCommon from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions3 from "./extensions/extensions.js";
 
@@ -11680,7 +11681,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     const relatedNodes = relatedNodesMap?.values() || [];
     for (const relatedNode of relatedNodes) {
       if (relatedNode) {
-        const nodeSpan = await Common11.Linkifier.Linkifier.linkify(relatedNode);
+        const nodeSpan = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode);
         contentHelper.appendElementRow(relatedNodeLabel || i18nString21(UIStrings21.relatedNode), nodeSpan);
       }
     }
@@ -11954,7 +11955,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const node = invalidation.args.data.nodeId && relatedNodesMap ? relatedNodesMap.get(invalidation.args.data.nodeId) : null;
       if (node) {
         const nodeSpan2 = document.createElement("span");
-        void Common11.Linkifier.Linkifier.linkify(node).then((link) => nodeSpan2.appendChild(link));
+        nodeSpan2.appendChild(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node));
         return nodeSpan2;
       }
       if (invalidation.args.data.nodeName) {

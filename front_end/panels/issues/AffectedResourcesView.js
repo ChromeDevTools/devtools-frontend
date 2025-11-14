@@ -12,6 +12,7 @@ import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 const UIStrings = {
     /**
      * @description Text in Object Properties Section
@@ -179,7 +180,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
             Host.userMetrics.issuesPanelResourceOpened(issueCategory, "Element" /* AffectedItem.ELEMENT */);
         }
         const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-        const anchorElement = (await Common.Linkifier.Linkifier.linkify(deferredDOMNode));
+        const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode);
         anchorElement.textContent = nodeName;
         anchorElement.addEventListener('click', () => sendTelemetry());
         anchorElement.addEventListener('keydown', (event) => {

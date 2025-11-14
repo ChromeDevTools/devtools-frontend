@@ -6,7 +6,9 @@
 
 import * as I18n from '../../core/i18n/i18n.js';
 import type * as ThirdPartyI18n from '../../third_party/i18n/i18n.js';
+import {Directives, html, type LitTemplate, nothing} from '../lit/lit.js';
 
+const {repeat} = Directives;
 /**
  * Returns a span element that may contains other DOM element as placeholders
  */
@@ -28,4 +30,18 @@ export function getFormatLocalizedString(
     }
   }
   return element;
+}
+
+export function getFormatLocalizedStringTemplate(
+    registeredStrings: ThirdPartyI18n.LocalizedStringSet.RegisteredFileStrings, stringId: string,
+    placeholders: Record<string, Object>): LitTemplate {
+  const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale)
+                        .getMessageFormatterFor(stringId);
+
+  return html`<span>${
+      repeat(
+          formatter.getAst(),
+          icuElement => icuElement.type === /* argumentElement */ 1 ? (placeholders[icuElement.value] ?? nothing) :
+              'value' in icuElement                                 ? String(icuElement.value) :
+                                                                      nothing)}</span>`;
 }

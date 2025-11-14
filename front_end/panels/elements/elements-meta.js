@@ -169,6 +169,13 @@ function maybeRetrieveContextTypes(getClassCallBack) {
   }
   return getClassCallBack(loadedElementsModule);
 }
+var loadedPanelsCommonModule;
+async function loadPanelsCommonModule() {
+  if (!loadedPanelsCommonModule) {
+    loadedPanelsCommonModule = await import("./../common/common.js");
+  }
+  return loadedPanelsCommonModule;
+}
 UI.ViewManager.registerViewExtension({
   location: "panel",
   id: "elements",
@@ -655,8 +662,8 @@ Common.Linkifier.registerLinkifier({
     ];
   },
   async loadLinkifier() {
-    const Elements = await loadElementsModule();
-    return Elements.DOMLinkifier.Linkifier.instance();
+    const PanelsCommon = await loadPanelsCommonModule();
+    return PanelsCommon.DOMLinkifier.Linkifier.instance();
   }
 });
 //# sourceMappingURL=elements-meta.js.map

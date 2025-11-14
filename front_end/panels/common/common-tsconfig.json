@@ -39,6 +39,7 @@
     "../../../../../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts",
     "../../../../../../front_end/panels/common/AiCodeCompletionTeaser.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.ts",
+    "../../../../../../front_end/panels/common/DOMLinkifier.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.ts",
     "../../../../../../front_end/panels/common/ExtensionServer.ts",
     "../../../../../../front_end/panels/common/ExtensionView.ts",

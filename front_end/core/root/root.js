@@ -109,18 +109,18 @@ var Runtime = class _Runtime {
   static removeInstance() {
     runtimeInstance = void 0;
   }
-  static queryParamsObject;
-  static getSearchParams() {
-    if (!_Runtime.queryParamsObject) {
-      _Runtime.queryParamsObject = new URLSearchParams(location.search);
+  static #queryParamsObject;
+  static #getSearchParams() {
+    if (!_Runtime.#queryParamsObject && "location" in globalThis) {
+      _Runtime.#queryParamsObject = new URLSearchParams(location.search);
     }
-    return _Runtime.queryParamsObject;
+    return _Runtime.#queryParamsObject;
   }
   static queryParam(name) {
-    return _Runtime.getSearchParams().get(name);
+    return _Runtime.#getSearchParams()?.get(name) ?? null;
   }
   static setQueryParamForTesting(name, value) {
-    _Runtime.getSearchParams().set(name, value);
+    _Runtime.#getSearchParams()?.set(name, value);
   }
   static isNode() {
     if (isNode === void 0) {

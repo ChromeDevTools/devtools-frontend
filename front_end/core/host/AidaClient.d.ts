@@ -342,7 +342,9 @@ export declare class AidaClient {
     }): AsyncGenerator<DoConversationResponse, void, void>;
     registerClientEvent(clientEvent: AidaRegisterClientEvent): Promise<AidaClientResult>;
     completeCode(request: CompletionRequest): Promise<CompletionResponse | null>;
-    generateCode(request: GenerateCodeRequest): Promise<GenerateCodeResponse | null>;
+    generateCode(request: GenerateCodeRequest, options?: {
+        signal?: AbortSignal;
+    }): Promise<GenerateCodeResponse | null>;
 }
 export declare function convertToUserTierEnum(userTier: string | undefined): UserTier;
 export declare class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {

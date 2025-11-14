@@ -1,15 +1,17 @@
 import * as Common from '../core/common/common.js';
+import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import type * as UIModule from '../ui/legacy/legacy.js';
-export declare function createTarget({ id, name, type, parentTarget, subtype, url }?: {
+export declare function createTarget({ id, name, type, parentTarget, subtype, url, connection }?: {
     id?: Protocol.Target.TargetID;
     name?: string;
     type?: SDK.Target.Type;
     parentTarget?: SDK.Target.Target;
     subtype?: string;
     url?: string;
+    connection?: ProtocolClient.CDPConnection.CDPConnection;
 }): SDK.Target.Target;
 export { stubNoopSettings } from './SettingsHelpers.js';
 export declare function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void;

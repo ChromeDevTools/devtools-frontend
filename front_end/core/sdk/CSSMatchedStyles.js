@@ -6,7 +6,7 @@ import { CSSMetadata, cssMetadata } from './CSSMetadata.js';
 import { CSSProperty } from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
 import { AnchorFunctionMatcher, AngleMatcher, AttributeMatcher, AutoBaseMatcher, BaseVariableMatcher, BezierMatcher, BinOpMatcher, ColorMatcher, ColorMixMatcher, CustomFunctionMatcher, defaultValueForCSSType, EnvFunctionMatcher, FlexGridMasonryMatcher, GridTemplateMatcher, LengthMatcher, LightDarkColorMatcher, LinearGradientMatcher, LinkableNameMatcher, localEvalCSS, MathFunctionMatcher, PositionAnchorMatcher, PositionTryMatcher, RelativeColorChannelMatcher, ShadowMatcher, StringMatcher, URLMatcher, VariableMatcher } from './CSSPropertyParserMatchers.js';
-import { CSSFontPaletteValuesRule, CSSFunctionRule, CSSKeyframeRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule, } from './CSSRule.js';
+import { CSSAtRule, CSSFunctionRule, CSSKeyframeRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule, } from './CSSRule.js';
 import { CSSStyleDeclaration, Type } from './CSSStyleDeclaration.js';
 function containsStyle(styles, query) {
     if (!query.styleSheetId || !query.range) {
@@ -212,15 +212,15 @@ export class CSSMatchedStyles {
     #pseudoDOMCascades;
     #customHighlightPseudoDOMCascades;
     #functionRules;
+    #atRules;
     #functionRuleMap = new Map();
-    #fontPaletteValuesRule;
     #environmentVariables = {};
     static async create(payload) {
         const cssMatchedStyles = new CSSMatchedStyles(payload);
         await cssMatchedStyles.init(payload);
         return cssMatchedStyles;
     }
-    constructor({ cssModel, node, animationsPayload, parentLayoutNodeId, positionTryRules, propertyRules, cssPropertyRegistrations, fontPaletteValuesRule, activePositionFallbackIndex, functionRules, }) {
+    constructor({ cssModel, node, animationsPayload, parentLayoutNodeId, positionTryRules, propertyRules, cssPropertyRegistrations, activePositionFallbackIndex, functionRules, atRules, }) {
         this.#cssModel = cssModel;
         this.#node = node;
         this.#registeredProperties = [
@@ -232,10 +232,9 @@ export class CSSMatchedStyles {
         }
         this.#positionTryRules = positionTryRules.map(rule => new CSSPositionTryRule(cssModel, rule));
         this.#parentLayoutNodeId = parentLayoutNodeId;
-        this.#fontPaletteValuesRule =
-            fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : undefined;
         this.#activePositionFallbackIndex = activePositionFallbackIndex;
         this.#functionRules = functionRules.map(rule => new CSSFunctionRule(cssModel, rule));
+        this.#atRules = atRules.map(rule => new CSSAtRule(cssModel, rule));
     }
     async init({ matchedPayload, inheritedPayload, inlinePayload, attributesPayload, pseudoPayload, inheritedPseudoPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload, }) {
         matchedPayload = cleanUserAgentPayload(matchedPayload);
@@ -599,8 +598,8 @@ export class CSSMatchedStyles {
     functionRules() {
         return this.#functionRules;
     }
-    fontPaletteValuesRule() {
-        return this.#fontPaletteValuesRule;
+    atRules() {
+        return this.#atRules;
     }
     keyframes() {
         return this.#keyframes;

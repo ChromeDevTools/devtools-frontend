@@ -93,8 +93,8 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   get itemURL() {
     return "category://" + this.categoryName;
   }
-  setLink(link3) {
-    this.categoryLink = link3;
+  setLink(link4) {
+    this.categoryLink = link4;
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
@@ -737,9 +737,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.emptyView.hideWidget();
     this.reportView.showWidget();
     this.dispatchEventToListeners("ManifestDetected", true);
-    const link3 = Components.Linkifier.Linkifier.linkifyURL(url);
-    link3.tabIndex = 0;
-    this.reportView.setURL(link3);
+    const link4 = Components.Linkifier.Linkifier.linkifyURL(url);
+    link4.tabIndex = 0;
+    this.reportView.setURL(link4);
     this.errorsSection.clearContent();
     this.errorsSection.element.classList.toggle("hidden", !errors.length);
     for (const error of errors) {
@@ -802,10 +802,10 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     if (startURL) {
       const completeURL = Common2.ParsedURL.ParsedURL.completeURL(url, startURL);
       if (completeURL) {
-        const link4 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: startURL });
-        link4.tabIndex = 0;
-        link4.setAttribute("jslog", `${VisualLogging.link("start-url").track({ click: true })}`);
-        this.startURLField.appendChild(link4);
+        const link5 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: startURL });
+        link5.tabIndex = 0;
+        link5.setAttribute("jslog", `${VisualLogging.link("start-url").track({ click: true })}`);
+        this.startURLField.appendChild(link5);
       }
     }
     this.themeColorSwatch.classList.toggle("hidden", !stringProperty("theme_color"));
@@ -828,9 +828,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     this.newNoteUrlField.removeChildren();
     if (hasNewNoteUrl) {
       const completeURL = Common2.ParsedURL.ParsedURL.completeURL(url, newNoteUrl);
-      const link4 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: newNoteUrl });
-      link4.tabIndex = 0;
-      this.newNoteUrlField.appendChild(link4);
+      const link5 = Components.Linkifier.Linkifier.linkifyURL(completeURL, { text: newNoteUrl });
+      link5.tabIndex = 0;
+      this.newNoteUrlField.appendChild(link5);
     }
     const protocolHandlers = parsedManifest["protocol_handlers"] || [];
     this.protocolHandlersView.data = { protocolHandlers, manifestLink: url };
@@ -892,10 +892,10 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       }
       const urlField = shortcutSection.appendFlexedField(i18nString(UIStrings.url));
       const shortcutUrl = Common2.ParsedURL.ParsedURL.completeURL(url, shortcut.url);
-      const link4 = Components.Linkifier.Linkifier.linkifyURL(shortcutUrl, { text: shortcut.url });
-      link4.setAttribute("jslog", `${VisualLogging.link("shortcut").track({ click: true })}`);
-      link4.tabIndex = 0;
-      urlField.appendChild(link4);
+      const link5 = Components.Linkifier.Linkifier.linkifyURL(shortcutUrl, { text: shortcut.url });
+      link5.setAttribute("jslog", `${VisualLogging.link("shortcut").track({ click: true })}`);
+      link5.tabIndex = 0;
+      urlField.appendChild(link5);
       const shortcutIcons = shortcut.icons || [];
       let hasShortcutIconLargeEnough = false;
       for (const shortcutIcon of shortcutIcons) {
@@ -1004,7 +1004,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       const wco = document.createElement("code");
       wco.classList.add("wco");
       wco.textContent = "window-controls-overlay";
-      wcoStatusMessage.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoFound, { PH1: wco, PH2: displayOverrideText, PH3: link3 }));
+      wcoStatusMessage.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoFound, { PH1: wco, PH2: displayOverrideText, PH3: link4 }));
       if (this.overlayModel) {
         await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty("theme_color"));
       }
@@ -4794,7 +4794,11 @@ var PreloadingRuleSetView = class extends UI8.Widget.VBox {
           <span class="empty-state-header">${i18nString10(UIStrings10.noRulesDetected)}</span>
           <div class="empty-state-description">
             <span>${i18nString10(UIStrings10.rulesDescription)}</span>
-            ${UI8.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString10(UIStrings10.learnMore), "x-link", void 0, "learn-more")}
+            <x-link
+              class="x-link devtools-link"
+              href=${SPECULATION_EXPLANATION_URL}
+              jslog=${VisualLogging5.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+            >${i18nString10(UIStrings10.learnMore)}</x-link>
           </div>
         </div>
         <devtools-split-view sidebar-position="second">
@@ -4908,7 +4912,11 @@ var PreloadingAttemptView = class extends UI8.Widget.VBox {
           <span class="empty-state-header">${i18nString10(UIStrings10.noPrefetchAttempts)}</span>
           <div class="empty-state-description">
             <span>${i18nString10(UIStrings10.prefetchDescription)}</span>
-            ${UI8.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString10(UIStrings10.learnMore), "x-link", void 0, "learn-more")}
+            <x-link
+              class="x-link devtools-link"
+              href=${SPECULATION_EXPLANATION_URL}
+              jslog=${VisualLogging5.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+            >${i18nString10(UIStrings10.learnMore)}</x-link>
           </div>
         </div>
         <devtools-split-view sidebar-position="second">
@@ -7406,10 +7414,10 @@ var Section = class {
     this.sourceField.removeChildren();
     const fileName = Common9.ParsedURL.ParsedURL.extractName(version.scriptURL);
     const name = this.sourceField.createChild("div", "report-field-value-filename");
-    const link3 = Components2.Linkifier.Linkifier.linkifyURL(version.scriptURL, { text: fileName });
-    link3.tabIndex = 0;
-    link3.setAttribute("jslog", `${VisualLogging9.link("source-location").track({ click: true })}`);
-    name.appendChild(link3);
+    const link4 = Components2.Linkifier.Linkifier.linkifyURL(version.scriptURL, { text: fileName });
+    link4.tabIndex = 0;
+    link4.setAttribute("jslog", `${VisualLogging9.link("source-location").track({ click: true })}`);
+    name.appendChild(link4);
     if (this.registration.errors.length) {
       const errorsLabel = UI13.UIUtils.createIconLabel({
         title: String(this.registration.errors.length),
@@ -10923,8 +10931,8 @@ var StorageCategoryView = class extends UI21.Widget.VBox {
   setHeadline(header) {
     this.emptyWidget.header = header;
   }
-  setLink(link3) {
-    this.emptyWidget.link = link3;
+  setLink(link4) {
+    this.emptyWidget.link = link4;
   }
 };
 var ResourcesSection = class {

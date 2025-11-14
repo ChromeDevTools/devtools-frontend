@@ -14,7 +14,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     readonly pluginManager: DebuggerLanguagePluginManager;
     readonly ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
     readonly workspace: Workspace.Workspace.WorkspaceImpl;
-    private constructor();
+    constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager, ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager, workspace: Workspace.Workspace.WorkspaceImpl);
     setFunctionRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, ranges: SDK.SourceMapFunctionRanges.NamedFunctionRange[]): void;
     static instance(opts?: {
         forceNew: boolean | null;

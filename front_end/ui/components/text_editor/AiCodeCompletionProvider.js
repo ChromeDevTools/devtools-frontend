@@ -28,7 +28,7 @@ export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 const MAX_PREFIX_SUFFIX_LENGTH = 20_000;
 export class AiCodeCompletionProvider {
-    #aidaClient;
+    #aidaClient = new Host.AidaClient.AidaClient();
     #aiCodeCompletion;
     #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
     #aiCodeCompletionTeaserDismissedSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
@@ -44,6 +44,9 @@ export class AiCodeCompletionProvider {
             throw new Error('AI code completion feature is not enabled.');
         }
         this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
+    }
+    static createInstance(aiCodeCompletionConfig) {
+        return new AiCodeCompletionProvider(aiCodeCompletionConfig);
     }
     extension() {
         return [
@@ -77,12 +80,11 @@ export class AiCodeCompletionProvider {
     clearCache() {
         this.#aiCodeCompletion?.clearCachedRequest();
     }
+    // TODO(b/445394511): Update setup and cleanup method so that config callbacks are not
+    // called twice.
     #setupAiCodeCompletion() {
         if (!this.#editor || !this.#aiCodeCompletionConfig) {
             return;
-        }
-        if (!this.#aidaClient) {
-            this.#aidaClient = new Host.AidaClient.AidaClient();
         }
         if (!this.#aiCodeCompletion) {
             this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, undefined, this.#aiCodeCompletionConfig.completionContext.stopSequences);

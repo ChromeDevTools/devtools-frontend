@@ -1,5 +1,6 @@
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import { type LitTemplate } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import type * as Components from '../utils/utils.js';
 interface NodeChildren {
@@ -67,8 +68,9 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty): number;
     static createNameElement(name: string | null, isPrivate?: boolean): Element;
-    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string): HTMLElement;
+    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, className?: string): LitTemplate;
     static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement;
+    static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
     static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void;
     static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string): HTMLElement;
     static formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, element: Element, linkify: boolean, includePreview?: boolean): Promise<void>;
@@ -136,7 +138,6 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     readOnly: boolean;
     private prompt;
     private editableDiv;
-    propertyValue?: HTMLElement;
     expandedValueElement?: HTMLElement;
     constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier, view?: TreeElementView);
     static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
@@ -202,8 +203,8 @@ export declare class ExpandableTextPropertyValue {
     private readonly text;
     private readonly maxLength;
     private readonly maxDisplayableTextLength;
-    constructor(element: HTMLElement, text: string, maxLength: number);
-    get element(): HTMLElement;
+    constructor(text: string, maxLength: number);
+    get element(): DocumentFragment;
     private expandText;
     private copyText;
 }

@@ -381,7 +381,7 @@ function agentToConversationType(agent) {
         return "drjones-file" /* AiAssistanceModel.AiHistoryStorage.ConversationType.FILE */;
     }
     if (agent instanceof AiAssistanceModel.PerformanceAgent.PerformanceAgent) {
-        return agent.getConversationType();
+        return "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */;
     }
     throw new Error('Provided agent does not have a corresponding conversation type');
 }

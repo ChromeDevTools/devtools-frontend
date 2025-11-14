@@ -1218,12 +1218,12 @@ var NodeLink_exports = {};
 __export(NodeLink_exports, {
   NodeLink: () => NodeLink
 });
-import * as Common from "./../../../../core/common/common.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers5 from "./../../../../ui/components/helpers/helpers.js";
 import * as LegacyComponents from "./../../../../ui/legacy/components/utils/utils.js";
 import * as Lit7 from "./../../../../ui/lit/lit.js";
+import * as PanelsCommon from "./../../../common/common.js";
 var { html: html7 } = Lit7;
 var NodeLink = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -1273,7 +1273,7 @@ var NodeLink = class extends HTMLElement {
       this.#linkifiedNodeForBackendId.set(this.#backendNodeId, "NO_NODE_FOUND");
       return;
     }
-    const linkedNode = await Common.Linkifier.Linkifier.linkify(node, this.#options);
+    const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#options);
     this.#linkifiedNodeForBackendId.set(this.#backendNodeId, linkedNode);
     return linkedNode;
   }
@@ -2083,7 +2083,7 @@ var LegacyJavaScript_exports = {};
 __export(LegacyJavaScript_exports, {
   LegacyJavaScript: () => LegacyJavaScript
 });
-import * as Common2 from "./../../../../core/common/common.js";
+import * as Common from "./../../../../core/common/common.js";
 import * as i18n18 from "./../../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as Bindings from "./../../../../models/bindings/bindings.js";
@@ -2114,7 +2114,7 @@ var LegacyJavaScript = class extends BaseInsightComponent {
       return;
     }
     const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
-    await Common2.Revealer.reveal(uiLocation);
+    await Common.Revealer.reveal(uiLocation);
   }
   renderContent() {
     if (!this.model) {

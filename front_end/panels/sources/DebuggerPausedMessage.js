@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 import { getLocalizedBreakpointName } from './CategorizedBreakpointL10n.js';
 import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 const UIStrings = {
@@ -148,10 +148,10 @@ export class DebuggerPausedMessage {
         const breakpointType = BreakpointTypeNouns.get(data.type);
         mainElement.appendChild(document.createTextNode(i18nString(UIStrings.pausedOnS, { PH1: breakpointType ? breakpointType() : String(null) })));
         const subElement = messageWrapper.createChild('div', 'status-sub monospace');
-        const linkifiedNode = await Common.Linkifier.Linkifier.linkify(data.node);
+        const linkifiedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.node);
         subElement.appendChild(linkifiedNode);
         if (data.targetNode) {
-            const targetNodeLink = await Common.Linkifier.Linkifier.linkify(data.targetNode);
+            const targetNodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.targetNode);
             let messageElement;
             if (data.insertion) {
                 if (data.targetNode === data.node) {

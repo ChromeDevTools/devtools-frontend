@@ -274,9 +274,6 @@ export class PerformanceAgent extends AiAgent {
             modelId,
         };
     }
-    getConversationType() {
-        return "drjones-performance-full" /* ConversationType.PERFORMANCE */;
-    }
     async *handleContextDetails(context) {
         if (!context) {
             return;

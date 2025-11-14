@@ -731,7 +731,7 @@ export class ConsoleViewMessage {
         const result = document.createElement('span');
         const description = obj.description || '';
         if (description.length > getMaxTokenizableStringLength()) {
-            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(document.createElement('span'), description, getLongStringVisibleLength());
+            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(description, getLongStringVisibleLength());
             result.appendChild(propertyValue.element);
         }
         else {
@@ -1649,7 +1649,7 @@ export class ConsoleViewMessage {
     }
     linkifyWithCustomLinkifier(string, linkifier) {
         if (string.length > getMaxTokenizableStringLength()) {
-            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(document.createElement('span'), string, getLongStringVisibleLength());
+            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(string, getLongStringVisibleLength());
             const fragment = document.createDocumentFragment();
             fragment.appendChild(propertyValue.element);
             return fragment;

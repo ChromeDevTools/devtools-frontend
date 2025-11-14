@@ -5981,6 +5981,9 @@
   "panels/common/common.ts | cancel": {
     "message": "Cancel"
   },
+  "panels/common/DOMLinkifier.ts | node": {
+    "message": "<node>"
+  },
   "panels/common/FreDialog.ts | cancel": {
     "message": "Cancel"
   },
@@ -6940,9 +6943,6 @@
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
     "message": "The {REASON_PROPERTY_DECLARATION_CODE} property prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect."
-  },
-  "panels/elements/DOMLinkifier.ts | node": {
-    "message": "<node>"
   },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Invalid element or text node within <optgroup>"

@@ -159,8 +159,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             if (!node) {
                 return null;
             }
-            const link = await Common.Linkifier.Linkifier.linkify(node);
-            return { node, link };
+            return node;
         }
         catch {
             return null;
@@ -197,22 +196,20 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             ...this.#interactions.values().map(i => i.nodeRef),
             ...this.#layoutShifts.flatMap(shift => shift.affectedNodeRefs),
         ].filter(nodeRef => !!nodeRef);
-        const idsToRefresh = new Set(toRefresh.map(nodeRef => nodeRef.node.backendNodeId()));
+        const idsToRefresh = new Set(toRefresh.map(nodeRef => nodeRef.backendNodeId()));
         const nodes = await domModel.pushNodesByBackendIdsToFrontend(idsToRefresh);
         if (!nodes) {
             return;
         }
-        const allPromises = toRefresh.map(async (nodeRef) => {
-            const refreshedNode = nodes.get(nodeRef.node.backendNodeId());
+        for (let i = 0; i < toRefresh.length; i++) {
+            const refreshedNode = nodes.get(toRefresh[i].backendNodeId());
             // It is possible for the refreshed node to be undefined even though it was defined previously.
             // We should keep the affected nodes consistent from the user perspective, so we will just keep the stale node instead of removing it.
             if (!refreshedNode) {
-                return;
+                continue;
             }
-            nodeRef.node = refreshedNode;
-            nodeRef.link = await Common.Linkifier.Linkifier.linkify(refreshedNode);
-        });
-        await Promise.all(allPromises);
+            toRefresh[i] = refreshedNode;
+        }
         this.#sendStatusUpdate();
     }
     async #handleWebVitalsEvent(webVitalsEvent, executionContextId) {

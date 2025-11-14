@@ -50,6 +50,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 import * as Emulation from '../emulation/emulation.js';
 import * as Media from '../media/media.js';
 import * as ElementsComponents from './components/components.js';
@@ -1811,7 +1812,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (!relatedElement) {
             return;
         }
-        const link = await Common.Linkifier.Linkifier.linkify(relatedElement, {
+        const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedElement, {
             preventKeyboardFocus: true,
             tooltip,
             textContent: linkContainer.textContent || undefined,

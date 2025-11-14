@@ -1,5 +1,7 @@
 // gen/front_end/ui/i18n/i18n.prebundle.js
 import * as I18n from "./../../core/i18n/i18n.js";
+import { Directives, html, nothing } from "./../lit/lit.js";
+var { repeat } = Directives;
 function getFormatLocalizedString(registeredStrings, stringId, placeholders) {
   const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
   const element = document.createElement("span");
@@ -16,7 +18,13 @@ function getFormatLocalizedString(registeredStrings, stringId, placeholders) {
   }
   return element;
 }
+function getFormatLocalizedStringTemplate(registeredStrings, stringId, placeholders) {
+  const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
+  return html`<span>${repeat(formatter.getAst(), (icuElement) => icuElement.type === /* argumentElement */
+  1 ? placeholders[icuElement.value] ?? nothing : "value" in icuElement ? String(icuElement.value) : nothing)}</span>`;
+}
 export {
-  getFormatLocalizedString
+  getFormatLocalizedString,
+  getFormatLocalizedStringTemplate
 };
 //# sourceMappingURL=i18n.js.map

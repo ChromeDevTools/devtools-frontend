@@ -3,33 +3,34 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { LiveLocationWithPool, } from './LiveLocation.js';
 import { SASSSourceMapping } from './SASSSourceMapping.js';
 import { StylesSourceMapping } from './StylesSourceMapping.js';
-let cssWorkspaceBindingInstance;
 export class CSSWorkspaceBinding {
     #resourceMapping;
     #modelToInfo;
     #liveLocationPromises;
     constructor(resourceMapping, targetManager) {
         this.#resourceMapping = resourceMapping;
+        this.#resourceMapping.cssWorkspaceBinding = this;
         this.#modelToInfo = new Map();
         targetManager.observeModels(SDK.CSSModel.CSSModel, this);
         this.#liveLocationPromises = new Set();
     }
     static instance(opts = { forceNew: null, resourceMapping: null, targetManager: null }) {
         const { forceNew, resourceMapping, targetManager } = opts;
-        if (!cssWorkspaceBindingInstance || forceNew) {
+        if (forceNew) {
             if (!resourceMapping || !targetManager) {
                 throw new Error(`Unable to create CSSWorkspaceBinding: resourceMapping and targetManager must be provided: ${new Error().stack}`);
             }
-            cssWorkspaceBindingInstance = new CSSWorkspaceBinding(resourceMapping, targetManager);
+            Root.DevToolsContext.globalInstance().set(CSSWorkspaceBinding, new CSSWorkspaceBinding(resourceMapping, targetManager));
         }
-        return cssWorkspaceBindingInstance;
+        return Root.DevToolsContext.globalInstance().get(CSSWorkspaceBinding);
     }
     static removeInstance() {
-        cssWorkspaceBindingInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(CSSWorkspaceBinding);
     }
     get modelToInfo() {
         return this.#modelToInfo;

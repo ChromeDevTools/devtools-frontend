@@ -87,7 +87,7 @@ export function getMatchedStyles(payload = {}, getEnvironmentVariablesCallback =
         positionTryRules: [],
         propertyRules: [],
         cssPropertyRegistrations: [],
-        fontPaletteValuesRule: undefined,
+        atRules: [],
         activePositionFallbackIndex: -1,
         animationStylesPayload: [],
         transitionsStylePayload: null,

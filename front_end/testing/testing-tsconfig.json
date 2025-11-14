@@ -57,6 +57,7 @@
     "../../../../../front_end/testing/InsightHelpers.ts",
     "../../../../../front_end/testing/LanguagePluginHelpers.ts",
     "../../../../../front_end/testing/LocaleHelpers.ts",
+    "../../../../../front_end/testing/MockCDPConnection.ts",
     "../../../../../front_end/testing/MockConnection.ts",
     "../../../../../front_end/testing/MockExecutionContext.ts",
     "../../../../../front_end/testing/MockIssuesManager.ts",

@@ -27,7 +27,8 @@ export declare const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export declare const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 export declare class AiCodeCompletionProvider {
     #private;
-    constructor(aiCodeCompletionConfig: AiCodeCompletionConfig);
+    private constructor();
+    static createInstance(aiCodeCompletionConfig: AiCodeCompletionConfig): AiCodeCompletionProvider;
     extension(): CodeMirror.Extension[];
     dispose(): void;
     editorInitialized(editor: TextEditor): void;

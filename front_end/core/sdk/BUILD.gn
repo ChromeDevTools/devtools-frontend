@@ -155,7 +155,6 @@ ts_library("unittests") {
     "CookieModel.test.ts",
     "CookieParser.test.ts",
     "DOMModel.test.ts",
-    "DebuggerModel.test.ts",
     "EmulationModel.test.ts",
     "EnhancedTracesParser.test.ts",
     "FrameManager.test.ts",
@@ -207,6 +206,7 @@ devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
+    "DebuggerModel.test.ts",
     "RuntimeModel.test.ts",
     "Target.test.ts",
     "TargetManager.test.ts",
@@ -214,6 +214,9 @@ devtools_foundation_module("foundation_unittests") {
 
   deps = [
     ":bundle",
+    "../../generated",
+    "../../models/bindings:bundle",
+    "../../models/workspace:bundle",
     "../../testing",
     "../host:bundle",
     "../platform:bundle",

@@ -6,12 +6,10 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
@@ -21,56 +19,36 @@ const {urlString} = Platform.DevToolsPath;
 const SCRIPT_ID_ONE = '1' as Protocol.Runtime.ScriptId;
 const SCRIPT_ID_TWO = '2' as Protocol.Runtime.ScriptId;
 
-describeWithMockConnection('DebuggerModel', () => {
+describe('DebuggerModel', () => {
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
   describe('breakpoint activation', () => {
-    beforeEach(() => {
-      // Dummy handlers for unblocking target suspension.
-      setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', () => ({}));
-      setMockConnectionResponseHandler('Debugger.disable', () => ({}));
-      setMockConnectionResponseHandler('DOM.disable', () => ({}));
-      setMockConnectionResponseHandler('CSS.disable', () => ({}));
-      setMockConnectionResponseHandler('Overlay.disable', () => ({}));
-      setMockConnectionResponseHandler('Animation.disable', () => ({}));
-      setMockConnectionResponseHandler('Overlay.setShowGridOverlays', () => ({}));
-      setMockConnectionResponseHandler('Overlay.setShowFlexOverlays', () => ({}));
-      setMockConnectionResponseHandler('Overlay.setShowScrollSnapOverlays', () => ({}));
-      setMockConnectionResponseHandler('Overlay.setShowContainerQueryOverlays', () => ({}));
-      setMockConnectionResponseHandler('Overlay.setShowIsolatedElements', () => ({}));
-      setMockConnectionResponseHandler('Overlay.setShowViewportSizeOnResize', () => ({}));
-      setMockConnectionResponseHandler('Target.setAutoAttach', () => ({}));
-
-      // Dummy handlers for unblocking target resumption.
-      setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
-      setMockConnectionResponseHandler('Debugger.setPauseOnExceptions', () => ({}));
-      setMockConnectionResponseHandler('DOM.enable', () => ({}));
-      setMockConnectionResponseHandler('Overlay.enable', () => ({}));
-      setMockConnectionResponseHandler('CSS.enable', () => ({}));
-      setMockConnectionResponseHandler('Animation.enable', () => ({}));
-    });
-
     it('deactivates breakpoints on construction with inactive breakpoints', async () => {
+      const connection = new MockCDPConnection();
       let breakpointsDeactivated = false;
-      setMockConnectionResponseHandler('Debugger.setBreakpointsActive', request => {
+      connection.setHandler('Debugger.setBreakpointsActive', request => {
         if (request.active === false) {
           breakpointsDeactivated = true;
         }
-        return {};
+        return {result: {}};
       });
       Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(false);
-      createTarget();
+      createTarget({connection});
       assert.isTrue(breakpointsDeactivated);
     });
 
     it('deactivates breakpoints for suspended target', async () => {
+      const connection = new MockCDPConnection();
       let breakpointsDeactivated = false;
-      setMockConnectionResponseHandler('Debugger.setBreakpointsActive', request => {
+      connection.setHandler('Debugger.setBreakpointsActive', request => {
         if (request.active === false) {
           breakpointsDeactivated = true;
         }
-        return {};
+        return {result: {}};
       });
 
-      const target = createTarget();
+      const target = createTarget({connection});
 
       await target.suspend();
 
@@ -88,20 +66,21 @@ describeWithMockConnection('DebuggerModel', () => {
     });
 
     it('activates breakpoints for suspended target', async () => {
+      const connection = new MockCDPConnection();
       let breakpointsDeactivated = false;
       let breakpointsActivated = false;
-      setMockConnectionResponseHandler('Debugger.setBreakpointsActive', request => {
+      connection.setHandler('Debugger.setBreakpointsActive', request => {
         if (request.active) {
           breakpointsActivated = true;
         } else {
           breakpointsDeactivated = true;
         }
-        return {};
+        return {result: {}};
       });
 
       // Deactivate breakpoints befroe the target is created.
       Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(false);
-      const target = createTarget();
+      const target = createTarget({connection});
       assert.isTrue(breakpointsDeactivated);
 
       await target.suspend();
@@ -116,39 +95,44 @@ describeWithMockConnection('DebuggerModel', () => {
 
   describe('createRawLocationFromURL', () => {
     it('yields correct location in the presence of multiple scripts with the same URL', async () => {
-      const target = createTarget();
+      const connection = new MockCDPConnection();
+      const target = createTarget({connection});
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       const url = 'http://localhost/index.html';
-      dispatchEvent(target, 'Debugger.scriptParsed', {
-        scriptId: SCRIPT_ID_ONE,
-        url,
-        startLine: 0,
-        startColumn: 0,
-        endLine: 1,
-        endColumn: 10,
-        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
-        hash: '',
-        buildId: '',
-        isLiveEdit: false,
-        sourceMapURL: undefined,
-        hasSourceURL: false,
-        length: 10,
-      });
-      dispatchEvent(target, 'Debugger.scriptParsed', {
-        scriptId: SCRIPT_ID_TWO,
-        url,
-        startLine: 20,
-        startColumn: 0,
-        endLine: 21,
-        endColumn: 10,
-        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
-        hash: '',
-        buildId: '',
-        isLiveEdit: false,
-        sourceMapURL: undefined,
-        hasSourceURL: false,
-        length: 10,
-      });
+      connection.dispatchEvent(
+          'Debugger.scriptParsed', {
+            scriptId: SCRIPT_ID_ONE,
+            url,
+            startLine: 0,
+            startColumn: 0,
+            endLine: 1,
+            endColumn: 10,
+            executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+            hash: '',
+            buildId: '',
+            isLiveEdit: false,
+            sourceMapURL: undefined,
+            hasSourceURL: false,
+            length: 10,
+          },
+          target.sessionId);
+      connection.dispatchEvent(
+          'Debugger.scriptParsed', {
+            scriptId: SCRIPT_ID_TWO,
+            url,
+            startLine: 20,
+            startColumn: 0,
+            endLine: 21,
+            endColumn: 10,
+            executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+            hash: '',
+            buildId: '',
+            isLiveEdit: false,
+            sourceMapURL: undefined,
+            hasSourceURL: false,
+            length: 10,
+          },
+          target.sessionId);
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 0)?.scriptId, SCRIPT_ID_ONE);
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 20, 1)?.scriptId, SCRIPT_ID_TWO);
       assert.isNull(debuggerModel?.createRawLocationByURL(url, 5, 5));
@@ -160,26 +144,25 @@ describeWithMockConnection('DebuggerModel', () => {
 
   describe('setBreakpointByURL', () => {
     it('correctly sets only a single breakpoint in Node.js internal scripts', async () => {
-      setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', ({url}) => {
+      const connection = new MockCDPConnection();
+      connection.setHandler('Debugger.setBreakpointByUrl', ({url}) => {
         if (url === 'fs.js') {
           return {
-            breakpointId: breakpointId1,
-            locations: [],
-            getError() {
-              return undefined;
-            },
+            result: {
+              breakpointId: breakpointId1,
+              locations: [],
+            }
           };
         }
         return {
-          breakpointId: breakpointId2,
-          locations: [],
-          getError() {
-            return undefined;
-          },
+          result: {
+            breakpointId: breakpointId2,
+            locations: [],
+          }
         };
       });
 
-      const target = createTarget();
+      const target = createTarget({connection});
       target.markAsNodeJSForTest();
       const model = new SDK.DebuggerModel.DebuggerModel(target);
       const {breakpointId} = await model.setBreakpointByURL(urlString`fs.js`, 1);
@@ -189,38 +172,43 @@ describeWithMockConnection('DebuggerModel', () => {
 
   describe('scriptsForSourceURL', () => {
     it('returns the latest script at the front of the result for scripts with the same URL', () => {
-      const target = createTarget();
+      const connection = new MockCDPConnection();
+      const target = createTarget({connection});
       const url = 'http://localhost/index.html';
-      dispatchEvent(target, 'Debugger.scriptParsed', {
-        scriptId: SCRIPT_ID_ONE,
-        url,
-        startLine: 0,
-        startColumn: 0,
-        endLine: 1,
-        endColumn: 10,
-        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
-        hash: '',
-        buildId: '',
-        isLiveEdit: false,
-        sourceMapURL: undefined,
-        hasSourceURL: false,
-        length: 10,
-      });
-      dispatchEvent(target, 'Debugger.scriptParsed', {
-        scriptId: SCRIPT_ID_TWO,
-        url,
-        startLine: 20,
-        startColumn: 0,
-        endLine: 21,
-        endColumn: 10,
-        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
-        buildId: '',
-        hash: '',
-        isLiveEdit: false,
-        sourceMapURL: undefined,
-        hasSourceURL: false,
-        length: 10,
-      });
+      connection.dispatchEvent(
+          'Debugger.scriptParsed', {
+            scriptId: SCRIPT_ID_ONE,
+            url,
+            startLine: 0,
+            startColumn: 0,
+            endLine: 1,
+            endColumn: 10,
+            executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+            hash: '',
+            buildId: '',
+            isLiveEdit: false,
+            sourceMapURL: undefined,
+            hasSourceURL: false,
+            length: 10,
+          },
+          target.sessionId);
+      connection.dispatchEvent(
+          'Debugger.scriptParsed', {
+            scriptId: SCRIPT_ID_TWO,
+            url,
+            startLine: 20,
+            startColumn: 0,
+            endLine: 21,
+            endColumn: 10,
+            executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+            buildId: '',
+            hash: '',
+            isLiveEdit: false,
+            sourceMapURL: undefined,
+            hasSourceURL: false,
+            length: 10,
+          },
+          target.sessionId);
 
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       const scripts = debuggerModel?.scriptsForSourceURL(url) || [];
@@ -230,7 +218,7 @@ describeWithMockConnection('DebuggerModel', () => {
     });
   });
 
-  describe('Scope', () => {
+  describeWithLocale('Scope', () => {
     it('Scope.typeName covers every enum value', async () => {
       const target = createTarget();
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
@@ -277,12 +265,8 @@ describeWithMockConnection('DebuggerModel', () => {
   });
 
   describe('pause', () => {
-    let target: SDK.Target.Target;
-    let backend: MockProtocolBackend;
-
     beforeEach(() => {
-      target = createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
-      const targetManager = target.targetManager();
+      const targetManager = SDK.TargetManager.TargetManager.instance();
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
       const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
@@ -293,17 +277,26 @@ describeWithMockConnection('DebuggerModel', () => {
         ignoreListManager,
         workspace,
       });
-      backend = new MockProtocolBackend();
     });
 
     it('with empty call frame list will invoke plain step-into', async () => {
+      const connection = new MockCDPConnection();
+      const target =
+          createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME, connection});
       const stepIntoRequestPromise = new Promise<void>(resolve => {
-        setMockConnectionResponseHandler('Debugger.stepInto', () => {
+        connection.setHandler('Debugger.stepInto', () => {
           resolve();
-          return {};
+          return {result: {}};
         });
       });
-      backend.dispatchDebuggerPauseWithNoCallFrames(target, Protocol.Debugger.PausedEventReason.Other);
+
+      connection.dispatchEvent(
+          'Debugger.paused', {
+            callFrames: [],
+            reason: Protocol.Debugger.PausedEventReason.Other,
+          },
+          target.sessionId);
+
       await stepIntoRequestPromise;
     });
   });

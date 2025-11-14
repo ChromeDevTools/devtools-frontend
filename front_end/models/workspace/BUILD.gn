@@ -34,6 +34,8 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../core/sdk:foundation_unittests",
+    "../../core/sdk:foundation_unittests_node_typecheck",
     "../../core/sdk:unittests",
     "../../entrypoints/main/*",
     "../../foundation/*",

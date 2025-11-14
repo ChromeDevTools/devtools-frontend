@@ -23,10 +23,28 @@ export type CommandAndHandler<C extends ProtocolClient.CDPConnection.Command> = 
  */
 export class MockCDPConnection implements ProtocolClient.CDPConnection.CDPConnection {
   readonly #observers = new Set<ProtocolClient.CDPConnection.CDPConnectionObserver>();
-  readonly #handlers: Map<ProtocolClient.CDPConnection.Command, CommandHandler<ProtocolClient.CDPConnection.Command>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly #handlers: Map<ProtocolClient.CDPConnection.Command, CommandHandler<any>>;
 
-  constructor(handlers: Array<CommandAndHandler<ProtocolClient.CDPConnection.Command>>) {
+  constructor(handlers: Array<CommandAndHandler<ProtocolClient.CDPConnection.Command>> = []) {
     this.#handlers = new Map(handlers);
+  }
+
+  /**
+   * Sets the provided handler or clears an existing handler when passing `null`.
+   *
+   * Throws if a set would overwrite an existing handler.
+   */
+  setHandler<T extends ProtocolClient.CDPConnection.Command>(method: T, handler: CommandHandler<T>|null): void {
+    if (handler && this.#handlers.has(method)) {
+      throw new Error(`MockCDPConnection already has a handler for ${method}`);
+    }
+
+    if (handler) {
+      this.#handlers.set(method, handler);
+    } else {
+      this.#handlers.delete(method);
+    }
   }
 
   send<T extends ProtocolClient.CDPConnection.Command>(
@@ -45,6 +63,15 @@ export class MockCDPConnection implements ProtocolClient.CDPConnection.CDPConnec
     }
 
     return Promise.resolve(handler(params, sessionId));
+  }
+
+  dispatchEvent<T extends ProtocolClient.CDPConnection.Event>(
+      event: T, params: ProtocolClient.CDPConnection.EventParams<T>, sessionId: string|undefined): void {
+    this.#observers.forEach(observer => observer.onEvent({
+      sessionId,
+      method: event,
+      params,
+    }));
   }
 
   observe(observer: ProtocolClient.CDPConnection.CDPConnectionObserver): void {

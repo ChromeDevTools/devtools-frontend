@@ -17,7 +17,8 @@ import type {ConnectionTransport} from './ConnectionTransport.js';
 import {InspectorBackend, type MessageError, type QualifiedName, test} from './InspectorBackend.js';
 
 interface CallbackWithDebugInfo {
-  resolve: (response: Awaited<ReturnType<CDPConnection['send']>>) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolve: (response: {result: CommandResult<any>}|{error: CDPError}) => void;
   method: string;
   sessionId: string|undefined;
 }

@@ -275,12 +275,9 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
     // Instead, we ignore the ID coming from the worker when sending the command, but
     // patch it back in when sending the response back to the worker.
     void this.connection?.send(method, params, sessionId).then(response => {
-      this.dispatchProtocolMessage({
-        id,
-        sessionId,
-        result: 'result' in response ? response.result : undefined,
-        error: 'error' in response ? response.error : undefined,
-      });
+      const message =
+          'result' in response ? {id, sessionId, result: response.result} : {id, sessionId, error: response.error};
+      this.dispatchProtocolMessage(message);
     });
   }
 

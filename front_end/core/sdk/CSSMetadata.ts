@@ -455,11 +455,8 @@ const cornerShapeValuePresetMap = new Map([
 ]);
 
 const valuePresets = new Map([
-  ['filter', filterValuePresetMap],
-  ['backdrop-filter', filterValuePresetMap],
-  ['background', imageValuePresetMap],
-  ['background-image', imageValuePresetMap],
-  ['-webkit-mask-image', imageValuePresetMap],
+  ['filter', filterValuePresetMap], ['backdrop-filter', filterValuePresetMap], ['background', imageValuePresetMap],
+  ['background-image', imageValuePresetMap], ['-webkit-mask-image', imageValuePresetMap],
   [
     'transform',
     new Map([
@@ -486,6 +483,17 @@ const valuePresets = new Map([
     ]),
   ],
   ['corner-shape', cornerShapeValuePresetMap],
+  [
+    'font-variant-alternates',
+    new Map([
+      ['stylistic', 'stylistic(||)'],
+      ['styleset', 'styleset(||)'],
+      ['character-variant', 'character-variant(||)'],
+      ['swash', 'swash(||)'],
+      ['ornaments', 'ornaments(||)'],
+      ['annotation', 'annotation(||)'],
+    ]),
+  ]
 ]);
 
 const distanceProperties = new Set<string>([
@@ -765,6 +773,10 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'proportional-width',
       'ruby',
     ]),
+  ],
+  [
+    'font-variant-alternates',
+    new Set(['historical-forms', 'stylistic', 'styleset', 'character-variant', 'swash', 'ornaments', 'annotation'])
   ],
   ['vertical-align', new Set(['top', 'bottom', '-webkit-baseline-middle'])],
   ['page-break-after', new Set(['left', 'right', 'always', 'avoid'])],

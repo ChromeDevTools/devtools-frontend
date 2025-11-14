@@ -15473,21 +15473,6 @@
                     ]
                 },
                 {
-                    "id": "IpProxyStatus",
-                    "description": "Sets Controls for IP Proxy of requests.\nPage reload is required before the new behavior will be observed.",
-                    "experimental": true,
-                    "type": "string",
-                    "enum": [
-                        "Available",
-                        "FeatureNotEnabled",
-                        "MaskedDomainListNotEnabled",
-                        "MaskedDomainListNotPopulated",
-                        "AuthTokensUnavailable",
-                        "Unavailable",
-                        "BypassedByDevTools"
-                    ]
-                },
-                {
                     "id": "CorsError",
                     "description": "The reason why request was blocked.",
                     "type": "string",
@@ -15807,13 +15792,6 @@
                             "description": "Security details for the request.",
                             "optional": true,
                             "$ref": "SecurityDetails"
-                        },
-                        {
-                            "name": "isIpProtectionUsed",
-                            "description": "Indicates whether the request was sent through IP Protection proxies. If\nset to true, the request used the IP Protection privacy feature.",
-                            "experimental": true,
-                            "optional": true,
-                            "type": "boolean"
                         }
                     ]
                 },
@@ -17120,30 +17098,6 @@
                 }
             ],
             "commands": [
-                {
-                    "name": "getIPProtectionProxyStatus",
-                    "description": "Returns enum representing if IP Proxy of requests is available\nor reason it is not active.",
-                    "experimental": true,
-                    "returns": [
-                        {
-                            "name": "status",
-                            "description": "Whether IP proxy is available",
-                            "$ref": "IpProxyStatus"
-                        }
-                    ]
-                },
-                {
-                    "name": "setIPProtectionProxyBypassEnabled",
-                    "description": "Sets bypass IP Protection Proxy boolean.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "enabled",
-                            "description": "Whether IP Proxy is being bypassed by devtools; false by default.",
-                            "type": "boolean"
-                        }
-                    ]
-                },
                 {
                     "name": "setAcceptedEncodings",
                     "description": "Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.",
@@ -28220,7 +28174,7 @@
                         },
                         {
                             "name": "panelId",
-                            "description": "The id of the panel we want DevTools to open initially. Currently\nsupported panels are elements, console, network, sources and resources.",
+                            "description": "The id of the panel we want DevTools to open initially. Currently\nsupported panels are elements, console, network, sources, resources\nand performance.",
                             "optional": true,
                             "type": "string"
                         }

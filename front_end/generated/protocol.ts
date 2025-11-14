@@ -10166,20 +10166,6 @@ export namespace Network {
   }
 
   /**
-   * Sets Controls for IP Proxy of requests.
-   * Page reload is required before the new behavior will be observed.
-   */
-  export const enum IpProxyStatus {
-    Available = 'Available',
-    FeatureNotEnabled = 'FeatureNotEnabled',
-    MaskedDomainListNotEnabled = 'MaskedDomainListNotEnabled',
-    MaskedDomainListNotPopulated = 'MaskedDomainListNotPopulated',
-    AuthTokensUnavailable = 'AuthTokensUnavailable',
-    Unavailable = 'Unavailable',
-    BypassedByDevTools = 'BypassedByDevTools',
-  }
-
-  /**
    * The reason why request was blocked.
    */
   export const enum CorsError {
@@ -10424,11 +10410,6 @@ export namespace Network {
      * Security details for the request.
      */
     securityDetails?: SecurityDetails;
-    /**
-     * Indicates whether the request was sent through IP Protection proxies. If
-     * set to true, the request used the IP Protection privacy feature.
-     */
-    isIpProtectionUsed?: boolean;
   }
 
   /**
@@ -11334,20 +11315,6 @@ export namespace Network {
   export interface LoadNetworkResourceOptions {
     disableCache: boolean;
     includeCredentials: boolean;
-  }
-
-  export interface GetIPProtectionProxyStatusResponse extends ProtocolResponseWithError {
-    /**
-     * Whether IP proxy is available
-     */
-    status: IpProxyStatus;
-  }
-
-  export interface SetIPProtectionProxyBypassEnabledRequest {
-    /**
-     * Whether IP Proxy is being bypassed by devtools; false by default.
-     */
-    enabled: boolean;
   }
 
   export interface SetAcceptedEncodingsRequest {
@@ -18516,7 +18483,8 @@ export namespace Target {
     targetId: TargetID;
     /**
      * The id of the panel we want DevTools to open initially. Currently
-     * supported panels are elements, console, network, sources and resources.
+     * supported panels are elements, console, network, sources, resources
+     * and performance.
      */
     panelId?: string;
   }

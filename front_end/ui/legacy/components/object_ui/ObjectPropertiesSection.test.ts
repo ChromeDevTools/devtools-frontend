@@ -57,25 +57,47 @@ describe('ObjectPropertiesSection', () => {
 
 describeWithEnvironment('ObjectPropertyTreeElement', () => {
   it('can edit values', async () => {
-    const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.TreeElementViewInput, object, HTMLElement]>();
     const property = new SDK.RemoteObject.RemoteObjectProperty(
         'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
+    const container = document.createElement('div');
+    const input = {
+      startEditing: sinon.stub(),
+      invokeGetter: sinon.stub(),
+      onAutoComplete: sinon.stub(),
+      linkifier: undefined,
+      completions: [],
+      expanded: false,
+      editing: false,
+      editingEnded: sinon.stub(),
+      editingCommitted: sinon.stub(),
+      node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
+    };
+    const output = {valueElement: undefined, nameElement: undefined};
+    ObjectUI.ObjectPropertiesSection.TREE_ELEMENT_DEFAULT_VIEW(input, output, container);
+
+    sinon.assert.notCalled(input.startEditing);
+    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+    const valueElement = container.querySelector('.value');
+    assert.exists(valueElement);
+    assert.strictEqual(valueElement, output.valueElement);
+    valueElement.dispatchEvent(event);
+    sinon.assert.calledOnce(input.startEditing);
+
+    const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.TreeElementViewInput, object, HTMLElement]>();
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(
         new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property), undefined, viewFunction);
     section.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
 
-    const promptStub =
-        sinon.stub(ObjectUI.ObjectPropertiesSection.ObjectPropertyPrompt.prototype, 'attachAndStartEditing');
-    promptStub.returns(document.createElement('div'));
     renderElementIntoDOM(section.listItemElement);
-    section.update();
-    section.listItemElement.appendChild(section.valueElement);
+    const firstExpectedCall = expectCall(viewFunction);
+    section.performUpdate();
+    const [firstInput] = await firstExpectedCall;
+    assert.isFalse(firstInput.editing);
 
-    const expectedCall = expectCall(viewFunction);
-    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
-    section.valueElement.dispatchEvent(event);
-    const [input] = await expectedCall;
-    assert.isTrue(input.editing);
+    const secondExpectedCall = expectCall(viewFunction);
+    firstInput.startEditing();
+    const [secondInput] = await secondExpectedCall;
+    assert.isTrue(secondInput.editing);
   });
 
   it('shows expandable text contents for lengthy strings', async () => {

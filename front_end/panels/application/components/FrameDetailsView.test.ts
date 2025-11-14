@@ -43,6 +43,11 @@ const makeFrame = (target: SDK.Target.Target) => {
          Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed],
     getOwnerDOMNodeOrDocument: () => Promise.resolve({
       nodeName: () => 'iframe',
+      nodeType: () => Node.ELEMENT_NODE,
+      pseudoType: () => undefined,
+      isViewTransitionPseudoNode: () => false,
+      nodeNameInCorrectCase: () => 'iframe',
+      getAttribute: () => null,
     }),
     resourceTreeModel: () => target.model(SDK.ResourceTreeModel.ResourceTreeModel),
     getCreationStackTraceData: () => ({
@@ -200,16 +205,16 @@ describeWithMockConnection('FrameDetailsView', () => {
       'Measure Memory',
     ]);
 
-    const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
+    const values = [...component.shadowRoot.querySelectorAll('devtools-report-value')].map(v => v.deepInnerText());
     assert.deepEqual(values, [
       'https://www.example.com/path/page.html',
       'https://www.example.com',
-      '<iframe>',
-      '',
-      '',
-      '',
+      'iframe',
+      'function1\n\xA0@\xA0www.example.com/script.js:16',
+      'root',
+      'ad-script1.js:1',
       '/ad-script2.$script',
-      'Yes\xA0Localhost is always a secure context',
+      'Yes\nLocalhost is always a secure context',
       'Yes',
       'none',
       'same-origin',
@@ -219,7 +224,7 @@ object-src: 'none'
 script-src: 'strict-dynamic', 'unsafe-inline', https:, http:, 'nonce-GsVjHiIoejpPhMPOHDQZ90yc9eJn1s', 'unsafe-eval'
 report-uri: https://www.example.com/csp`,
       'available, transferable',
-      'available\xA0Learn more',
+      'available\nLearn more',
     ]);
 
     const stackTrace = getElementWithinComponent(

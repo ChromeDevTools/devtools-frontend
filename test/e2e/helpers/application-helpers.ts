@@ -445,7 +445,7 @@ function veImpressionForCookieTable() {
 
 function veImpressionForFrameDetails() {
   return veImpression('Pane', 'frames', [
-    veImpression('Action', 'reveal-in-elements'),
+    veImpression('Link', 'node'),
     veImpression('Action', 'reveal-in-network'),
     veImpression('Action', 'reveal-in-sources'),
     veImpression('Link', 'learn-more.coop-coep'),

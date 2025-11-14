@@ -40,7 +40,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/components/StackTra
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface StackTraceData {
-  frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  creationStackTraceData: {
+    creationStackTrace: Protocol.Runtime.StackTrace|null,
+    creationStackTraceTarget: SDK.Target.Target|null,
+  };
   buildStackTraceRows: (
       stackTrace: Protocol.Runtime.StackTrace,
       target: SDK.Target.Target|null,
@@ -135,8 +138,7 @@ export class StackTrace extends HTMLElement {
   #showHidden = false;
 
   set data(data: StackTraceData) {
-    const frame = data.frame;
-    const {creationStackTrace, creationStackTraceTarget} = frame.getCreationStackTraceData();
+    const {creationStackTrace, creationStackTraceTarget} = data.creationStackTraceData;
     if (creationStackTrace) {
       this.#stackTraceRows = data.buildStackTraceRows(
           creationStackTrace, creationStackTraceTarget, this.#linkifier, true,

@@ -22,15 +22,6 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as ApplicationComponents from './components.js';
 
 const {urlString} = Platform.DevToolsPath;
-const makeFrame = (overrides: Partial<SDK.ResourceTreeModel.ResourceTreeFrame> = {}) => {
-  const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
-    resourceTreeModel: () => ({
-      target: () => ({}),
-    }),
-    ...overrides,
-  } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
-  return newFrame;
-};
 
 function mockBuildStackTraceRows(
     stackTrace: Protocol.Runtime.StackTrace,
@@ -68,33 +59,31 @@ describeWithEnvironment('StackTrace', () => {
 
   it('generates rows from stack trace data', () => {
     setupIgnoreListManagerEnvironment();
-    const frame = makeFrame({
-      getCreationStackTraceData: () => ({
-        creationStackTrace: {
-          callFrames: [
-            {
-              functionName: 'function1',
-              url: 'http://www.example.com/script1.js',
-              lineNumber: 15,
-              columnNumber: 10,
-              scriptId: fakeScriptId,
-            },
-            {
-              functionName: 'function2',
-              url: 'http://www.example.com/script2.js',
-              lineNumber: 20,
-              columnNumber: 5,
-              scriptId: fakeScriptId,
-            },
-          ],
-        },
-        creationStackTraceTarget: {} as SDK.Target.Target,
-      }),
-    });
+    const creationStackTraceData = {
+      creationStackTrace: {
+        callFrames: [
+          {
+            functionName: 'function1',
+            url: 'http://www.example.com/script1.js',
+            lineNumber: 15,
+            columnNumber: 10,
+            scriptId: fakeScriptId,
+          },
+          {
+            functionName: 'function2',
+            url: 'http://www.example.com/script2.js',
+            lineNumber: 20,
+            columnNumber: 5,
+            scriptId: fakeScriptId,
+          },
+        ],
+      },
+      creationStackTraceTarget: {} as SDK.Target.Target,
+    };
     const component = new ApplicationComponents.StackTrace.StackTrace();
     renderElementIntoDOM(component);
     component.data = {
-      frame,
+      creationStackTraceData,
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 
@@ -124,33 +113,31 @@ describeWithEnvironment('StackTrace', () => {
     // Initialize ignore listing
     const {ignoreListManager} = setupIgnoreListManagerEnvironment();
     ignoreListManager.ignoreListURL(urlString`http://www.example.com/hidden.js`);
-    const frame = makeFrame({
-      getCreationStackTraceData: () => ({
-        creationStackTrace: {
-          callFrames: [
-            {
-              functionName: 'function1',
-              url: 'http://www.example.com/script.js',
-              lineNumber: 15,
-              columnNumber: 10,
-              scriptId: fakeScriptId,
-            },
-            {
-              functionName: 'function2',
-              url: 'http://www.example.com/hidden.js',
-              lineNumber: 20,
-              columnNumber: 5,
-              scriptId: fakeScriptId,
-            },
-          ],
-        },
-        creationStackTraceTarget: {} as SDK.Target.Target,
-      }),
-    });
+    const creationStackTraceData = {
+      creationStackTrace: {
+        callFrames: [
+          {
+            functionName: 'function1',
+            url: 'http://www.example.com/script.js',
+            lineNumber: 15,
+            columnNumber: 10,
+            scriptId: fakeScriptId,
+          },
+          {
+            functionName: 'function2',
+            url: 'http://www.example.com/hidden.js',
+            lineNumber: 20,
+            columnNumber: 5,
+            scriptId: fakeScriptId,
+          },
+        ],
+      },
+      creationStackTraceTarget: {} as SDK.Target.Target,
+    };
     const component = new ApplicationComponents.StackTrace.StackTrace();
     renderElementIntoDOM(component);
     component.data = {
-      frame,
+      creationStackTraceData,
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 

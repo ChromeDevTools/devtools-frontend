@@ -45,7 +45,8 @@ declare global {
 }
 
 const getFieldValuesTextContent = async (devToolsPage: DevToolsPage) => {
-  const fieldValues = await getTrimmedTextContent('devtools-report-value', devToolsPage);
+  const fieldValues = await Promise.all(
+      (await devToolsPage.$$('devtools-report-value')).map(element => element.evaluate(e => e.deepInnerText())));
   if (fieldValues[0]) {
     // This contains some CSS from the svg icon link being rendered. It's
     // system-specific, so we get rid of it and only look at the (URL) text.
@@ -73,14 +74,14 @@ describe('The Application Tab', () => {
     const expected = [
       `${inspectedPage.getResourcesPath()}/application/frame-tree.html`,
       `https://localhost:${inspectedPage.serverPort}`,
-      '<#document>',
-      'Yes\xA0Localhost is always a secure context',
+      '#document',
+      'Yes\nLocalhost is always a secure context',
       'No',
       'none',
       'unsafe-none',
       'None',
-      'unavailable\xA0requires cross-origin isolated context',
-      'unavailable\xA0Learn more',
+      'unavailable\nrequires cross-origin isolated context',
+      'unavailable\nLearn more',
       'accelerometer',
     ];
 
@@ -272,14 +273,14 @@ describe('The Application Tab', () => {
     const expected = [
       `${inspectedPage.getResourcesPath()}/application/iframe.html`,
       `https://localhost:${inspectedPage.serverPort}`,
-      '<iframe>',
-      'Yes\xA0Localhost is always a secure context',
+      'iframe#frameId',
+      'Yes\nLocalhost is always a secure context',
       'No',
       'none',
       'unsafe-none',
       'None',
-      'unavailable\xA0requires cross-origin isolated context',
-      'unavailable\xA0Learn more',
+      'unavailable\nrequires cross-origin isolated context',
+      'unavailable\nLearn more',
       'accelerometer',
     ];
     assert.deepEqual(fieldValuesTextContent, expected);
@@ -305,14 +306,14 @@ describe('The Application Tab', () => {
     const expected2 = [
       `${inspectedPage.getResourcesPath()}/application/main-frame.html`,
       `https://localhost:${inspectedPage.serverPort}`,
-      '<iframe>',
-      'Yes\xA0Localhost is always a secure context',
+      'iframe#frameId',
+      'Yes\nLocalhost is always a secure context',
       'No',
       'none',
       'unsafe-none',
       'None',
-      'unavailable\xA0requires cross-origin isolated context',
-      'unavailable\xA0Learn more',
+      'unavailable\nrequires cross-origin isolated context',
+      'unavailable\nLearn more',
       'accelerometer',
     ];
     assert.deepEqual(fieldValuesTextContent2, expected2);

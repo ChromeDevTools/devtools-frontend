@@ -15,6 +15,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
+import * as PanelCommon from '../../../panels/common/common.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as CspEvaluator from '../../../third_party/csp_evaluator/csp_evaluator.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -87,10 +88,6 @@ const UIStrings = {
    * @description Related node label in Timeline UIUtils of the Performance panel
    */
   ownerElement: 'Owner Element',
-  /**
-   * @description Title for a link to the Elements panel
-   */
-  clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
    * @description Title for ad frame type field
    */
@@ -287,6 +284,7 @@ interface FrameDetailsViewInput {
   protocolMonitorExperimentEnabled: boolean;
   trials: Protocol.Page.OriginTrial[]|null;
   securityIsolationInfo?: Promise<Protocol.Network.SecurityIsolationStatus|null>;
+  onRevealInNetwork?: () => void;
   onRevealInSources: () => void;
 }
 
@@ -350,26 +348,22 @@ function renderDocumentSection(input: FrameDetailsViewInput): LitTemplate {
       <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
-          ${maybeRenderSourcesLinkForURL(input.frame, input.onRevealInSources)}
-          ${maybeRenderNetworkLinkForURL(input.frame)}
+          ${!input.frame?.unreachableUrl() ? renderSourcesLinkForURL(input.onRevealInSources) : nothing}
+          ${input.onRevealInNetwork ? renderNetworkLinkForURL(input.onRevealInNetwork) : nothing}
           <div class="text-ellipsis" title=${input.frame.url}>${input.frame.url}</div>
         </div>
       </devtools-report-value>
-      ${maybeRenderUnreachableURL(input.frame)}
-      ${maybeRenderOrigin(input.frame)}
-      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(input.frame, value)), nothing)}
-      ${maybeRenderCreationStacktrace(input.frame)}
-      ${maybeRenderAdStatus(input.frame)}
-      ${maybeRenderCreatorAdScriptAncestry(input.frame, input.target, input.adScriptAncestry)}
+      ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
+      ${maybeRenderOrigin(input.frame?.securityOrigin)}
+      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(value)), nothing)}
+      ${maybeRenderCreationStacktrace(input.frame.getCreationStackTraceData())}
+      ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
+      ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
       <devtools-report-divider></devtools-report-divider>
     `;
 }
 
-function maybeRenderSourcesLinkForURL(
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, onRevealInSources: () => void): LitTemplate {
-  if (!frame || frame.unreachableUrl()) {
-    return nothing;
-  }
+function renderSourcesLinkForURL(onRevealInSources: () => void): LitTemplate {
   return renderIconLink(
       'label',
       i18nString(UIStrings.clickToOpenInSourcesPanel),
@@ -378,77 +372,64 @@ function maybeRenderSourcesLinkForURL(
   );
 }
 
-function maybeRenderNetworkLinkForURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
-  if (frame) {
-    const resource = frame.resourceForURL(frame.url);
-    if (resource?.request) {
-      const request = resource.request;
-      return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
-        const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-            request, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
-        return Common.Revealer.reveal(requestLocation);
-      }, 'reveal-in-network');
-    }
-  }
-  return nothing;
+function renderNetworkLinkForURL(onRevealInNetwork: () => void): LitTemplate {
+  return renderIconLink(
+      'arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), onRevealInNetwork, 'reveal-in-network');
 }
 
-function maybeRenderUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
-  if (!frame?.unreachableUrl()) {
+function maybeRenderUnreachableURL(unreachableUrl: Platform.DevToolsPath.UrlString): LitTemplate {
+  if (!unreachableUrl) {
     return nothing;
   }
   return html`
       <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
-          ${renderNetworkLinkForUnreachableURL(frame)}
-          <div class="text-ellipsis" title=${frame.unreachableUrl()}>${frame.unreachableUrl()}</div>
+          ${renderNetworkLinkForUnreachableURL(unreachableUrl)}
+          <div class="text-ellipsis" title=${unreachableUrl}>${unreachableUrl}</div>
         </div>
       </devtools-report-value>
     `;
 }
 
-function renderNetworkLinkForUnreachableURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
-  if (frame) {
-    const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(frame.unreachableUrl());
-    if (unreachableUrl) {
-      return renderIconLink(
-          'arrow-up-down-circle',
-          i18nString(UIStrings.clickToOpenInNetworkPanelMight),
-          ():
-              void => {
-                void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
-                  {
-                    filterType: NetworkForward.UIFilter.FilterType.Domain,
-                    filterValue: unreachableUrl.domain(),
-                  },
-                  {
-                    filterType: null,
-                    filterValue: unreachableUrl.path,
-                  },
-                ]));
-              },
-          'unreachable-url.reveal-in-network',
-      );
-    }
+function renderNetworkLinkForUnreachableURL(unreachableUrlString: Platform.DevToolsPath.UrlString): LitTemplate {
+  const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(unreachableUrlString);
+  if (unreachableUrl) {
+    return renderIconLink(
+        'arrow-up-down-circle',
+        i18nString(UIStrings.clickToOpenInNetworkPanelMight),
+        ():
+            void => {
+              void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+                {
+                  filterType: NetworkForward.UIFilter.FilterType.Domain,
+                  filterValue: unreachableUrl.domain(),
+                },
+                {
+                  filterType: null,
+                  filterValue: unreachableUrl.path,
+                },
+              ]));
+            },
+        'unreachable-url.reveal-in-network',
+    );
   }
   return nothing;
 }
 
-function maybeRenderOrigin(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
-  if (frame?.securityOrigin && frame?.securityOrigin !== '://') {
+function maybeRenderOrigin(securityOrigin: string|null): LitTemplate {
+  if (securityOrigin && securityOrigin !== '://') {
     return html`
         <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
         <devtools-report-value>
-          <div class="text-ellipsis" title=${frame.securityOrigin}>${frame.securityOrigin}</div>
+          <div class="text-ellipsis" title=${securityOrigin}>${securityOrigin}</div>
         </devtools-report-value>
       `;
   }
   return nothing;
 }
 
-function renderOwnerElement(
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, linkTargetDOMNode: SDK.DOMModel.DOMNode|null): LitTemplate {
+function renderOwnerElement(linkTargetDOMNode: SDK.DOMModel.DOMNode|null): LitTemplate {
   if (linkTargetDOMNode) {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -456,14 +437,10 @@ function renderOwnerElement(
         <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
         <devtools-report-value class="without-min-width">
           <div class="inline-items">
-            <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
-              @mouseenter=${() => frame?.highlight()}
-              @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-              @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}
-              jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
-            >
-              &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
-            </button>
+            <devtools-widget .widgetConfig=${widgetConfig(PanelCommon.DOMLinkifier.DOMNodeLink, {
+              node: linkTargetDOMNode
+            })}>
+            </devtools-widget>
           </div>
         </devtools-report-value>
       `;
@@ -472,8 +449,10 @@ function renderOwnerElement(
   return nothing;
 }
 
-function maybeRenderCreationStacktrace(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
-  const creationStackTraceData = frame?.getCreationStackTraceData();
+function maybeRenderCreationStacktrace(
+    creationStackTraceData:
+        {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: SDK.Target.Target}|
+    null): LitTemplate {
   if (creationStackTraceData?.creationStackTrace) {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -484,7 +463,7 @@ function maybeRenderCreationStacktrace(frame: SDK.ResourceTreeModel.ResourceTree
         jslog=${VisualLogging.section('frame-creation-stack-trace')}
         >
           <devtools-resources-stack-trace .data=${{
-            frame,
+            creationStackTraceData,
             buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
           } as StackTraceData}>
           </devtools-resources-stack-trace>
@@ -516,17 +495,15 @@ function getAdFrameExplanationString(explanation: Protocol.Page.AdFrameExplanati
   }
 }
 
-function maybeRenderAdStatus(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitTemplate {
-  if (!frame) {
-    return nothing;
-  }
-  const adFrameType = frame.adFrameType();
-  if (adFrameType === Protocol.Page.AdFrameType.None) {
+function maybeRenderAdStatus(
+    adFrameType: Protocol.Page.AdFrameType|undefined,
+    adFrameStatus: Protocol.Page.AdFrameStatus|undefined): LitTemplate {
+  if (adFrameType === undefined || adFrameType === Protocol.Page.AdFrameType.None) {
     return nothing;
   }
   const typeStrings = getAdFrameTypeStrings(adFrameType);
   const rows = [html`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
-  for (const explanation of frame.adFrameStatus()?.explanations || []) {
+  for (const explanation of adFrameStatus?.explanations || []) {
     rows.push(html`<div>${getAdFrameExplanationString(explanation)}</div>`);
   }
 
@@ -543,12 +520,8 @@ function maybeRenderAdStatus(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null
 }
 
 function maybeRenderCreatorAdScriptAncestry(
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, target: SDK.Target.Target|null,
+    adFrameType: Protocol.Page.AdFrameType|null, target: SDK.Target.Target|null,
     adScriptAncestry: Protocol.Page.AdScriptAncestry|null): LitTemplate {
-  if (!frame) {
-    return nothing;
-  }
-  const adFrameType = frame.adFrameType();
   if (adFrameType === Protocol.Page.AdFrameType.None) {
     return nothing;
   }
@@ -922,6 +895,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
       const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
       const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
+      const frameRequest = frame.resourceForURL(frame.url)?.request;
       const input = {
         frame,
         target: this.#target,
@@ -932,6 +906,13 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         linkTargetDOMNode,
         trials: await frame.getOriginTrials(),
         securityIsolationInfo,
+        onRevealInNetwork: frameRequest ?
+            () => {
+              const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+                  frameRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+              return Common.Revealer.reveal(requestLocation);
+            } :
+            undefined,
         onRevealInSources: async () => {
           const sourceCode = this.#uiSourceCodeForFrame(frame);
           if (sourceCode) {

@@ -19,8 +19,7 @@ import {
   dispatchEvent,
 } from '../../../testing/MockConnection.js';
 import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as ReportView from '../../../ui/components/report_view/report_view.js';
+import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 
 import * as ApplicationComponents from './components.js';
 
@@ -89,13 +88,13 @@ const makeFrame = (target: SDK.Target.Target) => {
 describeWithMockConnection('FrameDetailsView', () => {
   it('renders with a title', async () => {
     const frame = makeFrame(createTarget());
-    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(frame);
+    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+    component.frame = frame;
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
-    void component.render();
-    await RenderCoordinator.done({waitForWork: true});
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    await component.updateComplete;
+
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const titleElement = report.shadowRoot!.querySelector('.report-title');
     assert.strictEqual(titleElement?.textContent, frame.displayName());
@@ -180,14 +179,15 @@ describeWithMockConnection('FrameDetailsView', () => {
       }],
     });
 
-    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(frame);
+    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+    component.frame = frame;
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
-    await component.render();
-    await RenderCoordinator.done({waitForWork: true});
+    await component.updateComplete;
 
-    const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
+    await raf();
+
+    const keys = [...component.contentElement.querySelectorAll('devtools-report-key')].map(k => k.deepInnerText());
     assert.deepEqual(keys, [
       'URL',
       'Origin',
@@ -205,7 +205,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       'Measure Memory',
     ]);
 
-    const values = [...component.shadowRoot.querySelectorAll('devtools-report-value')].map(v => v.deepInnerText());
+    const values = [...component.contentElement.querySelectorAll('devtools-report-value')].map(v => v.deepInnerText());
     assert.deepEqual(values, [
       'https://www.example.com/path/page.html',
       'https://www.example.com',
@@ -227,8 +227,8 @@ report-uri: https://www.example.com/csp`,
       'available\nLearn more',
     ]);
 
-    const stackTrace = getElementWithinComponent(
-        component, 'devtools-resources-stack-trace', ApplicationComponents.StackTrace.StackTrace);
+    const stackTrace = component.contentElement.querySelector('devtools-resources-stack-trace') as
+        ApplicationComponents.StackTrace.StackTrace;
     assert.isNotNull(stackTrace.shadowRoot);
     const expandableList =
         getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
@@ -246,7 +246,7 @@ report-uri: https://www.example.com/csp`,
     assert.deepEqual(stackTraceText[0], 'function1\n\xA0@\xA0www.example.com/script.js:16');
 
     const adStatusList =
-        component.shadowRoot.querySelector('devtools-report-value.ad-status-list devtools-expandable-list');
+        component.contentElement.querySelector('devtools-report-value.ad-status-list devtools-expandable-list');
     assert.exists(adStatusList);
     const adStatusExpandableButton = adStatusList.shadowRoot!.querySelector('button');
     assert.notExists(adStatusExpandableButton);
@@ -254,7 +254,7 @@ report-uri: https://www.example.com/csp`,
     assert.exists(adStatusItem);
     assert.strictEqual(adStatusItem.textContent?.trim(), 'root');
 
-    const adScriptAncestryList = component.shadowRoot.querySelector(
+    const adScriptAncestryList = component.contentElement.querySelector(
         'devtools-report-value.creator-ad-script-ancestry-list devtools-expandable-list');
     assert.exists(adScriptAncestryList);
     const adScriptAncestryExpandableButton = adScriptAncestryList.shadowRoot!.querySelector('button');

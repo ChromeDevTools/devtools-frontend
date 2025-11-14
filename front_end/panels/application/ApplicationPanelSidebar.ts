@@ -2149,8 +2149,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   private readonly treeElementForResource: Map<string, FrameResourceTreeElement>;
   private treeElementForWindow: Map<Protocol.Target.TargetID, FrameWindowTreeElement>;
   private treeElementForWorker: Map<Protocol.Target.TargetID, WorkerTreeElement>;
-  private view: LegacyWrapper.LegacyWrapper
-      .LegacyWrapper<UI.Widget.Widget, ApplicationComponents.FrameDetailsView.FrameDetailsReportView>|null;
+  private view: ApplicationComponents.FrameDetailsView.FrameDetailsReportView|null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(section.panel, '', false, 'frame');
@@ -2195,8 +2194,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.treeElementForWorker.clear();
 
     if (this.selected) {
-      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
+      this.view = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+      this.view.frame = this.frame;
       this.showView(this.view);
     } else {
       this.view = null;
@@ -2233,8 +2232,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
+      this.view = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+      this.view.frame = this.frame;
     }
     Host.userMetrics.panelShown('frame-details');
     this.showView(this.view);

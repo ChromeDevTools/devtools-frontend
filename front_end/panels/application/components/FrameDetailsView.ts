@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/expandable_list/expandable_list.js';
 import '../../../ui/components/report_view/report_view.js';
@@ -20,8 +19,6 @@ import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as CspEvaluator from '../../../third_party/csp_evaluator/csp_evaluator.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -288,7 +285,9 @@ interface FrameDetailsViewInput {
   onRevealInSources: () => void;
 }
 
-function renderFrameDetailsView(input: FrameDetailsViewInput, target: ShadowRoot): void {
+type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, _output, target) => {
   if (!input.frame) {
     return;
   }
@@ -310,7 +309,7 @@ function renderFrameDetailsView(input: FrameDetailsViewInput, target: ShadowRoot
     </devtools-report>
   `, target);
   // clang-format on
-}
+};
 
 function renderOriginTrial(trials: Protocol.Page.OriginTrial[]|null): LitTemplate {
   if (!trials) {
@@ -848,27 +847,31 @@ function renderAdditionalInfoSection(frame: SDK.ResourceTreeModel.ResourceTreeFr
     `;
 }
 
-export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class FrameDetailsReportView extends UI.Widget.Widget {
   #frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
   #target: SDK.Target.Target|null = null;
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null = null;
   #linkifier = new Components.Linkifier.Linkifier();
   #adScriptAncestry: Protocol.Page.AdScriptAncestry|null = null;
+  #view: View;
 
-  constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
-    super();
-    this.#frame = frame;
-    void this.render();
-  }
-
-  connectedCallback(): void {
-    this.parentElement?.classList.add('overflow-auto');
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
+    this.#view = view;
   }
 
-  override async render(): Promise<void> {
+  set frame(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+    this.#frame = frame;
+    this.requestUpdate();
+  }
+
+  get frame(): SDK.ResourceTreeModel.ResourceTreeFrame|undefined {
+    return this.#frame;
+  }
+
+  override async performUpdate(): Promise<void> {
     const result = await this.#frame?.parentFrame()?.getAdScriptAncestry(this.#frame?.id);
     if (result && result.ancestryChain.length > 0) {
       this.#adScriptAncestry = result;
@@ -887,41 +890,39 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
-    await RenderCoordinator.write('FrameDetailsView render', async () => {
-      const frame = this.#frame;
-      if (!frame) {
-        return;
-      }
-      const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-      const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
-      const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
-      const frameRequest = frame.resourceForURL(frame.url)?.request;
-      const input = {
-        frame,
-        target: this.#target,
-        protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
-        permissionsPolicies: this.#permissionsPolicies,
-        adScriptAncestry: this.#adScriptAncestry,
-        linkifier: this.#linkifier,
-        linkTargetDOMNode,
-        trials: await frame.getOriginTrials(),
-        securityIsolationInfo,
-        onRevealInNetwork: frameRequest ?
-            () => {
-              const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-                  frameRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
-              return Common.Revealer.reveal(requestLocation);
-            } :
-            undefined,
-        onRevealInSources: async () => {
-          const sourceCode = this.#uiSourceCodeForFrame(frame);
-          if (sourceCode) {
-            await Common.Revealer.reveal(sourceCode);
-          }
-        },
-      };
-      renderFrameDetailsView(input, this.#shadow);
-    });
+    const frame = this.#frame;
+    if (!frame) {
+      return;
+    }
+    const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+    const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
+    const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
+    const frameRequest = frame.resourceForURL(frame.url)?.request;
+    const input = {
+      frame,
+      target: this.#target,
+      protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
+      permissionsPolicies: this.#permissionsPolicies,
+      adScriptAncestry: this.#adScriptAncestry,
+      linkifier: this.#linkifier,
+      linkTargetDOMNode,
+      trials: await frame.getOriginTrials(),
+      securityIsolationInfo,
+      onRevealInNetwork: frameRequest ?
+          () => {
+            const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+                frameRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+            return Common.Revealer.reveal(requestLocation);
+          } :
+          undefined,
+      onRevealInSources: async () => {
+        const sourceCode = this.#uiSourceCodeForFrame(frame);
+        if (sourceCode) {
+          await Common.Revealer.reveal(sourceCode);
+        }
+      },
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 
   #uiSourceCodeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Workspace.UISourceCode.UISourceCode|null {
@@ -935,13 +936,5 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       }
     }
     return null;
-  }
-}
-
-customElements.define('devtools-resources-frame-details-view', FrameDetailsReportView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-frame-details-view': FrameDetailsReportView;
   }
 }

@@ -47,7 +47,6 @@
     "../../../../../../front_end/core/common/Gzip.ts",
     "../../../../../../front_end/core/common/JavaScriptMetaData.ts",
     "../../../../../../front_end/core/common/Lazy.ts",
-    "../../../../../../front_end/core/common/Linkifier.ts",
     "../../../../../../front_end/core/common/MapWithDefault.ts",
     "../../../../../../front_end/core/common/Mutex.ts",
     "../../../../../../front_end/core/common/Object.ts",

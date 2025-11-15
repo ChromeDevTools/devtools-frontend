@@ -40,7 +40,6 @@
     "../../../../../../front_end/panels/timeline/AnnotationHelpers.ts",
     "../../../../../../front_end/panels/timeline/AppenderUtils.ts",
     "../../../../../../front_end/panels/timeline/BenchmarkEvents.ts",
-    "../../../../../../front_end/panels/timeline/CLSLinkifier.ts",
     "../../../../../../front_end/panels/timeline/CompatibilityTracksAppender.ts",
     "../../../../../../front_end/panels/timeline/CountersGraph.ts",
     "../../../../../../front_end/panels/timeline/EntriesFilter.ts",

@@ -366,49 +366,6 @@ var TraceLoadEvent = class _TraceLoadEvent extends Event {
   }
 };
 
-// gen/front_end/panels/timeline/CLSLinkifier.js
-var CLSLinkifier_exports = {};
-__export(CLSLinkifier_exports, {
-  CLSRect: () => CLSRect,
-  Linkifier: () => Linkifier
-});
-import * as SDK from "./../../core/sdk/sdk.js";
-var CLSRect = class {
-  x;
-  y;
-  width;
-  height;
-  color;
-  outlineColor;
-  constructor([x, y, width, height]) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.color = { r: 238, g: 111, b: 99, a: 0.4 };
-    this.outlineColor = { r: 238, g: 111, b: 99, a: 0.7 };
-  }
-};
-var linkifierInstance;
-var Linkifier = class _Linkifier {
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!linkifierInstance || forceNew) {
-      linkifierInstance = new _Linkifier();
-    }
-    return linkifierInstance;
-  }
-  linkify(object, _options) {
-    const link = document.createElement("span");
-    const rect = object;
-    const { x, y, width, height } = rect;
-    link.textContent = `Location: [${x},${y}], Size: [${width}x${height}]`;
-    link.addEventListener("mouseover", () => SDK.OverlayModel.OverlayModel.highlightRect(rect));
-    link.addEventListener("mouseleave", () => SDK.OverlayModel.OverlayModel.clearHighlight());
-    return link;
-  }
-};
-
 // gen/front_end/panels/timeline/CompatibilityTracksAppender.js
 var CompatibilityTracksAppender_exports = {};
 __export(CompatibilityTracksAppender_exports, {
@@ -1010,7 +967,7 @@ import * as Common3 from "./../../core/common/common.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Trace10 from "./../../models/trace/trace.js";
 import * as PerfUI8 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -2024,7 +1981,7 @@ var ThreadAppender = class {
     const workerId = this.#parsedTrace.data.Workers.workerIdByThread.get(this.#threadId);
     const workerURL = workerId ? this.#parsedTrace.data.Workers.workerURLById.get(workerId) : url;
     let workerName = workerURL ? i18nString8(UIStrings8.workerS, { PH1: workerURL }) : i18nString8(UIStrings8.dedicatedWorker);
-    const workerTarget = workerId !== void 0 && SDK2.TargetManager.TargetManager.instance().targetById(workerId);
+    const workerTarget = workerId !== void 0 && SDK.TargetManager.TargetManager.instance().targetById(workerId);
     if (workerTarget) {
       workerName = i18nString8(UIStrings8.workerSS, { PH1: workerTarget.name(), PH2: url });
     }
@@ -2324,7 +2281,7 @@ __export(TimelineFlameChartView_exports, {
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n52 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
-import * as SDK15 from "./../../core/sdk/sdk.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as CrUXManager5 from "./../../models/crux-manager/crux-manager.js";
 import * as Trace32 from "./../../models/trace/trace.js";
@@ -2869,9 +2826,9 @@ var TargetForEvent_exports = {};
 __export(TargetForEvent_exports, {
   targetForEvent: () => targetForEvent
 });
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
 function targetForEvent(parsedTrace, event) {
-  const targetManager = SDK3.TargetManager.TargetManager.instance();
+  const targetManager = SDK2.TargetManager.TargetManager.instance();
   const workerId = parsedTrace.data.Workers.workerIdByThread.get(event.tid);
   if (workerId) {
     return targetManager.targetById(workerId);
@@ -2888,7 +2845,7 @@ __export(TimelineDetailsView_exports, {
 import * as Common14 from "./../../core/common/common.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Trace29 from "./../../models/trace/trace.js";
 import * as TraceBounds13 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing5 from "./../../services/tracing/tracing.js";
@@ -2937,7 +2894,7 @@ import * as Common11 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Trace24 from "./../../models/trace/trace.js";
@@ -4776,7 +4733,7 @@ import * as Host2 from "./../../core/host/host.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as CrUXManager3 from "./../../models/crux-manager/crux-manager.js";
@@ -4802,7 +4759,7 @@ import * as TimelineInsights from "./components/insights/insights.js";
 // gen/front_end/panels/timeline/IsolateSelector.js
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Menus from "./../../ui/components/menus/menus.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 var UIStrings12 = {
@@ -4830,15 +4787,15 @@ var IsolateSelector = class extends UI4.Toolbar.ToolbarItem {
     menu.showArrow = true;
     menu.style.whiteSpace = "normal";
     menu.addEventListener("selectmenuselected", this.#onSelectMenuSelected.bind(this));
-    SDK4.IsolateManager.IsolateManager.instance().observeIsolates(this);
-    SDK4.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetChanged, this);
-    SDK4.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.targetChanged, this);
+    SDK3.IsolateManager.IsolateManager.instance().observeIsolates(this);
+    SDK3.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetChanged, this);
+    SDK3.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.targetChanged, this);
   }
   #updateIsolateItem(isolate, itemForIsolate) {
     const modelCountByName = /* @__PURE__ */ new Map();
     for (const model of isolate.models()) {
       const target = model.target();
-      const name = SDK4.TargetManager.TargetManager.instance().rootTarget() !== target ? target.name() : "";
+      const name = SDK3.TargetManager.TargetManager.instance().rootTarget() !== target ? target.name() : "";
       const parsedURL = new Common6.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : "";
       const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || i18nString12(UIStrings12.empty));
@@ -4858,7 +4815,7 @@ var IsolateSelector = class extends UI4.Toolbar.ToolbarItem {
         const selectedIsolateTitle = item.textContent?.slice(0, 29);
         this.menu.buttonTitle = selectedIsolateTitle || i18nString12(UIStrings12.empty);
         const model = isolate.runtimeModel();
-        UI4.Context.Context.instance().setFlavor(SDK4.CPUProfilerModel.CPUProfilerModel, model?.target().model(SDK4.CPUProfilerModel.CPUProfilerModel) ?? null);
+        UI4.Context.Context.instance().setFlavor(SDK3.CPUProfilerModel.CPUProfilerModel, model?.target().model(SDK3.CPUProfilerModel.CPUProfilerModel) ?? null);
       }
     });
   }
@@ -4874,7 +4831,7 @@ var IsolateSelector = class extends UI4.Toolbar.ToolbarItem {
     if (isolateItem) {
       if (isolateItem.selected) {
         this.menu.buttonTitle = i18nString12(UIStrings12.selectJavascriptVmInstance);
-        UI4.Context.Context.instance().setFlavor(SDK4.CPUProfilerModel.CPUProfilerModel, null);
+        UI4.Context.Context.instance().setFlavor(SDK3.CPUProfilerModel.CPUProfilerModel, null);
       }
       this.menu.removeChild(isolateItem);
     }
@@ -4887,11 +4844,11 @@ var IsolateSelector = class extends UI4.Toolbar.ToolbarItem {
   }
   targetChanged(event) {
     const target = event.data;
-    const model = target.model(SDK4.RuntimeModel.RuntimeModel);
+    const model = target.model(SDK3.RuntimeModel.RuntimeModel);
     if (!model) {
       return;
     }
-    const isolate = SDK4.IsolateManager.IsolateManager.instance().isolateByModel(model);
+    const isolate = SDK3.IsolateManager.IsolateManager.instance().isolateByModel(model);
     if (isolate) {
       this.isolateChanged(isolate);
     }
@@ -5217,7 +5174,7 @@ __export(TimelineController_exports, {
 });
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as LiveMetrics from "./../../models/live-metrics/live-metrics.js";
 import * as Trace16 from "./../../models/trace/trace.js";
@@ -5230,7 +5187,7 @@ __export(RecordingMetadata_exports, {
   forCPUProfile: () => forCPUProfile,
   forTrace: () => forTrace
 });
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as EmulationModel from "./../../models/emulation/emulation.js";
 import * as Trace15 from "./../../models/trace/trace.js";
 function forCPUProfile() {
@@ -5253,8 +5210,8 @@ async function innerForTraceCalculate({ recordingStartTime, cruxFieldData } = {}
   } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
     emulatedDeviceTitle = "Responsive";
   }
-  const cpuThrottling = SDK5.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate();
-  const networkConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().isThrottling() ? SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions() : void 0;
+  const cpuThrottling = SDK4.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate();
+  const networkConditions = SDK4.NetworkManager.MultitargetNetworkManager.instance().isThrottling() ? SDK4.NetworkManager.MultitargetNetworkManager.instance().networkConditions() : void 0;
   let networkThrottlingConditions;
   let networkTitle;
   if (networkConditions) {
@@ -5388,13 +5345,13 @@ var TimelineController = class {
       categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
     }
     await LiveMetrics.LiveMetrics.instance().disable();
-    SDK6.TargetManager.TargetManager.instance().addModelListener(SDK6.ResourceTreeModel.ResourceTreeModel, SDK6.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
+    SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
     this.#navigationUrls = [];
     this.#fieldData = null;
     this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(","));
     if (response.getError()) {
-      await SDK6.TargetManager.TargetManager.instance().resumeAllTargets();
+      await SDK5.TargetManager.TargetManager.instance().resumeAllTargets();
     }
     return response;
   }
@@ -5408,19 +5365,19 @@ var TimelineController = class {
     if (this.tracingManager) {
       this.tracingManager.stop();
     }
-    SDK6.TargetManager.TargetManager.instance().removeModelListener(SDK6.ResourceTreeModel.ResourceTreeModel, SDK6.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
-    const throttlingManager = SDK6.CPUThrottlingManager.CPUThrottlingManager.instance();
+    SDK5.TargetManager.TargetManager.instance().removeModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
+    const throttlingManager = SDK5.CPUThrottlingManager.CPUThrottlingManager.instance();
     const optionDuringRecording = throttlingManager.cpuThrottlingOption();
-    throttlingManager.setCPUThrottlingOption(SDK6.CPUThrottlingManager.NoThrottlingOption);
+    throttlingManager.setCPUThrottlingOption(SDK5.CPUThrottlingManager.NoThrottlingOption);
     this.client.loadingStarted();
-    SDK6.SourceMap.SourceMap.retainRawSourceMaps = true;
+    SDK5.SourceMap.SourceMap.retainRawSourceMaps = true;
     const [fieldData] = await Promise.all([
       this.fetchFieldData(),
       // TODO(crbug.com/366072294): Report the progress of this resumption, as it can be lengthy on heavy pages.
-      SDK6.TargetManager.TargetManager.instance().resumeAllTargets(),
+      SDK5.TargetManager.TargetManager.instance().resumeAllTargets(),
       this.waitForTracingToStop()
     ]).catch((e) => {
-      SDK6.SourceMap.SourceMap.retainRawSourceMaps = false;
+      SDK5.SourceMap.SourceMap.retainRawSourceMaps = false;
       throw e;
     });
     this.#fieldData = fieldData;
@@ -5445,7 +5402,7 @@ var TimelineController = class {
     if (!this.tracingManager) {
       throw new Error(i18nString14(UIStrings14.tracingNotSupported));
     }
-    await SDK6.TargetManager.TargetManager.instance().suspendAllTargets("performance-timeline");
+    await SDK5.TargetManager.TargetManager.instance().suspendAllTargets("performance-timeline");
     this.tracingCompletePromise = Promise.withResolvers();
     const response = await this.tracingManager.start(this, categories2);
     await this.warmupJsProfiler();
@@ -5457,7 +5414,7 @@ var TimelineController = class {
   // To trigger the StartProfiling interrupt and get the warmup cost out of the way, we send a
   // very soft invocation to V8.https://crbug.com/1358602
   async warmupJsProfiler() {
-    const runtimeModel = this.primaryPageTarget.model(SDK6.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.primaryPageTarget.model(SDK5.RuntimeModel.RuntimeModel);
     if (!runtimeModel) {
       return;
     }
@@ -5490,7 +5447,7 @@ var TimelineController = class {
       metadata
     );
     this.client.loadingCompleteForTest();
-    SDK6.SourceMap.SourceMap.retainRawSourceMaps = false;
+    SDK5.SourceMap.SourceMap.retainRawSourceMaps = false;
   }
   tracingBufferUsage(usage) {
     this.client.recordingProgress(usage);
@@ -6657,7 +6614,7 @@ __export(TimelineLoader_exports, {
 import * as Common8 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Trace19 from "./../../models/trace/trace.js";
 var UIStrings17 = {
   /**
@@ -6768,7 +6725,7 @@ var TimelineLoader = class _TimelineLoader {
       if (this.#metadata.cpuThrottling === 1) {
         this.#metadata.cpuThrottling = void 0;
       }
-      const noThrottlingString = typeof SDK7.NetworkManager.NoThrottlingConditions.title === "string" ? SDK7.NetworkManager.NoThrottlingConditions.title : SDK7.NetworkManager.NoThrottlingConditions.title();
+      const noThrottlingString = typeof SDK6.NetworkManager.NoThrottlingConditions.title === "string" ? SDK6.NetworkManager.NoThrottlingConditions.title : SDK6.NetworkManager.NoThrottlingConditions.title();
       if (this.#metadata.networkThrottling === "No throttling" || this.#metadata.networkThrottling === noThrottlingString) {
         this.#metadata.networkThrottling = void 0;
       }
@@ -8298,7 +8255,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     });
     this.statusPaneContainer = this.timelinePane.element.createChild("div", "status-pane-container fill");
     this.createFileSelector();
-    SDK8.TargetManager.TargetManager.instance().addModelListener(SDK8.ResourceTreeModel.ResourceTreeModel, SDK8.ResourceTreeModel.Events.Load, this.loadEventFired, this);
+    SDK7.TargetManager.TargetManager.instance().addModelListener(SDK7.ResourceTreeModel.ResourceTreeModel, SDK7.ResourceTreeModel.Events.Load, this.loadEventFired, this);
     this.flameChart = new TimelineFlameChartView(this);
     this.element.addEventListener("toggle-popover", (event) => this.flameChart.togglePopover(event.detail));
     this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
@@ -8396,14 +8353,14 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     this.populateToolbar();
     this.#showLandingPage();
     this.updateTimelineControls();
-    SDK8.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged", this.onSuspendStateChanged, this);
-    const profilerModels = SDK8.TargetManager.TargetManager.instance().models(SDK8.CPUProfilerModel.CPUProfilerModel);
+    SDK7.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged", this.onSuspendStateChanged, this);
+    const profilerModels = SDK7.TargetManager.TargetManager.instance().models(SDK7.CPUProfilerModel.CPUProfilerModel);
     for (const model of profilerModels) {
       for (const message of model.registeredConsoleProfileMessages) {
         this.consoleProfileFinished(message);
       }
     }
-    SDK8.TargetManager.TargetManager.instance().observeModels(SDK8.CPUProfilerModel.CPUProfilerModel, {
+    SDK7.TargetManager.TargetManager.instance().observeModels(SDK7.CPUProfilerModel.CPUProfilerModel, {
       modelAdded: (model) => {
         model.addEventListener("ConsoleProfileFinished", (event) => this.consoleProfileFinished(event.data));
       },
@@ -8911,8 +8868,8 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   createSettingsPane() {
     this.showSettingsPaneSetting = Common10.Settings.Settings.instance().createSetting("timeline-show-settings-toolbar", false);
     this.showSettingsPaneButton = new UI10.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString20(UIStrings20.captureSettings), "gear-filled", "timeline-settings-toggle");
-    SDK8.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.updateShowSettingsToolbarButton, this);
-    SDK8.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener("RateChanged", this.updateShowSettingsToolbarButton, this);
+    SDK7.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.updateShowSettingsToolbarButton, this);
+    SDK7.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener("RateChanged", this.updateShowSettingsToolbarButton, this);
     this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
@@ -9030,7 +8987,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const isoDate = Platform11.DateUtilities.toISO8601Compact(metadata.startTime ? new Date(metadata.startTime) : /* @__PURE__ */ new Date());
     const isCpuProfile = metadata.dataOrigin === "CPUProfile";
     const { includeResourceContent, includeSourceMaps } = config;
-    metadata.enhancedTraceVersion = includeResourceContent ? SDK8.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : void 0;
+    metadata.enhancedTraceVersion = includeResourceContent ? SDK7.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : void 0;
     let fileName = isCpuProfile ? `CPU-${isoDate}.cpuprofile` : `Trace-${isoDate}.json`;
     let blobParts = [];
     if (isCpuProfile) {
@@ -9268,10 +9225,10 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   updateShowSettingsToolbarButton() {
     const messages = [];
-    if (SDK8.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate() !== 1) {
+    if (SDK7.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate() !== 1) {
       messages.push(i18nString20(UIStrings20.CpuThrottlingIsEnabled));
     }
-    if (SDK8.NetworkManager.MultitargetNetworkManager.instance().isThrottling()) {
+    if (SDK7.NetworkManager.MultitargetNetworkManager.instance().isThrottling()) {
       messages.push(i18nString20(UIStrings20.NetworkThrottlingIsEnabled));
     }
     if (this.captureLayersAndPicturesSetting.get()) {
@@ -9304,7 +9261,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       return Platform11.DevToolsPath.EmptyUrlString;
     }
     const inspectedURL = this.controller.primaryPageTarget.inspectedURL();
-    const resourceTreeModel = this.controller.primaryPageTarget.model(SDK8.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = this.controller.primaryPageTarget.model(SDK7.ResourceTreeModel.ResourceTreeModel);
     const navHistory = resourceTreeModel && await resourceTreeModel.navigationHistory();
     if (!resourceTreeModel || !navHistory) {
       return inspectedURL;
@@ -9320,7 +9277,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         return;
       }
       const target = this.controller.primaryPageTarget;
-      const resourceModel = target.model(SDK8.ResourceTreeModel.ResourceTreeModel);
+      const resourceModel = target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
       if (!resourceModel) {
         reject("Could not load resourceModel");
         return;
@@ -9331,23 +9288,23 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         } else {
           reject(`Unexpected navigation to ${event.data.url}`);
         }
-        resourceModel?.removeEventListener(SDK8.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+        resourceModel?.removeEventListener(SDK7.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
       }
-      resourceModel.addEventListener(SDK8.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      resourceModel.addEventListener(SDK7.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
       await resourceModel.navigate("about:blank");
     });
     await aboutBlankNavigationComplete;
   }
   async #startCPUProfilingRecording() {
     try {
-      this.cpuProfiler = UI10.Context.Context.instance().flavor(SDK8.CPUProfilerModel.CPUProfilerModel);
+      this.cpuProfiler = UI10.Context.Context.instance().flavor(SDK7.CPUProfilerModel.CPUProfilerModel);
       if (!this.cpuProfiler) {
-        const firstNodeTarget = SDK8.TargetManager.TargetManager.instance().targets().find((target) => target.type() === SDK8.Target.Type.NODE);
+        const firstNodeTarget = SDK7.TargetManager.TargetManager.instance().targets().find((target) => target.type() === SDK7.Target.Type.NODE);
         if (!firstNodeTarget) {
           throw new Error("Could not load any Node target.");
         }
         if (firstNodeTarget) {
-          this.cpuProfiler = firstNodeTarget.model(SDK8.CPUProfilerModel.CPUProfilerModel);
+          this.cpuProfiler = firstNodeTarget.model(SDK7.CPUProfilerModel.CPUProfilerModel);
         }
       }
       this.setUIControlsEnabled(false);
@@ -9355,7 +9312,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       if (!this.cpuProfiler) {
         throw new Error("No Node target is found.");
       }
-      await SDK8.TargetManager.TargetManager.instance().suspendAllTargets("performance-timeline");
+      await SDK7.TargetManager.TargetManager.instance().suspendAllTargets("performance-timeline");
       await this.cpuProfiler.startRecording();
       this.recordingStarted();
     } catch (e) {
@@ -9364,8 +9321,8 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   async #startTraceRecording() {
     try {
-      const rootTarget = SDK8.TargetManager.TargetManager.instance().rootTarget();
-      const primaryPageTarget = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+      const rootTarget = SDK7.TargetManager.TargetManager.instance().rootTarget();
+      const primaryPageTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!primaryPageTarget) {
         throw new Error("Could not load primary page target.");
       }
@@ -9442,7 +9399,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.loadFromCpuProfile(profile);
       this.setUIControlsEnabled(true);
       this.cpuProfiler = null;
-      await SDK8.TargetManager.TargetManager.instance().resumeAllTargets();
+      await SDK7.TargetManager.TargetManager.instance().resumeAllTargets();
     }
   }
   async recordingFailed(error, rawEvents) {
@@ -9485,7 +9442,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       await this.controller.dispose();
       this.controller = null;
     }
-    void SDK8.TargetManager.TargetManager.instance().resumeAllTargets();
+    void SDK7.TargetManager.TargetManager.instance().resumeAllTargets();
   }
   onSuspendStateChanged() {
     this.updateTimelineControls();
@@ -9643,7 +9600,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
     PerfUI12.LineLevelProfile.Performance.instance().reset();
     if (parsedTrace.data.Samples.profilesInProcess.size) {
-      const primaryPageTarget = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+      const primaryPageTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
       const cpuProfiles = Array.from(parsedTrace.data.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
         const profiles = Array.from(threadsInProcess.values()).map((profileData) => profileData.parsedProfile);
         return profiles;
@@ -9810,7 +9767,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   recordingStarted(config) {
     if (config && this.recordingPageReload && this.controller) {
-      const resourceModel = this.controller?.primaryPageTarget.model(SDK8.ResourceTreeModel.ResourceTreeModel);
+      const resourceModel = this.controller?.primaryPageTarget.model(SDK7.ResourceTreeModel.ResourceTreeModel);
       if (!resourceModel) {
         void this.recordingFailed("Could not navigate to original URL");
         return;
@@ -10026,7 +9983,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
           frameId: script.frame,
           initiatorUrl: script.url
         };
-        rawSourceMap = await SDK8.SourceMapManager.tryLoadSourceMap(script.sourceMapUrl, initiator);
+        rawSourceMap = await SDK7.SourceMapManager.tryLoadSourceMap(script.sourceMapUrl, initiator);
       }
       if (script.url && rawSourceMap) {
         metadata.sourceMaps?.push({ url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap });
@@ -10041,12 +9998,12 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   #createSourceMapResolver(isFreshRecording, metadata) {
     const debuggerModelForFrameId = /* @__PURE__ */ new Map();
-    for (const target of SDK8.TargetManager.TargetManager.instance().targets()) {
-      const debuggerModel = target.model(SDK8.DebuggerModel.DebuggerModel);
+    for (const target of SDK7.TargetManager.TargetManager.instance().targets()) {
+      const debuggerModel = target.model(SDK7.DebuggerModel.DebuggerModel);
       if (!debuggerModel) {
         continue;
       }
-      const resourceModel = target.model(SDK8.ResourceTreeModel.ResourceTreeModel);
+      const resourceModel = target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
       const activeFrameIds = (resourceModel?.frames() ?? []).map((frame) => frame.id);
       for (const frameId of activeFrameIds) {
         debuggerModelForFrameId.set(frameId, debuggerModel);
@@ -10066,7 +10023,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     return async function resolveSourceMap(params) {
       const { scriptId, scriptUrl, sourceUrl, sourceMapUrl, frame, cachedRawSourceMap } = params;
       if (cachedRawSourceMap) {
-        return new SDK8.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? "", cachedRawSourceMap);
+        return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? "", cachedRawSourceMap);
       }
       if (isFreshRecording) {
         const map = await getExistingSourceMap(frame, scriptId, scriptUrl);
@@ -10081,7 +10038,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       if (!isFreshRecording && metadata?.sourceMaps && !isDataUrl) {
         const cachedSourceMap = metadata.sourceMaps.find((m) => m.sourceMapUrl === sourceMapUrl);
         if (cachedSourceMap) {
-          return new SDK8.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap);
+          return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap);
         }
       }
       if (!isFreshRecording && !isDataUrl) {
@@ -10091,8 +10048,8 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         return null;
       }
       const initiator = { target: null, frameId: frame, initiatorUrl: sourceUrl };
-      const payload = await SDK8.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
-      return payload ? new SDK8.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
+      const payload = await SDK7.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
+      return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };
   }
   async #retainResourceContentsForEnhancedTrace(parsedTrace, metadata) {
@@ -10106,7 +10063,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         continue;
       }
       const url = request.args.data.url;
-      const resource = SDK8.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+      const resource = SDK7.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
       if (!resource) {
         continue;
       }
@@ -11941,8 +11898,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static async generateInvalidationsList(invalidations, contentHelper) {
     const { groupedByReason, backendNodeIds } = TimelineComponents4.DetailsView.generateInvalidationsList(invalidations);
     let relatedNodesMap = null;
-    const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target?.model(SDK9.DOMModel.DOMModel);
+    const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK8.DOMModel.DOMModel);
     if (domModel) {
       relatedNodesMap = await domModel.pushNodesByBackendIdsToFrontend(backendNodeIds);
     }
@@ -11973,7 +11930,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       let scriptLink = null;
       const callFrame = stackTrace?.at(0);
       if (callFrame) {
-        scriptLink = contentHelper.linkifier()?.maybeLinkifyScriptLocation(SDK9.TargetManager.TargetManager.instance().rootTarget(), callFrame.scriptId, callFrame.url, callFrame.lineNumber) || null;
+        scriptLink = contentHelper.linkifier()?.maybeLinkifyScriptLocation(SDK8.TargetManager.TargetManager.instance().rootTarget(), callFrame.scriptId, callFrame.url, callFrame.lineNumber) || null;
       }
       const niceNodeLink = createLinkForInvalidationNode(invalidation);
       const text = scriptLink ? uiI18n.getFormatLocalizedString(str_21, UIStrings21.invalidationWithCallFrame, { PH1: niceNodeLink, PH2: scriptLink }) : niceNodeLink;
@@ -12028,7 +11985,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (!snapshotEvent) {
       return null;
     }
-    const paintProfilerModel = target.model(SDK9.PaintProfiler.PaintProfilerModel);
+    const paintProfilerModel = target.model(SDK8.PaintProfiler.PaintProfilerModel);
     if (!paintProfilerModel) {
       return null;
     }
@@ -12853,7 +12810,7 @@ __export(TimelinePaintProfilerView_exports, {
   TimelinePaintImageView: () => TimelinePaintImageView,
   TimelinePaintProfilerView: () => TimelinePaintProfilerView
 });
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
 import * as Trace27 from "./../../models/trace/trace.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
@@ -12892,13 +12849,13 @@ var timelinePaintProfiler_css_default = `/*
 
 // gen/front_end/panels/timeline/TracingLayerTree.js
 import * as Common13 from "./../../core/common/common.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
-var TracingLayerTree = class extends SDK10.LayerTreeBase.LayerTreeBase {
+import * as SDK9 from "./../../core/sdk/sdk.js";
+var TracingLayerTree = class extends SDK9.LayerTreeBase.LayerTreeBase {
   tileById = /* @__PURE__ */ new Map();
   paintProfilerModel;
   constructor(target) {
     super(target);
-    this.paintProfilerModel = target?.model(SDK10.PaintProfiler.PaintProfilerModel) ?? null;
+    this.paintProfilerModel = target?.model(SDK9.PaintProfiler.PaintProfilerModel) ?? null;
   }
   async setLayers(root, layers, paints) {
     const idsToResolve = /* @__PURE__ */ new Set();
@@ -13320,7 +13277,7 @@ var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
     if (!data.tileId.id_ref) {
       return null;
     }
-    const target = SDK11.TargetManager.TargetManager.instance().rootTarget();
+    const target = SDK10.TargetManager.TargetManager.instance().rootTarget();
     if (!target) {
       return null;
     }
@@ -13485,7 +13442,7 @@ var TimelinePaintImageView = class extends UI14.Widget.Widget {
 import "./../../ui/components/linkifier/linkifier.js";
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n45 from "./../../core/i18n/i18n.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Trace28 from "./../../models/trace/trace.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
@@ -13701,8 +13658,8 @@ var TimelineSelectorStatsView = class extends UI15.Widget.VBox {
         const slowPathNonMatches = (nonMatches ? 1 - timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 0) * 100;
         const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
         let linkData = "";
-        const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
-        const cssModel = target?.model(SDK12.CSSModel.CSSModel);
+        const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+        const cssModel = target?.model(SDK11.CSSModel.CSSModel);
         if (cssModel) {
           const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
           if (styleSheetHeader) {
@@ -13913,8 +13870,8 @@ var TimelineSelectorStatsView = class extends UI15.Widget.VBox {
       });
       return linkData;
     }
-    const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
-    const cssModel = target?.model(SDK12.CSSModel.CSSModel);
+    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+    const cssModel = target?.model(SDK11.CSSModel.CSSModel);
     if (!cssModel) {
       return [];
     }
@@ -14201,7 +14158,7 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
     this.updateContents();
   }
   #addLayerTreeForSelectedFrame(frame) {
-    const target = SDK13.TargetManager.TargetManager.instance().rootTarget();
+    const target = SDK12.TargetManager.TargetManager.instance().rootTarget();
     if (frame.layerTree && target) {
       const layerTreeForFrame = new TracingFrameLayerTree(target, frame.layerTree);
       const layersView = this.layersView();
@@ -14308,7 +14265,7 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
     }
   }
   showEventInPaintProfiler(event) {
-    const paintProfilerModel = SDK13.TargetManager.TargetManager.instance().models(SDK13.PaintProfiler.PaintProfilerModel)[0];
+    const paintProfilerModel = SDK12.TargetManager.TargetManager.instance().models(SDK12.PaintProfiler.PaintProfilerModel)[0];
     if (!paintProfilerModel) {
       return;
     }
@@ -14473,7 +14430,7 @@ __export(TimelineFlameChartNetworkDataProvider_exports, {
 });
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform14 from "./../../core/platform/platform.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Trace31 from "./../../models/trace/trace.js";
 import * as PerfUI15 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
@@ -14803,7 +14760,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (!networkRequest || !Trace31.Types.Events.isSyntheticNetworkRequest(networkRequest)) {
       return;
     }
-    const timelineNetworkRequest = SDK14.TraceObject.RevealableNetworkRequest.create(networkRequest);
+    const timelineNetworkRequest = SDK13.TraceObject.RevealableNetworkRequest.create(networkRequest);
     const contextMenu = new UI17.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(timelineNetworkRequest);
     return contextMenu;
@@ -16376,7 +16333,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
   }
   onEntryHovered(commonEvent) {
-    SDK15.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     const entryIndex = commonEvent.data;
     const event = this.mainDataProvider.eventByIndex(entryIndex);
     if (!event || !this.#parsedTrace) {
@@ -16391,7 +16348,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     }
     const nodeIds = Utils7.EntryNodes.nodeIdsForEvent(this.#parsedTrace, event);
     for (const nodeId of nodeIds) {
-      new SDK15.DOMModel.DeferredDOMNode(target, nodeId).highlight();
+      new SDK14.DOMModel.DeferredDOMNode(target, nodeId).highlight();
     }
   }
   highlightEvent(event) {
@@ -18597,7 +18554,6 @@ export {
   AnnotationHelpers_exports as AnnotationHelpers,
   AppenderUtils_exports as AppenderUtils,
   BenchmarkEvents_exports as BenchmarkEvents,
-  CLSLinkifier_exports as CLSLinkifier,
   CompatibilityTracksAppender_exports as CompatibilityTracksAppender,
   CountersGraph_exports as CountersGraph,
   EntriesFilter_exports as EntriesFilter,

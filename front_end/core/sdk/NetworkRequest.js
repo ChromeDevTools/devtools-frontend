@@ -1260,6 +1260,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.#siteHasCookieInOtherPartition = extraRequestInfo.siteHasCookieInOtherPartition ?? false;
         this.#hasThirdPartyCookiePhaseoutIssue = this.#blockedRequestCookies.some(item => item.blockedReasons.includes("ThirdPartyPhaseout" /* Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout */));
     }
+    setAppliedNetworkConditions(appliedNetworkConditionsId) {
+        this.#appliedNetworkConditionsId = appliedNetworkConditionsId;
+    }
     hasExtraRequestInfo() {
         return this.#hasExtraRequestInfo;
     }

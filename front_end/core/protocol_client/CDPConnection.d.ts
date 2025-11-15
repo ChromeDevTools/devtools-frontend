@@ -1,9 +1,9 @@
 import type { ProtocolMapping } from '../../generated/protocol-mapping.js';
 export type Command = keyof ProtocolMapping.Commands;
-export type CommandParams<T extends keyof ProtocolMapping.Commands> = ProtocolMapping.Commands[T]['paramsType'][0];
-export type CommandResult<T extends keyof ProtocolMapping.Commands> = ProtocolMapping.Commands[T]['returnType'];
+export type CommandParams<T extends Command> = ProtocolMapping.Commands[T]['paramsType'][0];
+export type CommandResult<T extends Command> = Omit<ProtocolMapping.Commands[T]['returnType'], 'getError'>;
 export type Event = keyof ProtocolMapping.Events;
-export type EventParams<T extends keyof ProtocolMapping.Events> = ProtocolMapping.Events[T];
+export type EventParams<T extends keyof ProtocolMapping.Events> = ProtocolMapping.Events[T][0];
 export interface CDPBaseMessage {
     sessionId?: string;
 }

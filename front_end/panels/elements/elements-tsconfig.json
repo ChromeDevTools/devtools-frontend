@@ -187,6 +187,9 @@
       "path": "../../ui/lit/bundle-tsconfig.json"
     },
     {
+      "path": "../common/bundle-tsconfig.json"
+    },
+    {
       "path": "components/bundle-tsconfig.json"
     }
   ]

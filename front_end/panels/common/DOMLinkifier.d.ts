@@ -1,7 +1,10 @@
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-export interface Options extends Common.Linkifier.Options {
+export interface Options {
+    tooltip?: string;
+    preventKeyboardFocus?: boolean;
+    textContent?: string;
+    isDynamicLink?: boolean;
     hiddenClassList?: string[];
     disabled?: boolean;
 }
@@ -35,7 +38,7 @@ export declare class DeferredDOMNodeLink extends UI.Widget.Widget {
     constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options, view?: DeferredView);
     performUpdate(): void;
 }
-export declare class Linkifier implements Common.Linkifier.Linkifier {
+export declare class Linkifier {
     static instance(opts?: {
         forceNew: boolean | null;
     }): Linkifier;

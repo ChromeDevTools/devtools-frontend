@@ -21,12 +21,19 @@ export type CommandAndHandler<C extends ProtocolClient.CDPConnection.Command> = 
  */
 export declare class MockCDPConnection implements ProtocolClient.CDPConnection.CDPConnection {
     #private;
-    constructor(handlers: Array<CommandAndHandler<ProtocolClient.CDPConnection.Command>>);
+    constructor(handlers?: Array<CommandAndHandler<ProtocolClient.CDPConnection.Command>>);
+    /**
+     * Sets the provided handler or clears an existing handler when passing `null`.
+     *
+     * Throws if a set would overwrite an existing handler.
+     */
+    setHandler<T extends ProtocolClient.CDPConnection.Command>(method: T, handler: CommandHandler<T> | null): void;
     send<T extends ProtocolClient.CDPConnection.Command>(method: T, params: ProtocolClient.CDPConnection.CommandParams<T>, sessionId: string | undefined): Promise<{
         result: ProtocolClient.CDPConnection.CommandResult<T>;
     } | {
         error: ProtocolClient.CDPConnection.CDPError;
     }>;
+    dispatchEvent<T extends ProtocolClient.CDPConnection.Event>(event: T, params: ProtocolClient.CDPConnection.EventParams<T>, sessionId: string | undefined): void;
     observe(observer: ProtocolClient.CDPConnection.CDPConnectionObserver): void;
     unobserve(observer: ProtocolClient.CDPConnection.CDPConnectionObserver): void;
 }

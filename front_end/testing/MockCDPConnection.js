@@ -14,9 +14,26 @@ import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
  */
 export class MockCDPConnection {
     #observers = new Set();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #handlers;
-    constructor(handlers) {
+    constructor(handlers = []) {
         this.#handlers = new Map(handlers);
+    }
+    /**
+     * Sets the provided handler or clears an existing handler when passing `null`.
+     *
+     * Throws if a set would overwrite an existing handler.
+     */
+    setHandler(method, handler) {
+        if (handler && this.#handlers.has(method)) {
+            throw new Error(`MockCDPConnection already has a handler for ${method}`);
+        }
+        if (handler) {
+            this.#handlers.set(method, handler);
+        }
+        else {
+            this.#handlers.delete(method);
+        }
     }
     send(method, params, sessionId) {
         const handler = this.#handlers.get(method);
@@ -29,6 +46,13 @@ export class MockCDPConnection {
             });
         }
         return Promise.resolve(handler(params, sessionId));
+    }
+    dispatchEvent(event, params, sessionId) {
+        this.#observers.forEach(observer => observer.onEvent({
+            sessionId,
+            method: event,
+            params,
+        }));
     }
     observe(observer) {
         this.#observers.add(observer);

@@ -328,13 +328,6 @@ export class NetworkManager extends SDKModel {
         }
         return result.status;
     }
-    async getIpProtectionProxyStatus() {
-        const result = await this.#networkAgent.invoke_getIPProtectionProxyStatus();
-        if (result.getError()) {
-            return null;
-        }
-        return result.status;
-    }
     async enableReportingApi(enable = true) {
         return await this.#networkAgent.invoke_enableReportingApi({ enable });
     }
@@ -839,6 +832,11 @@ export class NetworkDispatcher {
             appliedNetworkConditionsId,
         };
         this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
+        const networkRequest = this.#requestsById.get(requestId);
+        if (appliedNetworkConditionsId && networkRequest) {
+            networkRequest.setAppliedNetworkConditions(appliedNetworkConditionsId);
+            this.updateNetworkRequest(networkRequest);
+        }
     }
     responseReceivedEarlyHints({ requestId, headers, }) {
         this.getExtraInfoBuilder(requestId).setEarlyHintsHeaders(this.headersMapToHeadersArray(headers));

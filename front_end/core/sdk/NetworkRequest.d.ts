@@ -224,6 +224,7 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     charset(): string | null;
     setCharset(charset: string): void;
     addExtraRequestInfo(extraRequestInfo: ExtraRequestInfo): void;
+    setAppliedNetworkConditions(appliedNetworkConditionsId: string): void;
     hasExtraRequestInfo(): boolean;
     blockedRequestCookies(): BlockedCookieWithReason[];
     setIncludedRequestCookies(includedRequestCookies: IncludedCookieWithReason[]): void;

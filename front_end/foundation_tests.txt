@@ -29,6 +29,7 @@ core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
 core/i18n/time-utilities.test.js
+core/sdk/DebuggerModel.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js

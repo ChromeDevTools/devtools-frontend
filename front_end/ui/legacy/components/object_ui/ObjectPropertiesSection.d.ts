@@ -113,18 +113,22 @@ export declare class RootElement extends UI.TreeOutline.TreeElement {
  **/
 export declare const InitialVisibleChildrenLimit = 200;
 export interface TreeElementViewInput {
+    startEditing(): unknown;
+    invokeGetter(getter: SDK.RemoteObject.RemoteObject): unknown;
     onAutoComplete(expression: string, filter: string, force: boolean): unknown;
+    linkifier: Components.Linkifier.Linkifier | undefined;
     completions: string[];
-    expandedValueElement: HTMLElement | undefined;
     expanded: boolean;
     editing: boolean;
     editingEnded(): unknown;
     editingCommitted(detail: string): unknown;
     node: ObjectTreeNode;
-    nameElement: HTMLElement;
-    valueElement: HTMLElement;
 }
-type TreeElementView = (input: TreeElementViewInput, output: object, target: HTMLElement) => void;
+interface TreeElementViewOutput {
+    valueElement: Element | undefined;
+    nameElement: Element | undefined;
+}
+type TreeElementView = (input: TreeElementViewInput, output: TreeElementViewOutput, target: HTMLElement) => void;
 export declare const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView;
 export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     #private;
@@ -133,30 +137,24 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private highlightChanges;
     private linkifier;
     private readonly maxNumPropertiesToShow;
-    nameElement: HTMLElement;
-    valueElement: HTMLElement;
     readOnly: boolean;
     private prompt;
-    private editableDiv;
-    expandedValueElement?: HTMLElement;
     constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier, view?: TreeElementView);
     static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
     static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, { properties, internalProperties }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
     private static appendEmptyPlaceholderIfNeeded;
     static createRemoteObjectAccessorPropertySpan(object: SDK.RemoteObject.RemoteObject | null, propertyPath: string[], callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement;
+    get nameElement(): Element | undefined;
     setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
     private applySearch;
     private showAllPropertiesElementSelected;
     private createShowAllPropertiesButton;
     revertHighlightChanges(): void;
     onpopulate(): Promise<void>;
-    ondblclick(event: Event): boolean;
     onenter(): boolean;
     onattach(): void;
     onexpand(): void;
     oncollapse(): void;
-    private createExpandedValueElement;
-    update(): void;
     performUpdate(): void;
     getContextMenu(event: Event): UI.ContextMenu.ContextMenu;
     private contextMenuFired;
@@ -167,7 +165,7 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private promptKeyDown;
     private applyExpression;
     invalidateChildren(): void;
-    private onInvokeGetterClick;
+    onInvokeGetterClick(getter: SDK.RemoteObject.RemoteObject): Promise<void>;
     private updateExpandable;
     path(): string;
 }

@@ -45,7 +45,6 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
     dispose(): void;
     private bypassServiceWorkerChanged;
     getSecurityIsolationStatus(frameId: Protocol.Page.FrameId | null): Promise<Protocol.Network.SecurityIsolationStatus | null>;
-    getIpProtectionProxyStatus(): Promise<Protocol.Network.IpProxyStatus | null>;
     enableReportingApi(enable?: boolean): Promise<Promise<Protocol.ProtocolResponseWithError>>;
     loadNetworkResource(frameId: Protocol.Page.FrameId | null, url: Platform.DevToolsPath.UrlString, options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult>;
     clearRequests(): void;

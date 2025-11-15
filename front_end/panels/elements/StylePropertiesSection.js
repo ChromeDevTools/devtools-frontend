@@ -732,7 +732,7 @@ export class StylePropertiesSection {
             };
             this.#ancestorRuleListElement.prepend(atRuleElement);
             this.#ancestorClosingBracesElement.prepend(this.indentElement(this.createClosingBrace(), 0));
-            this.nestingLevel++;
+            this.nestingLevel = 1;
         }
     }
     maybeCreateAncestorRules(style) {

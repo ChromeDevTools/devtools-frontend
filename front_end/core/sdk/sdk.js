@@ -8024,7 +8024,18 @@ var valuePresets = /* @__PURE__ */ new Map([
       ["perspective", "perspective(|10px|)"]
     ])
   ],
-  ["corner-shape", cornerShapeValuePresetMap]
+  ["corner-shape", cornerShapeValuePresetMap],
+  [
+    "font-variant-alternates",
+    /* @__PURE__ */ new Map([
+      ["stylistic", "stylistic(||)"],
+      ["styleset", "styleset(||)"],
+      ["character-variant", "character-variant(||)"],
+      ["swash", "swash(||)"],
+      ["ornaments", "ornaments(||)"],
+      ["annotation", "annotation(||)"]
+    ])
+  ]
 ]);
 var distanceProperties = /* @__PURE__ */ new Set([
   "background-position",
@@ -8305,6 +8316,10 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
       "proportional-width",
       "ruby"
     ])
+  ],
+  [
+    "font-variant-alternates",
+    /* @__PURE__ */ new Set(["historical-forms", "stylistic", "styleset", "character-variant", "swash", "ornaments", "annotation"])
   ],
   ["vertical-align", /* @__PURE__ */ new Set(["top", "bottom", "-webkit-baseline-middle"])],
   ["page-break-after", /* @__PURE__ */ new Set(["left", "right", "always", "avoid"])],
@@ -10471,13 +10486,6 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     }
     return result.status;
   }
-  async getIpProtectionProxyStatus() {
-    const result = await this.#networkAgent.invoke_getIPProtectionProxyStatus();
-    if (result.getError()) {
-      return null;
-    }
-    return result.status;
-  }
   async enableReportingApi(enable = true) {
     return await this.#networkAgent.invoke_enableReportingApi({ enable });
   }
@@ -10941,6 +10949,11 @@ var NetworkDispatcher = class {
       appliedNetworkConditionsId
     };
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
+    const networkRequest = this.#requestsById.get(requestId);
+    if (appliedNetworkConditionsId && networkRequest) {
+      networkRequest.setAppliedNetworkConditions(appliedNetworkConditionsId);
+      this.updateNetworkRequest(networkRequest);
+    }
   }
   responseReceivedEarlyHints({ requestId, headers }) {
     this.getExtraInfoBuilder(requestId).setEarlyHintsHeaders(this.headersMapToHeadersArray(headers));
@@ -29048,6 +29061,9 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
       "ThirdPartyPhaseout"
       /* Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout */
     ));
+  }
+  setAppliedNetworkConditions(appliedNetworkConditionsId) {
+    this.#appliedNetworkConditionsId = appliedNetworkConditionsId;
   }
   hasExtraRequestInfo() {
     return this.#hasExtraRequestInfo;

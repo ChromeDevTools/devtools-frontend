@@ -1,10 +1,10 @@
-import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as PanelsCommon from '../../../common/common.js';
 export interface NodeLinkData {
     backendNodeId: Protocol.DOM.BackendNodeId;
     frame: string;
-    options?: Common.Linkifier.Options;
+    options?: PanelsCommon.DOMLinkifier.Options;
     /**
      * URL to display if backendNodeId cannot be resolved (ie for traces loaded from disk).
      * Will be given to linkifyURL. Use this or one of the other fallback fields.

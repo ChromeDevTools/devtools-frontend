@@ -5,6 +5,7 @@
     "moduleResolution": "nodenext",
     "lib": ["esnext", "dom"],
     "outDir": "ignored",
+    "rootDir": ".",
     "checkJs": true,
     "noEmit": true,
     "noImplicitAny": true,

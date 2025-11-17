@@ -1,0 +1,54 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../../visibility.gni")
+
+devtools_ui_module("helpers") {
+  sources = [ "OpenInNewTab.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "helpers.ts"
+
+  deps = [ ":helpers" ]
+
+  visibility = [
+    ":*",
+
+    # IMPORTANT: Be careful when extending visibility of front_end/ui/helpers,
+    # as the UIHelpers module should only be used in UI code.
+    "../../entrypoints/main/*",
+    "../../panels/*",
+    "../../testing/*",
+    "../components/*",
+    "../legacy/*",
+  ]
+
+  visibility += devtools_visibility
+}
+
+devtools_ui_module("unittests") {
+  testonly = true
+
+  sources = [ "OpenInNewTab.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../testing",
+  ]
+}

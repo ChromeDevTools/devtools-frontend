@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {getReleaseNote} from './ReleaseNoteText.js';
@@ -69,7 +70,7 @@ let releaseNotesActionDelegateInstance: ReleaseNotesActionDelegate;
 export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     const releaseNote = getReleaseNote();
-    UI.UIUtils.openInNewTab(releaseNote.link);
+    UIHelpers.openInNewTab(releaseNote.link);
     return true;
   }
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReleaseNotesActionDelegate {
@@ -85,7 +86,7 @@ export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionD
 let reportIssueActionDelegateInstance: ReportIssueActionDelegate;
 export class ReportIssueActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    UI.UIUtils.openInNewTab('https://goo.gle/devtools-bug');
+    UIHelpers.openInNewTab('https://goo.gle/devtools-bug');
     return true;
   }
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReportIssueActionDelegate {

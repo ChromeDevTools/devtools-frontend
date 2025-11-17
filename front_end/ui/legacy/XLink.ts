@@ -4,6 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as UIHelpers from '../helpers/helpers.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -13,7 +14,6 @@ import {Tooltip} from './Tooltip.js';
 import {
   copyLinkAddressLabel,
   MaxLengthForDisplayedURLs,
-  openInNewTab,
   openLinkExternallyLabel,
 } from './UIUtils.js';
 import {XElement} from './XElement.js';
@@ -54,14 +54,14 @@ export class XLink extends XElement {
     this.onClick = (event: Event) => {
       event.consume(true);
       if (this.#href) {
-        openInNewTab(this.#href);
+        UIHelpers.openInNewTab(this.#href);
       }
     };
     this.onKeyDown = (event: KeyboardEvent) => {
       if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         event.consume(true);
         if (this.#href) {
-          openInNewTab(this.#href);
+          UIHelpers.openInNewTab(this.#href);
         }
       }
     };
@@ -140,7 +140,7 @@ export class ContextMenuProvider implements Provider<Node> {
     const node: XLink = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        openInNewTab(node.href);
+        UIHelpers.openInNewTab(node.href);
       }
     }, {jslogContext: 'open-in-new-tab'});
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

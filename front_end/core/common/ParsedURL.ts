@@ -38,7 +38,7 @@ export function normalizePath(path: string): string {
   return normalizedPath;
 }
 
-export function schemeIs(url: Platform.DevToolsPath.UrlString, scheme: string): boolean {
+export function schemeIs(url: Platform.DevToolsPath.UrlString|URL, scheme: string): boolean {
   try {
     return (new URL(url)).protocol === scheme;
   } catch {

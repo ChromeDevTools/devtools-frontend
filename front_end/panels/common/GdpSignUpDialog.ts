@@ -12,6 +12,7 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import type * as Switch from '../../ui/components/switch/switch.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
@@ -168,7 +169,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
           .title=${i18nString(UIStrings.learnMoreAccessibleText)}
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'learn-more'}
-          @click=${() => UI.UIUtils.openInNewTab(GDP_PROGRAM_URL as Platform.DevToolsPath.UrlString)}>${i18nString(UIStrings.learnMore)}</devtools-button>
+          @click=${() => UIHelpers.openInNewTab(GDP_PROGRAM_URL as Platform.DevToolsPath.UrlString)}>${i18nString(UIStrings.learnMore)}</devtools-button>
         <div class="right-buttons">
           <devtools-button
             .variant=${Buttons.Button.Variant.TONAL}

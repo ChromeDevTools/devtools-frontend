@@ -53,6 +53,7 @@ devtools_ui_module("ai_assistance") {
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
+    "../../ui/helpers:bundle",
     "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

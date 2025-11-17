@@ -257,6 +257,7 @@ group("unittests") {
     "ui/components/text_prompt:unittests",
     "ui/components/tooltips:unittests",
     "ui/components/tree_outline:unittests",
+    "ui/helpers:unittests",
     "ui/i18n:unittests",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:unittests",

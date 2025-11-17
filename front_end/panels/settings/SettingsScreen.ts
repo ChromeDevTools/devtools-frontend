@@ -14,6 +14,7 @@ import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -497,7 +498,7 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
         jslogContext: `${experiment.name}-documentation`,
         title: i18nString(UIStrings.learnMore),
       };
-      linkButton.addEventListener('click', () => UI.UIUtils.openInNewTab(experimentLink));
+      linkButton.addEventListener('click', () => UIHelpers.openInNewTab(experimentLink));
       linkButton.classList.add('link-icon');
 
       p.appendChild(linkButton);
@@ -542,7 +543,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         void SettingsScreen.showSettingsScreen({focusTabHeader: true} as ShowSettingsScreenOptions);
         return true;
       case 'settings.documentation':
-        UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/');
+        UIHelpers.openInNewTab('https://developer.chrome.com/docs/devtools/');
         return true;
       case 'settings.shortcuts':
         void SettingsScreen.showSettingsScreen({name: 'keybinds', focusTabHeader: true});

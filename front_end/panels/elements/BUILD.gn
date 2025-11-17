@@ -101,6 +101,7 @@ devtools_ui_module("elements") {
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/components/tree_outline:bundle",
+    "../../ui/helpers:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/inline_editor:bundle",

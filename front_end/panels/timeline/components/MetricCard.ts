@@ -9,7 +9,7 @@ import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import metricCardStyles from './metricCard.css.js';
@@ -622,7 +622,7 @@ export class MetricCard extends HTMLElement {
             title=${this.#getHelpTooltip()}
             .iconName=${'help'}
             .variant=${Buttons.Button.Variant.ICON}
-            @click=${() => UI.UIUtils.openInNewTab(helpLink)}
+            @click=${() => UIHelpers.openInNewTab(helpLink)}
           ></devtools-button>
         </h3>
         <div tabindex="0" class="metric-values-section"

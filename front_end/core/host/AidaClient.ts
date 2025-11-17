@@ -733,7 +733,7 @@ export function convertToUserTierEnum(userTier: string|undefined): UserTier {
         return UserTier.PUBLIC;
     }
   }
-  return UserTier.BETA;
+  return UserTier.PUBLIC;
 }
 
 let hostConfigTrackerInstance: HostConfigTracker|undefined;

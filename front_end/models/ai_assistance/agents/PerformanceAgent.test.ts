@@ -91,7 +91,7 @@ describeWithEnvironment('PerformanceAgent', () => {
             metadata: {
               disable_user_content_logging: false,
               string_session_id: 'sessionId',
-              user_tier: 2,
+              user_tier: 3,
               client_version: 'unit_test',
             },
             options: {

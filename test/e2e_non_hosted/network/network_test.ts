@@ -116,7 +116,7 @@ describe('The Network Tab', function() {
      });
 
   describe('with durable messages', function() {
-    setup({enabledFeatures: ['devToolsEnableDurableMessages']});
+    setup({enabledFeatures: ['DevToolsEnableDurableMessages']});
 
     it('can persist requests across cross-origin navigation', async ({devToolsPage, inspectedPage}) => {
       await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);

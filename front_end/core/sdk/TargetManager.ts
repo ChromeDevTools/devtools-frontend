@@ -205,6 +205,20 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#scopedObservers.delete(targetObserver);
   }
 
+  /** @returns The set of models we create unconditionally for new targets in the order in which they should be created */
+  #autoStartModels(): SDKModelConstructor[] {
+    const earlyModels = new Set<SDKModelConstructor>();
+    const models = new Set<SDKModelConstructor>();
+    for (const [model, info] of SDKModel.registeredModels) {
+      if (info.early) {
+        earlyModels.add(model);
+      } else if (info.autostart || this.#modelObservers.has(model)) {
+        models.add(model);
+      }
+    }
+    return [...earlyModels, ...models];
+  }
+
   createTarget(
       id: Protocol.Target.TargetID|'main', name: string, type: TargetType, parentTarget: Target|null,
       sessionId?: string, waitForDebuggerInPage?: boolean, connection?: ProtocolClient.CDPConnection.CDPConnection,
@@ -214,7 +228,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     if (waitForDebuggerInPage) {
       void target.pageAgent().invoke_waitForDebugger();
     }
-    target.createModels(new Set(this.#modelObservers.keysArray()));
+    target.createModels(this.#autoStartModels());
     this.#targets.add(target);
 
     const inScope = this.isInScope(target);
@@ -316,7 +330,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       this.#browserTarget = new Target(
           this, /* #id*/ 'main', /* #name*/ 'browser', TargetType.BROWSER, /* #parentTarget*/ null,
           /* #sessionId */ '', /* suspended*/ false, /* #connection*/ null, /* targetInfo*/ undefined);
-      this.#browserTarget.createModels(new Set(this.#modelObservers.keysArray()));
+      this.#browserTarget.createModels(this.#autoStartModels());
     }
     const targetId =
         await Host.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId() as Protocol.Target.TargetID;

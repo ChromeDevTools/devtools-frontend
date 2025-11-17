@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
-import {SDKModel} from './SDKModel.js';
+import {SDKModel, type SDKModelConstructor} from './SDKModel.js';
 import type {TargetManager} from './TargetManager.js';
 
 export class Target extends ProtocolClient.InspectorBackend.TargetBase {
@@ -111,20 +111,11 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this.#targetInfo = targetInfo;
   }
 
-  createModels(required: Set<new(arg1: Target) => SDKModel>): void {
+  /** Creates the models in the order in which they are provided */
+  createModels(models: SDKModelConstructor[]): void {
     this.#creatingModels = true;
-    const registeredModels = Array.from(SDKModel.registeredModels.entries());
-    // Create early models.
-    for (const [modelClass, info] of registeredModels) {
-      if (info.early) {
-        this.model(modelClass);
-      }
-    }
-    // Create autostart and required models.
-    for (const [modelClass, info] of registeredModels) {
-      if (info.autostart || required.has(modelClass)) {
-        this.model(modelClass);
-      }
+    for (const model of models) {
+      this.model(model);
     }
     this.#creatingModels = false;
   }

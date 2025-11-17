@@ -10,22 +10,20 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
-import {SDKModel} from './SDKModel.js';
+import {SDKModel, type SDKModelConstructor} from './SDKModel.js';
 import {Target, Type as TargetType} from './Target.js';
-
-type ModelClass<T = SDKModel> = new (arg1: Target) => T;
 
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #targets: Set<Target>;
   readonly #observers: Set<Observer>;
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners: Platform.MapUtilities.Multimap<string|symbol|number, {
-    modelClass: ModelClass,
+    modelClass: SDKModelConstructor,
     thisObject: Object|undefined,
     listener: Common.EventTarget.EventListener<any, any>,
     wrappedListener: Common.EventTarget.EventListener<any, any>,
   }>;
-  readonly #modelObservers: Platform.MapUtilities.Multimap<ModelClass, SDKModelObserver<any>>;
+  readonly #modelObservers: Platform.MapUtilities.Multimap<SDKModelConstructor, SDKModelObserver<any>>;
   #scopedObservers: WeakSet<Observer|SDKModelObserver<any>>;
   /* eslint-enable @typescript-eslint/no-explicit-any */
   #isSuspended: boolean;
@@ -99,7 +97,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return this.#isSuspended;
   }
 
-  models<T extends SDKModel>(modelClass: ModelClass<T>, opts?: {scoped: boolean}): T[] {
+  models<T extends SDKModel>(modelClass: SDKModelConstructor<T>, opts?: {scoped: boolean}): T[] {
     const result = [];
     for (const target of this.#targets) {
       if (opts?.scoped && !this.isInScope(target)) {
@@ -119,8 +117,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return mainTarget ? mainTarget.inspectedURL() : '';
   }
 
-  observeModels<T extends SDKModel>(modelClass: ModelClass<T>, observer: SDKModelObserver<T>, opts?: {scoped: boolean}):
-      void {
+  observeModels<T extends SDKModel>(modelClass: SDKModelConstructor<T>, observer: SDKModelObserver<T>, opts?: {
+    scoped: boolean,
+  }): void {
     const models = this.models(modelClass, opts);
     this.#modelObservers.set(modelClass, observer);
     if (opts?.scoped) {
@@ -131,12 +130,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
   }
 
-  unobserveModels<T extends SDKModel>(modelClass: ModelClass<T>, observer: SDKModelObserver<T>): void {
+  unobserveModels<T extends SDKModel>(modelClass: SDKModelConstructor<T>, observer: SDKModelObserver<T>): void {
     this.#modelObservers.delete(modelClass, observer);
     this.#scopedObservers.delete(observer);
   }
 
-  modelAdded(modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
+  modelAdded(modelClass: SDKModelConstructor, model: SDKModel, inScope: boolean): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
       if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelAdded(model);
@@ -144,7 +143,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
   }
 
-  private modelRemoved(modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
+  private modelRemoved(modelClass: SDKModelConstructor, model: SDKModel, inScope: boolean): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
       if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelRemoved(model);
@@ -153,8 +152,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   addModelListener<Events, T extends keyof Events>(
-      modelClass: ModelClass<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>,
-      thisObject?: Object, opts?: {scoped: boolean}): void {
+      modelClass: SDKModelConstructor<SDKModel<Events>>, eventType: T,
+      listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object, opts?: {scoped: boolean}): void {
     const wrappedListener = (event: Common.EventTarget.EventTargetEvent<Events[T], Events>): void => {
       if (!opts?.scoped || this.isInScope(event)) {
         listener.call(thisObject, event);
@@ -167,8 +166,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   removeModelListener<Events, T extends keyof Events>(
-      modelClass: ModelClass<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>,
-      thisObject?: Object): void {
+      modelClass: SDKModelConstructor<SDKModel<Events>>, eventType: T,
+      listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
     if (!this.#modelListeners.has(eventType)) {
       return;
     }

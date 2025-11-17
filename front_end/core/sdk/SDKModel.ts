@@ -12,7 +12,9 @@ export interface RegistrationInfo {
   early?: boolean;
 }
 
-const registeredModels = new Map<new (arg1: Target) => SDKModel, RegistrationInfo>();
+export type SDKModelConstructor<T extends SDKModel = SDKModel> = new (target: Target) => T;
+
+const registeredModels = new Map<SDKModelConstructor, RegistrationInfo>();
 
 // TODO(crbug.com/1228674) Remove defaults for generic type parameters once
 //                         all event emitters and sinks have been migrated.
@@ -52,7 +54,7 @@ export class SDKModel<Events = any> extends Common.ObjectWrapper.ObjectWrapper<E
   dispose(): void {
   }
 
-  static register(modelClass: new(arg1: Target) => SDKModel, registrationInfo: RegistrationInfo): void {
+  static register(modelClass: SDKModelConstructor, registrationInfo: RegistrationInfo): void {
     if (registrationInfo.early && !registrationInfo.autostart) {
       throw new Error(`Error registering model ${modelClass.name}: early models must be autostarted.`);
     }

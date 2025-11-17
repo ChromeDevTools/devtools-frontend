@@ -40,7 +40,7 @@ ts_e2e_library("console") {
 
   deps = [
     "../../../front_end/panels/console:bundle",
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

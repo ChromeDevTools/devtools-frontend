@@ -13,7 +13,7 @@ import {
   reloadAndRecord,
   startRecording,
   stopRecording,
-} from '../../e2e/helpers/performance-helpers.js';
+} from '../helpers/performance-helpers.js';
 
 describe('The Performance panel', function() {
   setup({dockingMode: 'undocked'});

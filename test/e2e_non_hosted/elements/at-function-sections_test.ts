@@ -11,7 +11,7 @@ import {
   STYLE_PROPERTIES_SELECTOR,
   waitForAndClickTreeElementWithPartialText,
   waitForStyleRule,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function getStyleRuleProperties(selector: string, count: number, devToolsPage: DevToolsPage) {

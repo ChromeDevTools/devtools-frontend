@@ -38,7 +38,7 @@ ts_e2e_library("elements") {
     "violating-element-and-attributes_test.ts",
   ]
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

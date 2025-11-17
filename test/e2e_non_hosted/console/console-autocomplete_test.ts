@@ -6,8 +6,8 @@ import {
   CONSOLE_TAB_SELECTOR,
   CONSOLE_TOOLTIP_SELECTOR,
   focusConsolePrompt,
-} from '../../e2e/helpers/console-helpers.js';
-import {openSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/console-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 /** See the comments in console-repl-mode_test to see why this is necessary. **/

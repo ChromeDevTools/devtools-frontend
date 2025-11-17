@@ -4,20 +4,20 @@
 
 import {assert} from 'chai';
 
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   clickInfobarButton,
   getTextFromHeadersRow,
   navigateToNetworkTab,
   selectRequestByName,
   waitForSomeRequestsToAppear,
-} from '../../e2e/helpers/network-helpers.js';
+} from '../helpers/network-helpers.js';
 import {
   enableLocalOverrides,
   openOverridesSubPane,
   openSourcesPanel,
-} from '../../e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+} from '../helpers/sources-helpers.js';
 
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';

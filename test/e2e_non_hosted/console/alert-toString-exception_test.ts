@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   getConsoleMessages,
   navigateToConsoleTab,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('Does not crash if it fails to convert alert() argument to string', async ({devToolsPage, inspectedPage}) => {

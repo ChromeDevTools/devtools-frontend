@@ -10,7 +10,7 @@ import {
   getIssueByTitle,
   navigateToIssuesTab,
   RESOURCES_LABEL,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Partitioning Blob URL Issue', () => {
   it('should display the blocked fetching Blob URL and description based on partitioning info',

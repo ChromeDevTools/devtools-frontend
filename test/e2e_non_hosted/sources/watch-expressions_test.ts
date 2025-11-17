@@ -9,7 +9,7 @@ import {
   openSourceCodeEditorForFile,
   openSourcesPanel,
   waitForStackTopMatch,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Watch Expression Pane', () => {
   it('collapses children when editing', async ({devToolsPage}) => {

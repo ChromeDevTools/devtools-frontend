@@ -4,21 +4,21 @@
 
 import {assert} from 'chai';
 
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   openNetworkTab,
   selectRequestByName,
   setCacheDisabled,
   waitForSomeRequestsToAppear,
-} from '../../e2e/helpers/network-helpers.js';
+} from '../helpers/network-helpers.js';
 import {
   readQuickOpenResults,
   typeIntoQuickOpen,
-} from '../../e2e/helpers/quick_open-helpers.js';
+} from '../helpers/quick_open-helpers.js';
 import {
   enableLocalOverrides,
   openSourcesPanel,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

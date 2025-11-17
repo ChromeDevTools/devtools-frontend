@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../../e2e/helpers/sources-helpers.js';
+import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';
 

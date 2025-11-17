@@ -10,7 +10,7 @@ import {
   navigateToApplicationTab,
   navigateToSessionStorageForTopDomain,
   selectStorageItemAtIndex,
-} from '../../e2e/helpers/application-helpers.js';
+} from '../helpers/application-helpers.js';
 
 describe('The Application Tab', () => {
   // TODO (liviurau): Update navigateToApplicationTab helper to work in docked

@@ -10,7 +10,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Select element accessibility issues test', () => {
   it('should display issue when there is a disallowed child of a select element',

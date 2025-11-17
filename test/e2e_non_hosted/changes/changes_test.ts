@@ -4,10 +4,10 @@
 
 import {assert} from 'chai';
 
-import {veImpressionForChangesPanel} from '../../e2e/helpers/changes-helpers.js';
-import {editCSSProperty} from '../../e2e/helpers/elements-helpers.js';
-import {openCommandMenu} from '../../e2e/helpers/quick_open-helpers.js';
-import {expectVeEvents, veImpressionsUnder} from '../../e2e/helpers/visual-logging-helpers.js';
+import {veImpressionForChangesPanel} from '../helpers/changes-helpers.js';
+import {editCSSProperty} from '../helpers/elements-helpers.js';
+import {openCommandMenu} from '../helpers/quick_open-helpers.js';
+import {expectVeEvents, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

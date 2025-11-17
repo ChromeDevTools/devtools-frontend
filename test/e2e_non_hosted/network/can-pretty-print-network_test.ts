@@ -9,11 +9,11 @@ import {
   navigateToNetworkTab,
   selectRequestByName,
   waitForSomeRequestsToAppear,
-} from '../../e2e/helpers/network-helpers.js';
+} from '../helpers/network-helpers.js';
 import {
   isPrettyPrinted,
   retrieveCodeMirrorEditorContent,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
 

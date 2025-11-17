@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {openSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+import {openSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('CPU Calibration', () => {
   it('works', async ({devToolsPage}) => {

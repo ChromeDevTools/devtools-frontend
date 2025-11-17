@@ -10,7 +10,7 @@ ts_e2e_library("inline_editor") {
     "font-editor_test.ts",
   ]
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

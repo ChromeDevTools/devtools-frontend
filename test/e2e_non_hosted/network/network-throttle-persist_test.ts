@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {navigateToNetworkTab} from '../../e2e/helpers/network-helpers.js';
+import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', function() {
   // These tests reload panels repeatedly, which can take a longer time.

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Location emulation on Sensors panel', () => {
   it('includes UI for emulating a location', async ({devToolsPage}) => {

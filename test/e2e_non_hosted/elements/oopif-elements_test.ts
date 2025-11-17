@@ -7,7 +7,7 @@ import {
   expandSelectedNodeRecursively,
   waitForElementsStyleSection,
   waitForElementWithPartialText,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', () => {
   it('shows OOPIF frame error inline', async ({devToolsPage, inspectedPage}) => {

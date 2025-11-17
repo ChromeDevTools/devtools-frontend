@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {getTestServerPort} from 'test/conductor/server_port.js';
-import {openSourcesPanel} from 'test/e2e/helpers/sources-helpers.js';
+import {openSourcesPanel} from 'test/e2e_non_hosted/helpers/sources-helpers.js';
 import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers';
 
 export interface Action {

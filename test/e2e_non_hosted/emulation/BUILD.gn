@@ -13,7 +13,7 @@ ts_e2e_library("emulation") {
     "responsive_test.ts",
   ]
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

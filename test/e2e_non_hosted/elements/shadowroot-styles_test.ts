@@ -10,8 +10,8 @@ import {
   waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
   waitForPartialContentOfSelectedElementsNode,
-} from '../../e2e/helpers/elements-helpers.js';
-import {togglePreferenceInSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/elements-helpers.js';
+import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('The Elements Tab', () => {
   it('can show styles in shadow roots', async ({devToolsPage, inspectedPage}) => {

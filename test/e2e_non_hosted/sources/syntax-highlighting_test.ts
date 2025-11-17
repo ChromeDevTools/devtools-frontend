@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {openSourceCodeEditorForFile} from '../../e2e/helpers/sources-helpers.js';
+import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {
   it('is highlighting the syntax correctly', async ({devToolsPage, inspectedPage}) => {

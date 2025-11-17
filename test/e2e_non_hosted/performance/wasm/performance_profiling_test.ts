@@ -19,7 +19,7 @@ import {
   startRecording,
   stopRecording,
   SUMMARY_TAB_SELECTOR,
-} from '../../../e2e/helpers/performance-helpers.js';
+} from '../../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../../shared/frontend-helper.js';
 import type {InspectedPage} from '../../shared/target-helper.js';
 

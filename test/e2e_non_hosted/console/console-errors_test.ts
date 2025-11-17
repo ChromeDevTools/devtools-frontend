@@ -9,10 +9,10 @@ import {
   navigateToConsoleTab,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 import {
   increaseTimeoutForPerfPanel,
-} from '../../e2e/helpers/performance-helpers.js';
+} from '../helpers/performance-helpers.js';
 
 describe('The Console\'s errors', function() {
   increaseTimeoutForPerfPanel(this);

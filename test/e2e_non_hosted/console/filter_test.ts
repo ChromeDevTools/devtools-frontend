@@ -11,7 +11,7 @@ import {
   navigateToConsoleTab,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('shows messages from all levels', async ({devToolsPage, inspectedPage}) => {

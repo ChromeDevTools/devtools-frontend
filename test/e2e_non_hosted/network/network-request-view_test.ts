@@ -9,8 +9,8 @@ import {expectError} from '../../conductor/events.js';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
-} from '../../e2e/helpers/console-helpers.js';
-import {triggerLocalFindDialog} from '../../e2e/helpers/memory-helpers.js';
+} from '../helpers/console-helpers.js';
+import {triggerLocalFindDialog} from '../helpers/memory-helpers.js';
 import {
   clickInfobarButton,
   getAllRequestNames,
@@ -18,7 +18,7 @@ import {
   navigateToNetworkTab,
   selectRequestByName,
   waitForSomeRequestsToAppear,
-} from '../../e2e/helpers/network-helpers.js';
+} from '../helpers/network-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

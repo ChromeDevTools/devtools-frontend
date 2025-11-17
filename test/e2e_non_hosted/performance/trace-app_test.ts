@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events';
-import {searchForComponent} from '../../e2e/helpers/performance-helpers';
+import {searchForComponent} from '../helpers/performance-helpers';
 import type {DevToolsPage} from '../shared/frontend-helper';
 import type {InspectedPage} from '../shared/target-helper';
 

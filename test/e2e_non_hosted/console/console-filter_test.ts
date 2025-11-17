@@ -5,6 +5,11 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+import {
+  step,
+} from '../../shared/helper.js';
 import {
   closeConsoleSidebar,
   CONSOLE_MESSAGE_WRAPPER_SELECTOR,
@@ -19,12 +24,7 @@ import {
   toggleShowCorsErrors,
   waitForConsoleMessagesToBeNonEmpty,
   waitForExactConsoleMessageCount,
-} from '../../e2e/helpers/console-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  step,
-} from '../../shared/helper.js';
+} from '../helpers/console-helpers.js';
 
 type MessageCheck = (msg: string) => boolean;
 

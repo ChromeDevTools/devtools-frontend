@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('Logging and preview of Trusted Types objects in the Console', () => {
   it('Logging of Trusted Type HTML object', async ({devToolsPage}) => {

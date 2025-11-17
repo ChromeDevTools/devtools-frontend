@@ -12,8 +12,8 @@ import {
   waitForAdorners,
   waitForElementsStyleSection,
   waitForSomeGridsInLayoutPane,
-} from '../../e2e/helpers/elements-helpers.js';
-import {togglePreferenceInSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/elements-helpers.js';
+import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('Layout Pane in the Elements Tab', function() {
   // FIXME: lower parts of the panel are not visible in docked mode.

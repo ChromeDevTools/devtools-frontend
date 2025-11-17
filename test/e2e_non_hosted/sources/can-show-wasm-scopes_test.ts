@@ -14,7 +14,7 @@ import {
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
   waitValuesForScope,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', () => {
   it('shows and updates the module, local, and stack scope while pausing', async ({devToolsPage, inspectedPage}) => {

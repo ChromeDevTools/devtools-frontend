@@ -4,11 +4,7 @@
 
 import {assert} from 'chai';
 
-import {
-  getPausedMessages,
-  openSourcesPanel,
-  PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR
-} from '../../e2e/helpers/sources-helpers.js';
+import {getPausedMessages, openSourcesPanel, PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR} from '../helpers/sources-helpers.js';
 
 describe('Breakpoints on CSP Violation', () => {
   it('CSP Violations should come up before break on exceptions', async ({devToolsPage, inspectedPage}) => {

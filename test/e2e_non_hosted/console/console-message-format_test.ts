@@ -8,7 +8,7 @@ import {
   getConsoleMessages,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('shows BigInts formatted', async ({devToolsPage, inspectedPage}) => {

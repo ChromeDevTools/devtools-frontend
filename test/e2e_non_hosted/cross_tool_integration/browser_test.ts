@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {getCurrentConsoleMessages} from '../../e2e/helpers/console-helpers.js';
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
+import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Browser', () => {
   it('can reload a website after all closeable tools are closed', async ({devToolsPage, inspectedPage}) => {

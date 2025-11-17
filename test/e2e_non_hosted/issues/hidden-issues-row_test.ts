@@ -12,7 +12,7 @@ import {
   getIssueHeaderByTitle,
   ISSUE,
   navigateToIssuesTab,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Hide issues row', () => {
   it('should be visible after hiding an issue', async ({devToolsPage, inspectedPage}) => {

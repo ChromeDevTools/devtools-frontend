@@ -7,8 +7,8 @@ import {
   SEARCH_BOX_SELECTOR,
   summonAndWaitForSearchBox,
   waitForSelectedNodeToBeExpanded,
-} from '../../e2e/helpers/elements-helpers.js';
-import {togglePreferenceInSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/elements-helpers.js';
+import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function toggleSearchAsYouType(devToolsPage: DevToolsPage, enabled: boolean) {

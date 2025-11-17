@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import {
+  step,
+} from '../../shared/helper.js';
 import {
   addBreakpointForLine,
   disableInlineBreakpointForLine,
@@ -9,11 +13,7 @@ import {
   openSourceCodeEditorForFile,
   PAUSE_INDICATOR_SELECTOR,
   RESUME_BUTTON,
-} from '../../e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import {
-  step,
-} from '../../shared/helper.js';
+} from '../helpers/sources-helpers.js';
 
 // These tests are ported from the web test:
 // https://crsrc.org/c/third_party/blink/web_tests/http/tests/devtools/sources/debugger/source-frame-inline-breakpoint-decorations.js;drc=74dacd13f4b89f64ebe1aa99d4b5d80480a8d3b4

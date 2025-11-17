@@ -10,7 +10,7 @@ import {
   openSourceCodeEditorForFile,
   PAUSE_INDICATOR_SELECTOR,
   RESUME_BUTTON,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', function() {
   it('sets the breakpoint in the first script for multiple inline scripts', async ({devToolsPage, inspectedPage}) => {

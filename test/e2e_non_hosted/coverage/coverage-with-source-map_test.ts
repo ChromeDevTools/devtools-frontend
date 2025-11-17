@@ -6,11 +6,11 @@ import {
   startInstrumentingCoverage,
   waitForCoverageData,
   waitForTheCoveragePanelToLoad,
-} from '../../e2e/helpers/coverage-helpers.js';
+} from '../helpers/coverage-helpers.js';
 import {
   MAIN_PANEL_SELECTOR,
   MOVE_TO_MAIN_TAB_BAR_SELECTOR,
-} from '../../e2e/helpers/cross-tool-helper.js';
+} from '../helpers/cross-tool-helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

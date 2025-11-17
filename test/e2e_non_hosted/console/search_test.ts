@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {navigateToConsoleTab} from '../../e2e/helpers/console-helpers.js';
+import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('Console search', () => {

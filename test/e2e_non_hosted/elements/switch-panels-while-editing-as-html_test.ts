@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {findSubMenuEntryItem} from '../../e2e/helpers/context-menu-helpers.js';
+import {findSubMenuEntryItem} from '../helpers/context-menu-helpers.js';
 import {
   expandSelectedNodeRecursively,
   navigateToElementsTab,
-} from '../../e2e/helpers/elements-helpers.js';
-import {openSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/elements-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Elements tab', function() {
   // Flaking repeatedly on CI

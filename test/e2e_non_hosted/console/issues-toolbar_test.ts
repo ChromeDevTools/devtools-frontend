@@ -5,7 +5,7 @@
 import {
   navigateToConsoleTab,
   waitForIssueButtonLabel,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('shows the toolbar button for no issue correctly', async ({devToolsPage, inspectedPage}) => {

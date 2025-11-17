@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Rendering pane', () => {
   it('includes UI for simulating vision deficiencies', async ({devToolsPage}) => {

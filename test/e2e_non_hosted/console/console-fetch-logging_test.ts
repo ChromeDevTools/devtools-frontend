@@ -10,7 +10,7 @@ import {
   navigateToConsoleTab,
   toggleShowLogXmlHttpRequests,
   typeIntoConsoleAndWaitForResult,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('is able to log fetching when XMLHttpRequest Logging is enabled', async ({devToolsPage, inspectedPage}) => {

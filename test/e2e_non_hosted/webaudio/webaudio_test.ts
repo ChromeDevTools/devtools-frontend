@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('The WebAudio Panel', () => {
   it('Listens for audio contexts', async ({devToolsPage, inspectedPage}) => {

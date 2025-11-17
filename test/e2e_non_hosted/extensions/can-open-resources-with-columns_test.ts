@@ -5,14 +5,14 @@
 import {assert} from 'chai';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {loadExtension} from '../../e2e/helpers/extension-helpers.js';
+import {loadExtension} from '../helpers/extension-helpers.js';
 import {
   getToolbarText,
   openFileInSourcesPanel,
   SourceFileEvents,
   waitForHighlightedLine,
   waitForSourceFiles,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('The Extension API', () => {
   it('can open wasm resources with offset', async ({devToolsPage, inspectedPage}) => {

@@ -5,7 +5,7 @@
 
 import {
   waitForElementWithPartialText,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', () => {
   it('updates DOM for prerender targets', async ({devToolsPage, inspectedPage}) => {

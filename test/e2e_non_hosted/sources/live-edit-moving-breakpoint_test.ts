@@ -5,14 +5,14 @@
 import {assert} from 'chai';
 
 import {
+  step,
+} from '../../shared/helper.js';
+import {
   addBreakpointForLine,
   isBreakpointSet,
   openSourceCodeEditorForFile,
   reloadPageAndWaitForSourceFile,
-} from '../../e2e/helpers/sources-helpers.js';
-import {
-  step,
-} from '../../shared/helper.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Live edit', () => {
   setup({enabledFeatures: ['DevToolsLiveEdit']});

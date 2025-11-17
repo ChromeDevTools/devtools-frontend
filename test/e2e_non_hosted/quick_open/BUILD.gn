@@ -11,7 +11,7 @@ ts_e2e_library("quick_open") {
   ]
 
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

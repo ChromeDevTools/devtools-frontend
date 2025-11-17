@@ -10,7 +10,7 @@ import {
   setDOMBreakpointOnSelectedNode,
   toggleDOMBreakpointCheckbox,
   waitForElementsDOMBreakpointsSection,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('Elements DOM Breakpoints section', () => {
   it('avoids duplication and persists DOM breakpoint state between page reloads',

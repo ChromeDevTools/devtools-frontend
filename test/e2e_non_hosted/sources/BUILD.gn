@@ -49,7 +49,7 @@ ts_e2e_library("sources") {
 
   deps = [
     "../../../front_end/ui/components/text_editor:bundle",
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

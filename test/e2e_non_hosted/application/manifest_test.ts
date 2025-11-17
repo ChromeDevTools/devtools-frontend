@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getTrimmedTextContent, navigateToApplicationTab} from '../../e2e/helpers/application-helpers.js';
+import {getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const MANIFEST_SELECTOR = '[aria-label="Manifest: Invoke to scroll to the top of manifest"]';
 const APP_ID_SELECTOR = '[aria-label="App Id"]';

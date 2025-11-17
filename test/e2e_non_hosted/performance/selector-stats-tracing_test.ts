@@ -9,7 +9,7 @@ import {
   getDataGridColumnNames,
   getDataGridRows,
   getInnerTextOfDataGridCells
-} from '../../e2e/helpers/datagrid-helpers.js';
+} from '../helpers/datagrid-helpers.js';
 import {
   enableCSSSelectorStats,
   increaseTimeoutForPerfPanel,
@@ -18,8 +18,8 @@ import {
   selectRecalculateStylesEvent,
   startRecording,
   stopRecording,
-} from '../../e2e/helpers/performance-helpers.js';
-import {getOpenSources} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/performance-helpers.js';
+import {getOpenSources} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

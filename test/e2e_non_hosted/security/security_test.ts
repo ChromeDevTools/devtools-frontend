@@ -8,7 +8,7 @@ import {
   openSecurityPanelFromMoreTools,
   securityTabDoesNotExist,
   securityTabExists,
-} from '../../e2e/helpers/security-helpers.js';
+} from '../helpers/security-helpers.js';
 
 describe('The Security Panel', function() {
   setup({dockingMode: 'bottom'});

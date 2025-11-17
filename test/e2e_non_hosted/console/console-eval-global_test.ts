@@ -4,12 +4,8 @@
 
 import {assert} from 'chai';
 
-import {
-  CONSOLE_TAB_SELECTOR,
-  focusConsolePrompt,
-  getCurrentConsoleMessages
-} from '../../e2e/helpers/console-helpers.js';
 import {step} from '../../shared/helper.js';
+import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('interacts with the global scope correctly', async ({devToolsPage}) => {

@@ -11,7 +11,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Client Hint issues test', () => {
   it('should display issue when Client Hints are used with invalid origin for DelegateCH', async ({

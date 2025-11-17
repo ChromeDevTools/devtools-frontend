@@ -17,7 +17,7 @@ import {
   record,
   stopRecording,
   toggleCodeView,
-} from '../../e2e/helpers/recorder-helpers.js';
+} from '../helpers/recorder-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

@@ -4,12 +4,9 @@
 
 import {assert} from 'chai';
 
-import {maybeGetCurrentConsoleMessages} from '../../e2e/helpers/console-helpers.js';
-import {
-  getAvailableSnippets,
-  openCommandMenu,
-  showSnippetsAutocompletion
-} from '../../e2e/helpers/quick_open-helpers.js';
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import {maybeGetCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {
   addSelectedTextToWatches,
   createNewSnippet,
@@ -18,8 +15,7 @@ import {
   openSnippetsSubPane,
   openSourcesPanel,
   runSnippet,
-} from '../../e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Snippet creation', () => {
   it('can show newly created snippets show up in command menu', async ({devToolsPage}) => {

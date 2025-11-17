@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {toggleAccessibilityTree} from '../../e2e/helpers/elements-helpers.js';
+import {toggleAccessibilityTree} from '../helpers/elements-helpers.js';
 
 describe('Accessibility Tree in the Elements Tab', function() {
   setup({enabledDevToolsExperiments: ['full-accessibility-tree', 'protocol-monitor']});

@@ -2,24 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../../e2e/helpers/console-helpers.js';
+import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {
   clickOnContextMenuItemFromTab,
   MOVE_TO_DRAWER_SELECTOR,
   MOVE_TO_MAIN_TAB_BAR_SELECTOR,
   tabExistsInDrawer,
   tabExistsInMainPanel,
-} from '../../e2e/helpers/cross-tool-helper.js';
-import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../../e2e/helpers/elements-helpers.js';
-import {LAYERS_TAB_SELECTOR} from '../../e2e/helpers/layers-helpers.js';
-import {MEMORY_TAB_ID, navigateToMemoryTab} from '../../e2e/helpers/memory-helpers.js';
+} from '../helpers/cross-tool-helper.js';
+import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../helpers/elements-helpers.js';
+import {LAYERS_TAB_SELECTOR} from '../helpers/layers-helpers.js';
+import {MEMORY_TAB_ID, navigateToMemoryTab} from '../helpers/memory-helpers.js';
 import {
   navigateToBottomUpTab,
   navigateToPerformanceTab,
   startRecording,
   stopRecording,
-} from '../../e2e/helpers/performance-helpers.js';
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/performance-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

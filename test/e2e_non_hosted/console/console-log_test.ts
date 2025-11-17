@@ -5,6 +5,9 @@
 import {assert} from 'chai';
 
 import {
+  replacePuppeteerUrl,
+} from '../../shared/helper.js';
+import {
   CONSOLE_ALL_MESSAGES_SELECTOR,
   focusConsolePrompt,
   getConsoleMessages,
@@ -15,14 +18,11 @@ import {
   typeIntoConsoleAndWaitForResult,
   waitForConsoleInfoMessageAndClickOnLink,
   waitForLastConsoleMessageToHaveContent,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 import {
   addLogpointForLine,
   openSourceCodeEditorForFile,
-} from '../../e2e/helpers/sources-helpers.js';
-import {
-  replacePuppeteerUrl,
-} from '../../shared/helper.js';
+} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 /* eslint-disable no-console */

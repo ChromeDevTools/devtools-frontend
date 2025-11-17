@@ -10,7 +10,7 @@ import {
   openDeviceToolbar,
   selectFoldableDevice,
   selectNonDualScreenDevice,
-} from '../../e2e/helpers/emulation-helpers.js';
+} from '../helpers/emulation-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

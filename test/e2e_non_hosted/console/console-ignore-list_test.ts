@@ -5,12 +5,12 @@
 import {assert} from 'chai';
 
 import {
-  navigateToConsoleTab,
-} from '../../e2e/helpers/console-helpers.js';
-import {setIgnoreListPattern} from '../../e2e/helpers/settings-helpers.js';
-import {
   replacePuppeteerUrl,
 } from '../../shared/helper.js';
+import {
+  navigateToConsoleTab,
+} from '../helpers/console-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
 describe('Ignore list', () => {
   it('can be toggled on and off in console stack trace', async ({devToolsPage, inspectedPage}) => {

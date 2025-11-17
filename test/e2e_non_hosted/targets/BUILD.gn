@@ -8,7 +8,7 @@ ts_e2e_library("targets") {
   sources = [ "worklet_test.ts" ]
 
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

@@ -11,7 +11,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('IssueView cache', () => {
   it('should correctly update the issue', async ({devToolsPage, inspectedPage}) => {

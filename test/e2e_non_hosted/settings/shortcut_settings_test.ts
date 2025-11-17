@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {getSelectedItemText, QUICK_OPEN_SELECTOR} from '../../e2e/helpers/quick_open-helpers.js';
-import {openSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+import {getSelectedItemText, QUICK_OPEN_SELECTOR} from '../helpers/quick_open-helpers.js';
+import {openSettingsTab} from '../helpers/settings-helpers.js';
 import {
   ADD_SHORTCUT_LINK_TEXT,
   clickAddShortcutLink,
@@ -33,7 +33,7 @@ import {
   VS_CODE_SHORTCUTS_SHORTCUTS,
   waitForEmptyShortcutInput,
   waitForVSCodeShortcutPreset,
-} from '../../e2e/helpers/settings-shortcuts-helpers.js';
+} from '../helpers/settings-shortcuts-helpers.js';
 
 describe('Shortcuts Settings tab', () => {
   it('should update when the shortcuts preset is changed ', async ({devToolsPage}) => {

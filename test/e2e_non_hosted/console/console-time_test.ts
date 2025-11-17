@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {
   getCurrentConsoleMessages,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('console.time', () => {
   it('produces time messages', async ({devToolsPage, inspectedPage}) => {

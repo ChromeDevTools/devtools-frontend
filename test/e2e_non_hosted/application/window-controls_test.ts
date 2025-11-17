@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {navigateToApplicationTab} from '../../e2e/helpers/application-helpers.js';
 import {selectOption} from '../../shared/helper.js';
+import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TEST_HTML_FILE = 'window-controls';
 

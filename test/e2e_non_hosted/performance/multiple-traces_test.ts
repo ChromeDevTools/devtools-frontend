@@ -9,7 +9,7 @@ import * as path from 'path';
 import {GEN_DIR} from '../../conductor/paths.js';
 import {
   navigateToPerformanceTab,
-} from '../../e2e/helpers/performance-helpers.js';
+} from '../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function uploadTraceFile(devToolsPage: DevToolsPage, name: string) {

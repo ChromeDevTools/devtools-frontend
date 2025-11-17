@@ -5,8 +5,8 @@ import {
   navigateToApplicationTab,
   navigateToServiceWorkers,
   unregisterServiceWorker,
-} from '../../e2e/helpers/application-helpers.js';
-import {tabExistsInMainPanel} from '../../e2e/helpers/cross-tool-helper.js';
+} from '../helpers/application-helpers.js';
+import {tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
 
 const NETWORK_TAB_SELECTOR = '#tab-network';
 const TEST_HTML_FILE = 'service-worker-network';

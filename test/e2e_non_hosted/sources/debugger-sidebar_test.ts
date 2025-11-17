@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {openSourcesPanel, toggleDebuggerSidebar} from '../../e2e/helpers/sources-helpers.js';
+import {openSourcesPanel, toggleDebuggerSidebar} from '../helpers/sources-helpers.js';
 
 describe('The Sources panel', () => {
   describe('contains a debugger sidebar', () => {

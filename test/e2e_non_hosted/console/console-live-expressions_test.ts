@@ -9,7 +9,7 @@ import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
   getCurrentConsoleMessages,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('commits live expression with Enter', async ({devToolsPage}) => {

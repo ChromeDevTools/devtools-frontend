@@ -11,7 +11,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('CORS issues', () => {
   it('should display CORS violations with the correct affected resources', async ({devToolsPage, inspectedPage}) => {

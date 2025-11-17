@@ -11,7 +11,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Cookie Deprecation Metadata issue', () => {
   it('should display correct information', async ({devToolsPage}) => {

@@ -27,7 +27,7 @@ import {
   stepThroughTheCode,
   switchToCallFrame,
   THREADS_SELECTOR,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {
   it('shows the correct wasm source on load and reload', async ({devToolsPage, inspectedPage}) => {

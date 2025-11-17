@@ -10,7 +10,7 @@ import {
   getGroupByCategoryChecked,
   navigateToIssuesTab,
   toggleGroupByCategory,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('The Issues tab categories checkbox', () => {
   it('should group issues by associated categories when checked', async ({inspectedPage, devToolsPage}) => {

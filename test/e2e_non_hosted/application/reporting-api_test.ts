@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {navigateToApplicationTab} from '../../e2e/helpers/application-helpers.js';
-import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
+import {navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
 
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 

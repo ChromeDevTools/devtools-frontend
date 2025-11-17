@@ -15,7 +15,7 @@ import {
   removeBreakpointForLine,
   retrieveTopCallFrameScriptLocation,
   retrieveTopCallFrameWithoutResuming,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', () => {
   const fileName = 'with-sourcemap.ll';

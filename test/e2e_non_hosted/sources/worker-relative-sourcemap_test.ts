@@ -4,13 +4,9 @@
 
 import {assert} from 'chai';
 
-import {
-  createSelectorsForWorkerFile,
-  expandFileTree,
-  type NestedFileSelector
-} from '../../e2e/helpers/sources-helpers.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+import {createSelectorsForWorkerFile, expandFileTree, type NestedFileSelector} from '../helpers/sources-helpers.js';
 
 function createSelectorsForEvalWorker(fileName: string, inspectedPage: InspectedPage) {
   const EVAL_WORKER_NAME = '#1';

@@ -5,7 +5,7 @@
 import {
   checkCommandResultFunction,
   navigateToConsoleTab,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 // offset is 1 because Console.log returns undefined after logging, so we want
 // to check the output before the last one.

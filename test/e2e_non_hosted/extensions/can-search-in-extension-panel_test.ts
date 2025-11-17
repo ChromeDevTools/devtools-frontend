@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {expectError} from '../../conductor/events.js';
 import {platform} from '../../conductor/platform.js';
-import {loadExtension} from '../../e2e/helpers/extension-helpers.js';
+import {loadExtension} from '../helpers/extension-helpers.js';
 
 declare global {
   interface Window {

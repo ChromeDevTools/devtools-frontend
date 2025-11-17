@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 import {
+  step,
+} from '../../shared/helper.js';
+import {
   navigateToConsoleTab,
   waitForLastConsoleMessageToHaveContent,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 import {
   executionLineHighlighted,
   getOpenSources,
   openSourcesPanel,
   PAUSE_BUTTON,
   PAUSE_INDICATOR_SELECTOR,
-} from '../../e2e/helpers/sources-helpers.js';
-import {
-  step,
-} from '../../shared/helper.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', () => {
   it('pauses the script when clicking the "Pause" button', async ({devToolsPage, inspectedPage}) => {

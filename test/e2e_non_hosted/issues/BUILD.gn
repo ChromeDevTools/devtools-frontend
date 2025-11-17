@@ -33,7 +33,7 @@ ts_e2e_library("issues") {
     "select-element-accessibility-issues_test.ts",
   ]
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

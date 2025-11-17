@@ -4,9 +4,10 @@
 
 import {assert} from 'chai';
 
-import {elementContainsTextWithSelector} from '../../e2e/helpers/network-helpers.js';
-import {openGoToLineQuickOpen} from '../../e2e/helpers/quick_open-helpers.js';
-import {togglePreferenceInSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+import {step} from '../../shared/helper.js';
+import {elementContainsTextWithSelector} from '../helpers/network-helpers.js';
+import {openGoToLineQuickOpen} from '../helpers/quick_open-helpers.js';
+import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
   isPrettyPrinted,
@@ -16,8 +17,7 @@ import {
   retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
   waitForHighlightedLine,
-} from '../../e2e/helpers/sources-helpers.js';
-import {step} from '../../shared/helper.js';
+} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
 const PRETTY_PRINTED_TOGGLE = 'devtools-text-editor.pretty-printed';

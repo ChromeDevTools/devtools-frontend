@@ -14,8 +14,8 @@ import {
   navigateToOpenedWindows,
   navigateToWebWorkers,
   unregisterServiceWorker,
-} from '../../e2e/helpers/application-helpers.js';
-import {setIgnoreListPattern} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/application-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';

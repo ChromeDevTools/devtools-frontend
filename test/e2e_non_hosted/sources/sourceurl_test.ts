@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {expandFileTree, type NestedFileSelector, openFileInSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
+import {expandFileTree, type NestedFileSelector, openFileInSourcesPanel} from '../helpers/sources-helpers.js';
 
 function createSelectorsForFile(domainName: string, folderName: string, fileName: string): NestedFileSelector {
   const rootSelector = '.navigator-frame-tree-item[aria-label="top, frame"]';

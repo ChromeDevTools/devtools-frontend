@@ -13,7 +13,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {expectError} from '../../conductor/events.js';
 import {
   loadExtension,
-} from '../../e2e/helpers/extension-helpers.js';
+} from '../helpers/extension-helpers.js';
 
 async function createPanel(extension: puppeteer.Frame, resourcePath = '') {
   return await extension.evaluate(

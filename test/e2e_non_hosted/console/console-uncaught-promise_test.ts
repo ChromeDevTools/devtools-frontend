@@ -9,7 +9,7 @@ import {
   getCurrentConsoleMessages,
   navigateToConsoleTab,
   typeIntoConsoleAndWaitForResult,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('is able to log uncaught promise rejections into console', async ({devToolsPage, inspectedPage}) => {

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../../e2e/helpers/cross-tool-helper.js';
+import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
 import {
   addBreakpointForLine,
   inspectMemory,
@@ -13,7 +13,7 @@ import {
   reloadPageAndWaitForSourceFile,
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {runCommandWithQuickOpen} from '../../e2e/helpers/quick_open-helpers.js';
+import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 
 // Ideally we want to have all panels within this list,
 // but introducing shadow doms for all panels currently leads

@@ -9,8 +9,8 @@ import {
   increaseTimeoutForPerfPanel,
   navigateToPerformanceTab,
   openCaptureSettings
-} from '../../e2e/helpers/performance-helpers.js';
-import {expectVeEvents, veChange} from '../../e2e/helpers/visual-logging-helpers.js';
+} from '../helpers/performance-helpers.js';
+import {expectVeEvents, veChange} from '../helpers/visual-logging-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

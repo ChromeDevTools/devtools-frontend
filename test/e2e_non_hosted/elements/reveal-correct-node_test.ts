@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
+import {step} from '../../shared/helper.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   expandSelectedNodeRecursively,
   waitForAdorners,
   waitForPartialContentOfSelectedElementsNode,
   waitForSelectedTreeElementSelectorWhichIncludesText,
-} from '../../e2e/helpers/elements-helpers.js';
-import {expandIssue, navigateToIssuesTab, revealNodeInElementsPanel} from '../../e2e/helpers/issues-helpers.js';
-import {step} from '../../shared/helper.js';
+} from '../helpers/elements-helpers.js';
+import {expandIssue, navigateToIssuesTab, revealNodeInElementsPanel} from '../helpers/issues-helpers.js';
 
 describe('The Issues tab', () => {
   it('should reveal an element in the Elements panel when the node icon is clicked', async ({

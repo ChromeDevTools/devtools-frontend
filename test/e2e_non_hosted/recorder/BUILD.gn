@@ -12,7 +12,7 @@ ts_e2e_library("recorder") {
     "ui_test.ts",
   ]
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

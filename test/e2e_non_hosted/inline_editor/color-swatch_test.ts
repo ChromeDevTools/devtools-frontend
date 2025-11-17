@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {waitForSoftContextMenu} from '../../e2e/helpers/context-menu-helpers.js';
+import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {
   clickNthChildOfSelectedElementNode,
   editCSSProperty,
@@ -18,7 +18,7 @@ import {
   waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
   waitForElementsComputedSection,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

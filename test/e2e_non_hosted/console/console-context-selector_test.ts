@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {navigateToConsoleTab} from '../../e2e/helpers/console-helpers.js';
-import {openSourcesPanel, RESUME_BUTTON} from '../../e2e/helpers/sources-helpers.js';
+import {navigateToConsoleTab} from '../helpers/console-helpers.js';
+import {openSourcesPanel, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('The Console Tab', () => {

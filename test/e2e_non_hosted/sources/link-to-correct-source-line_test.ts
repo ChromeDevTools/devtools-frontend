@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {expandIssue, navigateToIssuesTab, revealViolatingSourcesLines} from '../../e2e/helpers/issues-helpers.js';
-import {waitForHighlightedLine} from '../../e2e/helpers/sources-helpers.js';
+import {expandIssue, navigateToIssuesTab, revealViolatingSourcesLines} from '../helpers/issues-helpers.js';
+import {waitForHighlightedLine} from '../helpers/sources-helpers.js';
 
 describe('The Issues tab', () => {
   it('should highlight the blocked inline <script> in the Sources panel when the link is clicked',

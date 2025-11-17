@@ -11,7 +11,7 @@ ts_e2e_library("security") {
   ]
 
   deps = [
-    "../../e2e/helpers",
     "../../shared",
+    "../helpers",
   ]
 }

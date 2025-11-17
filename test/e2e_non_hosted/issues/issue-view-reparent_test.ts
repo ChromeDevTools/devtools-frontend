@@ -10,7 +10,7 @@ import {
   ISSUE,
   navigateToIssuesTab,
   toggleGroupByCategory,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('IssueView', () => {
   it('should be parented in issueTree when not groupedByCategory', async ({devToolsPage, inspectedPage}) => {

@@ -8,7 +8,7 @@ import type * as Timeline from '../../../../front_end/panels/timeline/timeline.j
 import {GEN_DIR} from '../../../conductor/paths.js';
 import {
   navigateToPerformanceTab,
-} from '../../../e2e/helpers/performance-helpers.js';
+} from '../../../e2e_non_hosted/helpers/performance-helpers.js';
 import type {DevToolsPage} from '../../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../../e2e_non_hosted/shared/target-helper.js';
 import {measurements} from '../../report/report.js';

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {openDeviceToolbar, showMediaQueryInspector} from '../../e2e/helpers/emulation-helpers.js';
+import {openDeviceToolbar, showMediaQueryInspector} from '../helpers/emulation-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

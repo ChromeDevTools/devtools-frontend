@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -11,8 +12,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Cookie attribute exceeds max size issues test', () => {
   const clearCookies = async (inspectedPage: InspectedPage) => {

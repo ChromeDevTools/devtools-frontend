@@ -5,14 +5,14 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {waitForDomNodeToBeVisible} from '../../e2e/helpers/elements-helpers.js';
+import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {
   clickZoomDropDown,
   openDeviceToolbar,
   selectDevice,
   selectEdit,
   selectTestDevice,
-} from '../../e2e/helpers/emulation-helpers.js';
+} from '../helpers/emulation-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

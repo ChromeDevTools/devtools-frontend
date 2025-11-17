@@ -9,7 +9,7 @@ import {
   focusConsolePrompt,
   typeIntoConsole,
   typeIntoConsoleAndWaitForResult,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {
   it('is cleared via the console.clear() method', async ({devToolsPage, inspectedPage}) => {

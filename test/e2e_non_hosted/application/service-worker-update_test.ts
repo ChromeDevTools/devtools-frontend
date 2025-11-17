@@ -7,7 +7,7 @@ import {
   navigateToApplicationTab,
   navigateToServiceWorkers,
   unregisterServiceWorker,
-} from '../../e2e/helpers/application-helpers.js';
+} from '../helpers/application-helpers.js';
 
 const TEST_HTML_FILE = 'service-worker-network';
 const SERVICE_WORKER_UPDATE_TIMELINE_SELECTOR = '.service-worker-update-timing-table';

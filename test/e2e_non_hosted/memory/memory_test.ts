@@ -6,6 +6,9 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {
+  step,
+} from '../../shared/helper.js';
+import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,
   checkExposeInternals,
@@ -37,10 +40,7 @@ import {
   waitForRetainerChain,
   waitForSearchResultNumber,
   waitUntilRetainerChainSatisfies,
-} from '../../e2e/helpers/memory-helpers.js';
-import {
-  step,
-} from '../../shared/helper.js';
+} from '../helpers/memory-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function runJSSetTest(devToolsPage: DevToolsPage) {

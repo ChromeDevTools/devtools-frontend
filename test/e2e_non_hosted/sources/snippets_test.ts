@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
-import {openSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 const SNIPPETS_TAB_SELECTOR = '[aria-label="Snippets"]';
 

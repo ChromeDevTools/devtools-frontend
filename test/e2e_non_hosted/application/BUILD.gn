@@ -19,7 +19,7 @@ ts_e2e_library("application") {
   ]
 
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

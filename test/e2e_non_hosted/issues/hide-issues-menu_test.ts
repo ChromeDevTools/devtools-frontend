@@ -16,7 +16,7 @@ import {
   ISSUE,
   navigateToIssuesTab,
   toggleGroupByKind,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Hide issues menu', () => {
   it('should become visible on hovering over the issue header', async ({devToolsPage}) => {

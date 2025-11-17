@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('Audio worklet support', () => {
   it('Receiving log messages from Audio worklets', async ({devToolsPage, inspectedPage}) => {

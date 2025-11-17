@@ -4,11 +4,11 @@
 
 import {assert} from 'chai';
 
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   getCallFrameNames,
   PAUSE_INDICATOR_SELECTOR,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', () => {
   it('can restart a call stack frame', async ({devToolsPage, inspectedPage}) => {

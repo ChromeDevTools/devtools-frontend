@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {platform} from '../../conductor/platform.js';
-import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../../e2e/helpers/console-helpers.js';
+import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {
   const RESULT_SELECTOR = '.console-message-text';

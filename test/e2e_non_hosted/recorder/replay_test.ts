@@ -13,7 +13,7 @@ import {
   replayShortcut,
   setupRecorderWithScript,
   setupRecorderWithScriptAndReplay,
-} from '../../e2e/helpers/recorder-helpers.js';
+} from '../helpers/recorder-helpers.js';
 
 describe('Recorder', function() {
   if (this.timeout() !== 0) {

@@ -8,8 +8,8 @@ import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
   STACK_PREVIEW_CONTAINER,
-} from '../../e2e/helpers/console-helpers.js';
-import {openSettingsTab} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/console-helpers.js';
+import {openSettingsTab} from '../helpers/settings-helpers.js';
 
 const CONSOLE_MESSAGE_WRAPPER = '.console-message-stack-trace-wrapper';
 const ADD_FILENAME_PATTERN_BUTTON = 'devtools-button[aria-label="Add a regular expression rule for the script\'s URL"]';

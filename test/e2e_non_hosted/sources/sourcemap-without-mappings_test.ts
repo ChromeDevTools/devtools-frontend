@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {setIgnoreListPattern} from '../../e2e/helpers/settings-helpers.js';
-import {addBreakpointForLine, openSourceCodeEditorForFile} from '../../e2e/helpers/sources-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
+import {addBreakpointForLine, openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('SourceMap handling', () => {
   it('can deal with a source map that has no mappings', async ({devToolsPage, inspectedPage}) => {

@@ -5,6 +5,7 @@
 import {assert, expect} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import {
   clearTextFilter,
   getAllRequestNames,
@@ -12,8 +13,7 @@ import {
   setCacheDisabled,
   setPersistLog,
   waitForSomeRequestsToAppear,
-} from '../../e2e/helpers/network-helpers.js';
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+} from '../helpers/network-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;

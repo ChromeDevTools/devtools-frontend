@@ -11,7 +11,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Cookie domain attribute should not contain non-ASCII characters issue', () => {
   it('should display an issue when a cookie has a domain attribute with non-ASCII characters',

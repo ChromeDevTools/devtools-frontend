@@ -10,7 +10,7 @@ import {
   ISSUE,
   navigateToIssuesTab,
   toggleGroupByKind,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('The Issues tab group by kind checkbox', () => {
   it('should group issues by associated kinds when checked', async ({devToolsPage, inspectedPage}) => {

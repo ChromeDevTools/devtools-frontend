@@ -14,7 +14,7 @@ import {
   openSourcesPanel,
   PAUSE_BUTTON,
   RESUME_BUTTON,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Snippets subpane', () => {
   it('can stop on breakpoints', async ({devToolsPage}) => {

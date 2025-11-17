@@ -9,15 +9,15 @@ import {
   focusConsolePrompt,
   getCurrentConsoleMessages,
   Level
-} from '../../e2e/helpers/console-helpers.js';
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
+} from '../helpers/console-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
   waitForCSSPropertyValue,
   waitForElementsStyleSection
-} from '../../e2e/helpers/elements-helpers.js';
-import {setIgnoreListPattern} from '../../e2e/helpers/settings-helpers.js';
+} from '../helpers/elements-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
   getBreakpointDecorators,
@@ -38,7 +38,7 @@ import {
   STEP_OUT_BUTTON,
   STEP_OVER_BUTTON,
   waitForStackTopMatch
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function waitForTextContent(selector: string, devToolsPage: DevToolsPage) {

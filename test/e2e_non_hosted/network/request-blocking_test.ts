@@ -4,8 +4,8 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {navigateToNetworkTab, setTextFilter, waitForSomeRequestsToAppear} from '../../e2e/helpers/network-helpers.js';
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
+import {navigateToNetworkTab, setTextFilter, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

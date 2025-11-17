@@ -7,7 +7,7 @@ import {
   expandSelectedNodeRecursively,
   uncheckStylesPaneCheckbox,
   waitForElementsStyleSection,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', function() {
   // Skip since this test seems to be consistently failing on mac and linux.

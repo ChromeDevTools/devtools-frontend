@@ -37,7 +37,7 @@ node_ts_library("helpers") {
   deps = [
     "../../../extension-api",
     "../../../front_end/panels/recorder:bundle",
-    "../../e2e_non_hosted/shared",
     "../../shared",
+    "../shared",
   ]
 }

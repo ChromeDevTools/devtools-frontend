@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../../e2e/helpers/console-helpers.js';
+import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {
   it('eval in console succeeds for pages with no CSP', async ({devToolsPage}) => {

@@ -10,7 +10,7 @@ import type * as Console from '../../../front_end/panels/console/console.js';
 import {
   clickOnContextMenu,
   CONSOLE_TAB_SELECTOR,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('ConsoleInsight', function() {

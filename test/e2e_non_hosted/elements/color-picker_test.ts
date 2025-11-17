@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getColorSwatch, goToResourceAndWaitForStyleSection} from '../../e2e/helpers/elements-helpers.js';
+import {getColorSwatch, goToResourceAndWaitForStyleSection} from '../helpers/elements-helpers.js';
 
 describe('ColorPicker', () => {
   it('scrolls to the bottom when previewing palettes', async ({devToolsPage, inspectedPage}) => {

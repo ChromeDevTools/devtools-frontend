@@ -8,7 +8,7 @@ import {
   increaseTimeoutForPerfPanel,
   navigateToPerformanceTab,
   reloadAndRecord,
-} from '../../e2e/helpers/performance-helpers.js';
+} from '../helpers/performance-helpers.js';
 
 describe('Revealing insights in RPP', function() {
   setup({dockingMode: 'undocked'});

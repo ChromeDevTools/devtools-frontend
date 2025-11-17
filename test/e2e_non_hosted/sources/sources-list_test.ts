@@ -4,12 +4,12 @@
 
 import {assert} from 'chai';
 
-import {navigateToElementsTab} from '../../e2e/helpers/elements-helpers.js';
+import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {
   captureAddedSourceFiles,
   openFileInSourcesPanel,
   openSourcesPanel,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 declare global {
   interface Window {

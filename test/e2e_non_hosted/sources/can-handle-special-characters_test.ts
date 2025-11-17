@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import {resolve} from 'path';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   addBreakpointForLine,
   executionLineHighlighted,
@@ -15,8 +16,7 @@ import {
   openFileInSourcesPanel,
   openSourcesPanel,
   RESUME_BUTTON,
-} from '../../e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+} from '../helpers/sources-helpers.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Sources Tab', () => {

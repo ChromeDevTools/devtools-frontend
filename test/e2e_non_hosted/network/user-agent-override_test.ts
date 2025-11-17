@@ -10,7 +10,7 @@ import {
   setCacheDisabled,
   setTextFilter,
   waitForSomeRequestsToAppear
-} from '../../e2e/helpers/network-helpers.js';
+} from '../helpers/network-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const NETWORK_VIEW_SELECTOR = '.network-item-view';

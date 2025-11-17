@@ -19,7 +19,7 @@ import {
   startRecording,
   startRecordingViaShortcut,
   stopRecording,
-} from '../../e2e/helpers/recorder-helpers.js';
+} from '../helpers/recorder-helpers.js';
 
 describe('Recorder', function() {
   it('should capture the initial page as the url of the first section', async ({inspectedPage, devToolsPage}) => {

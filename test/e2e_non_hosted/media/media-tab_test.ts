@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers';
 import type {DevToolsPage} from '../shared/frontend-helper';
 import type {InspectedPage} from '../shared/target-helper';
 

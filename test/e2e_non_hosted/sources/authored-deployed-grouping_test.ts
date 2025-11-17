@@ -10,7 +10,7 @@ import {
   expandSourceTreeItem,
   openSourcesPanel,
   readSourcesTreeView,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

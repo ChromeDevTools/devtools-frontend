@@ -9,8 +9,8 @@ ts_e2e_library("performance") {
 
   deps = [
     "../../../../front_end/panels/timeline:bundle",
-    "../../../e2e/helpers",
     "../../../e2e_non_hosted/conductor:implementation",
+    "../../../e2e_non_hosted/helpers",
     "../../report",
   ]
 }

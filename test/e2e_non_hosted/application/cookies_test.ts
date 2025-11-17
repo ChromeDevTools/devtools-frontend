@@ -14,7 +14,7 @@ import {
   navigateToApplicationTab,
   navigateToCookiesForTopDomain,
   selectCookieByName,
-} from '../../e2e/helpers/application-helpers.js';
+} from '../helpers/application-helpers.js';
 import type {BrowserWrapper} from '../shared/browser-helper.js';
 
 async function deleteCookies(browserWrapper: BrowserWrapper) {

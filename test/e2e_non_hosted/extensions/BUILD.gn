@@ -14,7 +14,7 @@ ts_e2e_library("extensions") {
   ]
 
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

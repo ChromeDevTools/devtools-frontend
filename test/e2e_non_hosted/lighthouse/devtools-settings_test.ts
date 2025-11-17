@@ -6,14 +6,14 @@ import {assert} from 'chai';
 import * as path from 'path';
 
 import {expectError} from '../../conductor/events.js';
-import {openDeviceToolbar, selectDevice} from '../../e2e/helpers/emulation-helpers.js';
+import {openDeviceToolbar, selectDevice} from '../helpers/emulation-helpers.js';
 import {
   clickStartButton,
   getTargetViewport,
   navigateToLighthouseTab,
   selectCategories,
   waitForResult,
-} from '../../e2e/helpers/lighthouse-helpers.js';
+} from '../helpers/lighthouse-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 // This test will fail (by default) in headful mode, as the target page never gets painted.

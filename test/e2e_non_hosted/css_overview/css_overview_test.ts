@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../../e2e/helpers/css-overview-helpers.js';
+import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 
 const CONTRAST_BUTTON_SELECTOR = '[data-type="contrast"]';
 const CONTRAST_ISSUE_IN_GRID_SELECTOR = '.contrast-container-in-grid';

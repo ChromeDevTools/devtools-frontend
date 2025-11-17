@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {
   goToResourceAndWaitForStyleSection,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('Filtering in the styles tab', () => {
   it('filters and highlights styles', async ({devToolsPage, inspectedPage}) => {

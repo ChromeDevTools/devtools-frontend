@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {
   navigateToConsoleTab,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('Issue links in the console tab', () => {
   it('should reveal the right issue', async ({devToolsPage, inspectedPage}) => {

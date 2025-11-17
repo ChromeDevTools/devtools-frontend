@@ -4,11 +4,7 @@
 
 import {assert} from 'chai';
 
-import {
-  focusConsolePrompt,
-  getCurrentConsoleMessages,
-  navigateToConsoleTab
-} from '../../e2e/helpers/console-helpers.js';
+import {focusConsolePrompt, getCurrentConsoleMessages, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('does not break when global `eval` is overwritten', async ({devToolsPage}) => {

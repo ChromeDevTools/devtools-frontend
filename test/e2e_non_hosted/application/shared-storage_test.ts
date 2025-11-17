@@ -11,12 +11,12 @@ import {
   navigateToApplicationTab,
   navigateToSharedStorage,
   navigateToSharedStorageForTopDomain,
-} from '../../e2e/helpers/application-helpers.js';
+} from '../helpers/application-helpers.js';
 import {
   getDataGrid,
   getDataGridRows,
   getInnerTextOfDataGridCells,
-} from '../../e2e/helpers/datagrid-helpers.js';
+} from '../helpers/datagrid-helpers.js';
 
 const SITE = 'https://localhost';
 

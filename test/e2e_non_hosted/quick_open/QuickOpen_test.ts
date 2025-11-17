@@ -4,16 +4,16 @@
 
 import {assert} from 'chai';
 
+import {step} from '../../shared/helper.js';
 import {
   getMenuItemAtPosition,
   getMenuItemTitleAtPosition,
   openFileQuickOpen,
   readQuickOpenResults,
   typeIntoQuickOpen,
-} from '../../e2e/helpers/quick_open-helpers.js';
-import {setIgnoreListPattern, togglePreferenceInSettingsTab} from '../../e2e/helpers/settings-helpers.js';
-import {openSourcesPanel, SourceFileEvents, waitForSourceFiles} from '../../e2e/helpers/sources-helpers.js';
-import {step} from '../../shared/helper.js';
+} from '../helpers/quick_open-helpers.js';
+import {setIgnoreListPattern, togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
+import {openSourcesPanel, SourceFileEvents, waitForSourceFiles} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

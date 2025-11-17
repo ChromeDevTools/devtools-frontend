@@ -4,14 +4,14 @@
 
 import {assert} from 'chai';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   ELEMENTS_PANEL_SELECTOR,
   getStyleRule,
   goToResourceAndWaitForStyleSection,
   SECTION_SUBTITLE_SELECTOR,
   STYLE_PROPERTIES_SELECTOR,
-} from '../../e2e/helpers/elements-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+} from '../helpers/elements-helpers.js';
 
 async function getStyleRuleProperties(selector: string, count: number, devToolsPage: DevToolsPage) {
   const rule = await getStyleRule(selector, devToolsPage);

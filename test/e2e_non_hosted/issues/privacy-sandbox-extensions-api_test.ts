@@ -11,7 +11,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('Privacy Sandbox Extensions API', () => {
   it('should report privacy sandbox extensions api deprecation issues', async ({devToolsPage, inspectedPage}) => {

@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   navigateToNetworkTab,
   waitForSomeRequestsToAppear,
-} from '../../e2e/helpers/network-helpers.js';
+} from '../helpers/network-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

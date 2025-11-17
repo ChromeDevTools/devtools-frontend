@@ -8,7 +8,7 @@ import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
   typeIntoConsole,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('correctly expands getters on string properties', async ({devToolsPage}) => {

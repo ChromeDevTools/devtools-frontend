@@ -7,7 +7,7 @@ import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
   typeIntoConsole,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('recursively expands objects', async ({devToolsPage}) => {

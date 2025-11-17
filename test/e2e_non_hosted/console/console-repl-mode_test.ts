@@ -9,7 +9,7 @@ import {
   CONSOLE_TAB_SELECTOR,
   CONSOLE_TOOLTIP_SELECTOR,
   focusConsolePrompt,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {
   it('allows re-declaration of let variables', async ({devToolsPage}) => {

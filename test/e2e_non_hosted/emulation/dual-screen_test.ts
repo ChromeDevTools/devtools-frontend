@@ -10,7 +10,7 @@ import {
   selectNonDualScreenDevice,
   selectToggleButton,
   startEmulationWithDualScreenPage,
-} from '../../e2e/helpers/emulation-helpers.js';
+} from '../helpers/emulation-helpers.js';
 
 const DUO_VERTICAL_SPANNED_WIDTH = '1114';
 const DUO_VERTICAL_WIDTH = '540';

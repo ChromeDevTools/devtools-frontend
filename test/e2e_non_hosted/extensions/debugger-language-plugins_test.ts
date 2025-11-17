@@ -11,9 +11,9 @@ import {
   focusConsolePrompt,
   getCurrentConsoleMessages,
   getStructuredConsoleMessages,
-} from '../../e2e/helpers/console-helpers.js';
-import {checkIfTabExistsInDrawer} from '../../e2e/helpers/cross-tool-helper.js';
-import {loadExtension} from '../../e2e/helpers/extension-helpers.js';
+} from '../helpers/console-helpers.js';
+import {checkIfTabExistsInDrawer} from '../helpers/cross-tool-helper.js';
+import {loadExtension} from '../helpers/extension-helpers.js';
 import {
   captureAddedSourceFiles,
   DEBUGGER_PAUSED_EVENT,
@@ -30,7 +30,7 @@ import {
   stepOver,
   switchToCallFrame,
   WasmLocationLabels,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

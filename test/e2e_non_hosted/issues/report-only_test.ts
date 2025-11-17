@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertStatus, expandIssue, navigateToIssuesTab} from '../../e2e/helpers/issues-helpers.js';
+import {assertStatus, expandIssue, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
 describe('The Issues tab report-only issues', () => {
   it('should report the violation as blocked', async ({devToolsPage, inspectedPage}) => {

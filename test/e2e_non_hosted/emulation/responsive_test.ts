@@ -10,7 +10,7 @@ import {
   openDeviceToolbar,
   toggleAutoAdjustZoom,
   waitForZoomDropDownNotExpanded,
-} from '../../e2e/helpers/emulation-helpers.js';
+} from '../helpers/emulation-helpers.js';
 
 describe('Custom devices', () => {
   it('can preserve zoom', async ({devToolsPage, inspectedPage}) => {

@@ -10,7 +10,7 @@ import {
   navigateToApplicationTab,
   navigateToStorage,
   waitForQuotaUsage,
-} from '../../e2e/helpers/application-helpers.js';
+} from '../helpers/application-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

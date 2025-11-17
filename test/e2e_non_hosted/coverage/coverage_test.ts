@@ -12,12 +12,12 @@ import {
   stopInstrumentingCoverage,
   waitForCoverageData,
   waitForTheCoveragePanelToLoad,
-} from '../../e2e/helpers/coverage-helpers.js';
+} from '../helpers/coverage-helpers.js';
 import {
   clickOnContextMenuItemFromTab,
   MOVE_TO_MAIN_TAB_BAR_SELECTOR,
   tabExistsInMainPanel,
-} from '../../e2e/helpers/cross-tool-helper.js';
+} from '../helpers/cross-tool-helper.js';
 
 const COVERAGE_TAB_ID = '#tab-coverage';
 

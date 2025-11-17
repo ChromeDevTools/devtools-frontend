@@ -15,7 +15,7 @@ ts_e2e_library("sensors") {
   ]
 
   deps = [
-    "../../e2e/helpers",
     "../../shared",
+    "../helpers",
   ]
 }

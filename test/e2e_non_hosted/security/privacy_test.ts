@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   getDataGridRows,
-} from '../../e2e/helpers/datagrid-helpers.js';
+} from '../helpers/datagrid-helpers.js';
 import {
   navigateToSecurityTab,
-} from '../../e2e/helpers/security-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+} from '../helpers/security-helpers.js';
 
 async function addPrivacyUIToHostConfig(devToolsPage: DevToolsPage) {
   const hostConfig = {

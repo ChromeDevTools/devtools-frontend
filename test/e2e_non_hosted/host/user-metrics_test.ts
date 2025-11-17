@@ -5,23 +5,23 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {CONSOLE_MESSAGES_SELECTOR, navigateToConsoleTab} from '../../e2e/helpers/console-helpers.js';
-import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../../e2e/helpers/css-overview-helpers.js';
+import {
+  platform,
+} from '../../shared/helper.js';
+import {CONSOLE_MESSAGES_SELECTOR, navigateToConsoleTab} from '../helpers/console-helpers.js';
+import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {
   editCSSProperty,
   focusElementsTree,
   navigateToSidePane,
   waitForContentOfSelectedElementsNode,
   waitForElementsStyleSection,
-} from '../../e2e/helpers/elements-helpers.js';
-import {navigateToNetworkTab, openNetworkTab} from '../../e2e/helpers/network-helpers.js';
-import {navigateToPerformanceTab} from '../../e2e/helpers/performance-helpers.js';
-import {openCommandMenu} from '../../e2e/helpers/quick_open-helpers.js';
-import {openPanelViaMoreTools, openSettingsTab} from '../../e2e/helpers/settings-helpers.js';
-import {waitForSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
-import {
-  platform,
-} from '../../shared/helper.js';
+} from '../helpers/elements-helpers.js';
+import {navigateToNetworkTab, openNetworkTab} from '../helpers/network-helpers.js';
+import {navigateToPerformanceTab} from '../helpers/performance-helpers.js';
+import {openCommandMenu} from '../helpers/quick_open-helpers.js';
+import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
+import {waitForSourcesPanel} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

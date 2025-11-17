@@ -10,7 +10,7 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
+} from '../helpers/issues-helpers.js';
 
 describe('SAB issues test', () => {
   it('should display SharedArrayBuffer violations with the correct affected resources',

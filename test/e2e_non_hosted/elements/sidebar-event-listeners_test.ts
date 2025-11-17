@@ -8,7 +8,7 @@ import {
   waitForContentOfSelectedElementsNode,
   waitForElementsStyleSection,
   waitForSelectedNodeToBeExpanded,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

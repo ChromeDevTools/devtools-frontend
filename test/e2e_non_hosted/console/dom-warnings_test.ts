@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getCurrentConsoleMessages, Level, navigateToConsoleTab} from '../../e2e/helpers/console-helpers.js';
+import {getCurrentConsoleMessages, Level, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('console', () => {
   // Migrated devtools_browsertest.

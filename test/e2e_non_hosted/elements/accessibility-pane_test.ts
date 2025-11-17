@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {toggleAccessibilityPane} from '../../e2e/helpers/elements-helpers.js';
+import {toggleAccessibilityPane} from '../helpers/elements-helpers.js';
 
 describe('Accessibility Pane in the Elements Tab', function() {
   it('displays the partial accessibility tree', async ({devToolsPage, inspectedPage}) => {

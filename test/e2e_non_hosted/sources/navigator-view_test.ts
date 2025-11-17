@@ -4,18 +4,18 @@
 
 import {assert} from 'chai';
 
-import {openSoftContextMenuAndClickOnItem} from '../../e2e/helpers/context-menu-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   openFileWithQuickOpen,
   runCommandWithQuickOpen,
-} from '../../e2e/helpers/quick_open-helpers.js';
+} from '../helpers/quick_open-helpers.js';
 import {
   openFileInSourcesPanel,
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
   openSourcesPanel,
   toggleNavigatorSidebar,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('The Sources panel', () => {
   describe('contains a Navigator view', () => {

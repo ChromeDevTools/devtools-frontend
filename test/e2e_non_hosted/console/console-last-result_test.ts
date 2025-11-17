@@ -10,7 +10,7 @@ import {
   turnOffHistoryAutocomplete,
   typeIntoConsole,
   typeIntoConsoleAndWaitForResult,
-} from '../../e2e/helpers/console-helpers.js';
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
   it('exposes the last evaluation using "$_"', async ({devToolsPage}) => {

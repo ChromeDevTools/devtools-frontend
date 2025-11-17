@@ -24,9 +24,9 @@ import {
   waitForElementsStyleSection,
   waitForPropertyToHighlight,
   waitForStyleRule,
-} from '../../e2e/helpers/elements-helpers.js';
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
-import {expectVeEvents, veImpression, veImpressionsUnder} from '../../e2e/helpers/visual-logging-helpers.js';
+} from '../helpers/elements-helpers.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+import {expectVeEvents, veImpression, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

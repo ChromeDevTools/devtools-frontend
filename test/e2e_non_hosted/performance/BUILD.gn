@@ -18,7 +18,7 @@ ts_e2e_library("performance") {
     "wasm/performance_profiling_test.ts",
   ]
   deps = [
-    "../../e2e/helpers",
+    "../helpers",
     "../shared",
   ]
 }

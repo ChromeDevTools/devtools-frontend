@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('The Layers Panel', function() {
   async function getCurrentUrl(devToolsPage: DevToolsPage) {

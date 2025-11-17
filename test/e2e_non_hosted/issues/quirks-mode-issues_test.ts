@@ -4,6 +4,9 @@
 
 import {assert} from 'chai';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+import {matchStringArray} from '../../shared/helper.js';
 import {
   assertIssueTitle,
   expandIssue,
@@ -12,10 +15,7 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSection,
   waitForTableFromResourceSectionContents,
-} from '../../e2e/helpers/issues-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {matchStringArray} from '../../shared/helper.js';
+} from '../helpers/issues-helpers.js';
 
 const triggerQuirksModeIssueInIssuesTab =
     async (path: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) => {

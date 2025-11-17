@@ -6,16 +6,16 @@ import {assert} from 'chai';
 import * as os from 'os';
 import type * as puppeteer from 'puppeteer-core';
 
-import {getCurrentConsoleMessages} from '../../e2e/helpers/console-helpers.js';
-import {tabExistsInDrawer} from '../../e2e/helpers/cross-tool-helper.js';
+import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {tabExistsInDrawer} from '../helpers/cross-tool-helper.js';
 import {
   getCategoryRow,
   navigateToMemoryTab,
   setClassFilter,
   takeHeapSnapshot,
   waitForNonEmptyHeapSnapshotData,
-} from '../../e2e/helpers/memory-helpers.js';
-import {navigateToPerformanceTab} from '../../e2e/helpers/performance-helpers.js';
+} from '../helpers/memory-helpers.js';
+import {navigateToPerformanceTab} from '../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 

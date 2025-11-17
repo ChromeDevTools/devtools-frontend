@@ -16,7 +16,7 @@ import {
   waitForDomNodeToBeVisible,
   waitForElementsStyleSection,
   waitForPartialContentOfSelectedElementsNode
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';

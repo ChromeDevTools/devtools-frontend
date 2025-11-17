@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {setIgnoreListPattern, toggleIgnoreListing} from '../../e2e/helpers/settings-helpers.js';
+import {setIgnoreListPattern, toggleIgnoreListing} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
   DEBUGGER_PAUSED_EVENT,
@@ -18,7 +18,7 @@ import {
   setEventListenerBreakpoint,
   stepIn,
   stepOut,
-} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/sources-helpers.js';
 
 describe('Ignore list', function() {
   it('can be toggled on and off in call stack', async ({devToolsPage, inspectedPage}) => {

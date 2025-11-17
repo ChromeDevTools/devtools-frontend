@@ -5,6 +5,8 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   addBreakpointForLine,
   getLineNumberElement,
@@ -12,9 +14,7 @@ import {
   isEqualOrAbbreviation,
   openSourceCodeEditorForFile,
   retrieveCodeMirrorEditorContent,
-} from '../../e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+} from '../helpers/sources-helpers.js';
 
 const BREAKPOINT_VIEW_COMPONENT = '#devtools-breakpoint-view';
 const FIRST_BREAKPOINT_ITEM_SELECTOR = '[data-first-breakpoint]';

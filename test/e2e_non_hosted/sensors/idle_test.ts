@@ -4,11 +4,11 @@
 
 import {assert} from 'chai';
 
-import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
 import {
   selectOption,
   step,
 } from '../../shared/helper.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Idle Emulation on Sensors panel', () => {

@@ -7,8 +7,8 @@ import {
   navigateToPerformanceTab,
   startRecording,
   stopRecording
-} from '../../e2e/helpers/performance-helpers.js';
-import {openSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
+} from '../helpers/performance-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Performance panel', function() {
   setup({dockingMode: 'undocked'});

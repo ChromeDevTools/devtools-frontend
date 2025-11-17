@@ -19,7 +19,7 @@ import {
   setThrottlingMethod,
   setToolbarCheckboxWithText,
   waitForResult,
-} from '../../e2e/helpers/lighthouse-helpers.js';
+} from '../helpers/lighthouse-helpers.js';
 
 /**
  * This test will fail (by default) in headful mode, as the target page never gets painted.

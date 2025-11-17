@@ -7,7 +7,7 @@ import {
   toggleClassesPane,
   toggleClassesPaneCheckbox,
   typeInClassesPaneInput,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('The Classes pane', () => {
   it('can add a class to the element', async ({devToolsPage, inspectedPage}) => {

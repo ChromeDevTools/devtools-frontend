@@ -9,7 +9,7 @@ import {
   waitForElementsStyleSection,
   waitForElementWithPartialText,
   waitForSelectedNodeChange,
-} from '../../e2e/helpers/elements-helpers.js';
+} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', () => {
   it('can delete elements in the tree', async ({devToolsPage, inspectedPage}) => {

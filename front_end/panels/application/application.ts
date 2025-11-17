@@ -12,6 +12,7 @@ import * as DOMStorageItemsView from './DOMStorageItemsView.js';
 import * as DOMStorageModel from './DOMStorageModel.js';
 import * as ExtensionStorageItemsView from './ExtensionStorageItemsView.js';
 import * as ExtensionStorageModel from './ExtensionStorageModel.js';
+import * as FrameDetailsView from './FrameDetailsView.js';
 import * as IndexedDBModel from './IndexedDBModel.js';
 import * as IndexedDBViews from './IndexedDBViews.js';
 import * as InterestGroupStorageModel from './InterestGroupStorageModel.js';
@@ -19,6 +20,7 @@ import * as InterestGroupStorageView from './InterestGroupStorageView.js';
 import * as InterestGroupTreeElement from './InterestGroupTreeElement.js';
 import * as KeyValueStorageItemsView from './KeyValueStorageItemsView.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
+import * as OriginTrialTreeView from './OriginTrialTreeView.js';
 import * as PreloadingView from './preloading/PreloadingView.js';
 import * as PreloadingTreeElement from './PreloadingTreeElement.js';
 import * as ReportingApiView from './ReportingApiView.js';
@@ -47,6 +49,7 @@ export {
   DOMStorageModel,
   ExtensionStorageItemsView,
   ExtensionStorageModel,
+  FrameDetailsView,
   IndexedDBModel,
   IndexedDBViews,
   InterestGroupStorageModel,
@@ -54,6 +57,7 @@ export {
   InterestGroupTreeElement,
   KeyValueStorageItemsView,
   OpenedWindowDetailsView,
+  OriginTrialTreeView,
   PreloadingTreeElement,
   PreloadingView,
   ReportingApiView,

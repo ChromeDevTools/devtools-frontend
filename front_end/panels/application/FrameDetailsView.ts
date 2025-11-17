@@ -2,36 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/expandable_list/expandable_list.js';
-import '../../../ui/components/report_view/report_view.js';
-import './StackTrace.js';
+import '../../ui/components/expandable_list/expandable_list.js';
+import '../../ui/components/report_view/report_view.js';
 
-import * as Common from '../../../core/common/common.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
-import * as PanelCommon from '../../../panels/common/common.js';
-import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as CspEvaluator from '../../../third_party/csp_evaluator/csp_evaluator.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
-import type * as ReportView from '../../../ui/components/report_view/report_view.js';
-import * as Components from '../../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, nothing, render} from '../../../ui/lit/lit.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import * as PanelCommon from '../../panels/common/common.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as CspEvaluator from '../../third_party/csp_evaluator/csp_evaluator.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import type * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
+import type * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import * as ApplicationComponents from './components/components.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import {OriginTrialTreeView} from './OriginTrialTreeView.js';
-import {
-  type PermissionsPolicySectionData,
-  renderIconLink,
-} from './PermissionsPolicySection.js';
-import type {StackTraceData} from './StackTrace.js';
 
 const {until} = Directives;
 const {widgetConfig} = UI.Widget;
@@ -263,7 +258,7 @@ const UIStrings = {
    */
   originTrialsExplanation: 'Origin trials give you access to a new or experimental feature.',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface FrameDetailsReportViewData {
@@ -302,7 +297,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
       ${renderOriginTrial(input.trials)}
       ${until(input.permissionsPolicies?.then?.(policies =>
         html`
-          <devtools-resources-permissions-policy-section .data=${{policies, showDetails: false} as PermissionsPolicySectionData}>
+          <devtools-resources-permissions-policy-section .data=${{policies, showDetails: false} as ApplicationComponents.PermissionsPolicySection.PermissionsPolicySectionData}>
           </devtools-resources-permissions-policy-section>
         `), nothing)}
       ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing}
@@ -363,7 +358,7 @@ function renderDocumentSection(input: FrameDetailsViewInput): LitTemplate {
 }
 
 function renderSourcesLinkForURL(onRevealInSources: () => void): LitTemplate {
-  return renderIconLink(
+  return ApplicationComponents.PermissionsPolicySection.renderIconLink(
       'label',
       i18nString(UIStrings.clickToOpenInSourcesPanel),
       onRevealInSources,
@@ -372,7 +367,7 @@ function renderSourcesLinkForURL(onRevealInSources: () => void): LitTemplate {
 }
 
 function renderNetworkLinkForURL(onRevealInNetwork: () => void): LitTemplate {
-  return renderIconLink(
+  return ApplicationComponents.PermissionsPolicySection.renderIconLink(
       'arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), onRevealInNetwork, 'reveal-in-network');
 }
 
@@ -394,7 +389,7 @@ function maybeRenderUnreachableURL(unreachableUrl: Platform.DevToolsPath.UrlStri
 function renderNetworkLinkForUnreachableURL(unreachableUrlString: Platform.DevToolsPath.UrlString): LitTemplate {
   const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(unreachableUrlString);
   if (unreachableUrl) {
-    return renderIconLink(
+    return ApplicationComponents.PermissionsPolicySection.renderIconLink(
         'arrow-up-down-circle',
         i18nString(UIStrings.clickToOpenInNetworkPanelMight),
         ():
@@ -464,7 +459,7 @@ function maybeRenderCreationStacktrace(
           <devtools-resources-stack-trace .data=${{
             creationStackTraceData,
             buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
-          } as StackTraceData}>
+          } as ApplicationComponents.StackTrace.StackTraceData}>
           </devtools-resources-stack-trace>
         </devtools-report-value>
       `;

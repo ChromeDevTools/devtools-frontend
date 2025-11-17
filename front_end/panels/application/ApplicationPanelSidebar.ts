@@ -51,13 +51,13 @@ import {BackForwardCacheTreeElement} from './BackForwardCacheTreeElement.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
-import * as ApplicationComponents from './components/components.js';
 import {type DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';
 import {
   Events as ExtensionStorageModelEvents,
   type ExtensionStorage,
   ExtensionStorageModel,
 } from './ExtensionStorageModel.js';
+import {FrameDetailsReportView} from './FrameDetailsView.js';
 import {
   type Database as IndexedDBModelDatabase,
   type DatabaseId,
@@ -2149,7 +2149,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   private readonly treeElementForResource: Map<string, FrameResourceTreeElement>;
   private treeElementForWindow: Map<Protocol.Target.TargetID, FrameWindowTreeElement>;
   private treeElementForWorker: Map<Protocol.Target.TargetID, WorkerTreeElement>;
-  private view: ApplicationComponents.FrameDetailsView.FrameDetailsReportView|null;
+  private view: FrameDetailsReportView|null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(section.panel, '', false, 'frame');
@@ -2194,7 +2194,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.treeElementForWorker.clear();
 
     if (this.selected) {
-      this.view = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+      this.view = new FrameDetailsReportView();
       this.view.frame = this.frame;
       this.showView(this.view);
     } else {
@@ -2232,7 +2232,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+      this.view = new FrameDetailsReportView();
       this.view.frame = this.frame;
     }
     Host.userMetrics.panelShown('frame-details');

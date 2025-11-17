@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/icon_button/icon_button.js';
-import '../../../ui/legacy/legacy.js';
-import '../../../ui/components/adorners/adorners.js';
+import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/legacy/legacy.js';
+import '../../ui/components/adorners/adorners.js';
 
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as Protocol from '../../../generated/protocol.js';
-import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Protocol from '../../generated/protocol.js';
+import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
@@ -70,7 +70,7 @@ const UIStrings = {
    */
   noTrialTokens: 'No trial tokens',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/application/components/OriginTrialTreeView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/OriginTrialTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;

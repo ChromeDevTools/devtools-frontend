@@ -2,19 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Protocol from '../../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {
   renderElementIntoDOM,
-} from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
+} from '../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
-import * as ApplicationComponents from './components.js';
+import * as Application from './application.js';
 
 async function renderOriginTrialTreeView(
-    data: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeViewData,
-    ): Promise<ApplicationComponents.OriginTrialTreeView.OriginTrialTreeView> {
-  const component = new ApplicationComponents.OriginTrialTreeView.OriginTrialTreeView();
+    data: Application.OriginTrialTreeView.OriginTrialTreeViewData,
+    ): Promise<Application.OriginTrialTreeView.OriginTrialTreeView> {
+  const component = new Application.OriginTrialTreeView.OriginTrialTreeView();
   component.data = data;
   renderElementIntoDOM(component);
   await component.updateComplete;
@@ -25,7 +25,7 @@ async function renderOriginTrialTreeView(
  * Extract `TreeOutline` component from `OriginTrialTreeView` for inspection.
  */
 async function renderOriginTrialTreeViewTreeOutline(
-    data: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeViewData,
+    data: Application.OriginTrialTreeView.OriginTrialTreeViewData,
     ): Promise<{
   component: UI.TreeOutline.TreeElement,
   shadowRoot: ShadowRoot,

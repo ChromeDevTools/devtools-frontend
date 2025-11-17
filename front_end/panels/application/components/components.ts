@@ -5,9 +5,8 @@
 import * as BackForwardCacheView from './BackForwardCacheView.js';
 import * as BounceTrackingMitigationsView from './BounceTrackingMitigationsView.js';
 import * as EndpointsGrid from './EndpointsGrid.js';
-import * as FrameDetailsView from './FrameDetailsView.js';
 import * as InterestGroupAccessGrid from './InterestGroupAccessGrid.js';
-import * as OriginTrialTreeView from './OriginTrialTreeView.js';
+import * as PermissionsPolicySection from './PermissionsPolicySection.js';
 import * as ProtocolHandlersView from './ProtocolHandlersView.js';
 import * as ReportsGrid from './ReportsGrid.js';
 import * as ServiceWorkerRouterView from './ServiceWorkerRouterView.js';
@@ -21,9 +20,8 @@ export {
   BackForwardCacheView,
   BounceTrackingMitigationsView,
   EndpointsGrid,
-  FrameDetailsView,
   InterestGroupAccessGrid,
-  OriginTrialTreeView,
+  PermissionsPolicySection,
   ProtocolHandlersView,
   ReportsGrid,
   ServiceWorkerRouterView,

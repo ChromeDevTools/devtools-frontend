@@ -2,26 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {
   getCleanTextContentFromElements,
   getElementsWithinComponent,
   getElementWithinComponent,
   raf,
   renderElementIntoDOM,
-} from '../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
+} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
-} from '../../../testing/MockConnection.js';
-import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
-import type * as ReportView from '../../../ui/components/report_view/report_view.js';
+} from '../../testing/MockConnection.js';
+import * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
+import type * as ReportView from '../../ui/components/report_view/report_view.js';
 
-import * as ApplicationComponents from './components.js';
+import * as Application from './application.js';
+import * as ApplicationComponents from './components/components.js';
 
 const makeFrame = (target: SDK.Target.Target) => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
@@ -88,7 +89,7 @@ const makeFrame = (target: SDK.Target.Target) => {
 describeWithMockConnection('FrameDetailsView', () => {
   it('renders with a title', async () => {
     const frame = makeFrame(createTarget());
-    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+    const component = new Application.FrameDetailsView.FrameDetailsReportView();
     component.frame = frame;
     renderElementIntoDOM(component);
 
@@ -179,7 +180,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       }],
     });
 
-    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+    const component = new Application.FrameDetailsView.FrameDetailsReportView();
     component.frame = frame;
     renderElementIntoDOM(component);
 

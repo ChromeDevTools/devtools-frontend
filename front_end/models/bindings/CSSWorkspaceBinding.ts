@@ -63,7 +63,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
-    this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping));
+    this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping, this));
   }
 
   modelRemoved(cssModel: SDK.CSSModel.CSSModel): void {
@@ -157,7 +157,8 @@ export class ModelInfo {
   #sassSourceMapping: SASSSourceMapping;
   readonly #locations: Platform.MapUtilities.Multimap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, LiveLocation>;
   readonly #unboundLocations: Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, LiveLocation>;
-  constructor(cssModel: SDK.CSSModel.CSSModel, resourceMapping: ResourceMapping) {
+  constructor(
+      cssModel: SDK.CSSModel.CSSModel, resourceMapping: ResourceMapping, cssWorkspaceBinding: CSSWorkspaceBinding) {
     this.#eventListeners = [
       cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetAdded,
@@ -176,7 +177,8 @@ export class ModelInfo {
     this.#resourceMapping = resourceMapping;
     this.#stylesSourceMapping = new StylesSourceMapping(cssModel, resourceMapping.workspace);
     const sourceMapManager = cssModel.sourceMapManager();
-    this.#sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace);
+    this.#sassSourceMapping =
+        new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace, cssWorkspaceBinding);
 
     this.#locations = new Platform.MapUtilities.Multimap();
     this.#unboundLocations = new Platform.MapUtilities.Multimap();

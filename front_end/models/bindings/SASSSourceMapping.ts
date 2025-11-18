@@ -10,7 +10,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-import {CSSWorkspaceBinding, type SourceMapping} from './CSSWorkspaceBinding.js';
+import type {CSSWorkspaceBinding, SourceMapping} from './CSSWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 
 export class SASSSourceMapping implements SourceMapping {
@@ -18,12 +18,14 @@ export class SASSSourceMapping implements SourceMapping {
   readonly #project: ContentProviderBasedProject;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
   readonly #bindings: Map<string, Binding>;
+  readonly #cssWorkspaceBinding: CSSWorkspaceBinding;
 
   constructor(
       target: SDK.Target.Target,
       sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>,
-      workspace: Workspace.Workspace.WorkspaceImpl) {
+      workspace: Workspace.Workspace.WorkspaceImpl, cssWorkspaceBinding: CSSWorkspaceBinding) {
     this.#sourceMapManager = sourceMapManager;
+    this.#cssWorkspaceBinding = cssWorkspaceBinding;
     this.#project = new ContentProviderBasedProject(
         workspace, 'cssSourceMaps:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
@@ -58,7 +60,7 @@ export class SASSSourceMapping implements SourceMapping {
       }
       binding.addSourceMap(sourceMap, header.frameId);
     }
-    await CSSWorkspaceBinding.instance().updateLocations(header);
+    await this.#cssWorkspaceBinding.updateLocations(header);
     this.sourceMapAttachedForTest(sourceMap);
   }
 
@@ -78,7 +80,7 @@ export class SASSSourceMapping implements SourceMapping {
         }
       }
     }
-    await CSSWorkspaceBinding.instance().updateLocations(header);
+    await this.#cssWorkspaceBinding.updateLocations(header);
   }
 
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {

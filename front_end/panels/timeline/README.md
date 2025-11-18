@@ -14,15 +14,7 @@ The first method is to run DevTools! Load up the Chrome for Testing version that
 
 DevTools, navigate to the Performance Panel and record or import a trace. There are a number of trace files saved in `devtools-frontend/test/unittests/fixtures/traces` that you can use.
 
-#### Option 2: the components server
-
-You can also use the DevTools component server. This server runs standalone parts of DevTools in the browser. To do this, run `npm run components-server` in the terminal, which will run a server on `localhost:8090`.
-
-You can then navigate to the Performance Panel examples using the link on the index page. This runs the real Performance Panel code in isolation, and you can additionally preload a trace by appending `?trace=name-of-trace-file-from-fixtures`. This is a nicer development cycle because you do not have to manually import a trace after each change. Note though that some parts of the experience are stubbed, so you always should test your work in proper DevTools too.
-
-These examples can also be used to create screenshot tests, which are an important tool for the Performance Panel because it is the only way to test `<canvas>` output. We define these as interaction tests (`devtools-frontend/tests/interactions/panels/performance`).
-
-#### Option 3: bundled DevTools in the browser
+#### Option 2: bundled DevTools in the browser
 
 This option loads the DevTools frontend in a browser tab in Chrome, but requires a little more setup to easily load traces.
 

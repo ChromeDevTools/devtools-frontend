@@ -29,7 +29,7 @@ tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design
 name e.g. `--sys-color-error-container`). They reference palette tokens and
 incorporate light / dark mode switches and should be used in the code directly.
 You can view all system tokens in their light and dark variant when running the
-component server with `npm run components-server` under *Theme Colors*.
+component server on our [component documentation page](https://chromedevtools.github.io/devtools-frontend/#ThemeColors).
 
 [**Application
 tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/application_tokens.css)

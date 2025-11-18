@@ -7,8 +7,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
-  getCleanTextContentFromElements,
-  getElementsWithinComponent,
   getElementWithinComponent,
   raf,
   renderElementIntoDOM,
@@ -22,7 +20,7 @@ import * as ExpandableList from '../../ui/components/expandable_list/expandable_
 import type * as ReportView from '../../ui/components/report_view/report_view.js';
 
 import * as Application from './application.js';
-import * as ApplicationComponents from './components/components.js';
+import type * as ApplicationComponents from './components/components.js';
 
 const makeFrame = (target: SDK.Target.Target) => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
@@ -235,13 +233,12 @@ report-uri: https://www.example.com/csp`,
         getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     assert.isNotNull(expandableList.shadowRoot);
 
-    const stackTraceRows = getElementsWithinComponent(
-        expandableList, 'devtools-stack-trace-row', ApplicationComponents.StackTrace.StackTraceRow);
+    const stackTraceRows = expandableList.shadowRoot!.querySelectorAll('devtools-widget');
     let stackTraceText: string[] = [];
 
     stackTraceRows.forEach(row => {
       assert.isNotNull(row.shadowRoot);
-      stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
+      stackTraceText = stackTraceText.concat(row.deepInnerText());
     });
 
     assert.deepEqual(stackTraceText[0], 'function1\n\xA0@\xA0www.example.com/script.js:16');

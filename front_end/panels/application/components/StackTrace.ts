@@ -9,13 +9,14 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import {html, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import stackTraceLinkButtonStyles from './stackTraceLinkButton.css.js';
 import stackTraceRowStyles from './stackTraceRow.css.js';
 
-const {html} = Lit;
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -54,79 +55,82 @@ export interface StackTraceData {
       ) => Array<Components.JSPresentationUtils.StackTraceRegularRow|Components.JSPresentationUtils.StackTraceAsyncRow>;
 }
 
-interface StackTraceRowData {
-  stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow;
+interface StackTraceRowViewInput {
+  stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow|null;
 }
 
-export class StackTraceRow extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+type StackTraceRowView = (input: StackTraceRowViewInput, output: undefined, target: HTMLElement) => void;
+const ROW_DEFAULT_VIEW: StackTraceRowView = (input, output, target) => {
+  if (!input.stackTraceRowItem) {
+    return;
+  }
+  // clang-format off
+  render(html`
+    <style>${stackTraceRowStyles}</style>
+    <div class="stack-trace-row">
+      <div class="stack-trace-function-name text-ellipsis" title=${input.stackTraceRowItem.functionName}>
+        ${input.stackTraceRowItem.functionName}
+      </div>
+      <div class="stack-trace-source-location">
+        ${input.stackTraceRowItem.link ? html`
+          <div class="text-ellipsis">\xA0@\xA0${input.stackTraceRowItem.link}</div>` :
+          nothing}
+        </div>
+      </div>`, target);
+  // clang-format on
+};
 
-  #stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow|null = null;
-
-  set data(data: StackTraceRowData) {
-    this.#stackTraceRowItem = data.stackTraceRowItem;
-    this.#render();
+export class StackTraceRow extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = ROW_DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
   }
 
-  #render(): void {
-    if (!this.#stackTraceRowItem) {
-      return;
-    }
-    Lit.render(
-        html`
-      <style>${stackTraceRowStyles}</style>
-      <div class="stack-trace-row">
-              <div class="stack-trace-function-name text-ellipsis" title=${this.#stackTraceRowItem.functionName}>
-                ${this.#stackTraceRowItem.functionName}
-              </div>
-              <div class="stack-trace-source-location">
-                ${
-            this.#stackTraceRowItem.link ?
-                html`<div class="text-ellipsis">\xA0@\xA0${this.#stackTraceRowItem.link}</div>` :
-                Lit.nothing}
-              </div>
-            </div>
-    `,
-        this.#shadow, {host: this});
+  stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow|null = null;
+  #view: StackTraceRowView;
+
+  override performUpdate(): void {
+    this.#view(this, undefined, this.contentElement);
   }
 }
 
-interface StackTraceLinkButtonData {
+interface StackTraceLinkViewInput {
   onShowAllClick: () => void;
-  hiddenCallFramesCount: number;
+  hiddenCallFramesCount: number|null;
   expandedView: boolean;
 }
 
-export class StackTraceLinkButton extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+type StackTraceLinkView = (input: StackTraceLinkViewInput, output: undefined, target: HTMLElement) => void;
+const LINK_DEFAULT_VIEW: StackTraceLinkView = (input, output, target) => {
+  if (!input.hiddenCallFramesCount) {
+    return;
+  }
+  const linkText = input.expandedView ? i18nString(UIStrings.showLess) :
+                                        i18nString(UIStrings.showSMoreFrames, {n: input.hiddenCallFramesCount});
+  // clang-format off
+  render(html`
+    <style>${stackTraceLinkButtonStyles}</style>
+    <div class="stack-trace-row">
+      <button class="link" @click=${() => input.onShowAllClick()}>
+        ${linkText}
+      </button>
+    </div>`, target);
+  // clang-format on
+};
 
-  #onShowAllClick: () => void = () => {};
-  #hiddenCallFramesCount: number|null = null;
-  #expandedView = false;
+export class StackTraceLinkButton extends UI.Widget.Widget {
+  onShowAllClick: () => void = () => {};
+  hiddenCallFramesCount: number|null = null;
+  expandedView = false;
+  #view: StackTraceLinkView;
 
-  set data(data: StackTraceLinkButtonData) {
-    this.#onShowAllClick = data.onShowAllClick;
-    this.#hiddenCallFramesCount = data.hiddenCallFramesCount;
-    this.#expandedView = data.expandedView;
-    this.#render();
+  constructor(element?: HTMLElement, view = LINK_DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
   }
 
-  #render(): void {
-    if (!this.#hiddenCallFramesCount) {
-      return;
-    }
-    const linkText = this.#expandedView ? i18nString(UIStrings.showLess) :
-                                          i18nString(UIStrings.showSMoreFrames, {n: this.#hiddenCallFramesCount});
-    Lit.render(
-        html`
-      <style>${stackTraceLinkButtonStyles}</style>
-      <div class="stack-trace-row">
-          <button class="link" @click=${() => this.#onShowAllClick()}>
-            ${linkText}
-          </button>
-        </div>
-    `,
-        this.#shadow, {host: this});
+  override performUpdate(): void {
+    this.#view(this, undefined, this.contentElement);
   }
 }
 
@@ -160,7 +164,7 @@ export class StackTrace extends HTMLElement {
     this.#render();
   }
 
-  createRowTemplates(): Lit.TemplateResult[] {
+  createRowTemplates(): TemplateResult[] {
     const expandableRows = [];
     let hiddenCallFramesCount = 0;
     for (const item of this.#stackTraceRows) {
@@ -176,9 +180,9 @@ export class StackTrace extends HTMLElement {
       if (this.#showHidden || !ignoreListHide) {
         if ('functionName' in item) {
           expandableRows.push(html`
-          <devtools-stack-trace-row data-stack-trace-row .data=${{
-            stackTraceRowItem: item,
-          }}></devtools-stack-trace-row>`);
+          <devtools-widget data-stack-trace-row .widgetConfig=${widgetConfig(StackTraceRow, {
+            stackTraceRowItem: item
+          })}></devtools-widget>`);
         }
         if ('asyncDescription' in item) {
           expandableRows.push(html`
@@ -194,7 +198,11 @@ export class StackTrace extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       expandableRows.push(html`
-      <devtools-stack-trace-link-button data-stack-trace-row .data=${{onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden}}></devtools-stack-trace-link-button>
+        <devtools-widget data-stack-trace-row .widgetConfig=${widgetConfig(StackTraceLinkButton, {
+          onShowAllClick: this.#onToggleShowAllClick.bind(this),
+          hiddenCallFramesCount,
+          expandedView: this.#showHidden})}>
+        </devtools-widget>
       `);
       // clang-format on
     }
@@ -206,7 +214,7 @@ export class StackTrace extends HTMLElement {
     if (!this.#stackTraceRows.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      Lit.render(
+      render(
         html`
           <span>${i18nString(UIStrings.cannotRenderStackTrace)}</span>
         `,
@@ -215,7 +223,7 @@ export class StackTrace extends HTMLElement {
     }
 
     const expandableRows = this.createRowTemplates();
-    Lit.render(
+    render(
       html`
         <devtools-expandable-list .data=${{rows: expandableRows, title: i18nString(UIStrings.creationStackTrace)}}
                                   jslog=${VisualLogging.tree()}>
@@ -226,14 +234,10 @@ export class StackTrace extends HTMLElement {
   }
 }
 
-customElements.define('devtools-stack-trace-row', StackTraceRow);
-customElements.define('devtools-stack-trace-link-button', StackTraceLinkButton);
 customElements.define('devtools-resources-stack-trace', StackTrace);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-stack-trace-row': StackTraceRow;
-    'devtools-stack-trace-link-button': StackTraceLinkButton;
     'devtools-resources-stack-trace': StackTrace;
   }
 }

@@ -9,9 +9,8 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   dispatchClickEvent,
-  getCleanTextContentFromElements,
-  getElementsWithinComponent,
   getElementWithinComponent,
+  raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -57,7 +56,7 @@ describeWithEnvironment('StackTrace', () => {
     assert.deepEqual(rows, []);
   });
 
-  it('generates rows from stack trace data', () => {
+  it('generates rows from stack trace data', async () => {
     setupIgnoreListManagerEnvironment();
     const creationStackTraceData = {
       creationStackTrace: {
@@ -93,14 +92,13 @@ describeWithEnvironment('StackTrace', () => {
     const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
     assert.instanceOf(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);
+    await raf();
 
-    const stackTraceRows = getElementsWithinComponent(
-        expandableList, 'devtools-stack-trace-row', ApplicationComponents.StackTrace.StackTraceRow);
+    const stackTraceRows = expandableList.shadowRoot!.querySelectorAll('devtools-widget');
     let stackTraceText: string[] = [];
 
     stackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
-      stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
+      stackTraceText = stackTraceText.concat(row.shadowRoot!.querySelector('.stack-trace-row')!.deepInnerText());
     });
 
     assert.deepEqual(stackTraceText, [
@@ -158,7 +156,7 @@ describeWithEnvironment('StackTrace', () => {
 
     stackTraceRows.forEach(row => {
       assert.isNotNull(row.shadowRoot);
-      stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
+      stackTraceText = stackTraceText.concat(row.shadowRoot!.querySelector('.stack-trace-row')!.deepInnerText());
     });
 
     assert.deepEqual(stackTraceText, [
@@ -166,11 +164,11 @@ describeWithEnvironment('StackTrace', () => {
       'Show 1 more frame',
     ]);
 
-    const stackTraceLinkButton = getElementWithinComponent(
-        expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
+    const stackTraceLinkButton = expandableList.shadowRoot!.querySelector('devtools-widget:last-of-type')!;
     const showAllButton = stackTraceLinkButton.shadowRoot!.querySelector('.stack-trace-row button.link');
     assert.instanceOf(showAllButton, HTMLButtonElement);
     dispatchClickEvent(showAllButton);
+    await raf();
 
     const openedStackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     let openedStackTraceText: string[] = [];
@@ -178,7 +176,7 @@ describeWithEnvironment('StackTrace', () => {
     openedStackTraceRows.forEach(row => {
       assert.isNotNull(row.shadowRoot);
       openedStackTraceText =
-          openedStackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
+          openedStackTraceText.concat(row.shadowRoot!.querySelector('.stack-trace-row')!.deepInnerText());
     });
 
     assert.deepEqual(openedStackTraceText, [
@@ -187,18 +185,18 @@ describeWithEnvironment('StackTrace', () => {
       'Show less',
     ]);
 
-    const newStackTraceLinkButton = getElementWithinComponent(
-        expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
+    const newStackTraceLinkButton = expandableList.shadowRoot!.querySelector('devtools-widget:last-of-type')!;
     const showLessButton = newStackTraceLinkButton.shadowRoot!.querySelector('.stack-trace-row button.link');
     assert.instanceOf(showLessButton, HTMLButtonElement);
     dispatchClickEvent(showLessButton);
+    await raf();
 
     const reclosedStackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     stackTraceText = [];
 
     reclosedStackTraceRows.forEach(row => {
       assert.isNotNull(row.shadowRoot);
-      stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
+      stackTraceText = stackTraceText.concat(row.shadowRoot!.querySelector('.stack-trace-row')!.deepInnerText());
     });
 
     assert.deepEqual(stackTraceText, [

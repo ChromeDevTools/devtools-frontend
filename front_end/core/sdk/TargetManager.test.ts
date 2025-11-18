@@ -73,6 +73,14 @@ describe('TargetManager', () => {
     sinon.assert.calledTwice(observer.modelAdded);
   });
 
+  it('allows overriding which models to autostart', () => {
+    const targetManager = new SDK.TargetManager.TargetManager(new Set([SDK.DebuggerModel.DebuggerModel]));
+    const target = createTarget({targetManager});
+
+    assert.isTrue(target.models().has(SDK.DebuggerModel.DebuggerModel));
+    assert.isFalse(target.models().has(SDK.DOMModel.DOMModel));
+  });
+
   it('allows listening to models', () => {
     const WillReloadPage = SDK.ResourceTreeModel.Events.WillReloadPage;
     const thisObject = {};

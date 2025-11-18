@@ -10,7 +10,7 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
-import {SDKModel, type SDKModelConstructor} from './SDKModel.js';
+import {type RegistrationInfo, SDKModel, type SDKModelConstructor} from './SDKModel.js';
 import {Target, Type as TargetType} from './Target.js';
 
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -31,8 +31,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #scopeTarget: Target|null;
   #defaultScopeSet: boolean;
   readonly #scopeChangeListeners: Set<() => void>;
+  readonly #overrideAutoStartModels?: Set<SDKModelConstructor>;
 
-  constructor() {
+  /**
+   * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
+   */
+  constructor(overrideAutoStartModels?: Set<SDKModelConstructor>) {
     super();
     this.#targets = new Set();
     this.#observers = new Set();
@@ -44,6 +48,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#scopedObservers = new WeakSet();
     this.#defaultScopeSet = false;
     this.#scopeChangeListeners = new Set();
+    this.#overrideAutoStartModels = overrideAutoStartModels;
   }
 
   static instance({forceNew}: {
@@ -209,10 +214,13 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #autoStartModels(): SDKModelConstructor[] {
     const earlyModels = new Set<SDKModelConstructor>();
     const models = new Set<SDKModelConstructor>();
+    const shouldAutostart = (model: SDKModelConstructor, info: RegistrationInfo): boolean =>
+        this.#overrideAutoStartModels ? this.#overrideAutoStartModels.has(model) : info.autostart;
+
     for (const [model, info] of SDKModel.registeredModels) {
       if (info.early) {
         earlyModels.add(model);
-      } else if (info.autostart || this.#modelObservers.has(model)) {
+      } else if (shouldAutostart(model, info) || this.#modelObservers.has(model)) {
         models.add(model);
       }
     }

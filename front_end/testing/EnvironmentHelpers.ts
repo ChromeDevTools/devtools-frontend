@@ -31,16 +31,25 @@ let UI: typeof UIModule;
 
 let uniqueTargetId = 0;
 
-export function createTarget(
-    {id, name, type = SDK.Target.Type.FRAME, parentTarget, subtype, url = 'http://example.com', connection}: {
-      id?: Protocol.Target.TargetID,
-      name?: string,
-      type?: SDK.Target.Type,
-      parentTarget?: SDK.Target.Target,
-      subtype?: string,
-      url?: string,
-      connection?: ProtocolClient.CDPConnection.CDPConnection,
-    } = {}) {
+export function createTarget({
+  id,
+  name,
+  type = SDK.Target.Type.FRAME,
+  parentTarget,
+  subtype,
+  url = 'http://example.com',
+  connection,
+  targetManager = SDK.TargetManager.TargetManager.instance(),
+}: {
+  id?: Protocol.Target.TargetID,
+  name?: string,
+  type?: SDK.Target.Type,
+  parentTarget?: SDK.Target.Target,
+  subtype?: string,
+  url?: string,
+  connection?: ProtocolClient.CDPConnection.CDPConnection,
+  targetManager?: SDK.TargetManager.TargetManager,
+} = {}) {
   if (!id) {
     if (!uniqueTargetId++) {
       id = 'test' as Protocol.Target.TargetID;
@@ -48,7 +57,6 @@ export function createTarget(
       id = ('test' + uniqueTargetId) as Protocol.Target.TargetID;
     }
   }
-  const targetManager = SDK.TargetManager.TargetManager.instance();
   if (!ProtocolClient.ConnectionTransport.ConnectionTransport.getFactory()) {
     // We are not running with `describeWithMockConnection` so create a fresh mock connection.
     // Because child targets inherit the SessionRouter/CDPConnection from the parent, we'll throw if a

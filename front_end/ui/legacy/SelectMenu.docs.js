@@ -5,7 +5,7 @@ import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import { UIUtils } from './legacy.js';
 const { html } = Lit;
-export async function render(container) {
+export function render(container) {
     function createDivWithP(text) {
         const div = document.createElement('div');
         div.style.paddingLeft = '25px';

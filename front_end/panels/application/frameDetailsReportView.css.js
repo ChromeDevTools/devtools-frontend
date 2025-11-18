@@ -9,6 +9,10 @@ export default `/*
  * found in the LICENSE file.
  */
 
+:host {
+  overflow: auto;
+}
+
 .text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -117,5 +121,4 @@ button.text-link {
     text-decoration-color: linktext;
   }
 }
-
 /*# sourceURL=${import.meta.resolve('./frameDetailsReportView.css')} */`;

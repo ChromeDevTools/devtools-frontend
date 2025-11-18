@@ -4,6 +4,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -87,7 +88,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <devtools-checkbox class="small" title=${i18nString(UIStrings.emulatesAFocusedPage)}
             jslog=${VisualLogging.toggle('emulate-page-focus').track({ change: true })} ${bindToSetting('emulate-page-focus')}>${i18nString(UIStrings.emulateFocusedPage)}</devtools-checkbox>
         <devtools-button
-            @click=${() => UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page')}
+            @click=${() => UIHelpers.openInNewTab('https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page')}
            .data=${{
         variant: "icon" /* Buttons.Button.Variant.ICON */,
         iconName: 'help',

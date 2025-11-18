@@ -13,6 +13,7 @@ import * as Root from '../../../../core/root/root.js';
 import * as AiAssistanceModels from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as UIHelpers from '../../../../ui/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -513,7 +514,7 @@ export class EntryLabelOverlay extends HTMLElement {
                 },
             ],
             onLearnMoreClick: () => {
-                UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/performance/annotations#auto-annotations');
+                UIHelpers.openInNewTab('https://developer.chrome.com/docs/devtools/performance/annotations#auto-annotations');
             },
             learnMoreButtonText: UIStringsNotTranslate.learnMoreButton,
         });

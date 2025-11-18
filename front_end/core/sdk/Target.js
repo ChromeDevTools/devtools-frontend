@@ -100,20 +100,11 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#isSuspended = suspended;
         this.#targetInfo = targetInfo;
     }
-    createModels(required) {
+    /** Creates the models in the order in which they are provided */
+    createModels(models) {
         this.#creatingModels = true;
-        const registeredModels = Array.from(SDKModel.registeredModels.entries());
-        // Create early models.
-        for (const [modelClass, info] of registeredModels) {
-            if (info.early) {
-                this.model(modelClass);
-            }
-        }
-        // Create autostart and required models.
-        for (const [modelClass, info] of registeredModels) {
-            if (info.autostart || required.has(modelClass)) {
-                this.model(modelClass);
-            }
+        for (const model of models) {
+            this.model(model);
         }
         this.#creatingModels = false;
     }

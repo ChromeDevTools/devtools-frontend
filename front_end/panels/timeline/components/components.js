@@ -2857,7 +2857,7 @@ import * as Platform5 from "./../../../core/platform/platform.js";
 import * as CrUXManager5 from "./../../../models/crux-manager/crux-manager.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers7 from "./../../../ui/components/helpers/helpers.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as UIHelpers from "./../../../ui/helpers/helpers.js";
 import * as Lit10 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/metricCard.css.js
@@ -4080,7 +4080,7 @@ var MetricCard = class extends HTMLElement {
             title=${this.#getHelpTooltip()}
             .iconName=${"help"}
             .variant=${"icon"}
-            @click=${() => UI9.UIUtils.openInNewTab(helpLink)}
+            @click=${() => UIHelpers.openInNewTab(helpLink)}
           ></devtools-button>
         </h3>
         <div tabindex="0" class="metric-values-section"
@@ -4151,7 +4151,7 @@ import * as ComponentHelpers8 from "./../../../ui/components/helpers/helpers.js"
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit12 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../../common/common.js";
@@ -4590,6 +4590,7 @@ x-link {
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
 var { html: html12, nothing: nothing11 } = Lit12;
+var { widgetConfig } = UI9.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings14 = {
@@ -4855,8 +4856,8 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   constructor() {
     super();
-    this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
-    this.#recordReloadAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
+    this.#toggleRecordAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
+    this.#recordReloadAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
   }
   #onMetricStatus(event) {
     this.#lcpValue = event.data.lcp;
@@ -4964,7 +4965,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         ${nodeLink ? html12`
             <div class="related-info" slot="extra-info">
               <span class="related-info-label">${i18nString13(UIStrings14.lcpElement)}</span>
-              <span class="related-info-link">${nodeLink}</span>
+              <span class="related-info-link">
+               <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: this.#lcpValue?.nodeRef })}>
+               </devtools-widget>
+              </span>
             </div>
           ` : nothing11}
       </devtools-metric-card>
@@ -5044,7 +5048,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     }}>
           ${action6.title()}
         </devtools-button>
-        <span class="shortcut-label">${UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
+        <span class="shortcut-label">${UI9.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
       </div>
     `;
   }
@@ -5096,7 +5100,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         </ul>
       ` : nothing11}
       <div class="environment-option">
-        <devtools-widget .widgetConfig=${UI10.Widget.widgetConfig(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}></devtools-widget>
+        <devtools-widget .widgetConfig=${widgetConfig(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}></devtools-widget>
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
@@ -5281,7 +5285,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     if (this.#cruxManager.getConfigSetting().get().enabled) {
       return this.#renderCollectionPeriod();
     }
-    const linkEl = UI10.XLink.XLink.create("https://developer.chrome.com/docs/crux", i18n27.i18n.lockedString("Chrome UX Report"));
+    const linkEl = UI9.XLink.XLink.create("https://developer.chrome.com/docs/crux", i18n27.i18n.lockedString("Chrome UX Report"));
     const messageEl = uiI18n4.getFormatLocalizedString(str_14, UIStrings14.seeHowYourLocalMetricsCompare, { PH1: linkEl });
     return html12`
       <div class="field-data-message">${messageEl}</div>
@@ -5320,7 +5324,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         block: "center"
       });
       interactionEl.focus();
-      UI10.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
+      UI9.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
     });
   }
   async #logExtraInteractionDetails(interaction) {
@@ -5346,7 +5350,6 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       const metricValue = renderMetricValue("timeline.landing.interaction-event-timing", interaction.duration, INP_THRESHOLDS, (v) => i18n27.TimeUtilities.preciseMillisToString(v), { dim: true });
       const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
       const isInp = this.#inpValue?.interactionId === interaction.interactionId;
-      const nodeLink = interaction.nodeRef ? PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(interaction.nodeRef) : Lit12.nothing;
       return html12`
             <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
               <details>
@@ -5354,7 +5357,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
                   <span class="interaction-type">
                     ${interaction.interactionType} ${isInp ? html12`<span class="interaction-inp-chip" title=${i18nString13(UIStrings14.inpInteraction)}>INP</span>` : nothing11}
                   </span>
-                  <span class="interaction-node">${nodeLink}</span>
+                  <span class="interaction-node">
+                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}>
+                    </devtools-widget>
+                  </span>
                   ${isP98Excluded ? html12`<devtools-icon
                     class="interaction-info"
                     name="info"
@@ -5419,7 +5425,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       });
       layoutShiftEls[0].focus();
       for (const layoutShiftEl of layoutShiftEls) {
-        UI10.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
+        UI9.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
       }
     });
   }
@@ -5451,7 +5457,10 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
                 ${layoutShift.affectedNodeRefs.map((node) => html12`
-                  <div class="layout-shift-node">${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node)}</div>
+                  <div class="layout-shift-node">
+                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node })}>
+                    </devtools-widget>
+                  </div>
                 `)}
               </div>
             </li>
@@ -5539,7 +5548,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     Lit12.render(output, this.#shadow, { host: this });
   };
 };
-var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
+var LiveMetricsLogs = class extends UI9.Widget.WidgetElement {
   #tabbedPane;
   constructor() {
     super();
@@ -5566,18 +5575,18 @@ var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
     }
   }
   createWidget() {
-    const containerWidget = new UI10.Widget.Widget(this, { useShadowDom: true });
+    const containerWidget = new UI9.Widget.Widget(this, { useShadowDom: true });
     containerWidget.contentElement.style.display = "contents";
-    this.#tabbedPane = new UI10.TabbedPane.TabbedPane();
+    this.#tabbedPane = new UI9.TabbedPane.TabbedPane();
     const interactionsSlot = document.createElement("slot");
     interactionsSlot.name = "interactions-log-content";
-    const interactionsTab = UI10.Widget.Widget.getOrCreateWidget(interactionsSlot);
+    const interactionsTab = UI9.Widget.Widget.getOrCreateWidget(interactionsSlot);
     this.#tabbedPane.appendTab("interactions", i18nString13(UIStrings14.interactions), interactionsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.interactions-log");
     const layoutShiftsSlot = document.createElement("slot");
     layoutShiftsSlot.name = "layout-shifts-log-content";
-    const layoutShiftsTab = UI10.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
+    const layoutShiftsTab = UI9.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
     this.#tabbedPane.appendTab("layout-shifts", i18nString13(UIStrings14.layoutShifts), layoutShiftsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.layout-shifts-log");
-    const clearButton = new UI10.Toolbar.ToolbarButton(i18nString13(UIStrings14.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
+    const clearButton = new UI9.Toolbar.ToolbarButton(i18nString13(UIStrings14.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
     clearButton.addEventListener("Click", this.#clearCurrentLog, this);
     this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
     this.#tabbedPane.show(containerWidget.contentElement);
@@ -5599,7 +5608,7 @@ import * as SDK8 from "./../../../core/sdk/sdk.js";
 import * as Helpers6 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace7 from "./../../../models/trace/trace.js";
 import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
@@ -6180,7 +6189,7 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/timeline/components/NetworkRequestDetails.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var NetworkRequestDetails = class extends UI11.Widget.Widget {
+var NetworkRequestDetails = class extends UI10.Widget.Widget {
   #view;
   #request = null;
   #requestPreviewElements = /* @__PURE__ */ new WeakMap();
@@ -6303,7 +6312,7 @@ function renderURL(request) {
   const networkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI11.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI10.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(networkRequest);
       void contextMenu.show();
     });
@@ -6465,7 +6474,7 @@ __export(RelatedInsightChips_exports, {
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n33 from "./../../../core/i18n/i18n.js";
-import * as UI12 from "./../../../ui/legacy/legacy.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit15 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
@@ -6565,7 +6574,7 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/RelatedInsightChips.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var RelatedInsightChips = class extends UI12.Widget.Widget {
+var RelatedInsightChips = class extends UI11.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
@@ -6647,7 +6656,7 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI14 from "./../../../ui/legacy/legacy.js";
+import * as UI13 from "./../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/SidebarInsight.js
 var InsightActivated = class _InsightActivated extends Event {
@@ -6679,7 +6688,7 @@ import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Trace8 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
-import * as UI13 from "./../../../ui/legacy/legacy.js";
+import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit16 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
@@ -6864,7 +6873,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var SidebarAnnotationsTab = class extends UI13.Widget.Widget {
+var SidebarAnnotationsTab = class extends UI12.Widget.Widget {
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
@@ -7911,8 +7920,8 @@ var AnnotationHoverOut = class _AnnotationHoverOut extends Event {
 var DEFAULT_SIDEBAR_TAB = "insights";
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
-var SidebarWidget = class extends UI14.Widget.VBox {
-  #tabbedPane = new UI14.TabbedPane.TabbedPane();
+var SidebarWidget = class extends UI13.Widget.VBox {
+  #tabbedPane = new UI13.TabbedPane.TabbedPane();
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
   /**
@@ -7980,7 +7989,7 @@ var SidebarWidget = class extends UI14.Widget.VBox {
     }
   }
 };
-var InsightsView = class extends UI14.Widget.VBox {
+var InsightsView = class extends UI13.Widget.VBox {
   #component = new SidebarInsightsTab();
   constructor() {
     super();
@@ -8002,7 +8011,7 @@ var InsightsView = class extends UI14.Widget.VBox {
     }
   }
 };
-var AnnotationsView = class extends UI14.Widget.VBox {
+var AnnotationsView = class extends UI13.Widget.VBox {
   #component = new SidebarAnnotationsTab();
   constructor() {
     super();
@@ -8029,7 +8038,7 @@ __export(TimelineSummary_exports, {
   CategorySummary: () => CategorySummary
 });
 import * as i18n39 from "./../../../core/i18n/i18n.js";
-import * as UI15 from "./../../../ui/legacy/legacy.js";
+import * as UI14 from "./../../../ui/legacy/legacy.js";
 import * as Lit19 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
@@ -8124,7 +8133,7 @@ var UIStrings20 = {
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var CategorySummary = class extends HTMLElement {
-  #shadow = UI15.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
+  #shadow = UI14.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: timelineSummary_css_default, delegatesFocus: void 0 });
   #rangeStart = 0;
   #rangeEnd = 0;
   #total = 0;

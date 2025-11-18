@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Lit from '../../lit/lit.js';
-import { Tooltip } from './Tooltip.js';
+import { Tooltip } from './tooltips.js';
 const { html } = Lit;
-export async function render(container) {
+export function render(container) {
     Lit.render(html `
     <div style="position: relative; z-index: 0;">
       <button aria-describedby="simple-tooltip" style="position: absolute; left: 16px; top: 16px;">
@@ -37,7 +37,7 @@ export async function render(container) {
     </div>
   `, container);
     const anchor = container.querySelector('.anchor');
-    const programmaticTooltip = new Tooltip({ id: 'programatic', variant: 'rich', anchor });
+    const programmaticTooltip = new Tooltip.Tooltip({ id: 'programatic', variant: 'rich', anchor });
     programmaticTooltip.append('Text content');
     anchor.insertAdjacentElement('afterend', programmaticTooltip);
     // Make the buttons draggable, so that we can experiment with the position of the tooltip.

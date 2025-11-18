@@ -18,6 +18,7 @@ import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace6 from "./../../models/workspace/workspace.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
+import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
@@ -2081,6 +2082,7 @@ import * as Host3 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as Input from "./../../ui/components/input/input.js";
+import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
@@ -2450,7 +2452,7 @@ var UserActionRow = class extends UI3.Widget.Widget {
     this.#view({
       onSuggestionClick: this.onSuggestionClick,
       onRatingClick: this.#handleRateClick.bind(this),
-      onReportClick: () => UI3.UIUtils.openInNewTab(REPORT_URL),
+      onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
       onCopyResponseClick: this.onCopyResponseClick,
       scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
       onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
@@ -4756,7 +4758,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       onDeleteClick: this.#onDeleteClicked.bind(this),
       onExportConversationClick: this.#onExportConversationClick.bind(this),
       onHelpClick: () => {
-        UI7.UIUtils.openInNewTab(AI_ASSISTANCE_HELP);
+        UIHelpers2.openInNewTab(AI_ASSISTANCE_HELP);
       },
       onSettingsClick: () => {
         void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");

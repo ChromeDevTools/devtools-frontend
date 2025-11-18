@@ -33,6 +33,7 @@ import liveMetricsViewStyles from './liveMetricsView.css.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import { CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue } from './Utils.js';
 const { html, nothing } = Lit;
+const { widgetConfig } = UI.Widget;
 const DEVICE_OPTION_LIST = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 const RTT_MINIMUM = 60;
 const UIStrings = {
@@ -417,7 +418,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         ${nodeLink ? html `
             <div class="related-info" slot="extra-info">
               <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
-              <span class="related-info-link">${nodeLink}</span>
+              <span class="related-info-link">
+               <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: this.#lcpValue?.nodeRef })}>
+               </devtools-widget>
+              </span>
             </div>
           `
             : nothing}
@@ -560,7 +564,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </ul>
       ` : nothing}
       <div class="environment-option">
-        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}></devtools-widget>
+        <devtools-widget .widgetConfig=${widgetConfig(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}></devtools-widget>
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
@@ -820,7 +824,6 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             const metricValue = renderMetricValue('timeline.landing.interaction-event-timing', interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.preciseMillisToString(v), { dim: true });
             const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
             const isInp = this.#inpValue?.interactionId === interaction.interactionId;
-            const nodeLink = interaction.nodeRef ? PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(interaction.nodeRef) : Lit.nothing;
             return html `
             <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
               <details>
@@ -830,7 +833,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                 html `<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
                 : nothing}
                   </span>
-                  <span class="interaction-node">${nodeLink}</span>
+                  <span class="interaction-node">
+                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}>
+                    </devtools-widget>
+                  </span>
                   ${isP98Excluded ? html `<devtools-icon
                     class="interaction-info"
                     name="info"
@@ -924,7 +930,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
                 ${layoutShift.affectedNodeRefs.map(node => html `
-                  <div class="layout-shift-node">${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node)}</div>
+                  <div class="layout-shift-node">
+                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node })}>
+                    </devtools-widget>
+                  </div>
                 `)}
               </div>
             </li>

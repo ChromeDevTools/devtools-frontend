@@ -90,8 +90,7 @@ export class StackTrace extends HTMLElement {
     #stackTraceRows = [];
     #showHidden = false;
     set data(data) {
-        const frame = data.frame;
-        const { creationStackTrace, creationStackTraceTarget } = frame.getCreationStackTraceData();
+        const { creationStackTrace, creationStackTraceTarget } = data.creationStackTraceData;
         if (creationStackTrace) {
             this.#stackTraceRows = data.buildStackTraceRows(creationStackTrace, creationStackTraceTarget, this.#linkifier, true, this.#onStackTraceRowsUpdated.bind(this));
         }

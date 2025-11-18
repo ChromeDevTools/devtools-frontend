@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { UIUtils } from './legacy.js';
-export async function render(container) {
+export function render(container) {
     const styleElement = document.createElement('style');
     styleElement.textContent = 'fieldset { label { display: block; } }';
     container.appendChild(styleElement);

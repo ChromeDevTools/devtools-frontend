@@ -121,6 +121,9 @@
       "path": "../../../ui/components/settings/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/i18n/bundle-tsconfig.json"
     },
     {

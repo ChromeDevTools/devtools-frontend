@@ -1,9 +1,8 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
-import { SDKModel } from './SDKModel.js';
+import { SDKModel, type SDKModelConstructor } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
-type ModelClass<T = SDKModel> = new (arg1: Target) => T;
 export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     constructor();
@@ -16,20 +15,20 @@ export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     suspendAllTargets(reason?: string): Promise<void>;
     resumeAllTargets(): Promise<void>;
     allTargetsSuspended(): boolean;
-    models<T extends SDKModel>(modelClass: ModelClass<T>, opts?: {
+    models<T extends SDKModel>(modelClass: SDKModelConstructor<T>, opts?: {
         scoped: boolean;
     }): T[];
     inspectedURL(): string;
-    observeModels<T extends SDKModel>(modelClass: ModelClass<T>, observer: SDKModelObserver<T>, opts?: {
+    observeModels<T extends SDKModel>(modelClass: SDKModelConstructor<T>, observer: SDKModelObserver<T>, opts?: {
         scoped: boolean;
     }): void;
-    unobserveModels<T extends SDKModel>(modelClass: ModelClass<T>, observer: SDKModelObserver<T>): void;
-    modelAdded(modelClass: ModelClass, model: SDKModel, inScope: boolean): void;
+    unobserveModels<T extends SDKModel>(modelClass: SDKModelConstructor<T>, observer: SDKModelObserver<T>): void;
+    modelAdded(modelClass: SDKModelConstructor, model: SDKModel, inScope: boolean): void;
     private modelRemoved;
-    addModelListener<Events, T extends keyof Events>(modelClass: ModelClass<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object, opts?: {
+    addModelListener<Events, T extends keyof Events>(modelClass: SDKModelConstructor<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object, opts?: {
         scoped: boolean;
     }): void;
-    removeModelListener<Events, T extends keyof Events>(modelClass: ModelClass<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void;
+    removeModelListener<Events, T extends keyof Events>(modelClass: SDKModelConstructor<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void;
     observeTargets(targetObserver: Observer, opts?: {
         scoped: boolean;
     }): void;
@@ -68,4 +67,3 @@ export declare class SDKModelObserver<T> {
     modelAdded(_model: T): void;
     modelRemoved(_model: T): void;
 }
-export {};

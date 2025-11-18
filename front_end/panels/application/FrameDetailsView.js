@@ -1,28 +1,25 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-import '../../../ui/components/expandable_list/expandable_list.js';
-import '../../../ui/components/report_view/report_view.js';
-import './StackTrace.js';
-import * as Common from '../../../core/common/common.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
-import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as CspEvaluator from '../../../third_party/csp_evaluator/csp_evaluator.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as Components from '../../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import { Directives, html, nothing, render } from '../../../ui/lit/lit.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import '../../ui/components/expandable_list/expandable_list.js';
+import '../../ui/components/report_view/report_view.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import * as PanelCommon from '../../panels/common/common.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as CspEvaluator from '../../third_party/csp_evaluator/csp_evaluator.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as ApplicationComponents from './components/components.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import { OriginTrialTreeView } from './OriginTrialTreeView.js';
-import { renderIconLink, } from './PermissionsPolicySection.js';
 const { until } = Directives;
 const { widgetConfig } = UI.Widget;
 const UIStrings = {
@@ -73,10 +70,6 @@ const UIStrings = {
      * @description Related node label in Timeline UIUtils of the Performance panel
      */
     ownerElement: 'Owner Element',
-    /**
-     * @description Title for a link to the Elements panel
-     */
-    clickToOpenInElementsPanel: 'Click to open in Elements panel',
     /**
      * @description Title for ad frame type field
      */
@@ -248,9 +241,9 @@ const UIStrings = {
      */
     originTrialsExplanation: 'Origin trials give you access to a new or experimental feature.',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-function renderFrameDetailsView(input, target) {
+const DEFAULT_VIEW = (input, _output, target) => {
     if (!input.frame) {
         return;
     }
@@ -271,7 +264,7 @@ function renderFrameDetailsView(input, target) {
     </devtools-report>
   `, target);
     // clang-format on
-}
+};
 function renderOriginTrial(trials) {
     if (!trials) {
         return nothing;
@@ -305,85 +298,70 @@ function renderDocumentSection(input) {
       <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
-          ${maybeRenderSourcesLinkForURL(input.frame, input.onRevealInSources)}
-          ${maybeRenderNetworkLinkForURL(input.frame)}
+          ${!input.frame?.unreachableUrl() ? renderSourcesLinkForURL(input.onRevealInSources) : nothing}
+          ${input.onRevealInNetwork ? renderNetworkLinkForURL(input.onRevealInNetwork) : nothing}
           <div class="text-ellipsis" title=${input.frame.url}>${input.frame.url}</div>
         </div>
       </devtools-report-value>
-      ${maybeRenderUnreachableURL(input.frame)}
-      ${maybeRenderOrigin(input.frame)}
-      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(input.frame, value)), nothing)}
-      ${maybeRenderCreationStacktrace(input.frame)}
-      ${maybeRenderAdStatus(input.frame)}
-      ${maybeRenderCreatorAdScriptAncestry(input.frame, input.target, input.adScriptAncestry)}
+      ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
+      ${maybeRenderOrigin(input.frame?.securityOrigin)}
+      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(value)), nothing)}
+      ${maybeRenderCreationStacktrace(input.frame.getCreationStackTraceData())}
+      ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
+      ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
       <devtools-report-divider></devtools-report-divider>
     `;
 }
-function maybeRenderSourcesLinkForURL(frame, onRevealInSources) {
-    if (!frame || frame.unreachableUrl()) {
-        return nothing;
-    }
-    return renderIconLink('label', i18nString(UIStrings.clickToOpenInSourcesPanel), onRevealInSources, 'reveal-in-sources');
+function renderSourcesLinkForURL(onRevealInSources) {
+    return ApplicationComponents.PermissionsPolicySection.renderIconLink('label', i18nString(UIStrings.clickToOpenInSourcesPanel), onRevealInSources, 'reveal-in-sources');
 }
-function maybeRenderNetworkLinkForURL(frame) {
-    if (frame) {
-        const resource = frame.resourceForURL(frame.url);
-        if (resource?.request) {
-            const request = resource.request;
-            return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
-                const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(request, "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */);
-                return Common.Revealer.reveal(requestLocation);
-            }, 'reveal-in-network');
-        }
-    }
-    return nothing;
+function renderNetworkLinkForURL(onRevealInNetwork) {
+    return ApplicationComponents.PermissionsPolicySection.renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), onRevealInNetwork, 'reveal-in-network');
 }
-function maybeRenderUnreachableURL(frame) {
-    if (!frame?.unreachableUrl()) {
+function maybeRenderUnreachableURL(unreachableUrl) {
+    if (!unreachableUrl) {
         return nothing;
     }
     return html `
       <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
-          ${renderNetworkLinkForUnreachableURL(frame)}
-          <div class="text-ellipsis" title=${frame.unreachableUrl()}>${frame.unreachableUrl()}</div>
+          ${renderNetworkLinkForUnreachableURL(unreachableUrl)}
+          <div class="text-ellipsis" title=${unreachableUrl}>${unreachableUrl}</div>
         </div>
       </devtools-report-value>
     `;
 }
-function renderNetworkLinkForUnreachableURL(frame) {
-    if (frame) {
-        const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(frame.unreachableUrl());
-        if (unreachableUrl) {
-            return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanelMight), () => {
-                void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
-                    {
-                        filterType: NetworkForward.UIFilter.FilterType.Domain,
-                        filterValue: unreachableUrl.domain(),
-                    },
-                    {
-                        filterType: null,
-                        filterValue: unreachableUrl.path,
-                    },
-                ]));
-            }, 'unreachable-url.reveal-in-network');
-        }
+function renderNetworkLinkForUnreachableURL(unreachableUrlString) {
+    const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(unreachableUrlString);
+    if (unreachableUrl) {
+        return ApplicationComponents.PermissionsPolicySection.renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanelMight), () => {
+            void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+                {
+                    filterType: NetworkForward.UIFilter.FilterType.Domain,
+                    filterValue: unreachableUrl.domain(),
+                },
+                {
+                    filterType: null,
+                    filterValue: unreachableUrl.path,
+                },
+            ]));
+        }, 'unreachable-url.reveal-in-network');
     }
     return nothing;
 }
-function maybeRenderOrigin(frame) {
-    if (frame?.securityOrigin && frame?.securityOrigin !== '://') {
+function maybeRenderOrigin(securityOrigin) {
+    if (securityOrigin && securityOrigin !== '://') {
         return html `
         <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
         <devtools-report-value>
-          <div class="text-ellipsis" title=${frame.securityOrigin}>${frame.securityOrigin}</div>
+          <div class="text-ellipsis" title=${securityOrigin}>${securityOrigin}</div>
         </devtools-report-value>
       `;
     }
     return nothing;
 }
-function renderOwnerElement(frame, linkTargetDOMNode) {
+function renderOwnerElement(linkTargetDOMNode) {
     if (linkTargetDOMNode) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
@@ -391,14 +369,10 @@ function renderOwnerElement(frame, linkTargetDOMNode) {
         <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
         <devtools-report-value class="without-min-width">
           <div class="inline-items">
-            <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
-              @mouseenter=${() => frame?.highlight()}
-              @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-              @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}
-              jslog=${VisualLogging.action('reveal-in-elements').track({ click: true })}
-            >
-              &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
-            </button>
+            <devtools-widget .widgetConfig=${widgetConfig(PanelCommon.DOMLinkifier.DOMNodeLink, {
+            node: linkTargetDOMNode
+        })}>
+            </devtools-widget>
           </div>
         </devtools-report-value>
       `;
@@ -406,8 +380,7 @@ function renderOwnerElement(frame, linkTargetDOMNode) {
     }
     return nothing;
 }
-function maybeRenderCreationStacktrace(frame) {
-    const creationStackTraceData = frame?.getCreationStackTraceData();
+function maybeRenderCreationStacktrace(creationStackTraceData) {
     if (creationStackTraceData?.creationStackTrace) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
@@ -417,7 +390,7 @@ function maybeRenderCreationStacktrace(frame) {
         jslog=${VisualLogging.section('frame-creation-stack-trace')}
         >
           <devtools-resources-stack-trace .data=${{
-            frame,
+            creationStackTraceData,
             buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
         }}>
           </devtools-resources-stack-trace>
@@ -445,17 +418,13 @@ function getAdFrameExplanationString(explanation) {
             return i18nString(UIStrings.parentIsAdExplanation);
     }
 }
-function maybeRenderAdStatus(frame) {
-    if (!frame) {
-        return nothing;
-    }
-    const adFrameType = frame.adFrameType();
-    if (adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
+function maybeRenderAdStatus(adFrameType, adFrameStatus) {
+    if (adFrameType === undefined || adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
         return nothing;
     }
     const typeStrings = getAdFrameTypeStrings(adFrameType);
     const rows = [html `<div title=${typeStrings.description}>${typeStrings.value}</div>`];
-    for (const explanation of frame.adFrameStatus()?.explanations || []) {
+    for (const explanation of adFrameStatus?.explanations || []) {
         rows.push(html `<div>${getAdFrameExplanationString(explanation)}</div>`);
     }
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -468,11 +437,7 @@ function maybeRenderAdStatus(frame) {
       </devtools-report-value>`;
     // clang-format on
 }
-function maybeRenderCreatorAdScriptAncestry(frame, target, adScriptAncestry) {
-    if (!frame) {
-        return nothing;
-    }
-    const adFrameType = frame.adFrameType();
+function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestry) {
     if (adFrameType === "none" /* Protocol.Page.AdFrameType.None */) {
         return nothing;
     }
@@ -759,24 +724,27 @@ function renderAdditionalInfoSection(frame) {
       <devtools-report-divider></devtools-report-divider>
     `;
 }
-export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-    #shadow = this.attachShadow({ mode: 'open' });
+export class FrameDetailsReportView extends UI.Widget.Widget {
     #frame;
     #target = null;
     #protocolMonitorExperimentEnabled = false;
     #permissionsPolicies = null;
     #linkifier = new Components.Linkifier.Linkifier();
     #adScriptAncestry = null;
-    constructor(frame) {
-        super();
-        this.#frame = frame;
-        void this.render();
-    }
-    connectedCallback() {
-        this.parentElement?.classList.add('overflow-auto');
+    #view;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
         this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
+        this.#view = view;
     }
-    async render() {
+    set frame(frame) {
+        this.#frame = frame;
+        this.requestUpdate();
+    }
+    get frame() {
+        return this.#frame;
+    }
+    async performUpdate() {
         const result = await this.#frame?.parentFrame()?.getAdScriptAncestry(this.#frame?.id);
         if (result && result.ancestryChain.length > 0) {
             this.#adScriptAncestry = result;
@@ -793,33 +761,38 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         if (!this.#permissionsPolicies && this.#frame) {
             this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
         }
-        await RenderCoordinator.write('FrameDetailsView render', async () => {
-            const frame = this.#frame;
-            if (!frame) {
-                return;
-            }
-            const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-            const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
-            const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
-            const input = {
-                frame,
-                target: this.#target,
-                protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
-                permissionsPolicies: this.#permissionsPolicies,
-                adScriptAncestry: this.#adScriptAncestry,
-                linkifier: this.#linkifier,
-                linkTargetDOMNode,
-                trials: await frame.getOriginTrials(),
-                securityIsolationInfo,
-                onRevealInSources: async () => {
-                    const sourceCode = this.#uiSourceCodeForFrame(frame);
-                    if (sourceCode) {
-                        await Common.Revealer.reveal(sourceCode);
-                    }
-                },
-            };
-            renderFrameDetailsView(input, this.#shadow);
-        });
+        const frame = this.#frame;
+        if (!frame) {
+            return;
+        }
+        const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+        const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
+        const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
+        const frameRequest = frame.resourceForURL(frame.url)?.request;
+        const input = {
+            frame,
+            target: this.#target,
+            protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
+            permissionsPolicies: this.#permissionsPolicies,
+            adScriptAncestry: this.#adScriptAncestry,
+            linkifier: this.#linkifier,
+            linkTargetDOMNode,
+            trials: await frame.getOriginTrials(),
+            securityIsolationInfo,
+            onRevealInNetwork: frameRequest ?
+                () => {
+                    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(frameRequest, "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */);
+                    return Common.Revealer.reveal(requestLocation);
+                } :
+                undefined,
+            onRevealInSources: async () => {
+                const sourceCode = this.#uiSourceCodeForFrame(frame);
+                if (sourceCode) {
+                    await Common.Revealer.reveal(sourceCode);
+                }
+            },
+        };
+        this.#view(input, undefined, this.contentElement);
     }
     #uiSourceCodeForFrame(frame) {
         for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
@@ -834,5 +807,4 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         return null;
     }
 }
-customElements.define('devtools-resources-frame-details-view', FrameDetailsReportView);
 //# sourceMappingURL=FrameDetailsView.js.map

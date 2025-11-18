@@ -3,7 +3,7 @@ import * as Platform from '../platform/platform.js';
  * http://tools.ietf.org/html/rfc3986#section-5.2.4
  */
 export declare function normalizePath(path: string): string;
-export declare function schemeIs(url: Platform.DevToolsPath.UrlString, scheme: string): boolean;
+export declare function schemeIs(url: Platform.DevToolsPath.UrlString | URL, scheme: string): boolean;
 /**
  * File paths in DevTools that are represented either as unencoded absolute or relative paths, or encoded paths, or URLs.
  * @example

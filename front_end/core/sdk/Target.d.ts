@@ -1,12 +1,13 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
-import { SDKModel } from './SDKModel.js';
+import { SDKModel, type SDKModelConstructor } from './SDKModel.js';
 import type { TargetManager } from './TargetManager.js';
 export declare class Target extends ProtocolClient.InspectorBackend.TargetBase {
     #private;
     constructor(targetManager: TargetManager, id: Protocol.Target.TargetID | 'main', name: string, type: Type, parentTarget: Target | null, sessionId: string, suspended: boolean, connection: ProtocolClient.CDPConnection.CDPConnection | null, targetInfo?: Protocol.Target.TargetInfo);
-    createModels(required: Set<new (arg1: Target) => SDKModel>): void;
+    /** Creates the models in the order in which they are provided */
+    createModels(models: SDKModelConstructor[]): void;
     id(): Protocol.Target.TargetID | 'main';
     name(): string;
     setName(name: string): void;

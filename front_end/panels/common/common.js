@@ -547,6 +547,7 @@ import * as Badges from "./../../models/badges/badges.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
+import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
@@ -784,7 +785,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           .title=${i18nString2(UIStrings2.learnMoreAccessibleText)}
           .variant=${"outlined"}
           .jslogContext=${"learn-more"}
-          @click=${() => UI3.UIUtils.openInNewTab(GDP_PROGRAM_URL)}>${i18nString2(UIStrings2.learnMore)}</devtools-button>
+          @click=${() => UIHelpers.openInNewTab(GDP_PROGRAM_URL)}>${i18nString2(UIStrings2.learnMore)}</devtools-button>
         <div class="right-buttons">
           <devtools-button
             .variant=${"tonal"}
@@ -1358,6 +1359,7 @@ import * as Host5 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
+import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
@@ -1678,7 +1680,7 @@ var BadgeNotification = class extends UI6.Widget.Widget {
           label: i18nString3(UIStrings3.viewProfile),
           jslogContext: "view-profile",
           onClick: () => {
-            UI6.UIUtils.openInNewTab(Host5.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+            UIHelpers2.openInNewTab(Host5.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
           }
         }
       ],

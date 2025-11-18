@@ -312,11 +312,13 @@ panels/application/BackgroundServiceView.test.js
 panels/application/DOMStorageModel.test.js
 panels/application/ExtensionStorageItemsView.test.js
 panels/application/ExtensionStorageModel.test.js
+panels/application/FrameDetailsView.test.js
 panels/application/IndexedDBModel.test.js
 panels/application/IndexedDBViews.test.js
 panels/application/InterestGroupStorageView.test.js
 panels/application/InterestGroupTreeElement.test.js
 panels/application/KeyValueStorageItemsView.test.js
+panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
 panels/application/ReportingApiView.test.js
 panels/application/ServiceWorkerUpdateCycleView.test.js
@@ -332,9 +334,7 @@ panels/application/preloading/PreloadingView.test.js
 panels/application/components/BackForwardCacheView.test.js
 panels/application/components/BounceTrackingMitigationsView.test.js
 panels/application/components/EndpointsGrid.test.js
-panels/application/components/FrameDetailsView.test.js
 panels/application/components/InterestGroupAccessGrid.test.js
-panels/application/components/OriginTrialTreeView.test.js
 panels/application/components/ProtocolHandlersView.test.js
 panels/application/components/ReportsGrid.test.js
 panels/application/components/ServiceWorkerRouterView.test.js
@@ -659,6 +659,7 @@ ui/components/text_editor/javascript.test.js
 ui/components/text_prompt/TextPrompt.test.js
 ui/components/tooltips/Tooltip.test.js
 ui/components/tree_outline/TreeOutline.test.js
+ui/helpers/OpenInNewTab.test.js
 ui/i18n/i18n.test.js
 ui/legacy/ARIAUtils.test.js
 ui/legacy/ActionRegistration.test.js

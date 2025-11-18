@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { Switch } from './switch.js';
-export async function render(container) {
+export function render(container) {
     function switchExample({ checked, disabled }) {
         const example = document.createElement('div');
         example.style.marginTop = '20px';

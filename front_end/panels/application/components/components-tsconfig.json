@@ -39,9 +39,7 @@
     "../../../../../../../front_end/panels/application/components/BackForwardCacheView.ts",
     "../../../../../../../front_end/panels/application/components/BounceTrackingMitigationsView.ts",
     "../../../../../../../front_end/panels/application/components/EndpointsGrid.ts",
-    "../../../../../../../front_end/panels/application/components/FrameDetailsView.ts",
     "../../../../../../../front_end/panels/application/components/InterestGroupAccessGrid.ts",
-    "../../../../../../../front_end/panels/application/components/OriginTrialTreeView.ts",
     "../../../../../../../front_end/panels/application/components/PermissionsPolicySection.ts",
     "../../../../../../../front_end/panels/application/components/ProtocolHandlersView.ts",
     "../../../../../../../front_end/panels/application/components/ReportsGrid.ts",
@@ -76,6 +74,9 @@
     },
     {
       "path": "../../../models/bindings/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../common/bundle-tsconfig.json"
     },
     {
       "path": "../../network/forward/bundle-tsconfig.json"

@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -239,7 +240,7 @@ export class BadgeNotification extends UI.Widget.Widget {
                     label: i18nString(UIStrings.viewProfile),
                     jslogContext: 'view-profile',
                     onClick: () => {
-                        UI.UIUtils.openInNewTab(Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+                        UIHelpers.openInNewTab(Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
                     }
                 }
             ],

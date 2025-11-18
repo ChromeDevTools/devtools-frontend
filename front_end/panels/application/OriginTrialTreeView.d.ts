@@ -1,9 +1,9 @@
-import '../../../ui/components/icon_button/icon_button.js';
-import '../../../ui/legacy/legacy.js';
-import '../../../ui/components/adorners/adorners.js';
-import * as Protocol from '../../../generated/protocol.js';
-import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/legacy/legacy.js';
+import '../../ui/components/adorners/adorners.js';
+import * as Protocol from '../../generated/protocol.js';
+import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
+import * as UI from '../../ui/legacy/legacy.js';
 type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
 /**
  * The Origin Trial Tree has 4 levels of content:

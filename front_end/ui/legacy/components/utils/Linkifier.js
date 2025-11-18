@@ -11,6 +11,7 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+import * as UIHelpers from '../../../helpers/helpers.js';
 import { html, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
@@ -781,7 +782,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
                 section: 'reveal',
                 title: UI.UIUtils.openLinkExternallyLabel(),
                 jslogContext: 'open-in-new-tab',
-                handler: () => UI.UIUtils.openInNewTab(url),
+                handler: () => UIHelpers.openInNewTab(url),
             });
             result.push({
                 section: 'clipboard',

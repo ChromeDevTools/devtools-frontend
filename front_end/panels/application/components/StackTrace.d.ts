@@ -4,7 +4,10 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../ui/lit/lit.js';
 export interface StackTraceData {
-    frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+    creationStackTraceData: {
+        creationStackTrace: Protocol.Runtime.StackTrace | null;
+        creationStackTraceTarget: SDK.Target.Target | null;
+    };
     buildStackTraceRows: (stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target | null, linkifier: Components.Linkifier.Linkifier, tabStops: boolean | undefined, updateCallback?: (arg0: Array<Components.JSPresentationUtils.StackTraceRegularRow | Components.JSPresentationUtils.StackTraceAsyncRow>) => void) => Array<Components.JSPresentationUtils.StackTraceRegularRow | Components.JSPresentationUtils.StackTraceAsyncRow>;
 }
 interface StackTraceRowData {

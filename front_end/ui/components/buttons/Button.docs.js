@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { Button, FloatingButton } from './buttons.js';
-export async function render(container) {
+export function render(container) {
+    const buttonDocs = container.createChild('div', 'button-docs');
     const style = document.createElement('style');
     style.textContent = `
-      #container > div {
+      .button-docs > div {
         width: 80%;
         padding: var(--sys-size-11);
         display: flex;
@@ -14,12 +15,12 @@ export async function render(container) {
         gap: var(--sys-size-5);
       }
     `;
-    container.appendChild(style);
+    buttonDocs.appendChild(style);
     const appendSection = (headerText, sectionElement) => {
         const header = document.createElement('header');
         header.textContent = headerText;
-        container.appendChild(header);
-        container.appendChild(sectionElement);
+        buttonDocs.appendChild(header);
+        buttonDocs.appendChild(sectionElement);
     };
     const buttonsSection = document.createElement('div');
     const primarySection = document.createElement('div');

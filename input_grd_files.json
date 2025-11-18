@@ -363,6 +363,7 @@
   "front_end/ui/visual_logging/visual_logging.js",
   "front_end/ui/components/buttons/buttons.js",
   "front_end/ui/components/highlighting/highlighting.js",
+  "front_end/ui/helpers/helpers.js",
   "front_end/ui/legacy/legacy.js",
   "front_end/panels/mobile_throttling/mobile_throttling.js",
   "front_end/models/issues_manager/descriptions/arInsecureContext.md",

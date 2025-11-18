@@ -47,9 +47,9 @@ import { BackForwardCacheTreeElement } from './BackForwardCacheTreeElement.js';
 import { BackgroundServiceModel } from './BackgroundServiceModel.js';
 import { BackgroundServiceView } from './BackgroundServiceView.js';
 import { BounceTrackingMitigationsTreeElement } from './BounceTrackingMitigationsTreeElement.js';
-import * as ApplicationComponents from './components/components.js';
 import { DOMStorageModel } from './DOMStorageModel.js';
 import { ExtensionStorageModel, } from './ExtensionStorageModel.js';
+import { FrameDetailsReportView } from './FrameDetailsView.js';
 import { Events as IndexedDBModelEvents, IndexedDBModel, } from './IndexedDBModel.js';
 import { IDBDatabaseView, IDBDataView } from './IndexedDBViews.js';
 import { InterestGroupStorageModel } from './InterestGroupStorageModel.js';
@@ -1806,7 +1806,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
         this.treeElementForResource.clear();
         this.treeElementForWorker.clear();
         if (this.selected) {
-            this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
+            this.view = new FrameDetailsReportView();
+            this.view.frame = this.frame;
             this.showView(this.view);
         }
         else {
@@ -1841,7 +1842,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     onselect(selectedByUser) {
         super.onselect(selectedByUser);
         if (!this.view) {
-            this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
+            this.view = new FrameDetailsReportView();
+            this.view.frame = this.frame;
         }
         Host.userMetrics.panelShown('frame-details');
         this.showView(this.view);

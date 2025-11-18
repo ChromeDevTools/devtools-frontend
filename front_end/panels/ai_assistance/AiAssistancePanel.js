@@ -14,6 +14,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -756,7 +757,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             onDeleteClick: this.#onDeleteClicked.bind(this),
             onExportConversationClick: this.#onExportConversationClick.bind(this),
             onHelpClick: () => {
-                UI.UIUtils.openInNewTab(AI_ASSISTANCE_HELP);
+                UIHelpers.openInNewTab(AI_ASSISTANCE_HELP);
             },
             onSettingsClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');

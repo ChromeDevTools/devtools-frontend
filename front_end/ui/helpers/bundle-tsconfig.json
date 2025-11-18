@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/ui/helpers"},"files":["../../../../../../front_end/ui/helpers/helpers.ts"],"references":[{"path":"./helpers-tsconfig.json"}]}

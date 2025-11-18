@@ -688,7 +688,6 @@ __export(UIUtils_exports, {
   measureTextWidth: () => measureTextWidth,
   measuredScrollbarWidth: () => measuredScrollbarWidth,
   modifiedFloatNumber: () => modifiedFloatNumber,
-  openInNewTab: () => openInNewTab,
   openLinkExternallyLabel: () => openLinkExternallyLabel,
   registerRenderer: () => registerRenderer,
   resetMeasuredScrollbarWidthForTest: () => resetMeasuredScrollbarWidthForTest,
@@ -12040,7 +12039,6 @@ import * as Common14 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
-import * as Root7 from "./../../core/root/root.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
@@ -15073,19 +15071,6 @@ function measuredScrollbarWidth(document2) {
   document2.body.removeChild(scrollDiv);
   return cachedMeasuredScrollbarWidth;
 }
-function openInNewTab(url) {
-  url = new URL(`${url}`);
-  if (["developer.chrome.com", "developers.google.com", "web.dev"].includes(url.hostname)) {
-    if (!url.searchParams.has("utm_source")) {
-      url.searchParams.append("utm_source", "devtools");
-    }
-    const { channel } = Root7.Runtime.hostConfig;
-    if (!url.searchParams.has("utm_campaign") && typeof channel === "string") {
-      url.searchParams.append("utm_campaign", channel);
-    }
-  }
-  Host7.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform15.DevToolsPath.urlString`${url}`);
-}
 var MAX_DISPLAY_COUNT = 10;
 var MAX_DURATION = 60 * 24 * 60 * 60 * 1e3;
 var MAX_INTERACTION_COUNT = 2;
@@ -16394,6 +16379,7 @@ __export(XLink_exports, {
 });
 import * as Host8 from "./../../core/host/host.js";
 import * as Platform17 from "./../../core/platform/platform.js";
+import * as UIHelpers from "./../helpers/helpers.js";
 import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/Fragment.js
@@ -16676,14 +16662,14 @@ var XLink = class extends XElement {
     this.onClick = (event) => {
       event.consume(true);
       if (this.#href) {
-        openInNewTab(this.#href);
+        UIHelpers.openInNewTab(this.#href);
       }
     };
     this.onKeyDown = (event) => {
       if (Platform17.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         event.consume(true);
         if (this.#href) {
-          openInNewTab(this.#href);
+          UIHelpers.openInNewTab(this.#href);
         }
       }
     };
@@ -16751,7 +16737,7 @@ var ContextMenuProvider = class {
     const node = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        openInNewTab(node.href);
+        UIHelpers.openInNewTab(node.href);
       }
     }, { jslogContext: "open-in-new-tab" });
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

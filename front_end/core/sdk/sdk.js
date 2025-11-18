@@ -739,10 +739,6 @@ var generatedProperties = [
       "scroll-snap-align",
       "scroll-snap-stop",
       "scroll-snap-type",
-      "scroll-start-block",
-      "scroll-start-inline",
-      "scroll-start-x",
-      "scroll-start-y",
       "scroll-target-group",
       "scroll-timeline-axis",
       "scroll-timeline-name",
@@ -4112,25 +4108,6 @@ var generatedProperties = [
       "proximity"
     ],
     "name": "scroll-snap-type"
-  },
-  {
-    "longhands": [
-      "scroll-start-block",
-      "scroll-start-inline"
-    ],
-    "name": "scroll-start"
-  },
-  {
-    "name": "scroll-start-block"
-  },
-  {
-    "name": "scroll-start-inline"
-  },
-  {
-    "name": "scroll-start-x"
-  },
-  {
-    "name": "scroll-start-y"
   },
   {
     "keywords": [
@@ -9646,18 +9623,11 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     this.#isSuspended = suspended;
     this.#targetInfo = targetInfo;
   }
-  createModels(required) {
+  /** Creates the models in the order in which they are provided */
+  createModels(models) {
     this.#creatingModels = true;
-    const registeredModels2 = Array.from(SDKModel.registeredModels.entries());
-    for (const [modelClass, info] of registeredModels2) {
-      if (info.early) {
-        this.model(modelClass);
-      }
-    }
-    for (const [modelClass, info] of registeredModels2) {
-      if (info.autostart || required.has(modelClass)) {
-        this.model(modelClass);
-      }
+    for (const model of models) {
+      this.model(model);
     }
     this.#creatingModels = false;
   }
@@ -9963,12 +9933,25 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
     this.#observers.delete(targetObserver);
     this.#scopedObservers.delete(targetObserver);
   }
+  /** @returns The set of models we create unconditionally for new targets in the order in which they should be created */
+  #autoStartModels() {
+    const earlyModels = /* @__PURE__ */ new Set();
+    const models = /* @__PURE__ */ new Set();
+    for (const [model, info] of SDKModel.registeredModels) {
+      if (info.early) {
+        earlyModels.add(model);
+      } else if (info.autostart || this.#modelObservers.has(model)) {
+        models.add(model);
+      }
+    }
+    return [...earlyModels, ...models];
+  }
   createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection, targetInfo) {
     const target = new Target(this, id, name, type, parentTarget, sessionId || "", this.#isSuspended, connection || null, targetInfo);
     if (waitForDebuggerInPage) {
       void target.pageAgent().invoke_waitForDebugger();
     }
-    target.createModels(new Set(this.#modelObservers.keysArray()));
+    target.createModels(this.#autoStartModels());
     this.#targets.add(target);
     const inScope = this.isInScope(target);
     for (const observer of [...this.#observers]) {
@@ -10062,7 +10045,7 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
         /* targetInfo*/
         void 0
       );
-      this.#browserTarget.createModels(new Set(this.#modelObservers.keysArray()));
+      this.#browserTarget.createModels(this.#autoStartModels());
     }
     const targetId = await Host.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId();
     void this.#browserTarget.targetAgent().invoke_autoAttachRelated({

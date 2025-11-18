@@ -101,6 +101,9 @@
       "path": "../../ui/components/switch/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/i18n/bundle-tsconfig.json"
     },
     {

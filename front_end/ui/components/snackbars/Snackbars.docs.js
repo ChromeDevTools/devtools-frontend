@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { Snackbar } from './snackbars.js';
-export async function render(container) {
+export function render(container) {
     const onActionClick = () => {
         // eslint-disable-next-line no-console
         console.log('Action button clicked!');

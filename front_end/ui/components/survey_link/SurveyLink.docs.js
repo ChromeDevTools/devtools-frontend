@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../../core/common/common.js';
-import { SurveyLink } from '../survey_link/survey_link.js';
+import { SurveyLink } from './survey_link.js';
 export function render(container) {
     const link = new SurveyLink.SurveyLink();
     container.appendChild(link);

@@ -51,6 +51,9 @@
   "references": [
     {
       "path": "./bundle-tsconfig.json"
+    },
+    {
+      "path": "../../lit/bundle-tsconfig.json"
     }
   ]
 }

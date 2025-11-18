@@ -1286,6 +1286,9 @@
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future."
   },
+  "generated/Deprecation.ts | Fledge": {
+    "message": "The Protected Audience API is deprecated and will be removed in a future release."
+  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ for more details."
   },
@@ -4130,159 +4133,6 @@
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "No endpoints to display"
   },
-  "panels/application/components/FrameDetailsView.ts | additionalInformation": {
-    "message": "Additional Information"
-  },
-  "panels/application/components/FrameDetailsView.ts | adStatus": {
-    "message": "Ad Status"
-  },
-  "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "A frame ancestor is an insecure context"
-  },
-  "panels/application/components/FrameDetailsView.ts | apiAvailability": {
-    "message": "API availability"
-  },
-  "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Availability of certain APIs depends on the document being cross-origin isolated."
-  },
-  "panels/application/components/FrameDetailsView.ts | available": {
-    "message": "available"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "available, not transferable"
-  },
-  "panels/application/components/FrameDetailsView.ts | availableTransferable": {
-    "message": "available, transferable"
-  },
-  "panels/application/components/FrameDetailsView.ts | child": {
-    "message": "child"
-  },
-  "panels/application/components/FrameDetailsView.ts | childDescription": {
-    "message": "This frame has been identified as a child frame of an ad"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
-    "message": "Click to open in Elements panel"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
-    "message": "Click to open in Network panel"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
-    "message": "Click to open in Network panel (might require page reload)"
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
-    "message": "Click to open in Sources panel"
-  },
-  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
-    "message": "Content Security Policy (CSP)"
-  },
-  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "There was an ad script in the (async) stack when this frame was created. Examining the creation stack trace of this frame might provide more insight."
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Frame Creation Stack Trace"
-  },
-  "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "This frame was created programmatically. The stack trace shows where this happened."
-  },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "Creator Ad Script Ancestry"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Cross-Origin Isolated"
-  },
-  "panels/application/components/FrameDetailsView.ts | document": {
-    "message": "Document"
-  },
-  "panels/application/components/FrameDetailsView.ts | frameId": {
-    "message": "Frame ID"
-  },
-  "panels/application/components/FrameDetailsView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Localhost is always a secure context"
-  },
-  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
-    "message": "This frame is considered an ad frame because its current (or previous) main document is an ad resource."
-  },
-  "panels/application/components/FrameDetailsView.ts | measureMemory": {
-    "message": "Measure Memory"
-  },
-  "panels/application/components/FrameDetailsView.ts | no": {
-    "message": "No"
-  },
-  "panels/application/components/FrameDetailsView.ts | none": {
-    "message": "None"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "Origin"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
-    "message": "Origin trials give you access to a new or experimental feature."
-  },
-  "panels/application/components/FrameDetailsView.ts | ownerElement": {
-    "message": "Owner Element"
-  },
-  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
-    "message": "This frame is considered an ad frame because its parent frame is an ad frame."
-  },
-  "panels/application/components/FrameDetailsView.ts | reportingTo": {
-    "message": "reporting to"
-  },
-  "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "requires cross-origin isolated context"
-  },
-  "panels/application/components/FrameDetailsView.ts | root": {
-    "message": "root"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootDescription": {
-    "message": "This frame has been identified as the root frame of an ad"
-  },
-  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "Root Script Filterlist Rule"
-  },
-  "panels/application/components/FrameDetailsView.ts | secureContext": {
-    "message": "Secure Context"
-  },
-  "panels/application/components/FrameDetailsView.ts | securityIsolation": {
-    "message": "Security & Isolation"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "The frame's scheme is insecure"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is available"
-  },
-  "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled."
-  },
-  "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "SharedArrayBuffer transfer requires enabling the permission policy:"
-  },
-  "panels/application/components/FrameDetailsView.ts | unavailable": {
-    "message": "unavailable"
-  },
-  "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
-    "message": "Unreachable URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ will require cross-origin isolated context in the future"
-  },
-  "panels/application/components/FrameDetailsView.ts | yes": {
-    "message": "Yes"
-  },
   "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
     "message": "All interest group storage events."
   },
@@ -4303,39 +4153,6 @@
   },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
     "message": "No interest group events detected"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
-    "message": "Expiry Time"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "Third Party"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Subdomain Matching"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
-    "message": "No trial tokens"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | origin": {
-    "message": "Origin"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "Raw Token"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "Token Status"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | token": {
-    "message": "Token"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "{PH1} tokens"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | trialName": {
-    "message": "Trial Name"
-  },
-  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "Usage Restriction"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
     "message": "Allowed Features"
@@ -4607,6 +4424,156 @@
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
     "message": "Extension Storage Items cleared"
   },
+  "panels/application/FrameDetailsView.ts | additionalInformation": {
+    "message": "Additional Information"
+  },
+  "panels/application/FrameDetailsView.ts | adStatus": {
+    "message": "Ad Status"
+  },
+  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "A frame ancestor is an insecure context"
+  },
+  "panels/application/FrameDetailsView.ts | apiAvailability": {
+    "message": "API availability"
+  },
+  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "Availability of certain APIs depends on the document being cross-origin isolated."
+  },
+  "panels/application/FrameDetailsView.ts | available": {
+    "message": "available"
+  },
+  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "available, not transferable"
+  },
+  "panels/application/FrameDetailsView.ts | availableTransferable": {
+    "message": "available, transferable"
+  },
+  "panels/application/FrameDetailsView.ts | child": {
+    "message": "child"
+  },
+  "panels/application/FrameDetailsView.ts | childDescription": {
+    "message": "This frame has been identified as a child frame of an ad"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
+    "message": "Click to open in Network panel"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "Click to open in Network panel (might require page reload)"
+  },
+  "panels/application/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "Click to open in Sources panel"
+  },
+  "panels/application/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP)"
+  },
+  "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "There was an ad script in the (async) stack when this frame was created. Examining the creation stack trace of this frame might provide more insight."
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Frame Creation Stack Trace"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "This frame was created programmatically. The stack trace shows where this happened."
+  },
+  "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "Creator Ad Script Ancestry"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "Cross-Origin Isolated"
+  },
+  "panels/application/FrameDetailsView.ts | document": {
+    "message": "Document"
+  },
+  "panels/application/FrameDetailsView.ts | frameId": {
+    "message": "Frame ID"
+  },
+  "panels/application/FrameDetailsView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Localhost is always a secure context"
+  },
+  "panels/application/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "This frame is considered an ad frame because its current (or previous) main document is an ad resource."
+  },
+  "panels/application/FrameDetailsView.ts | measureMemory": {
+    "message": "Measure Memory"
+  },
+  "panels/application/FrameDetailsView.ts | no": {
+    "message": "No"
+  },
+  "panels/application/FrameDetailsView.ts | none": {
+    "message": "None"
+  },
+  "panels/application/FrameDetailsView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/FrameDetailsView.ts | originTrialsExplanation": {
+    "message": "Origin trials give you access to a new or experimental feature."
+  },
+  "panels/application/FrameDetailsView.ts | ownerElement": {
+    "message": "Owner Element"
+  },
+  "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "This frame is considered an ad frame because its parent frame is an ad frame."
+  },
+  "panels/application/FrameDetailsView.ts | reportingTo": {
+    "message": "reporting to"
+  },
+  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "requires cross-origin isolated context"
+  },
+  "panels/application/FrameDetailsView.ts | root": {
+    "message": "root"
+  },
+  "panels/application/FrameDetailsView.ts | rootDescription": {
+    "message": "This frame has been identified as the root frame of an ad"
+  },
+  "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Root Script Filterlist Rule"
+  },
+  "panels/application/FrameDetailsView.ts | secureContext": {
+    "message": "Secure Context"
+  },
+  "panels/application/FrameDetailsView.ts | securityIsolation": {
+    "message": "Security & Isolation"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "The frame's scheme is insecure"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "The performance.measureUserAgentSpecificMemory() API is available"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
+  },
+  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled."
+  },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "SharedArrayBuffer transfer requires enabling the permission policy:"
+  },
+  "panels/application/FrameDetailsView.ts | unavailable": {
+    "message": "unavailable"
+  },
+  "panels/application/FrameDetailsView.ts | unreachableUrl": {
+    "message": "Unreachable URL"
+  },
+  "panels/application/FrameDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
+    "message": "⚠️ will require cross-origin isolated context in the future"
+  },
+  "panels/application/FrameDetailsView.ts | yes": {
+    "message": "Yes"
+  },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Clear object store"
   },
@@ -4768,6 +4735,39 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Yes"
+  },
+  "panels/application/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Expiry Time"
+  },
+  "panels/application/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "Third Party"
+  },
+  "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "Subdomain Matching"
+  },
+  "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
+    "message": "No trial tokens"
+  },
+  "panels/application/OriginTrialTreeView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "Raw Token"
+  },
+  "panels/application/OriginTrialTreeView.ts | status": {
+    "message": "Token Status"
+  },
+  "panels/application/OriginTrialTreeView.ts | token": {
+    "message": "Token"
+  },
+  "panels/application/OriginTrialTreeView.ts | tokens": {
+    "message": "{PH1} tokens"
+  },
+  "panels/application/OriginTrialTreeView.ts | trialName": {
+    "message": "Trial Name"
+  },
+  "panels/application/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Usage Restriction"
   },
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
     "message": "Action"

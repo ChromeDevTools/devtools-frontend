@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -243,7 +244,7 @@ export class UserActionRow extends UI.Widget.Widget {
         this.#view({
             onSuggestionClick: this.onSuggestionClick,
             onRatingClick: this.#handleRateClick.bind(this),
-            onReportClick: () => UI.UIUtils.openInNewTab(REPORT_URL),
+            onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
             onCopyResponseClick: this.onCopyResponseClick,
             scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
             onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),

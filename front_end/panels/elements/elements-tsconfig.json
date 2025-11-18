@@ -169,6 +169,9 @@
       "path": "../../ui/components/tree_outline/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.json"
     },
     {

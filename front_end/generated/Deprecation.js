@@ -53,6 +53,10 @@ export const UIStrings = {
      */
     DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.",
     /**
+     * @description A deprecation warning shown in the DevTools Issues tab. It's shown when one of the Protected Audience APIs like `navigator.joinAdInterestGroup`, `navigator.getInterestGroupAdAuctionData` or `navigator.runAdAuction` are called.
+     */
+    Fledge: "The Protected Audience API is deprecated and will be removed in a future release.",
+    /**
      * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
      */
     GeolocationInsecureOrigin: "`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ for more details.",

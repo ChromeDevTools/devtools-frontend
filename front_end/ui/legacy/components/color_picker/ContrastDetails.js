@@ -9,6 +9,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import * as UIHelpers from '../../../helpers/helpers.js';
 import * as UI from '../../legacy.js';
 const UIStrings = {
     /**
@@ -306,7 +307,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
         this.contrastValueBubble.classList.toggle('contrast-aaa', passesAAA);
     }
     static showHelp() {
-        UI.UIUtils.openInNewTab('https://web.dev/color-and-contrast-accessibility/');
+        UIHelpers.openInNewTab('https://web.dev/color-and-contrast-accessibility/');
     }
     setVisible(visible) {
         this.#visible = visible;

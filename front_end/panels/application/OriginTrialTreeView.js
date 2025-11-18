@@ -1,12 +1,12 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../../ui/components/icon_button/icon_button.js';
-import '../../../ui/legacy/legacy.js';
-import '../../../ui/components/adorners/adorners.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import { Directives, html, nothing, render } from '../../../ui/lit/lit.js';
+import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/legacy/legacy.js';
+import '../../ui/components/adorners/adorners.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 const { classMap } = Directives;
@@ -63,7 +63,7 @@ const UIStrings = {
      */
     noTrialTokens: 'No trial tokens',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/application/components/OriginTrialTreeView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/OriginTrialTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function renderOriginTrialTree(originTrial) {
     const success = originTrial.status === "Enabled" /* Protocol.Page.OriginTrialStatus.Enabled */;

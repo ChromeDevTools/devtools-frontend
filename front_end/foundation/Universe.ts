@@ -9,8 +9,8 @@ import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
 export interface CreationOptions {
-  // Settings things
   settingsCreationOptions: Common.Settings.SettingsCreationOptions;
+  overrideAutoStartModels?: Set<SDK.SDKModel.SDKModelConstructor>;
 }
 
 export class Universe {
@@ -24,7 +24,7 @@ export class Universe {
       ...options.settingsCreationOptions,
     });
 
-    const targetManager = new SDK.TargetManager.TargetManager();
+    const targetManager = new SDK.TargetManager.TargetManager(options.overrideAutoStartModels);
     this.context.set(SDK.TargetManager.TargetManager, targetManager);
 
     const workspace = new Workspace.Workspace.WorkspaceImpl();

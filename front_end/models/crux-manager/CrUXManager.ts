@@ -87,6 +87,7 @@ export interface CrUXResponse {
 
 export type PageResult = Record<`${PageScope}-${DeviceScope}`, CrUXResponse|null>&{
   warnings: string[],
+  normalizedUrl: string,
 };
 
 export interface OriginMapping {
@@ -194,10 +195,12 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       'url-PHONE': null,
       'url-TABLET': null,
       warnings: [],
+      normalizedUrl: '',
     };
 
     try {
       const normalizedUrl = this.#normalizeUrl(pageUrl);
+      pageResult.normalizedUrl = normalizedUrl.href;
       const promises: Array<Promise<void>> = [];
 
       for (const pageScope of pageScopeList) {
@@ -250,11 +253,11 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    */
   async #getFieldDataForCurrentPage(): Promise<PageResult> {
     const currentUrl = this.#mainDocumentUrl || await this.#getInspectedURL();
-    const urlForCrux = this.#configSetting.get().overrideEnabled ? this.#configSetting.get().override || '' :
-                                                                   this.#getMappedUrl(currentUrl);
+    const normalizedUrl = this.#configSetting.get().overrideEnabled ? this.#configSetting.get().override || '' :
+                                                                      this.#getMappedUrl(currentUrl);
 
-    const result = await this.getFieldDataForPage(urlForCrux);
-    if (currentUrl !== urlForCrux) {
+    const result = await this.getFieldDataForPage(normalizedUrl);
+    if (currentUrl !== normalizedUrl) {
       result.warnings.push(i18nString(UIStrings.fieldOverrideWarning));
     }
     return result;

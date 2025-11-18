@@ -85,6 +85,10 @@ function getFieldMessage(view: Element): HTMLElement|null {
   return view.shadowRoot!.querySelector('#field-setup .field-data-message');
 }
 
+function getFieldDataHistoryLink(view: Element): HTMLElement|null {
+  return view.shadowRoot!.querySelector<HTMLElement>('#field-setup .field-data-message .local-field-link');
+}
+
 function getLiveMetricsTitle(view: Element): HTMLElement {
   // There may be multiple, but this should always be the first one.
   return view.shadowRoot!.querySelector('.live-metrics > .section-title')!;
@@ -709,6 +713,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         'url-PHONE': null,
         'url-TABLET': null,
         warnings: [],
+        normalizedUrl: '',
       };
 
       sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForPage').callsFake(async () => mockFieldData);
@@ -798,6 +803,33 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const fieldMessage = getFieldMessage(view);
       assert.match(fieldMessage!.textContent!, /Warning from crux/);
+    });
+
+    it('Should display field data history link', async () => {
+      const view = renderLiveMetrics();
+
+      await RenderCoordinator.done();
+
+      mockFieldData['url-ALL'] = createMockFieldData();
+      mockFieldData.normalizedUrl = 'https://www.example.com/';
+
+      target.model(SDK.ResourceTreeModel.ResourceTreeModel)
+          ?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
+            url: 'https://example.com',
+            isPrimaryFrame: () => true,
+          } as SDK.ResourceTreeModel.ResourceTreeFrame);
+
+      await RenderCoordinator.done();
+
+      const fieldLink = getFieldDataHistoryLink(view);
+      assert.include(fieldLink!.textContent, 'View history');
+      assert.strictEqual(
+          fieldLink!.getAttribute('href'),
+          'https://cruxvis.withgoogle.com/#/?' +
+              'view=cwvsummary&' +
+              'url=https%3A%2F%2Fwww.example.com%2F&' +
+              'identifier=url&' +
+              'device=ALL');
     });
 
     it('should make initial request on render when crux is enabled', async () => {

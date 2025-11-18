@@ -114,6 +114,7 @@ describeWithMockConnection('OriginMap', () => {
       'url-PHONE': null,
       'url-TABLET': null,
       warnings: [],
+      normalizedUrl: '',
     };
 
     cruxManager.getConfigSetting().set({enabled: true, override: ''});

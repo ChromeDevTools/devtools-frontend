@@ -79,6 +79,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
       'url-PHONE': null,
       'url-TABLET': null,
       warnings: [],
+      normalizedUrl: '',
     };
 
     cruxManager.getConfigSetting().set({enabled: false, override: ''});

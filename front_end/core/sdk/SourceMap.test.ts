@@ -1350,8 +1350,18 @@ describeWithEnvironment('SourceMap', () => {
   });
 
   it('builds scopes fallback when the source map does not have any scope information', async () => {
+    // TODO: this test fails when this experiment is on, because "hasScopeInfo"
+    // returns true, because addOriginalScopes is called in parseMap. Explicitly
+    // disable the experiment for now because otherwise it will be enabled incidentally
+    // from previous tests in this file, which results in different results when
+    // running this test directly vs all together.
+    //
+    // This should be resolved: presently it seems that when this experiment is on,
+    // the "fallback" scopes are never generated (only blank ones are).
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
+
     const scopeTreeStub = sinon.stub(Formatter.FormatterWorkerPool.formatterWorkerPool(), 'javaScriptScopeTree')
-                              .returns(Promise.resolve({start: 0, end: 10, variables: [], kind: 1, children: []}));
+                              .returns(Promise.resolve({start: 0, end: 38, variables: [], kind: 1, children: []}));
     const script = sinon.createStubInstance(SDK.Script.Script, {
       requestContentData: Promise.resolve(
           new TextUtils.ContentData.ContentData('function f() { console.log("hello"); }', false, 'text/javascript'))
@@ -1359,8 +1369,10 @@ describeWithEnvironment('SourceMap', () => {
     const sourceMap = new SDK.SourceMap.SourceMap(
         compiledUrl, sourceMapJsonUrl, {
           version: 3,
-          mappings: 'ACAA',  // [0, 1, 0, 0]
-          sources: [],
+          // [ 0, 1, 0, 0]
+          // [37, 0, 0, 0]
+          mappings: 'ACAA,qCAAA',
+          sources: ['module1.js', 'module2.js'],
           names: [],
         },
         script);
@@ -1369,7 +1381,7 @@ describeWithEnvironment('SourceMap', () => {
 
     // Trigger processing.
     assert.isNotNull(sourceMap.findEntry(0, 0));
-    await new Promise(r => setTimeout(r, 0));  // Wait one event loop tick.
+    await sourceMap.scopesFallbackPromiseForTest;
 
     assert.isTrue(sourceMap.hasScopeInfo());
     sinon.assert.calledOnceWithExactly(scopeTreeStub, 'function f() { console.log("hello"); }', 'script');

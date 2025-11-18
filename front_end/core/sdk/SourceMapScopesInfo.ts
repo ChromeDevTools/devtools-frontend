@@ -26,35 +26,114 @@ export class SourceMapScopesInfo {
   }
 
   /**
-   * If the source map does not contain any scopes information, this factory function attempts to create bare bones scope information
+   * If the source map does not contain any scopes information, this factory function attempts to create scope information
    * via the script's AST combined with the mappings.
    *
    * We create the generated ranges from the scope tree and for each range we create an original scope that matches the bounds 1:1.
-   * We don't map the bounds via mappings as mappings are often iffy and it's not strictly required to translate stack traces where we
-   * map call-sites separately.
    */
   static createFromAst(
       sourceMap: SourceMap, scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode,
       text: TextUtils.Text.Text): SourceMapScopesInfo {
-    const {scope, range} = convertScope(scopeTree, undefined, undefined);
-    return new SourceMapScopesInfo(sourceMap, {scopes: [scope], ranges: [range]});
-
-    function convertScope(
-        node: Formatter.FormatterWorkerPool.ScopeTreeNode, parentScope: ScopesCodec.OriginalScope|undefined,
-        parentRange: ScopesCodec.GeneratedRange|
-        undefined): {scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange} {
-      const start = positionFromOffset(node.start);
-      const end = positionFromOffset(node.end);
-      const isStackFrame = node.kind === Formatter.FormatterWorkerPool.ScopeKind.FUNCTION;
-
+    const numSourceUrls = sourceMap.sourceURLs().length;
+    const scopeBySourceUrl: ScopesCodec.OriginalScope[] = [];
+    for (let i = 0; i < numSourceUrls; i++) {
       const scope: ScopesCodec.OriginalScope = {
-        start,
-        end,
-        name: sourceMap.findEntry(start.line, start.column, 0)?.name,
-        isStackFrame,
+        start: {line: 0, column: 0},
+        end: {line: Number.POSITIVE_INFINITY, column: Number.POSITIVE_INFINITY},
+        isStackFrame: false,
         variables: [],
         children: [],
       };
+      scopeBySourceUrl.push(scope);
+    }
+
+    // Convert the entire scopeTree. Returns a root range that encompasses everything,
+    // and inserts scopes by sourceIndex into the above scopeBySourceUrl.
+    const {range} = convertScope(scopeTree, undefined);
+    return new SourceMapScopesInfo(sourceMap, {scopes: scopeBySourceUrl, ranges: [range]});
+
+    /**
+     * Recursively finds the correct place in the tree to insert the new scope.
+     * Maintains the invariant that children are sorted and contained by their parent.
+     */
+    function insertInScope(parent: ScopesCodec.OriginalScope, newScope: ScopesCodec.OriginalScope): void {
+      // Check if the newScope fits strictly inside any of the existing children.
+      for (const child of parent.children) {
+        if (contains(child, newScope)) {
+          insertInScope(child, newScope);
+          return;
+        }
+      }
+
+      // When here, newScope belongs directly in parent.
+      // However, newScope might encompass some of parent's existing children (due
+      // to compiler transform quirks or arbitrary insertion order). We must move
+      // those children inside newScope.
+      const childrenToKeep: ScopesCodec.OriginalScope[] = [];
+      for (const child of parent.children) {
+        if (contains(newScope, child)) {
+          // child is actually inside newScope, so re-parent it.
+          newScope.children.push(child);
+          child.parent = newScope;
+        } else {
+          childrenToKeep.push(child);
+        }
+      }
+
+      // Find the correct index in the remaining children to insert newScope.
+      // We look for the first child that starts after the new scope.
+      const insertIndex = childrenToKeep.findIndex(child => compareScopes(newScope, child) < 0);
+      if (insertIndex === -1) {
+        // If no child starts after, it goes at the end.
+        childrenToKeep.push(newScope);
+      } else {
+        childrenToKeep.splice(insertIndex, 0, newScope);
+      }
+
+      // Update parent's children to only be the ones that don't belong to newScope.
+      parent.children = childrenToKeep;
+      newScope.parent = parent;
+    }
+
+    function contains(outer: ScopesCodec.OriginalScope, inner: ScopesCodec.OriginalScope): boolean {
+      return comparePositions(outer.start, inner.start) <= 0 && comparePositions(outer.end, inner.end) >= 0;
+    }
+
+    function compareScopes(a: ScopesCodec.OriginalScope, b: ScopesCodec.OriginalScope): number {
+      return comparePositions(a.start, b.start);
+    }
+
+    function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number {
+      if (a.line !== b.line) {
+        return a.line - b.line;
+      }
+      return a.column - b.column;
+    }
+
+    function convertScope(
+        node: Formatter.FormatterWorkerPool.ScopeTreeNode,
+        parentRange: ScopesCodec.GeneratedRange|undefined): {range: ScopesCodec.GeneratedRange} {
+      const start = positionFromOffset(node.start);
+      const end = positionFromOffset(node.end);
+      const startEntry = sourceMap.findEntry(start.line, start.column);
+      const endEntry = sourceMap.findEntry(end.line, end.column);
+      const sourceIndex = startEntry?.sourceIndex;
+      const canMapOriginalPosition = startEntry && endEntry && sourceIndex !== undefined &&
+          startEntry.sourceIndex === endEntry.sourceIndex && startEntry.sourceIndex !== undefined && sourceIndex >= 0 &&
+          sourceIndex < numSourceUrls;
+      const isStackFrame = node.kind === Formatter.FormatterWorkerPool.ScopeKind.FUNCTION;
+
+      let scope: ScopesCodec.OriginalScope|undefined;
+      if (canMapOriginalPosition) {
+        scope = {
+          start: {line: startEntry.sourceLineNumber, column: startEntry.sourceColumnNumber},
+          end: {line: endEntry.sourceLineNumber, column: endEntry.sourceColumnNumber},
+          name: startEntry.name,
+          isStackFrame,
+          variables: [],
+          children: [],
+        };
+      }
 
       const range: ScopesCodec.GeneratedRange = {
         start,
@@ -67,11 +146,14 @@ export class SourceMapScopesInfo {
       };
 
       parentRange?.children.push(range);
-      parentScope?.children.push(scope);
+      if (canMapOriginalPosition && scope) {
+        const rootScope = scopeBySourceUrl[sourceIndex];
+        insertInScope(rootScope, scope);
+      }
 
-      node.children.forEach(child => convertScope(child, scope, range));
+      node.children.forEach(child => convertScope(child, range));
 
-      return {scope, range};
+      return {range};
     }
 
     function positionFromOffset(offset: number): ScopesCodec.Position {
@@ -347,7 +429,16 @@ export class SourceMapScopesInfo {
   /**
    * Returns the authored function name of the function containing the provided generated position.
    */
-  findOriginalFunctionName({line, column}: ScopesCodec.Position): string|null {
+  findOriginalFunctionName(position: ScopesCodec.Position): string|null {
+    const originalInnerMostScope = this.findOriginalFunctionScope(position)?.scope ?? undefined;
+    return this.#findFunctionNameInOriginalScopeChain(originalInnerMostScope);
+  }
+
+  /**
+   * Returns the authored function scope of the function containing the provided generated position.
+   */
+  findOriginalFunctionScope({line, column}: ScopesCodec.Position):
+      {scope: ScopesCodec.OriginalScope, url?: Platform.DevToolsPath.UrlString}|null {
     // There are 2 approaches:
     //   1) Find the inner-most generated range containing the provided generated position
     //      and use it's OriginalScope (then walk it outwards until we hit a function).
@@ -376,7 +467,24 @@ export class SourceMapScopesInfo {
               .at(-1);
     }
 
-    return this.#findFunctionNameInOriginalScopeChain(originalInnerMostScope) ?? null;
+    if (!originalInnerMostScope) {
+      return null;
+    }
+
+    const functionScope = this.#findFunctionScopeInOriginalScopeChain(originalInnerMostScope);
+    if (!functionScope) {
+      return null;
+    }
+
+    // Find the root scope for some given original source, to get the source url.
+    let rootScope: ScopesCodec.OriginalScope = functionScope;
+    while (rootScope.parent) {
+      rootScope = rootScope.parent;
+    }
+    const sourceIndex = this.#originalScopes.indexOf(rootScope);
+    const url = sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : undefined;
+
+    return functionScope ? {scope: functionScope, url} : null;
   }
 
   /**
@@ -403,13 +511,23 @@ export class SourceMapScopesInfo {
     return result;
   }
 
-  #findFunctionNameInOriginalScopeChain(innerOriginalScope: ScopesCodec.OriginalScope|undefined): string|null {
+  #findFunctionScopeInOriginalScopeChain(innerOriginalScope: ScopesCodec.OriginalScope|undefined):
+      ScopesCodec.OriginalScope|null {
     for (let originalScope = innerOriginalScope; originalScope; originalScope = originalScope.parent) {
       if (originalScope.isStackFrame) {
-        return originalScope.name ?? '';
+        return originalScope;
       }
     }
     return null;
+  }
+
+  #findFunctionNameInOriginalScopeChain(innerOriginalScope: ScopesCodec.OriginalScope|undefined): string|null {
+    const functionScope = this.#findFunctionScopeInOriginalScopeChain(innerOriginalScope);
+    if (!functionScope) {
+      return null;
+    }
+
+    return functionScope.name ?? '';
   }
 
   /**

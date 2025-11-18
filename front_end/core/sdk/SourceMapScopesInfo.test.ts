@@ -955,24 +955,154 @@ describe('SourceMapScopesInfo', () => {
 
       const sourceMapJSON = encodeSourceMap([
         '0:10 => original.js:0:10@foo',  // function f() => function foo()
-        '0:44 => original.js:5:9@bar',   // function b() => function bar()
+        '0:33 => original.js:3:0',       // end of f
+        '0:44 => original2.js:5:9@bar',  // function b() => function bar()
+        '0:57 => original2.js:7:0',      // end of b
       ]);
       const sourceMap = new SDK.SourceMap.SourceMap(urlString`compiled.js`, urlString`compiled.js.map`, sourceMapJSON);
 
       const info = SourceMapScopesInfo.createFromAst(sourceMap, ast, new TextUtils.Text.Text(generatedCode));
 
-      // Check function name for a position at the beginning of the function name mapping.
-      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 10}), 'foo');
+      // Check function name/scope for a position at the beginning of the function name mapping,
+      // and for a position at the beginning of the function name mapping.
+      for (const column of [10, 25]) {
+        assert.strictEqual(info.findOriginalFunctionName({line: 0, column}), 'foo');
 
-      // Check function name for a position inside the function body.
-      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 25}), 'foo');
+        const {scope, url} = info.findOriginalFunctionScope({line: 0, column}) ?? {};
+        assert.strictEqual(url, 'original.js');
+        assert.isOk(scope);
+        assert.strictEqual(scope.name, 'foo');
+        assert.strictEqual(scope.start.line, 0);
+        assert.strictEqual(scope.start.column, 10);
+        assert.strictEqual(scope.end.line, 3);
+        assert.strictEqual(scope.end.column, 0);
+      }
 
-      // Check function name for the second function.
-      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 44}), 'bar');
-      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 52}), 'bar');
+      // Check function name/scope for the second function.
+      for (const column of [44, 52]) {
+        assert.strictEqual(info.findOriginalFunctionName({line: 0, column}), 'bar');
+
+        const {scope, url} = info.findOriginalFunctionScope({line: 0, column}) ?? {};
+        assert.strictEqual(url, 'original2.js');
+        assert.isOk(scope);
+        assert.strictEqual(scope.name, 'bar');
+        assert.strictEqual(scope.start.line, 5);
+        assert.strictEqual(scope.start.column, 9);
+        assert.strictEqual(scope.end.line, 7);
+        assert.strictEqual(scope.end.column, 0);
+      }
 
       // Check a position in the global scope.
       assert.isNull(info.findOriginalFunctionName({line: 0, column: 38}));  // Between the two functions
+      assert.isNull(info.findOriginalFunctionScope({line: 0, column: 38}));
+    });
+
+    it('handles nested scopes across multiple original files', () => {
+      // Generated:
+      // main.js: function outer() { function inner() { console.log('hi'); } }
+      // util.js: function util() {}
+      const generatedCode = `function outer() { function inner() { console.log('hi'); } } function util() {}`;
+
+      const ast = Formatter.ScopeParser.parseScopes(generatedCode)?.export();
+
+      const sourceMapJSON = encodeSourceMap([
+        // main.js
+        '0:14 => main.js:0:14@outer',  // outer start
+        '0:33 => main.js:0:33@inner',  // inner start (inside outer)
+        '0:58 => main.js:0:58',        // inner end
+        '0:60 => main.js:0:60',        // outer end
+
+        // utils.js
+        '0:74 => utils.js:0:14@util',  // util start
+        '0:79 => utils.js:0:18',       // util end
+      ]);
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`compiled.js`, urlString`compiled.js.map`, sourceMapJSON);
+      const info = SourceMapScopesInfo.createFromAst(sourceMap, ast!, new TextUtils.Text.Text(generatedCode));
+
+      // Test inner scope.
+      for (let i = 33; i < 58; i++) {
+        const result = info.findOriginalFunctionScope({line: 0, column: i});
+        assert.isOk(result);
+        assert.strictEqual(result.url, 'main.js');
+        assert.strictEqual(result.scope.name, 'inner');
+        assert.strictEqual(result.scope.parent?.name, 'outer');
+      }
+
+      // Test scope from second file.
+      for (let i = 74; i < 79; i++) {
+        const result = info.findOriginalFunctionScope({line: 0, column: i});
+        assert.isOk(result);
+        assert.strictEqual(result.url, 'utils.js');
+        assert.strictEqual(result.scope.name, 'util');
+        assert.isUndefined(result.scope.parent?.name);
+      }
+    });
+
+    it('discards scopes where start and end map to different source files', () => {
+      const generatedCode = `function bad() { }`;
+      const ast = Formatter.ScopeParser.parseScopes(generatedCode)?.export();
+
+      const sourceMapJSON = encodeSourceMap([
+        // The start maps to file A.
+        '0:12 => fileA.js:0:12@bad',
+        // The end maps to a different file.
+        '0:18 => fileB.js:0:0',
+      ]);
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`compiled.js`, urlString`compiled.js.map`, sourceMapJSON);
+      const info = SourceMapScopesInfo.createFromAst(sourceMap, ast!, new TextUtils.Text.Text(generatedCode));
+
+      // Although the AST found a function, the source map is invalid.
+      for (let i = 0; i < 20; i++) {
+        const result = info.findOriginalFunctionScope({line: 0, column: i});
+        assert.isNull(result, 'Should not return a scope when source files mismatch');
+      }
+    });
+
+    it('inserts scopes correctly when an inner AST node maps to a larger scope than its parent', () => {
+      // Scenario:
+      //
+      // AST: In the generated code, 'wrapper' encompasses 'big'
+      // Original: According to the source map, 'big' actually encompasses 'wrapper'
+      //
+      // This may be a contrived and unlikely example, but the point is to ensure
+      // that the children scopes are kept in the correct order no matter what the
+      // mappings are.
+
+      const generatedCode = `function wrapper() { function big() { } }`;
+      const ast = Formatter.ScopeParser.parseScopes(generatedCode)?.export();
+
+      const sourceMapJSON = encodeSourceMap([
+        // 'wrapper' maps to a small range in original.js
+        '0:16 => original.js:10:16@wrapper',
+
+        // 'big' maps to a huge enclosing range in original.js
+        '0:33 => original.js:0:0@big',
+        '0:39 => original.js:100:0',  // big ends way later
+
+        '0:41 => original.js:11:0',  // wrapper ends
+      ]);
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`compiled.js`, urlString`compiled.js.map`, sourceMapJSON);
+      const info = SourceMapScopesInfo.createFromAst(sourceMap, ast!, new TextUtils.Text.Text(generatedCode));
+
+      // Check 'big'.
+      const big = info.findOriginalFunctionScope({line: 0, column: 33});
+      assert.isOk(big);
+      assert.strictEqual(big.url, 'original.js');
+      assert.strictEqual(big.scope.name, 'big');
+      assert.strictEqual(big.scope.start.line, 0);
+      assert.strictEqual(big.scope.end.line, 100);
+      assert.isNotEmpty(big.scope.children, 'The outer scope should have adopted the inner scope');
+      assert.strictEqual(big.scope.children[0].name, 'wrapper');
+
+      // Check 'wrapper'.
+      const wrapper = info.findOriginalFunctionScope({line: 0, column: 16});
+      assert.isOk(wrapper);
+      assert.strictEqual(wrapper.url, 'original.js');
+      assert.strictEqual(wrapper.scope.name, 'wrapper');
+      assert.isEmpty(wrapper.scope.children);
     });
   });
 

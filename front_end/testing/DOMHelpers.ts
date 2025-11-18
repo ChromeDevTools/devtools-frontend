@@ -292,6 +292,13 @@ export function querySelectorErrorOnMissing<T extends HTMLElement = HTMLElement>
   return elem;
 }
 
+declare global {
+  interface Window {
+    // Injected from karma
+    assertScreenshot(elementId: string, filename: string): Promise<string|undefined>;
+  }
+}
+
 /**
  * Given a filename in the format "<folder>/<image.png>"
  * this function asserts that a screenshot taken from the element
@@ -316,7 +323,12 @@ export async function assertScreenshot(filename: string) {
   await raf();
   // Pending activity before taking screenshots results in flakiness.
   await checkForPendingActivity();
-  // @ts-expect-error see karma config.
+  if (!window.assertScreenshot) {
+    window.assertScreenshot = async () => {
+      debugger;  // eslint-disable-line no-debugger
+      return undefined;
+    };
+  }
   const errorMessage = await window.assertScreenshot(`#${TEST_CONTAINER_ID}`, filename);
   if (errorMessage) {
     throw new Error(errorMessage);

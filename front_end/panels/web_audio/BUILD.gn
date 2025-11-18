@@ -25,6 +25,8 @@ devtools_ui_module("web_audio") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

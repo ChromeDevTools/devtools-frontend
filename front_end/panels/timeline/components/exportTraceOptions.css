@@ -19,13 +19,22 @@
     height: 24px;
   }
 
-  .export-trace-blank {
+  .export-trace-explanation {
     flex: 1;
-    min-width: var(--sys-size-25)
+    min-width: var(--sys-size-25);
   }
+}
+
+.export-trace-options-row-last {
+  align-items: center;
 }
 
 .info-tooltip-container {
   max-width: var(--sys-size-28);
   white-space: normal;
+}
+
+x-link {
+  color: var(--sys-color-primary);
+  text-decoration-line: underline;
 }

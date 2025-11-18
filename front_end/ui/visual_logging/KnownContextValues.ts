@@ -3195,6 +3195,7 @@ export const knownContextValues = new Set([
   'save-image',
   'save-name',
   'save-player-info',
+  'save-trace-explanation',
   'scale',
   'scheme',
   'sci',

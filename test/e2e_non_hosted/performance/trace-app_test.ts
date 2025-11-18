@@ -42,8 +42,12 @@ async function searchAndClickOnStackTrace(
   await devToolsPage.raf();
   await devToolsPage.timeout(3000);
 
-  const topStackFrameLink =
-      await devToolsPage.$('.devtools-link', await devToolsPage.$('.timeline-details-stack-values'));
+  // Prefer stack trace if present.
+  const containerEl =
+      await devToolsPage.$('.timeline-details-stack-values') ?? await devToolsPage.$('.timeline-details-view');
+  assert.isOk(containerEl);
+
+  const topStackFrameLink = await devToolsPage.$('.devtools-link', containerEl);
   assert.isOk(topStackFrameLink);
   assert.strictEqual(await topStackFrameLink.evaluate(el => el.textContent), expectedSourceLocation);
   await topStackFrameLink.click();
@@ -87,7 +91,7 @@ describe('trace_app.html', function() {
     await searchAndClickOnStackTrace(devToolsPage, 'pooopInTheTrace', 'pooopInTheTrace', '(index):399:26');
   });
 
-  it('linkifies to CSS resoures', async ({devToolsPage, inspectedPage}) => {
+  it('linkifies to CSS resources', async ({devToolsPage, inspectedPage}) => {
     await loadTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
     await searchAndClickOnStackTrace(
         devToolsPage, 'fonts.googleapis.com', '/* latin */',

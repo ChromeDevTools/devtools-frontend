@@ -257,8 +257,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   private async updateScriptRanges(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap|undefined):
       Promise<void> {
     let hasIgnoreListedMappings = false;
-    if (!IgnoreListManager.instance().isUserIgnoreListedURL(
-            script.sourceURL, {isContentScript: script.isContentScript()})) {
+    if (!this.isUserIgnoreListedURL(script.sourceURL, {isContentScript: script.isContentScript()})) {
       hasIgnoreListedMappings =
           sourceMap?.sourceURLs().some(
               url => this.isUserIgnoreListedURL(url, {isKnownThirdParty: sourceMap.hasIgnoreListHint(url)})) ??

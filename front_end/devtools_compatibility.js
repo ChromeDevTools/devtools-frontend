@@ -450,7 +450,6 @@
     TimelineNavigationSettingState: 'DevTools.TimelineNavigationSettingState',
     SyncSetting: 'DevTools.SyncSetting',
     SwatchActivated: 'DevTools.SwatchActivated',
-    AnimationPlaybackRateChanged: 'DevTools.AnimationPlaybackRateChanged',
     BuiltInAiAvailability: 'DevTools.BuiltInAiAvailability'
     // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
   };

@@ -269,11 +269,6 @@ export class UserMetrics {
         EnumeratedHistogram.SwatchActivated, swatch, SwatchType.MAX_VALUE);
   }
 
-  animationPlaybackRateChanged(playbackRate: AnimationsPlaybackRate): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.AnimationPlaybackRateChanged, playbackRate, AnimationsPlaybackRate.MAX_VALUE);
-  }
-
   workspacesPopulated(wallClockTimeInMilliseconds: number): void {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);

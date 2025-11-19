@@ -271,30 +271,29 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
 
   private createListItems(): KeybindsItem[] {
-    const actions = UI.ActionRegistry.ActionRegistry.instance().actions().sort((actionA, actionB) => {
-      if (actionA.category() < actionB.category()) {
-        return -1;
-      }
-      if (actionA.category() > actionB.category()) {
-        return 1;
-      }
-      if (actionA.id() < actionB.id()) {
-        return -1;
-      }
-      if (actionA.id() > actionB.id()) {
-        return 1;
-      }
-      return 0;
-    });
+    const actions = UI.ActionRegistry.ActionRegistry.instance()
+                        .actions()
+                        .filter(action => action.configurableBindings())
+                        .sort((actionA, actionB) => {
+                          if (actionA.category() < actionB.category()) {
+                            return -1;
+                          }
+                          if (actionA.category() > actionB.category()) {
+                            return 1;
+                          }
+                          if (actionA.id() < actionB.id()) {
+                            return -1;
+                          }
+                          if (actionA.id() > actionB.id()) {
+                            return 1;
+                          }
+                          return 0;
+                        });
 
     const items: KeybindsItem[] = [];
 
     let currentCategory: UI.ActionRegistration.ActionCategory;
     actions.forEach(action => {
-      if (action.id() === 'elements.toggle-element-search') {
-        return;
-      }
-
       if (currentCategory !== action.category()) {
         items.push(action.category());
       }

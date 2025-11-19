@@ -215,6 +215,10 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.bindings;
   }
 
+  configurableBindings(): boolean {
+    return this.actionRegistration.configurableBindings ?? true;
+  }
+
   experiment(): string|undefined {
     return this.actionRegistration.experiment;
   }
@@ -536,6 +540,13 @@ export interface ActionRegistration {
    * are flavors of the current appliaction context.
    */
   bindings?: Binding[];
+  /**
+   * Whether the action's bindings should be displayed for configuration in the
+   * Settings UI. Setting this to `false` will hide the action from the Shortcuts
+   * tab. Defaults to `true`.
+   */
+  // TODO(crbug.com/436764687): Consider removing this again if parametrized actions get moved to a separate mechanism
+  configurableBindings?: boolean;
   /**
    * The name of the experiment an action is associated with. Enabling and disabling the declared
    * experiment will enable and disable the action respectively.

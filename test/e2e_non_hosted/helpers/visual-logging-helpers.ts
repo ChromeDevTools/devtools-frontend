@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 /** Corresponds to the type in front_end/ui/visual_logging/Debugging.ts **/
 interface TestImpressionLogEntry {

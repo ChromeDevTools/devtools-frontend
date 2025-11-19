@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   checkCommandResultFunction,
   navigateToConsoleTab,
 } from '../helpers/console-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 async function openConsoleOnTestPage(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await inspectedPage.goToResource('../resources/console/command-line-api.html');

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import type {DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 import {veImpressionForAnimationsPanel} from './animations-helpers.js';
 import {veImpressionForApplicationPanel} from './application-helpers.js';

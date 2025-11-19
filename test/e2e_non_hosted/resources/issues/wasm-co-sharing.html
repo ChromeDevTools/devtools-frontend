@@ -17,7 +17,7 @@
     content.append(iframe);
 
     iframe.onload = sendWasmModule;
-    iframe.src = `https://${OOPIF_HOST}:${document.location.port}/test/e2e/resources/issues/wasm-co-iframe.html`;
+    iframe.src = `https://${OOPIF_HOST}:${document.location.port}/test/e2e_non_hosted/resources/issues/wasm-co-iframe.html`;
     return iframe;
   }
 

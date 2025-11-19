@@ -76,7 +76,7 @@ describe('The Network Tab search', function() {
     assert.lengthOf(results, 3);
     for (const result of results) {
       assert.lengthOf(result.matches, 1);
-      assert.include(result.matches[0], 'e2e/resources/network');
+      assert.include(result.matches[0], 'e2e_non_hosted/resources/network');
     }
   });
 

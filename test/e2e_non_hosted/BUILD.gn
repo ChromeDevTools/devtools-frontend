@@ -9,6 +9,7 @@ group("e2e_non_hosted") {
   deps = [
     ":test_inputs",
     ":tests",
+    "resources",
   ]
 }
 

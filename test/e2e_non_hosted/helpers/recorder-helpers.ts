@@ -11,8 +11,8 @@ import {
   platform,
   selectOption,
 } from '../../../test/shared/helper.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
 
@@ -226,10 +226,10 @@ export const processAndVerifyBaseRecording = (
         parsed.steps[1],
         {
           type: 'navigate',
-          url: `https://localhost:<test-port>/test/e2e/resources/${resource}`,
+          url: `https://localhost:<test-port>/test/e2e_non_hosted/resources/${resource}`,
           assertedEvents: [{
             type: 'navigation',
-            url: `https://localhost:<test-port>/test/e2e/resources/${resource}`,
+            url: `https://localhost:<test-port>/test/e2e_non_hosted/resources/${resource}`,
             title: '',
           }]
         },

@@ -5,11 +5,11 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   matchStringTable,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 

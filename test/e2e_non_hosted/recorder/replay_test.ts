@@ -596,7 +596,7 @@ describe('Recorder', function() {
                   {
                     title: '',
                     type: 'navigation' as AssertedEventType.Navigation,
-                    url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+                    url: 'https://<url>/test/e2e_non_hosted/resources/recorder/recorder.html',
                   },
                 ],
               },

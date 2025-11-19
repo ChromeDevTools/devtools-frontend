@@ -117,9 +117,9 @@ describe('The Console Tab', () => {
     assert.include(
         lastMessages,
         `Uncaught (in promise) TypeError: Failed to register a ServiceWorker for scope ('https://localhost:${
-            inspectedPage.serverPort}/test/e2e/resources/console/') with script ('https://localhost:${
+            inspectedPage.serverPort}/test/e2e_non_hosted/resources/console/') with script ('https://localhost:${
             inspectedPage
-                .serverPort}/test/e2e/resources/console/404'): A bad HTTP response code (404) was received when fetching the script.`,
+                .serverPort}/test/e2e_non_hosted/resources/console/404'): A bad HTTP response code (404) was received when fetching the script.`,
         'Error message was not displayed correctly for promiseTest9',
     );
   });

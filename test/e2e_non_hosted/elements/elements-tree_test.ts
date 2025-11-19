@@ -50,7 +50,7 @@ describe('The Elements tab', function() {
     await waitForPartialContentOfSelectedElementsNode('#document', devToolsPage);
     assert.match(
         await getContentOfSelectedNode(devToolsPage),
-        /#document \(https?:\/\/.*\/test\/e2e\/resources\/elements\/shadow-dom-modify-chardata.html\)/);
+        /#document \(https?:\/\/.*\/test\/e2e_non_hosted\/resources\/elements\/shadow-dom-modify-chardata.html\)/);
   });
 
   it('automatically selects previously selected user agent and open shadow roots after reload',

@@ -4,13 +4,14 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {createSelectorsForWorkerFile, expandFileTree, type NestedFileSelector} from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 function createSelectorsForEvalWorker(fileName: string, inspectedPage: InspectedPage) {
   const EVAL_WORKER_NAME = '#1';
-  return createSelectorsForWorkerFile(EVAL_WORKER_NAME, 'test/e2e/resources/sources', fileName, 1, inspectedPage);
+  return createSelectorsForWorkerFile(
+      EVAL_WORKER_NAME, 'test/e2e_non_hosted/resources/sources', fileName, 1, inspectedPage);
 }
 
 async function openNestedWorkerFile(selectors: NestedFileSelector, devToolsPage: DevToolsPage) {

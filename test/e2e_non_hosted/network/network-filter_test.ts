@@ -20,8 +20,9 @@ const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
 const RESULTS = [
-  `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}/test/e2e/resources/network`,
-  ...Array.from({length: SIMPLE_PAGE_REQUEST_NUMBER}, (_, i) => `image.svg?id=${i}/test/e2e/resources/network`),
+  `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}/test/e2e_non_hosted/resources/network`,
+  ...Array.from(
+      {length: SIMPLE_PAGE_REQUEST_NUMBER}, (_, i) => `image.svg?id=${i}/test/e2e_non_hosted/resources/network`),
 ];
 
 async function elementTextContent(element: ElementHandle): Promise<string> {

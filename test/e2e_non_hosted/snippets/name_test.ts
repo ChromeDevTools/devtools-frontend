@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {createNewSnippet, getOpenSources, openSnippetsSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('Snippets subpane', () => {
   async function runTest(name: string, devToolsPage: DevToolsPage) {

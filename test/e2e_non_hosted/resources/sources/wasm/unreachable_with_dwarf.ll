@@ -16,7 +16,7 @@ entry:
 !0 = !DIGlobalVariableExpression(var: !1, expr: !DIExpression())
 !1 = distinct !DIGlobalVariable(name: "global", scope: !2, file: !3, line: 1, type: !6, isLocal: false, isDefinition: true)
 !2 = distinct !DICompileUnit(language: DW_LANG_C99, file: !3, producer: "clang version 9.0.0 (https://github.com/llvm/llvm-project 5c5365a639589cad0cfd5dcf92f374aecda7d7c0)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, enums: !4, globals: !5, nameTableKind: None)
-!3 = !DIFile(filename: "unreachable_with_dwarf.ll", directory: "test/e2e/resources/sources/wasm/")
+!3 = !DIFile(filename: "unreachable_with_dwarf.ll", directory: "test/e2e_non_hosted/resources/sources/wasm/")
 !4 = !{}
 !5 = !{!0}
 !6 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)

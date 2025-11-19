@@ -46,7 +46,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
     assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
     await uploadProfileHandle.uploadFile(
-        path.join(GEN_DIR, 'test/e2e/resources/performance/timeline/treeView-test-trace.json'));
+        path.join(GEN_DIR, 'test/e2e_non_hosted/resources/performance/timeline/treeView-test-trace.json'));
   }
 
   it('match case button is working as expected', async ({devToolsPage, inspectedPage}) => {

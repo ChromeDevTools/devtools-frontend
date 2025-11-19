@@ -6,7 +6,7 @@
 const CACHE_NAME = 'cache-v1';
 
 const urlsToCache = [
-  '/test/e2e/resources/application/main.css',
+  '/test/e2e_non_hosted/resources/application/main.css',
 ];
 
 

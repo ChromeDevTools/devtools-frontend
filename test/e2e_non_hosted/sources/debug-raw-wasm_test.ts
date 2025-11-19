@@ -38,8 +38,8 @@ describe('Sources Tab', function() {
       const capturedFileNames = await captureAddedSourceFiles(
           2, () => inspectedPage.goToResource('sources/wasm/call-to-add-wasm.html'), devToolsPage);
       assert.deepEqual(capturedFileNames, [
-        '/test/e2e/resources/sources/wasm/call-to-add-wasm.html',
-        '/test/e2e/resources/sources/wasm/add.wasm',
+        '/test/e2e_non_hosted/resources/sources/wasm/call-to-add-wasm.html',
+        '/test/e2e_non_hosted/resources/sources/wasm/add.wasm',
       ]);
     }
 
@@ -48,8 +48,8 @@ describe('Sources Tab', function() {
         await inspectedPage.reload();
       }, devToolsPage);
       assert.deepEqual(capturedFileNames, [
-        '/test/e2e/resources/sources/wasm/call-to-add-wasm.html',
-        '/test/e2e/resources/sources/wasm/add.wasm',
+        '/test/e2e_non_hosted/resources/sources/wasm/call-to-add-wasm.html',
+        '/test/e2e_non_hosted/resources/sources/wasm/add.wasm',
       ]);
     }
   });

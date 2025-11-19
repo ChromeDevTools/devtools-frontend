@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -13,6 +12,7 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Cookie attribute exceeds max size issues test', () => {
   const clearCookies = async (inspectedPage: InspectedPage) => {
@@ -38,7 +38,7 @@ describe('Cookie attribute exceeds max size issues test', () => {
          await ensureResourceSectionIsExpanded(section, devToolsPage);
          const expectedTableRows = [
            ['Name', 'Domain & Path'],
-           ['exceeds_max_size', 'localhost/test/e2e/resources'],
+           ['exceeds_max_size', 'localhost/test/e2e_non_hosted/resources'],
          ];
          await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
        } finally {

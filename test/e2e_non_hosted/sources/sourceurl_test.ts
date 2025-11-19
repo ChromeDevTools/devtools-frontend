@@ -22,8 +22,10 @@ describe('The Sources Tab', () => {
   it('resolves relative sourceURL annotations correctly', async ({devToolsPage, inspectedPage}) => {
     const domainName = inspectedPage.getResourcesPath().split('/')[2];
     await openFileInSourcesPanel('sourceurl.html', devToolsPage, inspectedPage);
-    await expandFileTree(createSelectorsForFile(domainName, 'test/e2e/resources/sources', 'eval.js'), devToolsPage);
-    await expandFileTree(createSelectorsForFile(domainName, 'test/e2e/resources/sources', 'inline.js'), devToolsPage);
+    await expandFileTree(
+        createSelectorsForFile(domainName, 'test/e2e_non_hosted/resources/sources', 'eval.js'), devToolsPage);
+    await expandFileTree(
+        createSelectorsForFile(domainName, 'test/e2e_non_hosted/resources/sources', 'inline.js'), devToolsPage);
   });
 
   it('retains absolute webpack:/// and webpack-internal:/// sourceURL annotations',

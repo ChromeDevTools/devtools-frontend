@@ -13,7 +13,7 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 function createSelectorsForFile(fileName: string, inspectedPage: InspectedPage) {
-  return createSelectorsForWorkerFile(fileName, 'test/e2e/resources/sources', fileName, 1, inspectedPage);
+  return createSelectorsForWorkerFile(fileName, 'test/e2e_non_hosted/resources/sources', fileName, 1, inspectedPage);
 }
 
 async function openNestedWorkerFile(selectors: NestedFileSelector, devToolsPage: DevToolsPage) {

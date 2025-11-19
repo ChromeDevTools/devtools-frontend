@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   ACTIVE_STARTING_STYLE_ADORNER_SELECTOR,
   editCSSProperty,
@@ -21,6 +20,7 @@ import {
   waitForNoAdornersOnSelectedNode,
   waitForPartialContentOfSelectedElementsNode,
 } from '../helpers/elements-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const prepareElementsTab = async (devToolsPage: DevToolsPage) => {
   await waitForElementsStyleSection(null, devToolsPage);

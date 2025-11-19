@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';

@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {maybeGetCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {
@@ -16,6 +15,7 @@ import {
   openSourcesPanel,
   runSnippet,
 } from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('Snippet creation', () => {
   it('can show newly created snippets show up in command menu', async ({devToolsPage}) => {

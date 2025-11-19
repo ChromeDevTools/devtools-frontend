@@ -35,11 +35,12 @@ describe('The Sources panel', () => {
         await openSourceCodeEditorForFile('index.html', 'navigation/index.html', devToolsPage, inspectedPage);
 
         await openSoftContextMenuAndClickOnItem(
-            '[aria-label="test/e2e/resources/sources/navigation, nw-folder"]', 'Search in folder', devToolsPage);
+            '[aria-label="test/e2e_non_hosted/resources/sources/navigation, nw-folder"]', 'Search in folder',
+            devToolsPage);
 
         const element = await devToolsPage.waitFor('[aria-label="Find"]');
         const value = await element.evaluate(input => (input as HTMLInputElement).value);
-        assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
+        assert.strictEqual(value, 'file:test/e2e_non_hosted/resources/sources/navigation');
       });
 
       it('which automatically reveals the correct file (by default)', async ({devToolsPage, inspectedPage}) => {

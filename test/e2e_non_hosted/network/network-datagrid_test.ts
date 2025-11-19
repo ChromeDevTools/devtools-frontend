@@ -329,12 +329,13 @@ describe('The Network Tab', function() {
     await loadNetworkTab(devToolsPage, inspectedPage);
     const promises = [
       devToolsPage.waitForFunction(async () => {
-        const {status, type} = await getRequestRowInfo(devToolsPage, 'service-worker.html/test/e2e/resources/network');
+        const {status, type} =
+            await getRequestRowInfo(devToolsPage, 'service-worker.html/test/e2e_non_hosted/resources/network');
         return status === '200OK' && type === 'document';
       }),
       devToolsPage.waitForFunction(async () => {
         const {status, type} =
-            await getRequestRowInfo(devToolsPage, '⚙ service-worker.jslocalhost/test/e2e/resources/network');
+            await getRequestRowInfo(devToolsPage, '⚙ service-worker.jslocalhost/test/e2e_non_hosted/resources/network');
         return status === 'Finished' && type === 'script';
       }),
     ];

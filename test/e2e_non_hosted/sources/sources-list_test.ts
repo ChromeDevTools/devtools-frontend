@@ -28,8 +28,8 @@ describe('The Sources Tab', () => {
     }, devToolsPage);
 
     assert.deepEqual(capturedFileNames, [
-      '/test/e2e/resources/sources/minified-sourcecode.js',
-      '/test/e2e/resources/sources/evalSourceURL.js',
+      '/test/e2e_non_hosted/resources/sources/minified-sourcecode.js',
+      '/test/e2e_non_hosted/resources/sources/evalSourceURL.js',
     ]);
   });
 
@@ -47,7 +47,7 @@ describe('The Sources Tab', () => {
     }, devToolsPage);
 
     assert.deepEqual(capturedFileNames, [
-      '/test/e2e/resources/sources/dynamic.css',
+      '/test/e2e_non_hosted/resources/sources/dynamic.css',
     ]);
   });
 
@@ -59,6 +59,6 @@ describe('The Sources Tab', () => {
       await openSourcesPanel(devToolsPage);
     }, devToolsPage);
 
-    assert.deepEqual(capturedFileNames, ['/test/e2e/resources/pages/hello-world.html']);
+    assert.deepEqual(capturedFileNames, ['/test/e2e_non_hosted/resources/pages/hello-world.html']);
   });
 });

@@ -182,7 +182,7 @@ describe('Recorder', function() {
               type: 'click',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder2.html',
                 title: ''
               }],
               target: 'main',
@@ -219,7 +219,7 @@ describe('Recorder', function() {
               type: 'click',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder2.html',
                 title: ''
               }],
               target: 'main',
@@ -245,7 +245,7 @@ describe('Recorder', function() {
               type: 'click',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder2.html',
                 title: ''
               }],
               target: 'main',
@@ -284,7 +284,7 @@ describe('Recorder', function() {
                   type: 'click',
                   assertedEvents: [{
                     type: 'navigation',
-                    url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
+                    url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder2.html',
                     title: ''
                   }],
                   target: 'main',
@@ -345,10 +345,10 @@ describe('Recorder', function() {
             },
             {
               type: 'navigate',
-              url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
+              url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder.html',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder.html',
                 title: ''
               }]
             },

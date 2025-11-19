@@ -39,7 +39,7 @@ describe('Multi-Workers', function() {
     const scriptFile = sourceMaps ? 'multi-workers.min.js' : 'multi-workers.js';
     function workerFileSelectors(workerIndex: number, inspectedPage: InspectedPage) {
       return createSelectorsForWorkerFile(
-          scriptFile, 'test/e2e/resources/sources', 'multi-workers.js', workerIndex, inspectedPage);
+          scriptFile, 'test/e2e_non_hosted/resources/sources', 'multi-workers.js', workerIndex, inspectedPage);
     }
 
     async function validateNavigationTree(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {

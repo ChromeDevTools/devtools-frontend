@@ -70,7 +70,7 @@ describe('The Performance panel', function() {
     const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
     assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
     await uploadProfileHandle.uploadFile(
-        path.join(GEN_DIR, 'test/e2e/resources/performance/wasm/mainWasm_profile.json'));
+        path.join(GEN_DIR, 'test/e2e_non_hosted/resources/performance/wasm/mainWasm_profile.json'));
 
     await searchForWasmCall(devToolsPage);
   }

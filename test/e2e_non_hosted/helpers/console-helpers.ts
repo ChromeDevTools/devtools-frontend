@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 import {
   expectVeEvents,

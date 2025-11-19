@@ -4,12 +4,12 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   addBreakpointForLine,
   openSourceCodeEditorForFile,
   RESUME_BUTTON,
 } from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function retrieveCodeMirrorEditorContent(devToolsPage: DevToolsPage): Promise<string[]> {
   const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');

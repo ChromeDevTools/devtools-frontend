@@ -5,8 +5,6 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   addBreakpointForLine,
   getLineNumberElement,
@@ -15,6 +13,8 @@ import {
   openSourceCodeEditorForFile,
   retrieveCodeMirrorEditorContent,
 } from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 const BREAKPOINT_VIEW_COMPONENT = '#devtools-breakpoint-view';
 const FIRST_BREAKPOINT_ITEM_SELECTOR = '[data-first-breakpoint]';

@@ -66,7 +66,7 @@ describe('The Console\'s errors', function() {
     assert.deepEqual(messages, [
       {
         message: `GET https://localhost:${
-            inspectedPage.serverPort}/test/e2e/resources/console/non-existent-xhr 404 (Not Found)`,
+            inspectedPage.serverPort}/test/e2e_non_hosted/resources/console/non-existent-xhr 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors.html:20',
@@ -77,7 +77,7 @@ step2 @ resource-errors.html:12`,
       },
       {
         message: `GET https://localhost:${
-            inspectedPage.serverPort}/test/e2e/resources/missing.css net::ERR_ABORTED 404 (Not Found)`,
+            inspectedPage.serverPort}/test/e2e_non_hosted/resources/missing.css net::ERR_ABORTED 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors-iframe.html:3',
@@ -86,7 +86,7 @@ step2 @ resource-errors.html:12`,
       },
       {
         message: `GET https://localhost:${
-            inspectedPage.serverPort}/test/e2e/resources/non-existent-iframe.html 404 (Not Found)`,
+            inspectedPage.serverPort}/test/e2e_non_hosted/resources/non-existent-iframe.html 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors-iframe.html:8',
@@ -95,7 +95,8 @@ step2 @ resource-errors.html:12`,
       },
       {
         message: `GET https://localhost:${
-            inspectedPage.serverPort}/test/e2e/resources/non-existent-script.js net::ERR_ABORTED 404 (Not Found)`,
+            inspectedPage
+                .serverPort}/test/e2e_non_hosted/resources/non-existent-script.js net::ERR_ABORTED 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors-iframe.html:4',

@@ -124,7 +124,7 @@ describe('Ignore list', function() {
     await inspectedPage.goToResource('sources/multi-files.html');
     await openSourcesPanel(devToolsPage);
     assert.deepEqual(await readIgnoreListedSources(devToolsPage), [
-      'test/e2e/resources/sources',
+      'test/e2e_non_hosted/resources/sources',
       'multi-files.html',
       'multi-files-mycode.js',
       'multi-files-thirdparty.js',
@@ -133,7 +133,7 @@ describe('Ignore list', function() {
     assert.deepEqual(await readIgnoreListedSources(devToolsPage), []);
     await toggleIgnoreListing(true, devToolsPage);
     assert.deepEqual(await readIgnoreListedSources(devToolsPage), [
-      'test/e2e/resources/sources',
+      'test/e2e_non_hosted/resources/sources',
       'multi-files.html',
       'multi-files-mycode.js',
       'multi-files-thirdparty.js',
@@ -146,22 +146,22 @@ describe('Ignore list', function() {
       await setIgnoreListPattern('thirdparty', devToolsPage);
       await inspectedPage.goToResource('sources/multi-files.html');
       await openSourcesPanel(devToolsPage);
-      assert.deepEqual(
-          await readSourcesTreeView(devToolsPage),
-          ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
+      assert.deepEqual(await readSourcesTreeView(devToolsPage), [
+        'top', 'localhost:XXXX', 'test/e2e_non_hosted/resources/sources', 'multi-files.html', 'multi-files-mycode.js'
+      ]);
       await toggleIgnoreListing(false, devToolsPage);
       assert.deepEqual(await readSourcesTreeView(devToolsPage), [
         'top',
         'localhost:XXXX',
-        'test/e2e/resources/sources',
+        'test/e2e_non_hosted/resources/sources',
         'multi-files.html',
         'multi-files-mycode.js',
         'multi-files-thirdparty.js',
       ]);
       await toggleIgnoreListing(true, devToolsPage);
-      assert.deepEqual(
-          await readSourcesTreeView(devToolsPage),
-          ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
+      assert.deepEqual(await readSourcesTreeView(devToolsPage), [
+        'top', 'localhost:XXXX', 'test/e2e_non_hosted/resources/sources', 'multi-files.html', 'multi-files-mycode.js'
+      ]);
     });
   });
 });

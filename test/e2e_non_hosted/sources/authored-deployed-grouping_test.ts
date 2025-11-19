@@ -17,168 +17,168 @@ import type {InspectedPage} from '../shared/target-helper.js';
 const groupedExpectedTree = [
   'Authored',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.js',
   'Deployed',
   'top',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers-sourcemap.html',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
 ];
 
 const groupedRedundantExpectedTree = [
   'Authored',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.js',
   'Deployed',
   'top',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'redundant-worker-sourcemap.html',
   'multi-workers.min.js',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
 ];
 
 const defaultExpectedTree = [
   'top',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers-sourcemap.html',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.js',
   'multi-workers.min.js',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'localhost:XXXX',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
 ];
 
 const folderlessExpectedTree = [
   'top',
   'multi-workers-sourcemap.html',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.js',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
   'multi-workers.min.js',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.min.js',
 ];
 
 const folderlessGroupedExpectedTree = [
   'Authored',
-  'test/e2e/resources/sources',
+  'test/e2e_non_hosted/resources/sources',
   'multi-workers.js',
   'Deployed',
   'top',
@@ -211,7 +211,7 @@ describe('Source Panel grouping', function() {
 
   function workerFileSelectors(workerIndex: number, inspectedPage: InspectedPage) {
     return createSelectorsForWorkerFile(
-        scriptFile, 'test/e2e/resources/sources', scriptFile, workerIndex, inspectedPage);
+        scriptFile, 'test/e2e_non_hosted/resources/sources', scriptFile, workerIndex, inspectedPage);
   }
 
   async function validateNavigationTree(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
@@ -221,7 +221,7 @@ describe('Source Panel grouping', function() {
   async function validateNavigationTreeNoSourcemaps(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await devToolsPage.waitFor(
         createSelectorsForWorkerFile(
-            'multi-workers.js', 'test/e2e/resources/sources', 'multi-workers.js', 10, inspectedPage)
+            'multi-workers.js', 'test/e2e_non_hosted/resources/sources', 'multi-workers.js', 10, inspectedPage)
             .rootSelector);
   }
   const authoredMenuText = 'Group by Authored/Deployed';
@@ -254,7 +254,7 @@ describe('Source Panel grouping', function() {
     await devToolsPage.click('[title="More options"]');
     await devToolsPage.click(`[aria-label="${folderMenuText}, unchecked"]`);
     await devToolsPage.waitForNone('.soft-context-menu');
-    await devToolsPage.waitFor('[aria-label="test/e2e/resources/sources, nw-folder"]');
+    await devToolsPage.waitFor('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]');
     await validateNavigationTree(devToolsPage, inspectedPage);
   }
 
@@ -262,7 +262,8 @@ describe('Source Panel grouping', function() {
     await devToolsPage.click('[title="More options"]');
     await devToolsPage.click(`[aria-label="${folderMenuText}, checked"]`);
     await devToolsPage.waitForNone('.soft-context-menu');
-    await devToolsPage.waitForNone('[aria-label="test/e2e/resources/sources, nw-folder"]:not(.is-from-source-map)');
+    await devToolsPage.waitForNone(
+        '[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]:not(.is-from-source-map)');
     await validateNavigationTree(devToolsPage, inspectedPage);
   }
 
@@ -273,7 +274,7 @@ describe('Source Panel grouping', function() {
 
     // Switch to grouped
     await enableGroupByAuthored(devToolsPage, inspectedPage);
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]', devToolsPage);
+    await expandSourceTreeItem('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]', devToolsPage);
     await expandFileTree(workerFileSelectors(6, inspectedPage), devToolsPage);
     assert.deepEqual(await readSourcesTreeView(devToolsPage), groupedExpectedTree);
 
@@ -284,7 +285,7 @@ describe('Source Panel grouping', function() {
 
     // And switch to grouped again...
     await enableGroupByAuthored(devToolsPage, inspectedPage);
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]', devToolsPage);
+    await expandSourceTreeItem('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]', devToolsPage);
     await expandFileTree(workerFileSelectors(6, inspectedPage), devToolsPage);
     assert.deepEqual(await readSourcesTreeView(devToolsPage), groupedExpectedTree);
   });
@@ -296,7 +297,7 @@ describe('Source Panel grouping', function() {
 
     // Switch to grouped
     await enableGroupByAuthored(devToolsPage, inspectedPage);
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]', devToolsPage);
+    await expandSourceTreeItem('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]', devToolsPage);
     await expandFileTree(workerFileSelectors(6, inspectedPage), devToolsPage);
     assert.deepEqual(await readSourcesTreeView(devToolsPage), groupedRedundantExpectedTree);
   });
@@ -313,7 +314,7 @@ describe('Source Panel grouping', function() {
     await inspectedPage.goToResource(targetPage);
     // Validate source tree
     await validateNavigationTree(devToolsPage, inspectedPage);
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]', devToolsPage);
+    await expandSourceTreeItem('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]', devToolsPage);
     await expandFileTree(workerFileSelectors(6, inspectedPage), devToolsPage);
 
     assert.deepEqual(await readSourcesTreeView(devToolsPage), groupedExpectedTree);
@@ -329,19 +330,19 @@ describe('Source Panel grouping', function() {
     await expandSourceTreeItem(workerFileSelectors(6, inspectedPage).rootSelector, devToolsPage);
     await expandSourceTreeItem(
         workerFileSelectors(6, inspectedPage).rootSelector +
-            ' + ol > [aria-label="test/e2e/resources/sources, nw-folder"]',
+            ' + ol > [aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]',
         devToolsPage);
     assert.deepEqual(await readSourcesTreeView(devToolsPage), folderlessExpectedTree);
 
     // Switch to group by authored, folderless
     await enableGroupByAuthored(devToolsPage, inspectedPage);
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]', devToolsPage);
+    await expandSourceTreeItem('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]', devToolsPage);
     await expandSourceTreeItem(workerFileSelectors(6, inspectedPage).rootSelector, devToolsPage);
     assert.deepEqual(await readSourcesTreeView(devToolsPage), folderlessGroupedExpectedTree);
 
     // Reenable folders
     await enableGroupByFolder(devToolsPage, inspectedPage);
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]', devToolsPage);
+    await expandSourceTreeItem('[aria-label="test/e2e_non_hosted/resources/sources, nw-folder"]', devToolsPage);
     await expandFileTree(workerFileSelectors(6, inspectedPage), devToolsPage);
     assert.deepEqual(await readSourcesTreeView(devToolsPage), groupedExpectedTree);
   });

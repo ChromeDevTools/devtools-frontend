@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   clickInfobarButton,
@@ -18,6 +17,7 @@ import {
   openOverridesSubPane,
   openSourcesPanel,
 } from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
@@ -63,7 +63,7 @@ async function editorTabHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolea
 async function fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolean> {
   const element = await devToolsPage.activeElement();
   const title = await element.evaluate(e => e.getAttribute('title')) || '';
-  assert.match(title, /\/test\/e2e\/resources\/network\/\.headers$/);
+  assert.match(title, /\/test\/e2e_non_hosted\/resources\/network\/\.headers$/);
   const fileTreeIcon = await element.waitForSelector(
       '.navigator-file-tree-item .leading-icons devtools-file-source-icon >>> devtools-icon');
   if (!fileTreeIcon) {

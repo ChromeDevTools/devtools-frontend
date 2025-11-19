@@ -1,5 +1,5 @@
 WASMC_FLAGS=--target=wasm32 -Wl,--no-entry,--allow-undefined,--export-all -nostdlib
-WASMC_DBGFLAGS=-gfull -fdebug-prefix-map=`pwd`=test/e2e/resources/sources/wasm/
+WASMC_DBGFLAGS=-gfull -fdebug-prefix-map=`pwd`=test/e2e_non_hosted/resources/sources/wasm/
 
 %.wasm: %.cc Makefile
 	clang++ ${WASMC_FLAGS} $(filter %.cc,$^) -o $@

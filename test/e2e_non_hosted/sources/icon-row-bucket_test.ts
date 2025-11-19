@@ -5,10 +5,10 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {navigateToIssuesTab} from '../helpers/issues-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
 const PRETTY_PRINTED_TOGGLE = 'devtools-text-editor.pretty-printed';

@@ -365,7 +365,7 @@ describe('Recorder', function() {
               key: 'Enter',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/form.html?name=test',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/form.html?name=test',
                 title: ''
               }]
             },
@@ -590,7 +590,7 @@ describe('Recorder', function() {
           ],
           assertedEvents: [{
             type: 'navigation',
-            url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
+            url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder2.html',
             title: ''
           }]
         },
@@ -606,7 +606,7 @@ describe('Recorder', function() {
           ],
           assertedEvents: [{
             type: 'navigation',
-            url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
+            url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder.html',
             title: ''
           }]
         }
@@ -658,10 +658,10 @@ describe('Recorder', function() {
             },
             {
               type: 'navigate',
-              url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
+              url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder.html',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/recorder.html',
                 title: ''
               }]
             },
@@ -897,7 +897,7 @@ describe('Recorder', function() {
               key: 'Enter',
               assertedEvents: [{
                 type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/input.html',
+                url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/input.html',
                 title: ''
               }]
             },
@@ -938,7 +938,7 @@ describe('Recorder', function() {
             ],
             assertedEvents: [{
               type: 'navigation',
-              url: 'https://localhost:<test-port>/test/e2e/resources/recorder/input.html',
+              url: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/input.html',
               title: ''
             }]
           }]
@@ -1054,7 +1054,7 @@ describe('Recorder', function() {
     assert.deepEqual(processAndVerifyBaseRecording(recording, {resource: 'recorder/oopif.html'}), {
       steps: [{
         type: 'click',
-        target: 'https://devtools.oopif.test:<test-port>/test/e2e/resources/recorder/iframe1.html',
+        target: 'https://devtools.oopif.test:<test-port>/test/e2e_non_hosted/resources/recorder/iframe1.html',
         selectors: [
           ['aria/To iframe 2'],
           ['a'],
@@ -1064,7 +1064,7 @@ describe('Recorder', function() {
         ],
         assertedEvents: [{
           type: 'navigation',
-          url: 'https://devtools.oopif.test:<test-port>/test/e2e/resources/recorder/iframe2.html',
+          url: 'https://devtools.oopif.test:<test-port>/test/e2e_non_hosted/resources/recorder/iframe2.html',
           title: ''
         }]
       }]
@@ -1134,7 +1134,7 @@ describe('Recorder', function() {
             },
             {
               type: 'click',
-              target: 'https://localhost:<test-port>/test/e2e/resources/recorder/popup.html',
+              target: 'https://localhost:<test-port>/test/e2e_non_hosted/resources/recorder/popup.html',
               selectors: [
                 ['aria/Button in Popup'],
                 ['button'],

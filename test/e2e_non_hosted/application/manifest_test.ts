@@ -36,9 +36,9 @@ describe('The Manifest Page', () => {
     assert.strictEqual(fieldNames[3], 'Computed App ID');
     assert.strictEqual(
         fieldValues[3],
-        `https://localhost:${inspectedPage.serverPort}/test/e2e/resources/application/some_start_url` +
+        `https://localhost:${inspectedPage.serverPort}/test/e2e_non_hosted/resources/application/some_start_url` +
             'Learn moreNote: id is not specified in the manifest, start_url is used instead. To specify an ' +
-            'App ID that matches the current identity, set the id field to /test/e2e/resources/application/some_start_url .',
+            'App ID that matches the current identity, set the id field to /test/e2e_non_hosted/resources/application/some_start_url .',
     );
     await devToolsPage.waitFor('button[title="Copy suggested ID to clipboard"]');
   });

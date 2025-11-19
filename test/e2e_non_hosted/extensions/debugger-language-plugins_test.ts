@@ -99,7 +99,7 @@ describe('The Debugger Language Plugins', () => {
           new SingleFilePlugin(), 'Single File', {language: 'WebAssembly', symbol_types: ['ExternalDWARF']});
     });
 
-    await goToWasmResource('/test/e2e/resources/extensions/global_variable.wasm', undefined, inspectedPage);
+    await goToWasmResource('/test/e2e_non_hosted/resources/extensions/global_variable.wasm', undefined, inspectedPage);
     await openSourcesPanel(devToolsPage);
 
     const capturedFileNames = captureAddedSourceFiles(2, async () => {
@@ -108,7 +108,7 @@ describe('The Debugger Language Plugins', () => {
     await addDummyExternalDWARFInfo('global_variable.wasm', devToolsPage);
 
     assert.deepEqual(await capturedFileNames, [
-      '/test/e2e/resources/extensions/global_variable.wasm',
+      '/test/e2e_non_hosted/resources/extensions/global_variable.wasm',
       '/source_file.c',
     ]);
   });
@@ -240,7 +240,7 @@ describe('The Debugger Language Plugins', () => {
     }, locationLabels.getMappingsForPlugin());
 
     await goToWasmResource(
-        '/test/e2e/resources/extensions/global_variable.wasm', {autoLoadModule: true}, inspectedPage);
+        '/test/e2e_non_hosted/resources/extensions/global_variable.wasm', {autoLoadModule: true}, inspectedPage);
     await openSourcesPanel(devToolsPage);
     await addDummyExternalDWARFInfo('global_variable.wasm', devToolsPage);
     await openFileInEditor('global_variable.wat', devToolsPage);
@@ -1074,14 +1074,14 @@ describe('The Debugger Language Plugins', () => {
           {language: 'WebAssembly', symbol_types: ['ExternalDWARF']});
     });
 
-    await goToWasmResource('/test/e2e/resources/extensions/global_variable.wasm', undefined, inspectedPage);
+    await goToWasmResource('/test/e2e_non_hosted/resources/extensions/global_variable.wasm', undefined, inspectedPage);
     await openSourcesPanel(devToolsPage);
 
     {
       const capturedFileNames = await captureAddedSourceFiles(1, async () => {
         await inspectedPage.evaluate('loadModule();');
       }, devToolsPage);
-      assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm']);
+      assert.deepEqual(capturedFileNames, ['/test/e2e_non_hosted/resources/extensions/global_variable.wasm']);
     }
 
     {

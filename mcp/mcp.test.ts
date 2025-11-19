@@ -4,6 +4,6 @@
 
 describe('MCP', () => {
   it('can import', async function() {
-    await import('./mcp.js')
+    await import('./mcp.js');
   });
 });

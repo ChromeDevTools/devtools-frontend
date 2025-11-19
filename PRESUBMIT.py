@@ -215,26 +215,11 @@ def CheckDevToolsLint(input_api, output_api):
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test', 'run_lint_check.mjs')
 
-    front_end_directory = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'front_end')
-
-    inspector_overlay_directory = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'inspector_overlay')
-    test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                            'test')
-    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                               'scripts')
-
     default_linted_directories = [
-        front_end_directory,
-        test_directory,
-        scripts_directory,
-        inspector_overlay_directory,
+        input_api.os_path.join(input_api.PresubmitLocalPath())
     ]
 
     lint_related_files = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(),
-                               'eslint.config.mjs'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintrc.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -242,8 +227,6 @@ def CheckDevToolsLint(input_api, output_api):
         # This file includes the LitAnalyzer rules
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                'tsconfig.json'),
-        input_api.os_path.join(scripts_directory, 'test',
-                               'run_lint_check.mjs'),
     ]
 
     lint_related_directories = [

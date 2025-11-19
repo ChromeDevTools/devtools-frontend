@@ -98,8 +98,8 @@ describeWithEnvironment('AICallTree', function() {
       stringifiedNode = callTree?.stringifyNode(callTree.selectedNode, 2, parsedTrace, callTree.selectedNode, [''], 2);
     }
 
-    // Entry Format: id;eventKey;name;duration;selfTime;urlIndex;childRange;[S]
-    assert.deepEqual(stringifiedNode, '2;p-73704-775-1273-118;define;3.5;0.5;;2-6;S');
+    // Entry Format: id;eventKey;name;duration;selfTime;urlIndex;childRange;[line];[column];[S]
+    assert.deepEqual(stringifiedNode, '2;p-73704-775-1273-118;define;3.5;0.5;;2-6;;;S');
   });
 
   // Since the childIds are serialized while the node is visited by BFS,

@@ -9,14 +9,14 @@ Content:
 
 # Call tree:
 
-1;p-1-1-0-2;(anonymous);2370;;0;2
-2;p-1-1-0-3;executeUserEntryPoint;2370;;1;3
-3;p-1-1-0-4;Module._load;2370;;2;4
-4;p-1-1-0-5;Module.load;2370;;2;5
-5;p-1-1-0-6;Module._extensions..js;2370;;2;6
-6;p-1-1-0-7;Module._compile;2370;;2;7
-7;p-1-1-0-8;callAndPauseOnStart;2370;;;8;S
-8;p-1-1-0-9;(anonymous);2370;2370;3;
+1;p-1-1-0-2;(anonymous);2370;;0;2;0;0
+2;p-1-1-0-3;executeUserEntryPoint;2370;;1;3;126;30
+3;p-1-1-0-4;Module._load;2370;;2;4;949;23
+4;p-1-1-0-5;Module.load;2370;;2;5;1193;32
+5;p-1-1-0-6;Module._extensions..js;2370;;2;6;1388;36
+6;p-1-1-0-7;Module._compile;2370;;2;7;1329;36
+7;p-1-1-0-8;callAndPauseOnStart;2370;;;8;;;S
+8;p-1-1-0-9;(anonymous);2370;2370;3;;0;0
 === end content
 
 Title: AICallTree serializes a simple tree
@@ -27,12 +27,12 @@ Content:
 
 # Call tree:
 
-1;r-36071;Task;0.2;;;2
-2;r-36072;Timer fired;0.2;;;3
-3;r-36076;Function call;0.2;;0;4
-4;p-74406-259-16342-528;_ds.q.ns;0.2;;0;5;S
-5;p-74406-259-16342-529;clearTimeout;0.2;0;;6
-6;r-36082;Recalculate style;0.2;0.2;;
+1;r-36071;Task;0.2;;;2;;
+2;r-36072;Timer fired;0.2;;;3;;
+3;r-36076;Function call;0.2;;0;4;190;175
+4;p-74406-259-16342-528;_ds.q.ns;0.2;;0;5;190;175;S
+5;p-74406-259-16342-529;clearTimeout;0.2;0;;6;;
+6;r-36082;Recalculate style;0.2;0.2;0;;136;87
 === end content
 
 Title: AICallTree serializes a simple tree in a concise format
@@ -43,12 +43,12 @@ Content:
 
 # Call tree:
 
-1;r-36071;Task;0.2;;;2
-2;r-36072;Timer fired;0.2;;;3
-3;r-36076;Function call;0.2;;0;4
-4;p-74406-259-16342-528;_ds.q.ns;0.2;;0;5;S
-5;p-74406-259-16342-529;clearTimeout;0.2;0;;6
-6;r-36082;Recalculate style;0.2;0.2;;
+1;r-36071;Task;0.2;;;2;;
+2;r-36072;Timer fired;0.2;;;3;;
+3;r-36076;Function call;0.2;;0;4;190;175
+4;p-74406-259-16342-528;_ds.q.ns;0.2;;0;5;190;175;S
+5;p-74406-259-16342-529;clearTimeout;0.2;0;;6;;
+6;r-36082;Recalculate style;0.2;0.2;0;;136;87
 === end content
 
 Title: AICallTree serializes a tree in a concise format
@@ -59,17 +59,17 @@ Content:
 
 # Call tree:
 
-1;r-5764;Task;0.9;0;;2;S
-2;r-5765;Timer fired;0.9;0;;3
-3;r-5766;Function call;0.9;0.1;0;4
-4;p-73704-775-2873-705;(anonymous);0.8;;0;5
-5;p-73704-775-2873-706;(anonymous);0.8;;0;6-8
-6;p-73704-775-2873-707;Ot.getEntriesByType;0.1;;0;8
-7;p-73704-775-2874-709;le.createOobTrace;0.6;0.2;0;9-11
-8;p-73704-775-2873-708;getEntriesByType;0.1;0.1;;
-9;p-73704-775-2875-710;le;0.1;0.1;0;
-10;p-73704-775-2877-711;ie;0.2;;0;11-13
-11;p-73704-775-2877-712;Ot.requiredApisAvailable;0.2;0.2;0;
-12;p-73704-775-2879-713;oe;0;;0;13
-13;p-73704-775-2879-714;setTimeout;0;0;;
+1;r-5764;Task;0.9;0;;2;;;S
+2;r-5765;Timer fired;0.9;0;;3;;
+3;r-5766;Function call;0.9;0.1;0;4;0;32324
+4;p-73704-775-2873-705;(anonymous);0.8;;0;5;0;32324
+5;p-73704-775-2873-706;(anonymous);0.8;;0;6-8;0;32342
+6;p-73704-775-2873-707;Ot.getEntriesByType;0.1;;0;8;0;20337
+7;p-73704-775-2874-709;le.createOobTrace;0.6;0.2;0;9-11;0;30481
+8;p-73704-775-2873-708;getEntriesByType;0.1;0.1;;;;
+9;p-73704-775-2875-710;le;0.1;0.1;0;;0;31269
+10;p-73704-775-2877-711;ie;0.2;;0;11-13;0;25861
+11;p-73704-775-2877-712;Ot.requiredApisAvailable;0.2;0.2;0;;0;20761
+12;p-73704-775-2879-713;oe;0;;0;13;0;26165
+13;p-73704-775-2879-714;setTimeout;0;0;;;;
 === end content

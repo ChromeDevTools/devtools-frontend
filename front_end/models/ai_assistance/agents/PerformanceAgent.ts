@@ -870,7 +870,11 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         }
 
         const tree = AICallTree.fromEvent(event, parsedTrace);
-        const callTree = tree ? this.#formatter.formatCallTree(tree) : 'No call tree found';
+        if (!tree) {
+          return {error: 'No call tree found'};
+        }
+
+        const callTree = this.#formatter.formatCallTree(tree);
 
         const key = `getDetailedCallTree(${args.eventKey})`;
         this.#cacheFunctionResult(focus, key, callTree);

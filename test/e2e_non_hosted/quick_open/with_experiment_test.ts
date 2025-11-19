@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import {readQuickOpenResults, typeIntoQuickOpen} from '../helpers/quick_open-helpers';
-import {setIgnoreListPattern} from '../helpers/settings-helpers';
-import {openSourcesPanel} from '../helpers/sources-helpers';
+import {readQuickOpenResults, typeIntoQuickOpen} from '../helpers/quick_open-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('Quick Open menu with experiment', () => {
   setup({enabledDevToolsExperiments: ['just-my-code']});

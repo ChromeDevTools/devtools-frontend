@@ -8,7 +8,7 @@
 import type {TSESTree} from '@typescript-eslint/utils';
 import type {RuleContext, RuleListener} from '@typescript-eslint/utils/ts-eslint';
 
-import type {DomFragment} from './dom-fragment';
+import type {DomFragment} from './dom-fragment.ts';
 
 type Node = TSESTree.Node;
 type CallExpression = TSESTree.CallExpression;

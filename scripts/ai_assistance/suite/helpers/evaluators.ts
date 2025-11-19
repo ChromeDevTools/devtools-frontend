@@ -5,7 +5,7 @@
 import assert from 'node:assert';
 
 import {loadInstructions} from '../instructions/load.ts';
-import type {Conversation} from '../types';
+import type {Conversation} from '../types.js';
 
 import {generateGeminiContent} from './gemini.ts';
 import {getMarkdownConversation, getOutputs, type Output} from './outputs.ts';

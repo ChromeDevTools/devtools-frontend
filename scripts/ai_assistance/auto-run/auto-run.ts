@@ -11,7 +11,7 @@ import yargs from 'yargs/yargs';
 
 import {convertRawOutputToEval, type RawOutput} from '../suite/to_eval_output.ts';
 import type {
-  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult} from '../types';
+  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult} from '../types.js';
 
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';

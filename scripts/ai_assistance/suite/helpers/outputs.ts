@@ -6,7 +6,7 @@ import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
-import type {Conversation, EvalFileOutput} from '../types';
+import type {Conversation, EvalFileOutput} from '../types.js';
 
 const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs', 'outputs');
 

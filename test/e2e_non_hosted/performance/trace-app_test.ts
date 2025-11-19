@@ -4,10 +4,10 @@
 
 import {assert} from 'chai';
 
-import {expectError} from '../../conductor/events';
-import {searchForComponent} from '../helpers/performance-helpers';
-import type {DevToolsPage} from '../shared/frontend-helper';
-import type {InspectedPage} from '../shared/target-helper';
+import {expectError} from '../../conductor/events.js';
+import {searchForComponent} from '../helpers/performance-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 async function loadTrace(devToolsPage: DevToolsPage, inspectedPage: InspectedPage, resource: string) {
   // Scripts in these traces happen to fail asserts in formatter_worker.

@@ -24,7 +24,7 @@
   animation: expand var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
 }
 
-:host-context(.closing) .wrapper {
+.wrapper.closing {
   animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
 }
 

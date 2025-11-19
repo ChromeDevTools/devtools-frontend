@@ -189,12 +189,14 @@ const SIGN_IN_URL = 'https://accounts.google.com' as Platform.DevToolsPath.UrlSt
 
 interface ViewInput {
   state: StateData;
+  closing: boolean;
   disableAnimations: boolean;
   renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
   selectedRating?: boolean;
   noLogging: boolean;
   callbacks: {
     onClose: () => void,
+    onAnimationEnd: () => void,
     onSearch: () => void,
     onRating: (isPositive: boolean) => void,
     onReport: () => void,
@@ -652,6 +654,8 @@ export class ConsoleInsight extends HTMLElement {
   #headerRef = Directives.createRef<HTMLHeadingElement>();
   #citationLinks: HTMLElement[] = [];
   #areReferenceDetailsOpen = false;
+  #stateChanging = false;
+  #closing = false;
 
   // Rating sub-form state.
   #selectedRating?: boolean;
@@ -818,12 +822,9 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #transitionTo(newState: StateData): void {
-    const previousState = this.#state;
+    this.#stateChanging = this.#state.type !== newState.type;
     this.#state = newState;
     this.#render();
-    if (newState.type !== previousState.type) {
-      this.#focusHeader();
-    }
   }
 
   async #generateInsightIfNeeded(): Promise<void> {
@@ -855,10 +856,18 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#state.type === State.CONSENT_REMINDER) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
     }
-    this.shadowRoot?.addEventListener('animationend', () => {
+    this.#closing = true;
+    this.#render();
+  }
+
+  #onAnimationEnd(): void {
+    if (this.#closing) {
       this.dispatchEvent(new CloseEvent());
-    }, {once: true});
-    this.classList.add('closing');
+      return;
+    }
+    if (this.#stateChanging) {
+      this.#headerRef.value?.focus();
+    }
   }
 
   #onRating(isPositive: boolean): void {
@@ -1074,12 +1083,6 @@ export class ConsoleInsight extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(SIGN_IN_URL);
   }
 
-  #focusHeader(): void {
-    this.addEventListener('animationend', () => {
-      this.#headerRef.value?.focus();
-    }, {once: true});
-  }
-
   #onToggleReferenceDetails(): void {
     if (this.#referenceDetailsRef.value) {
       this.#areReferenceDetailsOpen = this.#referenceDetailsRef.value.open;
@@ -1103,6 +1106,7 @@ export class ConsoleInsight extends HTMLElement {
   #render(): void {
     const input: ViewInput = {
       state: this.#state,
+      closing: this.#closing,
       disableAnimations: this.disableAnimations,
       renderer: this.#renderer,
       selectedRating: this.#selectedRating,
@@ -1110,6 +1114,7 @@ export class ConsoleInsight extends HTMLElement {
           Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
       callbacks: {
         onClose: this.#onClose.bind(this),
+        onAnimationEnd: this.#onAnimationEnd.bind(this),
         onSearch: this.#onSearch.bind(this),
         onRating: this.#onRating.bind(this),
         onReport: this.#onReport.bind(this),
@@ -1181,7 +1186,11 @@ export class ConsoleInsight extends HTMLElement {
     render(html`
       <style>${styles}</style>
       <style>${Input.checkboxStyles}</style>
-      <div class="wrapper" jslog=${VisualLogging.pane('console-insights').track({resize: true})}>
+      <div
+        class=${Directives.classMap({wrapper: true, closing: input.closing})}
+        jslog=${VisualLogging.pane('console-insights').track({resize: true})}
+        @animationend=${callbacks.onAnimationEnd}
+      >
         <div class="animation-wrapper">
           ${header}
           <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>

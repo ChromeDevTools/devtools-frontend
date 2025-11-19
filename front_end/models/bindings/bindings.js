@@ -1023,8 +1023,10 @@ var SASSSourceMapping = class {
   #project;
   #eventListeners;
   #bindings;
-  constructor(target, sourceMapManager, workspace) {
+  #cssWorkspaceBinding;
+  constructor(target, sourceMapManager, workspace, cssWorkspaceBinding) {
     this.#sourceMapManager = sourceMapManager;
+    this.#cssWorkspaceBinding = cssWorkspaceBinding;
     this.#project = new ContentProviderBasedProject(
       workspace,
       "cssSourceMaps:" + target.id(),
@@ -1055,7 +1057,7 @@ var SASSSourceMapping = class {
       }
       binding.addSourceMap(sourceMap, header.frameId);
     }
-    await CSSWorkspaceBinding.instance().updateLocations(header);
+    await this.#cssWorkspaceBinding.updateLocations(header);
     this.sourceMapAttachedForTest(sourceMap);
   }
   async sourceMapDetached(event) {
@@ -1071,7 +1073,7 @@ var SASSSourceMapping = class {
         }
       }
     }
-    await CSSWorkspaceBinding.instance().updateLocations(header);
+    await this.#cssWorkspaceBinding.updateLocations(header);
   }
   rawLocationToUILocation(rawLocation) {
     const header = rawLocation.header();
@@ -1583,7 +1585,7 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
     return this.#modelToInfo.get(cssModel);
   }
   modelAdded(cssModel) {
-    this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping));
+    this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping, this));
   }
   modelRemoved(cssModel) {
     this.getCSSModelInfo(cssModel).dispose();
@@ -1654,7 +1656,7 @@ var ModelInfo = class {
   #sassSourceMapping;
   #locations;
   #unboundLocations;
-  constructor(cssModel, resourceMapping) {
+  constructor(cssModel, resourceMapping, cssWorkspaceBinding) {
     this.#eventListeners = [
       cssModel.addEventListener(SDK7.CSSModel.Events.StyleSheetAdded, (event) => {
         void this.styleSheetAdded(event);
@@ -1666,7 +1668,7 @@ var ModelInfo = class {
     this.#resourceMapping = resourceMapping;
     this.#stylesSourceMapping = new StylesSourceMapping(cssModel, resourceMapping.workspace);
     const sourceMapManager = cssModel.sourceMapManager();
-    this.#sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace);
+    this.#sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace, cssWorkspaceBinding);
     this.#locations = new Platform4.MapUtilities.Multimap();
     this.#unboundLocations = new Platform4.MapUtilities.Multimap();
   }

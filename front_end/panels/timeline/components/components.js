@@ -642,6 +642,7 @@ import * as Dialogs from "./../../../ui/components/dialogs/dialogs.js";
 import * as ComponentHelpers2 from "./../../../ui/components/helpers/helpers.js";
 import * as UI4 from "./../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
+import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/exportTraceOptions.css.js
 var exportTraceOptions_css_default = `/*
@@ -665,15 +666,24 @@ var exportTraceOptions_css_default = `/*
     height: 24px;
   }
 
-  .export-trace-blank {
+  .export-trace-explanation {
     flex: 1;
-    min-width: var(--sys-size-25)
+    min-width: var(--sys-size-25);
   }
+}
+
+.export-trace-options-row-last {
+  align-items: center;
 }
 
 .info-tooltip-container {
   max-width: var(--sys-size-28);
   white-space: normal;
+}
+
+x-link {
+  color: var(--sys-color-primary);
+  text-decoration-line: underline;
 }
 
 /*# sourceURL=${import.meta.resolve("./exportTraceOptions.css")} */`;
@@ -705,6 +715,10 @@ var UIStrings4 = {
    * @description Text for the compression option.
    */
   shouldCompress: "Compress with gzip",
+  /**
+   * @description Text for the explanation link
+   */
+  explanation: "Explanation",
   /**
    * @description Text for the save trace button
    */
@@ -932,7 +946,16 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
           ${this.#state.displayResourceContentCheckbox ? this.#renderCheckbox("resource-content", this.#includeResourceContentCheckbox, i18nString4(UIStrings4.includeResourceContent), this.#state.includeResourceContent) : ""}
           ${this.#state.displayResourceContentCheckbox && this.#state.displaySourceMapsCheckbox ? this.#renderCheckbox("script-source-maps", this.#includeSourceMapsCheckbox, i18nString4(UIStrings4.includeSourcemap), this.#state.includeSourceMaps) : ""}
           ${this.#renderCheckbox("compress-with-gzip", this.#shouldCompressCheckbox, i18nString4(UIStrings4.shouldCompress), this.#state.shouldCompress)}
-          <div class='export-trace-options-row'><div class='export-trace-blank'></div><devtools-button
+          <div class='export-trace-options-row export-trace-options-row-last'>
+            <div class="export-trace-explanation">
+              <x-link
+                href="https://developer.chrome.com/docs/devtools/performance/save-trace"
+                class=devtools-link
+                jslog=${VisualLogging3.link().track({ click: true, keydown: "Enter|Space" }).context("save-trace-explanation")}>
+                  ${i18nString4(UIStrings4.explanation)}
+              </x-link>
+            </div>
+            <devtools-button
                   class="setup-button"
                   data-export-button
                   @click=${this.#onExportClick.bind(this)}
@@ -1285,7 +1308,7 @@ import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n2 from "./../../../ui/i18n/i18n.js";
 import * as UI6 from "./../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/fieldSettingsDialog.css.js
 var fieldSettingsDialog_css_default = `/*
@@ -1582,7 +1605,7 @@ var FieldSettingsDialog = class extends HTMLElement {
         variant: "outlined",
         title: i18nString6(UIStrings6.configure)
       }}
-        jslog=${VisualLogging3.action("timeline.field-data.configure").track({ click: true })}
+        jslog=${VisualLogging4.action("timeline.field-data.configure").track({ click: true })}
         >${i18nString6(UIStrings6.configure)}</devtools-button>
       `;
     }
@@ -1594,7 +1617,7 @@ var FieldSettingsDialog = class extends HTMLElement {
       variant: "primary",
       title: i18nString6(UIStrings6.setUp)
     }}
-        jslog=${VisualLogging3.action("timeline.field-data.setup").track({ click: true })}
+        jslog=${VisualLogging4.action("timeline.field-data.setup").track({ click: true })}
         data-field-data-setup
       >${i18nString6(UIStrings6.setUp)}</devtools-button>
     `;
@@ -1610,7 +1633,7 @@ var FieldSettingsDialog = class extends HTMLElement {
       title: i18nString6(UIStrings6.ok)
     }}
         class="enable"
-        jslog=${VisualLogging3.action("timeline.field-data.enable").track({ click: true })}
+        jslog=${VisualLogging4.action("timeline.field-data.enable").track({ click: true })}
         data-field-data-enable
       >${i18nString6(UIStrings6.ok)}</devtools-button>
     `;
@@ -1626,7 +1649,7 @@ var FieldSettingsDialog = class extends HTMLElement {
       variant: "outlined",
       title: label
     }}
-        jslog=${VisualLogging3.action("timeline.field-data.disable").track({ click: true })}
+        jslog=${VisualLogging4.action("timeline.field-data.disable").track({ click: true })}
         data-field-data-disable
       >${label}</devtools-button>
     `;
@@ -1713,7 +1736,7 @@ var FieldSettingsDialog = class extends HTMLElement {
                   .checked=${this.#urlOverrideEnabled}
                   @change=${this.#onUrlOverrideEnabledChange}
                   aria-label=${i18nString6(UIStrings6.onlyFetchFieldData)}
-                  jslog=${VisualLogging3.toggle().track({ click: true }).context("field-url-override-enabled")}
+                  jslog=${VisualLogging4.toggle().track({ click: true }).context("field-url-override-enabled")}
                 />
                 ${i18nString6(UIStrings6.onlyFetchFieldData)}
               </label>
@@ -2631,7 +2654,7 @@ import * as Platform3 from "./../../../core/platform/platform.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as ComponentHelpers6 from "./../../../ui/components/helpers/helpers.js";
 import * as Lit9 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "./../../mobile_throttling/mobile_throttling.js";
 
 // gen/front_end/panels/timeline/components/networkThrottlingSelector.css.js
@@ -2817,7 +2840,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
                     .value=${key}
                     .selected=${selectedConditionsKey === key}
                     .title=${title}
-                    jslog=${VisualLogging4.item(jslogContext).track({ click: true })}
+                    jslog=${VisualLogging5.item(jslogContext).track({ click: true })}
                   >
                     ${title}
                   </devtools-menu-item>
@@ -2827,7 +2850,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
                 <devtools-menu-item
                   .value=${1}
                   .title=${i18nString10(UIStrings10.add)}
-                  jslog=${VisualLogging4.action("add").track({ click: true })}
+                  jslog=${VisualLogging5.action("add").track({ click: true })}
                   @click=${this.#onAddClick}
                 >
                   ${i18nString10(UIStrings10.add)}
@@ -3387,7 +3410,7 @@ __export(Utils_exports, {
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../core/platform/platform.js";
 import * as ThemeSupport from "./../../../ui/legacy/theme_support/theme_support.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 var UIStrings12 = {
   /**
    * @description ms is the short form of milli-seconds and the placeholder is a decimal number.
@@ -3498,7 +3521,7 @@ function renderMetricValue(jslogContext, value, thresholds, format, options) {
   metricValueEl.textContent = format(value);
   const rating = rateMetric(value, thresholds);
   metricValueEl.classList.add(rating);
-  metricValueEl.setAttribute("jslog", `${VisualLogging5.section(jslogContext)}`);
+  metricValueEl.setAttribute("jslog", `${VisualLogging6.section(jslogContext)}`);
   if (options?.dim) {
     metricValueEl.classList.add("dim");
   }
@@ -4153,7 +4176,7 @@ import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
 import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit12 from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../../common/common.js";
 
 // gen/front_end/panels/timeline/utils/Helpers.js
@@ -4603,6 +4626,14 @@ var UIStrings14 = {
    */
   localMetrics: "Local metrics",
   /**
+   *@description Text for the link to the historical field data for the specific URL or origin that is shown. This link text appears in parenthesis after the collection period information in the field data dialog. The link opens the CrUX Vis viewer (https://cruxvis.withgoogle.com).
+   */
+  fieldDataHistoryLink: "View history",
+  /**
+   *@description Tooltip for the CrUX Vis viewer link which shows the history of the field data for the specific URL or origin.
+   */
+  fieldDataHistoryTooltip: "View field data history in CrUX Vis",
+  /**
    * @description Accessible label for a section that logs user interactions and layout shifts. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user.
    */
   eventLogs: "Interaction and layout shift logs section",
@@ -4994,7 +5025,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
               class="link-to-log"
               title=${i18nString13(UIStrings14.showClsCluster)}
               @click=${() => this.#revealLayoutShiftCluster(clusterIds)}
-              jslog=${VisualLogging6.action("timeline.landing.show-cls-cluster").track({ click: true })}
+              jslog=${VisualLogging7.action("timeline.landing.show-cls-cluster").track({ click: true })}
             >${i18nString13(UIStrings14.numShifts, { shiftCount: clusterIds.size })}</button>
           </div>
         ` : nothing11}
@@ -5026,7 +5057,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
               class="link-to-log"
               title=${i18nString13(UIStrings14.showInpInteraction)}
               @click=${() => this.#revealInteraction(interaction)}
-              jslog=${VisualLogging6.action("timeline.landing.show-inp-interaction").track({ click: true })}
+              jslog=${VisualLogging7.action("timeline.landing.show-inp-interaction").track({ click: true })}
             >${interaction.interactionType}</button>
           </div>
         ` : nothing11}
@@ -5263,6 +5294,29 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       PH2: formattedLastDate.toLocaleDateString(void 0, options)
     });
   }
+  #renderFieldDataHistoryLink() {
+    if (!this.#cruxManager.getConfigSetting().get().enabled) {
+      return Lit12.nothing;
+    }
+    const normalizedUrl = this.#cruxManager.pageResult?.normalizedUrl;
+    if (!normalizedUrl) {
+      return Lit12.nothing;
+    }
+    const tmp = new URL("https://cruxvis.withgoogle.com/");
+    tmp.searchParams.set("view", "cwvsummary");
+    tmp.searchParams.set("url", normalizedUrl);
+    const identifier = this.#cruxManager.fieldPageScope;
+    tmp.searchParams.set("identifier", identifier);
+    const device = this.#cruxManager.getSelectedDeviceScope();
+    tmp.searchParams.set("device", device);
+    const cruxVis = `${tmp.origin}/#/${tmp.search}`;
+    return html12`
+        (<x-link href=${cruxVis}
+                 class="local-field-link"
+                 title=${i18nString13(UIStrings14.fieldDataHistoryTooltip)}
+        >${i18nString13(UIStrings14.fieldDataHistoryLink)}</x-link>)
+      `;
+  }
   #renderCollectionPeriod() {
     const range = this.#getCollectionPeriodRange();
     const dateEl = document.createElement("span");
@@ -5271,10 +5325,11 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const message = uiI18n4.getFormatLocalizedString(str_14, UIStrings14.collectionPeriod, {
       PH1: dateEl
     });
+    const fieldDataHistoryLink = range ? this.#renderFieldDataHistoryLink() : Lit12.nothing;
     const warnings = this.#cruxManager.pageResult?.warnings || [];
     return html12`
       <div class="field-data-message">
-        <div>${message}</div>
+        <div>${message} ${fieldDataHistoryLink}</div>
         ${warnings.map((warning) => html12`
           <div class="field-data-warning">${warning}</div>
         `)}
@@ -6433,7 +6488,7 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
     return Lit14.nothing;
   }
   const hasStackTrace = Trace7.Helpers.Trace.stackTraceInEvent(request) !== null;
-  let link = null;
+  let link2 = null;
   const options = {
     tabStop: true,
     showColumnNumber: true,
@@ -6442,12 +6497,12 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
   if (hasStackTrace) {
     const topFrame = Trace7.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
     if (topFrame) {
-      link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
+      link2 = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
     }
   }
   const initiator = parsedTrace?.data.NetworkRequests.eventToInitiator.get(request);
   if (initiator) {
-    link = linkifier.maybeLinkifyScriptLocation(
+    link2 = linkifier.maybeLinkifyScriptLocation(
       target,
       null,
       // this would be the scriptId, but we don't have one. The linkifier will fallback to using the URL.
@@ -6457,13 +6512,13 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
       options
     );
   }
-  if (!link) {
+  if (!link2) {
     return Lit14.nothing;
   }
   return html14`
       <div class="network-request-details-item">
         <div class="title">${i18nString15(UIStrings16.initiatedBy)}</div>
-        <div class="value focusable-outline">${link}</div>
+        <div class="value focusable-outline">${link2}</div>
       </div>`;
 }
 
@@ -6691,7 +6746,7 @@ import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js"
 import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit16 from "./../../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
 var sidebarAnnotationsTab_css_default = `/*
@@ -7119,7 +7174,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
                   @mouseout=${() => annotation.type === "ENTRY_LABEL" ? input.onAnnotationHoverOut() : null}
                   aria-label=${label}
                   tabindex="0"
-                  jslog=${VisualLogging7.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({ click: true })}
+                  jslog=${VisualLogging8.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({ click: true })}
                 >
                   <div class="annotation">
                     ${renderAnnotationIdentifier(annotation, input.annotationEntryToColorMap)}
@@ -7130,7 +7185,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
                   <button class="delete-button" aria-label=${i18nString17(UIStrings18.deleteButton, { PH1: label })} @click=${(event) => {
       event.stopPropagation();
       input.onAnnotationDelete(annotation);
-    }} jslog=${VisualLogging7.action("timeline.annotation-sidebar.delete").track({ click: true })}>
+    }} jslog=${VisualLogging8.action("timeline.annotation-sidebar.delete").track({ click: true })}>
                     <devtools-icon class="bin-icon extra-large" name="bin"></devtools-icon>
                   </button>
                 </div>`;
@@ -7163,7 +7218,7 @@ import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers9 from "./../../../ui/components/helpers/helpers.js";
 import * as Lit17 from "./../../../ui/lit/lit.js";
 import { nothing as nothing18 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 import * as Insights4 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/sidebarSingleInsightSet.css.js
@@ -7535,7 +7590,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
     let fieldIsDifferentEl;
     if (!this.#dismissedFieldMismatchNotice && fieldValues && this.#isFieldWorseThanLocal(localValues, fieldValues)) {
       fieldIsDifferentEl = html17`
-        <div class="field-mismatch-notice" jslog=${VisualLogging8.section("timeline.insights.field-mismatch")}>
+        <div class="field-mismatch-notice" jslog=${VisualLogging9.section("timeline.insights.field-mismatch")}>
           <h3>${i18nString18(UIStrings19.fieldMismatchTitle)}</h3>
           <devtools-button
             title=${i18nString18(UIStrings19.dismissTitle)}

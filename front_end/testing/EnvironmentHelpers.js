@@ -23,7 +23,7 @@ import { cleanupSettings, setupSettings } from './SettingsHelpers.js';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let UI;
 let uniqueTargetId = 0;
-export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTarget, subtype, url = 'http://example.com', connection } = {}) {
+export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTarget, subtype, url = 'http://example.com', connection, targetManager = SDK.TargetManager.TargetManager.instance(), } = {}) {
     if (!id) {
         if (!uniqueTargetId++) {
             id = 'test';
@@ -32,7 +32,6 @@ export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTar
             id = ('test' + uniqueTargetId);
         }
     }
-    const targetManager = SDK.TargetManager.TargetManager.instance();
     if (!ProtocolClient.ConnectionTransport.ConnectionTransport.getFactory()) {
         // We are not running with `describeWithMockConnection` so create a fresh mock connection.
         // Because child targets inherit the SessionRouter/CDPConnection from the parent, we'll throw if a

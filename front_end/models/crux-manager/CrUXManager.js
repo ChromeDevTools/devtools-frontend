@@ -92,9 +92,11 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
             'url-PHONE': null,
             'url-TABLET': null,
             warnings: [],
+            normalizedUrl: '',
         };
         try {
             const normalizedUrl = this.#normalizeUrl(pageUrl);
+            pageResult.normalizedUrl = normalizedUrl.href;
             const promises = [];
             for (const pageScope of pageScopeList) {
                 for (const deviceScope of DEVICE_SCOPE_LIST) {
@@ -143,10 +145,10 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
      */
     async #getFieldDataForCurrentPage() {
         const currentUrl = this.#mainDocumentUrl || await this.#getInspectedURL();
-        const urlForCrux = this.#configSetting.get().overrideEnabled ? this.#configSetting.get().override || '' :
+        const normalizedUrl = this.#configSetting.get().overrideEnabled ? this.#configSetting.get().override || '' :
             this.#getMappedUrl(currentUrl);
-        const result = await this.getFieldDataForPage(urlForCrux);
-        if (currentUrl !== urlForCrux) {
+        const result = await this.getFieldDataForPage(normalizedUrl);
+        if (currentUrl !== normalizedUrl) {
             result.warnings.push(i18nString(UIStrings.fieldOverrideWarning));
         }
         return result;

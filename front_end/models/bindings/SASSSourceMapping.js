@@ -6,15 +6,16 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { ContentProviderBasedProject } from './ContentProviderBasedProject.js';
-import { CSSWorkspaceBinding } from './CSSWorkspaceBinding.js';
 import { NetworkProject } from './NetworkProject.js';
 export class SASSSourceMapping {
     #sourceMapManager;
     #project;
     #eventListeners;
     #bindings;
-    constructor(target, sourceMapManager, workspace) {
+    #cssWorkspaceBinding;
+    constructor(target, sourceMapManager, workspace, cssWorkspaceBinding) {
         this.#sourceMapManager = sourceMapManager;
+        this.#cssWorkspaceBinding = cssWorkspaceBinding;
         this.#project = new ContentProviderBasedProject(workspace, 'cssSourceMaps:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
         NetworkProject.setTargetForProject(this.#project, target);
         this.#bindings = new Map();
@@ -38,7 +39,7 @@ export class SASSSourceMapping {
             }
             binding.addSourceMap(sourceMap, header.frameId);
         }
-        await CSSWorkspaceBinding.instance().updateLocations(header);
+        await this.#cssWorkspaceBinding.updateLocations(header);
         this.sourceMapAttachedForTest(sourceMap);
     }
     async sourceMapDetached(event) {
@@ -54,7 +55,7 @@ export class SASSSourceMapping {
                 }
             }
         }
-        await CSSWorkspaceBinding.instance().updateLocations(header);
+        await this.#cssWorkspaceBinding.updateLocations(header);
     }
     rawLocationToUILocation(rawLocation) {
         const header = rawLocation.header();

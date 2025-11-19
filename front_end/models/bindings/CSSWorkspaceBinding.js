@@ -39,7 +39,7 @@ export class CSSWorkspaceBinding {
         return this.#modelToInfo.get(cssModel);
     }
     modelAdded(cssModel) {
-        this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping));
+        this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping, this));
     }
     modelRemoved(cssModel) {
         this.getCSSModelInfo(cssModel).dispose();
@@ -110,7 +110,7 @@ export class ModelInfo {
     #sassSourceMapping;
     #locations;
     #unboundLocations;
-    constructor(cssModel, resourceMapping) {
+    constructor(cssModel, resourceMapping, cssWorkspaceBinding) {
         this.#eventListeners = [
             cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, event => {
                 void this.styleSheetAdded(event);
@@ -122,7 +122,8 @@ export class ModelInfo {
         this.#resourceMapping = resourceMapping;
         this.#stylesSourceMapping = new StylesSourceMapping(cssModel, resourceMapping.workspace);
         const sourceMapManager = cssModel.sourceMapManager();
-        this.#sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace);
+        this.#sassSourceMapping =
+            new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace, cssWorkspaceBinding);
         this.#locations = new Platform.MapUtilities.Multimap();
         this.#unboundLocations = new Platform.MapUtilities.Multimap();
     }

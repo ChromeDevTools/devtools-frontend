@@ -2,6 +2,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -217,7 +218,7 @@ export declare class LengthRenderer extends LengthRenderer_base {
     #private;
     constructor(stylesPane: StylesSidebarPane, propertyName: string, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[];
-    popOverAttachedForTest(): void;
+    getTooltipValue(tooltip: Tooltips.Tooltip.Tooltip, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<void>;
 }
 declare const BaseFunctionRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.BaseFunctionMatch<any>, any[]>;

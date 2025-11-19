@@ -3251,6 +3251,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "save-image",
   "save-name",
   "save-player-info",
+  "save-trace-explanation",
   "scale",
   "scheme",
   "sci",

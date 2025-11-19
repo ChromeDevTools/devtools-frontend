@@ -35,7 +35,7 @@ export interface SourceMapping {
 }
 export declare class ModelInfo {
     #private;
-    constructor(cssModel: SDK.CSSModel.CSSModel, resourceMapping: ResourceMapping);
+    constructor(cssModel: SDK.CSSModel.CSSModel, resourceMapping: ResourceMapping, cssWorkspaceBinding: CSSWorkspaceBinding);
     get locations(): Platform.MapUtilities.Multimap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, LiveLocation>;
     createLiveLocation(rawLocation: SDK.CSSModel.CSSLocation, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool): Promise<LiveLocation>;
     disposeLocation(location: LiveLocation): void;

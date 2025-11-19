@@ -15,7 +15,7 @@ export class Universe {
             forceNew: true,
             ...options.settingsCreationOptions,
         });
-        const targetManager = new SDK.TargetManager.TargetManager();
+        const targetManager = new SDK.TargetManager.TargetManager(options.overrideAutoStartModels);
         this.context.set(SDK.TargetManager.TargetManager, targetManager);
         const workspace = new Workspace.Workspace.WorkspaceImpl();
         this.context.set(Workspace.Workspace.WorkspaceImpl, workspace);

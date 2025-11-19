@@ -12,6 +12,7 @@ import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import exportTraceOptionsStyles from './exportTraceOptions.css.js';
 const { html } = Lit;
 const UIStrings = {
@@ -39,6 +40,10 @@ const UIStrings = {
      * @description Text for the compression option.
      */
     shouldCompress: 'Compress with gzip',
+    /**
+     * @description Text for the explanation link
+     */
+    explanation: 'Explanation',
     /**
      * @description Text for the save trace button
      */
@@ -224,7 +229,16 @@ export class ExportTraceOptions extends HTMLElement {
           ${this.#state.displayResourceContentCheckbox ? this.#renderCheckbox('resource-content', this.#includeResourceContentCheckbox, i18nString(UIStrings.includeResourceContent), this.#state.includeResourceContent) : ''}
           ${this.#state.displayResourceContentCheckbox && this.#state.displaySourceMapsCheckbox ? this.#renderCheckbox('script-source-maps', this.#includeSourceMapsCheckbox, i18nString(UIStrings.includeSourcemap), this.#state.includeSourceMaps) : ''}
           ${this.#renderCheckbox('compress-with-gzip', this.#shouldCompressCheckbox, i18nString(UIStrings.shouldCompress), this.#state.shouldCompress)}
-          <div class='export-trace-options-row'><div class='export-trace-blank'></div><devtools-button
+          <div class='export-trace-options-row export-trace-options-row-last'>
+            <div class="export-trace-explanation">
+              <x-link
+                href="https://developer.chrome.com/docs/devtools/performance/save-trace"
+                class=devtools-link
+                jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('save-trace-explanation')}>
+                  ${i18nString(UIStrings.explanation)}
+              </x-link>
+            </div>
+            <devtools-button
                   class="setup-button"
                   data-export-button
                   @click=${this.#onExportClick.bind(this)}

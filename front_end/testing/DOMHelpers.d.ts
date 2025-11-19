@@ -88,6 +88,11 @@ export declare function getCleanTextContentFromSingleElement(el: ShadowRoot | HT
 export declare function cleanTextContent(input: string): string;
 export declare function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string): void;
 export declare function querySelectorErrorOnMissing<T extends HTMLElement = HTMLElement>(parent: HTMLElement, selector: string): T;
+declare global {
+    interface Window {
+        assertScreenshot(elementId: string, filename: string): Promise<string | undefined>;
+    }
+}
 /**
  * Given a filename in the format "<folder>/<image.png>"
  * this function asserts that a screenshot taken from the element

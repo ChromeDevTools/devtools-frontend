@@ -357,7 +357,31 @@ var UIStrings = {
   /**
    * @description Tooltip text for a setting that controls the network cache. Disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
    */
-  networkCacheExplanation: "Disabling the network cache will simulate a network experience similar to a first time visitor."
+  networkCacheExplanation: "Disabling the network cache will simulate a network experience similar to a first time visitor.",
+  /**
+   * @description Setting under the Sources category to toggle usage of JavaScript source maps.
+   */
+  javaScriptSourceMaps: "JavaScript source maps",
+  /**
+   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   */
+  enableJavaScriptSourceMaps: "Enable JavaScript source maps",
+  /**
+   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   */
+  disableJavaScriptSourceMaps: "Disable JavaScript source maps",
+  /**
+   * @description Title of a setting under the Sources category
+   */
+  cssSourceMaps: "CSS source maps",
+  /**
+   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   */
+  enableCssSourceMaps: "Enable CSS source maps",
+  /**
+   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   */
+  disableCssSourceMaps: "Disable CSS source maps"
 };
 var str_ = i18n.i18n.registerUIStrings("core/sdk/sdk-meta.ts", UIStrings);
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
@@ -1089,5 +1113,41 @@ Common.Settings.registerSettingExtension({
   learnMore: {
     tooltip: i18nLazyString(UIStrings.remoteFileLoadingInfo)
   }
+});
+Common.Settings.registerSettingExtension({
+  category: "SOURCES",
+  storageType: "Synced",
+  title: i18nLazyString(UIStrings.javaScriptSourceMaps),
+  settingName: "js-source-maps-enabled",
+  settingType: "boolean",
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableJavaScriptSourceMaps)
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableJavaScriptSourceMaps)
+    }
+  ]
+});
+Common.Settings.registerSettingExtension({
+  category: "SOURCES",
+  storageType: "Synced",
+  title: i18nLazyString(UIStrings.cssSourceMaps),
+  settingName: "css-source-maps-enabled",
+  settingType: "boolean",
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableCssSourceMaps)
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableCssSourceMaps)
+    }
+  ]
 });
 //# sourceMappingURL=sdk-meta.js.map

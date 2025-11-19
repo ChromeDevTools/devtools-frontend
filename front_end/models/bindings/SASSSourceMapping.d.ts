@@ -1,10 +1,10 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
-import { type SourceMapping } from './CSSWorkspaceBinding.js';
+import type { CSSWorkspaceBinding, SourceMapping } from './CSSWorkspaceBinding.js';
 export declare class SASSSourceMapping implements SourceMapping {
     #private;
-    constructor(target: SDK.Target.Target, sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>, workspace: Workspace.Workspace.WorkspaceImpl);
+    constructor(target: SDK.Target.Target, sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>, workspace: Workspace.Workspace.WorkspaceImpl, cssWorkspaceBinding: CSSWorkspaceBinding);
     private sourceMapAttachedForTest;
     private sourceMapAttached;
     private sourceMapDetached;

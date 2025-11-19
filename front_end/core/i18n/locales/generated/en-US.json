@@ -509,6 +509,9 @@
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Capture async stack traces"
   },
+  "core/sdk/sdk-meta.ts | cssSourceMaps": {
+    "message": "CSS source maps"
+  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Custom formatters"
   },
@@ -524,8 +527,14 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Disable cache while DevTools is open"
   },
+  "core/sdk/sdk-meta.ts | disableCssSourceMaps": {
+    "message": "Disable CSS source maps"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
+  },
+  "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Disable JavaScript source maps"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Disable local fonts"
@@ -626,8 +635,14 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Enable cache"
   },
+  "core/sdk/sdk-meta.ts | enableCssSourceMaps": {
+    "message": "Enable CSS source maps"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Enable JavaScript"
+  },
+  "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Enable JavaScript source maps"
   },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Enable local fonts"
@@ -664,6 +679,9 @@
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Highlight ad frames"
+  },
+  "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript source maps"
   },
   "core/sdk/sdk-meta.ts | networkCacheExplanation": {
     "message": "Disabling the network cache will simulate a network experience similar to a first time visitor."
@@ -13994,9 +14012,6 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Create new snippet"
   },
-  "panels/sources/sources-meta.ts | cssSourceMaps": {
-    "message": "CSS source maps"
-  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deactivate breakpoints"
   },
@@ -14020,12 +14035,6 @@
   },
   "panels/sources/sources-meta.ts | disableCodeFolding": {
     "message": "Disable code folding"
-  },
-  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
-    "message": "Disable CSS source maps"
-  },
-  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
-    "message": "Disable JavaScript source maps"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Disable tab moves focus"
@@ -14072,12 +14081,6 @@
   "panels/sources/sources-meta.ts | enableCodeFolding": {
     "message": "Enable code folding"
   },
-  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
-    "message": "Enable CSS source maps"
-  },
-  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
-    "message": "Enable JavaScript source maps"
-  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Enable tab moves focus"
   },
@@ -14104,9 +14107,6 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Increment CSS unit by {PH1}"
-  },
-  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
-    "message": "JavaScript source maps"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Jump to next editing location"
@@ -14561,6 +14561,9 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protocol"
   },
+  "panels/timeline/components/ExportTraceOptions.ts | explanation": {
+    "message": "Explanation"
+  },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
     "message": "Save performance trace "
   },
@@ -14770,6 +14773,12 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Interaction and layout shift logs section"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryLink": {
+    "message": "View history"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataHistoryTooltip": {
+    "message": "View field data history in CrUX Vis"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "Field metrics"

@@ -5,7 +5,10 @@ import { SDKModel, type SDKModelConstructor } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
 export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor();
+    /**
+     * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
+     */
+    constructor(overrideAutoStartModels?: Set<SDKModelConstructor>);
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): TargetManager;

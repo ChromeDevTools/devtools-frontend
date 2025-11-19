@@ -8,12 +8,10 @@ export declare class SourceMapScopesInfo {
     #private;
     constructor(sourceMap: SourceMap, scopeInfo: ScopesCodec.ScopeInfo);
     /**
-     * If the source map does not contain any scopes information, this factory function attempts to create bare bones scope information
+     * If the source map does not contain any scopes information, this factory function attempts to create scope information
      * via the script's AST combined with the mappings.
      *
      * We create the generated ranges from the scope tree and for each range we create an original scope that matches the bounds 1:1.
-     * We don't map the bounds via mappings as mappings are often iffy and it's not strictly required to translate stack traces where we
-     * map call-sites separately.
      */
     static createFromAst(sourceMap: SourceMap, scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode, text: TextUtils.Text.Text): SourceMapScopesInfo;
     addOriginalScopes(scopes: Array<ScopesCodec.OriginalScope | null>): void;
@@ -85,7 +83,14 @@ export declare class SourceMapScopesInfo {
     /**
      * Returns the authored function name of the function containing the provided generated position.
      */
-    findOriginalFunctionName({ line, column }: ScopesCodec.Position): string | null;
+    findOriginalFunctionName(position: ScopesCodec.Position): string | null;
+    /**
+     * Returns the authored function scope of the function containing the provided generated position.
+     */
+    findOriginalFunctionScope({ line, column }: ScopesCodec.Position): {
+        scope: ScopesCodec.OriginalScope;
+        url?: Platform.DevToolsPath.UrlString;
+    } | null;
     /**
      * Returns one or more original stack frames for this single "raw frame" or call-site.
      *

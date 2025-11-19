@@ -21,7 +21,11 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     #scopeTarget;
     #defaultScopeSet;
     #scopeChangeListeners;
-    constructor() {
+    #overrideAutoStartModels;
+    /**
+     * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
+     */
+    constructor(overrideAutoStartModels) {
         super();
         this.#targets = new Set();
         this.#observers = new Set();
@@ -33,6 +37,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#scopedObservers = new WeakSet();
         this.#defaultScopeSet = false;
         this.#scopeChangeListeners = new Set();
+        this.#overrideAutoStartModels = overrideAutoStartModels;
     }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(TargetManager) || forceNew) {
@@ -170,11 +175,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     #autoStartModels() {
         const earlyModels = new Set();
         const models = new Set();
+        const shouldAutostart = (model, info) => this.#overrideAutoStartModels ? this.#overrideAutoStartModels.has(model) : info.autostart;
         for (const [model, info] of SDKModel.registeredModels) {
             if (info.early) {
                 earlyModels.add(model);
             }
-            else if (info.autostart || this.#modelObservers.has(model)) {
+            else if (shouldAutostart(model, info) || this.#modelObservers.has(model)) {
                 models.add(model);
             }
         }

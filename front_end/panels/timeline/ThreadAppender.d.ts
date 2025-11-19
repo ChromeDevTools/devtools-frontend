@@ -1,12 +1,5 @@
 import * as Trace from '../../models/trace/trace.js';
 import { type CompatibilityTracksAppender, type PopoverInfo, type TrackAppender, type TrackAppenderName } from './CompatibilityTracksAppender.js';
-/**
- * This appender is only triggered when the Renderer handler is run. At
- * the moment this only happens in the basic component server example.
- * In the future, once this appender fully supports the behaviour of the
- * old engine's thread/sync tracks we can always run it by enabling the
- * Renderer and Samples handler by default.
- **/
 export declare class ThreadAppender implements TrackAppender {
     #private;
     readonly appenderName: TrackAppenderName;

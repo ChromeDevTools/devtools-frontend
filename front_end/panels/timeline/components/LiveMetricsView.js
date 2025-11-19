@@ -46,6 +46,14 @@ const UIStrings = {
      */
     localMetrics: 'Local metrics',
     /**
+     *@description Text for the link to the historical field data for the specific URL or origin that is shown. This link text appears in parenthesis after the collection period information in the field data dialog. The link opens the CrUX Vis viewer (https://cruxvis.withgoogle.com).
+     */
+    fieldDataHistoryLink: 'View history',
+    /**
+     *@description Tooltip for the CrUX Vis viewer link which shows the history of the field data for the specific URL or origin.
+     */
+    fieldDataHistoryTooltip: 'View field data history in CrUX Vis',
+    /**
      * @description Accessible label for a section that logs user interactions and layout shifts. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user.
      */
     eventLogs: 'Interaction and layout shift logs section',
@@ -734,6 +742,31 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             PH2: formattedLastDate.toLocaleDateString(undefined, options),
         });
     }
+    #renderFieldDataHistoryLink() {
+        if (!this.#cruxManager.getConfigSetting().get().enabled) {
+            return Lit.nothing;
+        }
+        const normalizedUrl = this.#cruxManager.pageResult?.normalizedUrl;
+        if (!normalizedUrl) {
+            return Lit.nothing;
+        }
+        const tmp = new URL('https://cruxvis.withgoogle.com/');
+        tmp.searchParams.set('view', 'cwvsummary');
+        tmp.searchParams.set('url', normalizedUrl);
+        // identifier must be 'origin' or 'url'.
+        const identifier = this.#cruxManager.fieldPageScope;
+        tmp.searchParams.set('identifier', identifier);
+        // device must be one 'PHONE', 'DESKTOP', 'TABLET', or 'ALL'.
+        const device = this.#cruxManager.getSelectedDeviceScope();
+        tmp.searchParams.set('device', device);
+        const cruxVis = `${tmp.origin}/#/${tmp.search}`;
+        return html `
+        (<x-link href=${cruxVis}
+                 class="local-field-link"
+                 title=${i18nString(UIStrings.fieldDataHistoryTooltip)}
+        >${i18nString(UIStrings.fieldDataHistoryLink)}</x-link>)
+      `;
+    }
     #renderCollectionPeriod() {
         const range = this.#getCollectionPeriodRange();
         const dateEl = document.createElement('span');
@@ -742,10 +775,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         const message = uiI18n.getFormatLocalizedString(str_, UIStrings.collectionPeriod, {
             PH1: dateEl,
         });
+        const fieldDataHistoryLink = range ? this.#renderFieldDataHistoryLink() : Lit.nothing;
         const warnings = this.#cruxManager.pageResult?.warnings || [];
         return html `
       <div class="field-data-message">
-        <div>${message}</div>
+        <div>${message} ${fieldDataHistoryLink}</div>
         ${warnings.map(warning => html `
           <div class="field-data-warning">${warning}</div>
         `)}

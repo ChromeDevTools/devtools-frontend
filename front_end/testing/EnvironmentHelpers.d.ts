@@ -4,7 +4,7 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import type * as UIModule from '../ui/legacy/legacy.js';
-export declare function createTarget({ id, name, type, parentTarget, subtype, url, connection }?: {
+export declare function createTarget({ id, name, type, parentTarget, subtype, url, connection, targetManager, }?: {
     id?: Protocol.Target.TargetID;
     name?: string;
     type?: SDK.Target.Type;
@@ -12,6 +12,7 @@ export declare function createTarget({ id, name, type, parentTarget, subtype, ur
     subtype?: string;
     url?: string;
     connection?: ProtocolClient.CDPConnection.CDPConnection;
+    targetManager?: SDK.TargetManager.TargetManager;
 }): SDK.Target.Target;
 export { stubNoopSettings } from './SettingsHelpers.js';
 export declare function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void;

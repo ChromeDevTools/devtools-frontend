@@ -1337,16 +1337,17 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
         const valueElement = document.createElement('span');
         valueElement.tabIndex = -1;
         valueElement.textContent = match.text;
-        if (!context.tracing) {
-            void this.#attachPopover(valueElement, match, context);
-        }
+        const tooltip = this.#getTooltip(valueElement, match, context);
         const evaluation = context.tracing?.applyEvaluation([], () => {
             return {
                 placeholder: [valueElement],
                 asyncEvalCallback: () => this.#applyEvaluation(valueElement, match, context)
             };
         });
-        return evaluation ?? [valueElement];
+        if (evaluation) {
+            return evaluation;
+        }
+        return tooltip ? [valueElement, tooltip] : [valueElement];
     }
     async #applyEvaluation(valueElement, match, context) {
         const pixelValue = await resolveValues(this.#stylesPane, this.#propertyName, match, context, match.text);
@@ -1356,21 +1357,22 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
         }
         return false;
     }
-    async #attachPopover(valueElement, match, context) {
+    #getTooltip(valueElement, match, context) {
+        const tooltipId = this.#treeElement?.getTooltipId('length');
+        if (!tooltipId) {
+            return undefined;
+        }
+        valueElement.setAttribute('aria-details', tooltipId);
+        const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: valueElement, variant: 'rich', id: tooltipId, jslogContext: 'length-popover' });
+        tooltip.addEventListener('beforetoggle', () => this.getTooltipValue(tooltip, match, context), { once: true });
+        return tooltip;
+    }
+    async getTooltipValue(tooltip, match, context) {
         const pixelValue = await resolveValues(this.#stylesPane, this.#propertyName, match, context, match.text);
         if (!pixelValue) {
             return;
         }
-        const tooltipId = this.#treeElement?.getTooltipId('length');
-        if (tooltipId) {
-            valueElement.setAttribute('aria-details', tooltipId);
-            const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: valueElement, variant: 'rich', id: tooltipId, jslogContext: 'length-popover' });
-            tooltip.appendChild(document.createTextNode(pixelValue[0]));
-            valueElement.insertAdjacentElement('afterend', tooltip);
-        }
-        this.popOverAttachedForTest();
-    }
-    popOverAttachedForTest() {
+        tooltip.appendChild(document.createTextNode(pixelValue[0]));
     }
 }
 // clang-format off

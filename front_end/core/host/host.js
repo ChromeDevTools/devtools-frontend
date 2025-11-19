@@ -1191,7 +1191,7 @@ function convertToUserTierEnum(userTier) {
         return UserTier.PUBLIC;
     }
   }
-  return UserTier.BETA;
+  return UserTier.PUBLIC;
 }
 var hostConfigTrackerInstance;
 var HostConfigTracker = class _HostConfigTracker extends Common3.ObjectWrapper.ObjectWrapper {

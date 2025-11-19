@@ -389,7 +389,7 @@ export function convertToUserTierEnum(userTier) {
                 return UserTier.PUBLIC;
         }
     }
-    return UserTier.BETA;
+    return UserTier.PUBLIC;
 }
 let hostConfigTrackerInstance;
 export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {

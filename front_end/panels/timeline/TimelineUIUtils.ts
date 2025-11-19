@@ -2464,7 +2464,9 @@ export class TimelineDetailsContentHelper {
       const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                              .createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
       callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
-          undefined, this.target ?? undefined, this.#linkifier, {stackTrace, tabStops: true, showColumnNumber: true});
+          undefined, this.target ?? undefined, this.#linkifier, {tabStops: true, showColumnNumber: true});
+      callFrameContents.stackTrace = stackTrace;
+      await callFrameContents.updateComplete;
     } else {
       // I _think_ this only happens during tests.
       // See "TimelineFlameChartView > shows the details for a selected main thread event".

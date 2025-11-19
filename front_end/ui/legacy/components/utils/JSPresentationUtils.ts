@@ -217,7 +217,7 @@ export function buildStackTraceRows(
 }
 
 function renderStackTraceTable(
-    container: Element, parent: Element,
+    container: Element, parent: Element, expandable: boolean,
     stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow>): HTMLElement[] {
   container.removeChildren();
   const links: HTMLElement[] = [];
@@ -225,20 +225,33 @@ function renderStackTraceTable(
   // The tableSection groups one or more synchronous call frames together.
   // Wherever there is an asynchronous call, a new section is created.
   let tableSection: Element|null = null;
+  let firstRow = true;
   for (const item of stackTraceRows) {
     if (!tableSection || 'asyncDescription' in item) {
       tableSection = container.createChild('tbody');
     }
 
     const row = tableSection.createChild('tr');
-    if ('asyncDescription' in item) {
+    if (firstRow && expandable) {
+      const button = row.createChild('td').createChild('button', 'arrow-icon-button');
+      button.createChild('span', 'arrow-icon');
+      parent.classList.add('expandable');
+      container.classList.add('expandable');
+      button.addEventListener('click', () => {
+        button.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
+        parent.classList.toggle('expanded');
+        container.classList.toggle('expanded');
+      });
+      firstRow = false;
+    } else {
       row.createChild('td').textContent = '\n';
+    }
+    if ('asyncDescription' in item) {
       row.createChild('td', 'stack-preview-async-description').textContent = item.asyncDescription;
       row.createChild('td');
       row.createChild('td');
       row.classList.add('stack-preview-async-row');
     } else {
-      row.createChild('td').textContent = '\n';
       row.createChild('td', 'function-name').textContent = item.functionName;
       row.createChild('td').textContent = ' @ ';
       if (item.link) {
@@ -284,13 +297,13 @@ function renderStackTraceTable(
 export interface Options {
   // TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
   runtimeStackTrace?: Protocol.Runtime.StackTrace;
-  stackTrace?: StackTrace.StackTrace.StackTrace;
   tabStops?: boolean;
   // Whether the width of stack trace preview
   // is constrained to its container or whether
   // it can grow the container.
   widthConstrained?: boolean;
   showColumnNumber?: boolean;
+  expandable?: boolean;
 }
 
 export interface StackTraceRegularRow {
@@ -303,8 +316,10 @@ export interface StackTraceAsyncRow {
 }
 
 export class StackTracePreviewContent extends UI.Widget.Widget {
+  #stackTrace?: StackTrace.StackTrace.StackTrace;
   #target?: SDK.Target.Target;
   #linkifier?: Linkifier;
+  #ownedLinkifier?: Linkifier;
   #options: Options;
   #links: HTMLElement[] = [];
 
@@ -315,6 +330,10 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
 
     this.#target = target;
     this.#linkifier = linkifier;
+    if (!this.#linkifier) {
+      this.#ownedLinkifier = new Linkifier();
+      this.#linkifier = this.#ownedLinkifier;
+    }
     this.#options = options || {
       widthConstrained: false,
     };
@@ -329,7 +348,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
     this.#table = this.contentElement.createChild('table', 'stack-preview-container');
     this.#table.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
 
-    this.#options.stackTrace?.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.performUpdate.bind(this));
+    this.#stackTrace?.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.performUpdate.bind(this));
 
     this.performUpdate();
   }
@@ -339,21 +358,22 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
       return;
     }
 
-    const {runtimeStackTrace, stackTrace, tabStops} = this.#options;
+    const {runtimeStackTrace, tabStops} = this.#options;
 
-    if (stackTrace) {
+    if (this.#stackTrace) {
       const stackTraceRows = buildStackTraceRows(
-          stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
-      this.#links = renderStackTraceTable(this.#table, this.element, stackTraceRows);
+          this.#stackTrace, this.#target ?? null, this.#linkifier, tabStops, this.#options.showColumnNumber);
+      this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
       return;
     }
 
     // TODO(crbug.com/456517732): remove when all usages of runtimeStackTrace are migrated.
-    const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element);
+    const updateCallback =
+        renderStackTraceTable.bind(null, this.#table, this.element, this.#options.expandable ?? false);
     const stackTraceRows = buildStackTraceRowsForLegacyRuntimeStackTrace(
         runtimeStackTrace ?? {callFrames: []}, this.#target ?? null, this.#linkifier, tabStops, updateCallback,
         this.#options.showColumnNumber);
-    this.#links = renderStackTraceTable(this.#table, this.element, stackTraceRows);
+    this.#links = renderStackTraceTable(this.#table, this.element, this.#options.expandable ?? false, stackTraceRows);
   }
 
   get linkElements(): readonly HTMLElement[] {
@@ -373,5 +393,14 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
   set options(options: Options) {
     this.#options = options;
     this.requestUpdate();
+  }
+
+  set stackTrace(stackTrace: StackTrace.StackTrace.StackTrace) {
+    this.#stackTrace = stackTrace;
+    this.requestUpdate();
+  }
+
+  override onDetach(): void {
+    this.#ownedLinkifier?.dispose();
   }
 }

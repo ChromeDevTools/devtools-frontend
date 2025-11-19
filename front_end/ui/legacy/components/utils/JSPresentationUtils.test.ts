@@ -7,6 +7,7 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../../testing/MockConnection.js';
 
@@ -90,27 +91,52 @@ describeWithMockConnection('JSPresentationUtils', () => {
         target);
   }
 
-  function checkLinkContentForStackTracePreview(
+  async function checkLinkContentForStackTracePreview(
       target: SDK.Target.Target, linkifier: Components.Linkifier.Linkifier,
       stackTrace: StackTrace.StackTrace.StackTrace, expectedNumLinks: number, expectedLinkContent: string) {
-    const options = {tabStops: false, stackTrace} as Components.JSPresentationUtils.Options;
-    const {linkElements: links} =
+    const options = {tabStops: false};
+    const component =
         new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, options);
-    assert.lengthOf(links, expectedNumLinks);
-    assert.strictEqual(links[0].textContent, expectedLinkContent);
+    component.stackTrace = stackTrace;
+    await component.updateComplete;
+    assert.lengthOf(component.linkElements, expectedNumLinks);
+    assert.strictEqual(component.linkElements[0].textContent, expectedLinkContent);
   }
 
   it('renders stack trace, and re-renders on update', async () => {
     const {target, debuggerWorkspaceBinding, linkifier} = setUpEnvironment();
     const stackTrace = await createStackTrace(target, debuggerWorkspaceBinding);
     const expectedNumLinks = 3;
-    checkLinkContentForStackTracePreview(target, linkifier, stackTrace, expectedNumLinks, 'www.google.com/script.js:1');
+    await checkLinkContentForStackTracePreview(
+        target, linkifier, stackTrace, expectedNumLinks, 'www.google.com/script.js:1');
 
     // Modify stack trace and re-render.
     // @ts-expect-error
     stackTrace.syncFragment.frames[0].line = 100;
     stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
-    checkLinkContentForStackTracePreview(
+    await checkLinkContentForStackTracePreview(
         target, linkifier, stackTrace, expectedNumLinks, 'www.google.com/script.js:101');
+  });
+
+  it('renders expandable stack trace', async () => {
+    const {target, debuggerWorkspaceBinding, linkifier} = setUpEnvironment();
+    const stackTrace = await createStackTrace(target, debuggerWorkspaceBinding);
+
+    const options = {expandable: true};
+    const component =
+        new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, options);
+    renderElementIntoDOM(component);
+    component.stackTrace = stackTrace;
+    await component.updateComplete;
+    assert.deepEqual(component.contentElement.deepInnerText().split('\n'), ['\tfoo\t@\twww.google.com/script.js:1']);
+    const expandButton = component.contentElement.querySelector('button');
+    assert.exists(expandButton);
+    expandButton.click();
+    await component.updateComplete;
+    assert.deepEqual(component.contentElement.deepInnerText().split('\n'), [
+      '\tfoo\t@\twww.google.com/script.js:1',
+      '\tbar\t@\tbar.js:2',
+      '\tbaz\t@\tbaz.js:3',
+    ]);
   });
 });

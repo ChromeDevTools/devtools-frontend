@@ -29,10 +29,10 @@ export function keyIsArrowKey(key: string): key is ArrowKey {
   return ARROW_KEYS.has(key as ArrowKey);
 }
 
-export function isEscKey(event: KeyboardEvent): boolean {
+export function isEscKey(event: {readonly key: string}): boolean {
   return event.key === 'Escape';
 }
 
-export function isEnterOrSpaceKey(event: KeyboardEvent): boolean {
+export function isEnterOrSpaceKey(event: {readonly key: string}): boolean {
   return event.key === 'Enter' || event.key === ' ';
 }

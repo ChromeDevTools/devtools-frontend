@@ -28,29 +28,29 @@ describe('KeyboardUtilities', () => {
 
   describe('isEscKey', () => {
     it('is true for the escape key', () => {
-      const event = new KeyboardEvent('keydown', {key: 'Escape'});
+      const event = {key: 'Escape'};
       assert.isTrue(Platform.KeyboardUtilities.isEscKey(event));
     });
 
     it('is false for another key', () => {
-      const event = new KeyboardEvent('keydown', {key: 'Enter'});
+      const event = {key: 'Enter'};
       assert.isFalse(Platform.KeyboardUtilities.isEscKey(event));
     });
   });
 
   describe('isEnterOrSpaceKey', () => {
     it('returns true for enter', () => {
-      const event = new KeyboardEvent('keydown', {key: 'Enter'});
+      const event = {key: 'Enter'};
       assert.isTrue(Platform.KeyboardUtilities.isEnterOrSpaceKey(event));
     });
 
     it('returns true for space', () => {
-      const event = new KeyboardEvent('keydown', {key: ' '});
+      const event = {key: ' '};
       assert.isTrue(Platform.KeyboardUtilities.isEnterOrSpaceKey(event));
     });
 
     it('returns false for any other key', () => {
-      const event = new KeyboardEvent('keydown', {key: 'a'});
+      const event = {key: 'a'};
       assert.isFalse(Platform.KeyboardUtilities.isEnterOrSpaceKey(event));
     });
   });

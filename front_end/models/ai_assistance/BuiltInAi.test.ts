@@ -30,7 +30,8 @@ describe('BuiltInAi', () => {
       create: () => mockLanguageModel,
     };
 
-    const builtInAi = await AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    await new Promise(resolve => setTimeout(resolve, 0));
     assert.isDefined(builtInAi);
     const abortController = new AbortController();
     const stream = builtInAi.getConsoleInsight('explain this error', abortController);
@@ -53,10 +54,11 @@ describe('BuiltInAi', () => {
     // @ts-expect-error
     window.LanguageModel = {
       availability: () => 'available',
-      create: () => {},
+      create: () => ({foo: 'bar'}),
     };
 
-    const builtInAi = await AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
-    assert.isUndefined(builtInAi);
+    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isFalse(builtInAi.hasSession());
   });
 });

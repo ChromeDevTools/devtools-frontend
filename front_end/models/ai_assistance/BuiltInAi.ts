@@ -6,9 +6,6 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
 let builtInAiInstance: BuiltInAi|undefined;
-let availability: LanguageModelAvailability|undefined;
-let hasGpu: boolean|undefined;
-let isFirstRun = true;
 
 export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
@@ -27,155 +24,110 @@ export const enum LanguageModelAvailability {
 }
 
 export class BuiltInAi {
-  #consoleInsightsSession: LanguageModel;
+  #availability: LanguageModelAvailability|null = null;
+  #hasGpu: boolean;
+  #consoleInsightsSession: LanguageModel|null = null;
 
-  static async getLanguageModelAvailability(): Promise<LanguageModelAvailability> {
+  static instance(): BuiltInAi {
+    if (builtInAiInstance === undefined) {
+      builtInAiInstance = new BuiltInAi();
+    }
+    return builtInAiInstance;
+  }
+
+  constructor() {
+    this.#hasGpu = this.#isGpuAvailable();
+    void this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+  }
+
+  async getLanguageModelAvailability(): Promise<LanguageModelAvailability> {
     if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
-      return LanguageModelAvailability.DISABLED;
+      this.#availability = LanguageModelAvailability.DISABLED;
+      return this.#availability;
     }
     try {
       // @ts-expect-error
-      availability = await window.LanguageModel.availability({expectedOutputs: [{type: 'text', languages: ['en']}]}) as
-          LanguageModelAvailability;
-      return availability;
+      this.#availability = await window.LanguageModel.availability(
+                               {expectedOutputs: [{type: 'text', languages: ['en']}]}) as LanguageModelAvailability;
     } catch {
-      return LanguageModelAvailability.UNAVAILABLE;
+      this.#availability = LanguageModelAvailability.UNAVAILABLE;
     }
+    return this.#availability;
   }
 
-  static cachedIsAvailable(): boolean {
-    return availability === LanguageModelAvailability.AVAILABLE &&
-        (hasGpu || Boolean(Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu));
-  }
-
-  static isGpuAvailable(): boolean {
-    const hasGpuHelper = (): boolean => {
-      const canvas = document.createElement('canvas');
-      try {
-        const webgl = canvas.getContext('webgl');
-        if (!webgl) {
-          return false;
-        }
-        const debugInfo = webgl.getExtension('WEBGL_debug_renderer_info');
-        if (!debugInfo) {
-          return false;
-        }
-        const renderer = webgl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        if (renderer.includes('SwiftShader')) {
-          return false;
-        }
-      } catch {
+  #isGpuAvailable(): boolean {
+    const canvas = document.createElement('canvas');
+    try {
+      const webgl = canvas.getContext('webgl');
+      if (!webgl) {
         return false;
       }
-      return true;
-    };
-
-    if (hasGpu !== undefined) {
-      return hasGpu;
+      const debugInfo = webgl.getExtension('WEBGL_debug_renderer_info');
+      if (!debugInfo) {
+        return false;
+      }
+      const renderer = webgl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+      if (renderer.includes('SwiftShader')) {
+        return false;
+      }
+    } catch {
+      return false;
     }
-    hasGpu = hasGpuHelper();
-    return hasGpu;
+    return true;
   }
 
-  private constructor(consoleInsightsSession: LanguageModel) {
-    this.#consoleInsightsSession = consoleInsightsSession;
+  hasSession(): boolean {
+    return Boolean(this.#consoleInsightsSession);
   }
 
-  static async instance(): Promise<BuiltInAi|undefined> {
-    if (builtInAiInstance === undefined) {
-      if (isFirstRun) {
-        const languageModelAvailability = await BuiltInAi.getLanguageModelAvailability();
-        const hasGpu = BuiltInAi.isGpuAvailable();
-        if (hasGpu) {
-          switch (languageModelAvailability) {
-            case LanguageModelAvailability.UNAVAILABLE:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
-              break;
-            case LanguageModelAvailability.DOWNLOADABLE:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
-              break;
-            case LanguageModelAvailability.DOWNLOADING:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
-              break;
-            case LanguageModelAvailability.AVAILABLE:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
-              break;
-            case LanguageModelAvailability.DISABLED:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
-              break;
-          }
-        } else {
-          switch (languageModelAvailability) {
-            case LanguageModelAvailability.UNAVAILABLE:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
-              break;
-            case LanguageModelAvailability.DOWNLOADABLE:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
-              break;
-            case LanguageModelAvailability.DOWNLOADING:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
-              break;
-            case LanguageModelAvailability.AVAILABLE:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
-              break;
-            case LanguageModelAvailability.DISABLED:
-              Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
-              break;
-          }
-        }
-        isFirstRun = false;
-        if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !hasGpu) {
-          return undefined;
-        }
-        if (languageModelAvailability !== LanguageModelAvailability.AVAILABLE) {
-          return undefined;
-        }
-      } else {
-        if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !BuiltInAi.isGpuAvailable()) {
-          return undefined;
-        }
-        if ((await BuiltInAi.getLanguageModelAvailability()) !== LanguageModelAvailability.AVAILABLE) {
-          return undefined;
-        }
-      }
-
-      try {
-        // @ts-expect-error
-        const consoleInsightsSession = await window.LanguageModel.create({
-          initialPrompts: [{
-            role: 'system',
-            content: `
-  You are an expert web developer. Your goal is to help a human web developer who
-  is using Chrome DevTools to debug a web site or web app. The Chrome DevTools
-  console is showing a message which is either an error or a warning. Please help
-  the user understand the problematic console message.
-
-  Your instructions are as follows:
-    - Explain the reason why the error or warning is showing up.
-    - The explanation has a maximum length of 200 characters. Anything beyond this
-      length will be cut off. Make sure that your explanation is at most 200 characters long.
-    - Your explanation should not end in the middle of a sentence.
-    - Your explanation should consist of a single paragraph only. Do not include any
-      headings or code blocks. Only write a single paragraph of text.
-    - Your response should be concise and to the point. Avoid lengthy explanations
-      or unnecessary details.
-            `
-          }],
-          expectedInputs: [{
-            type: 'text',
-            languages: ['en'],
-          }],
-          expectedOutputs: [{
-            type: 'text',
-            languages: ['en'],
-          }],
-        }) as LanguageModel;
-        builtInAiInstance = new BuiltInAi(consoleInsightsSession);
-      } catch {
-        return undefined;
-      }
+  async initialize(): Promise<void> {
+    if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+      return;
     }
-    return builtInAiInstance;
+    if (this.#availability !== LanguageModelAvailability.AVAILABLE) {
+      return;
+    }
+    await this.#createSession();
+  }
+
+  async #createSession(): Promise<void> {
+    try {
+      // @ts-expect-error
+      this.#consoleInsightsSession = await window.LanguageModel.create({
+        initialPrompts: [{
+          role: 'system',
+          content: `
+You are an expert web developer. Your goal is to help a human web developer who
+is using Chrome DevTools to debug a web site or web app. The Chrome DevTools
+console is showing a message which is either an error or a warning. Please help
+the user understand the problematic console message.
+
+Your instructions are as follows:
+  - Explain the reason why the error or warning is showing up.
+  - The explanation has a maximum length of 200 characters. Anything beyond this
+    length will be cut off. Make sure that your explanation is at most 200 characters long.
+  - Your explanation should not end in the middle of a sentence.
+  - Your explanation should consist of a single paragraph only. Do not include any
+    headings or code blocks. Only write a single paragraph of text.
+  - Your response should be concise and to the point. Avoid lengthy explanations
+    or unnecessary details.
+          `
+        }],
+        expectedInputs: [{
+          type: 'text',
+          languages: ['en'],
+        }],
+        expectedOutputs: [{
+          type: 'text',
+          languages: ['en'],
+        }],
+      });
+      if (this.#availability !== LanguageModelAvailability.AVAILABLE) {
+        void this.getLanguageModelAvailability();
+      }
+    } catch (e) {
+      console.error('Error when creating LanguageModel session', e.message);
+    }
   }
 
   static removeInstance(): void {
@@ -183,6 +135,9 @@ export class BuiltInAi {
   }
 
   async * getConsoleInsight(prompt: string, abortController: AbortController): AsyncGenerator<string> {
+    if (!this.#consoleInsightsSession) {
+      return;
+    }
     // Clone the session to start a fresh conversation for each answer. Otherwise
     // previous dialog would pollute the context resulting in worse answers.
     let session: LanguageModel|null = null;
@@ -197,6 +152,46 @@ export class BuiltInAi {
     } finally {
       if (session) {
         session.destroy();
+      }
+    }
+  }
+
+  #sendAvailabilityMetrics(): void {
+    if (this.#hasGpu) {
+      switch (this.#availability) {
+        case LanguageModelAvailability.UNAVAILABLE:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
+          break;
+        case LanguageModelAvailability.DOWNLOADABLE:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
+          break;
+        case LanguageModelAvailability.DOWNLOADING:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
+          break;
+        case LanguageModelAvailability.AVAILABLE:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
+          break;
+        case LanguageModelAvailability.DISABLED:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
+          break;
+      }
+    } else {
+      switch (this.#availability) {
+        case LanguageModelAvailability.UNAVAILABLE:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
+          break;
+        case LanguageModelAvailability.DOWNLOADABLE:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
+          break;
+        case LanguageModelAvailability.DOWNLOADING:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
+          break;
+        case LanguageModelAvailability.AVAILABLE:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
+          break;
+        case LanguageModelAvailability.DISABLED:
+          Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
+          break;
       }
     }
   }

@@ -504,7 +504,7 @@ export class MainImpl {
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();
 
-    void AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
 
     new PauseListener();
 

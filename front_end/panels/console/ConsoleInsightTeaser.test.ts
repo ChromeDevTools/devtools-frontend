@@ -168,14 +168,14 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isFalse(input.isInactive);
     assert.isEmpty(input.mainText);
     assert.isEmpty(input.headerText);
-    assert.isFalse(input.isError);
+    assert.strictEqual(input.state, 'ready');
     await teaser.maybeGenerateTeaser();
 
     input = await view.nextInput;
     assert.isFalse(input.isInactive);
     assert.strictEqual(input.mainText, 'This is an incomplete');
     assert.strictEqual(input.headerText, 'message text string');
-    assert.isTrue(input.isError);
+    assert.strictEqual(input.state, 'error');
   });
 
   it('show the "Tell me more" button only when AIDA is available', async () => {

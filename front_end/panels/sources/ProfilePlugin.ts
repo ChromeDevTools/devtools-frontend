@@ -9,6 +9,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 
 import {Plugin} from './Plugin.js';
 
@@ -109,13 +110,15 @@ function markersFromProfileData(
   return CodeMirror.RangeSet.of(markers, true);
 }
 
-const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType): typeof Plugin => class extends Plugin {
+const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType): typeof Plugin =>
+    class ProfilePlugin extends Plugin {
   updateEffect = CodeMirror.StateEffect.define<PerfUI.LineLevelProfile.LineColumnProfileMap>();
   field: CodeMirror.StateField<CodeMirror.RangeSet<CodeMirror.GutterMarker>>;
   gutter: CodeMirror.Extension;
   compartment: CodeMirror.Compartment = new CodeMirror.Compartment();
+  readonly #transformer: SourceFrame.SourceFrame.Transformer;
 
-  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
+  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, transformer: SourceFrame.SourceFrame.Transformer) {
     super(uiSourceCode);
 
     this.field = CodeMirror.StateField.define<CodeMirror.RangeSet<CodeMirror.GutterMarker>>({
@@ -133,6 +136,8 @@ const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType):
       markers: view => view.state.field(this.field),
       class: `cm-${type}Gutter`,
     });
+
+    this.#transformer = transformer;
   }
 
   static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
@@ -140,7 +145,26 @@ const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType):
   }
 
   private getLineMap(): PerfUI.LineLevelProfile.LineColumnProfileMap|undefined {
-    return this.uiSourceCode.getDecorationData(type);
+    const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(type);
+    if (!uiSourceCodeProfileMap) {
+      return undefined;
+    }
+
+    const editorProfileMap: PerfUI.LineLevelProfile.LineColumnProfileMap = new Map();
+    for (const [lineNumber, columnData] of uiSourceCodeProfileMap) {
+      for (const [columnNumber, data] of columnData) {
+        const editorLocation = this.#transformer.uiLocationToEditorLocation(lineNumber - 1, columnNumber - 1);
+        const oneBasedFormattedLineNumber = editorLocation.lineNumber + 1;
+        const oneBasedFormattedColumnNumber = editorLocation.columnNumber + 1;
+        let columnData = editorProfileMap.get(oneBasedFormattedLineNumber);
+        if (!columnData) {
+          columnData = new Map();
+          editorProfileMap.set(oneBasedFormattedLineNumber, columnData);
+        }
+        columnData.set(oneBasedFormattedColumnNumber, (columnData.get(oneBasedFormattedColumnNumber) || 0) + data);
+      }
+    }
+    return editorProfileMap;
   }
 
   override editorExtension(): CodeMirror.Extension {

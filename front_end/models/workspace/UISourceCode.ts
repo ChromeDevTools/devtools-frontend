@@ -12,8 +12,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 import {Events as WorkspaceImplEvents, type Project} from './WorkspaceImpl.js';
 
-export type LineColumnProfileMap = Map<number, Map<number, number>>;
-
 const UIStrings = {
   /**
    * @description Text for the index of something
@@ -37,9 +35,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #contentType: Common.ResourceType.ResourceType;
   #requestContentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null = null;
   #decorations = new Map<string, any>();
-  #formattedDecorations = new Map<string, any>();
   #hasCommits = false;
-  #prettied = false;
   #messages: Set<Message>|null = null;
   #content: TextUtils.ContentData.ContentDataOrError|null = null;
   #forceLoadOnCheckContent = false;
@@ -501,9 +497,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   getDecorationData(type: string): any {
-    if (this.#prettied && this.#formattedDecorations.get(type)) {
-      return this.#formattedDecorations.get(type);
-    }
     return this.#decorations.get(type);
   }
 
@@ -513,45 +506,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   editDisabled(): boolean {
     return this.#disableEdit;
-  }
-
-  formatChanged(format: {originalToFormatted(lineNumber: number, columnNumber?: number): number[]}|null): void {
-    if (this.#prettied === Boolean(format)) {
-      return;
-    }
-    this.#prettied = Boolean(format);
-    if (!format) {
-      this.dispatchEventToListeners(Events.DecorationChanged, DecoratorType.PERFORMANCE);
-      return;
-    }
-    const performanceDecorations = this.#decorations.get(DecoratorType.PERFORMANCE);
-    if (!performanceDecorations) {
-      return;
-    }
-    let formattedPerformanceDecorations: LineColumnProfileMap =
-        this.#formattedDecorations.get(DecoratorType.PERFORMANCE);
-    if (!formattedPerformanceDecorations) {
-      formattedPerformanceDecorations = new Map();
-      this.#formattedDecorations.set(DecoratorType.PERFORMANCE, formattedPerformanceDecorations);
-    } else {
-      formattedPerformanceDecorations.clear();
-    }
-
-    for (const [lineNumber, columnData] of performanceDecorations) {
-      for (const [columnNumber, data] of columnData) {
-        const [formattedLineNumber, formattedColumnNumber] =
-            format.originalToFormatted(lineNumber - 1, columnNumber - 1);
-        const oneBasedFormattedLineNumber = formattedLineNumber + 1;
-        const oneBasedFormattedColumnNumber = formattedColumnNumber + 1;
-        let lineData = formattedPerformanceDecorations.get(oneBasedFormattedLineNumber);
-        if (!lineData) {
-          lineData = new Map();
-          formattedPerformanceDecorations.set(oneBasedFormattedLineNumber, lineData);
-        }
-        lineData.set(oneBasedFormattedColumnNumber, (lineData.get(oneBasedFormattedColumnNumber) || 0) + data);
-      }
-    }
-    this.dispatchEventToListeners(Events.DecorationChanged, 'performance');
   }
 
   isIgnoreListed(): boolean {

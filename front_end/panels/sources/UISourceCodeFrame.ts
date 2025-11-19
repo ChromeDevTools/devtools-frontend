@@ -238,7 +238,6 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   override async setContent(content: string): Promise<void> {
-    this.#uiSourceCode.formatChanged(this.formattedMap);
     this.disposePlugins();
     this.loadPlugins();
     await super.setContent(content);

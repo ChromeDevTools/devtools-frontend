@@ -46,11 +46,12 @@ for (const individualThrottlingEnabled of [false, true]) {
           assert.exists(placeholder);
           assert.deepEqual(
               placeholder.querySelector('.empty-state-header')?.textContent,
-              individualThrottlingEnabled ? 'No request throttling or blocking patterns' :
-                                            'No blocked network requests');
+              individualThrottlingEnabled ? 'Nothing throttled or blocked' : 'No blocked network requests');
           assert.deepEqual(
               placeholder.querySelector('.empty-state-description > span')?.textContent,
-              'Add a pattern by clicking on the \"Add pattern\" button.');
+              individualThrottlingEnabled ?
+                  'To throttle or block a network request, add a rule here manually or via the network panel\'s context menu. Learn more' :
+                  'Add a pattern by clicking on the \"Add pattern\" button.');
 
           if (individualThrottlingEnabled) {
             await assertScreenshot('request_conditions/throttling_placeholder.png');
@@ -241,7 +242,7 @@ describeWithMockConnection('RequestConditionsDrawer', () => {
     const condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com/*bar', enabled: true});
     const item = requestConditionsDrawer.renderItem(condition, /* editable=*/ true, 0);
 
-    const [decreaseButton, increaseButton] = item.querySelectorAll('devtools-button');
+    const [increaseButton, decreaseButton] = item.querySelectorAll('devtools-button');
 
     increaseButton.click();
     sinon.assert.calledOnceWithExactly(increasePriority, condition);

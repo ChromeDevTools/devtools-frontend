@@ -64,6 +64,7 @@ interface ViewInput {
   customConditionsGroup: NetworkThrottlingConditionsGroup;
   jslogContext: string|undefined;
   title: string|undefined;
+  disabled: boolean;
   onSelect: (conditions: SDK.NetworkManager.ThrottlingConditions) => void;
   onAddCustomConditions: () => void;
 }
@@ -108,6 +109,7 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
   render(
       // clang-format off
     html`<select
+      ?disabled=${input.disabled}
       aria-label=${input.title ?? nothing}
       jslog=${VisualLogging.dropDown().track({change: true}).context(input.jslogContext)}
       @change=${onSelect}>
@@ -166,6 +168,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper<
   readonly #title?: string;
   readonly #view: ViewFunction;
   #variant: NetworkThrottlingSelect.Variant = NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
+  #disabled = false;
 
   static createForGlobalConditions(element: HTMLElement, title: string): NetworkThrottlingSelect {
     ThrottlingManager.instance();  // Instantiate the throttling manager to connect network manager with the setting
@@ -201,6 +204,14 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper<
     this.#title = options.title;
     this.#view = view;
 
+    this.#performUpdate();
+  }
+
+  get disabled(): boolean {
+    return this.#disabled;
+  }
+  set disabled(disabled: boolean) {
+    this.#disabled = disabled;
     this.#performUpdate();
   }
 
@@ -284,6 +295,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper<
       selectedConditions: this.#currentConditions,
       jslogContext: this.#jslogContext,
       title: this.#title,
+      disabled: this.#disabled,
       onSelect,
       onAddCustomConditions,
       throttlingGroups,
@@ -306,6 +318,13 @@ export class NetworkThrottlingSelectorWidget extends UI.Widget.VBox {
     super(element, {useShadowDom: true});
     this.#select = new NetworkThrottlingSelect(this.contentElement, {}, view);
     this.#select.addEventListener(Events.CONDITIONS_CHANGED, ({data}) => this.#conditionsChangedHandler?.(data));
+  }
+
+  get disabled(): boolean {
+    return this.#select.disabled;
+  }
+  set disabled(disabled: boolean) {
+    this.#select.disabled = disabled;
   }
 
   set variant(variant: NetworkThrottlingSelect.Variant) {

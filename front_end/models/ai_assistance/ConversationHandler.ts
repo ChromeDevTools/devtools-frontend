@@ -21,8 +21,8 @@ import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
 import {PerformanceAgent, type PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
+import {AiConversation} from './AiConversation.js';
 import {
-  Conversation,
   ConversationType,
 } from './AiHistoryStorage.js';
 import {getDisabledReasons} from './AiUtils.js';
@@ -42,7 +42,7 @@ interface ExternalNetworkRequestParameters {
 
 export interface ExternalPerformanceAIConversationData {
   conversationHandler: ConversationHandler;
-  conversation: Conversation;
+  conversation: AiConversation;
   agent: AiAgent<unknown>;
   selected: PerformanceTraceContext;
 }
@@ -207,7 +207,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
 
   async *
       handleConversationWithHistory(
-          items: AsyncIterable<ResponseData, void, void>, conversation: Conversation|undefined):
+          items: AsyncIterable<ResponseData, void, void>, conversation: AiConversation|undefined):
           AsyncGenerator<ResponseData, void, void> {
     for await (const data of items) {
       // We don't want to save partial responses to the conversation history.
@@ -225,7 +225,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
     selected: NodeContext|PerformanceTraceContext|RequestContext|null,
   }): AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
     const {conversationType, aiAgent, prompt, selected} = opts;
-    const conversation = new Conversation(
+    const conversation = new AiConversation(
         conversationType,
         [],
         aiAgent.id,
@@ -236,7 +236,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   async * #doExternalConversation(opts: {
-    conversation: Conversation,
+    conversation: AiConversation,
     aiAgent: AiAgent<unknown>,
     prompt: string,
     selected: NodeContext|PerformanceTraceContext|RequestContext|null,

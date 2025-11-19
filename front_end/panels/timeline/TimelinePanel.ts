@@ -946,7 +946,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
 
       const agent = conversationHandler.createAgent(AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
-      const conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(
+      const conversation = new AiAssistanceModel.AiConversation.AiConversation(
           AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE,
           [],
           agent.id,

@@ -401,14 +401,14 @@ describe('AiHistoryStorage', () => {
     describe('title', () => {
       it('should return undefined if there is not USER_QUERY entry in history', () => {
         const conversation =
-            new AiAssistance.AiHistoryStorage.Conversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING, []);
+            new AiAssistance.AiConversation.AiConversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING, []);
 
         assert.isUndefined(conversation.title);
       });
 
       it('should return full title if the first USER_QUERY is less than 80 characters', () => {
         const conversation =
-            new AiAssistance.AiHistoryStorage.Conversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING, [{
+            new AiAssistance.AiConversation.AiConversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING, [{
                                                              type: AiAssistance.AiAgent.ResponseType.USER_QUERY,
                                                              query: 'this is less than 80',
                                                            }]);
@@ -418,7 +418,7 @@ describe('AiHistoryStorage', () => {
 
       it('should return first 80 characters of the title with ellipis if the first USER_QUERY is more than 80 characters',
          () => {
-           const conversation = new AiAssistance.AiHistoryStorage.Conversation(
+           const conversation = new AiAssistance.AiConversation.AiConversation(
                AiAssistance.AiHistoryStorage.ConversationType.STYLING, [{
                  type: AiAssistance.AiAgent.ResponseType.USER_QUERY,
                  query:
@@ -458,10 +458,10 @@ describe('AiHistoryStorage', () => {
       it('should store images and text conversation separately', async () => {
         const storage = getStorage();
         sinon.stub(AiAssistance.AiHistoryStorage.AiHistoryStorage, 'instance').returns(storage);
-        const conversation1 = new AiAssistance.AiHistoryStorage.Conversation(
+        const conversation1 = new AiAssistance.AiConversation.AiConversation(
             AiAssistance.AiHistoryStorage.ConversationType.STYLING, [], 'id1', false);
         await conversation1.addHistoryItem(historyItem1);
-        const conversation2 = new AiAssistance.AiHistoryStorage.Conversation(
+        const conversation2 = new AiAssistance.AiConversation.AiConversation(
             AiAssistance.AiHistoryStorage.ConversationType.STYLING, [], 'id2', false);
         await conversation2.addHistoryItem(historyItem2);
 
@@ -507,10 +507,10 @@ describe('AiHistoryStorage', () => {
         const MAX_STORAGE_SIZE = 1;
         const storage = getStorage(MAX_STORAGE_SIZE);
         sinon.stub(AiAssistance.AiHistoryStorage.AiHistoryStorage, 'instance').returns(storage);
-        const conversation1 = new AiAssistance.AiHistoryStorage.Conversation(
+        const conversation1 = new AiAssistance.AiConversation.AiConversation(
             AiAssistance.AiHistoryStorage.ConversationType.STYLING, [], 'id1', false);
         await conversation1.addHistoryItem(historyItem1);
-        const conversation2 = new AiAssistance.AiHistoryStorage.Conversation(
+        const conversation2 = new AiAssistance.AiConversation.AiConversation(
             AiAssistance.AiHistoryStorage.ConversationType.STYLING, [], 'id2', false);
         await conversation2.addHistoryItem(historyItem2);
 
@@ -519,14 +519,14 @@ describe('AiHistoryStorage', () => {
         const historyWithoutImages = storage.getHistory();
         assert.lengthOf(historyWithoutImages, 2);
         const conversationFromHistory = historyWithoutImages.map(
-            item => AiAssistance.AiHistoryStorage.Conversation.fromSerializedConversation(item));
+            item => AiAssistance.AiConversation.AiConversation.fromSerializedConversation(item));
         assert.lengthOf(conversationFromHistory, 2);
         assert.deepEqual(conversationFromHistory[0].history, [{
                            type: AiAssistance.AiAgent.ResponseType.USER_QUERY,
                            query: 'text',
                            imageInput: {
                              inlineData: {
-                               data: AiAssistance.AiHistoryStorage.NOT_FOUND_IMAGE_DATA,
+                               data: AiAssistance.AiConversation.NOT_FOUND_IMAGE_DATA,
                                mimeType: 'image/jpeg',
                              }
                            },
@@ -608,7 +608,7 @@ describe('AiHistoryStorage', () => {
           complete: true,
         },
       ];
-      const conversation = new AiAssistance.AiHistoryStorage.Conversation(
+      const conversation = new AiAssistance.AiConversation.AiConversation(
           AiAssistance.AiHistoryStorage.ConversationType.STYLING, history);
       const markdown = conversation.getConversationMarkdown();
 

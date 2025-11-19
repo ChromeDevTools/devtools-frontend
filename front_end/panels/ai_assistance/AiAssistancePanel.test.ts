@@ -932,7 +932,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
       const addHistoryItemStub =
-          sinon.stub(AiAssistanceModel.AiHistoryStorage.Conversation.prototype, 'addHistoryItem');
+          sinon.stub(AiAssistanceModel.AiConversation.AiConversation.prototype, 'addHistoryItem');
       viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
       const {view} = await createAiAssistancePanel({
         aidaClient: mockAidaClient(

@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("ai_assistance") {
   sources = [
     "AgentProject.ts",
+    "AiConversation.ts",
     "AiHistoryStorage.ts",
     "AiUtils.ts",
     "BuiltInAi.ts",

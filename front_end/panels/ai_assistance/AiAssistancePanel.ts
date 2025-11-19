@@ -224,7 +224,7 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
 
 async function getEmptyStateSuggestions(
     context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
-    conversation?: AiAssistanceModel.AiHistoryStorage.Conversation):
+    conversation?: AiAssistanceModel.AiConversation.AiConversation):
     Promise<AiAssistanceModel.AiAgent.ConversationSuggestion[]> {
   if (context) {
     const specialSuggestions = await context.getSuggestions();
@@ -270,7 +270,7 @@ async function getEmptyStateSuggestions(
 
 function getMarkdownRenderer(
     context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
-    conversation?: AiAssistanceModel.AiHistoryStorage.Conversation): MarkdownRendererWithCodeBlock {
+    conversation?: AiAssistanceModel.AiConversation.AiConversation): MarkdownRendererWithCodeBlock {
   if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
     if (!context.external) {
       const focus = context.getItem();
@@ -495,7 +495,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #mutex = new Common.Mutex.Mutex();
 
   #conversationAgent?: AiAssistanceModel.AiAgent.AiAgent<unknown>;
-  #conversation?: AiAssistanceModel.AiHistoryStorage.Conversation;
+  #conversation?: AiAssistanceModel.AiConversation.AiConversation;
 
   #selectedFile: AiAssistanceModel.FileAgent.FileContext|null = null;
   #selectedElement: AiAssistanceModel.StylingAgent.NodeContext|null = null;
@@ -720,7 +720,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #updateConversationState(opts?: {
     agent?: AiAssistanceModel.AiAgent.AiAgent<unknown>,
-    conversation?: AiAssistanceModel.AiHistoryStorage.Conversation,
+    conversation?: AiAssistanceModel.AiConversation.AiConversation,
   }): void {
     if (this.#conversationAgent !== opts?.agent) {
       // Cancel any previous conversation
@@ -733,7 +733,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // If we get a new agent we need to
       // create a new conversation along side it
       if (opts?.agent) {
-        this.#conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(
+        this.#conversation = new AiAssistanceModel.AiConversation.AiConversation(
             agentToConversationType(opts.agent),
             [],
             opts.agent.id,
@@ -1212,7 +1212,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #populateHistoryMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     const historicalConversations = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map(
         serializedConversation =>
-            AiAssistanceModel.AiHistoryStorage.Conversation.fromSerializedConversation(serializedConversation));
+            AiAssistanceModel.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty) {
         continue;
@@ -1281,7 +1281,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     Workspace.FileManager.FileManager.instance().close(filename);
   }
 
-  async #openHistoricConversation(conversation: AiAssistanceModel.AiHistoryStorage.Conversation): Promise<void> {
+  async #openHistoricConversation(conversation: AiAssistanceModel.AiConversation.AiConversation): Promise<void> {
     if (this.#conversation === conversation) {
       return;
     }
@@ -1421,7 +1421,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversationAgent.origin);
   }
 
-  #getConversationContext(conversation?: AiAssistanceModel.AiHistoryStorage.Conversation):
+  #getConversationContext(conversation?: AiAssistanceModel.AiConversation.AiConversation):
       AiAssistanceModel.AiAgent.ConversationContext<unknown>|null {
     if (!conversation) {
       return null;
@@ -1656,7 +1656,7 @@ export function getResponseMarkdown(message: ModelChatMessage): string {
     }
     if (step.contextDetails) {
       contentParts.push(
-          AiAssistanceModel.AiHistoryStorage.Conversation.generateContextDetailsMarkdown(step.contextDetails));
+          AiAssistanceModel.AiConversation.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
     }
     if (step.thought) {
       contentParts.push(step.thought);

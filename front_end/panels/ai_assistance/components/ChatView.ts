@@ -884,7 +884,7 @@ function renderChatMessage({
 }
 
 function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitTemplate {
-  if (inlineData.data === AiAssistanceModel.AiHistoryStorage.NOT_FOUND_IMAGE_DATA) {
+  if (inlineData.data === AiAssistanceModel.AiConversation.NOT_FOUND_IMAGE_DATA) {
     // clang-format off
     return html`<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>

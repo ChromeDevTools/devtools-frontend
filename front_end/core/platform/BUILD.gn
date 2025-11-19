@@ -15,6 +15,7 @@ devtools_foundation_module("platform") {
     "Constructor.ts",
     "DateUtilities.ts",
     "DevToolsPath.ts",
+    "HostRuntime.ts",
     "KeyboardUtilities.ts",
     "MapUtilities.ts",
     "MimeType.ts",
@@ -25,6 +26,12 @@ devtools_foundation_module("platform") {
     "TypescriptUtilities.ts",
     "UIString.ts",
     "UserVisibleError.ts",
+  ]
+
+  deps = [
+    "./api:bundle",
+    "./browser:bundle",
+    "./node:bundle",
   ]
 }
 

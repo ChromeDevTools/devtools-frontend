@@ -141,8 +141,8 @@ export class Memory {
         return;
       }
       const line = node.callFrame.lineNumber + 1;
-      // Since no column number is provided by the heap profile, default to 1 (beginning of line).
-      helper.addLocationData(target, script, {line, column: 1}, node.selfSize);
+      const column = node.callFrame.columnNumber + 1;
+      helper.addLocationData(target, script, {line, column}, node.selfSize);
     }
   }
 }

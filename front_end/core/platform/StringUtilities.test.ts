@@ -611,11 +611,11 @@ describe('StringUtilities', () => {
   describe('concatBase64', () => {
     it('correctly concatenates two base64 strings', () => {
       const str = 'This is a small sample sentence for encoding.';
-      const strAsBase64 = window.btoa(str);
+      const strAsBase64 = globalThis.btoa(str);
 
       for (let i = 0; i < str.length; ++i) {
-        const lhs = window.btoa(str.substring(0, i));
-        const rhs = window.btoa(str.substring(i));
+        const lhs = globalThis.btoa(str.substring(0, i));
+        const rhs = globalThis.btoa(str.substring(i));
 
         assert.strictEqual(Platform.StringUtilities.concatBase64(lhs, rhs), strAsBase64);
       }

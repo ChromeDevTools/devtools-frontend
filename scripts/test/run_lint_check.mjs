@@ -43,12 +43,7 @@ const flags = yargs(hideBin(process.argv))
       type: 'string',
       array: true,
       default: [
-        'front_end',
-        'inspector_overlay',
-        'scripts',
-        'test',
-        'extensions',
-        'extension-api'
+        '.',
       ]
     });
   })

@@ -1432,6 +1432,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/common/AiCodeCompletionDisclaimer.js",
   "front_end/panels/common/AiCodeCompletionSummaryToolbar.js",
   "front_end/panels/common/AiCodeCompletionTeaser.js",
+  "front_end/panels/common/AiCodeGenerationTeaser.js",
   "front_end/panels/common/BadgeNotification.js",
   "front_end/panels/common/DOMLinkifier.js",
   "front_end/panels/common/ExtensionPanel.js",

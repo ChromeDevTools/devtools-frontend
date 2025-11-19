@@ -2105,8 +2105,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
-    // Clear the line level profile that could exist from the previous trace.
-    PerfUI.LineLevelProfile.Performance.instance().reset();
 
     this.#minimapComponent.reset();
 
@@ -2164,20 +2162,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.flameChart.bulkAddOverlays(currModificationManager.getOverlays());
     }
 
-    // Set up line level profiling with CPU profiles, if we found any.
-    PerfUI.LineLevelProfile.Performance.instance().reset();
-    if (parsedTrace.data.Samples.profilesInProcess.size) {
-      const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      // Gather up all CPU Profiles we found when parsing this trace.
-      const cpuProfiles =
-          Array.from(parsedTrace.data.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
-            const profiles = Array.from(threadsInProcess.values()).map(profileData => profileData.parsedProfile);
-            return profiles;
-          });
-      for (const profile of cpuProfiles) {
-        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile, primaryPageTarget);
-      }
-    }
+    // Set up line level profiling with CPU profiles.
+    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    // Gather up all CPU Profiles we found when parsing this trace.
+    const cpuProfiles =
+        Array.from(parsedTrace.data.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
+          const profiles = Array.from(threadsInProcess.values()).map(profileData => profileData.parsedProfile);
+          return profiles;
+        });
+    PerfUI.LineLevelProfile.Performance.instance().initialize(cpuProfiles, primaryPageTarget);
 
     // Initialize EntityMapper
     this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);

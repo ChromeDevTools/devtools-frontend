@@ -29,8 +29,12 @@ export class Performance {
     return performanceInstance;
   }
 
-  reset(): void {
+  initialize(profiles: CPUProfile.CPUProfileDataModel.CPUProfileDataModel[], target: SDK.Target.Target|null): void {
     this.helper.reset();
+    for (const profile of profiles) {
+      this.appendCPUProfile(profile, target);
+    }
+    void this.helper.update();
   }
 
   private appendLegacyCPUProfile(
@@ -56,12 +60,13 @@ export class Performance {
     }
   }
 
-  appendCPUProfile(profile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null): void {
+  private appendCPUProfile(profile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null):
+      void {
     if (!profile.lines) {
       this.appendLegacyCPUProfile(profile, target);
-      this.helper.scheduleUpdate();
       return;
     }
+
     if (!profile.samples || !profile.columns) {
       return;
     }
@@ -83,12 +88,12 @@ export class Performance {
       const time = profile.timestamps[i] - profile.timestamps[i - 1];
       this.helper.addLocationData(target, scriptIdOrUrl, {line, column}, time);
     }
-    this.helper.scheduleUpdate();
   }
 }
 
 let memoryInstance: Memory;
 
+// Note: this is used only by LiveHeapProfile (a drawer panel) if the experiment is enabled.
 export class Memory {
   private readonly helper: Helper;
   private constructor() {
@@ -108,12 +113,23 @@ export class Memory {
 
   reset(): void {
     this.helper.reset();
+    void this.helper.update();
   }
 
-  appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.Target.Target|null): void {
+  initialize(profilesAndTargets: Array<{
+    profile: Protocol.HeapProfiler.SamplingHeapProfile,
+    target: SDK.Target.Target,
+  }>): void {
+    this.helper.reset();
+    for (const {profile, target} of profilesAndTargets) {
+      this.appendHeapProfile(profile, target);
+    }
+    void this.helper.update();
+  }
+
+  private appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.Target.Target|null): void {
     const helper = this.helper;
     processNode(profile.head);
-    helper.scheduleUpdate();
 
     function processNode(node: Protocol.HeapProfiler.SamplingHeapProfileNode): void {
       node.children.forEach(processNode);
@@ -134,7 +150,7 @@ export class Memory {
 export class Helper {
   private readonly type: Workspace.UISourceCode.DecoratorType;
   private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();
-  private updateTimer: number|null = null;
+
   /**
    * Given a location in a script (with line and column numbers being 1-based) stores
    * the time spent at that location in a performance profile.
@@ -149,7 +165,6 @@ export class Helper {
   reset(): void {
     // The second map uses string keys for script URLs and numbers for scriptId.
     this.locationData = new Map();
-    this.scheduleUpdate();
   }
 
   /**
@@ -176,17 +191,7 @@ export class Helper {
     lineData.set(column, (lineData.get(column) || 0) + data);
   }
 
-  scheduleUpdate(): void {
-    if (this.updateTimer) {
-      return;
-    }
-    this.updateTimer = window.setTimeout(() => {
-      this.updateTimer = null;
-      void this.doUpdate();
-    }, 0);
-  }
-
-  private async doUpdate(): Promise<void> {
+  async update(): Promise<void> {
     this.locationPool.disposeAll();
     // Map from sources to line->value profile maps.
     const decorationsBySource = new Map<Workspace.UISourceCode.UISourceCode, Map<number, Map<number, number>>>();

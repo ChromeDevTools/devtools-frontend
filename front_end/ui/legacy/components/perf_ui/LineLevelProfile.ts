@@ -2,12 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// This file supports the gutter decorations visible in the Sources panel when a
+// performance trace is active, showing either the runtime sample measures or the
+// memory sampling (memory is behind the LiveHeapProfile experiment).
+//
+// When profiles are added, the associated UISourceCodes are given the profile data
+// as decorations. The raw profile locations are mapped to original source files in
+// this way.
+//
+// Note, while this is called "LineLevel", it's the profile data is actually granular
+// to the column.
+
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import type * as CPUProfile from '../../../../models/cpu_profile/cpu_profile.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+
+/** 1-based. line => column => value */
+export type LineColumnProfileMap = Map<number, Map<number, number>>;
+export type ProfileDataMap = Map<Workspace.UISourceCode.UISourceCode, LineColumnProfileMap>;
 
 let performanceInstance: Performance;
 
@@ -156,7 +171,7 @@ export class Helper {
    * the time spent at that location in a performance profile.
    */
   private locationData =
-      new Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, Map<number, Map<number, number>>>>();
+      new Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, LineColumnProfileMap>>();
   constructor(type: Workspace.UISourceCode.DecoratorType) {
     this.type = type;
     this.reset();
@@ -194,7 +209,7 @@ export class Helper {
   async update(): Promise<void> {
     this.locationPool.disposeAll();
     // Map from sources to line->value profile maps.
-    const decorationsBySource = new Map<Workspace.UISourceCode.UISourceCode, Map<number, Map<number, number>>>();
+    const decorationsBySource: ProfileDataMap = new Map();
     const pending: Array<Promise<void>> = [];
     for (const [target, scriptToLineMap] of this.locationData) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
@@ -219,12 +234,12 @@ export class Helper {
                     if (uiLocation) {
                       let lineMap = decorationsBySource.get(uiLocation.uiSourceCode);
                       if (!lineMap) {
-                        lineMap = new Map<number, Map<number, number>>();
+                        lineMap = new Map();
                         decorationsBySource.set(uiLocation.uiSourceCode, lineMap);
                       }
                       let columnMap = lineMap.get(lineNumber);
                       if (!columnMap) {
-                        columnMap = new Map<number, number>();
+                        columnMap = new Map();
                         lineMap.set(lineNumber, columnMap);
                       }
                       columnMap.set((zeroBasedColumn || 0) + 1, data);

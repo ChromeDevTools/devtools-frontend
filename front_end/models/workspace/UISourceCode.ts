@@ -12,6 +12,8 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 import {Events as WorkspaceImplEvents, type Project} from './WorkspaceImpl.js';
 
+export type LineColumnProfileMap = Map<number, Map<number, number>>;
+
 const UIStrings = {
   /**
    * @description Text for the index of something
@@ -526,10 +528,10 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (!performanceDecorations) {
       return;
     }
-    let formattedPerformanceDecorations: Map<number, Map<number, number>> =
+    let formattedPerformanceDecorations: LineColumnProfileMap =
         this.#formattedDecorations.get(DecoratorType.PERFORMANCE);
     if (!formattedPerformanceDecorations) {
-      formattedPerformanceDecorations = new Map<number, Map<number, number>>();
+      formattedPerformanceDecorations = new Map();
       this.#formattedDecorations.set(DecoratorType.PERFORMANCE, formattedPerformanceDecorations);
     } else {
       formattedPerformanceDecorations.clear();

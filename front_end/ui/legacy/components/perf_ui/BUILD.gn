@@ -76,6 +76,7 @@ devtools_entrypoint("bundle") {
     "../../../../panels/media/*",
     "../../../../panels/network/*",
     "../../../../panels/profiler/*",
+    "../../../../panels/sources/*",
     "../../../../panels/timeline/*",
     "../../../../testing/*",
     "../../../components/docs/perf_piechart/*",

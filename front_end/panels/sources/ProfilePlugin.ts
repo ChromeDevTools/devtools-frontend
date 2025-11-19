@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {Plugin} from './Plugin.js';
 
@@ -89,20 +90,16 @@ class PerformanceMarker extends CodeMirror.GutterMarker {
 }
 
 function markersFromProfileData(
-    map: Map<number, number>|Map<number, Map<number, number>>, state: CodeMirror.EditorState,
+    map: PerfUI.LineLevelProfile.LineColumnProfileMap, state: CodeMirror.EditorState,
     type: Workspace.UISourceCode.DecoratorType): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
   const markerType = type === Workspace.UISourceCode.DecoratorType.PERFORMANCE ? PerformanceMarker : MemoryMarker;
   const markers: Array<CodeMirror.Range<CodeMirror.GutterMarker>> = [];
   const aggregatedByLine = new Map<number, number>();
   for (const [line, value] of map) {
     if (line <= state.doc.lines) {
-      if (value instanceof Map) {
-        for (const [, data] of value) {
-          aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
-        }
-        continue;
+      for (const [, data] of value) {
+        aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
       }
-      aggregatedByLine.set(line, value);
     }
   }
   for (const [line, value] of aggregatedByLine) {
@@ -113,7 +110,7 @@ function markersFromProfileData(
 }
 
 const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType): typeof Plugin => class extends Plugin {
-  updateEffect = CodeMirror.StateEffect.define<Map<number, number>|Map<number, Map<number, number>>>();
+  updateEffect = CodeMirror.StateEffect.define<PerfUI.LineLevelProfile.LineColumnProfileMap>();
   field: CodeMirror.StateField<CodeMirror.RangeSet<CodeMirror.GutterMarker>>;
   gutter: CodeMirror.Extension;
   compartment: CodeMirror.Compartment = new CodeMirror.Compartment();
@@ -142,7 +139,7 @@ const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType):
     return uiSourceCode.contentType().hasScripts();
   }
 
-  private getLineMap(): Map<number, number>|Map<number, Map<number, number>>|undefined {
+  private getLineMap(): PerfUI.LineLevelProfile.LineColumnProfileMap|undefined {
     return this.uiSourceCode.getDecorationData(type);
   }
 

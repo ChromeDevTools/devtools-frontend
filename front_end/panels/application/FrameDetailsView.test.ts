@@ -7,7 +7,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
-  getElementWithinComponent,
   raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -16,11 +15,10 @@ import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
-import * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
+import type * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
 import type * as ReportView from '../../ui/components/report_view/report_view.js';
 
 import * as Application from './application.js';
-import type * as ApplicationComponents from './components/components.js';
 
 const makeFrame = (target: SDK.Target.Target) => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
@@ -226,11 +224,10 @@ report-uri: https://www.example.com/csp`,
       'available\nLearn more',
     ]);
 
-    const stackTrace = component.contentElement.querySelector('devtools-resources-stack-trace') as
-        ApplicationComponents.StackTrace.StackTrace;
-    assert.isNotNull(stackTrace.shadowRoot);
-    const expandableList =
-        getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
+    const stackTrace = component.contentElement.querySelector(
+        'devtools-report-value[jslog="Section; context: frame-creation-stack-trace"] devtools-widget')!;
+    const expandableList = stackTrace.shadowRoot!.querySelector('devtools-expandable-list') as
+        ExpandableList.ExpandableList.ExpandableList;
     assert.isNotNull(expandableList.shadowRoot);
 
     const stackTraceRows = expandableList.shadowRoot!.querySelectorAll('devtools-widget');

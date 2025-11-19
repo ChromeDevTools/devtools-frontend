@@ -134,12 +134,15 @@ export class StackTraceLinkButton extends UI.Widget.Widget {
   }
 }
 
-export class StackTrace extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class StackTrace extends UI.Widget.Widget {
   readonly #linkifier = new Components.Linkifier.Linkifier();
   #stackTraceRows:
       Array<Components.JSPresentationUtils.StackTraceRegularRow|Components.JSPresentationUtils.StackTraceAsyncRow> = [];
   #showHidden = false;
+
+  constructor(element?: HTMLElement) {
+    super(element, {useShadowDom: true});
+  }
 
   set data(data: StackTraceData) {
     const {creationStackTrace, creationStackTraceTarget} = data.creationStackTraceData;
@@ -218,7 +221,7 @@ export class StackTrace extends HTMLElement {
         html`
           <span>${i18nString(UIStrings.cannotRenderStackTrace)}</span>
         `,
-        this.#shadow, {host: this});
+        this.contentElement, {host: this});
       return;
     }
 
@@ -229,15 +232,7 @@ export class StackTrace extends HTMLElement {
                                   jslog=${VisualLogging.tree()}>
         </devtools-expandable-list>
       `,
-      this.#shadow, {host: this});
+      this.contentElement, {host: this});
     // clang-format on
-  }
-}
-
-customElements.define('devtools-resources-stack-trace', StackTrace);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-stack-trace': StackTrace;
   }
 }

@@ -9,13 +9,11 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   dispatchClickEvent,
-  getElementWithinComponent,
   raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../../testing/TraceHelpers.js';
-import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 
 import * as ApplicationComponents from './components.js';
@@ -86,9 +84,7 @@ describeWithEnvironment('StackTrace', () => {
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 
-    assert.isNotNull(component.shadowRoot);
-    const expandableList =
-        getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
+    const expandableList = component.contentElement.querySelector('devtools-expandable-list')!;
     const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
     assert.instanceOf(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);
@@ -139,9 +135,7 @@ describeWithEnvironment('StackTrace', () => {
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 
-    assert.isNotNull(component.shadowRoot);
-    const expandableList =
-        getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
+    const expandableList = component.contentElement.querySelector('devtools-expandable-list')!;
     const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
     assert.instanceOf(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);

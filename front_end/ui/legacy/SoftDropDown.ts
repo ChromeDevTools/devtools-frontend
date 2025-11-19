@@ -5,12 +5,12 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import {appendStyle} from './DOMUtilities.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior} from './GlassPane.js';
 import {ListControl, type ListDelegate, ListMode} from './ListControl.js';
 import {Events as ListModelEvents, type ItemsReplacedEvent, type ListModel} from './ListModel.js';
@@ -54,7 +54,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
       );
     }
     this.element.classList.add('soft-dropdown');
-    Platform.DOMUtilities.appendStyle(this.element, softDropDownButtonStyles);
+    appendStyle(this.element, softDropDownButtonStyles);
     this.titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = IconButton.Icon.create('triangle-down');
     this.element.appendChild(dropdownArrowIcon);

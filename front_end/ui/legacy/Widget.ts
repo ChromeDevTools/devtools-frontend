@@ -35,6 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
 
+import {appendStyle, deepActiveElement} from './DOMUtilities.js';
 import {cloneCustomElement, createShadowRootWithCoreStyles} from './UIUtils.js';
 
 // Remember the original DOM mutation methods here, since we
@@ -766,7 +767,7 @@ export class Widget {
 
   registerRequiredCSS(...cssFiles: Array<string&{_tag: 'CSS-in-JS'}>): void {
     for (const cssFile of cssFiles) {
-      Platform.DOMUtilities.appendStyle(this.#shadowRoot ?? this.element, cssFile);
+      appendStyle(this.#shadowRoot ?? this.element, cssFile);
     }
   }
 
@@ -1106,7 +1107,7 @@ export class WidgetFocusRestorer {
   private previous: HTMLElement|null;
   constructor(widget: Widget) {
     this.widget = widget;
-    this.previous = (Platform.DOMUtilities.deepActiveElement(widget.element.ownerDocument) as HTMLElement | null);
+    this.previous = (deepActiveElement(widget.element.ownerDocument) as HTMLElement | null);
     widget.focus();
   }
 

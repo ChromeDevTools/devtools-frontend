@@ -53,6 +53,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
 import confirmDialogStyles from './confirmDialog.css.js';
 import {Dialog} from './Dialog.js';
+import {appendStyle, deepActiveElement, rangeOfWord} from './DOMUtilities.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
 import {InspectorView} from './InspectorView.js';
@@ -358,7 +359,7 @@ export function isEditing(): boolean {
     return true;
   }
 
-  const focused = Platform.DOMUtilities.deepActiveElement(document);
+  const focused = deepActiveElement(document);
   if (!focused) {
     return false;
   }
@@ -580,8 +581,8 @@ export function handleElementValueModifications(
   }
 
   const originalValue = element.textContent;
-  const wordRange = Platform.DOMUtilities.rangeOfWord(
-      selectionRange.startContainer, selectionRange.startOffset, StyleValueDelimiters, element);
+  const wordRange =
+      rangeOfWord(selectionRange.startContainer, selectionRange.startOffset, StyleValueDelimiters, element);
   const wordString = wordRange.toString();
 
   if (suggestionHandler?.(wordString)) {
@@ -655,8 +656,8 @@ export function addPlatformClass(element: HTMLElement): void {
 }
 
 export function installComponentRootStyles(element: HTMLElement): void {
-  Platform.DOMUtilities.appendStyle(element, inspectorCommonStyles);
-  Platform.DOMUtilities.appendStyle(element, Buttons.textButtonStyles);
+  appendStyle(element, inspectorCommonStyles);
+  appendStyle(element, Buttons.textButtonStyles);
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
   if (!Host.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
@@ -681,7 +682,7 @@ export class ElementFocusRestorer {
   private previous: HTMLElement|null;
   constructor(element: Element) {
     this.element = (element as HTMLElement | null);
-    this.previous = (Platform.DOMUtilities.deepActiveElement(element.ownerDocument) as HTMLElement | null);
+    this.previous = (deepActiveElement(element.ownerDocument) as HTMLElement | null);
     (element as HTMLElement).focus();
   }
 
@@ -1930,7 +1931,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
 function focusChanged(event: Event): void {
   const target = event.target as HTMLElement;
   const document = target ? target.ownerDocument : null;
-  const element = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
+  const element = document ? deepActiveElement(document) : null;
   updateWidgetfocusWidgetForNode(element);
 }
 
@@ -1953,11 +1954,11 @@ export function createShadowRootWithCoreStyles(element: Element, options: {
   const {cssFile, delegatesFocus} = options;
 
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
-  Platform.DOMUtilities.appendStyle(shadowRoot, inspectorCommonStyles, Buttons.textButtonStyles);
+  appendStyle(shadowRoot, inspectorCommonStyles, Buttons.textButtonStyles);
   if (Array.isArray(cssFile)) {
-    Platform.DOMUtilities.appendStyle(shadowRoot, ...cssFile);
+    appendStyle(shadowRoot, ...cssFile);
   } else if (cssFile) {
-    Platform.DOMUtilities.appendStyle(shadowRoot, cssFile);
+    appendStyle(shadowRoot, cssFile);
   }
   shadowRoot.addEventListener('focus', focusChanged, true);
   return shadowRoot;

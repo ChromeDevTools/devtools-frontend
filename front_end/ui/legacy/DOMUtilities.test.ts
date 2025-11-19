@@ -4,7 +4,7 @@
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
-import * as Platform from './platform.js';
+import * as UI from './legacy.js';
 
 const cssInJS = (strings: ArrayLike<string>, ...values: any[]): CSSInJS =>
     String.raw({raw: strings}, ...values) as CSSInJS;
@@ -16,7 +16,7 @@ describe('DOMUtilities', () => {
       btn.innerText = 'Click me!';
       renderElementIntoDOM(btn);
       btn.focus();
-      const activeElement = Platform.DOMUtilities.deepActiveElement(document);
+      const activeElement = UI.DOMUtilities.deepActiveElement(document);
       assert.strictEqual(activeElement, btn);
     });
 
@@ -35,7 +35,7 @@ describe('DOMUtilities', () => {
 
       const component = new TestComponent();
       renderElementIntoDOM(component);
-      const activeElement = Platform.DOMUtilities.deepActiveElement(document);
+      const activeElement = UI.DOMUtilities.deepActiveElement(document);
       assert.strictEqual(activeElement, component.button);
     });
   });
@@ -46,7 +46,7 @@ describe('DOMUtilities', () => {
       const child = document.createElement('p');
       parent.appendChild(child);
       renderElementIntoDOM(parent);
-      assert.isNull(Platform.DOMUtilities.getEnclosingShadowRootForNode(child));
+      assert.isNull(UI.DOMUtilities.getEnclosingShadowRootForNode(child));
     });
 
     it('returns the shadow root in the tree', () => {
@@ -62,12 +62,12 @@ describe('DOMUtilities', () => {
       customElements.define('shadow-root-test', TestComponent);
       const component = new TestComponent();
       renderElementIntoDOM(component);
-      assert.strictEqual(Platform.DOMUtilities.getEnclosingShadowRootForNode(div), component.shadowRoot);
+      assert.strictEqual(UI.DOMUtilities.getEnclosingShadowRootForNode(div), component.shadowRoot);
     });
   });
 
   describe('appendStyle', () => {
-    const {appendStyle} = Platform.DOMUtilities;
+    const {appendStyle} = UI.DOMUtilities;
 
     it('correctly appends <style> elements', () => {
       const parent = renderElementIntoDOM(document.createElement('main'));

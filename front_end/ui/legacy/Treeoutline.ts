@@ -45,6 +45,7 @@ import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import {appendStyle} from './DOMUtilities.js';
 import {type Config, InplaceEditor} from './InplaceEditor.js';
 import {Keys} from './KeyboardShortcut.js';
 import type {SearchableView} from './SearchableView.js';
@@ -428,7 +429,7 @@ export class TreeOutlineInShadow extends TreeOutline {
 
   registerRequiredCSS(...cssFiles: Array<string&{_tag: 'CSS-in-JS'}>): void {
     for (const cssFile of cssFiles) {
-      Platform.DOMUtilities.appendStyle(this.shadowRoot, cssFile);
+      appendStyle(this.shadowRoot, cssFile);
     }
   }
 

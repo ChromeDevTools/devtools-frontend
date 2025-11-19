@@ -13,7 +13,6 @@ devtools_module("platform") {
     "ArrayUtilities.ts",
     "Brand.ts",
     "Constructor.ts",
-    "DOMUtilities.ts",
     "DateUtilities.ts",
     "DevToolsPath.ts",
     "KeyboardUtilities.ts",
@@ -42,7 +41,6 @@ ts_library("unittests") {
 
   sources = [
     "ArrayUtilities.test.ts",
-    "DOMUtilities.test.ts",
     "DateUtilities.test.ts",
     "DevToolsPath.test.ts",
     "KeyboardUtilities.test.ts",

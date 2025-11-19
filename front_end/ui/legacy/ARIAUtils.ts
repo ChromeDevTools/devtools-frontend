@@ -5,6 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import {Dialog} from './Dialog.js';
+import {getEnclosingShadowRootForNode} from './DOMUtilities.js';
 
 let id = 0;
 
@@ -348,8 +349,7 @@ export function setActiveDescendant(element: Element, activedescendant: Element|
 
   if (activedescendant.isConnected && element.isConnected) {
     console.assert(
-        Platform.DOMUtilities.getEnclosingShadowRootForNode(activedescendant) ===
-            Platform.DOMUtilities.getEnclosingShadowRootForNode(element),
+        getEnclosingShadowRootForNode(activedescendant) === getEnclosingShadowRootForNode(element),
         'elements are not in the same shadow dom');
   }
 

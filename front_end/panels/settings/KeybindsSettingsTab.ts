@@ -305,7 +305,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
 
   onEscapeKeyPressed(event: Event): void {
-    const deepActiveElement = Platform.DOMUtilities.deepActiveElement(document);
+    const deepActiveElement = UI.DOMUtilities.deepActiveElement(document);
     if (this.editingRow && deepActiveElement && deepActiveElement.nodeName === 'INPUT') {
       this.editingRow.onEscapeKeyPressed(event);
     }
@@ -595,7 +595,7 @@ export class ShortcutListItem {
   }
 
   onEscapeKeyPressed(event: Event): void {
-    const activeElement = Platform.DOMUtilities.deepActiveElement(document);
+    const activeElement = UI.DOMUtilities.deepActiveElement(document);
     for (const [shortcut, shortcutInput] of this.shortcutInputs.entries()) {
       if (activeElement === shortcutInput) {
         this.onShortcutInputKeyDown(shortcut, shortcutInput as HTMLInputElement, event);

@@ -717,7 +717,7 @@ export class MainImpl {
     // @ts-expect-error Used in ElementsTreeOutline
     eventCopy['original'] = event;
     const document = event.target && (event.target as HTMLElement).ownerDocument;
-    const target = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
+    const target = document ? UI.DOMUtilities.deepActiveElement(document) : null;
     if (target) {
       target.dispatchEvent(eventCopy);
     }
@@ -778,7 +778,7 @@ export class ZoomActionDelegate implements UI.ActionRegistration.ActionDelegate 
 export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     let searchableView = UI.SearchableView.SearchableView.fromElement(
-        Platform.DOMUtilities.deepActiveElement(document),
+        UI.DOMUtilities.deepActiveElement(document),
     );
     if (!searchableView) {
       const currentPanel = (UI.InspectorView.InspectorView.instance().currentPanelDeprecated() as UI.Panel.Panel);

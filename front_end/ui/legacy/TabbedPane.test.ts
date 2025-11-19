@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../core/platform/platform.js';
 import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
@@ -39,14 +38,14 @@ describeWithEnvironment('TabbedPane', () => {
   });
 
   const dispatchKeyEvent = (key: string) => {
-    const activeElement = Platform.DOMUtilities.deepActiveElement(document);
+    const activeElement = UI.DOMUtilities.deepActiveElement(document);
     if (activeElement) {
       activeElement.dispatchEvent(new KeyboardEvent('keydown', {key, bubbles: true, cancelable: true}));
     }
   };
 
   const getFocusedElementText = () => {
-    const activeElement = Platform.DOMUtilities.deepActiveElement(document);
+    const activeElement = UI.DOMUtilities.deepActiveElement(document);
     return activeElement ? activeElement.textContent : null;
   };
 

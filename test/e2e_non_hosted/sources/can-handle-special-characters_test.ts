@@ -42,7 +42,8 @@ describe('Sources Tab', () => {
 
   async function loadFromFilePath(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     const fileUrl = 'file://' +
-        resolve(__dirname, '..', '..', 'e2e', 'resources', 'sources', 'filesystem', 'special-characters.html');
+        resolve(__dirname, '..', '..', 'e2e_non_hosted', 'resources', 'sources', 'filesystem',
+                'special-characters.html');
     await inspectedPage.goTo(fileUrl);
     await openSourcesPanel(devToolsPage);
   }

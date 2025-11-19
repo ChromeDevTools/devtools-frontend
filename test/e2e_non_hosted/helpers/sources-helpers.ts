@@ -740,7 +740,7 @@ export class WasmLocationLabels {
 
   static load(source: string, wasm: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage):
       WasmLocationLabels {
-    const mapFileName = path.join(GEN_DIR, 'test', 'e2e', 'resources', `${wasm}.map.json`);
+    const mapFileName = path.join(GEN_DIR, 'test', 'e2e_non_hosted', 'resources', `${wasm}.map.json`);
     const mapFile = JSON.parse(fs.readFileSync(mapFileName, {encoding: 'utf-8'})) as Array<{
                       source: string,
                       generatedLine: number,

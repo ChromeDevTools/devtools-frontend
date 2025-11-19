@@ -7,6 +7,10 @@
 
 export const UIStrings = {
   /**
+   * @description This warning occurs when the website uses Attribution Reporting.
+   */
+  AttributionReporting: "Attribution Reporting is deprecated and will be removed. See https://goo.gle/ps-status for details.",
+  /**
    * @description We show this warning when 1) an 'authorization' header is attached to the request by scripts, 2) there is no 'authorization' in the 'access-control-allow-headers' header in the response, and 3) there is a wildcard symbol ('*') in the 'access-control-allow-header' header in the response. This is allowed now, but we're planning to reject such responses and require responses to have an 'access-control-allow-headers' containing 'authorization'.
    */
   AuthorizationCoveredByWildcard: "Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling.",
@@ -238,6 +242,9 @@ export interface DeprecationDescriptor {
 }
 
 export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor>> = {
+  "AttributionReporting": {
+    "chromeStatusFeature": 6320639375966208
+  },
   "AuthorizationCoveredByWildcard": {
     "milestone": 97
   },

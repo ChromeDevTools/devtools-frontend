@@ -1749,12 +1749,13 @@
                         "FormInputWithNoLabelError",
                         "FormAutocompleteAttributeEmptyError",
                         "FormEmptyIdAndNameAttributesForInputError",
-                        "FormAriaLabelledByToNonExistingId",
+                        "FormAriaLabelledByToNonExistingIdError",
                         "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
-                        "FormLabelHasNeitherForNorNestedInput",
+                        "FormLabelHasNeitherForNorNestedInputError",
                         "FormLabelForMatchesNonExistingIdError",
                         "FormInputHasWrongButWellIntendedAutocompleteValueError",
-                        "ResponseWasBlockedByORB"
+                        "ResponseWasBlockedByORB",
+                        "NavigationEntryMarkedSkippable"
                     ]
                 },
                 {

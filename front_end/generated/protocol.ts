@@ -1187,12 +1187,13 @@ export namespace Audits {
     FormInputWithNoLabelError = 'FormInputWithNoLabelError',
     FormAutocompleteAttributeEmptyError = 'FormAutocompleteAttributeEmptyError',
     FormEmptyIdAndNameAttributesForInputError = 'FormEmptyIdAndNameAttributesForInputError',
-    FormAriaLabelledByToNonExistingId = 'FormAriaLabelledByToNonExistingId',
+    FormAriaLabelledByToNonExistingIdError = 'FormAriaLabelledByToNonExistingIdError',
     FormInputAssignedAutocompleteValueToIdOrNameAttributeError = 'FormInputAssignedAutocompleteValueToIdOrNameAttributeError',
-    FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
+    FormLabelHasNeitherForNorNestedInputError = 'FormLabelHasNeitherForNorNestedInputError',
     FormLabelForMatchesNonExistingIdError = 'FormLabelForMatchesNonExistingIdError',
     FormInputHasWrongButWellIntendedAutocompleteValueError = 'FormInputHasWrongButWellIntendedAutocompleteValueError',
     ResponseWasBlockedByORB = 'ResponseWasBlockedByORB',
+    NavigationEntryMarkedSkippable = 'NavigationEntryMarkedSkippable',
   }
 
   /**

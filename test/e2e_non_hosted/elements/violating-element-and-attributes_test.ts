@@ -14,12 +14,15 @@ describe('Element has violating properties', function() {
     await expandSelectedNodeRecursively(devToolsPage);
   }
 
-  it('tag is highlighted on input without name nor id', async ({devToolsPage, inspectedPage}) => {
-    await expandFormWithIssues(devToolsPage, inspectedPage);
-    const elements = await devToolsPage.waitForMany('.violating-element', 2);
-    const violatingElementOrAttr = await elements[0].evaluate(node => node.textContent);
-    assert.strictEqual(violatingElementOrAttr, 'input');
-  });
+  // Skipped to land browser-protocol roll for definitions (the CfT roll that changes the implementation will follow).
+  it.skip(
+      '[crbug.com/461775544] tag is highlighted on input without name nor id',
+      async ({devToolsPage, inspectedPage}) => {
+        await expandFormWithIssues(devToolsPage, inspectedPage);
+        const elements = await devToolsPage.waitForMany('.violating-element', 2);
+        const violatingElementOrAttr = await elements[0].evaluate(node => node.textContent);
+        assert.strictEqual(violatingElementOrAttr, 'input');
+      });
 
   it('autocomplete attribute is highlighted when empty.', async ({devToolsPage, inspectedPage}) => {
     await expandFormWithIssues(devToolsPage, inspectedPage);
@@ -67,7 +70,11 @@ describe('The elements panel', function() {
     assert.strictEqual(violatingElement, 'button');
   });
 
-  it('displays multiple issues when hoverring over squiggly line', async ({devToolsPage, inspectedPage}) => {
+  // Skipped to land browser-protocol roll for definitions (the CfT roll that changes the implementation will follow).
+  it.skip('[crbug.com/461775544] displays multiple issues when hoverring over squiggly line', async ({
+                                                                                                devToolsPage,
+                                                                                                inspectedPage
+                                                                                              }) => {
     await expandElementsWithIssues(devToolsPage, inspectedPage);
     const elements = await devToolsPage.waitForMany('.violating-element', 2);
     const violatingElement = elements[1];

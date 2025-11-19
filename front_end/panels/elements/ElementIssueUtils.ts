@@ -124,11 +124,11 @@ function getTooltipFromGenericIssue(errorType: Protocol.Audits.GenericIssueError
       return i18nString(UIStrings.formAutocompleteAttributeEmptyError);
     case Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError:
       return i18nString(UIStrings.formEmptyIdAndNameAttributesForInputError);
-    case Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId:
+    case Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingIdError:
       return i18nString(UIStrings.formAriaLabelledByToNonExistingId);
     case Protocol.Audits.GenericIssueErrorType.FormInputAssignedAutocompleteValueToIdOrNameAttributeError:
       return i18nString(UIStrings.formInputAssignedAutocompleteValueToIdOrNameAttributeError);
-    case Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput:
+    case Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInputError:
       return i18nString(UIStrings.formLabelHasNeitherForNorNestedInput);
     case Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError:
       return i18nString(UIStrings.formLabelForMatchesNonExistingIdError);

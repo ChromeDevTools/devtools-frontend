@@ -129,8 +129,8 @@ export const genericFormDuplicateIdForInputError = {
   }],
 };
 
-export const genericFormAriaLabelledByToNonExistingId = {
-  file: 'genericFormAriaLabelledByToNonExistingId.md',
+export const genericFormAriaLabelledByToNonExistingIdError = {
+  file: 'genericFormAriaLabelledByToNonExistingIdError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label',
     linkTitle: i18nLazyString(UIStrings.labelFormlementsPageTitle),
@@ -169,8 +169,8 @@ export const genericFormLabelForMatchesNonExistingIdError = {
   }],
 };
 
-export const genericFormLabelHasNeitherForNorNestedInput = {
-  file: 'genericFormLabelHasNeitherForNorNestedInput.md',
+export const genericFormLabelHasNeitherForNorNestedInputError = {
+  file: 'genericFormLabelHasNeitherForNorNestedInputError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label',
     linkTitle: i18nLazyString(UIStrings.labelFormlementsPageTitle),
@@ -193,7 +193,10 @@ const issueDescriptions = new Map<Protocol.Audits.GenericIssueErrorType, LazyMar
     genericFormAutocompleteAttributeEmptyError,
   ],
   [Protocol.Audits.GenericIssueErrorType.FormDuplicateIdForInputError, genericFormDuplicateIdForInputError],
-  [Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId, genericFormAriaLabelledByToNonExistingId],
+  [
+    Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingIdError,
+    genericFormAriaLabelledByToNonExistingIdError
+  ],
   [
     Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError,
     genericFormEmptyIdAndNameAttributesForInputError,
@@ -207,8 +210,8 @@ const issueDescriptions = new Map<Protocol.Audits.GenericIssueErrorType, LazyMar
     genericFormLabelForMatchesNonExistingIdError,
   ],
   [
-    Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput,
-    genericFormLabelHasNeitherForNorNestedInput,
+    Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInputError,
+    genericFormLabelHasNeitherForNorNestedInputError,
   ],
   [
     Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError,
@@ -225,14 +228,14 @@ const issueTypes = new Map<Protocol.Audits.GenericIssueErrorType, IssueKind>([
   [Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError, IssueKind.IMPROVEMENT],
   [Protocol.Audits.GenericIssueErrorType.FormAutocompleteAttributeEmptyError, IssueKind.PAGE_ERROR],
   [Protocol.Audits.GenericIssueErrorType.FormDuplicateIdForInputError, IssueKind.PAGE_ERROR],
-  [Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId, IssueKind.IMPROVEMENT],
+  [Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingIdError, IssueKind.IMPROVEMENT],
   [Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError, IssueKind.IMPROVEMENT],
   [
     Protocol.Audits.GenericIssueErrorType.FormInputAssignedAutocompleteValueToIdOrNameAttributeError,
     IssueKind.IMPROVEMENT,
   ],
   [Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError, IssueKind.PAGE_ERROR],
-  [Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput, IssueKind.IMPROVEMENT],
+  [Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInputError, IssueKind.IMPROVEMENT],
   [Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError, IssueKind.IMPROVEMENT],
 
 ]);

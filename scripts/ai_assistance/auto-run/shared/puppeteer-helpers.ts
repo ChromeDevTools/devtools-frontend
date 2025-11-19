@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as path from 'path';
+import * as path from 'node:path';
 import type {ElementHandle, Page} from 'puppeteer-core';
 
 import type {IndividualPromptRequestResponse} from '../../types.d.ts';

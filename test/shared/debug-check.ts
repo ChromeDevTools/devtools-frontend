@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {readFileSync} from 'fs';
-import {join} from 'path';
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
 
 const isDebug = /^\s*is_debug\s*=\s*(.*)/;
 

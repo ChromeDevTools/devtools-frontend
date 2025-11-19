@@ -9,7 +9,7 @@
 
 /* eslint-disable no-console */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
 const ALLOWED_ASSERTION_FAILURES = [

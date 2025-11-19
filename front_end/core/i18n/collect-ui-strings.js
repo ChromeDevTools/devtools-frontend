@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 const glob = require('glob');
-const path = require('path');
+const path = require('node:path');
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 

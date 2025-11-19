@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { join, dirname } from 'path';
+import { join, dirname } from 'node:path';
 import { v5 } from 'uuid';
 
 import { writeIfChanged } from './ninja/write-if-changed.js';

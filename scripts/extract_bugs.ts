@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {readFileSync} from 'fs';
 import glob from 'glob';
+import {readFileSync} from 'node:fs';
 import * as ts from 'typescript';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';

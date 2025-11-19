@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const path = require('path');
-const process = require('process');
+const path = require('node:path');
+const process = require('node:process');
 const glob = requireInternal('glob');
 const karmaChromeLauncher = requireInternal('karma-chrome-launcher');
 

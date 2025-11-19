@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as os from 'os';
+import * as os from 'node:os';
 import type * as puppeteer from 'puppeteer-core';
 
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';

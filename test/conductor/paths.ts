@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as os from 'os';
-import * as path from 'path';
+import * as os from 'node:os';
+import * as path from 'node:path';
 
 const build = require('../build.js');
 export const SOURCE_ROOT = path.join(__dirname, '..', build.SOURCE_ROOT);

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {resolve} from 'path';
+import {resolve} from 'node:path';
 
 import {
   addBreakpointForLine,

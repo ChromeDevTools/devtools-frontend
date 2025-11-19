@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 const {assert} = require('chai');
-const path = require('path');
+const path = require('node:path');
 const stylelint = require('stylelint');
 
 const configBase = {

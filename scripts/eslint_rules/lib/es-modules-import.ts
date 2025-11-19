@@ -8,7 +8,7 @@
  */
 
 import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
-import path from 'path';
+import path from 'node:path';
 
 import {createRule} from './utils/ruleCreator.ts';
 import {isStarAsImportSpecifier} from './utils/treeHelpers.ts';

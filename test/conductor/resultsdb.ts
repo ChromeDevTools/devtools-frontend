@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as fs from 'fs';
-import * as http from 'http';
+import * as fs from 'node:fs';
+import * as http from 'node:http';
 
 import type {ArtifactGroup} from './screenshot-error.js';
 

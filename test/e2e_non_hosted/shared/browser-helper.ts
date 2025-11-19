@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import * as url from 'node:url';
 import * as puppeteer from 'puppeteer-core';
-import * as url from 'url';
 
 import {setupBrowserProcessIO} from '../../conductor/events.js';
 import {GEN_DIR} from '../../conductor/paths.js';

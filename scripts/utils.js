@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {execSync: shell} = require('child_process');
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const path = require('path');
-const {Transform: Stream} = require('stream');
-const {parse: parseURL} = require('url');
+const {execSync: shell} = require('node:child_process');
+const fs = require('node:fs');
+const http = require('node:http');
+const https = require('node:https');
+const path = require('node:path');
+const {Transform: Stream} = require('node:stream');
+const {parse: parseURL} = require('node:url');
 
 function fetch(url) {
   return new Promise(fetchPromise);

@@ -13,8 +13,8 @@
  * You can also execute the tests: `./node_modules/.bin/mocha.js scripts/deps/tests
  **/
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const ts = require('typescript');
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');

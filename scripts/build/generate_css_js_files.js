@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 const cssnano = require('cssnano');
 const cssnanoPresetLite = require('cssnano-preset-lite');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const postcss = require('postcss');
 
 const {writeIfChanged} = require('./ninja/write-if-changed.js');

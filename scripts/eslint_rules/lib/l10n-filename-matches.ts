@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type {TSESTree} from '@typescript-eslint/utils';
-import * as path from 'path';
+import * as path from 'node:path';
 
 import {isModuleScope} from './utils/l10n-helper.ts';
 import {createRule} from './utils/ruleCreator.ts';

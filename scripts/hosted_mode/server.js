@@ -1,11 +1,11 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-const fs = require('fs');
-const https = require('https');
-const path = require('path');
-const parseURL = require('url').parse;
-const promisify = require('util').promisify;
+const fs = require('node:fs');
+const https = require('node:https');
+const path = require('node:path');
+const parseURL = require('node:url').parse;
+const promisify = require('node:util').promisify;
 const WebSocketServer = require('ws').Server;
 
 const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;

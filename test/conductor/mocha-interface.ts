@@ -5,7 +5,7 @@
 import * as Mocha from 'mocha';
 // @ts-expect-error
 import * as commonInterface from 'mocha/lib/interfaces/common.js';
-import * as Path from 'path';
+import * as Path from 'node:path';
 
 import {makeInstrumentedTestFunction} from './mocha-interface-helpers.js';
 import {platform, type Platform} from './platform.js';

@@ -4,7 +4,7 @@
 
 // This script takes a path to a BUILD.gn and ensures that its DEPS are in sync for each file in that BUILD.gn.
 const {assert} = require('chai');
-const path = require('path');
+const path = require('node:path');
 
 const {compareDeps, parseBuildGN, parseSourceFileForImports, validateDirectory} =
     require('../sync-build-gn-imports.js');

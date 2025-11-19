@@ -10,8 +10,8 @@
  * here. Please add any paths you need that are missing.
  */
 
-const os = require('os');
-const path = require('path');
+const os = require('node:os');
+const path = require('node:path');
 
 /**
  * You would think we can use __filename here but we cannot because __filename

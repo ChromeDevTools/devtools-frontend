@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as fs from 'fs';
-import {join} from 'path';
+import * as fs from 'node:fs';
+import {join} from 'node:path';
 
 import * as ts from '../../conductor/test_config.js';
 import {mean, percentile} from '../helpers/perf-helper.js';

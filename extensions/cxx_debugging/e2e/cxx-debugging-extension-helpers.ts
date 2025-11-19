@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import {getTestServerPort} from 'test/conductor/server_port.js';
 import {openSourcesPanel} from 'test/e2e_non_hosted/helpers/sources-helpers.js';
 import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers';

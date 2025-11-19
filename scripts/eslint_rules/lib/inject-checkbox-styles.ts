@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type {TSESTree} from '@typescript-eslint/utils';
-import path from 'path';
+import path from 'node:path';
 
 import {isLitHtmlTemplateCall} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';

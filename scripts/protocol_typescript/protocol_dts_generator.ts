@@ -6,8 +6,8 @@
  * this script was taken from https://github.com/ChromeDevTools/devtools-protocol/tree/master/scripts
  * and adjusted slightly to fit within devtools-frontend
  */
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 import type {Protocol} from './protocol_schema.js';
 

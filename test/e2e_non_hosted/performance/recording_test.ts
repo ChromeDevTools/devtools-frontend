@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as path from 'path';
+import * as path from 'node:path';
 
 import {GEN_DIR} from '../../conductor/paths.js';
 import {

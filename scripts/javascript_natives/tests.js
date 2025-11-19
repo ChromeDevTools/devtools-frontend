@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import ts from 'typescript';
 import * as WebIDL2 from 'webidl2';
 

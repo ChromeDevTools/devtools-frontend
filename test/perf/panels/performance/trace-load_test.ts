@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as path from 'path';
+import * as path from 'node:path';
 
 import type * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import {GEN_DIR} from '../../../conductor/paths.js';

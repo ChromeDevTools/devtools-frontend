@@ -4,8 +4,8 @@
 
 // @ts-check
 
-const os = require('os');
-const path = require('path');
+const os = require('node:os');
+const path = require('node:path');
 
 const {devtoolsRootPath} = require('../devtools_paths.js');
 

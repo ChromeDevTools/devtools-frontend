@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {execSync, spawn} from 'child_process';
-import path from 'path';
+import {execSync, spawn} from 'node:child_process';
+import path from 'node:path';
 
 const args = process.argv.slice(2);
 if (args.length !== 2) {

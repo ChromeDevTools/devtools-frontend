@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { spawn } from 'child_process';
 import { ESLint } from 'eslint';
-import { readFileSync } from 'fs';
 import { sync } from 'globby';
-import { extname, join, resolve, relative } from 'path';
+import { spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { extname, join, resolve, relative } from 'node:path';
 import stylelint from 'stylelint';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';

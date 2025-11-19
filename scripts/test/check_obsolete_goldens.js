@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const childProcess = require('child_process');
-const fs = require('fs');
 const glob = require('glob');
-const path = require('path');
-const util = require('util');
+const childProcess = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const util = require('node:util');
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 const exec = util.promisify(childProcess.exec);

@@ -10,7 +10,7 @@ import jsdocPlugin from 'eslint-plugin-jsdoc';
 import litPlugin from 'eslint-plugin-lit';
 import mochaPlugin from 'eslint-plugin-mocha';
 import globals from 'globals';
-import { join } from 'path';
+import { join } from 'node:path';
 import typescriptEslint from 'typescript-eslint';
 
 import devToolsPlugin from './scripts/eslint_rules/plugin.mjs';
@@ -284,6 +284,7 @@ export default defineConfig([
           },
         },
       ],
+      'import/enforce-node-protocol-usage': ['error', 'always'],
       // Try to spot '// console.log()' left over from debugging
       '@devtools/no-commented-out-console': 'error',
       // Prevent imports being commented out rather than deleted.

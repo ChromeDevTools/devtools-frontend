@@ -6,7 +6,7 @@ import * as Mocha from 'mocha';
 import type {CommonFunctions, CreateOptions, SuiteFunctions, TestFunctions} from 'mocha/lib/interfaces/common';
 // @ts-expect-error
 import * as commonInterface from 'mocha/lib/interfaces/common.js';
-import * as Path from 'path';
+import * as Path from 'node:path';
 
 import {platform, type Platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';

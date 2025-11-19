@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as path from 'path';
+import * as path from 'node:path';
 import * as puppeteer from 'puppeteer-core';
 import {dumpCollectedErrors} from 'test/conductor/events.js';
 import * as MochaHooks from 'test/conductor/mocha_hooks.js';

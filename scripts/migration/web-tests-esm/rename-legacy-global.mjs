@@ -10,8 +10,8 @@
  * import passed via "--import" if not already present in the web test.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import yargs from 'yargs';
 
 const yargsObject = yargs(process.argv.slice(2), process.cwd())

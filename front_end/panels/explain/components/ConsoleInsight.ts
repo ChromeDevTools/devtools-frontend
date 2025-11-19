@@ -20,7 +20,6 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Console from '../../console/console.js';
 
 import styles from './consoleInsight.css.js';
-import listStyles from './consoleInsightSourcesList.css.js';
 
 // Note: privacy and legal notices are not localized so far.
 const UIStrings = {
@@ -365,6 +364,26 @@ function renderLoading(): Lit.TemplateResult {
   // clang-format on
 }
 
+function renderInsightSourcesList(
+    sources: Console.PromptBuilder.Source[], isPageReloadRecommended: boolean): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <div class="insight-sources">style>
+      <ul>
+        ${Directives.repeat(sources, item => item.value, item => {
+          return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link('source-' + item.type).track({click: true})}>
+            <devtools-icon name="open-externally"></devtools-icon>
+            ${localizeType(item.type)}
+          </x-link></li>`;
+        })}
+        ${isPageReloadRecommended ? html`<li class="source-disclaimer">
+          <devtools-icon name="warning"></devtools-icon>
+          ${i18nString(UIStrings.reloadRecommendation)}</li>` : Lit.nothing}
+      </ul>
+    </div>`;
+  // clang-format on
+}
+
 function renderInsight(
     insight: Extract<StateData, {type: State.INSIGHT}>, renderer: ViewInput['renderer'],
     disableAnimations: ViewInput['disableAnimations'], callbacks: ViewInput['callbacks'],
@@ -386,8 +405,7 @@ function renderInsight(
         ` : Lit.nothing}
         <details jslog=${VisualLogging.expand('sources').track({click: true})}>
           <summary>${i18nString(UIStrings.inputData)}</summary>
-          <devtools-console-insight-sources-list .sources=${insight.sources} .isPageReloadRecommended=${insight.isPageReloadRecommended}>
-          </devtools-console-insight-sources-list>
+          ${renderInsightSourcesList(insight.sources, insight.isPageReloadRecommended)}
         </details>
         <div class="buttons">
           ${renderSearchButton(callbacks.onSearch)}
@@ -1214,50 +1232,10 @@ export class ConsoleInsight extends HTMLElement {
   }
 }
 
-class ConsoleInsightSourcesList extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #sources: Console.PromptBuilder.Source[] = [];
-  #isPageReloadRecommended = false;
-
-  #render(): void {
-    // clang-format off
-     render(html`
-      <style>${listStyles}</style>
-      <style>${Input.checkboxStyles}</style>
-      <ul>
-        ${Directives.repeat(this.#sources, item => item.value, item => {
-          return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link('source-' + item.type).track({click: true})}>
-            <devtools-icon name="open-externally"></devtools-icon>
-            ${localizeType(item.type)}
-          </x-link></li>`;
-        })}
-        ${this.#isPageReloadRecommended ? html`<li class="source-disclaimer">
-          <devtools-icon name="warning"></devtools-icon>
-          ${i18nString(UIStrings.reloadRecommendation)}</li>` : Lit.nothing}
-      </ul>
-    `, this.#shadow, {
-      host: this,
-    });
-    // clang-format on
-  }
-
-  set sources(values: Console.PromptBuilder.Source[]) {
-    this.#sources = values;
-    this.#render();
-  }
-
-  set isPageReloadRecommended(isPageReloadRecommended: boolean) {
-    this.#isPageReloadRecommended = isPageReloadRecommended;
-    this.#render();
-  }
-}
-
 customElements.define('devtools-console-insight', ConsoleInsight);
-customElements.define('devtools-console-insight-sources-list', ConsoleInsightSourcesList);
 
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-console-insight': ConsoleInsight;
-    'devtools-console-insight-sources-list': ConsoleInsightSourcesList;
   }
 }

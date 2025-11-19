@@ -9,10 +9,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [
-    "./components/consoleInsight.css",
-    "./components/consoleInsightSourcesList.css",
-  ]
+  sources = [ "./components/consoleInsight.css" ]
 }
 
 devtools_ui_module("explain") {

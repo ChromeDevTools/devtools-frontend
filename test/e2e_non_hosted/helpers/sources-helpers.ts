@@ -749,7 +749,7 @@ export class WasmLocationLabels {
                       originalLine: number,
                       originalColumn: number,
                     }>;
-    const sourceFileName = path.join(GEN_DIR, 'test', 'e2e', 'resources', source);
+    const sourceFileName = path.join(GEN_DIR, 'test', 'e2e_non_hosted', 'resources', source);
     const sourceFile = fs.readFileSync(sourceFileName, {encoding: 'utf-8'});
     const labels = new Map<string, number>();
     for (const [index, line] of sourceFile.split('\n').entries()) {

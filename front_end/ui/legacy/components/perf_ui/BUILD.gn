@@ -106,6 +106,7 @@ devtools_ui_module("unittests") {
     "ChartViewport.test.ts",
     "FilmStripView.test.ts",
     "FlameChart.test.ts",
+    "LineLevelProfile.test.ts",
     "PieChart.test.ts",
     "TimelineGrid.test.ts",
     "TimelineOverviewCalculator.test.ts",

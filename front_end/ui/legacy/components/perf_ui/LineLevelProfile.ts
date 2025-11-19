@@ -8,7 +8,6 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import type * as CPUProfile from '../../../../models/cpu_profile/cpu_profile.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
 
 let performanceInstance: Performance;
 
@@ -16,7 +15,7 @@ export class Performance {
   private readonly helper: Helper;
 
   private constructor() {
-    this.helper = new Helper(SourceFrame.SourceFrame.DecoratorType.PERFORMANCE);
+    this.helper = new Helper(Workspace.UISourceCode.DecoratorType.PERFORMANCE);
   }
 
   static instance(opts: {
@@ -50,7 +49,8 @@ export class Performance {
           const lineInfo = node.positionTicks[j];
           const line = lineInfo.line;
           const time = lineInfo.ticks * sampleDuration;
-          this.helper.addLineData(target, node.url, line, time);
+          // Since no column number is provided by legacy profile, default to 1 (beginning of line).
+          this.helper.addLocationData(target, node.url, {line, column: 1}, time);
         }
       }
     }
@@ -62,13 +62,14 @@ export class Performance {
       this.helper.scheduleUpdate();
       return;
     }
-    if (!profile.samples) {
+    if (!profile.samples || !profile.columns) {
       return;
     }
 
     for (let i = 1; i < profile.samples.length; ++i) {
       const line = profile.lines[i];
-      if (!line) {
+      const column = profile.columns?.[i];
+      if (!line || !column) {
         continue;
       }
       const node = profile.nodeByIndex(i);
@@ -80,7 +81,7 @@ export class Performance {
         continue;
       }
       const time = profile.timestamps[i] - profile.timestamps[i - 1];
-      this.helper.addLineData(target, scriptIdOrUrl, line, time);
+      this.helper.addLocationData(target, scriptIdOrUrl, {line, column}, time);
     }
     this.helper.scheduleUpdate();
   }
@@ -91,7 +92,7 @@ let memoryInstance: Memory;
 export class Memory {
   private readonly helper: Helper;
   private constructor() {
-    this.helper = new Helper(SourceFrame.SourceFrame.DecoratorType.MEMORY);
+    this.helper = new Helper(Workspace.UISourceCode.DecoratorType.MEMORY);
   }
 
   static instance(opts: {
@@ -124,43 +125,55 @@ export class Memory {
         return;
       }
       const line = node.callFrame.lineNumber + 1;
-      helper.addLineData(target, script, line, node.selfSize);
+      // Since no column number is provided by the heap profile, default to 1 (beginning of line).
+      helper.addLocationData(target, script, {line, column: 1}, node.selfSize);
     }
   }
 }
 
 export class Helper {
-  private readonly type: string;
+  private readonly type: Workspace.UISourceCode.DecoratorType;
   private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();
   private updateTimer: number|null = null;
-  private lineData =
-      new Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, Map<number, number>>>();
-
-  constructor(type: string) {
+  /**
+   * Given a location in a script (with line and column numbers being 1-based) stores
+   * the time spent at that location in a performance profile.
+   */
+  private locationData =
+      new Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, Map<number, Map<number, number>>>>();
+  constructor(type: Workspace.UISourceCode.DecoratorType) {
     this.type = type;
     this.reset();
   }
 
   reset(): void {
     // The second map uses string keys for script URLs and numbers for scriptId.
-    this.lineData = new Map();
+    this.locationData = new Map();
     this.scheduleUpdate();
   }
 
-  addLineData(
-      target: SDK.Target.Target|null, scriptIdOrUrl: Platform.DevToolsPath.UrlString|number, line: number,
-      data: number): void {
-    let targetData = this.lineData.get(target);
+  /**
+   * Stores the time taken running a given script location (line and column)
+   */
+  addLocationData(
+      target: SDK.Target.Target|null, scriptIdOrUrl: Platform.DevToolsPath.UrlString|number,
+      {line, column}: {line: number, column: number}, data: number): void {
+    let targetData = this.locationData.get(target);
     if (!targetData) {
       targetData = new Map();
-      this.lineData.set(target, targetData);
+      this.locationData.set(target, targetData);
     }
     let scriptData = targetData.get(scriptIdOrUrl);
     if (!scriptData) {
       scriptData = new Map();
       targetData.set(scriptIdOrUrl, scriptData);
     }
-    scriptData.set(line, (scriptData.get(line) || 0) + data);
+    let lineData = scriptData.get(line);
+    if (!lineData) {
+      lineData = new Map();
+      scriptData.set(line, lineData);
+    }
+    lineData.set(column, (lineData.get(column) || 0) + data);
   }
 
   scheduleUpdate(): void {
@@ -176,10 +189,9 @@ export class Helper {
   private async doUpdate(): Promise<void> {
     this.locationPool.disposeAll();
     // Map from sources to line->value profile maps.
-    const decorationsBySource = new Map<Workspace.UISourceCode.UISourceCode, Map<number, number>>();
+    const decorationsBySource = new Map<Workspace.UISourceCode.UISourceCode, Map<number, Map<number, number>>>();
     const pending: Array<Promise<void>> = [];
-
-    for (const [target, scriptToLineMap] of this.lineData) {
+    for (const [target, scriptToLineMap] of this.locationData) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       for (const [scriptIdOrUrl, lineToDataMap] of scriptToLineMap) {
         // debuggerModel is null when the profile is loaded from file.
@@ -187,23 +199,34 @@ export class Helper {
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
         if (debuggerModel) {
           const workspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-          for (const lineToData of lineToDataMap) {
-            const line = lineToData[0] - 1;
-            const data = lineToData[1];
-            const rawLocation = typeof scriptIdOrUrl === 'string' ?
-                debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
-                debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl) as Protocol.Runtime.ScriptId, line, 0);
-            if (rawLocation) {
-              pending.push(workspaceBinding.rawLocationToUILocation(rawLocation).then(uiLocation => {
-                if (uiLocation) {
-                  let lineMap = decorationsBySource.get(uiLocation.uiSourceCode);
-                  if (!lineMap) {
-                    lineMap = new Map<number, number>();
-                    decorationsBySource.set(uiLocation.uiSourceCode, lineMap);
-                  }
-                  lineMap.set(uiLocation.lineNumber + 1, data);
+          for (const [lineNumber, lineData] of lineToDataMap) {
+            // lineData contains profiling data by column.
+            for (const [columnNumber, data] of lineData) {
+              const zeroBasedLine = lineNumber - 1;
+              const zeroBasedColumn = columnNumber - 1;
+              if (target) {
+                const rawLocation = typeof scriptIdOrUrl === 'string' ?
+                    debuggerModel.createRawLocationByURL(scriptIdOrUrl, zeroBasedLine, zeroBasedColumn || 0) :
+                    debuggerModel.createRawLocationByScriptId(
+                        String(scriptIdOrUrl) as Protocol.Runtime.ScriptId, zeroBasedLine, zeroBasedColumn || 0);
+                if (rawLocation) {
+                  pending.push(workspaceBinding.rawLocationToUILocation(rawLocation).then(uiLocation => {
+                    if (uiLocation) {
+                      let lineMap = decorationsBySource.get(uiLocation.uiSourceCode);
+                      if (!lineMap) {
+                        lineMap = new Map<number, Map<number, number>>();
+                        decorationsBySource.set(uiLocation.uiSourceCode, lineMap);
+                      }
+                      let columnMap = lineMap.get(lineNumber);
+                      if (!columnMap) {
+                        columnMap = new Map<number, number>();
+                        lineMap.set(lineNumber, columnMap);
+                      }
+                      columnMap.set((zeroBasedColumn || 0) + 1, data);
+                    }
+                  }));
                 }
-              }));
+              }
             }
           }
         } else if (typeof scriptIdOrUrl === 'string') {

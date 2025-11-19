@@ -121,7 +121,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private readonly lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>;
   private prettyInternal: boolean;
   private rawContent: string|CodeMirror.Text|null;
-  private formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
+  protected formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
   private readonly prettyToggle: UI.Toolbar.ToolbarToggle;
   private shouldAutoPrettyPrint: boolean;
   private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
@@ -400,6 +400,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       newSelection = textEditor.createSelection(
           {lineNumber: start[0], columnNumber: start[1]}, {lineNumber: end[0], columnNumber: end[1]});
     } else {
+      this.formattedMap = null;
       await this.setContent(this.rawContent || '');
       this.baseDoc = textEditor.state.doc;
       const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);
@@ -1049,12 +1050,6 @@ export interface Transformer {
     lineNumber: number,
     columnNumber: number,
   };
-}
-
-export const enum DecoratorType {
-  PERFORMANCE = 'performance',
-  MEMORY = 'memory',
-  COVERAGE = 'coverage',
 }
 
 const config = {

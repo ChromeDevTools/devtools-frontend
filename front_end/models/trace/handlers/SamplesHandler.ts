@@ -217,9 +217,11 @@ export function handleEvent(event: Types.Events.Event): void {
 
     const timeDeltas = event.args.data?.timeDeltas || [];
     const lines = event.args.data?.lines || Array(samples.length).fill(0);
+    const columns = event.args.data?.columns || Array(samples.length).fill(0);
     cdpProfile.samples?.push(...samples);
     cdpProfile.timeDeltas?.push(...timeDeltas);
     cdpProfile.lines?.push(...lines);
+    cdpProfile.columns?.push(...columns);
 
     if (traceIds) {
       cdpProfile.traceIds ??= {};
@@ -270,6 +272,7 @@ function getOrCreatePreProcessedData(
                                   samples: [],
                                   timeDeltas: [],
                                   lines: [],
+                                  columns: [],
                                 },
                                 profileId,
                               }));

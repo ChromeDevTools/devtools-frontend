@@ -41,7 +41,7 @@ export class Plugin {
       void {
   }
 
-  decorationChanged(_type: SourceFrame.SourceFrame.DecoratorType, _editor: TextEditor.TextEditor.TextEditor): void {
+  decorationChanged(_type: Workspace.UISourceCode.DecoratorType, _editor: TextEditor.TextEditor.TextEditor): void {
   }
 
   editorExtension(): CodeMirror.Extension {

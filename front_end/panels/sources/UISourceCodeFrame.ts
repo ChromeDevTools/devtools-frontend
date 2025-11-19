@@ -238,6 +238,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   override async setContent(content: string): Promise<void> {
+    this.#uiSourceCode.formatChanged(this.formattedMap);
     this.disposePlugins();
     this.loadPlugins();
     await super.setContent(content);
@@ -423,7 +424,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
 
   private onDecorationChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
     for (const plugin of this.plugins) {
-      plugin.decorationChanged(event.data as SourceFrame.SourceFrame.DecoratorType, this.textEditor);
+      plugin.decorationChanged(event.data as Workspace.UISourceCode.DecoratorType, this.textEditor);
     }
   }
 

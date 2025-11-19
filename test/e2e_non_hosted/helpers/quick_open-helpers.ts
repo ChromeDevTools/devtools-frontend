@@ -64,6 +64,7 @@ export async function readQuickOpenResults(devtoolsPage = getBrowserAndPagesWrap
   return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
 }
 
+/** Does not play well with pptr:evaluate scripts. crbug.com/391533572 */
 export const openFileWithQuickOpen =
     async (sourceFile: string, filePosition = 0, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   await waitForSourceFiles(

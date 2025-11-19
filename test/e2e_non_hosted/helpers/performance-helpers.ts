@@ -19,6 +19,7 @@ import {
 } from './visual-logging-helpers.js';
 
 export const FILTER_TEXTBOX_SELECTOR = '[aria-label="Filter"]';
+export const CLEAR_BUTTON_SELECTOR = '[aria-label="Clear"]';
 export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 export const RELOAD_AND_RECORD_BUTTON_SELECTOR = '[aria-label="Record and reload"]';
 export const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
@@ -216,6 +217,7 @@ export async function toggleMatchWholeWordButtonBottomUp(
 }
 
 export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(CLEAR_BUTTON_SELECTOR);
   await devToolsPage.click(RECORD_BUTTON_SELECTOR);
 
   // Wait for the button to turn to its stop state.

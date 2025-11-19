@@ -7,10 +7,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Coverage from '../coverage/coverage.js';
 
@@ -123,7 +123,7 @@ export class CoveragePlugin extends Plugin {
   }
 
   private getCoverageManager(): Coverage.CoverageDecorationManager.CoverageDecorationManager|undefined {
-    return this.uiSourceCode.getDecorationData(SourceFrame.SourceFrame.DecoratorType.COVERAGE);
+    return this.uiSourceCode.getDecorationData(Workspace.UISourceCode.DecoratorType.COVERAGE);
   }
 
   override editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
@@ -132,9 +132,9 @@ export class CoveragePlugin extends Plugin {
     }
   }
 
-  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
+  override decorationChanged(type: Workspace.UISourceCode.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
       void {
-    if (type === SourceFrame.SourceFrame.DecoratorType.COVERAGE) {
+    if (type === Workspace.UISourceCode.DecoratorType.COVERAGE) {
       this.startDecoUpdate(editor);
     }
   }

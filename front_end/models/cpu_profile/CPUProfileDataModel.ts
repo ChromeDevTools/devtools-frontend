@@ -56,7 +56,15 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * for CPU profiles coming from traces.
    */
   traceIds?: Record<string, number>;
+  /**
+   * Each item in the `lines` array contains the script line executing
+   * when the sample in that array position was taken.
+   */
   lines?: number[];
+  /**
+   * Same as `lines` above, but with the script column.
+   */
+  columns?: number[];
   totalHitCount: number;
   profileHead: CPUProfileNode;
   /**
@@ -90,14 +98,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     this.traceIds = profile.traceIds;
     this.samples = profile.samples;
 
-    // Lines are available only in profiles coming from tracing.
-    // Elements in the lines array have a 1 to 1 correspondence with
-    // samples, by array position. They can be 1 or 0 and indicate if
-    // there is line data for a given sample, i.e. if a given sample
-    // needs to be included to calculate the line level execution time
-    // data, which we show in the sources panel after recording a
-    // profile.
     this.lines = profile.lines;
+    this.columns = profile.columns;
     this.totalHitCount = 0;
     this.profileHead = this.translateProfileTree(profile.nodes);
     this.initialize(this.profileHead);
@@ -557,6 +559,7 @@ export type ExtendedProfileNode = Protocol.Profiler.ProfileNode&{parent?: number
 export type ExtendedProfile = Protocol.Profiler.Profile&{
   nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[],
   lines?: number[],
+  columns?: number[],
   /**
    * A sample can be manually collected with v8::CpuProfiler::collectSample.
    * When this is done an id (trace id) can be passed to the API to

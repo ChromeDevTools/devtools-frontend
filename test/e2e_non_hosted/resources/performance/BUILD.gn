@@ -14,6 +14,7 @@ copy_to_gen("performance") {
     "frame-metrics/index.html",
     "interaction-tester.html",
     "lcp.png",
+    "minified-work.js",
     "selectorStats/css-style-invalidation.html",
     "selectorStats/page-with-style-perf-test.html",
     "selectorStats/page-with-style.css",
@@ -25,5 +26,6 @@ copy_to_gen("performance") {
     "wasm/mainWasm_profile.json",
     "wasm/profiling.html",
     "wasm/profiling.wasm",
+    "work.js",
   ]
 }

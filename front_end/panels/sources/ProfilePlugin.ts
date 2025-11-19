@@ -5,10 +5,9 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 
 import {Plugin} from './Plugin.js';
 
@@ -90,22 +89,31 @@ class PerformanceMarker extends CodeMirror.GutterMarker {
 }
 
 function markersFromProfileData(
-    map: Map<number, number>, state: CodeMirror.EditorState,
-    type: SourceFrame.SourceFrame.DecoratorType): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
-  const markerType = type === SourceFrame.SourceFrame.DecoratorType.PERFORMANCE ? PerformanceMarker : MemoryMarker;
+    map: Map<number, number>|Map<number, Map<number, number>>, state: CodeMirror.EditorState,
+    type: Workspace.UISourceCode.DecoratorType): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
+  const markerType = type === Workspace.UISourceCode.DecoratorType.PERFORMANCE ? PerformanceMarker : MemoryMarker;
   const markers: Array<CodeMirror.Range<CodeMirror.GutterMarker>> = [];
+  const aggregatedByLine = new Map<number, number>();
   for (const [line, value] of map) {
     if (line <= state.doc.lines) {
-      const {from} = state.doc.line(line);
-      markers.push(new markerType(value).range(from));
+      if (value instanceof Map) {
+        for (const [, data] of value) {
+          aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
+        }
+        continue;
+      }
+      aggregatedByLine.set(line, value);
     }
+  }
+  for (const [line, value] of aggregatedByLine) {
+    const {from} = state.doc.line(line);
+    markers.push(new markerType(value).range(from));
   }
   return CodeMirror.RangeSet.of(markers, true);
 }
 
-const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType): typeof Plugin =>
-    class extends Plugin {
-  updateEffect = CodeMirror.StateEffect.define<Map<number, number>>();
+const makeLineLevelProfilePlugin = (type: Workspace.UISourceCode.DecoratorType): typeof Plugin => class extends Plugin {
+  updateEffect = CodeMirror.StateEffect.define<Map<number, number>|Map<number, Map<number, number>>>();
   field: CodeMirror.StateField<CodeMirror.RangeSet<CodeMirror.GutterMarker>>;
   gutter: CodeMirror.Extension;
   compartment: CodeMirror.Compartment = new CodeMirror.Compartment();
@@ -134,7 +142,7 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
     return uiSourceCode.contentType().hasScripts();
   }
 
-  private getLineMap(): Map<number, number>|undefined {
+  private getLineMap(): Map<number, number>|Map<number, Map<number, number>>|undefined {
     return this.uiSourceCode.getDecorationData(type);
   }
 
@@ -144,7 +152,7 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
         !map ? [] : [this.field.init(state => markersFromProfileData(map, state, type)), this.gutter, theme]);
   }
 
-  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
+  override decorationChanged(type: Workspace.UISourceCode.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
       void {
     const installed = Boolean(editor.state.field(this.field, false));
     const map = this.getLineMap();
@@ -189,6 +197,6 @@ const theme = CodeMirror.EditorView.baseTheme({
   },
 });
 
-export const MemoryProfilePlugin = makeLineLevelProfilePlugin(SourceFrame.SourceFrame.DecoratorType.MEMORY);
+export const MemoryProfilePlugin = makeLineLevelProfilePlugin(Workspace.UISourceCode.DecoratorType.MEMORY);
 
-export const PerformanceProfilePlugin = makeLineLevelProfilePlugin(SourceFrame.SourceFrame.DecoratorType.PERFORMANCE);
+export const PerformanceProfilePlugin = makeLineLevelProfilePlugin(Workspace.UISourceCode.DecoratorType.PERFORMANCE);

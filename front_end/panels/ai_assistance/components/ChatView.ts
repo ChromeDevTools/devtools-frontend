@@ -698,7 +698,7 @@ function renderStep({step, isLoading, markdownRenderer, isLast}: {
 }): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails,
+    empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
     paused: Boolean(step.sideEffect),
     canceled: Boolean(step.canceled),
   });

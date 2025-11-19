@@ -492,7 +492,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       this.#addFacts(options.selected);
     }
 
-    return yield* super.run(initialQuery, options);
+    yield* super.run(initialQuery, options);
   }
 
   #createFactForTraceSummary(): void {

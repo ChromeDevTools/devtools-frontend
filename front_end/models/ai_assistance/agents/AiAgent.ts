@@ -682,9 +682,7 @@ export abstract class AiAgent<T> {
 
       yield {
         type: ResponseType.SIDE_EFFECT,
-        confirm: (result: boolean) => {
-          sideEffectConfirmationPromiseWithResolvers.resolve(result);
-        },
+        confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
       };
 
       const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;

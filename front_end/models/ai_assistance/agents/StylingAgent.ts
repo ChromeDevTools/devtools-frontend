@@ -327,11 +327,8 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
           action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`,
         };
       },
-      handler: async (
-          params,
-          options,
-          ) => {
-        return await this.getStyles(params.elements, params.styleProperties, options);
+      handler: async params => {
+        return await this.getStyles(params.elements, params.styleProperties);
       },
     });
 
@@ -583,10 +580,7 @@ const data = {
     return this.context?.getItem() ?? null;
   }
 
-  async getStyles(elements: string[], properties: string[], _options?: {
-    signal?: AbortSignal,
-    approved?: boolean,
-  }): Promise<FunctionCallHandlerResult<unknown>> {
+  async getStyles(elements: string[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>> {
     const result:
         Record<string, {computed: Record<string, string|undefined>, authored: Record<string, string|undefined>}> = {};
     for (const uid of elements) {

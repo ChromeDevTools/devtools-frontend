@@ -69,7 +69,7 @@ export class TypeToAllowDialog {
           UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'});
 
       const allowButton = UI.UIUtils.createTextButton(i18nString(UIStrings.allow), () => {
-        resolve(input.value === options.typePhrase);
+        resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
       }, {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
       allowButton.disabled = true;
 

@@ -8,7 +8,7 @@ import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
-devtools_module("platform") {
+devtools_foundation_module("platform") {
   sources = [
     "ArrayUtilities.ts",
     "Brand.ts",
@@ -36,7 +36,7 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-ts_library("unittests") {
+devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [

@@ -116,7 +116,6 @@ group("unittests") {
     "core/dom_extension:unittests",
     "core/host:unittests",
     "core/i18n:unittests",
-    "core/platform:unittests",
     "core/protocol_client:unittests",
     "core/root:unittests",
     "core/sdk:unittests",
@@ -279,6 +278,7 @@ group("foundation_unittests") {
   deps = [
     "core/common:foundation_unittests",
     "core/i18n:foundation_unittests",
+    "core/platform:unittests",
     "core/sdk:foundation_unittests",
     "foundation:unittests",
     "models/ai_assistance:foundation_unittests",

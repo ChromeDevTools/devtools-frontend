@@ -4,6 +4,8 @@
 
 import type * as Api from '../api/api.js';
 
+export const IS_NODE = typeof (process as unknown) !== 'undefined' && process.versions?.node !== null;
+
 export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
   createWorker(): Api.HostRuntime.Worker {
     throw new Error('unimplemented');

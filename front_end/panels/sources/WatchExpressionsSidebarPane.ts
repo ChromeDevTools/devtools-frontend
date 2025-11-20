@@ -42,6 +42,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -306,6 +307,13 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements
   }
 }
 
+class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
+  constructor() {
+    super();
+    this.initialize(TextEditor.JavaScript.completeInContext);
+  }
+}
+
 export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #treeElement!: UI.TreeOutline.TreeElement;
   private nameElement!: Element;
@@ -315,7 +323,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private element: HTMLDivElement;
   private editing: boolean;
   private linkifier: Components.Linkifier.Linkifier;
-  private textPrompt?: ObjectUI.ObjectPropertiesSection.ObjectPropertyPrompt;
+  private textPrompt?: ObjectPropertyPrompt;
   private result?: SDK.RemoteObject.RemoteObject|null;
   private preventClickTimeout?: number;
   constructor(
@@ -390,7 +398,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.element.removeChildren();
     const newDiv = this.element.createChild('div');
     newDiv.textContent = this.nameElement.textContent;
-    this.textPrompt = new ObjectUI.ObjectPropertiesSection.ObjectPropertyPrompt();
+    this.textPrompt = new ObjectPropertyPrompt();
     this.textPrompt.renderAsBlock();
     const proxyElement = (this.textPrompt.attachAndStartEditing(newDiv, this.finishEditing.bind(this)) as HTMLElement);
     this.#treeElement.listItemElement.classList.add('watch-expression-editing');

@@ -121,6 +121,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
 
     assert.notStrictEqual(value.textContent, `"${longString}"`);
     expandButton.click();
+    await assertScreenshot('object_ui/expanded_strings.png');
     assert.strictEqual(value.textContent, `"${longString}"`);
   });
 });

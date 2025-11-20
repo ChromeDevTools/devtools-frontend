@@ -368,7 +368,7 @@ function renderInsightSourcesList(
     sources: Console.PromptBuilder.Source[], isPageReloadRecommended: boolean): Lit.TemplateResult {
   // clang-format off
   return html`
-    <div class="insight-sources">style>
+    <div class="insight-sources">
       <ul>
         ${Directives.repeat(sources, item => item.value, item => {
           return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link('source-' + item.type).track({click: true})}>

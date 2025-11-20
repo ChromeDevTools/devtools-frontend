@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Source map test</title>
+</head>
+<body>
+	<div class="test text">Test div</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var cssText = 'body .test {\n\
+  font-size: 14px;\n\
+  line-height: 28px; }\n\
+\n\
+body .text {\n\
+  color: green; }\n\
+  body .test::after {\n\
+    content: "";\n\
+    background-color: white; }\n\
+\n\
+body .test {\n\
+  padding: 5px; }\n\
+\n\
+/*# sourceMappingURL=test/e2e/resources/sources/sourcemap-css-absolute.map */';
+			var linkElement = document.createElement("link");
+			linkElement.setAttribute('type', 'text/css');
+			linkElement.setAttribute('rel', 'stylesheet');
+      const blob = new Blob([cssText], { type: 'text/css' });
+      var blobUrl = URL.createObjectURL(blob);
+			document.head.appendChild(linkElement);
+			linkElement.href = blobUrl;
+		});
+	</script>
+</body>
+</html>

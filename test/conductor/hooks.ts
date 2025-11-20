@@ -69,7 +69,7 @@ function launchChrome() {
     'CompositeBackgroundColorAnimation',           // crbug.com/381055647
     'ScriptSrcHashesV1',                           // crbug.com/443216445
   ];
-  // LINT.ThenChange(/test/e2e_non_hosted/shared/browser-helper.ts:features)
+  // LINT.ThenChange(/test/e2e/shared/browser-helper.ts:features)
   const launchArgs = [
     '--remote-allow-origins=*',
     '--remote-debugging-port=0',

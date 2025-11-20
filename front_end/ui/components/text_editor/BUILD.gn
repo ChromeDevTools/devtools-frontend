@@ -49,7 +49,7 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
-    "../../../../test/e2e_non_hosted/*",
+    "../../../../test/e2e/*",
     "../../../models/ai_code_completion/*",
     "../../legacy/components/*",
   ]

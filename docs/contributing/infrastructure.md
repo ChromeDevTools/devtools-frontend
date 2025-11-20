@@ -217,12 +217,12 @@ Below is a detailed description of what happens in such a build:
   - It does a `bot_update` of its own
   - Generates the GN files (`gn` step)
   - Compiles (`compile`) the project
-  - Reads the e2e_non_hosted test lists
+  - Reads the e2e test lists
   - Creates a CAS archive with project and the compilation output
   - Outputs the `compilator_properties`
 - Once the compilator is done we read the `compilator_properties` to find
   - the `cas_digest` to be used when triggering tests on swarming
-  - the `e2e_non_hosted_test_list` for sharding the e2e tests execution
+  - the `e2e_test_list` for sharding the e2e tests execution
 - Write the e2e test list at the location where building would have written it
 - The default test run phase starts at `Run tests` step:
   - We trigger all tests on swarming in parallel (`Trigger Tests`) substep.

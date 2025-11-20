@@ -19,44 +19,44 @@ import {
   SOURCE_ROOT,
 } from './conductor/paths.js';
 
-const options = commandLineArgs(yargs(process.argv.slice(2)))
-                    .options('skip-ninja', {
-                      type: 'boolean',
-                      default: false,
-                      desc: 'Skip rebuilding',
-                    })
-                    .options('debug-driver', {
-                      type: 'boolean',
-                      hidden: true,
-                      desc: 'Debug the driver part of tests',
-                    })
-                    .options('verbose', {
-                      alias: 'v',
-                      type: 'count',
-                      desc: 'Increases the log level',
-                    })
-                    .options('bail', {
-                      type: 'boolean',
-                      alias: 'b',
-                      desc: 'Bail after first test failure',
-                    })
-                    .options('auto-watch', {
-                      type: 'boolean',
-                      default: false,
-                      desc: 'watch changes to files and run tests automatically on file change (only for unit tests)'
-                    })
-                    .options(
-                        'node-unit-tests',
-                        {type: 'boolean', default: false, desc: 'whether to run unit tests in node (experimental)'})
-                    .positional('tests', {
-                      type: 'string',
-                      desc: 'Path to the test suite, starting from out/Target/gen directory.',
-                      normalize: true,
-                      default: ['front_end', 'test/e2e', 'test/e2e_non_hosted'].map(
-                          f => path.relative(process.cwd(), path.join(SOURCE_ROOT, f))),
-                    })
-                    .strict()
-                    .parseSync();
+const options =
+    commandLineArgs(yargs(process.argv.slice(2)))
+        .options('skip-ninja', {
+          type: 'boolean',
+          default: false,
+          desc: 'Skip rebuilding',
+        })
+        .options('debug-driver', {
+          type: 'boolean',
+          hidden: true,
+          desc: 'Debug the driver part of tests',
+        })
+        .options('verbose', {
+          alias: 'v',
+          type: 'count',
+          desc: 'Increases the log level',
+        })
+        .options('bail', {
+          type: 'boolean',
+          alias: 'b',
+          desc: 'Bail after first test failure',
+        })
+        .options('auto-watch', {
+          type: 'boolean',
+          default: false,
+          desc: 'watch changes to files and run tests automatically on file change (only for unit tests)'
+        })
+        .options(
+            'node-unit-tests',
+            {type: 'boolean', default: false, desc: 'whether to run unit tests in node (experimental)'})
+        .positional('tests', {
+          type: 'string',
+          desc: 'Path to the test suite, starting from out/Target/gen directory.',
+          normalize: true,
+          default: ['front_end', 'test/e2e'].map(f => path.relative(process.cwd(), path.join(SOURCE_ROOT, f))),
+        })
+        .strict()
+        .parseSync();
 
 const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'v', 'watch'];
 
@@ -187,7 +187,7 @@ class MochaTests extends Tests {
       '--config',
       path.join(this.suite.buildPath, 'mocharc.js'),
       '-u',
-      path.join(this.suite.buildPath, '..', 'e2e_non_hosted', 'conductor', 'mocha-interface.js'),
+      path.join(this.suite.buildPath, '..', 'e2e', 'conductor', 'mocha-interface.js'),
     ];
 
     if (options['debug']) {
@@ -268,7 +268,7 @@ function main() {
   const testKinds = [
     new (options['node-unit-tests'] ? MochaFrontendTests : KarmaTests)(
         path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay'), path.join(GEN_DIR, 'mcp')),
-    new MochaTests(path.join(GEN_DIR, 'test/e2e_non_hosted')),
+    new MochaTests(path.join(GEN_DIR, 'test/e2e')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
@@ -292,10 +292,21 @@ function main() {
   }
 
   const suites = new Map<MochaTests, PathPair[]>();
-  const testFiles = tests.flatMap(t => {
-    const globbed = glob.glob.sync(t);
-    return globbed.length > 0 ? globbed : t;
-  });
+  const testFiles = tests
+                        .map(t => {
+                          // The builders will use e2e_non_hosted path until we
+                          // have no branch that contains the path. After that
+                          // we can update the builders to use the new path.
+                          // In the mean time the runner will accept both e2e
+                          // and e2e_non_hosted paths and transform the
+                          // e2e_non_hosted path internally to e2e. After we
+                          // update infra I can come in and remove this.
+                          return t.replace('e2e_non_hosted', 'e2e');
+                        })
+                        .flatMap(t => {
+                          const globbed = glob.glob.sync(t);
+                          return globbed.length > 0 ? globbed : t;
+                        });
   for (const t of testFiles) {
     const repoPath = PathPair.get(t);
     if (!repoPath) {

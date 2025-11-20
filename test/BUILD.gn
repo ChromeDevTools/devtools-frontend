@@ -9,7 +9,7 @@ group("test") {
   deps = [
     ":run",
     ":unittests",
-    "e2e_non_hosted",
+    "e2e",
     "perf",
     "shared",
   ]

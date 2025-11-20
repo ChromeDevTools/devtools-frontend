@@ -7,7 +7,7 @@ import {
   addBreakpointForLine,
   openFileInEditor,
   PAUSE_INDICATOR_SELECTOR,
-} from 'test/e2e_non_hosted/helpers/sources-helpers';
+} from 'test/e2e/helpers/sources-helpers';
 import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers.js';
 
 import {

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<body id="content">
+
+</body>
+
+<script>
+  let iframe;
+  function createSameSiteIframe() {
+    if (document.location.hostname !== 'a.devtools.test') {
+      throw new Error(`This test is intended to be loaded on domain a.devtools.test.`);
+    }
+    const OOPIF_HOST = 'b.devtools.test';
+    iframe = document.createElement('iframe');
+    const content = document.getElementById("content");
+    content.append(iframe);
+
+    iframe.onload = sendWasmModule;
+    iframe.src = `https://${OOPIF_HOST}:${document.location.port}/test/e2e/resources/issues/wasm-co-iframe.html`;
+    return iframe;
+  }
+
+  async function sendWasmModule() {
+    (async () => {
+      const instance = await WebAssembly.instantiateStreaming(fetch('../sources/wasm/add.wasm'), {});
+      document.domain = "devtools.test";
+      iframe.contentWindow.postMessage(instance.module, `https://b.devtools.test:${document.location.port}`);
+    })();
+  }
+
+  createSameSiteIframe();
+</script>
+
+</html>

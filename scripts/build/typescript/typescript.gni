@@ -293,7 +293,7 @@ template("node_ts_library") {
 template("ts_e2e_library") {
   node_ts_library(target_name) {
     additional_type_definitions =
-        [ devtools_location_prepend + "test/e2e_non_hosted/types.d.ts" ]
+        [ devtools_location_prepend + "test/e2e/types.d.ts" ]
     forward_variables_from(invoker,
                            [
                              "sources",

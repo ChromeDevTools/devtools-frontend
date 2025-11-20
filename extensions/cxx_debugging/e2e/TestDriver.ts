@@ -9,7 +9,7 @@ import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
   typeIntoConsoleAndWaitForResult,
-} from 'test/e2e_non_hosted/helpers/console-helpers.js';
+} from 'test/e2e/helpers/console-helpers.js';
 import {
   addBreakpointForLine,
   CODE_LINE_SELECTOR,
@@ -20,7 +20,7 @@ import {
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
   SELECTED_THREAD_SELECTOR,
-} from 'test/e2e_non_hosted/helpers/sources-helpers.js';
+} from 'test/e2e/helpers/sources-helpers.js';
 import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers.js';
 
 import {

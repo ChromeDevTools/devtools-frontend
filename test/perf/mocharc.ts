@@ -14,8 +14,7 @@ module.exports = {
   require :
           [
             path.join(path.dirname(__dirname), 'perf', 'setup', 'test_setup.js'),
-            path.join(path.dirname(__dirname), 'e2e_non_hosted', 'conductor', 'mocha_hooks.js'),
-            'source-map-support/register'
+            path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'), 'source-map-support/register'
           ],
   timeout : TestConfig.debug ? 0 : 30_000,
   retries : TestConfig.retries,

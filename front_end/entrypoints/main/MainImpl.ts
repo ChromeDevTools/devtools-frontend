@@ -183,7 +183,7 @@ export class MainImpl {
     Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync-preferences').get());
     const veLogging = config.devToolsVeLogging;
 
-    // Used by e2e_non_hosted to put VE Logs into "test mode".
+    // Used by e2e to put VE Logs into "test mode".
     const veLogsTestMode = Common.Settings.Settings.instance().createSetting('veLogsTestMode', false).get();
 
     if (veLogging?.enabled) {

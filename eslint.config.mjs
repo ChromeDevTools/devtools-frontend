@@ -60,7 +60,7 @@ export default defineConfig([
     'scripts/protocol_typescript/*.js',
     'scripts/deps/tests/fixtures',
     'test/**/fixtures/',
-    'test/e2e_non_hosted/**/*.js',
+    'test/e2e/**/*.js',
     'test/shared/**/*.js',
   ]),
   {

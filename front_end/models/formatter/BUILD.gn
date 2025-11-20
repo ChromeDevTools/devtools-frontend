@@ -49,7 +49,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "ScriptFormatter.test.ts" ]
+  sources = [
+    "FormatterWorkerPool.test.ts",
+    "ScriptFormatter.test.ts",
+  ]
 
   deps = [
     ":bundle",

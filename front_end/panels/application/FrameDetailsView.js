@@ -386,14 +386,13 @@ function maybeRenderCreationStacktrace(creationStackTraceData) {
         // clang-format off
         return html `
         <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
-        <devtools-report-value
-        jslog=${VisualLogging.section('frame-creation-stack-trace')}
-        >
-          <devtools-resources-stack-trace .data=${{
-            creationStackTraceData,
-            buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace,
-        }}>
-          </devtools-resources-stack-trace>
+        <devtools-report-value jslog=${VisualLogging.section('frame-creation-stack-trace')}>
+          <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.StackTrace.StackTrace, { data: {
+                creationStackTraceData,
+                buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
+            }
+        })}>
+          </devtools-widget>
         </devtools-report-value>
       `;
         // clang-format on

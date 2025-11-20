@@ -115,8 +115,9 @@ export interface ProfileChunk extends Sample {
         data?: ArgsData & {
             cpuProfile?: PartialProfile;
             timeDeltas?: Micro[];
-            lines?: Micro[];
+            lines?: number[];
             source?: ProfileSource;
+            columns?: number[];
         };
     };
 }

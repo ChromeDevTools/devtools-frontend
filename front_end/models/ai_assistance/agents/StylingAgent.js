@@ -251,8 +251,8 @@ export class StylingAgent extends AiAgent {
                     action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`,
                 };
             },
-            handler: async (params, options) => {
-                return await this.getStyles(params.elements, params.styleProperties, options);
+            handler: async (params) => {
+                return await this.getStyles(params.elements, params.styleProperties);
             },
         });
         this.declareFunction('executeJavaScript', {
@@ -463,7 +463,7 @@ const data = {
     #getSelectedNode() {
         return this.context?.getItem() ?? null;
     }
-    async getStyles(elements, properties, _options) {
+    async getStyles(elements, properties) {
         const result = {};
         for (const uid of elements) {
             result[uid] = { computed: {}, authored: {} };

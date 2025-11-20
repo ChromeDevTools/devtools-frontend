@@ -3207,14 +3207,14 @@ function maybeRenderCreationStacktrace(creationStackTraceData) {
   if (creationStackTraceData?.creationStackTrace) {
     return html2`
         <devtools-report-key title=${i18nString6(UIStrings6.creationStackTraceExplanation)}>${i18nString6(UIStrings6.creationStackTrace)}</devtools-report-key>
-        <devtools-report-value
-        jslog=${VisualLogging3.section("frame-creation-stack-trace")}
-        >
-          <devtools-resources-stack-trace .data=${{
-      creationStackTraceData,
-      buildStackTraceRows: Components2.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
-    }}>
-          </devtools-resources-stack-trace>
+        <devtools-report-value jslog=${VisualLogging3.section("frame-creation-stack-trace")}>
+          <devtools-widget .widgetConfig=${widgetConfig2(ApplicationComponents4.StackTrace.StackTrace, {
+      data: {
+        creationStackTraceData,
+        buildStackTraceRows: Components2.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
+      }
+    })}>
+          </devtools-widget>
         </devtools-report-value>
       `;
   }

@@ -735,7 +735,6 @@ __export(ProfilesPanel_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
 
@@ -2593,7 +2592,7 @@ var ProfilesPanel = class _ProfilesPanel extends UI5.Panel.PanelWithSidebar {
     if (!this.toggleRecordAction.enabled()) {
       return true;
     }
-    const toggleButton = Platform3.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+    const toggleButton = UI5.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     const type = this.selectedProfileType;
     if (!type) {
       return true;
@@ -3113,7 +3112,7 @@ __export(ProfileView_exports, {
 import * as Common6 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n14 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as PerfUI2 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -3130,7 +3129,7 @@ __export(ProfileFlameChartDataProvider_exports, {
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 var colorGeneratorInstance = null;
@@ -3277,7 +3276,7 @@ var ProfileFlameChart = class extends Common5.ObjectWrapper.eventMixin(UI7.Widge
     this.mainPane.update();
   }
   performSearch(searchConfig, _shouldJump, jumpBackwards) {
-    const matcher = Platform4.StringUtilities.createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? "" : "i");
+    const matcher = Platform3.StringUtilities.createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? "" : "i");
     const selectedEntryIndex = this.searchResultIndex !== -1 ? this.searchResults[this.searchResultIndex] : -1;
     this.searchResults = [];
     const entriesCount = this.dataProvider.entryNodesLength();
@@ -4048,7 +4047,7 @@ var WritableProfileHeader = class extends ProfileHeader {
     await this.#profileReceivedPromise.promise;
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     if (!this.fileName) {
-      const now = Platform5.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date());
+      const now = Platform4.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date());
       const fileExtension = this.profileType().fileExtension();
       this.fileName = `${this.profileType().typeName()}-${now}${fileExtension}`;
     }
@@ -4240,7 +4239,7 @@ __export(HeapProfileView_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CPUProfile from "./../../models/cpu_profile/cpu_profile.js";
@@ -4258,7 +4257,7 @@ __export(HeapTimelineOverview_exports, {
 });
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n18 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as PerfUI3 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
@@ -4463,8 +4462,8 @@ var HeapTimelineOverview = class extends Common8.ObjectWrapper.eventMixin(UI10.W
     const totalTime = this.profileSamples.totalTime;
     const timeLeft = startTime + totalTime * this.windowLeftRatio;
     const timeRight = startTime + totalTime * this.windowRightRatio;
-    const minIndex = Platform6.ArrayUtilities.lowerBound(timestamps, timeLeft, Platform6.ArrayUtilities.DEFAULT_COMPARATOR);
-    const maxIndex = Platform6.ArrayUtilities.upperBound(timestamps, timeRight, Platform6.ArrayUtilities.DEFAULT_COMPARATOR);
+    const minIndex = Platform5.ArrayUtilities.lowerBound(timestamps, timeLeft, Platform5.ArrayUtilities.DEFAULT_COMPARATOR);
+    const maxIndex = Platform5.ArrayUtilities.upperBound(timestamps, timeRight, Platform5.ArrayUtilities.DEFAULT_COMPARATOR);
     let size = 0;
     for (let i = minIndex; i < maxIndex; ++i) {
       size += sizes[i];
@@ -4490,7 +4489,7 @@ var SmoothScale = class {
       const maxChangePerSec = 20;
       const maxChangePerDelta = Math.pow(maxChangePerSec, timeDeltaMs / 1e3);
       const scaleChange = target / this.currentScale;
-      this.currentScale *= Platform6.NumberUtilities.clamp(scaleChange, 1 / maxChangePerDelta, maxChangePerDelta);
+      this.currentScale *= Platform5.NumberUtilities.clamp(scaleChange, 1 / maxChangePerDelta, maxChangePerDelta);
     } else {
       this.currentScale = target;
     }
@@ -4707,7 +4706,7 @@ var HeapProfileView = class extends ProfileView {
     this.ordinals.push(this.lastOrdinal + 1);
     for (const sample of profile?.samples ?? []) {
       this.lastOrdinal = Math.max(this.lastOrdinal, sample.ordinal);
-      const bucket = Platform7.ArrayUtilities.upperBound(this.ordinals, sample.ordinal, Platform7.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
+      const bucket = Platform6.ArrayUtilities.upperBound(this.ordinals, sample.ordinal, Platform6.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
       this.sizes[bucket] += sample.size;
     }
     this.max.push(this.sizes[this.sizes.length - 1]);
@@ -5050,7 +5049,7 @@ var HeapFlameChartDataProvider = class extends ProfileFlameChartDataProvider {
     return false;
   }
   formatValue(value2, _precision) {
-    return i18nString9(UIStrings9.skb, { PH1: Platform7.NumberUtilities.withThousandsSeparator(value2 / 1e3) });
+    return i18nString9(UIStrings9.skb, { PH1: Platform6.NumberUtilities.withThousandsSeparator(value2 / 1e3) });
   }
   calculateTimelineData() {
     function nodesCount(node) {
@@ -5125,7 +5124,7 @@ __export(HeapSnapshotView_exports, {
 import * as Common13 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
@@ -5173,7 +5172,7 @@ __export(HeapSnapshotGridNodes_exports, {
 });
 import * as Common10 from "./../../core/common/common.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as HeapSnapshotModel from "./../../models/heap_snapshot_model/heap_snapshot_model.js";
 import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
@@ -5749,9 +5748,9 @@ var HeapSnapshotGenericObjectNode = class extends HeapSnapshotGridNode {
       return fullName;
     }
     const fullURL = fullName.substring(startPos + 1, endPos).trimLeft();
-    let url = Platform8.StringUtilities.trimURL(fullURL);
+    let url = Platform7.StringUtilities.trimURL(fullURL);
     if (url.length > 40) {
-      url = Platform8.StringUtilities.trimMiddle(url, 40);
+      url = Platform7.StringUtilities.trimMiddle(url, 40);
     }
     return fullName.substr(0, startPos + 2) + url + fullName.substr(endPos);
   }
@@ -6182,9 +6181,9 @@ var HeapSnapshotDiffNode = class extends HeapSnapshotGridNode {
     this.classKey = classKey;
     this.data = {
       object: this.nameInternal,
-      addedCount: Platform8.NumberUtilities.withThousandsSeparator(this.addedCount),
-      removedCount: Platform8.NumberUtilities.withThousandsSeparator(this.removedCount),
-      countDelta: this.signForDelta(this.countDelta) + Platform8.NumberUtilities.withThousandsSeparator(Math.abs(this.countDelta)),
+      addedCount: Platform7.NumberUtilities.withThousandsSeparator(this.addedCount),
+      removedCount: Platform7.NumberUtilities.withThousandsSeparator(this.removedCount),
+      countDelta: this.signForDelta(this.countDelta) + Platform7.NumberUtilities.withThousandsSeparator(Math.abs(this.countDelta)),
       addedSize: i18n21.ByteUtilities.bytesToString(this.addedSize),
       removedSize: i18n21.ByteUtilities.bytesToString(this.removedSize),
       sizeDelta: this.signForDelta(this.sizeDelta) + i18n21.ByteUtilities.bytesToString(Math.abs(this.sizeDelta))
@@ -6268,8 +6267,8 @@ var AllocationGridNode = class _AllocationGridNode extends HeapSnapshotGridNode 
     this.populated = false;
     this.allocationNode = data;
     this.data = {
-      liveCount: Platform8.NumberUtilities.withThousandsSeparator(data.liveCount),
-      count: Platform8.NumberUtilities.withThousandsSeparator(data.count),
+      liveCount: Platform7.NumberUtilities.withThousandsSeparator(data.liveCount),
+      count: Platform7.NumberUtilities.withThousandsSeparator(data.count),
       liveSize: i18n21.ByteUtilities.bytesToString(data.liveSize),
       size: i18n21.ByteUtilities.bytesToString(data.size),
       name: data.name
@@ -9104,7 +9103,7 @@ var HeapProfileHeader = class extends ProfileHeader {
   async saveToFile() {
     await this.loadPromise;
     const fileOutputStream = new Bindings2.FileUtils.FileOutputStream();
-    this.fileName = this.fileName || "Heap-" + Platform9.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date()) + this.profileType().fileExtension();
+    this.fileName = this.fileName || "Heap-" + Platform8.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date()) + this.profileType().fileExtension();
     const onOpen = async (accepted) => {
       if (!accepted) {
         return;
@@ -9385,7 +9384,7 @@ __export(LiveHeapProfileView_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common14 from "./../../core/common/common.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as DataGrid12 from "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -9735,7 +9734,7 @@ var GridNode = class extends DataGrid12.SortableDataGrid.SortableDataGridNode {
         cell.textContent = this.url;
         break;
       case "size":
-        cell.textContent = Platform10.NumberUtilities.withThousandsSeparator(Math.round(this.size / 1e3));
+        cell.textContent = Platform9.NumberUtilities.withThousandsSeparator(Math.round(this.size / 1e3));
         cell.createChild("span", "size-units").textContent = i18nString15(UIStrings16.kb);
         break;
       case "isolates":

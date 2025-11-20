@@ -2,7 +2,8 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import { type AiAgent, type ExternalRequestResponse, type ResponseData } from './agents/AiAgent.js';
 import { type PerformanceTraceContext } from './agents/PerformanceAgent.js';
-import { Conversation, ConversationType } from './AiHistoryStorage.js';
+import { AiConversation } from './AiConversation.js';
+import { ConversationType } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
 interface ExternalStylingRequestParameters {
     conversationType: ConversationType.STYLING;
@@ -16,7 +17,7 @@ interface ExternalNetworkRequestParameters {
 }
 export interface ExternalPerformanceAIConversationData {
     conversationHandler: ConversationHandler;
-    conversation: Conversation;
+    conversation: AiConversation;
     agent: AiAgent<unknown>;
     selected: PerformanceTraceContext;
 }
@@ -39,7 +40,7 @@ export declare class ConversationHandler extends Common.ObjectWrapper.ObjectWrap
      * conversation type to use the correct agent.
      */
     handleExternalRequest(parameters: ExternalStylingRequestParameters | ExternalNetworkRequestParameters | ExternalPerformanceRequestParameters): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>>;
-    handleConversationWithHistory(items: AsyncIterable<ResponseData, void, void>, conversation: Conversation | undefined): AsyncGenerator<ResponseData, void, void>;
+    handleConversationWithHistory(items: AsyncIterable<ResponseData, void, void>, conversation: AiConversation | undefined): AsyncGenerator<ResponseData, void, void>;
     createAgent(conversationType: ConversationType, changeManager?: ChangeManager): AiAgent<unknown>;
 }
 export declare const enum ConversationHandlerEvents {

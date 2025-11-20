@@ -9,6 +9,7 @@ interface ViewInput {
     customConditionsGroup: NetworkThrottlingConditionsGroup;
     jslogContext: string | undefined;
     title: string | undefined;
+    disabled: boolean;
     onSelect: (conditions: SDK.NetworkManager.ThrottlingConditions) => void;
     onAddCustomConditions: () => void;
 }
@@ -29,6 +30,8 @@ export declare class NetworkThrottlingSelect extends Common.ObjectWrapper.Object
         currentConditions?: SDK.NetworkManager.Conditions;
         includeBlocking?: true;
     }, view?: ViewFunction);
+    get disabled(): boolean;
+    set disabled(disabled: boolean);
     get recommendedConditions(): SDK.NetworkManager.Conditions | null;
     set recommendedConditions(recommendedConditions: SDK.NetworkManager.Conditions | null);
     get currentConditions(): SDK.NetworkManager.ThrottlingConditions | undefined;
@@ -47,6 +50,8 @@ export declare namespace NetworkThrottlingSelect {
 export declare class NetworkThrottlingSelectorWidget extends UI.Widget.VBox {
     #private;
     constructor(element?: HTMLElement, view?: ViewFunction);
+    get disabled(): boolean;
+    set disabled(disabled: boolean);
     set variant(variant: NetworkThrottlingSelect.Variant);
     set jslogContext(context: string);
     set currentConditions(currentConditions: SDK.NetworkManager.ThrottlingConditions | undefined);

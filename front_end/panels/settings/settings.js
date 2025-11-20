@@ -2458,7 +2458,7 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
     this.focus();
   }
   createListItems() {
-    const actions = UI5.ActionRegistry.ActionRegistry.instance().actions().sort((actionA, actionB) => {
+    const actions = UI5.ActionRegistry.ActionRegistry.instance().actions().filter((action2) => action2.configurableBindings()).sort((actionA, actionB) => {
       if (actionA.category() < actionB.category()) {
         return -1;
       }
@@ -2476,9 +2476,6 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
     const items = [];
     let currentCategory;
     actions.forEach((action2) => {
-      if (action2.id() === "elements.toggle-element-search") {
-        return;
-      }
       if (currentCategory !== action2.category()) {
         items.push(action2.category());
       }
@@ -2488,7 +2485,7 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
     return items;
   }
   onEscapeKeyPressed(event) {
-    const deepActiveElement = Platform3.DOMUtilities.deepActiveElement(document);
+    const deepActiveElement = UI5.DOMUtilities.deepActiveElement(document);
     if (this.editingRow && deepActiveElement && deepActiveElement.nodeName === "INPUT") {
       this.editingRow.onEscapeKeyPressed(event);
     }
@@ -2747,7 +2744,7 @@ var ShortcutListItem = class {
     UI5.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.shortcutChangesRestored, { PH1: this.item.title() }));
   }
   onEscapeKeyPressed(event) {
-    const activeElement = Platform3.DOMUtilities.deepActiveElement(document);
+    const activeElement = UI5.DOMUtilities.deepActiveElement(document);
     for (const [shortcut, shortcutInput] of this.shortcutInputs.entries()) {
       if (activeElement === shortcutInput) {
         this.onShortcutInputKeyDown(shortcut, shortcutInput, event);

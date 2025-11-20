@@ -12,7 +12,7 @@ import { FileAgent } from './agents/FileAgent.js';
 import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
 import { PerformanceAgent } from './agents/PerformanceAgent.js';
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
-import { Conversation, } from './AiHistoryStorage.js';
+import { AiConversation } from './AiConversation.js';
 import { getDisabledReasons } from './AiUtils.js';
 /*
 * Strings that don't need to be translated at this time.
@@ -149,7 +149,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     }
     async *#createAndDoExternalConversation(opts) {
         const { conversationType, aiAgent, prompt, selected } = opts;
-        const conversation = new Conversation(conversationType, [], aiAgent.id, 
+        const conversation = new AiConversation(conversationType, [], aiAgent.id, 
         /* isReadOnly */ true, 
         /* isExternal */ true);
         return yield* this.#doExternalConversation({ conversation, aiAgent, prompt, selected });

@@ -196,14 +196,16 @@ tr:has([aria-checked].network-fetch-timing-bar-clickable) ~ .network-fetch-timin
   background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.throttled devtools-icon {
-  vertical-align: middle;
-  margin-right: var(--sys-size-3);
-  color: var(--sys-color-yellow);
-}
-
 td.throttled {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sys-size-3);
   color: var(--sys-color-yellow);
+
+  devtools-icon {
+    color: var(--sys-color-yellow);
+  }
 }
 
 .network-timing-bar.receiving,

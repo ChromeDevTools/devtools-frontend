@@ -251,7 +251,6 @@ __export(JSPresentationUtils_exports, {
 });
 import * as Common3 from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as StackTrace from "./../../../../models/stack_trace/stack_trace.js";
 import * as Workspace3 from "./../../../../models/workspace/workspace.js";
@@ -1467,7 +1466,7 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     this.element.classList.add("stack-preview-container");
     this.element.classList.toggle("width-constrained", this.#options.widthConstrained ?? false);
     this.element.style.display = "inline-block";
-    Platform3.DOMUtilities.appendStyle(this.element.shadowRoot, jsUtils_css_default);
+    UI2.DOMUtilities.appendStyle(this.element.shadowRoot, jsUtils_css_default);
     this.#table = this.contentElement.createChild("table", "stack-preview-container");
     this.#table.classList.toggle("width-constrained", this.#options.widthConstrained ?? false);
     this.#options.stackTrace?.addEventListener("UPDATED", this.performUpdate.bind(this));

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/core/platform/node"},"files":["../../../../../../../front_end/core/platform/node/node.ts"],"references":[{"path":"./node-tsconfig.json"}]}

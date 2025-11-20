@@ -936,7 +936,7 @@ var MainImpl = class {
     const eventCopy = new CustomEvent("clipboard-" + event.type, { bubbles: true });
     eventCopy["original"] = event;
     const document2 = event.target && event.target.ownerDocument;
-    const target = document2 ? Platform2.DOMUtilities.deepActiveElement(document2) : null;
+    const target = document2 ? UI2.DOMUtilities.deepActiveElement(document2) : null;
     if (target) {
       target.dispatchEvent(eventCopy);
     }
@@ -987,7 +987,7 @@ var ZoomActionDelegate = class {
 };
 var SearchActionDelegate = class {
   handleAction(_context, actionId) {
-    let searchableView = UI2.SearchableView.SearchableView.fromElement(Platform2.DOMUtilities.deepActiveElement(document));
+    let searchableView = UI2.SearchableView.SearchableView.fromElement(UI2.DOMUtilities.deepActiveElement(document));
     if (!searchableView) {
       const currentPanel = UI2.InspectorView.InspectorView.instance().currentPanelDeprecated();
       if (currentPanel?.searchableView) {

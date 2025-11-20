@@ -47,10 +47,7 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         canceled: boolean;
     }>;
     static describeElement(element: SDK.DOMModel.DOMNode): Promise<string>;
-    getStyles(elements: string[], properties: string[], _options?: {
-        signal?: AbortSignal;
-        approved?: boolean;
-    }): Promise<FunctionCallHandlerResult<unknown>>;
+    getStyles(elements: string[], properties: string[]): Promise<FunctionCallHandlerResult<unknown>>;
     executeAction(action: string, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>>;
     handleContextDetails(selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null, multimodalInputType?: MultimodalInputType): Promise<string>;

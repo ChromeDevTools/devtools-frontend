@@ -36,6 +36,7 @@
   },
   "files": [
     "../../../../../../front_end/models/ai_assistance/AgentProject.ts",
+    "../../../../../../front_end/models/ai_assistance/AiConversation.ts",
     "../../../../../../front_end/models/ai_assistance/AiHistoryStorage.ts",
     "../../../../../../front_end/models/ai_assistance/AiUtils.ts",
     "../../../../../../front_end/models/ai_assistance/BuiltInAi.ts",

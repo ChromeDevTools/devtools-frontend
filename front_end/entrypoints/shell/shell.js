@@ -6003,6 +6003,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   featurePromotionId: "ai-assistance",
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
@@ -6017,6 +6018,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
@@ -6030,6 +6032,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
@@ -6043,6 +6046,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
@@ -6056,6 +6060,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
@@ -6069,6 +6074,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
@@ -6082,6 +6088,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
@@ -6095,6 +6102,7 @@ UI15.ActionRegistration.registerActionExtension({
   },
   category: "GLOBAL",
   title: titleForAiAssistanceActions,
+  configurableBindings: false,
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();

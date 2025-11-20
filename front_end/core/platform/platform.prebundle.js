@@ -6,7 +6,7 @@ import * as Brand from './Brand.js';
 import * as Constructor from './Constructor.js';
 import * as DateUtilities from './DateUtilities.js';
 import * as DevToolsPath from './DevToolsPath.js';
-import * as DOMUtilities from './DOMUtilities.js';
+import * as HostRuntime from './HostRuntime.js';
 import * as KeyboardUtilities from './KeyboardUtilities.js';
 import * as MapUtilities from './MapUtilities.js';
 import * as MimeType from './MimeType.js';
@@ -23,5 +23,5 @@ import * as UserVisibleError from './UserVisibleError.js';
  * error).
  */
 export { assertNever, assertNotNullOrUndefined, assertUnhandled } from './TypescriptUtilities.js';
-export { ArrayUtilities, Brand, Constructor, DateUtilities, DevToolsPath, DOMUtilities, KeyboardUtilities, MapUtilities, MimeType, NumberUtilities, StringUtilities, Timing, TypedArrayUtilities, TypeScriptUtilities, UIString, UserVisibleError, };
+export { ArrayUtilities, Brand, Constructor, DateUtilities, DevToolsPath, HostRuntime, KeyboardUtilities, MapUtilities, MimeType, NumberUtilities, StringUtilities, Timing, TypedArrayUtilities, TypeScriptUtilities, UIString, UserVisibleError, };
 //# sourceMappingURL=platform.prebundle.js.map

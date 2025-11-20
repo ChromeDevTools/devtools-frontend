@@ -454,6 +454,7 @@ UI.ActionRegistration.registerActionExtension({
       platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
+  configurableBindings: false,
 });
 
 UI.ActionRegistration.registerActionExtension({

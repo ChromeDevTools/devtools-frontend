@@ -429,7 +429,8 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: "Meta+Shift+C",
       platform: "mac"
     }
-  ]
+  ],
+  configurableBindings: false
 });
 UI.ActionRegistration.registerActionExtension({
   category: "ELEMENTS",

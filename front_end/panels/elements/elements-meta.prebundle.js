@@ -432,6 +432,7 @@ UI.ActionRegistration.registerActionExtension({
             platform: "mac" /* UI.ActionRegistration.Platforms.MAC */,
         },
     ],
+    configurableBindings: false,
 });
 UI.ActionRegistration.registerActionExtension({
     category: "ELEMENTS" /* UI.ActionRegistration.ActionCategory.ELEMENTS */,

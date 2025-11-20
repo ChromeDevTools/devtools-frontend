@@ -29,6 +29,15 @@ core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
 core/i18n/time-utilities.test.js
+core/platform/ArrayUtilities.test.js
+core/platform/DateUtilities.test.js
+core/platform/DevToolsPath.test.js
+core/platform/KeyboardUtilities.test.js
+core/platform/MapUtilities.test.js
+core/platform/MimeType.test.js
+core/platform/NumberUtilities.test.js
+core/platform/StringUtilities.test.js
+core/platform/TypedArrayUtilities.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/Target.test.js

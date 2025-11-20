@@ -29,7 +29,7 @@ export default `/*
   animation: expand var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
 }
 
-:host-context(.closing) .wrapper {
+.wrapper.closing {
   animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
 }
 
@@ -397,6 +397,51 @@ details h3 {
 
 .error-message {
   font: var(--sys-typescale-body4-bold);
+}
+
+@scope (.insight-sources) {
+  :root {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  ul {
+    color: var(--sys-color-primary);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    margin-top: 8px;
+    padding-left: var(--sys-size-6);
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  ul .link {
+    color: var(--sys-color-primary);
+    display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
+    align-items: center;
+    gap: 4px;
+    text-decoration-line: underline;
+  }
+
+  devtools-icon {
+    height: 16px;
+    width: 16px;
+    margin-right: var(--sys-size-1);
+  }
+
+  devtools-icon[name="open-externally"] {
+    color: var(--icon-link);
+  }
+
+  .source-disclaimer {
+    color: var(--sys-color-on-surface-subtle);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('././components/consoleInsight.css')} */`;

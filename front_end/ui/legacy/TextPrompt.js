@@ -35,6 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
+import { appendStyle, rangeOfWord } from './DOMUtilities.js';
 import { SuggestBox } from './SuggestBox.js';
 import textPromptStyles from './textPrompt.css.js';
 import { Tooltip } from './Tooltip.js';
@@ -304,7 +305,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
         this.boundClearAutocomplete = this.clearAutocomplete.bind(this);
         this.boundOnBlur = this.onBlur.bind(this);
         this.proxyElement = element.ownerDocument.createElement('span');
-        Platform.DOMUtilities.appendStyle(this.proxyElement, textPromptStyles);
+        appendStyle(this.proxyElement, textPromptStyles);
         this.contentElement = this.proxyElement.createChild('div', 'text-prompt-root');
         this.proxyElement.style.display = this.proxyElementDisplay;
         if (element.parentElement) {
@@ -658,7 +659,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
             this.clearAutocomplete();
             return;
         }
-        const wordQueryRange = Platform.DOMUtilities.rangeOfWord(selectionRange.startContainer, selectionRange.startOffset, this.completionStopCharacters, this.element(), 'backward');
+        const wordQueryRange = rangeOfWord(selectionRange.startContainer, selectionRange.startOffset, this.completionStopCharacters, this.element(), 'backward');
         const expressionRange = wordQueryRange.cloneRange();
         expressionRange.collapse(true);
         expressionRange.setStartBefore(this.element());

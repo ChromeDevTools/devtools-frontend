@@ -619,9 +619,7 @@ var AiAgent = class {
       }, { once: true });
       yield {
         type: "side-effect",
-        confirm: (result2) => {
-          sideEffectConfirmationPromiseWithResolvers.resolve(result2);
-        }
+        confirm: sideEffectConfirmationPromiseWithResolvers.resolve
       };
       const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
       if (!approvedRun) {
@@ -1966,10 +1964,12 @@ ${nodesStr}`;
   *   5. `urlIndex`: An index referencing a URL in the `allUrls` array. If no URL is present, this is an empty string.
   *   6. `childRange`: A string indicating the range of IDs for the node's children. Children should always have consecutive IDs.
   *                    If there is only one child, it's a single ID.
-  *   7. `[S]`: An optional marker indicating that this node is the selected node.
+  *   7. `[line]`: An optional field for a call frame's line number.
+  *   8. `[column]`: An optional field for a call frame's column number.
+  *   9. `[S]`: An optional marker indicating that this node is the selected node.
   *
   * Example:
-  *   `1;Parse HTML;2.5;0.3;0;2-5;S`
+  *   `1;Parse HTML;2.5;0.3;0;2-5;10;11;S`
   *   This represents:
   *     - Node ID 1
   *     - Name "Parse HTML"
@@ -1977,6 +1977,7 @@ ${nodesStr}`;
   *     - Self time of 0.3ms
   *     - URL index 0 (meaning the URL is the first one in the `allUrls` array)
   *     - Child range of IDs 2 to 5
+  *     - Line, column is 10:11
   *     - This node is the selected node (S marker)
   */
   stringifyNode(node, nodeId, parsedTrace, selectedNode, allUrls, childStartingNodeIndex) {
@@ -1995,7 +1996,8 @@ ${nodesStr}`;
     };
     const durationStr = roundToTenths(node.totalTime);
     const selfTimeStr = roundToTenths(node.selfTime);
-    const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event);
+    const url = location?.url;
     let urlIndexStr = "";
     if (url) {
       const existingIndex = allUrls.indexOf(url);
@@ -2018,6 +2020,8 @@ ${nodesStr}`;
     line += ";" + selfTimeStr;
     line += ";" + urlIndexStr;
     line += ";" + childRangeStr;
+    line += ";" + (location?.line ?? "");
+    line += ";" + (location?.column ?? "");
     if (selectedMarker) {
       line += ";" + selectedMarker;
     }
@@ -2704,7 +2708,7 @@ Network requests data:
   }
   static callFrameDataFormatDescription = `Each call frame is presented in the following format:
 
-'id;eventKey;name;duration;selfTime;urlIndex;childRange;[S]'
+'id;eventKey;name;duration;selfTime;urlIndex;childRange;[line];[column];[S]'
 
 Key definitions:
 
@@ -2715,15 +2719,17 @@ Key definitions:
 * selfTime: The time spent directly within the call frame, excluding its children's execution.
 * urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
 * childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+* line: An optional field for a call frame's line number. This is where the function is defined.
+* column: An optional field for a call frame's column number. This is where the function is defined.
 * S: _Optional_. The letter 'S' terminates the line if that call frame was selected by the user.
 
 Example Call Tree:
 
-1;r-123;main;500;100;;
-2;r-124;update;200;50;;3
-3;p-49575-15428179-2834-374;animate;150;20;0;4-5;S
-4;p-49575-15428179-3505-1162;calculatePosition;80;80;;
-5;p-49575-15428179-5391-2767;applyStyles;50;50;;
+1;r-123;main;500;100;0;1;;
+2;r-124;update;200;50;;3;0;1;
+3;p-49575-15428179-2834-374;animate;150;20;0;4-5;0;1;S
+4;p-49575-15428179-3505-1162;calculatePosition;80;80;0;1;;
+5;p-49575-15428179-5391-2767;applyStyles;50;50;0;1;;
 `;
   /**
    * Network requests format description that is sent to the model as a fact.
@@ -4306,7 +4312,7 @@ ${query}`);
     if (options.selected && focus) {
       this.#addFacts(options.selected);
     }
-    return yield* super.run(initialQuery, options);
+    yield* super.run(initialQuery, options);
   }
   #createFactForTraceSummary() {
     if (!this.#formatter) {
@@ -4617,7 +4623,10 @@ ${result}`,
           return { error: "Invalid eventKey" };
         }
         const tree = AICallTree.fromEvent(event, parsedTrace);
-        const callTree = tree ? this.#formatter.formatCallTree(tree) : "No call tree found";
+        if (!tree) {
+          return { error: "No call tree found" };
+        }
+        const callTree = this.#formatter.formatCallTree(tree);
         const key = `getDetailedCallTree(${args.eventKey})`;
         this.#cacheFunctionResult(focus, key, callTree);
         return { result: { callTree } };
@@ -5805,8 +5814,8 @@ var StylingAgent = class _StylingAgent extends AiAgent {
           action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`
         };
       },
-      handler: async (params, options) => {
-        return await this.getStyles(params.elements, params.styleProperties, options);
+      handler: async (params) => {
+        return await this.getStyles(params.elements, params.styleProperties);
       }
     });
     this.declareFunction("executeJavaScript", {
@@ -6020,7 +6029,7 @@ const data = {
   #getSelectedNode() {
     return this.context?.getItem() ?? null;
   }
-  async getStyles(elements, properties, _options) {
+  async getStyles(elements, properties) {
     const result = {};
     for (const uid of elements) {
       result[uid] = { computed: {}, authored: {} };
@@ -6145,178 +6154,19 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
   }
 };
 
+// gen/front_end/models/ai_assistance/AiConversation.js
+var AiConversation_exports = {};
+__export(AiConversation_exports, {
+  AiConversation: () => AiConversation,
+  NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA
+});
+
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
 __export(AiHistoryStorage_exports, {
-  AiHistoryStorage: () => AiHistoryStorage,
-  Conversation: () => Conversation,
-  NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA
+  AiHistoryStorage: () => AiHistoryStorage
 });
 import * as Common5 from "./../../core/common/common.js";
-var MAX_TITLE_LENGTH = 80;
-var NOT_FOUND_IMAGE_DATA = "";
-var Conversation = class _Conversation {
-  id;
-  type;
-  #isReadOnly;
-  history;
-  #isExternal;
-  static generateContextDetailsMarkdown(details) {
-    const detailsMarkdown = [];
-    for (const detail of details) {
-      const text = `\`\`\`\`${detail.codeLang || ""}
-${detail.text.trim()}
-\`\`\`\``;
-      detailsMarkdown.push(`**${detail.title}:**
-${text}`);
-    }
-    return detailsMarkdown.join("\n\n");
-  }
-  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, isExternal = false) {
-    this.type = type;
-    this.id = id;
-    this.#isReadOnly = isReadOnly;
-    this.#isExternal = isExternal;
-    this.history = this.#reconstructHistory(data);
-  }
-  get isReadOnly() {
-    return this.#isReadOnly;
-  }
-  get title() {
-    const query = this.history.find(
-      (response) => response.type === "user-query"
-      /* ResponseType.USER_QUERY */
-    )?.query;
-    if (!query) {
-      return;
-    }
-    if (this.#isExternal) {
-      return `[External] ${query.substring(0, MAX_TITLE_LENGTH - 11)}${query.length > MAX_TITLE_LENGTH - 11 ? "\u2026" : ""}`;
-    }
-    return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? "\u2026" : ""}`;
-  }
-  get isEmpty() {
-    return this.history.length === 0;
-  }
-  #reconstructHistory(historyWithoutImages) {
-    const imageHistory = AiHistoryStorage.instance().getImageHistory();
-    if (imageHistory && imageHistory.length > 0) {
-      const history = [];
-      for (const data of historyWithoutImages) {
-        if (data.type === "user-query" && data.imageId) {
-          const image = imageHistory.find((item) => item.id === data.imageId);
-          const inlineData = image ? { data: image.data, mimeType: image.mimeType } : { data: NOT_FOUND_IMAGE_DATA, mimeType: "image/jpeg" };
-          history.push({ ...data, imageInput: { inlineData } });
-        } else {
-          history.push(data);
-        }
-      }
-      return history;
-    }
-    return historyWithoutImages;
-  }
-  getConversationMarkdown() {
-    const contentParts = [];
-    contentParts.push(`# Exported Chat from Chrome DevTools AI Assistance
-
-**Export Timestamp (UTC):** ${(/* @__PURE__ */ new Date()).toISOString()}
-
----`);
-    for (const item of this.history) {
-      switch (item.type) {
-        case "user-query": {
-          contentParts.push(`## User
-
-${item.query}`);
-          if (item.imageInput) {
-            contentParts.push("User attached an image");
-          }
-          contentParts.push("## AI");
-          break;
-        }
-        case "context": {
-          contentParts.push(`### ${item.title}`);
-          if (item.details && item.details.length > 0) {
-            contentParts.push(_Conversation.generateContextDetailsMarkdown(item.details));
-          }
-          break;
-        }
-        case "title": {
-          contentParts.push(`### ${item.title}`);
-          break;
-        }
-        case "thought": {
-          contentParts.push(`${item.thought}`);
-          break;
-        }
-        case "action": {
-          if (!item.output) {
-            break;
-          }
-          if (item.code) {
-            contentParts.push(`**Code executed:**
-\`\`\`
-${item.code.trim()}
-\`\`\``);
-          }
-          contentParts.push(`**Data returned:**
-\`\`\`
-${item.output}
-\`\`\``);
-          break;
-        }
-        case "answer": {
-          if (item.complete) {
-            contentParts.push(`### Answer
-
-${item.text.trim()}`);
-          }
-          break;
-        }
-      }
-    }
-    return contentParts.join("\n\n");
-  }
-  archiveConversation() {
-    this.#isReadOnly = true;
-  }
-  async addHistoryItem(item) {
-    this.history.push(item);
-    await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
-    if (item.type === "user-query") {
-      if (item.imageId && item.imageInput && "inlineData" in item.imageInput) {
-        const inlineData = item.imageInput.inlineData;
-        await AiHistoryStorage.instance().upsertImage({ id: item.imageId, data: inlineData.data, mimeType: inlineData.mimeType });
-      }
-    }
-  }
-  serialize() {
-    return {
-      id: this.id,
-      history: this.history.map((item) => {
-        if (item.type === "user-query") {
-          return { ...item, imageInput: void 0 };
-        }
-        if (item.type === "side-effect") {
-          return { ...item, confirm: void 0 };
-        }
-        return item;
-      }),
-      type: this.type,
-      isExternal: this.#isExternal
-    };
-  }
-  static fromSerializedConversation(serializedConversation) {
-    const history = serializedConversation.history.map((entry) => {
-      if (entry.type === "side-effect") {
-        return { ...entry, confirm: () => {
-        } };
-      }
-      return entry;
-    });
-    return new _Conversation(serializedConversation.type, history, serializedConversation.id, true, serializedConversation.isExternal);
-  }
-};
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.ObjectWrapper {
@@ -6418,6 +6268,176 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.Obj
       instance = new _AiHistoryStorage(maxStorageSize);
     }
     return instance;
+  }
+};
+
+// gen/front_end/models/ai_assistance/AiConversation.js
+var NOT_FOUND_IMAGE_DATA = "";
+var MAX_TITLE_LENGTH = 80;
+var AiConversation = class _AiConversation {
+  id;
+  type;
+  #isReadOnly;
+  history;
+  #isExternal;
+  static generateContextDetailsMarkdown(details) {
+    const detailsMarkdown = [];
+    for (const detail of details) {
+      const text = `\`\`\`\`${detail.codeLang || ""}
+${detail.text.trim()}
+\`\`\`\``;
+      detailsMarkdown.push(`**${detail.title}:**
+${text}`);
+    }
+    return detailsMarkdown.join("\n\n");
+  }
+  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, isExternal = false) {
+    this.type = type;
+    this.id = id;
+    this.#isReadOnly = isReadOnly;
+    this.#isExternal = isExternal;
+    this.history = this.#reconstructHistory(data);
+  }
+  get isReadOnly() {
+    return this.#isReadOnly;
+  }
+  get title() {
+    const query = this.history.find(
+      (response) => response.type === "user-query"
+      /* ResponseType.USER_QUERY */
+    )?.query;
+    if (!query) {
+      return;
+    }
+    if (this.#isExternal) {
+      return `[External] ${query.substring(0, MAX_TITLE_LENGTH - 11)}${query.length > MAX_TITLE_LENGTH - 11 ? "\u2026" : ""}`;
+    }
+    return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? "\u2026" : ""}`;
+  }
+  get isEmpty() {
+    return this.history.length === 0;
+  }
+  #reconstructHistory(historyWithoutImages) {
+    const imageHistory = AiHistoryStorage.instance().getImageHistory();
+    if (imageHistory && imageHistory.length > 0) {
+      const history = [];
+      for (const data of historyWithoutImages) {
+        if (data.type === "user-query" && data.imageId) {
+          const image = imageHistory.find((item) => item.id === data.imageId);
+          const inlineData = image ? { data: image.data, mimeType: image.mimeType } : { data: NOT_FOUND_IMAGE_DATA, mimeType: "image/jpeg" };
+          history.push({ ...data, imageInput: { inlineData } });
+        } else {
+          history.push(data);
+        }
+      }
+      return history;
+    }
+    return historyWithoutImages;
+  }
+  getConversationMarkdown() {
+    const contentParts = [];
+    contentParts.push(`# Exported Chat from Chrome DevTools AI Assistance
+
+**Export Timestamp (UTC):** ${(/* @__PURE__ */ new Date()).toISOString()}
+
+---`);
+    for (const item of this.history) {
+      switch (item.type) {
+        case "user-query": {
+          contentParts.push(`## User
+
+${item.query}`);
+          if (item.imageInput) {
+            contentParts.push("User attached an image");
+          }
+          contentParts.push("## AI");
+          break;
+        }
+        case "context": {
+          contentParts.push(`### ${item.title}`);
+          if (item.details && item.details.length > 0) {
+            contentParts.push(_AiConversation.generateContextDetailsMarkdown(item.details));
+          }
+          break;
+        }
+        case "title": {
+          contentParts.push(`### ${item.title}`);
+          break;
+        }
+        case "thought": {
+          contentParts.push(`${item.thought}`);
+          break;
+        }
+        case "action": {
+          if (!item.output) {
+            break;
+          }
+          if (item.code) {
+            contentParts.push(`**Code executed:**
+\`\`\`
+${item.code.trim()}
+\`\`\``);
+          }
+          contentParts.push(`**Data returned:**
+\`\`\`
+${item.output}
+\`\`\``);
+          break;
+        }
+        case "answer": {
+          if (item.complete) {
+            contentParts.push(`### Answer
+
+${item.text.trim()}`);
+          }
+          break;
+        }
+      }
+    }
+    return contentParts.join("\n\n");
+  }
+  archiveConversation() {
+    this.#isReadOnly = true;
+  }
+  async addHistoryItem(item) {
+    this.history.push(item);
+    await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
+    if (item.type === "user-query") {
+      if (item.imageId && item.imageInput && "inlineData" in item.imageInput) {
+        const inlineData = item.imageInput.inlineData;
+        await AiHistoryStorage.instance().upsertImage({
+          id: item.imageId,
+          data: inlineData.data,
+          mimeType: inlineData.mimeType
+        });
+      }
+    }
+  }
+  serialize() {
+    return {
+      id: this.id,
+      history: this.history.map((item) => {
+        if (item.type === "user-query") {
+          return { ...item, imageInput: void 0 };
+        }
+        if (item.type === "side-effect") {
+          return { ...item, confirm: void 0 };
+        }
+        return item;
+      }),
+      type: this.type,
+      isExternal: this.#isExternal
+    };
+  }
+  static fromSerializedConversation(serializedConversation) {
+    const history = serializedConversation.history.map((entry) => {
+      if (entry.type === "side-effect") {
+        return { ...entry, confirm: () => {
+        } };
+      }
+      return entry;
+    });
+    return new _AiConversation(serializedConversation.type, history, serializedConversation.id, true, serializedConversation.isExternal);
   }
 };
 
@@ -6814,7 +6834,7 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
   }
   async *#createAndDoExternalConversation(opts) {
     const { conversationType, aiAgent, prompt, selected } = opts;
-    const conversation = new Conversation(
+    const conversation = new AiConversation(
       conversationType,
       [],
       aiAgent.id,
@@ -6935,6 +6955,7 @@ export {
   AIQueries_exports as AIQueries,
   AgentProject_exports as AgentProject,
   AiAgent_exports as AiAgent,
+  AiConversation_exports as AiConversation,
   AiHistoryStorage_exports as AiHistoryStorage,
   AiUtils_exports as AiUtils,
   BuiltInAi_exports as BuiltInAi,

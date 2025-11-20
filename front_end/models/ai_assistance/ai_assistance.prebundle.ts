@@ -10,6 +10,7 @@ import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
 import * as PerformanceAnnotationsAgent from './agents/PerformanceAnnotationsAgent.js';
 import * as StylingAgent from './agents/StylingAgent.js';
+import * as AiConversation from './AiConversation.js';
 import * as AiHistoryStorage from './AiHistoryStorage.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
@@ -33,6 +34,7 @@ export {
   AiAgent,
   AICallTree,
   AIContext,
+  AiConversation,
   AiHistoryStorage,
   AIQueries,
   AiUtils,

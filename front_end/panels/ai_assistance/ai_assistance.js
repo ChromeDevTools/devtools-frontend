@@ -3011,7 +3011,7 @@ function renderStepBadge({ step, isLoading, isLast }) {
 function renderStep({ step, isLoading, markdownRenderer, isLast }) {
   const stepClasses = Lit2.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails,
+    empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
     paused: Boolean(step.sideEffect),
     canceled: Boolean(step.canceled)
   });
@@ -3137,7 +3137,7 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
   `;
 }
 function renderImageChatMessage(inlineData) {
-  if (inlineData.data === AiAssistanceModel2.AiHistoryStorage.NOT_FOUND_IMAGE_DATA) {
+  if (inlineData.data === AiAssistanceModel2.AiConversation.NOT_FOUND_IMAGE_DATA) {
     return html4`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
     </div>`;
@@ -4609,7 +4609,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       this.#conversation?.archiveConversation();
       this.#conversationAgent = opts?.agent;
       if (opts?.agent) {
-        this.#conversation = new AiAssistanceModel3.AiHistoryStorage.Conversation(agentToConversationType(opts.agent), [], opts.agent.id, false);
+        this.#conversation = new AiAssistanceModel3.AiConversation.AiConversation(agentToConversationType(opts.agent), [], opts.agent.id, false);
       }
     }
     if (!opts?.agent) {
@@ -4974,7 +4974,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
   }
   #populateHistoryMenu(contextMenu) {
-    const historicalConversations = AiAssistanceModel3.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel3.AiHistoryStorage.Conversation.fromSerializedConversation(serializedConversation));
+    const historicalConversations = AiAssistanceModel3.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel3.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty) {
         continue;
@@ -5353,7 +5353,7 @@ function getResponseMarkdown(message) {
       contentParts.push(`### ${step.title}`);
     }
     if (step.contextDetails) {
-      contentParts.push(AiAssistanceModel3.AiHistoryStorage.Conversation.generateContextDetailsMarkdown(step.contextDetails));
+      contentParts.push(AiAssistanceModel3.AiConversation.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
     }
     if (step.thought) {
       contentParts.push(step.thought);

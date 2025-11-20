@@ -2372,7 +2372,7 @@ var cssValueTraceView_css_default = `/*
   }
 }
 
-::highlight(css-value-tracing) {
+:host::highlight(css-value-tracing) {
   background-color: var(--sys-color-tonal-container);
 }
 
@@ -8014,7 +8014,7 @@ ${allDeclarationText}
     this.update();
   }
   sectionsContainerKeyDown(event) {
-    const activeElement = Platform5.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);
+    const activeElement = UI11.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);
     if (!activeElement) {
       return;
     }
@@ -10698,11 +10698,11 @@ function getTooltipFromGenericIssue(errorType) {
       return i18nString10(UIStrings10.formAutocompleteAttributeEmptyError);
     case "FormEmptyIdAndNameAttributesForInputError":
       return i18nString10(UIStrings10.formEmptyIdAndNameAttributesForInputError);
-    case "FormAriaLabelledByToNonExistingId":
+    case "FormAriaLabelledByToNonExistingIdError":
       return i18nString10(UIStrings10.formAriaLabelledByToNonExistingId);
     case "FormInputAssignedAutocompleteValueToIdOrNameAttributeError":
       return i18nString10(UIStrings10.formInputAssignedAutocompleteValueToIdOrNameAttributeError);
-    case "FormLabelHasNeitherForNorNestedInput":
+    case "FormLabelHasNeitherForNorNestedInputError":
       return i18nString10(UIStrings10.formLabelHasNeitherForNorNestedInput);
     case "FormLabelForMatchesNonExistingIdError":
       return i18nString10(UIStrings10.formLabelForMatchesNonExistingIdError);

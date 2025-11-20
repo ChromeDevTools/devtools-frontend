@@ -142,7 +142,7 @@ performance/recording_test.js
 performance/revealing-insights_test.js
 performance/selector-stats-tracing_test.js
 performance/settings-throttle-change_test.js
-performance/timeline-js-line-level-profile-no-url-end-to-end_test.js
+performance/timeline-js-line-level-profile_test.js
 performance/timeline/treeview_test.js
 performance/trace-app_test.js
 performance/wasm/performance_profiling_test.js

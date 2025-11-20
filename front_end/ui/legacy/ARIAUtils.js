@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
 import { Dialog } from './Dialog.js';
+import { getEnclosingShadowRootForNode } from './DOMUtilities.js';
 let id = 0;
 export function nextId(prefix) {
     return (prefix || '') + ++id;
@@ -262,8 +263,7 @@ export function setActiveDescendant(element, activedescendant) {
         return;
     }
     if (activedescendant.isConnected && element.isConnected) {
-        console.assert(Platform.DOMUtilities.getEnclosingShadowRootForNode(activedescendant) ===
-            Platform.DOMUtilities.getEnclosingShadowRootForNode(element), 'elements are not in the same shadow dom');
+        console.assert(getEnclosingShadowRootForNode(activedescendant) === getEnclosingShadowRootForNode(element), 'elements are not in the same shadow dom');
     }
     ensureId(activedescendant);
     element.setAttribute('aria-activedescendant', activedescendant.id);

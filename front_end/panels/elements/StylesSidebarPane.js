@@ -307,7 +307,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.update();
     }
     sectionsContainerKeyDown(event) {
-        const activeElement = Platform.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);
+        const activeElement = UI.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);
         if (!activeElement) {
             return;
         }

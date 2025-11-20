@@ -65,6 +65,9 @@ export declare class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<Eve
     getDecorationData(type: string): any;
     disableEdit(): void;
     editDisabled(): boolean;
+    formatChanged(format: {
+        originalToFormatted(lineNumber: number, columnNumber?: number): number[];
+    } | null): void;
     isIgnoreListed(): boolean;
 }
 export declare enum Events {
@@ -141,4 +144,9 @@ export declare class UISourceCodeMetadata {
     modificationTime: Date | null;
     contentSize: number | null;
     constructor(modificationTime: Date | null, contentSize: number | null);
+}
+export declare const enum DecoratorType {
+    PERFORMANCE = "performance",
+    MEMORY = "memory",
+    COVERAGE = "coverage"
 }

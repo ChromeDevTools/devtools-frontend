@@ -19,7 +19,15 @@ export declare class CPUProfileDataModel extends ProfileTreeModel {
      * for CPU profiles coming from traces.
      */
     traceIds?: Record<string, number>;
+    /**
+     * Each item in the `lines` array contains the script line executing
+     * when the sample in that array position was taken.
+     */
     lines?: number[];
+    /**
+     * Same as `lines` above, but with the script column.
+     */
+    columns?: number[];
     totalHitCount: number;
     profileHead: CPUProfileNode;
     gcNode?: ProfileNode;
@@ -81,6 +89,7 @@ export type ExtendedProfileNode = Protocol.Profiler.ProfileNode & {
 export type ExtendedProfile = Protocol.Profiler.Profile & {
     nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[];
     lines?: number[];
+    columns?: number[];
     /**
      * A sample can be manually collected with v8::CpuProfiler::collectSample.
      * When this is done an id (trace id) can be passed to the API to

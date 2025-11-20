@@ -40,7 +40,7 @@ var consoleInsight_css_default = `/*
   animation: expand var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
 }
 
-:host-context(.closing) .wrapper {
+.wrapper.closing {
   animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
 }
 
@@ -410,62 +410,52 @@ details h3 {
   font: var(--sys-typescale-body4-bold);
 }
 
+@scope (.insight-sources) {
+  :root {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  ul {
+    color: var(--sys-color-primary);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    margin-top: 8px;
+    padding-left: var(--sys-size-6);
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  ul .link {
+    color: var(--sys-color-primary);
+    display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
+    align-items: center;
+    gap: 4px;
+    text-decoration-line: underline;
+  }
+
+  devtools-icon {
+    height: 16px;
+    width: 16px;
+    margin-right: var(--sys-size-1);
+  }
+
+  devtools-icon[name="open-externally"] {
+    color: var(--icon-link);
+  }
+
+  .source-disclaimer {
+    color: var(--sys-color-on-surface-subtle);
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("././components/consoleInsight.css")} */`;
-
-// gen/front_end/panels/explain/components/consoleInsightSourcesList.css.js
-var consoleInsightSourcesList_css_default = `/*
- * Copyright 2023 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-:host {
-  display: block;
-}
-
-ul {
-  color: var(--sys-color-primary);
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 18px;
-  margin-top: 8px;
-  padding-left: var(--sys-size-6);
-}
-
-li {
-  list-style-type: none;
-}
-
-ul .link {
-  color: var(--sys-color-primary);
-  display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
-  align-items: center;
-  gap: 4px;
-  text-decoration-line: underline;
-}
-
-devtools-icon {
-  height: 16px;
-  width: 16px;
-  margin-right: var(--sys-size-1);
-}
-
-devtools-icon[name="open-externally"] {
-  color: var(--icon-link);
-}
-
-.source-disclaimer {
-  color: var(--sys-color-on-surface-subtle);
-}
-
-/*# sourceURL=${import.meta.resolve("././components/consoleInsightSourcesList.css")} */`;
 
 // gen/front_end/panels/explain/components/ConsoleInsight.js
 var UIStrings = {
@@ -713,6 +703,22 @@ function renderLoading() {
       </svg>
     </div>`;
 }
+function renderInsightSourcesList(sources, isPageReloadRecommended) {
+  return html`
+    <div class="insight-sources">style>
+      <ul>
+        ${Directives.repeat(sources, (item) => item.value, (item) => {
+    return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link("source-" + item.type).track({ click: true })}>
+            <devtools-icon name="open-externally"></devtools-icon>
+            ${localizeType(item.type)}
+          </x-link></li>`;
+  })}
+        ${isPageReloadRecommended ? html`<li class="source-disclaimer">
+          <devtools-icon name="warning"></devtools-icon>
+          ${i18nString(UIStrings.reloadRecommendation)}</li>` : Lit.nothing}
+      </ul>
+    </div>`;
+}
 function renderInsight(insight, renderer, disableAnimations, callbacks, output) {
   return html`
         ${insight.validMarkdown ? html`<devtools-markdown-view
@@ -728,8 +734,7 @@ function renderInsight(insight, renderer, disableAnimations, callbacks, output) 
         ` : Lit.nothing}
         <details jslog=${VisualLogging.expand("sources").track({ click: true })}>
           <summary>${i18nString(UIStrings.inputData)}</summary>
-          <devtools-console-insight-sources-list .sources=${insight.sources} .isPageReloadRecommended=${insight.isPageReloadRecommended}>
-          </devtools-console-insight-sources-list>
+          ${renderInsightSourcesList(insight.sources, insight.isPageReloadRecommended)}
         </details>
         <div class="buttons">
           ${renderSearchButton(callbacks.onSearch)}
@@ -943,6 +948,8 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #headerRef = Directives.createRef();
   #citationLinks = [];
   #areReferenceDetailsOpen = false;
+  #stateChanging = false;
+  #closing = false;
   // Rating sub-form state.
   #selectedRating;
   #consoleInsightsEnabledSetting;
@@ -1084,12 +1091,9 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     }
   }
   #transitionTo(newState) {
-    const previousState = this.#state;
+    this.#stateChanging = this.#state.type !== newState.type;
     this.#state = newState;
     this.#render();
-    if (newState.type !== previousState.type) {
-      this.#focusHeader();
-    }
   }
   async #generateInsightIfNeeded() {
     if (this.#state.type !== "loading") {
@@ -1119,10 +1123,17 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     if (this.#state.type === "consent-reminder") {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
     }
-    this.shadowRoot?.addEventListener("animationend", () => {
+    this.#closing = true;
+    this.#render();
+  }
+  #onAnimationEnd() {
+    if (this.#closing) {
       this.dispatchEvent(new CloseEvent());
-    }, { once: true });
-    this.classList.add("closing");
+      return;
+    }
+    if (this.#stateChanging) {
+      this.#headerRef.value?.focus();
+    }
   }
   #onRating(isPositive) {
     if (this.#state.type !== "insight") {
@@ -1297,11 +1308,6 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #onGoToSignIn() {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(SIGN_IN_URL);
   }
-  #focusHeader() {
-    this.addEventListener("animationend", () => {
-      this.#headerRef.value?.focus();
-    }, { once: true });
-  }
   #onToggleReferenceDetails() {
     if (this.#referenceDetailsRef.value) {
       this.#areReferenceDetailsOpen = this.#referenceDetailsRef.value.open;
@@ -1321,12 +1327,14 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   #render() {
     const input = {
       state: this.#state,
+      closing: this.#closing,
       disableAnimations: this.disableAnimations,
       renderer: this.#renderer,
       selectedRating: this.#selectedRating,
       noLogging: Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
       callbacks: {
         onClose: this.#onClose.bind(this),
+        onAnimationEnd: this.#onAnimationEnd.bind(this),
         onSearch: this.#onSearch.bind(this),
         onRating: this.#onRating.bind(this),
         onReport: this.#onReport.bind(this),
@@ -1390,7 +1398,11 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     render(html`
       <style>${consoleInsight_css_default}</style>
       <style>${Input.checkboxStyles}</style>
-      <div class="wrapper" jslog=${VisualLogging.pane("console-insights").track({ resize: true })}>
+      <div
+        class=${Directives.classMap({ wrapper: true, closing: input.closing })}
+        jslog=${VisualLogging.pane("console-insights").track({ resize: true })}
+        @animationend=${callbacks.onAnimationEnd}
+      >
         <div class="animation-wrapper">
           ${header}
           <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>
@@ -1410,40 +1422,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
     }
   }
 };
-var ConsoleInsightSourcesList = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #sources = [];
-  #isPageReloadRecommended = false;
-  #render() {
-    render(html`
-      <style>${consoleInsightSourcesList_css_default}</style>
-      <style>${Input.checkboxStyles}</style>
-      <ul>
-        ${Directives.repeat(this.#sources, (item) => item.value, (item) => {
-      return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link("source-" + item.type).track({ click: true })}>
-            <devtools-icon name="open-externally"></devtools-icon>
-            ${localizeType(item.type)}
-          </x-link></li>`;
-    })}
-        ${this.#isPageReloadRecommended ? html`<li class="source-disclaimer">
-          <devtools-icon name="warning"></devtools-icon>
-          ${i18nString(UIStrings.reloadRecommendation)}</li>` : Lit.nothing}
-      </ul>
-    `, this.#shadow, {
-      host: this
-    });
-  }
-  set sources(values) {
-    this.#sources = values;
-    this.#render();
-  }
-  set isPageReloadRecommended(isPageReloadRecommended) {
-    this.#isPageReloadRecommended = isPageReloadRecommended;
-    this.#render();
-  }
-};
 customElements.define("devtools-console-insight", ConsoleInsight);
-customElements.define("devtools-console-insight-sources-list", ConsoleInsightSourcesList);
 
 // gen/front_end/panels/explain/ActionDelegate.js
 import * as Host2 from "./../../core/host/host.js";

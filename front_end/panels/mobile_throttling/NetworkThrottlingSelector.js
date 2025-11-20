@@ -86,6 +86,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(
     // clang-format off
     html `<select
+      ?disabled=${input.disabled}
       aria-label=${input.title ?? nothing}
       jslog=${VisualLogging.dropDown().track({ change: true }).context(input.jslogContext)}
       @change=${onSelect}>
@@ -133,6 +134,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
     #title;
     #view;
     #variant = "global-conditions" /* NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS */;
+    #disabled = false;
     static createForGlobalConditions(element, title) {
         ThrottlingManager.instance(); // Instantiate the throttling manager to connect network manager with the setting
         const select = new NetworkThrottlingSelect(element, {
@@ -155,6 +157,13 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
         this.#currentConditions = options.currentConditions;
         this.#title = options.title;
         this.#view = view;
+        this.#performUpdate();
+    }
+    get disabled() {
+        return this.#disabled;
+    }
+    set disabled(disabled) {
+        this.#disabled = disabled;
         this.#performUpdate();
     }
     get recommendedConditions() {
@@ -225,6 +234,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
             selectedConditions: this.#currentConditions,
             jslogContext: this.#jslogContext,
             title: this.#title,
+            disabled: this.#disabled,
             onSelect,
             onAddCustomConditions,
             throttlingGroups,
@@ -240,6 +250,12 @@ export class NetworkThrottlingSelectorWidget extends UI.Widget.VBox {
         super(element, { useShadowDom: true });
         this.#select = new NetworkThrottlingSelect(this.contentElement, {}, view);
         this.#select.addEventListener("conditionsChanged" /* Events.CONDITIONS_CHANGED */, ({ data }) => this.#conditionsChangedHandler?.(data));
+    }
+    get disabled() {
+        return this.#select.disabled;
+    }
+    set disabled(disabled) {
+        this.#select.disabled = disabled;
     }
     set variant(variant) {
         this.#select.variant = variant;

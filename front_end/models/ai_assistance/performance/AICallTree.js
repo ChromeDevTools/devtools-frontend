@@ -244,10 +244,12 @@ export class AICallTree {
     *   5. `urlIndex`: An index referencing a URL in the `allUrls` array. If no URL is present, this is an empty string.
     *   6. `childRange`: A string indicating the range of IDs for the node's children. Children should always have consecutive IDs.
     *                    If there is only one child, it's a single ID.
-    *   7. `[S]`: An optional marker indicating that this node is the selected node.
+    *   7. `[line]`: An optional field for a call frame's line number.
+    *   8. `[column]`: An optional field for a call frame's column number.
+    *   9. `[S]`: An optional marker indicating that this node is the selected node.
     *
     * Example:
-    *   `1;Parse HTML;2.5;0.3;0;2-5;S`
+    *   `1;Parse HTML;2.5;0.3;0;2-5;10;11;S`
     *   This represents:
     *     - Node ID 1
     *     - Name "Parse HTML"
@@ -255,6 +257,7 @@ export class AICallTree {
     *     - Self time of 0.3ms
     *     - URL index 0 (meaning the URL is the first one in the `allUrls` array)
     *     - Child range of IDs 2 to 5
+    *     - Line, column is 10:11
     *     - This node is the selected node (S marker)
     */
     stringifyNode(node, nodeId, parsedTrace, selectedNode, allUrls, childStartingNodeIndex) {
@@ -280,7 +283,8 @@ export class AICallTree {
         // 5. Self Time
         const selfTimeStr = roundToTenths(node.selfTime);
         // 6. URL Index
-        const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+        const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event);
+        const url = location?.url;
         let urlIndexStr = '';
         if (url) {
             const existingIndex = allUrls.indexOf(url);
@@ -308,6 +312,8 @@ export class AICallTree {
         line += ';' + selfTimeStr;
         line += ';' + urlIndexStr;
         line += ';' + childRangeStr;
+        line += ';' + (location?.line ?? '');
+        line += ';' + (location?.column ?? '');
         if (selectedMarker) {
             line += ';' + selectedMarker;
         }

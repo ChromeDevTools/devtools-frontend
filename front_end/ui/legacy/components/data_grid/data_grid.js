@@ -709,7 +709,7 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
     this.element.classList.toggle("no-selection", !hasSelected);
   }
   announceSelectedGridNode() {
-    if (this.element === Platform2.DOMUtilities.deepActiveElement(this.element.ownerDocument) && this.selectedNode?.existingElement()) {
+    if (this.element === UI.DOMUtilities.deepActiveElement(this.element.ownerDocument) && this.selectedNode?.existingElement()) {
       let expandText;
       if (this.selectedNode.hasChildren()) {
         expandText = this.selectedNode.expanded ? i18nString(UIStrings.expanded) : i18nString(UIStrings.collapsed);
@@ -1437,7 +1437,7 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
       nextSelectedNode.reveal();
       nextSelectedNode.select();
     }
-    const activeElement = Platform2.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+    const activeElement = UI.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     if (handled && this.element !== activeElement && !this.element.contains(activeElement)) {
       this.element.focus();
     }

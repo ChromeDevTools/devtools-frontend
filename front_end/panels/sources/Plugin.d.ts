@@ -17,7 +17,7 @@ export declare class Plugin {
     leftToolbarItems(): UI.Toolbar.ToolbarItem[];
     populateLineGutterContextMenu(_contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number): void;
     populateTextAreaContextMenu(_contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number, _columnNumber: number): void;
-    decorationChanged(_type: SourceFrame.SourceFrame.DecoratorType, _editor: TextEditor.TextEditor.TextEditor): void;
+    decorationChanged(_type: Workspace.UISourceCode.DecoratorType, _editor: TextEditor.TextEditor.TextEditor): void;
     editorExtension(): CodeMirror.Extension;
     editorInitialized(_editor: TextEditor.TextEditor.TextEditor): void;
     dispose(): void;

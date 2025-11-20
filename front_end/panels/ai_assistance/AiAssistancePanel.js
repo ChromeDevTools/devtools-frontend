@@ -600,7 +600,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             // If we get a new agent we need to
             // create a new conversation along side it
             if (opts?.agent) {
-                this.#conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(agentToConversationType(opts.agent), [], opts.agent.id, false);
+                this.#conversation = new AiAssistanceModel.AiConversation.AiConversation(agentToConversationType(opts.agent), [], opts.agent.id, false);
             }
         }
         if (!opts?.agent) {
@@ -982,7 +982,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
     }
     #populateHistoryMenu(contextMenu) {
-        const historicalConversations = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map(serializedConversation => AiAssistanceModel.AiHistoryStorage.Conversation.fromSerializedConversation(serializedConversation));
+        const historicalConversations = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map(serializedConversation => AiAssistanceModel.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
         for (const conversation of historicalConversations.reverse()) {
             if (conversation.isEmpty) {
                 continue;
@@ -1382,7 +1382,7 @@ export function getResponseMarkdown(message) {
             contentParts.push(`### ${step.title}`);
         }
         if (step.contextDetails) {
-            contentParts.push(AiAssistanceModel.AiHistoryStorage.Conversation.generateContextDetailsMarkdown(step.contextDetails));
+            contentParts.push(AiAssistanceModel.AiConversation.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
         }
         if (step.thought) {
             contentParts.push(step.thought);

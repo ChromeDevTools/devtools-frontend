@@ -146,7 +146,7 @@ iframe.widget {
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.highlighted-search-result,::highlight(highlighted-search-result) {
+.highlighted-search-result,:host::highlight(highlighted-search-result) {
   border-radius: 1px;
   background-color: var(--sys-color-yellow-container);
   outline: 1px solid var(--sys-color-yellow-container);
@@ -331,7 +331,7 @@ input[type='range']:disabled::-webkit-slider-thumb {
   }
 }
 
-.highlighted-search-result.current-search-result,::highlight(current-search-result) {
+.highlighted-search-result.current-search-result,:host::highlight(current-search-result) {
   /* Note: this value is used in light & dark mode */
   --override-current-search-result-background-color: rgb(255 127 0 / 80%);
 

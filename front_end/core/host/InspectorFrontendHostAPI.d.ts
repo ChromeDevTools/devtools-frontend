@@ -406,7 +406,6 @@ export declare const enum EnumeratedHistogram {
     LighthouseModeRun = "DevTools.LighthouseModeRun",
     LighthouseCategoryUsed = "DevTools.LighthouseCategoryUsed",
     SwatchActivated = "DevTools.SwatchActivated",
-    AnimationPlaybackRateChanged = "DevTools.AnimationPlaybackRateChanged",
     BuiltInAiAvailability = "DevTools.BuiltInAiAvailability"
 }
 export {};

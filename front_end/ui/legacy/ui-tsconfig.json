@@ -41,6 +41,7 @@
     "../../../../../../front_end/ui/legacy/Context.ts",
     "../../../../../../front_end/ui/legacy/ContextFlavorListener.ts",
     "../../../../../../front_end/ui/legacy/ContextMenu.ts",
+    "../../../../../../front_end/ui/legacy/DOMUtilities.ts",
     "../../../../../../front_end/ui/legacy/Dialog.ts",
     "../../../../../../front_end/ui/legacy/DockController.ts",
     "../../../../../../front_end/ui/legacy/DropTarget.ts",

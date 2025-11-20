@@ -1,5 +1,4 @@
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LayerView, type LayerViewHost, type Selection } from './LayerViewHost.js';
@@ -8,7 +7,7 @@ declare const LayerTreeOutline_base: (new (...args: any[]) => {
     once<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.PAINT_PROFILER_REQUESTED): boolean;
-    dispatchEventToListeners<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchEventToListeners<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
 }) & typeof UI.TreeOutline.TreeOutline;
 export declare class LayerTreeOutline extends LayerTreeOutline_base implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
     private layerViewHost;

@@ -1268,6 +1268,9 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Main"
   },
+  "generated/Deprecation.ts | AttributionReporting": {
+    "message": "Attribution Reporting is deprecated and will be removed. See https://goo.gle/ps-status for details."
+  },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
   },
@@ -10409,6 +10412,9 @@
   "panels/network/RequestConditionsDrawer.ts | addPatternToBlock": {
     "message": "Add a pattern by clicking on the \"{PH1}\" button."
   },
+  "panels/network/RequestConditionsDrawer.ts | addRule": {
+    "message": "Add rule"
+  },
   "panels/network/RequestConditionsDrawer.ts | dAffected": {
     "message": "{PH1} affected"
   },
@@ -10424,6 +10430,9 @@
   "panels/network/RequestConditionsDrawer.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
+  "panels/network/RequestConditionsDrawer.ts | enableThrottlingToggleLabel": {
+    "message": "Throttle or block {PH1}"
+  },
   "panels/network/RequestConditionsDrawer.ts | increasePriority": {
     "message": "Move up (higher patterns are checked first)"
   },
@@ -10433,11 +10442,17 @@
   "panels/network/RequestConditionsDrawer.ts | learnMore": {
     "message": "Learn more"
   },
+  "panels/network/RequestConditionsDrawer.ts | learnMoreLabel": {
+    "message": "Learn more about URL pattern syntax"
+  },
   "panels/network/RequestConditionsDrawer.ts | noNetworkRequestsBlocked": {
     "message": "No blocked network requests"
   },
   "panels/network/RequestConditionsDrawer.ts | noPattern": {
-    "message": "No request throttling or blocking patterns"
+    "message": "Nothing throttled or blocked"
+  },
+  "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
+    "message": "To throttle or block a network request, add a rule here manually or via the network panel's context menu. {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
     "message": "Pattern already exists."
@@ -10454,8 +10469,11 @@
   "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
     "message": "This pattern was upgraded from \"{PH1}\""
   },
+  "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
+    "message": "Request conditions"
+  },
   "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
-    "message": "Text pattern to block or throttle matching requests; use URLPattern syntax."
+    "message": "Text pattern to block or throttle matching requests; use URL Pattern syntax. {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
     "message": "Text pattern to block matching requests; use * for wildcard"

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../../front_end/core/platform/node/HostRuntime.ts"],
+  "sourcesContent": ["// Copyright 2025 The Chromium Authors\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nimport type * as Api from '../api/api.js';\n\nexport const IS_NODE = typeof (process as unknown) !== 'undefined' && process.versions?.node !== null;\n\nexport const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {\n  createWorker(): Api.HostRuntime.Worker {\n    throw new Error('unimplemented');\n  }\n};\n"],
+  "mappings": ";;;;;;;AAAA;;;;;AAMO,IAAM,UAAU,OAAQ,YAAwB,eAAe,QAAQ,UAAU,SAAS;AAE1F,IAAM,eAA4C;EACvD,eAAY;AACV,UAAM,IAAI,MAAM,eAAe;EACjC;;",
+  "names": []
+}

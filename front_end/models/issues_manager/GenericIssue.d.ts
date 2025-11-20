@@ -35,7 +35,7 @@ export declare const genericFormDuplicateIdForInputError: {
         linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
     }[];
 };
-export declare const genericFormAriaLabelledByToNonExistingId: {
+export declare const genericFormAriaLabelledByToNonExistingIdError: {
     file: string;
     links: {
         link: string;
@@ -70,7 +70,7 @@ export declare const genericFormLabelForMatchesNonExistingIdError: {
         linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
     }[];
 };
-export declare const genericFormLabelHasNeitherForNorNestedInput: {
+export declare const genericFormLabelHasNeitherForNorNestedInputError: {
     file: string;
     links: {
         link: string;

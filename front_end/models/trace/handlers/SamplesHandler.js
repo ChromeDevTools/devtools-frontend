@@ -190,9 +190,11 @@ export function handleEvent(event) {
         }
         const timeDeltas = event.args.data?.timeDeltas || [];
         const lines = event.args.data?.lines || Array(samples.length).fill(0);
+        const columns = event.args.data?.columns || Array(samples.length).fill(0);
         cdpProfile.samples?.push(...samples);
         cdpProfile.timeDeltas?.push(...timeDeltas);
         cdpProfile.lines?.push(...lines);
+        cdpProfile.columns?.push(...columns);
         if (traceIds) {
             cdpProfile.traceIds ??= {};
             for (const key in traceIds) {
@@ -235,6 +237,7 @@ function getOrCreatePreProcessedData(processId, profileId) {
             samples: [],
             timeDeltas: [],
             lines: [],
+            columns: [],
         },
         profileId,
     }));

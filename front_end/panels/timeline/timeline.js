@@ -8569,7 +8569,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         "drjones-performance-full"
         /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */
       );
-      const conversation = new AiAssistanceModel.AiHistoryStorage.Conversation(
+      const conversation = new AiAssistanceModel.AiConversation.AiConversation(
         "drjones-performance-full",
         [],
         agent.id,
@@ -11765,6 +11765,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static renderEventJson(event, contentHelper) {
     contentHelper.addSection(i18nString21(UIStrings21.traceEvent));
+    contentHelper.appendElementRow("eventKey", new Trace24.EventsSerializer.EventsSerializer().keyForEvent(event) ?? "?");
     const eventWithArgsFirst = {
       ...{ args: event.args },
       ...event

@@ -180,6 +180,13 @@ export default `/*
   color: var(--sys-color-on-tonal-container);
 }
 
+.network-log-grid.data-grid tr.selected.network-throttled-row,
+.network-log-grid.data-grid tr.selected.network-throttled-row .devtools-link,
+.network-log-grid.data-grid tr.selected.network-throttled-row .network-cell-subtitle,
+.network-log-grid.data-grid tr.selected.network-throttled-row .network-dim-cell {
+  color: var(--sys-color-yellow);
+}
+
 .network-header-subtitle {
   color: var(--sys-color-token-subtle);
 }
@@ -253,6 +260,10 @@ export default `/*
     position: absolute;
     z-index: 1;
   }
+}
+
+td.time-column {
+  vertical-align: middle;
 }
 
 .data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],

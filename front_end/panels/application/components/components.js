@@ -3071,7 +3071,8 @@ __export(StackTrace_exports, {
 import "./../../../ui/components/expandable_list/expandable_list.js";
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as Components2 from "./../../../ui/legacy/components/utils/utils.js";
-import * as Lit11 from "./../../../ui/lit/lit.js";
+import * as UI8 from "./../../../ui/legacy/legacy.js";
+import { html as html12, nothing as nothing6, render as render11 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/stackTraceLinkButton.css.js
@@ -3149,7 +3150,7 @@ var stackTraceRow_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./stackTraceRow.css")} */`;
 
 // gen/front_end/panels/application/components/StackTrace.js
-var { html: html12 } = Lit11;
+var { widgetConfig: widgetConfig2 } = UI8.Widget;
 var UIStrings12 = {
   /**
    * @description Error message stating that something went wrong when trying to render stack trace
@@ -3171,62 +3172,67 @@ var UIStrings12 = {
 };
 var str_12 = i18n23.i18n.registerUIStrings("panels/application/components/StackTrace.ts", UIStrings12);
 var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
-var StackTraceRow = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #stackTraceRowItem = null;
-  set data(data) {
-    this.#stackTraceRowItem = data.stackTraceRowItem;
-    this.#render();
+var ROW_DEFAULT_VIEW = (input, output, target) => {
+  if (!input.stackTraceRowItem) {
+    return;
   }
-  #render() {
-    if (!this.#stackTraceRowItem) {
-      return;
-    }
-    Lit11.render(html12`
-      <style>${stackTraceRow_css_default}</style>
-      <div class="stack-trace-row">
-              <div class="stack-trace-function-name text-ellipsis" title=${this.#stackTraceRowItem.functionName}>
-                ${this.#stackTraceRowItem.functionName}
-              </div>
-              <div class="stack-trace-source-location">
-                ${this.#stackTraceRowItem.link ? html12`<div class="text-ellipsis">\xA0@\xA0${this.#stackTraceRowItem.link}</div>` : Lit11.nothing}
-              </div>
-            </div>
-    `, this.#shadow, { host: this });
-  }
-};
-var StackTraceLinkButton = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #onShowAllClick = () => {
-  };
-  #hiddenCallFramesCount = null;
-  #expandedView = false;
-  set data(data) {
-    this.#onShowAllClick = data.onShowAllClick;
-    this.#hiddenCallFramesCount = data.hiddenCallFramesCount;
-    this.#expandedView = data.expandedView;
-    this.#render();
-  }
-  #render() {
-    if (!this.#hiddenCallFramesCount) {
-      return;
-    }
-    const linkText = this.#expandedView ? i18nString11(UIStrings12.showLess) : i18nString11(UIStrings12.showSMoreFrames, { n: this.#hiddenCallFramesCount });
-    Lit11.render(html12`
-      <style>${stackTraceLinkButton_css_default}</style>
-      <div class="stack-trace-row">
-          <button class="link" @click=${() => this.#onShowAllClick()}>
-            ${linkText}
-          </button>
+  render11(html12`
+    <style>${stackTraceRow_css_default}</style>
+    <div class="stack-trace-row">
+      <div class="stack-trace-function-name text-ellipsis" title=${input.stackTraceRowItem.functionName}>
+        ${input.stackTraceRowItem.functionName}
+      </div>
+      <div class="stack-trace-source-location">
+        ${input.stackTraceRowItem.link ? html12`
+          <div class="text-ellipsis">\xA0@\xA0${input.stackTraceRowItem.link}</div>` : nothing6}
         </div>
-    `, this.#shadow, { host: this });
+      </div>`, target);
+};
+var StackTraceRow = class extends UI8.Widget.Widget {
+  constructor(element, view = ROW_DEFAULT_VIEW) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  stackTraceRowItem = null;
+  #view;
+  performUpdate() {
+    this.#view(this, void 0, this.contentElement);
   }
 };
-var StackTrace = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var LINK_DEFAULT_VIEW = (input, output, target) => {
+  if (!input.hiddenCallFramesCount) {
+    return;
+  }
+  const linkText = input.expandedView ? i18nString11(UIStrings12.showLess) : i18nString11(UIStrings12.showSMoreFrames, { n: input.hiddenCallFramesCount });
+  render11(html12`
+    <style>${stackTraceLinkButton_css_default}</style>
+    <div class="stack-trace-row">
+      <button class="link" @click=${() => input.onShowAllClick()}>
+        ${linkText}
+      </button>
+    </div>`, target);
+};
+var StackTraceLinkButton = class extends UI8.Widget.Widget {
+  onShowAllClick = () => {
+  };
+  hiddenCallFramesCount = null;
+  expandedView = false;
+  #view;
+  constructor(element, view = LINK_DEFAULT_VIEW) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  performUpdate() {
+    this.#view(this, void 0, this.contentElement);
+  }
+};
+var StackTrace = class extends UI8.Widget.Widget {
   #linkifier = new Components2.Linkifier.Linkifier();
   #stackTraceRows = [];
   #showHidden = false;
+  constructor(element) {
+    super(element, { useShadowDom: true });
+  }
   set data(data) {
     const { creationStackTrace, creationStackTraceTarget } = data.creationStackTraceData;
     if (creationStackTrace) {
@@ -3254,9 +3260,9 @@ var StackTrace = class extends HTMLElement {
       if (this.#showHidden || !ignoreListHide) {
         if ("functionName" in item2) {
           expandableRows.push(html12`
-          <devtools-stack-trace-row data-stack-trace-row .data=${{
+          <devtools-widget data-stack-trace-row .widgetConfig=${widgetConfig2(StackTraceRow, {
             stackTraceRowItem: item2
-          }}></devtools-stack-trace-row>`);
+          })}></devtools-widget>`);
         }
         if ("asyncDescription" in item2) {
           expandableRows.push(html12`
@@ -3270,29 +3276,31 @@ var StackTrace = class extends HTMLElement {
     }
     if (hiddenCallFramesCount) {
       expandableRows.push(html12`
-      <devtools-stack-trace-link-button data-stack-trace-row .data=${{ onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden }}></devtools-stack-trace-link-button>
+        <devtools-widget data-stack-trace-row .widgetConfig=${widgetConfig2(StackTraceLinkButton, {
+        onShowAllClick: this.#onToggleShowAllClick.bind(this),
+        hiddenCallFramesCount,
+        expandedView: this.#showHidden
+      })}>
+        </devtools-widget>
       `);
     }
     return expandableRows;
   }
   #render() {
     if (!this.#stackTraceRows.length) {
-      Lit11.render(html12`
+      render11(html12`
           <span>${i18nString11(UIStrings12.cannotRenderStackTrace)}</span>
-        `, this.#shadow, { host: this });
+        `, this.contentElement, { host: this });
       return;
     }
     const expandableRows = this.createRowTemplates();
-    Lit11.render(html12`
+    render11(html12`
         <devtools-expandable-list .data=${{ rows: expandableRows, title: i18nString11(UIStrings12.creationStackTrace) }}
                                   jslog=${VisualLogging8.tree()}>
         </devtools-expandable-list>
-      `, this.#shadow, { host: this });
+      `, this.contentElement, { host: this });
   }
 };
-customElements.define("devtools-stack-trace-row", StackTraceRow);
-customElements.define("devtools-stack-trace-link-button", StackTraceLinkButton);
-customElements.define("devtools-resources-stack-trace", StackTrace);
 
 // gen/front_end/panels/application/components/TrustTokensView.js
 var TrustTokensView_exports = {};
@@ -3307,8 +3315,8 @@ import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyWrapper7 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI8 from "./../../../ui/legacy/legacy.js";
-import * as Lit12 from "./../../../ui/lit/lit.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as Lit11 from "./../../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/trustTokensView.css.js
@@ -3350,7 +3358,7 @@ devtools-icon {
 
 // gen/front_end/panels/application/components/TrustTokensView.js
 var PRIVATE_STATE_TOKENS_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/protections/private-state-tokens";
-var { html: html13 } = Lit12;
+var { html: html13 } = Lit11;
 var UIStrings13 = {
   /**
    * @description Text for the issuer of an item
@@ -3409,9 +3417,9 @@ var TrustTokensView = class extends LegacyWrapper7.LegacyWrapper.WrappableCompon
     const { tokens } = await mainTarget.storageAgent().invoke_getTrustTokens();
     tokens.sort((a, b) => a.issuerOrigin.localeCompare(b.issuerOrigin));
     await RenderCoordinator3.write("Render TrustTokensView", () => {
-      Lit12.render(html13`
+      Lit11.render(html13`
         <style>${trustTokensView_css_default}</style>
-        <style>${UI8.inspectorCommonStyles}</style>
+        <style>${UI9.inspectorCommonStyles}</style>
         ${this.#renderGridOrNoDataMessage(tokens)}
       `, this.#shadow, { host: this });
       if (this.isConnected) {

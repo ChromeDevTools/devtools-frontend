@@ -1,5 +1,6 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
@@ -31,7 +32,7 @@ export declare class SourceFrameImpl extends SourceFrameImpl_base implements UI.
     private readonly lazyContent;
     private prettyInternal;
     private rawContent;
-    private formattedMap;
+    protected formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping | null;
     private readonly prettyToggle;
     private shouldAutoPrettyPrint;
     private readonly progressToolbarItem;
@@ -145,11 +146,6 @@ export interface Transformer {
         lineNumber: number;
         columnNumber: number;
     };
-}
-export declare const enum DecoratorType {
-    PERFORMANCE = "performance",
-    MEMORY = "memory",
-    COVERAGE = "coverage"
 }
 /** Effect to add lines (by position) to the set of non-breakable lines. **/
 export declare const addNonBreakableLines: CodeMirror.StateEffectType<readonly number[]>;

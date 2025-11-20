@@ -534,6 +534,6 @@ export const concatBase64 = function (lhs, rhs) {
     }
     const lhsLeaveAsIs = lhs.substring(0, lhs.length - 4);
     const lhsToDecode = lhs.substring(lhs.length - 4);
-    return lhsLeaveAsIs + window.btoa(window.atob(lhsToDecode) + window.atob(rhs));
+    return lhsLeaveAsIs + globalThis.btoa(globalThis.atob(lhsToDecode) + globalThis.atob(rhs));
 };
 //# sourceMappingURL=StringUtilities.js.map

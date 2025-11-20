@@ -7,7 +7,7 @@ import * as Brand from './Brand.js';
 import * as Constructor from './Constructor.js';
 import * as DateUtilities from './DateUtilities.js';
 import * as DevToolsPath from './DevToolsPath.js';
-import * as DOMUtilities from './DOMUtilities.js';
+import * as HostRuntime from './HostRuntime.js';
 import * as KeyboardUtilities from './KeyboardUtilities.js';
 import * as MapUtilities from './MapUtilities.js';
 import * as MimeType from './MimeType.js';
@@ -31,7 +31,7 @@ export {
   Constructor,
   DateUtilities,
   DevToolsPath,
-  DOMUtilities,
+  HostRuntime,
   KeyboardUtilities,
   MapUtilities,
   MimeType,

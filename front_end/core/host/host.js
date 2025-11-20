@@ -1780,14 +1780,6 @@ var UserMetrics = class {
       /* SwatchType.MAX_VALUE */
     );
   }
-  animationPlaybackRateChanged(playbackRate) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.AnimationPlaybackRateChanged",
-      playbackRate,
-      4
-      /* AnimationsPlaybackRate.MAX_VALUE */
-    );
-  }
   workspacesPopulated(wallClockTimeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Workspaces.PopulateWallClocktime", wallClockTimeInMilliseconds);
   }

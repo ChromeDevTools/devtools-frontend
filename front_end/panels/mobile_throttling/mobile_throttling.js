@@ -756,6 +756,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   render(
     // clang-format off
     html`<select
+      ?disabled=${input.disabled}
       aria-label=${input.title ?? nothing}
       jslog=${VisualLogging2.dropDown().track({ change: true }).context(input.jslogContext)}
       @change=${onSelect}>
@@ -799,6 +800,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
   #title;
   #view;
   #variant = "global-conditions";
+  #disabled = false;
   static createForGlobalConditions(element, title) {
     ThrottlingManager.instance();
     const select = new _NetworkThrottlingSelect(element, {
@@ -820,6 +822,13 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
     this.#currentConditions = options.currentConditions;
     this.#title = options.title;
     this.#view = view;
+    this.#performUpdate();
+  }
+  get disabled() {
+    return this.#disabled;
+  }
+  set disabled(disabled) {
+    this.#disabled = disabled;
     this.#performUpdate();
   }
   get recommendedConditions() {
@@ -890,6 +899,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
       selectedConditions: this.#currentConditions,
       jslogContext: this.#jslogContext,
       title: this.#title,
+      disabled: this.#disabled,
       onSelect,
       onAddCustomConditions,
       throttlingGroups,
@@ -905,6 +915,12 @@ var NetworkThrottlingSelectorWidget = class extends UI3.Widget.VBox {
     super(element, { useShadowDom: true });
     this.#select = new NetworkThrottlingSelect(this.contentElement, {}, view);
     this.#select.addEventListener("conditionsChanged", ({ data }) => this.#conditionsChangedHandler?.(data));
+  }
+  get disabled() {
+    return this.#select.disabled;
+  }
+  set disabled(disabled) {
+    this.#select.disabled = disabled;
   }
   set variant(variant) {
     this.#select.variant = variant;

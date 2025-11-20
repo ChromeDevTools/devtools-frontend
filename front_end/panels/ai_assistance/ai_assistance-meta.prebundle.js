@@ -141,6 +141,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     featurePromotionId: 'ai-assistance',
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
@@ -155,6 +156,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();
@@ -168,6 +170,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();
@@ -181,6 +184,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();
@@ -194,6 +198,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();
@@ -207,6 +212,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();
@@ -220,6 +226,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();
@@ -233,6 +240,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     category: "GLOBAL" /* UI.ActionRegistration.ActionCategory.GLOBAL */,
     title: titleForAiAssistanceActions,
+    configurableBindings: false,
     async loadActionDelegate() {
         const AiAssistance = await loadAiAssistanceModule();
         return new AiAssistance.ActionDelegate();

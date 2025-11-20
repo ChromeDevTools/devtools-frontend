@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/core/platform/api"},"files":["../../../../../../../front_end/core/platform/api/api.ts"],"references":[{"path":"./api-tsconfig.json"}]}

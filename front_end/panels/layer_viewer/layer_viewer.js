@@ -539,7 +539,6 @@ __export(LayerTreeOutline_exports, {
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/layer_viewer/layerTreeOutline.css.js
@@ -624,7 +623,7 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOu
     wrapperElement.appendChild(this.treeOutline.element);
     wrapperElement.appendChild(summaryElement);
     this.element = wrapperElement;
-    Platform.DOMUtilities.appendStyle(this.element, layerTreeOutline_css_default);
+    UI2.DOMUtilities.appendStyle(this.element, layerTreeOutline_css_default);
     this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
   }
   focus() {
@@ -822,7 +821,7 @@ __export(Layers3DView_exports, {
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform2 from "./../../core/platform/platform.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
@@ -869,7 +868,7 @@ __export(TransformController_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
+import * as Platform from "./../../core/platform/platform.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings4 = {
@@ -1045,11 +1044,11 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
   setScaleConstraints(minScale, maxScale) {
     this.minScale = minScale;
     this.maxScale = maxScale;
-    this.#scale = Platform2.NumberUtilities.clamp(this.#scale, minScale, maxScale);
+    this.#scale = Platform.NumberUtilities.clamp(this.#scale, minScale, maxScale);
   }
   clampOffsets(minX, maxX, minY, maxY) {
-    this.#offsetX = Platform2.NumberUtilities.clamp(this.#offsetX, minX, maxX);
-    this.#offsetY = Platform2.NumberUtilities.clamp(this.#offsetY, minY, maxY);
+    this.#offsetX = Platform.NumberUtilities.clamp(this.#offsetX, minX, maxX);
+    this.#offsetY = Platform.NumberUtilities.clamp(this.#offsetY, minY, maxY);
   }
   scale() {
     return this.#scale;
@@ -1067,7 +1066,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     return this.#rotateY;
   }
   onScale(scaleFactor, x, y) {
-    scaleFactor = Platform2.NumberUtilities.clamp(this.#scale * scaleFactor, this.minScale, this.maxScale) / this.#scale;
+    scaleFactor = Platform.NumberUtilities.clamp(this.#scale * scaleFactor, this.minScale, this.maxScale) / this.#scale;
     this.#scale *= scaleFactor;
     this.#offsetX -= (x - this.#offsetX) * (scaleFactor - 1);
     this.#offsetY -= (y - this.#offsetY) * (scaleFactor - 1);
@@ -1388,7 +1387,7 @@ var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBo
     const rotateX = this.transformController.rotateX();
     const rotateY = this.transformController.rotateY();
     this.scale = scale * viewScale;
-    const textureScale = Platform3.NumberUtilities.clamp(this.scale, 0.1, 1);
+    const textureScale = Platform2.NumberUtilities.clamp(this.scale, 0.1, 1);
     if (textureScale !== this.oldTextureScale) {
       this.oldTextureScale = textureScale;
       this.textureManager.setScale(textureScale);
@@ -2150,7 +2149,7 @@ __export(PaintProfilerView_exports, {
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 
@@ -2329,7 +2328,7 @@ var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.e
     return logItemCategoriesMap;
   }
   static categoryForLogItem(logItem) {
-    const method = Platform4.StringUtilities.toTitleCase(logItem.method);
+    const method = Platform3.StringUtilities.toTitleCase(logItem.method);
     const logItemCategories = _PaintProfilerView.initLogItemCategories();
     let result = logItemCategories[method];
     if (!result) {
@@ -2493,8 +2492,8 @@ var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.e
     const screenRight = (this.#selectionWindow.windowRightRatio || 0) * this.canvas.width;
     const barLeft = Math.floor(screenLeft / this.outerBarWidth);
     const barRight = Math.floor((screenRight + this.innerBarWidth - this.barPaddingWidth / 2) / this.outerBarWidth);
-    const stepLeft = Platform4.NumberUtilities.clamp(barLeft * this.samplesPerBar, 0, this.log.length - 1);
-    const stepRight = Platform4.NumberUtilities.clamp(barRight * this.samplesPerBar, 0, this.log.length);
+    const stepLeft = Platform3.NumberUtilities.clamp(barLeft * this.samplesPerBar, 0, this.log.length - 1);
+    const stepRight = Platform3.NumberUtilities.clamp(barRight * this.samplesPerBar, 0, this.log.length);
     return { left: stepLeft, right: stepRight };
   }
   updateImage() {

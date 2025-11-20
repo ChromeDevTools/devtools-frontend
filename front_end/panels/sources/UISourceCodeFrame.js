@@ -200,6 +200,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
         this.#muteSourceCodeEvents = false;
     }
     async setContent(content) {
+        this.#uiSourceCode.formatChanged(this.formattedMap);
         this.disposePlugins();
         this.loadPlugins();
         await super.setContent(content);

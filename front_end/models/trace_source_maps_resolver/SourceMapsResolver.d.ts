@@ -36,6 +36,11 @@ export declare class SourceMapsResolver extends EventTarget {
     static resolvedCodeLocationForCallFrame(callFrame: Protocol.Runtime.CallFrame): ResolvedCodeLocationData | null;
     static resolvedCodeLocationForEntry(entry: Trace.Types.Events.Event): ResolvedCodeLocationData | null;
     static resolvedURLForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event): Platform.DevToolsPath.UrlString | null;
+    static codeLocationForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event): {
+        url: Platform.DevToolsPath.UrlString;
+        line?: number;
+        column?: number;
+    } | null;
     static storeResolvedCodeDataForCallFrame(callFrame: Protocol.Runtime.CallFrame, resolvedCodeLocationData: ResolvedCodeLocationData): void;
     install(): Promise<void>;
     /**

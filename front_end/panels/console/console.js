@@ -5147,7 +5147,7 @@ var ConsoleViewport = class {
   updateFocusedItem(focusLastChild) {
     const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
     const changed = this.lastSelectedElement !== selectedElement;
-    const containerHasFocus = this.#contentElement === Platform3.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+    const containerHasFocus = this.#contentElement === UI6.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     if (this.lastSelectedElement && changed) {
       this.lastSelectedElement.classList.remove("console-selected");
     }
@@ -7689,7 +7689,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     this.#updateJavaScriptCompletionCompartment();
   }
   async handleEnter(forceEvaluate) {
-    if (this.#selfXssWarningShown && this.text() === i18nString6(UIStrings6.allowPasting)) {
+    if (this.#selfXssWarningShown && (this.text() === i18nString6(UIStrings6.allowPasting) || this.text() === `'${i18nString6(UIStrings6.allowPasting)}'`)) {
       Common9.Console.Console.instance().log(this.text());
       this.editor.dispatch({
         changes: { from: 0, to: this.editor.state.doc.length },

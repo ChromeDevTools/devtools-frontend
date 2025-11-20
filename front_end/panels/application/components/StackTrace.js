@@ -5,11 +5,12 @@
 import '../../../ui/components/expandable_list/expandable_list.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import { html, nothing, render } from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import stackTraceLinkButtonStyles from './stackTraceLinkButton.css.js';
 import stackTraceRowStyles from './stackTraceRow.css.js';
-const { html } = Lit;
+const { widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
      * @description Error message stating that something went wrong when trying to render stack trace
@@ -31,64 +32,72 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StackTrace.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class StackTraceRow extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #stackTraceRowItem = null;
-    set data(data) {
-        this.#stackTraceRowItem = data.stackTraceRowItem;
-        this.#render();
+const ROW_DEFAULT_VIEW = (input, output, target) => {
+    if (!input.stackTraceRowItem) {
+        return;
     }
-    #render() {
-        if (!this.#stackTraceRowItem) {
-            return;
-        }
-        Lit.render(html `
-      <style>${stackTraceRowStyles}</style>
-      <div class="stack-trace-row">
-              <div class="stack-trace-function-name text-ellipsis" title=${this.#stackTraceRowItem.functionName}>
-                ${this.#stackTraceRowItem.functionName}
-              </div>
-              <div class="stack-trace-source-location">
-                ${this.#stackTraceRowItem.link ?
-            html `<div class="text-ellipsis">\xA0@\xA0${this.#stackTraceRowItem.link}</div>` :
-            Lit.nothing}
-              </div>
-            </div>
-    `, this.#shadow, { host: this });
-    }
-}
-export class StackTraceLinkButton extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #onShowAllClick = () => { };
-    #hiddenCallFramesCount = null;
-    #expandedView = false;
-    set data(data) {
-        this.#onShowAllClick = data.onShowAllClick;
-        this.#hiddenCallFramesCount = data.hiddenCallFramesCount;
-        this.#expandedView = data.expandedView;
-        this.#render();
-    }
-    #render() {
-        if (!this.#hiddenCallFramesCount) {
-            return;
-        }
-        const linkText = this.#expandedView ? i18nString(UIStrings.showLess) :
-            i18nString(UIStrings.showSMoreFrames, { n: this.#hiddenCallFramesCount });
-        Lit.render(html `
-      <style>${stackTraceLinkButtonStyles}</style>
-      <div class="stack-trace-row">
-          <button class="link" @click=${() => this.#onShowAllClick()}>
-            ${linkText}
-          </button>
+    // clang-format off
+    render(html `
+    <style>${stackTraceRowStyles}</style>
+    <div class="stack-trace-row">
+      <div class="stack-trace-function-name text-ellipsis" title=${input.stackTraceRowItem.functionName}>
+        ${input.stackTraceRowItem.functionName}
+      </div>
+      <div class="stack-trace-source-location">
+        ${input.stackTraceRowItem.link ? html `
+          <div class="text-ellipsis">\xA0@\xA0${input.stackTraceRowItem.link}</div>` :
+        nothing}
         </div>
-    `, this.#shadow, { host: this });
+      </div>`, target);
+    // clang-format on
+};
+export class StackTraceRow extends UI.Widget.Widget {
+    constructor(element, view = ROW_DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
+    stackTraceRowItem = null;
+    #view;
+    performUpdate() {
+        this.#view(this, undefined, this.contentElement);
     }
 }
-export class StackTrace extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+const LINK_DEFAULT_VIEW = (input, output, target) => {
+    if (!input.hiddenCallFramesCount) {
+        return;
+    }
+    const linkText = input.expandedView ? i18nString(UIStrings.showLess) :
+        i18nString(UIStrings.showSMoreFrames, { n: input.hiddenCallFramesCount });
+    // clang-format off
+    render(html `
+    <style>${stackTraceLinkButtonStyles}</style>
+    <div class="stack-trace-row">
+      <button class="link" @click=${() => input.onShowAllClick()}>
+        ${linkText}
+      </button>
+    </div>`, target);
+    // clang-format on
+};
+export class StackTraceLinkButton extends UI.Widget.Widget {
+    onShowAllClick = () => { };
+    hiddenCallFramesCount = null;
+    expandedView = false;
+    #view;
+    constructor(element, view = LINK_DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
+    }
+    performUpdate() {
+        this.#view(this, undefined, this.contentElement);
+    }
+}
+export class StackTrace extends UI.Widget.Widget {
     #linkifier = new Components.Linkifier.Linkifier();
     #stackTraceRows = [];
     #showHidden = false;
+    constructor(element) {
+        super(element, { useShadowDom: true });
+    }
     set data(data) {
         const { creationStackTrace, creationStackTraceTarget } = data.creationStackTraceData;
         if (creationStackTrace) {
@@ -120,9 +129,9 @@ export class StackTrace extends HTMLElement {
             if (this.#showHidden || !ignoreListHide) {
                 if ('functionName' in item) {
                     expandableRows.push(html `
-          <devtools-stack-trace-row data-stack-trace-row .data=${{
-                        stackTraceRowItem: item,
-                    }}></devtools-stack-trace-row>`);
+          <devtools-widget data-stack-trace-row .widgetConfig=${widgetConfig(StackTraceRow, {
+                        stackTraceRowItem: item
+                    })}></devtools-widget>`);
                 }
                 if ('asyncDescription' in item) {
                     expandableRows.push(html `
@@ -138,7 +147,12 @@ export class StackTrace extends HTMLElement {
             // Disabled until https://crbug.com/1079231 is fixed.
             // clang-format off
             expandableRows.push(html `
-      <devtools-stack-trace-link-button data-stack-trace-row .data=${{ onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden }}></devtools-stack-trace-link-button>
+        <devtools-widget data-stack-trace-row .widgetConfig=${widgetConfig(StackTraceLinkButton, {
+                onShowAllClick: this.#onToggleShowAllClick.bind(this),
+                hiddenCallFramesCount,
+                expandedView: this.#showHidden
+            })}>
+        </devtools-widget>
       `);
             // clang-format on
         }
@@ -148,21 +162,18 @@ export class StackTrace extends HTMLElement {
         if (!this.#stackTraceRows.length) {
             // Disabled until https://crbug.com/1079231 is fixed.
             // clang-format off
-            Lit.render(html `
+            render(html `
           <span>${i18nString(UIStrings.cannotRenderStackTrace)}</span>
-        `, this.#shadow, { host: this });
+        `, this.contentElement, { host: this });
             return;
         }
         const expandableRows = this.createRowTemplates();
-        Lit.render(html `
+        render(html `
         <devtools-expandable-list .data=${{ rows: expandableRows, title: i18nString(UIStrings.creationStackTrace) }}
                                   jslog=${VisualLogging.tree()}>
         </devtools-expandable-list>
-      `, this.#shadow, { host: this });
+      `, this.contentElement, { host: this });
         // clang-format on
     }
 }
-customElements.define('devtools-stack-trace-row', StackTraceRow);
-customElements.define('devtools-stack-trace-link-button', StackTraceLinkButton);
-customElements.define('devtools-resources-stack-trace', StackTrace);
 //# sourceMappingURL=StackTrace.js.map

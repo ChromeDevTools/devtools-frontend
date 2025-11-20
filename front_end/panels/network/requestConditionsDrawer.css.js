@@ -37,6 +37,10 @@ export default `/*
   flex-direction: row;
   align-items: center;
   flex: auto;
+
+  devtools-button {
+    flex: none;
+  }
 }
 
 .blocked-url-count {
@@ -81,8 +85,13 @@ export default `/*
 }
 
 .conditions-selector {
-  max-width: 120px;
+  width: max-content;
+  flex: none;
   margin: var(--sys-size-3);
+}
+
+[disabled] {
+  opacity: 50%;
 }
 
 /*# sourceURL=${import.meta.resolve('./requestConditionsDrawer.css')} */`;

@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import layerTreeOutlineStyles from './layerTreeOutline.css.js';
 import { LayerSelection, } from './LayerViewHost.js';
@@ -63,7 +62,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOut
         wrapperElement.appendChild(this.treeOutline.element);
         wrapperElement.appendChild(summaryElement);
         this.element = wrapperElement;
-        Platform.DOMUtilities.appendStyle(this.element, layerTreeOutlineStyles);
+        UI.DOMUtilities.appendStyle(this.element, layerTreeOutlineStyles);
         this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
     }
     focus() {

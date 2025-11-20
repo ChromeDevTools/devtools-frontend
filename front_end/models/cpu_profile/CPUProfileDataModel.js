@@ -50,7 +50,15 @@ export class CPUProfileDataModel extends ProfileTreeModel {
      * for CPU profiles coming from traces.
      */
     traceIds;
+    /**
+     * Each item in the `lines` array contains the script line executing
+     * when the sample in that array position was taken.
+     */
     lines;
+    /**
+     * Same as `lines` above, but with the script column.
+     */
+    columns;
     totalHitCount;
     profileHead;
     /**
@@ -84,14 +92,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         }
         this.traceIds = profile.traceIds;
         this.samples = profile.samples;
-        // Lines are available only in profiles coming from tracing.
-        // Elements in the lines array have a 1 to 1 correspondence with
-        // samples, by array position. They can be 1 or 0 and indicate if
-        // there is line data for a given sample, i.e. if a given sample
-        // needs to be included to calculate the line level execution time
-        // data, which we show in the sources panel after recording a
-        // profile.
         this.lines = profile.lines;
+        this.columns = profile.columns;
         this.totalHitCount = 0;
         this.profileHead = this.translateProfileTree(profile.nodes);
         this.initialize(this.profileHead);

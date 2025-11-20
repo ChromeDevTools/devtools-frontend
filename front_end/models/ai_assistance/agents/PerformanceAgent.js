@@ -412,7 +412,7 @@ export class PerformanceAgent extends AiAgent {
         if (options.selected && focus) {
             this.#addFacts(options.selected);
         }
-        return yield* super.run(initialQuery, options);
+        yield* super.run(initialQuery, options);
     }
     #createFactForTraceSummary() {
         if (!this.#formatter) {
@@ -724,7 +724,10 @@ export class PerformanceAgent extends AiAgent {
                     return { error: 'Invalid eventKey' };
                 }
                 const tree = AICallTree.fromEvent(event, parsedTrace);
-                const callTree = tree ? this.#formatter.formatCallTree(tree) : 'No call tree found';
+                if (!tree) {
+                    return { error: 'No call tree found' };
+                }
+                const callTree = this.#formatter.formatCallTree(tree);
                 const key = `getDetailedCallTree(${args.eventKey})`;
                 this.#cacheFunctionResult(focus, key, callTree);
                 return { result: { callTree } };

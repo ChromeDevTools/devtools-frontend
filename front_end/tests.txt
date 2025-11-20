@@ -29,6 +29,15 @@ core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
 core/i18n/time-utilities.test.js
+core/platform/ArrayUtilities.test.js
+core/platform/DateUtilities.test.js
+core/platform/DevToolsPath.test.js
+core/platform/KeyboardUtilities.test.js
+core/platform/MapUtilities.test.js
+core/platform/MimeType.test.js
+core/platform/NumberUtilities.test.js
+core/platform/StringUtilities.test.js
+core/platform/TypedArrayUtilities.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/Target.test.js
@@ -57,16 +66,6 @@ core/host/AidaClient.test.js
 core/host/DispatchHttpRequestClient.test.js
 core/host/GdpClient.test.js
 core/i18n/i18nImpl.test.js
-core/platform/ArrayUtilities.test.js
-core/platform/DOMUtilities.test.js
-core/platform/DateUtilities.test.js
-core/platform/DevToolsPath.test.js
-core/platform/KeyboardUtilities.test.js
-core/platform/MapUtilities.test.js
-core/platform/MimeType.test.js
-core/platform/NumberUtilities.test.js
-core/platform/StringUtilities.test.js
-core/platform/TypedArrayUtilities.test.js
 core/protocol_client/Dummy.test.js
 core/root/Runtime.test.js
 core/sdk/AccessibilityModel.test.js
@@ -360,6 +359,7 @@ panels/changes/changes.test.js
 panels/common/AiCodeCompletionDisclaimer.test.js
 panels/common/AiCodeCompletionSummaryToolbar.test.js
 panels/common/AiCodeCompletionTeaser.test.js
+panels/common/AiCodeGenerationTeaser.test.js
 panels/common/BadgeNotification.test.js
 panels/common/DOMLinkifier.test.js
 panels/common/ExtensionServer.test.js
@@ -665,6 +665,7 @@ ui/legacy/ARIAUtils.test.js
 ui/legacy/ActionRegistration.test.js
 ui/legacy/Context.test.js
 ui/legacy/ContextMenu.test.js
+ui/legacy/DOMUtilities.test.js
 ui/legacy/Dialog.test.js
 ui/legacy/DockController.test.js
 ui/legacy/FilterBar.test.js
@@ -707,6 +708,7 @@ ui/legacy/components/object_ui/ObjectPropertiesSection.test.js
 ui/legacy/components/perf_ui/ChartViewport.test.js
 ui/legacy/components/perf_ui/FilmStripView.test.js
 ui/legacy/components/perf_ui/FlameChart.test.js
+ui/legacy/components/perf_ui/LineLevelProfile.test.js
 ui/legacy/components/perf_ui/PieChart.test.js
 ui/legacy/components/perf_ui/TimelineGrid.test.js
 ui/legacy/components/perf_ui/TimelineOverviewCalculator.test.js

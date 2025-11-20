@@ -1450,6 +1450,7 @@ export class TimelineUIUtils {
     }
     static renderEventJson(event, contentHelper) {
         contentHelper.addSection(i18nString(UIStrings.traceEvent));
+        contentHelper.appendElementRow('eventKey', new Trace.EventsSerializer.EventsSerializer().keyForEvent(event) ?? '?');
         const eventWithArgsFirst = {
             ...{ args: event.args },
             ...event,

@@ -195,9 +195,6 @@ export class UserMetrics {
     swatchActivated(swatch) {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SwatchActivated" /* EnumeratedHistogram.SwatchActivated */, swatch, 13 /* SwatchType.MAX_VALUE */);
     }
-    animationPlaybackRateChanged(playbackRate) {
-        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.AnimationPlaybackRateChanged" /* EnumeratedHistogram.AnimationPlaybackRateChanged */, playbackRate, 4 /* AnimationsPlaybackRate.MAX_VALUE */);
-    }
     workspacesPopulated(wallClockTimeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);
     }

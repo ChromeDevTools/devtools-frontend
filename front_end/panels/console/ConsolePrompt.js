@@ -384,7 +384,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
         this.#updateJavaScriptCompletionCompartment();
     }
     async handleEnter(forceEvaluate) {
-        if (this.#selfXssWarningShown && this.text() === i18nString(UIStrings.allowPasting)) {
+        if (this.#selfXssWarningShown &&
+            (this.text() === i18nString(UIStrings.allowPasting) ||
+                this.text() === `'${i18nString(UIStrings.allowPasting)}'`)) {
             Common.Console.Console.instance().log(this.text());
             this.editor.dispatch({
                 changes: { from: 0, to: this.editor.state.doc.length },

@@ -9078,6 +9078,10 @@ export const NativeFunctions = [
         signatures: [["index", "bindGroup", "?dynamicOffsets"], ["index", "bindGroup", "dynamicOffsetsData", "dynamicOffsetsDataStart", "dynamicOffsetsDataLength"]]
     },
     {
+        name: "setImmediates",
+        signatures: [["rangeOffset", "data", "?dataOffset", "?size"]]
+    },
+    {
         name: "writeBuffer",
         signatures: [["buffer", "bufferOffset", "data", "?dataElementOffset", "?dataElementCount"], ["buffer", "bufferOffset", "data", "?dataByteOffset", "?byteSize"]]
     },

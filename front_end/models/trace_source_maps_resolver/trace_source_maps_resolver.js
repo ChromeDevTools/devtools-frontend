@@ -75,6 +75,26 @@ var SourceMapsResolver = class extends EventTarget {
     }
     return null;
   }
+  static codeLocationForEntry(parsedTrace, entry) {
+    const uiLocation = _a.resolvedCodeLocationForEntry(entry)?.devtoolsLocation;
+    if (uiLocation) {
+      return { url: uiLocation.uiSourceCode.url(), line: uiLocation.lineNumber, column: uiLocation.columnNumber };
+    }
+    const rawCallFrame = Trace.Helpers.Trace.rawCallFrameForEntry(entry);
+    if (rawCallFrame) {
+      const line = rawCallFrame.lineNumber >= 0 ? rawCallFrame.lineNumber : void 0;
+      const column = rawCallFrame.columnNumber >= 0 ? rawCallFrame.columnNumber : void 0;
+      return { url: rawCallFrame.url, line, column };
+    }
+    let url = Trace.Handlers.Helpers.getNonResolvedURL(entry, parsedTrace.data);
+    if (url) {
+      url = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url)?.url() ?? url;
+    }
+    if (url) {
+      return { url };
+    }
+    return null;
+  }
   static storeResolvedCodeDataForCallFrame(callFrame, resolvedCodeLocationData) {
     const keyForCallFrame = this.keyForCodeLocation(callFrame);
     resolvedCodeLocationDataNames.set(keyForCallFrame, resolvedCodeLocationData);

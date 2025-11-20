@@ -36,7 +36,6 @@ export declare class UserMetrics {
     lighthouseModeRun(type: LighthouseModeRun): void;
     lighthouseCategoryUsed(type: LighthouseCategoryUsed): void;
     swatchActivated(swatch: SwatchType): void;
-    animationPlaybackRateChanged(playbackRate: AnimationsPlaybackRate): void;
     workspacesPopulated(wallClockTimeInMilliseconds: number): void;
     visualLoggingProcessingDone(timeInMilliseconds: number): void;
     freestylerQueryLength(numberOfCharacters: number): void;

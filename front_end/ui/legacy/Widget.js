@@ -31,6 +31,7 @@ import '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
+import { appendStyle, deepActiveElement } from './DOMUtilities.js';
 import { cloneCustomElement, createShadowRootWithCoreStyles } from './UIUtils.js';
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
@@ -621,7 +622,7 @@ export class Widget {
     }
     registerRequiredCSS(...cssFiles) {
         for (const cssFile of cssFiles) {
-            Platform.DOMUtilities.appendStyle(this.#shadowRoot ?? this.element, cssFile);
+            appendStyle(this.#shadowRoot ?? this.element, cssFile);
         }
     }
     // Unused, but useful for debugging.
@@ -881,7 +882,7 @@ export class WidgetFocusRestorer {
     previous;
     constructor(widget) {
         this.widget = widget;
-        this.previous = Platform.DOMUtilities.deepActiveElement(widget.element.ownerDocument);
+        this.previous = deepActiveElement(widget.element.ownerDocument);
         widget.focus();
     }
     restore() {

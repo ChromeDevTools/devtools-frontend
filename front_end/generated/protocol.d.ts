@@ -1103,12 +1103,13 @@ export declare namespace Audits {
         FormInputWithNoLabelError = "FormInputWithNoLabelError",
         FormAutocompleteAttributeEmptyError = "FormAutocompleteAttributeEmptyError",
         FormEmptyIdAndNameAttributesForInputError = "FormEmptyIdAndNameAttributesForInputError",
-        FormAriaLabelledByToNonExistingId = "FormAriaLabelledByToNonExistingId",
+        FormAriaLabelledByToNonExistingIdError = "FormAriaLabelledByToNonExistingIdError",
         FormInputAssignedAutocompleteValueToIdOrNameAttributeError = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
-        FormLabelHasNeitherForNorNestedInput = "FormLabelHasNeitherForNorNestedInput",
+        FormLabelHasNeitherForNorNestedInputError = "FormLabelHasNeitherForNorNestedInputError",
         FormLabelForMatchesNonExistingIdError = "FormLabelForMatchesNonExistingIdError",
         FormInputHasWrongButWellIntendedAutocompleteValueError = "FormInputHasWrongButWellIntendedAutocompleteValueError",
-        ResponseWasBlockedByORB = "ResponseWasBlockedByORB"
+        ResponseWasBlockedByORB = "ResponseWasBlockedByORB",
+        NavigationEntryMarkedSkippable = "NavigationEntryMarkedSkippable"
     }
     /**
      * Depending on the concrete errorType, different properties are set.

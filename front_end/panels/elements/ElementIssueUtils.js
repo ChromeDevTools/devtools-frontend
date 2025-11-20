@@ -111,11 +111,11 @@ function getTooltipFromGenericIssue(errorType) {
             return i18nString(UIStrings.formAutocompleteAttributeEmptyError);
         case "FormEmptyIdAndNameAttributesForInputError" /* Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError */:
             return i18nString(UIStrings.formEmptyIdAndNameAttributesForInputError);
-        case "FormAriaLabelledByToNonExistingId" /* Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId */:
+        case "FormAriaLabelledByToNonExistingIdError" /* Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingIdError */:
             return i18nString(UIStrings.formAriaLabelledByToNonExistingId);
         case "FormInputAssignedAutocompleteValueToIdOrNameAttributeError" /* Protocol.Audits.GenericIssueErrorType.FormInputAssignedAutocompleteValueToIdOrNameAttributeError */:
             return i18nString(UIStrings.formInputAssignedAutocompleteValueToIdOrNameAttributeError);
-        case "FormLabelHasNeitherForNorNestedInput" /* Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput */:
+        case "FormLabelHasNeitherForNorNestedInputError" /* Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInputError */:
             return i18nString(UIStrings.formLabelHasNeitherForNorNestedInput);
         case "FormLabelForMatchesNonExistingIdError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError */:
             return i18nString(UIStrings.formLabelForMatchesNonExistingIdError);

@@ -26,6 +26,7 @@ export declare class Action extends Common.ObjectWrapper.ObjectWrapper<EventType
     contextTypes(): undefined | Array<Platform.Constructor.Constructor<unknown>>;
     canInstantiate(): boolean;
     bindings(): Binding[] | undefined;
+    configurableBindings(): boolean;
     experiment(): string | undefined;
     featurePromotionId(): string | undefined;
     setting(): string | undefined;
@@ -231,6 +232,12 @@ export interface ActionRegistration {
      * are flavors of the current appliaction context.
      */
     bindings?: Binding[];
+    /**
+     * Whether the action's bindings should be displayed for configuration in the
+     * Settings UI. Setting this to `false` will hide the action from the Shortcuts
+     * tab. Defaults to `true`.
+     */
+    configurableBindings?: boolean;
     /**
      * The name of the experiment an action is associated with. Enabling and disabling the declared
      * experiment will enable and disable the action respectively.

@@ -4,8 +4,8 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import { Plugin } from './Plugin.js';
 // Defines plugins that show profiling information in the editor
 // gutter when available.
@@ -82,13 +82,23 @@ class PerformanceMarker extends CodeMirror.GutterMarker {
     }
 }
 function markersFromProfileData(map, state, type) {
-    const markerType = type === "performance" /* SourceFrame.SourceFrame.DecoratorType.PERFORMANCE */ ? PerformanceMarker : MemoryMarker;
+    const markerType = type === "performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */ ? PerformanceMarker : MemoryMarker;
     const markers = [];
+    const aggregatedByLine = new Map();
     for (const [line, value] of map) {
         if (line <= state.doc.lines) {
-            const { from } = state.doc.line(line);
-            markers.push(new markerType(value).range(from));
+            if (value instanceof Map) {
+                for (const [, data] of value) {
+                    aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
+                }
+                continue;
+            }
+            aggregatedByLine.set(line, value);
         }
+    }
+    for (const [line, value] of aggregatedByLine) {
+        const { from } = state.doc.line(line);
+        markers.push(new markerType(value).range(from));
     }
     return CodeMirror.RangeSet.of(markers, true);
 }
@@ -167,6 +177,6 @@ const theme = CodeMirror.EditorView.baseTheme({
         marginLeft: '3px',
     },
 });
-export const MemoryProfilePlugin = makeLineLevelProfilePlugin("memory" /* SourceFrame.SourceFrame.DecoratorType.MEMORY */);
-export const PerformanceProfilePlugin = makeLineLevelProfilePlugin("performance" /* SourceFrame.SourceFrame.DecoratorType.PERFORMANCE */);
+export const MemoryProfilePlugin = makeLineLevelProfilePlugin("memory" /* Workspace.UISourceCode.DecoratorType.MEMORY */);
+export const PerformanceProfilePlugin = makeLineLevelProfilePlugin("performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */);
 //# sourceMappingURL=ProfilePlugin.js.map

@@ -223,118 +223,22 @@ var urlString = (strings, ...values) => String.raw({ raw: strings }, ...values);
 var EmptyRawPathString = "";
 var EmptyEncodedPathString = "";
 
-// gen/front_end/core/platform/DOMUtilities.js
-var DOMUtilities_exports = {};
-__export(DOMUtilities_exports, {
-  appendStyle: () => appendStyle,
-  deepActiveElement: () => deepActiveElement,
-  getEnclosingShadowRootForNode: () => getEnclosingShadowRootForNode,
-  rangeOfWord: () => rangeOfWord
+// gen/front_end/core/platform/HostRuntime.js
+var HostRuntime_exports = {};
+__export(HostRuntime_exports, {
+  HOST_RUNTIME: () => HOST_RUNTIME
 });
-function deepActiveElement(doc) {
-  let activeElement = doc.activeElement;
-  while (activeElement?.shadowRoot?.activeElement) {
-    activeElement = activeElement.shadowRoot.activeElement;
+import * as Browser from "./browser/browser.js";
+import * as Node from "./node/node.js";
+var HOST_RUNTIME = (() => {
+  if (Node.HostRuntime.IS_NODE) {
+    return Node.HostRuntime.HOST_RUNTIME;
   }
-  return activeElement;
-}
-function getEnclosingShadowRootForNode(node) {
-  let parentNode = node.parentNodeOrShadowHost();
-  while (parentNode) {
-    if (parentNode instanceof ShadowRoot) {
-      return parentNode;
-    }
-    parentNode = parentNode.parentNodeOrShadowHost();
+  if (Browser.HostRuntime.IS_BROWSER) {
+    return Browser.HostRuntime.HOST_RUNTIME;
   }
-  return null;
-}
-function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, direction) {
-  let startNode;
-  let startOffset = 0;
-  let endNode;
-  let endOffset = 0;
-  if (!stayWithinNode) {
-    stayWithinNode = rootNode;
-  }
-  if (!direction || direction === "backward" || direction === "both") {
-    let node = rootNode;
-    while (node) {
-      if (node === stayWithinNode) {
-        if (!startNode) {
-          startNode = stayWithinNode;
-        }
-        break;
-      }
-      if (node.nodeType === Node.TEXT_NODE && node.nodeValue !== null) {
-        const start = node === rootNode ? offset - 1 : node.nodeValue.length - 1;
-        for (let i = start; i >= 0; --i) {
-          if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
-            startNode = node;
-            startOffset = i + 1;
-            break;
-          }
-        }
-      }
-      if (startNode) {
-        break;
-      }
-      node = node.traversePreviousNode(stayWithinNode);
-    }
-    if (!startNode) {
-      startNode = stayWithinNode;
-      startOffset = 0;
-    }
-  } else {
-    startNode = rootNode;
-    startOffset = offset;
-  }
-  if (!direction || direction === "forward" || direction === "both") {
-    let node = rootNode;
-    while (node) {
-      if (node === stayWithinNode) {
-        if (!endNode) {
-          endNode = stayWithinNode;
-        }
-        break;
-      }
-      if (node.nodeType === Node.TEXT_NODE && node.nodeValue !== null) {
-        const start = node === rootNode ? offset : 0;
-        for (let i = start; i < node.nodeValue.length; ++i) {
-          if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
-            endNode = node;
-            endOffset = i;
-            break;
-          }
-        }
-      }
-      if (endNode) {
-        break;
-      }
-      node = node.traverseNextNode(stayWithinNode);
-    }
-    if (!endNode) {
-      endNode = stayWithinNode;
-      endOffset = stayWithinNode.nodeType === Node.TEXT_NODE ? stayWithinNode.nodeValue?.length || 0 : stayWithinNode.childNodes.length;
-    }
-  } else {
-    endNode = rootNode;
-    endOffset = offset;
-  }
-  if (!rootNode.ownerDocument) {
-    throw new Error("No `ownerDocument` found for rootNode");
-  }
-  const result = rootNode.ownerDocument.createRange();
-  result.setStart(startNode, startOffset);
-  result.setEnd(endNode, endOffset);
-  return result;
-}
-function appendStyle(node, ...styles) {
-  for (const cssText of styles) {
-    const style = (node.ownerDocument ?? document).createElement("style");
-    style.textContent = cssText;
-    node.appendChild(style);
-  }
-}
+  throw new Error("Unknown runtime!");
+})();
 
 // gen/front_end/core/platform/KeyboardUtilities.js
 var KeyboardUtilities_exports = {};
@@ -1099,7 +1003,7 @@ var concatBase64 = function(lhs, rhs) {
   }
   const lhsLeaveAsIs = lhs.substring(0, lhs.length - 4);
   const lhsToDecode = lhs.substring(lhs.length - 4);
-  return lhsLeaveAsIs + window.btoa(window.atob(lhsToDecode) + window.atob(rhs));
+  return lhsLeaveAsIs + globalThis.btoa(globalThis.atob(lhsToDecode) + globalThis.atob(rhs));
 };
 
 // gen/front_end/core/platform/Timing.js
@@ -1303,9 +1207,9 @@ export {
   ArrayUtilities_exports as ArrayUtilities,
   Brand_exports as Brand,
   Constructor_exports as Constructor,
-  DOMUtilities_exports as DOMUtilities,
   DateUtilities_exports as DateUtilities,
   DevToolsPath_exports as DevToolsPath,
+  HostRuntime_exports as HostRuntime,
   KeyboardUtilities_exports as KeyboardUtilities,
   MapUtilities_exports as MapUtilities,
   MimeType_exports as MimeType,

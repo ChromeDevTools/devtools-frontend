@@ -15,15 +15,9 @@ export declare class ConsoleInsight extends HTMLElement {
     connectedCallback(): void;
     disconnectedCallback(): void;
 }
-declare class ConsoleInsightSourcesList extends HTMLElement {
-    #private;
-    set sources(values: Console.PromptBuilder.Source[]);
-    set isPageReloadRecommended(isPageReloadRecommended: boolean);
-}
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-console-insight': ConsoleInsight;
-        'devtools-console-insight-sources-list': ConsoleInsightSourcesList;
     }
 }
 export {};

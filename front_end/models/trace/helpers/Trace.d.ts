@@ -83,6 +83,7 @@ export declare function getZeroIndexedStackTraceInEventPayload(event: Types.Even
  * Same as getZeroIndexedStackTraceInEventPayload, but only returns the top call frame.
  */
 export declare function getStackTraceTopCallFrameInEventPayload(event: Types.Events.Event): Types.Events.CallFrame | null;
+export declare function rawCallFrameForEntry(entry: Types.Events.Event): Protocol.Runtime.CallFrame | null;
 /**
  * Given a 1-based call frame creates a 0-based one.
  */

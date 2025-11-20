@@ -502,6 +502,16 @@ export function getStackTraceTopCallFrameInEventPayload(event) {
         }
     }
 }
+export function rawCallFrameForEntry(entry) {
+    if (Types.Events.isProfileCall(entry)) {
+        return entry.callFrame;
+    }
+    const topCallFrame = getStackTraceTopCallFrameInEventPayload(entry);
+    if (topCallFrame) {
+        return topCallFrame;
+    }
+    return null;
+}
 /**
  * Given a 1-based call frame creates a 0-based one.
  */

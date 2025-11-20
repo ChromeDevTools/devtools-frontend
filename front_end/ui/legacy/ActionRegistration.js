@@ -186,6 +186,9 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper {
     bindings() {
         return this.actionRegistration.bindings;
     }
+    configurableBindings() {
+        return this.actionRegistration.configurableBindings ?? true;
+    }
     experiment() {
         return this.actionRegistration.experiment;
     }

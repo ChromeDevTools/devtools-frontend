@@ -28,7 +28,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2023",
+    "target": "es2023",
     "tsBuildInfoFile": "platform-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
     "types": [],
@@ -38,9 +38,9 @@
     "../../../../../../front_end/core/platform/ArrayUtilities.ts",
     "../../../../../../front_end/core/platform/Brand.ts",
     "../../../../../../front_end/core/platform/Constructor.ts",
-    "../../../../../../front_end/core/platform/DOMUtilities.ts",
     "../../../../../../front_end/core/platform/DateUtilities.ts",
     "../../../../../../front_end/core/platform/DevToolsPath.ts",
+    "../../../../../../front_end/core/platform/HostRuntime.ts",
     "../../../../../../front_end/core/platform/KeyboardUtilities.ts",
     "../../../../../../front_end/core/platform/MapUtilities.ts",
     "../../../../../../front_end/core/platform/MimeType.ts",
@@ -54,5 +54,16 @@
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "api/bundle-tsconfig.json"
+    },
+    {
+      "path": "browser/bundle-tsconfig.json"
+    },
+    {
+      "path": "node/bundle-tsconfig.json"
+    }
   ]
 }

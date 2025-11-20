@@ -3644,7 +3644,8 @@ var generatedProperties = [
   },
   {
     "keywords": [
-      "auto"
+      "auto",
+      "none"
     ],
     "name": "position-anchor"
   },
@@ -6500,7 +6501,8 @@ var generatedPropertyValues = {
   },
   "position-anchor": {
     "values": [
-      "auto"
+      "auto",
+      "none"
     ]
   },
   "position-area": {

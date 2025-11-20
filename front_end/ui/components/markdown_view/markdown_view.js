@@ -518,7 +518,8 @@ var markdownLinks = /* @__PURE__ */ new Map([
     "https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html"
   ],
   ["storagePartitioningExplainer", "https://developers.google.com/privacy-sandbox/cookies/storage-partitioning"],
-  ["storageAccessAPI", "https://developer.mozilla.org/en-US/docs/Web/API/StorageAccessHandle/createObjectURL"]
+  ["storageAccessAPI", "https://developer.mozilla.org/en-US/docs/Web/API/StorageAccessHandle/createObjectURL"],
+  ["https://goo.gle/ps-status", "https://goo.gle/ps-status"]
 ]);
 var getMarkdownLink = (key) => {
   if (/^https:\/\/www\.chromestatus\.com\//.test(key)) {

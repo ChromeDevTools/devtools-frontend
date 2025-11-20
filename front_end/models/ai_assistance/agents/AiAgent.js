@@ -385,9 +385,7 @@ export class AiAgent {
             }, { once: true });
             yield {
                 type: "side-effect" /* ResponseType.SIDE_EFFECT */,
-                confirm: (result) => {
-                    sideEffectConfirmationPromiseWithResolvers.resolve(result);
-                },
+                confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
             };
             const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
             if (!approvedRun) {

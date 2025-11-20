@@ -90,7 +90,7 @@ export default `/*
   }
 }
 
-::highlight(css-value-tracing) {
+:host::highlight(css-value-tracing) {
   background-color: var(--sys-color-tonal-container);
 }
 

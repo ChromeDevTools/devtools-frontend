@@ -5,8 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Coverage from '../coverage/coverage.js';
 import { Plugin } from './Plugin.js';
@@ -99,7 +99,7 @@ export class CoveragePlugin extends Plugin {
         return coverageCompartment.of([]);
     }
     getCoverageManager() {
-        return this.uiSourceCode.getDecorationData("coverage" /* SourceFrame.SourceFrame.DecoratorType.COVERAGE */);
+        return this.uiSourceCode.getDecorationData("coverage" /* Workspace.UISourceCode.DecoratorType.COVERAGE */);
     }
     editorInitialized(editor) {
         if (this.getCoverageManager()) {
@@ -107,7 +107,7 @@ export class CoveragePlugin extends Plugin {
         }
     }
     decorationChanged(type, editor) {
-        if (type === "coverage" /* SourceFrame.SourceFrame.DecoratorType.COVERAGE */) {
+        if (type === "coverage" /* Workspace.UISourceCode.DecoratorType.COVERAGE */) {
             this.startDecoUpdate(editor);
         }
     }

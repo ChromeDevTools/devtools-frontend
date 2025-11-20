@@ -2,7 +2,8 @@ import '../../../ui/components/expandable_list/expandable_list.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import { type TemplateResult } from '../../../ui/lit/lit.js';
 export interface StackTraceData {
     creationStackTraceData: {
         creationStackTrace: Protocol.Runtime.StackTrace | null;
@@ -10,32 +11,34 @@ export interface StackTraceData {
     };
     buildStackTraceRows: (stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target | null, linkifier: Components.Linkifier.Linkifier, tabStops: boolean | undefined, updateCallback?: (arg0: Array<Components.JSPresentationUtils.StackTraceRegularRow | Components.JSPresentationUtils.StackTraceAsyncRow>) => void) => Array<Components.JSPresentationUtils.StackTraceRegularRow | Components.JSPresentationUtils.StackTraceAsyncRow>;
 }
-interface StackTraceRowData {
-    stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow;
+interface StackTraceRowViewInput {
+    stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow | null;
 }
-export declare class StackTraceRow extends HTMLElement {
+type StackTraceRowView = (input: StackTraceRowViewInput, output: undefined, target: HTMLElement) => void;
+export declare class StackTraceRow extends UI.Widget.Widget {
     #private;
-    set data(data: StackTraceRowData);
+    constructor(element?: HTMLElement, view?: StackTraceRowView);
+    stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow | null;
+    performUpdate(): void;
 }
-interface StackTraceLinkButtonData {
+interface StackTraceLinkViewInput {
     onShowAllClick: () => void;
-    hiddenCallFramesCount: number;
+    hiddenCallFramesCount: number | null;
     expandedView: boolean;
 }
-export declare class StackTraceLinkButton extends HTMLElement {
+type StackTraceLinkView = (input: StackTraceLinkViewInput, output: undefined, target: HTMLElement) => void;
+export declare class StackTraceLinkButton extends UI.Widget.Widget {
     #private;
-    set data(data: StackTraceLinkButtonData);
+    onShowAllClick: () => void;
+    hiddenCallFramesCount: number | null;
+    expandedView: boolean;
+    constructor(element?: HTMLElement, view?: StackTraceLinkView);
+    performUpdate(): void;
 }
-export declare class StackTrace extends HTMLElement {
+export declare class StackTrace extends UI.Widget.Widget {
     #private;
+    constructor(element?: HTMLElement);
     set data(data: StackTraceData);
-    createRowTemplates(): Lit.TemplateResult[];
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-stack-trace-row': StackTraceRow;
-        'devtools-stack-trace-link-button': StackTraceLinkButton;
-        'devtools-resources-stack-trace': StackTrace;
-    }
+    createRowTemplates(): TemplateResult[];
 }
 export {};

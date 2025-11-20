@@ -38,6 +38,7 @@ import * as Highlighting from '../components/highlighting/highlighting.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
+import { appendStyle } from './DOMUtilities.js';
 import { InplaceEditor } from './InplaceEditor.js';
 import { Keys } from './KeyboardShortcut.js';
 import { Tooltip } from './Tooltip.js';
@@ -368,7 +369,7 @@ export class TreeOutlineInShadow extends TreeOutline {
     }
     registerRequiredCSS(...cssFiles) {
         for (const cssFile of cssFiles) {
-            Platform.DOMUtilities.appendStyle(this.shadowRoot, cssFile);
+            appendStyle(this.shadowRoot, cssFile);
         }
     }
     setHideOverflow(hideOverflow) {

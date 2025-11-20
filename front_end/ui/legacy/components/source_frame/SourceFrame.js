@@ -325,6 +325,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.Sim
             newSelection = textEditor.createSelection({ lineNumber: start[0], columnNumber: start[1] }, { lineNumber: end[0], columnNumber: end[1] });
         }
         else {
+            this.formattedMap = null;
             await this.setContent(this.rawContent || '');
             this.baseDoc = textEditor.state.doc;
             const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);

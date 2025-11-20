@@ -42,6 +42,7 @@ __export(Trace_exports, {
   makeZeroBasedCallFrame: () => makeZeroBasedCallFrame,
   mergeEventsInOrder: () => mergeEventsInOrder,
   parseDevtoolsDetails: () => parseDevtoolsDetails,
+  rawCallFrameForEntry: () => rawCallFrameForEntry,
   sortTraceEventsInPlace: () => sortTraceEventsInPlace,
   stackTraceInEvent: () => stackTraceInEvent
 });
@@ -669,6 +670,16 @@ function getStackTraceTopCallFrameInEventPayload(event) {
       return stack[0];
     }
   }
+}
+function rawCallFrameForEntry(entry) {
+  if (Types2.Events.isProfileCall(entry)) {
+    return entry.callFrame;
+  }
+  const topCallFrame = getStackTraceTopCallFrameInEventPayload(entry);
+  if (topCallFrame) {
+    return topCallFrame;
+  }
+  return null;
 }
 function makeZeroBasedCallFrame(callFrame) {
   const normalizedCallFrame = { ...callFrame };

@@ -38,6 +38,7 @@
     "../../../../../../front_end/panels/common/AiCodeCompletionDisclaimer.ts",
     "../../../../../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts",
     "../../../../../../front_end/panels/common/AiCodeCompletionTeaser.ts",
+    "../../../../../../front_end/panels/common/AiCodeGenerationTeaser.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.ts",
     "../../../../../../front_end/panels/common/DOMLinkifier.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.ts",

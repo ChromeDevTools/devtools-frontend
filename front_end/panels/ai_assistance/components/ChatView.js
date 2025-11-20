@@ -527,7 +527,7 @@ function renderStepBadge({ step, isLoading, isLast }) {
 function renderStep({ step, isLoading, markdownRenderer, isLast }) {
     const stepClasses = Lit.Directives.classMap({
         step: true,
-        empty: !step.thought && !step.code && !step.contextDetails,
+        empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
         paused: Boolean(step.sideEffect),
         canceled: Boolean(step.canceled),
     });
@@ -669,7 +669,7 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
     // clang-format on
 }
 function renderImageChatMessage(inlineData) {
-    if (inlineData.data === AiAssistanceModel.AiHistoryStorage.NOT_FOUND_IMAGE_DATA) {
+    if (inlineData.data === AiAssistanceModel.AiConversation.NOT_FOUND_IMAGE_DATA) {
         // clang-format off
         return html `<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>

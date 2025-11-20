@@ -132,8 +132,7 @@ def _CheckWithNodeScript(input_api,
                               message=message)
 
 
-def _GetFilesToLint(input_api, lint_config_files, default_linted_directories,
-                    accepted_endings):
+def _GetFilesToLint(input_api, lint_config_files, accepted_endings):
     run_full_check = False
     files_to_lint = []
 
@@ -141,9 +140,9 @@ def _GetFilesToLint(input_api, lint_config_files, default_linted_directories,
     if len(lint_config_files) != 0:
         run_full_check = True
     else:
+        root_dir = input_api.os_path.join(input_api.PresubmitLocalPath())
         # Only run the linter on files that are relevant, to save PRESUBMIT time.
-        files_to_lint = _GetAffectedFiles(input_api,
-                                          default_linted_directories, ['D'],
+        files_to_lint = _GetAffectedFiles(input_api, root_dir, ['D'],
                                           accepted_endings)
 
     should_bail_out = len(files_to_lint) == 0 and not run_full_check
@@ -215,32 +214,26 @@ def CheckDevToolsLint(input_api, output_api):
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test', 'run_lint_check.mjs')
 
-    default_linted_directories = [
-        input_api.os_path.join(input_api.PresubmitLocalPath())
-    ]
-
-    lint_related_files = [
+    lint_related_paths = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               'eslint.config.mjs'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintrc.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintignore'),
         # This file includes the LitAnalyzer rules
-        input_api.os_path.join(input_api.PresubmitLocalPath(),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'tsconfig.json'),
-    ]
-
-    lint_related_directories = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts',
+                               'test', 'run_lint_check.mjs'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
     ]
 
-    lint_config_files = _GetAffectedFiles(
-        input_api, lint_related_directories,
-        [], [".js", ".mjs", ".ts"]) + _GetAffectedFiles(
-            input_api, lint_related_files, [], [])
+    lint_config_files = _GetAffectedFiles(input_api, lint_related_paths, [],
+                                          [])
 
     should_bail_out, files_to_lint = _GetFilesToLint(
-        input_api, lint_config_files, default_linted_directories,
-        ['.css', '.mjs', '.js', '.ts'])
+        input_api, lint_config_files, ['.css', '.mjs', '.js', '.ts'])
     if should_bail_out:
         # Run the formatter on all non-js like files
         results = []

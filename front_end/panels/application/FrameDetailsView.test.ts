@@ -75,7 +75,7 @@ const makeFrame = (target: SDK.Target.Target) => {
         }],
       },
     ]),
-    getPermissionsPolicyState: () => null,
+    getPermissionsPolicyState: () => Promise.resolve(null),
     parentFrame: () => null,
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;

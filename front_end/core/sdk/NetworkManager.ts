@@ -1502,6 +1502,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.updateNetworkRequest(networkRequest);
   }
 
+  directUDPSocketJoinedMulticastGroup(_event: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void {
+  }
+
+  directUDPSocketLeftMulticastGroup(_event: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void {
+  }
+
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {
     const request = this.#requestsById.get(event.requestId);
     if (!request) {

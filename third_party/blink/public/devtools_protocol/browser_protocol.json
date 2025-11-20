@@ -16750,6 +16750,22 @@
                             "description": "Expected to be unsigned integer.",
                             "optional": true,
                             "type": "number"
+                        },
+                        {
+                            "name": "multicastLoopback",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "multicastTimeToLive",
+                            "description": "Unsigned int 8.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "multicastAllowAddressSharing",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -18655,6 +18671,34 @@
                         {
                             "name": "timestamp",
                             "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketJoinedMulticastGroup",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "IPAddress",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketLeftMulticastGroup",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "IPAddress",
+                            "type": "string"
                         }
                     ]
                 },

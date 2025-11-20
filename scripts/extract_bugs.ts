@@ -25,8 +25,9 @@ const argv = yargs(hideBin(process.argv))
                  .parseSync();
 
 /**
- * Usage: node --no-warnings --experimental-strip-types
- * scripts/extract_bugs.ts
+ * Node v24 expected.
+ * Usage: node scripts/extract_bugs.ts
+ *
  *
  * Finds all skipped tests and returns associated bug IDs and the test
  * files (tab-separated).

@@ -203,9 +203,3 @@ For more options see
 ```bash
 node ./scripts/bisect-test-failure-dependency.ts -h
 ```
-
-If version of Node JS is under v24 you need to run with:
-
-```bash
-node --experimental-strip-types ./scripts/bisect-test-failure-dependency.ts -t <relative-file-path>
-```

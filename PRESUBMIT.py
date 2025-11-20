@@ -121,10 +121,6 @@ def _CheckWithNodeScript(input_api,
 
     process = [devtools_paths.node_path(), script_path]
 
-    if allow_typescript:
-        process.insert(1, '--no-warnings=ExperimentalWarning')
-        process.insert(1, '--experimental-strip-types')
-
     return _ExecuteSubProcess(input_api,
                               output_api,
                               process,

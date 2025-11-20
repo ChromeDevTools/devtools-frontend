@@ -338,8 +338,6 @@ hooks = [
       'vpython3',
       'third_party/node/node.py',
       '--output',
-      # Silence the "Importing JSON modules" warning
-      '--no-warnings=ExperimentalWarning',
       'scripts/deps/sync-vscode-settings.mjs'
     ]
   },

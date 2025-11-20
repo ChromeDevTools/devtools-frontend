@@ -231,8 +231,6 @@ class ScriptsMochaTests extends Tests {
     return super.run(
         tests.map(test => ScriptPathPair.getFromPair(test)),
         [
-          '--experimental-strip-types',
-          '--no-warnings=ExperimentalWarning',
           MOCHA_BIN_PATH,
           // Some test require spinning up a TypeScript
           // typechecking service which take some time on

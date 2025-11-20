@@ -20,8 +20,6 @@ generate_css("css_files") {
     "serviceWorkerRouterView.css",
     "sharedStorageAccessGrid.css",
     "sharedStorageMetadataView.css",
-    "stackTraceLinkButton.css",
-    "stackTraceRow.css",
     "storageMetadataView.css",
     "trustTokensView.css",
   ]
@@ -40,7 +38,6 @@ devtools_ui_module("components") {
     "ServiceWorkerRouterView.ts",
     "SharedStorageAccessGrid.ts",
     "SharedStorageMetadataView.ts",
-    "StackTrace.ts",
     "StorageMetadataView.ts",
     "TrustTokensView.ts",
   ]
@@ -104,7 +101,6 @@ devtools_ui_module("unittests") {
     "ServiceWorkerRouterView.test.ts",
     "SharedStorageAccessGrid.test.ts",
     "SharedStorageMetadataView.test.ts",
-    "StackTrace.test.ts",
     "StorageMetadataView.test.ts",
     "TrustTokensView.test.ts",
   ]

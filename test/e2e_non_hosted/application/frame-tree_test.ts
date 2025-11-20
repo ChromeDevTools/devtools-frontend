@@ -20,8 +20,7 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';
 const EXPAND_STACKTRACE_BUTTON_SELECTOR = '.arrow-icon-button';
-const STACKTRACE_ROW_SELECTOR = '.stack-trace-row';
-const STACKTRACE_ROW_LINK_SELECTOR = '.stack-trace-row .link';
+const STACKTRACE_ROW_SELECTOR = '.stack-preview-container tbody tr';
 const APPLICATION_PANEL_SELECTED_SELECTOR = '.tabbed-pane-header-tab.selected[aria-label="Application"]';
 
 const getTrailingURL = (text: string) => {
@@ -107,9 +106,9 @@ describe('The Application Tab', () => {
       return undefined;
     });
     const expected = [
-      'second\xA0@\xA0js-oopif.html:13',
-      'first\xA0@\xA0js-oopif.js:3',
-      '(anonymous)\xA0@\xA0js-oopif.js:6',
+      'second @ js-oopif.html:13',
+      'first @ js-oopif.js:3',
+      '(anonymous) @ js-oopif.js:6',
     ];
     assert.deepEqual(stackTraceRowsTextContent, expected);
   });
@@ -128,43 +127,51 @@ describe('The Application Tab', () => {
        let stackTraceRowsTextContent = await devToolsPage.waitForFunction(async () => {
          await ensureApplicationPanel(devToolsPage);
          await devToolsPage.click(EXPAND_STACKTRACE_BUTTON_SELECTOR);
-         const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR, devToolsPage);
+         const stackTraceRows =
+             (await Promise.all((await devToolsPage.$$(STACKTRACE_ROW_SELECTOR))
+                                    .map(row => row.evaluate(row => row.checkVisibility() && row.textContent.trim()))))
+                 .filter(Boolean);
          // Make sure the length is equivalent to the expected value below
-         if (stackTraceRows.length === 2) {
+         if (stackTraceRows.length === 1) {
            return stackTraceRows;
          }
          return undefined;
        });
        const expectedCollapsed = [
-         'second\xA0@\xA0js-oopif.html:13',
-         'Show 2 more frames',
+         'second @ js-oopif.html:13',
        ];
        assert.deepEqual(stackTraceRowsTextContent, expectedCollapsed);
 
        // Expand all frames
-       await devToolsPage.click(STACKTRACE_ROW_LINK_SELECTOR);
+       await devToolsPage.click('.show-all-link .link');
        stackTraceRowsTextContent = await devToolsPage.waitForFunction(async () => {
-         const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR, devToolsPage);
+         const stackTraceRows =
+             (await Promise.all((await devToolsPage.$$(STACKTRACE_ROW_SELECTOR))
+                                    .map(row => row.evaluate(row => row.checkVisibility() && row.textContent.trim()))))
+                 .filter(Boolean);
          // Make sure the length is equivalent to the expected value below
-         if (stackTraceRows.length === 4) {
+         if (stackTraceRows.length === 3) {
            return stackTraceRows;
          }
          return undefined;
        });
 
        const expectedFull = [
-         'second\xA0@\xA0js-oopif.html:13',
-         'first\xA0@\xA0js-oopif.js:3',
-         '(anonymous)\xA0@\xA0js-oopif.js:6',
-         'Show less',
+         'second @ js-oopif.html:13',
+         'first @ js-oopif.js:3',
+         '(anonymous) @ js-oopif.js:6',
        ];
        assert.deepEqual(stackTraceRowsTextContent, expectedFull);
 
-       await devToolsPage.click(STACKTRACE_ROW_LINK_SELECTOR);
+       await devToolsPage.click('.show-less-link .link');
        stackTraceRowsTextContent = await devToolsPage.waitForFunction(async () => {
-         const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR, devToolsPage);
+         const stackTraceRows =
+             (await Promise.all((await devToolsPage.$$(STACKTRACE_ROW_SELECTOR))
+                                    .map(row => row.evaluate(row => row.checkVisibility() && row.textContent.trim()))))
+                 .filter(Boolean);
+
          // Make sure the length is equivalent to the expected value below
-         if (stackTraceRows.length === 2) {
+         if (stackTraceRows.length === 1) {
            return stackTraceRows;
          }
          return undefined;

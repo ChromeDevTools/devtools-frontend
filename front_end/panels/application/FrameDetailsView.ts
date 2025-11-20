@@ -12,6 +12,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -270,6 +271,8 @@ export interface FrameDetailsReportViewData {
 interface FrameDetailsViewInput {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target: SDK.Target.Target|null;
+  creationStackTrace: Promise<StackTrace.StackTrace.StackTrace>|null;
+  creationTarget: SDK.Target.Target|null;
   adScriptAncestry: Protocol.Page.AdScriptAncestry|null;
   linkTargetDOMNode?: Promise<SDK.DOMModel.DOMNode|null>;
   permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null;
@@ -337,6 +340,7 @@ function renderDocumentSection(input: FrameDetailsViewInput): LitTemplate {
     return nothing;
   }
 
+  // clang-format off
   return html`
       <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
       <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
@@ -350,11 +354,13 @@ function renderDocumentSection(input: FrameDetailsViewInput): LitTemplate {
       ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
       ${maybeRenderOrigin(input.frame?.securityOrigin)}
       ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(value)), nothing)}
-      ${maybeRenderCreationStacktrace(input.frame.getCreationStackTraceData())}
+      ${until(input.creationStackTrace?.then?.(
+          value => maybeRenderCreationStacktrace(value, input.creationTarget)),
+          nothing)}
       ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
       ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
-      <devtools-report-divider></devtools-report-divider>
-    `;
+      <devtools-report-divider></devtools-report-divider>`;
+  // clang-format on
 }
 
 function renderSourcesLinkForURL(onRevealInSources: () => void): LitTemplate {
@@ -444,22 +450,16 @@ function renderOwnerElement(linkTargetDOMNode: SDK.DOMModel.DOMNode|null): LitTe
 }
 
 function maybeRenderCreationStacktrace(
-    creationStackTraceData:
-        {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: SDK.Target.Target}|
-    null): LitTemplate {
-  if (creationStackTraceData?.creationStackTrace) {
+    stackTrace: StackTrace.StackTrace.StackTrace|null, target: SDK.Target.Target|null): LitTemplate {
+  if (stackTrace && target) {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       return html`
         <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
           i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging.section('frame-creation-stack-trace')}>
-          <devtools-widget .widgetConfig=${widgetConfig(
-            ApplicationComponents.StackTrace.StackTrace, { data: {
-              creationStackTraceData,
-              buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace }
-            }
-          )}>
+          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(
+              Components.JSPresentationUtils.StackTracePreviewContent, {target, stackTrace, options: {expandable: true}})}>
           </devtools-widget>
         </devtools-report-value>
       `;
@@ -893,9 +893,17 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
     const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
     const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
     const frameRequest = frame.resourceForURL(frame.url)?.request;
+    const {creationStackTrace: rawCreationStackTrace, creationStackTraceTarget: creationTarget} =
+        frame.getCreationStackTraceData();
+    const creationStackTrace = rawCreationStackTrace &&
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(
+            rawCreationStackTrace, creationTarget);
+
     const input = {
       frame,
       target: this.#target,
+      creationStackTrace,
+      creationTarget,
       protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
       permissionsPolicies: this.#permissionsPolicies,
       adScriptAncestry: this.#adScriptAncestry,

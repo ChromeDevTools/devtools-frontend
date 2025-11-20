@@ -15,7 +15,6 @@ import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
-import type * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
 import type * as ReportView from '../../ui/components/report_view/report_view.js';
 
 import * as Application from './application.js';
@@ -56,7 +55,7 @@ const makeFrame = (target: SDK.Target.Target) => {
           scriptId: 'someScriptId',
         }],
       },
-      creationStackTraceTarget: null,
+      creationStackTraceTarget: target,
     }),
     getOriginTrials: async () => ([
       {
@@ -83,6 +82,19 @@ const makeFrame = (target: SDK.Target.Target) => {
 };
 
 describeWithMockConnection('FrameDetailsView', () => {
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping: new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace),
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+  });
+
   it('renders with a title', async () => {
     const frame = makeFrame(createTarget());
     const component = new Application.FrameDetailsView.FrameDetailsReportView();
@@ -98,16 +110,6 @@ describeWithMockConnection('FrameDetailsView', () => {
   });
 
   it('renders report keys and values', async () => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping: new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace),
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
 
     const target = createTarget();
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
@@ -207,7 +209,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       'https://www.example.com/path/page.html',
       'https://www.example.com',
       'iframe',
-      'function1\n\xA0@\xA0www.example.com/script.js:16',
+      '\tfunction1\t@\twww.example.com/script.js:16',
       'root',
       'ad-script1.js:1',
       '/ad-script2.$script',
@@ -226,19 +228,10 @@ report-uri: https://www.example.com/csp`,
 
     const stackTrace = component.contentElement.querySelector(
         'devtools-report-value[jslog="Section; context: frame-creation-stack-trace"] devtools-widget')!;
-    const expandableList = stackTrace.shadowRoot!.querySelector('devtools-expandable-list') as
-        ExpandableList.ExpandableList.ExpandableList;
-    assert.isNotNull(expandableList.shadowRoot);
 
-    const stackTraceRows = expandableList.shadowRoot!.querySelectorAll('devtools-widget');
-    let stackTraceText: string[] = [];
+    const stackTraceText = stackTrace.deepInnerText().split('\n');
 
-    stackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
-      stackTraceText = stackTraceText.concat(row.deepInnerText());
-    });
-
-    assert.deepEqual(stackTraceText[0], 'function1\n\xA0@\xA0www.example.com/script.js:16');
+    assert.deepEqual(stackTraceText[0], '\tfunction1\t@\twww.example.com/script.js:16');
 
     const adStatusList =
         component.contentElement.querySelector('devtools-report-value.ad-status-list devtools-expandable-list');

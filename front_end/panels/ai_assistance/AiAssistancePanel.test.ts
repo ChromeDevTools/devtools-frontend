@@ -2057,7 +2057,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       });
-      const {panel, view} = await createAiAssistancePanel();
+      const {panel, view} = await createAiAssistancePanel({aidaClient});
 
       await panel.handleAction('drjones.network-floating-button');
       let nextInput = await view.nextInput;

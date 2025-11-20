@@ -945,12 +945,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         throw new Error('could not create performance agent focus');
       }
 
-      const agent = conversationHandler.createAgent(AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE);
       const conversation = new AiAssistanceModel.AiConversation.AiConversation(
           AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE,
           [],
-          agent.id,
+          undefined,
           /* isReadOnly */ true,
+          conversationHandler.aidaClient,
+          undefined,
           /* isExternal */ true,
       );
 
@@ -960,7 +961,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.#externalAIConversationData = {
         conversationHandler,
         conversation,
-        agent,
         selected,
       };
     }

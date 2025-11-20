@@ -2,19 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type ContextDetail, type ResponseData, ResponseType} from './agents/AiAgent.js';
-import {AiHistoryStorage, type ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
+import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
+
+import {
+  type AiAgent,
+  type ContextDetail,
+  type ConversationContext,
+  type MultimodalInput,
+  type ResponseData,
+  ResponseType
+} from './agents/AiAgent.js';
+import {FileAgent} from './agents/FileAgent.js';
+import {NetworkAgent} from './agents/NetworkAgent.js';
+import {PerformanceAgent} from './agents/PerformanceAgent.js';
+import {StylingAgent} from './agents/StylingAgent.js';
+import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
+import type {ChangeManager} from './ChangeManager.js';
 
 export const NOT_FOUND_IMAGE_DATA = '';
 const MAX_TITLE_LENGTH = 80;
 
 export class AiConversation {
-  readonly id: string;
-  type: ConversationType;
-  #isReadOnly: boolean;
-  readonly history: ResponseData[];
-  #isExternal: boolean;
-
   static generateContextDetailsMarkdown(details: ContextDetail[]): string {
     const detailsMarkdown: string[] = [];
     for (const detail of details) {
@@ -24,13 +33,47 @@ export class AiConversation {
     return detailsMarkdown.join('\n\n');
   }
 
+  static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation {
+    const history = serializedConversation.history.map(entry => {
+      if (entry.type === ResponseType.SIDE_EFFECT) {
+        return {...entry, confirm: () => {}};
+      }
+      return entry;
+    });
+    return new AiConversation(
+        serializedConversation.type,
+        history,
+        serializedConversation.id,
+        true,
+        undefined,
+        undefined,
+        serializedConversation.isExternal,
+    );
+  }
+
+  readonly id: string;
+  type: ConversationType;
+  #isReadOnly: boolean;
+  readonly history: ResponseData[];
+  #isExternal: boolean;
+
+  #aidaClient: Host.AidaClient.AidaClient;
+  #changeManager: ChangeManager|undefined;
+  #agent: AiAgent<unknown>;
+
   constructor(
       type: ConversationType,
       data: ResponseData[] = [],
       id: string = crypto.randomUUID(),
       isReadOnly = true,
+      aidaClient: Host.AidaClient.AidaClient = new Host.AidaClient.AidaClient(),
+      changeManager?: ChangeManager,
       isExternal = false,
   ) {
+    this.#changeManager = changeManager;
+    this.#aidaClient = aidaClient;
+    this.#agent = this.#createAgent(type);
+
     this.type = type;
     this.id = id;
     this.#isReadOnly = isReadOnly;
@@ -170,19 +213,57 @@ export class AiConversation {
     };
   }
 
-  static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation {
-    const history = serializedConversation.history.map(entry => {
-      if (entry.type === ResponseType.SIDE_EFFECT) {
-        return {...entry, confirm: () => {}};
+  #createAgent(conversationType: ConversationType): AiAgent<unknown> {
+    const options = {
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+      changeManager: this.#changeManager,
+    };
+    let agent: AiAgent<unknown>;
+    switch (conversationType) {
+      case ConversationType.STYLING: {
+        agent = new StylingAgent(options);
+        break;
       }
-      return entry;
-    });
-    return new AiConversation(
-        serializedConversation.type,
-        history,
-        serializedConversation.id,
-        true,
-        serializedConversation.isExternal,
-    );
+      case ConversationType.NETWORK: {
+        agent = new NetworkAgent(options);
+        break;
+      }
+      case ConversationType.FILE: {
+        agent = new FileAgent(options);
+        break;
+      }
+      case ConversationType.PERFORMANCE: {
+        agent = new PerformanceAgent(options);
+        break;
+      }
+    }
+    return agent;
   }
+
+  async *
+      run(
+          initialQuery: string,
+          options: {
+            selected: ConversationContext<unknown>|null,
+            signal?: AbortSignal,
+          },
+          multimodalInput?: MultimodalInput,
+          ): AsyncGenerator<ResponseData, void, void> {
+    for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== ResponseType.ANSWER || data.complete) {
+        void this.addHistoryItem(data);
+      }
+      yield data;
+    }
+  }
+
+  get origin(): string|undefined {
+    return this.#agent.origin;
+  }
+}
+
+function isAiAssistanceServerSideLoggingEnabled(): boolean {
+  return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }

@@ -17,16 +17,14 @@ import {
   type ResponseData,
   ResponseType
 } from './agents/AiAgent.js';
-import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
-import {PerformanceAgent, type PerformanceTraceContext} from './agents/PerformanceAgent.js';
+import type {PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
 import {AiConversation} from './AiConversation.js';
 import {
   ConversationType,
 } from './AiHistoryStorage.js';
 import {getDisabledReasons} from './AiUtils.js';
-import type {ChangeManager} from './ChangeManager.js';
 
 interface ExternalStylingRequestParameters {
   conversationType: ConversationType.STYLING;
@@ -43,7 +41,6 @@ interface ExternalNetworkRequestParameters {
 export interface ExternalPerformanceAIConversationData {
   conversationHandler: ConversationHandler;
   conversation: AiConversation;
-  agent: AiAgent<unknown>;
   selected: PerformanceTraceContext;
 }
 
@@ -122,9 +119,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
       aidaClient: Host.AidaClient.AidaClient, aidaAvailability?: Host.AidaClient.AidaAccessPreconditions) {
     super();
     this.#aidaClient = aidaClient;
-    if (aidaAvailability) {
-      this.#aidaAvailability = aidaAvailability;
-    }
+    this.#aidaAvailability = aidaAvailability;
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
   }
 
@@ -142,6 +137,10 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
 
   static removeInstance(): void {
     conversationHandlerInstance = undefined;
+  }
+
+  get aidaClient(): Host.AidaClient.AidaClient {
+    return this.#aidaClient;
   }
 
   #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
@@ -207,8 +206,9 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
 
   async *
       handleConversationWithHistory(
-          items: AsyncIterable<ResponseData, void, void>, conversation: AiConversation|undefined):
-          AsyncGenerator<ResponseData, void, void> {
+          items: AsyncIterable<ResponseData, void, void>,
+          conversation: AiConversation|undefined,
+          ): AsyncGenerator<ResponseData, void, void> {
     for await (const data of items) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== ResponseType.ANSWER || data.complete) {
@@ -230,22 +230,22 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
         [],
         aiAgent.id,
         /* isReadOnly */ true,
+        this.#aidaClient,
+        undefined,
         /* isExternal */ true,
     );
-    return yield* this.#doExternalConversation({conversation, aiAgent, prompt, selected});
+    return yield* this.#doExternalConversation({conversation, prompt, selected});
   }
 
   async * #doExternalConversation(opts: {
     conversation: AiConversation,
-    aiAgent: AiAgent<unknown>,
     prompt: string,
     selected: NodeContext|PerformanceTraceContext|RequestContext|null,
   }): AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
-    const {conversation, aiAgent, prompt, selected} = opts;
-    const generator = aiAgent.run(prompt, {selected});
-    const generatorWithHistory = this.handleConversationWithHistory(generator, conversation);
+    const {conversation, prompt, selected} = opts;
+    const generator = conversation.run(prompt, {selected});
     const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
+    for await (const data of generator) {
       if (data.type !== ResponseType.ANSWER || data.complete) {
         devToolsLogs.push(data);
       }
@@ -274,7 +274,10 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
 
   async #handleExternalStylingConversation(prompt: string, selector = 'body'):
       Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    const stylingAgent = this.createAgent(ConversationType.STYLING);
+    const stylingAgent = new StylingAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+    });
     const node = await inspectElementBySelector(selector);
     if (node) {
       await node.setAsInspectedNode();
@@ -292,7 +295,6 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
       Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     return this.#doExternalConversation({
       conversation: data.conversation,
-      aiAgent: data.agent,
       prompt,
       selected: data.selected,
     });
@@ -300,7 +302,10 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
 
   async #handleExternalNetworkConversation(prompt: string, requestUrl: string):
       Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    const networkAgent = this.createAgent(ConversationType.NETWORK);
+    const networkAgent = new NetworkAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+    });
     const request = await inspectNetworkRequestByUrl(requestUrl);
     if (!request) {
       return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
@@ -315,36 +320,6 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
       prompt,
       selected: new RequestContext(request, calculator),
     });
-  }
-
-  createAgent(conversationType: ConversationType, changeManager?: ChangeManager): AiAgent<unknown> {
-    const options = {
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
-    };
-    let agent: AiAgent<unknown>;
-    switch (conversationType) {
-      case ConversationType.STYLING: {
-        agent = new StylingAgent({
-          ...options,
-          changeManager,
-        });
-        break;
-      }
-      case ConversationType.NETWORK: {
-        agent = new NetworkAgent(options);
-        break;
-      }
-      case ConversationType.FILE: {
-        agent = new FileAgent(options);
-        break;
-      }
-      case ConversationType.PERFORMANCE: {
-        agent = new PerformanceAgent(options);
-        break;
-      }
-    }
-    return agent;
   }
 }
 

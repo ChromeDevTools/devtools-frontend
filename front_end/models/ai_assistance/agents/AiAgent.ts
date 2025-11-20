@@ -486,11 +486,14 @@ export abstract class AiAgent<T> {
   }
 
   async *
-      run(initialQuery: string, options: {
-        selected: ConversationContext<T>|null,
-        signal?: AbortSignal,
-      },
-          multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void> {
+      run(
+          initialQuery: string,
+          options: {
+            selected: ConversationContext<T>|null,
+            signal?: AbortSignal,
+          },
+          multimodalInput?: MultimodalInput,
+          ): AsyncGenerator<ResponseData, void, void> {
     await options.selected?.refresh();
 
     if (options.selected) {

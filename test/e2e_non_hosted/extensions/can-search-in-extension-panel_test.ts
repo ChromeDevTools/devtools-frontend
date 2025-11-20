@@ -18,7 +18,7 @@ declare global {
 const PAGE_TITLE = 'TestPanel';
 describe('Extension panels', () => {
   it('can perform search actions', async ({devToolsPage, inspectedPage}) => {
-    expectError('Unknown VE context: https://localhostTestPanel');
+    expectError('Unknown VE context: \'https://localhostTestPanel\'');
     await inspectedPage.goToResource('empty.html');
     const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
 

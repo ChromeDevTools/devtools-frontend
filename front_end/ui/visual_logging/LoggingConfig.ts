@@ -131,7 +131,8 @@ function checkContextValue(context: string|number|undefined): void {
   if (Root.Runtime.Runtime.queryParam('debugFrontend') || Host.InspectorFrontendHost.isUnderTest() ||
       localStorage.getItem('veDebugLoggingEnabled') === DebugLoggingFormat.TEST) {
     const stack = (new Error().stack || '').split('\n').slice(3).join('\n');
-    console.error(`Unknown VE context: ${context}${stack}`);
+    console.error(`Unknown VE context: '${context}'\n${
+        stack}\nPlease add it to front_end/ui/visual_logging/KnownContextValues.ts if you think that's a valid context value.`);
   }
   reportedUnknownVeContext.add(context);
 }

@@ -47,7 +47,7 @@ describe('The Extension API', () => {
   });
 
   it('handles absolute resource paths correctly', async ({devToolsPage, inspectedPage}) => {
-    expectError('Unknown VE context: https://localhostextension-tab-title');
+    expectError('Unknown VE context: \'https://localhostextension-tab-title\'');
     await inspectedPage.goToResource('empty.html');
     const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
 
@@ -62,7 +62,7 @@ describe('The Extension API', () => {
   });
 
   it('handles relative resource paths correctly', async ({devToolsPage, inspectedPage}) => {
-    expectError('Unknown VE context: https://localhostextension-tab-title');
+    expectError('Unknown VE context: \'https://localhostextension-tab-title\'');
     await inspectedPage.goToResource('empty.html');
     const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
     await createPanel(extension, 'blank.html');

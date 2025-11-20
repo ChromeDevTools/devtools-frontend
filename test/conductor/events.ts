@@ -44,6 +44,8 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Hash of blocked script',
 ];
 
+const FILTERED_LOGS = ['Autofocus processing was blocked because a document already has a focused element'];
+
 const logLevels = {
   log: 'I',
   info: 'I',
@@ -138,7 +140,7 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
           fatalErrors.push(message);
           console.error(message);
         }
-      } else {
+      } else if (!FILTERED_LOGS.some(log => msg.text().includes(log))) {
         console.log(`${logLevel}> ${formatStackFrame(msg.location())}: ${msg.text()}`);
       }
     }

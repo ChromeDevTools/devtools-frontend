@@ -6,7 +6,6 @@ import {type ChildProcess, spawn} from 'child_process';
 import * as path from 'path';
 
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
-const COMPONENT_DOCS_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'component_server', 'server.js');
 const cwd = path.join(__dirname, '..', '..');
 let runningServer: ChildProcess|undefined;
 
@@ -14,7 +13,7 @@ let runningServer: ChildProcess|undefined;
  * Starts a hosted mode server on any available port and returns the port number
  * once the server is ready to receive requests.
  **/
-export function startServer(server: 'hosted-mode'|'component-docs', commandLineArgs: string[]): Promise<number> {
+export function startServer(server: 'hosted-mode', commandLineArgs: string[]): Promise<number> {
   if (runningServer) {
     throw new Error('Server was already started.');
   }
@@ -24,7 +23,6 @@ export function startServer(server: 'hosted-mode'|'component-docs', commandLineA
 
   const serverExecutable = {
     'hosted-mode': HOSTED_MODE_SERVER_PATH,
-    'component-docs': COMPONENT_DOCS_SERVER_PATH,
   }[server];
 
   // Copy the current env and append the port.

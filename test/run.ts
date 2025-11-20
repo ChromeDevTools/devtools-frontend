@@ -285,7 +285,6 @@ function main() {
           'chrome',
           'third_party/devtools-frontend/src/test:test',
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
-          'third_party/devtools-frontend/src/scripts/component_server:component_server',
         ] :
         [];
     const {status} = ninja('inherit', ...targets);

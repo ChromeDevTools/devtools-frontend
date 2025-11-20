@@ -19,7 +19,6 @@ const options = commandLineArgs(yargs(argv)).parseSync();
 
 export const enum ServerType {
   HOSTED_MODE = 'hosted-mode',
-  COMPONENT_DOCS = 'component-docs',
 }
 
 interface Config {

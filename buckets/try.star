@@ -330,7 +330,12 @@ def branch_cq():
 
     # If none of the branches need a legacy recipe, create a single CQ group.
     if any_branch_needs_legacy():
+        version_groups = set()
         for branch in versions.keys():
+            if versions[branch] in version_groups:
+                # Avoid creating a second CQ group for the version number.
+                continue
+            version_groups.add(versions[branch])
             cq_group(branch, versions[branch])
     else:
         cq_group()

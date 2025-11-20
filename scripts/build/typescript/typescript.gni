@@ -284,6 +284,8 @@ template("node_ts_library") {
                              "sources",
                              "visibility",
                              "deps",
+                             "data_deps",
+                             "public_deps",
                              "additional_type_definitions",
                            ])
   }
@@ -297,6 +299,8 @@ template("ts_e2e_library") {
                              "sources",
                              "visibility",
                              "deps",
+                             "data_deps",
+                             "public_deps",
                            ])
   }
 }

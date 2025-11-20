@@ -183,6 +183,8 @@ module.exports = function(config: any) {
     basePath: CHECKOUT_ROOT,
     autoWatchBatchDelay: 1000,
 
+    customContextFile: path.join(GEN_DIR, 'test/unit/context.html'),
+
     files: [
       // Global hooks in test_setup must go first
       {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_setup.js'), type: 'module'},

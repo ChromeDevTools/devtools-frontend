@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/ninja/copy.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("karma") {
@@ -14,4 +15,9 @@ node_ts_library("karma") {
     "../conductor:implementation",
     "../shared",
   ]
+  data_deps = [ ":context" ]
+}
+
+copy_to_gen("context") {
+  sources = [ "context.html" ]
 }

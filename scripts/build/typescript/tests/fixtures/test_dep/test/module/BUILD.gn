@@ -5,7 +5,7 @@ import("../../../../../typescript.gni")
 
 ts_library("module") {
   testonly = true
-  sources = [ "exporting_test.ts" ]
+  sources = [ "exporting.test.ts" ]
 
   deps = [ "../../front_end/module" ]
 }

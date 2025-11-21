@@ -216,7 +216,7 @@
         "signature": "6bd60c4b6fd914a86db29e7aa6d35bdaf3fb530a231cc5648e61f79b93cf511a",
         "affectsGlobalScope": false
       },
-      "../../../../../../fixtures/recompile_dep/test/module/exporting_test.ts": {
+      "../../../../../../fixtures/recompile_dep/test/module/exporting.test.ts": {
         "version": "74a5d0e0044d2bcc329c66aa7e9b5c23cb5338b2ce0093023cec7c81a0634339",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
@@ -1241,7 +1241,7 @@
         "../../../../../../../../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../../../../../../../../node_modules/@types/node/util.d.ts"
       ],
-      "../../../../../../fixtures/recompile_dep/test/module/exporting_test.ts": [
+      "../../../../../../fixtures/recompile_dep/test/module/exporting.test.ts": [
         "../../../../../../../../../node_modules/@types/chai/index.d.ts",
         "../../../../../../../../../node_modules/@types/node/fs.d.ts",
         "../../../../../../../../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -2075,7 +2075,7 @@
       "../../../../../../../../../node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../../../../../../../../../node_modules/typescript/lib/lib.esnext.promise.d.ts",
       "../../../../../../../../../node_modules/typescript/lib/lib.esnext.string.d.ts",
-      "../../../../../../fixtures/recompile_dep/test/module/exporting_test.ts",
+      "../../../../../../fixtures/recompile_dep/test/module/exporting.test.ts",
       "../../front_end/module/exporting.d.ts",
       "../../front_end/module/module.d.ts"
     ]

@@ -48,7 +48,7 @@ run_fixture "compilation_failure_front_end"
 
 # Test that compiling after a change works with dependencies
 run_fixture "recompile"
-touch $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
+touch $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting.test.ts
 # We need to force read from this directory to make sure autoninja actually picks up the change
 (find $ROOT_DIRECTORY/fixtures/recompile/ > /dev/null)
 run_fixture "recompile" 0

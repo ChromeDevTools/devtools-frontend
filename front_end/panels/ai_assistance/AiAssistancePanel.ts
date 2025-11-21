@@ -365,10 +365,10 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <x-link
           class="toolbar-feedback-link devtools-link"
-          title=${UIStrings.sendFeedback}
+          title=${i18nString(UIStrings.sendFeedback)}
           href=${AI_ASSISTANCE_SEND_FEEDBACK}
           jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('freestyler.send-feedback')}
-        >${UIStrings.sendFeedback}</x-link>
+        >${i18nString(UIStrings.sendFeedback)}</x-link>
         <div class="toolbar-divider"></div>
         <devtools-button
           title=${i18nString(UIStrings.help)}

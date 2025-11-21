@@ -41,7 +41,7 @@ function expectErrors() {
 /**
  * Start blocking *.css
  * Ideally this would be done with UI manipulation, but it'd be less reliable AND
- * the designated tests in network-request-blocking-panel_test.ts are skipped by default due to flakiness.
+ * the designated tests in network-request-blocking-panel.test.ts are skipped by default due to flakiness.
  **/
 async function blockCss(devToolsPage: DevToolsPage) {
   await devToolsPage.evaluate(`(async () => {

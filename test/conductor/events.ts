@@ -17,7 +17,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Session is unregistering, can\'t dispatch pending call to Debugger.setBlackboxPatterns',
   // Failure during shutdown. crbug.com/1199322
   'Session is unregistering, can\'t dispatch pending call to DOM.getDocument',
-  // Expected failures in assertion_test.ts
+  // Expected failures in assertion.test.ts
   'expected failure 1',
   'expected failure 2',
   // A failing fetch isn't itself a real error.

@@ -38,8 +38,8 @@ const options =
         })
         .option('fileExtension', {
           type: 'string',
-          description: 'The extension for testing. Defaults to `.test.ts` for front_end and `_test.ts` for E2E.',
-          alias: 'e'
+          description: 'The extension for testing. Defaults to `.test.ts`.',
+          alias: 'e',
         })
         .check(args => {
           if (!args.folder) {
@@ -49,11 +49,8 @@ const options =
               args.folder = 'test/';
             }
           }
-          if (args.folder.includes('front_end')) {
-            args.fileExtension = '.test.ts';
-          } else {
-            args.fileExtension = '_test.ts';
-          }
+
+          args.fileExtension = '.test.ts';
 
           return true;
         })

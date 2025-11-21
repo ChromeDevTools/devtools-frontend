@@ -38,7 +38,7 @@ assert(!devtools_skip_typecheck || !is_official_build,
 #
 #   ts_library("unittest") {
 #     testonly = true
-#     sources = [ "bar_test.ts" ]
+#     sources = [ "bar.test.ts" ]
 #     deps = [ "../../../../front_end/common" ]
 #   }
 #

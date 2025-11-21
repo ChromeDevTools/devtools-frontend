@@ -34,11 +34,11 @@ To run the end-to-end tests in **debug mode**, use:
 npm run test -- --debug test/e2e
 ```
 
-To run only **specific end-to-end tests** from a single `_test.ts`
-file, say `console-log_test.ts` for example, use:
+To run only **specific end-to-end tests** from a single `.test.ts`
+file, say `console-log.test.ts` for example, use:
 
 ```bash
-npm run test test/e2e/console/console-log_test.ts
+npm run test test/e2e/console/console-log.test.ts
 ```
 
 Check the output of `npm run test -- --help` for an overview of
@@ -148,13 +148,13 @@ it.repeat(20, 'find element', async () => {...});
 To see if certain tests are flaky you can use the E2E stressor bots. Open a CL with your test changes and run the following command specifying your test file:
 
 ```sh
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='test/e2e/sources/navigator-view_test.ts --repeat=80'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='test/e2e/sources/navigator-view.test.ts --repeat=80'
 ```
 
 or multiple test files:
 
 ```sh
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='test/e2e/sources/navigator-view_test.ts test/e2e/sources/snippets_test.ts --repeat=80'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='test/e2e/sources/navigator-view.test.ts test/e2e/sources/snippets.test.ts --repeat=80'
 ```
 
 This will run the specified tests on dedicated bots with the specified number of iterations. Note that in order for iterations to work the test should be using `it` from `mocha_extensions.ts`.

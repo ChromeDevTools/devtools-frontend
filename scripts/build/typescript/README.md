@@ -58,7 +58,7 @@ For tests compiled with `ts_library`, set `testonly = true`:
 ts_library("my_test_library") {
   testonly = true,
   sources = [
-    "my_library_test.ts",
+    "my_library.test.ts",
   ]
 
   deps = [

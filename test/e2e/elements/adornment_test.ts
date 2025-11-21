@@ -97,7 +97,9 @@ describe('Adornment in the Elements Tab', function() {
         devToolsPage);
   });
 
-  it('displays masonry adorners', async ({devToolsPage, inspectedPage}) => {
+  // `display: masonry` changed to `display: grid-lanes`. Skipping this test to let `CfT` roll
+  // and in a subsequent CL, I'm going to update the implementation to look for `grid-lanes`.
+  it.skip('[crbug.com/462642478] displays masonry adorners', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adornment-masonry.html');
     await prepareElementsTab(devToolsPage);
 

@@ -31,15 +31,18 @@ describe('Masonry Editor', function() {
     await waitForCSSPropertyValue('#target', 'display', 'masonry', undefined, devToolsPage);
   }
 
-  it('can be opened and masonry styles can be edited', async ({devToolsPage, inspectedPage}) => {
-    await setupStyles(devToolsPage, inspectedPage);
-    await clickStylePropertyEditorButton('Open masonry editor', 'devtools-masonry-editor', devToolsPage);
+  // `display: masonry` changed to `display: grid-lanes`. Skipping this test to let `CfT` roll
+  // and in a subsequent CL, I'm going to update the implementation to look for `grid-lanes`.
+  it.skip(
+      '[crbug.com/462642478] can be opened and masonry styles can be edited', async ({devToolsPage, inspectedPage}) => {
+        await setupStyles(devToolsPage, inspectedPage);
+        await clickStylePropertyEditorButton('Open masonry editor', 'devtools-masonry-editor', devToolsPage);
 
-    await clickPropertyButton('[title="Add justify-items: start"]', devToolsPage);
-    await waitForCSSPropertyValue('#target', 'justify-items', 'start', undefined, devToolsPage);
-    await clickPropertyButton('[title="Remove justify-items: start"]', devToolsPage);
-    await devToolsPage.waitFor('[title="Add justify-items: start"]');
-    const property = await getCSSPropertyInRule('#target', 'justify-items', undefined, devToolsPage);
-    assert.isUndefined(property);
-  });
+        await clickPropertyButton('[title="Add justify-items: start"]', devToolsPage);
+        await waitForCSSPropertyValue('#target', 'justify-items', 'start', undefined, devToolsPage);
+        await clickPropertyButton('[title="Remove justify-items: start"]', devToolsPage);
+        await devToolsPage.waitFor('[title="Add justify-items: start"]');
+        const property = await getCSSPropertyInRule('#target', 'justify-items', undefined, devToolsPage);
+        assert.isUndefined(property);
+      });
 });

@@ -74,7 +74,9 @@ export class Icon extends HTMLElement {
 
   constructor() {
     super();
-    this.role = 'presentation';
+    if (!this.role) {
+      this.role = 'presentation';
+    }
     const style = document.createElement('style');
     style.textContent = iconStyles;
     this.#icon = document.createElement('span');

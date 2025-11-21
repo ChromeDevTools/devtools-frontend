@@ -8,7 +8,7 @@ import("../../../scripts/build/ninja/devtools_worker.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("formatter_worker") {
+devtools_foundation_module("formatter_worker") {
   sources = [
     "AcornTokenizer.ts",
     "CSSFormatter.ts",
@@ -78,7 +78,7 @@ devtools_entrypoint("worker_entrypoint") {
   visibility += devtools_entrypoints_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [

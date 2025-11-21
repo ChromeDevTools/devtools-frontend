@@ -11,7 +11,7 @@ export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
     signal?: AbortSignal,
   }) => AsyncGenerator<string>;
-  clone: () => LanguageModel;
+  clone: () => Promise<LanguageModel>;
   destroy: () => void;
 }
 
@@ -26,7 +26,8 @@ export const enum LanguageModelAvailability {
 export class BuiltInAi {
   #availability: LanguageModelAvailability|null = null;
   #hasGpu: boolean;
-  #consoleInsightsSession: LanguageModel|null = null;
+  #consoleInsightsSession?: LanguageModel;
+  initDoneForTesting: Promise<void>;
 
   static instance(): BuiltInAi {
     if (builtInAiInstance === undefined) {
@@ -37,7 +38,8 @@ export class BuiltInAi {
 
   constructor() {
     this.#hasGpu = this.#isGpuAvailable();
-    void this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+    this.initDoneForTesting =
+        this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
   }
 
   async getLanguageModelAvailability(): Promise<LanguageModelAvailability> {

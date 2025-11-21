@@ -30,9 +30,10 @@ describe('BuiltInAi', () => {
       create: () => mockLanguageModel,
     };
 
-    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
-    await new Promise(resolve => setTimeout(resolve, 0));
+    const builtInAi = new AiAssistanceModel.BuiltInAi.BuiltInAi();
     assert.isDefined(builtInAi);
+    await builtInAi.initDoneForTesting;
+    assert.isTrue(builtInAi.hasSession());
     const abortController = new AbortController();
     const stream = builtInAi.getConsoleInsight('explain this error', abortController);
     let response = '';
@@ -57,8 +58,8 @@ describe('BuiltInAi', () => {
       create: () => ({foo: 'bar'}),
     };
 
-    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
-    await new Promise(resolve => setTimeout(resolve, 0));
+    const builtInAi = new AiAssistanceModel.BuiltInAi.BuiltInAi();
+    await builtInAi.initDoneForTesting;
     assert.isFalse(builtInAi.hasSession());
   });
 });

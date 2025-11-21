@@ -8,4 +8,4 @@ flags: [
   [-g, -fdebug-compilation-dir=.]
 ]
 script:
-file: MemoryInspector_test.js
+file: MemoryInspector.test.js

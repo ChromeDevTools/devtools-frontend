@@ -19,7 +19,7 @@
     "StandaloneTestDriver.ts",
     "OptionsPageTests.ts",
     "cxx-debugging-extension-helpers.ts",
-    "standalone/MemoryInspector_test.ts",
+    "standalone/MemoryInspector.test.ts",
     "../../../test/e2e/types.d.ts"
   ]
 }

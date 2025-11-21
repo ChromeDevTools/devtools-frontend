@@ -58,7 +58,7 @@ third_party/chrome/chrome-linux/chrome --load-extension=$PWD/out/DevTools_CXX_De
 ## Unittests
 
 The extension contains TypeScript and general front-end components, which are tested via
-`karma`-based tests located in the `tests/` folder. They follow the `foo_test.ts` naming convention used in DevTools front-end.
+`karma`-based tests located in the `tests/` folder. They follow the `foo.test.ts` naming convention used in DevTools front-end.
 
 These tests are automatically run by default by `tools/bootstrap.py` unless you pass the `-no-check`
 argument there.

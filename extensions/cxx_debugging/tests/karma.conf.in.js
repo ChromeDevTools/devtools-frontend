@@ -17,7 +17,7 @@ function requireInternal(module) {
 }
 
 function getTestInputs() {
-  const testFiles = glob.sync('@CMAKE_CURRENT_SOURCE_DIR@/*_test.ts');
+  const testFiles = glob.sync('@CMAKE_CURRENT_SOURCE_DIR@/*.test.ts');
 
   return testFiles.map(f => path.relative('@CMAKE_CURRENT_SOURCE_DIR@', f))
       .map(f => `${path.basename(f, '.ts')}.js`)

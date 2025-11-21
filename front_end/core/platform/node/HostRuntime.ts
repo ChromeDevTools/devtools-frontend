@@ -18,9 +18,68 @@ class NodeWorkerScope implements Api.HostRuntime.WorkerScope {
   }
 }
 
+class NodeWorker implements Api.HostRuntime.Worker {
+  readonly #workerPromise: Promise<WorkerThreads.Worker>;
+  #disposed = false;
+  #rejectWorkerPromise?: (error: Error) => void;
+
+  constructor(url: string) {
+    this.#workerPromise = new Promise((resolve, reject) => {
+      this.#rejectWorkerPromise = reject;
+      const worker = new WorkerThreads.Worker(new URL(url));
+      worker.once('message', (message: unknown) => {
+        if (message === 'workerReady') {
+          resolve(worker);
+        }
+      });
+      worker.on('error', reject);
+    });
+  }
+
+  postMessage(message: unknown): void {
+    void this.#workerPromise.then(worker => {
+      if (!this.#disposed) {
+        worker.postMessage(message);
+      }
+    });
+  }
+
+  dispose(): void {
+    this.#disposed = true;
+    void this.#workerPromise.then(worker => worker.terminate());
+  }
+
+  terminate(immediately?: boolean): void {
+    if (immediately) {
+      this.#rejectWorkerPromise?.(new Error('Worker terminated'));
+    }
+    this.dispose();
+  }
+
+  set onmessage(listener: (event: unknown) => void) {
+    void this.#workerPromise.then(worker => {
+      worker.on('message', data => {
+        if (!this.#disposed) {
+          listener({data});
+        }
+      });
+    });
+  }
+
+  set onerror(listener: (event: unknown) => void) {
+    void this.#workerPromise.then(worker => {
+      worker.on('error', (error: Error) => {
+        if (!this.#disposed) {
+          listener({type: 'error', ...error});
+        }
+      });
+    });
+  }
+}
+
 export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
-  createWorker(): Api.HostRuntime.Worker {
-    throw new Error('unimplemented');
+  createWorker(url: string): Api.HostRuntime.Worker {
+    return new NodeWorker(url);
   },
   workerScope: new NodeWorkerScope(),
 };

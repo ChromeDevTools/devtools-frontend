@@ -70,6 +70,10 @@ export const markdownLinks = new Map<string, string>([
   ['storagePartitioningExplainer', 'https://developers.google.com/privacy-sandbox/cookies/storage-partitioning'],
   ['storageAccessAPI', 'https://developer.mozilla.org/en-US/docs/Web/API/StorageAccessHandle/createObjectURL'],
   ['https://goo.gle/ps-status', 'https://goo.gle/ps-status'],
+  [
+    'https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/',
+    'https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/'
+  ],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

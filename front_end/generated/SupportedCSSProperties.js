@@ -2645,6 +2645,15 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "grid-template-areas",
+   "grid-template-columns",
+   "masonry-direction",
+   "masonry-fill"
+  ],
+  "name": "grid-lanes"
+ },
+ {
+  "longhands": [
    "grid-row-start",
    "grid-row-end"
   ],
@@ -3086,15 +3095,6 @@ export const generatedProperties = [
    "alpha"
   ],
   "name": "mask-type"
- },
- {
-  "longhands": [
-   "grid-template-areas",
-   "grid-template-columns",
-   "masonry-direction",
-   "masonry-fill"
-  ],
-  "name": "masonry"
  },
  {
   "keywords": [

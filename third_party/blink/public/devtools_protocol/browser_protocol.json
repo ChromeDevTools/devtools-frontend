@@ -5151,34 +5151,6 @@
                     ]
                 },
                 {
-                    "id": "CSSFontPaletteValuesRule",
-                    "description": "CSS font-palette-values rule representation.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "styleSheetId",
-                            "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified\nstylesheet rules) this rule came from.",
-                            "optional": true,
-                            "$ref": "StyleSheetId"
-                        },
-                        {
-                            "name": "origin",
-                            "description": "Parent stylesheet's origin.",
-                            "$ref": "StyleSheetOrigin"
-                        },
-                        {
-                            "name": "fontPaletteName",
-                            "description": "Associated font palette name.",
-                            "$ref": "Value"
-                        },
-                        {
-                            "name": "style",
-                            "description": "Associated style declaration.",
-                            "$ref": "CSSStyle"
-                        }
-                    ]
-                },
-                {
                     "id": "CSSAtRule",
                     "description": "CSS generic @rule representation.",
                     "type": "object",
@@ -5835,12 +5807,6 @@
                             "items": {
                                 "$ref": "CSSPropertyRegistration"
                             }
-                        },
-                        {
-                            "name": "cssFontPaletteValuesRule",
-                            "description": "A font-palette-values rule matching this node.",
-                            "optional": true,
-                            "$ref": "CSSFontPaletteValuesRule"
                         },
                         {
                             "name": "cssAtRules",

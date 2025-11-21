@@ -100,7 +100,7 @@ export class ListWidget<T> extends VBox {
     this.stopEditing();
   }
 
-  appendItem(item: T, editable: boolean): void {
+  appendItem(item: T, editable: boolean, focusable = true, controlLabels: {edit?: string, delete?: string} = {}): void {
     if (this.lastSeparator && this.items.length) {
       const element = document.createElement('div');
       element.classList.add('list-separator');
@@ -125,8 +125,10 @@ export class ListWidget<T> extends VBox {
     element.appendChild(content);
     if (editable) {
       element.classList.add('editable');
-      element.tabIndex = 0;
-      element.appendChild(this.createControls(item, element));
+      if (focusable) {
+        element.tabIndex = 0;
+      }
+      element.appendChild(this.createControls(item, element, controlLabels));
     }
     this.elements.push(element);
     this.updatePlaceholder();
@@ -172,7 +174,7 @@ export class ListWidget<T> extends VBox {
     this.updatePlaceholder();
   }
 
-  private createControls(item: T, element: Element): Element {
+  private createControls(item: T, element: Element, controlLabels: {edit?: string, delete?: string}): Element {
     const controls = document.createElement('div');
     controls.classList.add('controls-container');
     controls.classList.add('fill');
@@ -185,13 +187,13 @@ export class ListWidget<T> extends VBox {
           <devtools-button class=toolbar-button
                            .iconName=${'edit'}
                            .jslogContext=${'edit-item'}
-                           .title=${i18nString(UIStrings.editString)}
+                           .title=${controlLabels?.edit ?? i18nString(UIStrings.editString)}
                            .variant=${Buttons.Button.Variant.ICON}
                            @click=${onEditClicked}></devtools-button>
           <devtools-button class=toolbar-button
                            .iconName=${'bin'}
                            .jslogContext=${'remove-item'}
-                           .title=${i18nString(UIStrings.removeString)}
+                           .title=${controlLabels?.delete ?? i18nString(UIStrings.removeString)}
                            .variant=${Buttons.Button.Variant.ICON}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>

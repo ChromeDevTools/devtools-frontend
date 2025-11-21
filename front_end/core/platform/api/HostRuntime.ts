@@ -8,6 +8,7 @@
  */
 export interface HostRuntime {
   createWorker(url: string): Worker;
+  workerScope: WorkerScope;
 }
 
 /**
@@ -17,4 +18,17 @@ export interface Worker {
   // TODO(crbug.com/461952544): Actually add some methods here.
   // Leave one marker method to make this non-empty.
   dispose?(): void;
+}
+
+/**
+ * Used by workers to communicate with their parent.
+ */
+export interface WorkerScope {
+  postMessage(message: unknown): void;
+  set onmessage(listener: (event: WorkerMessageEvent) => void);
+}
+
+export interface WorkerMessageEvent {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly data: any;
 }

@@ -42,14 +42,12 @@ devtools_module("common") {
     "TextDictionary.ts",
     "Throttler.ts",
     "Trie.ts",
-    "Worker.ts",
   ]
 
   deps = [
     ":ColorUtils",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
-    "../../core/platform/api:bundle",
     "../../core/root:bundle",
   ]
 

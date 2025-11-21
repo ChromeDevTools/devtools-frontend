@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import type * as PlatformApi from '../../core/platform/api/api.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line @devtools/es-modules-import
 
 export {DefinitionKind, ScopeKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
@@ -44,8 +44,8 @@ export class FormatterWorkerPool {
   }
 
   private createWorker(): PlatformApi.HostRuntime.Worker {
-    const worker = Common.Worker.WorkerWrapper.fromURL(
-        new URL('../../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url));
+    const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(
+        new URL('../../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url).toString());
     worker.onmessage = this.onWorkerMessage.bind(this, worker);
     worker.onerror = this.onWorkerError.bind(this, worker);
     return worker;

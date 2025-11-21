@@ -14,9 +14,62 @@ class WebWorkerScope implements Api.HostRuntime.WorkerScope {
   }
 }
 
+class WebWorker implements Api.HostRuntime.Worker {
+  readonly #workerPromise: Promise<Worker>;
+  #disposed?: boolean;
+  #rejectWorkerPromise?: (error: Error) => void;
+
+  constructor(workerLocation: string) {
+    this.#workerPromise = new Promise((fulfill, reject) => {
+      this.#rejectWorkerPromise = reject;
+      const worker = new Worker(new URL(workerLocation), {type: 'module'});
+      worker.onerror = event => {
+        console.error(`Failed to load worker for ${workerLocation}:`, event);
+      };
+      worker.onmessage = (event: MessageEvent<unknown>) => {
+        console.assert(event.data === 'workerReady');
+        worker.onmessage = null;
+        fulfill(worker);
+      };
+    });
+  }
+
+  postMessage(message: unknown, transfer?: Api.HostRuntime.WorkerTransferable[]): void {
+    void this.#workerPromise.then(worker => {
+      if (!this.#disposed) {
+        worker.postMessage(message, transfer ?? []);
+      }
+    });
+  }
+
+  dispose(): void {
+    this.#disposed = true;
+    void this.#workerPromise.then(worker => worker.terminate());
+  }
+
+  terminate(immediately = false): void {
+    if (immediately) {
+      this.#rejectWorkerPromise?.(new Error('Worker terminated'));
+    }
+    this.dispose();
+  }
+
+  set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => void) {
+    void this.#workerPromise.then(worker => {
+      worker.onmessage = listener;
+    });
+  }
+
+  set onerror(listener: (event: unknown) => void) {
+    void this.#workerPromise.then(worker => {
+      worker.onerror = listener;
+    });
+  }
+}
+
 export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
-  createWorker(): Api.HostRuntime.Worker {
-    throw new Error('unimplemented');
+  createWorker(url: string): Api.HostRuntime.Worker {
+    return new WebWorker(url);
   },
   workerScope: new WebWorkerScope(),
 };

@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
@@ -504,8 +504,8 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
 export const sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 
 export async function disassembleWasm(content: string): Promise<TextUtils.WasmDisassembly.WasmDisassembly> {
-  const worker = Common.Worker.WorkerWrapper.fromURL(
-      new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
+  const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(
+      new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url).toString());
   const promise = new Promise<TextUtils.WasmDisassembly.WasmDisassembly>((resolve, reject) => {
     worker.onmessage = ({data}) => {
       if ('method' in data) {

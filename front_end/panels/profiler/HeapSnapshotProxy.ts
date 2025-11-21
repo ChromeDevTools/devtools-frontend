@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as PlatformApi from '../../core/platform/api/api.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
 import type {ChildrenProvider} from './ChildrenProvider.js';
@@ -39,8 +40,9 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     this.nextCallId = 1;
     this.callbacks = new Map();
     this.previousCallbacks = new Set();
-    this.worker = Common.Worker.WorkerWrapper.fromURL(
-        new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js', import.meta.url));
+    this.worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(
+        new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js', import.meta.url)
+            .toString());
     this.worker.onmessage = this.messageReceived.bind(this);
   }
 

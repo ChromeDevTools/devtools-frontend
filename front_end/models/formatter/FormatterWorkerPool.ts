@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as PlatformApi from '../../core/platform/api/api.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line @devtools/es-modules-import
 
 export {DefinitionKind, ScopeKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
@@ -11,7 +12,7 @@ let formatterWorkerPoolInstance: FormatterWorkerPool|undefined;
 
 export class FormatterWorkerPool {
   private taskQueue: Task[];
-  private workerTasks: Map<Common.Worker.WorkerWrapper, Task|null>;
+  private workerTasks: Map<PlatformApi.HostRuntime.Worker, Task|null>;
 
   constructor() {
     this.taskQueue = [];
@@ -42,7 +43,7 @@ export class FormatterWorkerPool {
     formatterWorkerPoolInstance = undefined;
   }
 
-  private createWorker(): Common.Worker.WorkerWrapper {
+  private createWorker(): PlatformApi.HostRuntime.Worker {
     const worker = Common.Worker.WorkerWrapper.fromURL(
         new URL('../../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url));
     worker.onmessage = this.onWorkerMessage.bind(this, worker);
@@ -72,7 +73,8 @@ export class FormatterWorkerPool {
     }
   }
 
-  private onWorkerMessage(worker: Common.Worker.WorkerWrapper, event: MessageEvent): void {
+  private onWorkerMessage(worker: PlatformApi.HostRuntime.Worker, event: PlatformApi.HostRuntime.WorkerMessageEvent):
+      void {
     const task = this.workerTasks.get(worker);
     if (!task) {
       return;
@@ -87,7 +89,7 @@ export class FormatterWorkerPool {
     task.callback(event.data ? event.data : null);
   }
 
-  private onWorkerError(worker: Common.Worker.WorkerWrapper, event: Event): void {
+  private onWorkerError(worker: PlatformApi.HostRuntime.Worker, event: Event): void {
     console.error(event);
     const task = this.workerTasks.get(worker);
     worker.terminate();

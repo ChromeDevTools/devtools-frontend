@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class WorkerWrapper {
+import type * as Api from '../platform/api/api.js';
+
+export class WorkerWrapper implements Api.HostRuntime.Worker {
   readonly #workerPromise: Promise<Worker>;
   #disposed?: boolean;
   #rejectWorkerPromise?: (error: Error) => void;
@@ -22,11 +24,11 @@ export class WorkerWrapper {
     });
   }
 
-  static fromURL(url: URL): WorkerWrapper {
+  static fromURL(url: URL): Api.HostRuntime.Worker {
     return new WorkerWrapper(url);
   }
 
-  postMessage(message: unknown, transfer?: Transferable[]): void {
+  postMessage(message: unknown, transfer?: Api.HostRuntime.WorkerTransferable[]): void {
     void this.#workerPromise.then(worker => {
       if (!this.#disposed) {
         worker.postMessage(message, transfer ?? []);
@@ -46,13 +48,13 @@ export class WorkerWrapper {
     this.dispose();
   }
 
-  set onmessage(listener: (event: MessageEvent) => void) {
+  set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => void) {
     void this.#workerPromise.then(worker => {
       worker.onmessage = listener;
     });
   }
 
-  set onerror(listener: (event: Event) => void) {
+  set onerror(listener: (event: unknown) => void) {
     void this.#workerPromise.then(worker => {
       worker.onerror = listener;
     });

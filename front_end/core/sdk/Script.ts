@@ -507,7 +507,7 @@ export async function disassembleWasm(content: string): Promise<TextUtils.WasmDi
   const worker = Common.Worker.WorkerWrapper.fromURL(
       new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
   const promise = new Promise<TextUtils.WasmDisassembly.WasmDisassembly>((resolve, reject) => {
-    worker.onmessage = ({data}: MessageEvent) => {
+    worker.onmessage = ({data}) => {
       if ('method' in data) {
         switch (data.method) {
           case 'disassemble':

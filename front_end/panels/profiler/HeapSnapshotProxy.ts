@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as PlatformApi from '../../core/platform/api/api.js';
 import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
 import type {ChildrenProvider} from './ChildrenProvider.js';
@@ -27,7 +28,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callbacks: Map<number, (arg0: any) => void>;
   readonly previousCallbacks: Set<number>;
-  readonly worker: Common.Worker.WorkerWrapper;
+  readonly worker: PlatformApi.HostRuntime.Worker;
   interval?: number;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,13 +75,15 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
 
   callFactoryMethod<T extends Object>(
       callback: null, objectId: string, methodName: string, proxyConstructor: new(...arg1: any[]) => T,
-      transfer: Transferable[], ...methodArguments: any[]): T;
+      transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...methodArguments: any[]): T;
   callFactoryMethod<T extends Object>(
       callback: ((...arg0: any[]) => void), objectId: string, methodName: string,
-      proxyConstructor: new(...arg1: any[]) => T, transfer: Transferable[], ...methodArguments: any[]): null;
+      proxyConstructor: new(...arg1: any[]) => T, transfer: PlatformApi.HostRuntime.WorkerTransferable[],
+      ...methodArguments: any[]): null;
   callFactoryMethod<T extends Object>(
       callback: ((...arg0: any[]) => void)|null, objectId: string, methodName: string,
-      proxyConstructor: new(...arg1: any[]) => T, transfer: Transferable[], ...methodArguments: any[]): T|null {
+      proxyConstructor: new(...arg1: any[]) => T, transfer: PlatformApi.HostRuntime.WorkerTransferable[],
+      ...methodArguments: any[]): T|null {
     const callId = this.nextCallId++;
     const newObjectId = this.nextObjectId++;
 
@@ -164,9 +167,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     return done;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messageReceived(event: MessageEvent<any>): void {
+  messageReceived(event: PlatformApi.HostRuntime.WorkerMessageEvent): void {
     const data = event.data;
     if (data.eventName) {
       if (this.eventHandler) {
@@ -191,9 +192,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     callback(data.result);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  postMessage(message: any, transfer?: Transferable[]): void {
+  postMessage(message: unknown, transfer?: PlatformApi.HostRuntime.WorkerTransferable[]): void {
     this.worker.postMessage(message, transfer);
   }
 }
@@ -226,8 +225,8 @@ export class HeapSnapshotProxyObject {
   }
 
   callFactoryMethodPromise<T extends Object>(
-      methodName: string, proxyConstructor: new(...arg1: any[]) => T, transfer: Transferable[],
-      ...args: any[]): Promise<T> {
+      methodName: string, proxyConstructor: new(...arg1: any[]) => T,
+      transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...args: any[]): Promise<T> {
     return new Promise(
         resolve => this.worker.callFactoryMethod(
             resolve, String(this.objectId), methodName, proxyConstructor, transfer, ...args));

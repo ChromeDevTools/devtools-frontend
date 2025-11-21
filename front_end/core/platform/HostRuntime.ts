@@ -3,15 +3,22 @@
 // found in the LICENSE file.
 
 import type * as Api from './api/api.js';
-import * as Browser from './browser/browser.js';
-import * as Node from './node/node.js';
 
-export const HOST_RUNTIME = ((): Api.HostRuntime.HostRuntime => {
-  if (Node.HostRuntime.IS_NODE) {
-    return Node.HostRuntime.HOST_RUNTIME;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore 'process' is not available when type-checking against browser types.
+export const IS_NODE = typeof (process as unknown) !== 'undefined' && process.versions?.node !== null;
+
+export const IS_BROWSER =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore 'window' is not available when type-checking against node.js types.
+    typeof window !== 'undefined' || (typeof self !== 'undefined' && typeof self.postMessage === 'function');
+
+export const HOST_RUNTIME = await (async(): Promise<Api.HostRuntime.HostRuntime> => {
+  if (IS_NODE) {
+    return (await import('./node/node.js')).HostRuntime.HOST_RUNTIME;
   }
-  if (Browser.HostRuntime.IS_BROWSER) {
-    return Browser.HostRuntime.HOST_RUNTIME;
+  if (IS_BROWSER) {
+    return (await import('./browser/browser.js')).HostRuntime.HOST_RUNTIME;
   }
 
   throw new Error('Unknown runtime!');

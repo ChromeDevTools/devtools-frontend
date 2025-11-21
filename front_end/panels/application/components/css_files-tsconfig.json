@@ -14,8 +14,6 @@
         "serviceWorkerRouterView.css.js",
         "sharedStorageAccessGrid.css.js",
         "sharedStorageMetadataView.css.js",
-        "stackTraceLinkButton.css.js",
-        "stackTraceRow.css.js",
         "storageMetadataView.css.js",
         "trustTokensView.css.js"
     ]

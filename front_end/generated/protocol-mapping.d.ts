@@ -376,6 +376,8 @@ export namespace ProtocolMapping {
      * Fired when data is received from tcp direct socket stream.
      */
     'Network.directTCPSocketChunkReceived': [Protocol.Network.DirectTCPSocketChunkReceivedEvent];
+    'Network.directUDPSocketJoinedMulticastGroup': [Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent];
+    'Network.directUDPSocketLeftMulticastGroup': [Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent];
     /**
      * Fired upon direct_socket.UDPSocket creation.
      */

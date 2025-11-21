@@ -2204,8 +2204,8 @@ var generatedProperties = [
       "math",
       "ruby",
       "ruby-text",
-      "masonry",
-      "inline-masonry"
+      "grid-lanes",
+      "inline-grid-lanes"
     ],
     "name": "display"
   },
@@ -5717,8 +5717,8 @@ var generatedPropertyValues = {
       "math",
       "ruby",
       "ruby-text",
-      "masonry",
-      "inline-masonry"
+      "grid-lanes",
+      "inline-grid-lanes"
     ]
   },
   "dominant-baseline": {
@@ -11313,6 +11313,10 @@ var NetworkDispatcher = class {
     });
     networkRequest.responseReceivedTime = event.timestamp;
     this.updateNetworkRequest(networkRequest);
+  }
+  directUDPSocketJoinedMulticastGroup(_event) {
+  }
+  directUDPSocketLeftMulticastGroup(_event) {
   }
   trustTokenOperationDone(event) {
     const request = this.#requestsById.get(event.requestId);

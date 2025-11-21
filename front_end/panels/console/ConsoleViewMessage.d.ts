@@ -85,6 +85,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private formatParameterAsError;
     private formatAsArrayEntry;
     private renderPropertyPreview;
+    createRemoteObjectAccessorPropertySpan(object: SDK.RemoteObject.RemoteObject | null, propertyPath: string[], callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement;
     private formatAsAccessorProperty;
     private formatWithSubstitutionString;
     matchesFilterRegex(regexObject: RegExp): boolean;

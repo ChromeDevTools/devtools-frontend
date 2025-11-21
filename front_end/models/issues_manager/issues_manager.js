@@ -1911,6 +1911,10 @@ var UIStrings8 = {
    */
   TextToSpeech_DisallowedByAutoplay: "`speechSynthesis.speak()` without user activation is deprecated and will be removed.",
   /**
+   * @description A deprecation warning shown in the DevTools Issues tab. It's shown when one of the Topics APIs like `document.browsingTopics()`, `<img browsingtopics>`, `<iframe browsingtopics>`, or `fetch(url, {browsingTopics: true})` are used.
+   */
+  Topics: "The Topics API is deprecated and will be removed in a future release.",
+  /**
    * @description A deprecation warning shown in the DevTools Issues tab. It's shown when a listener for the `unload` event is added.
    */
   UnloadHandler: "Unload event listeners are deprecated and will be removed.",

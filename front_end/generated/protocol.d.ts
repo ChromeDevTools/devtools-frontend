@@ -10323,6 +10323,12 @@ export declare namespace Network {
          * Expected to be unsigned integer.
          */
         receiveBufferSize?: number;
+        multicastLoopback?: boolean;
+        /**
+         * Unsigned int 8.
+         */
+        multicastTimeToLive?: integer;
+        multicastAllowAddressSharing?: boolean;
     }
     interface DirectUDPMessage {
         data: binary;
@@ -11485,6 +11491,14 @@ export declare namespace Network {
         identifier: RequestId;
         data: binary;
         timestamp: MonotonicTime;
+    }
+    interface DirectUDPSocketJoinedMulticastGroupEvent {
+        identifier: RequestId;
+        IPAddress: string;
+    }
+    interface DirectUDPSocketLeftMulticastGroupEvent {
+        identifier: RequestId;
+        IPAddress: string;
     }
     /**
      * Fired upon direct_socket.UDPSocket creation.

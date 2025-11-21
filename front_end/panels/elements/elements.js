@@ -14160,6 +14160,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   }
   const previousHighlightedNode = output.highlightedTreeElement?.node() ?? null;
   if (previousHighlightedNode !== input.currentHighlightedNode) {
+    output.isUpdatingHighlights = true;
     let treeElement = null;
     if (output.highlightedTreeElement) {
       let currentTreeElement = output.highlightedTreeElement;
@@ -14189,6 +14190,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     output.highlightedTreeElement = treeElement;
     output.elementsTreeOutline.setHoverEffect(treeElement);
     treeElement?.reveal(true);
+    output.isUpdatingHighlights = false;
   }
 };
 var DOMTreeWidget = class extends UI18.Widget.Widget {
@@ -14228,7 +14230,8 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
   #view;
   #viewOutput = {
     highlightedTreeElement: null,
-    alreadyExpandedParentTreeElement: null
+    alreadyExpandedParentTreeElement: null,
+    isUpdatingHighlights: false
   };
   #highlightThrottler = new Common12.Throttler.Throttler(100);
   constructor(element, view) {
@@ -14239,7 +14242,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
     this.#view = view ?? DEFAULT_VIEW4;
     if (Common12.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
       SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
-      SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearState, this, { scoped: true });
+      SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
     }
   }
   #highlightNode(event) {
@@ -14248,7 +14251,10 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       this.requestUpdate();
     });
   }
-  #clearState() {
+  #clearHighlightedNode() {
+    if (this.#viewOutput.isUpdatingHighlights) {
+      return;
+    }
     this.#currentHighlightedNode = null;
     this.requestUpdate();
   }
@@ -14293,11 +14299,11 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       currentHighlightedNode: this.#currentHighlightedNode,
       onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
       onSelectedNodeChanged: (event) => {
-        this.#clearState();
+        this.#clearHighlightedNode();
         this.onSelectedNodeChanged(event);
       },
-      onElementCollapsed: this.#clearState.bind(this),
-      onElementExpanded: this.#clearState.bind(this)
+      onElementCollapsed: this.#clearHighlightedNode.bind(this),
+      onElementExpanded: this.#clearHighlightedNode.bind(this)
     }, this.#viewOutput, this.contentElement);
   }
   modelAdded(domModel) {
@@ -18511,12 +18517,12 @@ var UIStrings20 = {
 var str_20 = i18n39.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var DEFAULT_VIEW8 = (input, _output, target) => {
-  const { target: sdkTarget, linkifier, options } = input;
+  const { target: sdkTarget, linkifier, stackTrace } = input;
   render10(html13`
     <style>${nodeStackTraceWidget_css_default}</style>
-    ${target && options.stackTrace ? html13`<devtools-widget
+    ${target && stackTrace ? html13`<devtools-widget
                 class="stack-trace"
-                .widgetConfig=${UI25.Widget.widgetConfig(Components6.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, options })}>
+                .widgetConfig=${UI25.Widget.widgetConfig(Components6.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, stackTrace })}>
               </devtools-widget>` : html13`<div class="gray-info-message">${i18nString19(UIStrings20.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI25.Widget.VBox {
@@ -18543,7 +18549,7 @@ var NodeStackTraceWidget = class extends UI25.Widget.VBox {
     const input = {
       target,
       linkifier: this.#linkifier,
-      options: { stackTrace }
+      stackTrace
     };
     this.#view(input, {}, this.contentElement);
   }

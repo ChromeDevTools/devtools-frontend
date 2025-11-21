@@ -1421,6 +1421,9 @@
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
   },
+  "generated/Deprecation.ts | Topics": {
+    "message": "The Topics API is deprecated and will be removed in a future release."
+  },
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "Unload event listeners are deprecated and will be removed."
   },
@@ -4304,18 +4307,6 @@
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Shared storage"
   },
-  "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Cannot render stack trace"
-  },
-  "panels/application/components/StackTrace.ts | creationStackTrace": {
-    "message": "Frame Creation Stack Trace"
-  },
-  "panels/application/components/StackTrace.ts | showLess": {
-    "message": "Show less"
-  },
-  "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
-  },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Bucket name"
   },
@@ -6398,6 +6389,9 @@
   "panels/console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | dots": {
+    "message": "(...)"
+  },
   "panels/console/ConsoleViewMessage.ts | error": {
     "message": "Error"
   },
@@ -6433,6 +6427,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | invokePropertyGetter": {
+    "message": "Invoke property getter"
   },
   "panels/console/ConsoleViewMessage.ts | logpoint": {
     "message": "Logpoint"

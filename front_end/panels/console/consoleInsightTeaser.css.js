@@ -93,6 +93,7 @@ export default `/*
     padding: var(--sys-size-5) 0 0;
     display: flex;
     align-items: center;
+    height: 34px;
 
     devtools-checkbox {
       margin-left: auto;

@@ -186,6 +186,14 @@ const UIStrings = {
      * @description Tooltip shown when user hovers over the cookie icon to explain that the button will bring the user to the cookie report
      */
     SeeIssueInCookieReport: 'Click to open privacy and security panel and show third-party cookie report',
+    /**
+     * @description Element text content in Object Properties Section
+     */
+    dots: '(...)',
+    /**
+     * @description Element title in Object Properties Section
+     */
+    invokePropertyGetter: 'Invoke property getter',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -236,6 +244,14 @@ const hoverButtonObserver = new IntersectionObserver(results => {
         }
     }
 });
+function appendOrShow(parent, child) {
+    if (child instanceof UI.Widget.Widget) {
+        child.show(parent, null, /* suppressOprhanWidgetError=*/ true);
+    }
+    else {
+        parent.appendChild(child);
+    }
+}
 export class ConsoleViewMessage {
     message;
     linkifier;
@@ -461,7 +477,7 @@ export class ConsoleViewMessage {
                 this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
                 return linkElement;
             });
-            messageElement.appendChild(fragment);
+            appendOrShow(messageElement, fragment);
         }
         return messageElement;
     }
@@ -658,7 +674,7 @@ export class ConsoleViewMessage {
         for (let i = 0; i < parameters.length; ++i) {
             // Inline strings when formatting.
             if (shouldFormatMessage && parameters[i].type === 'string') {
-                formattedResult.appendChild(this.linkifyStringAsFragment(parameters[i].description || ''));
+                appendOrShow(formattedResult, this.linkifyStringAsFragment(parameters[i].description || ''));
             }
             else {
                 formattedResult.appendChild(this.formatParameter(parameters[i], false, true));
@@ -731,8 +747,10 @@ export class ConsoleViewMessage {
         const result = document.createElement('span');
         const description = obj.description || '';
         if (description.length > getMaxTokenizableStringLength()) {
-            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(description, getLongStringVisibleLength());
-            result.appendChild(propertyValue.element);
+            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue();
+            propertyValue.text = description;
+            propertyValue.maxLength = getLongStringVisibleLength();
+            propertyValue.show(result, null, /* suppressOprhanWidgetError=*/ true);
         }
         else {
             UI.UIUtils.createTextChild(result, description);
@@ -854,7 +872,7 @@ export class ConsoleViewMessage {
         const text = Platform.StringUtilities.formatAsJSLiteral(description);
         const result = document.createElement('span');
         result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, output), false);
-        result.appendChild(this.linkifyStringAsFragment(text));
+        appendOrShow(result, this.linkifyStringAsFragment(text));
         return result;
     }
     formatParameterAsError(output) {
@@ -868,7 +886,7 @@ export class ConsoleViewMessage {
             let errorElement = this.tryFormatAsError(error.errorStack, details);
             if (!errorElement) {
                 errorElement = document.createElement('span');
-                errorElement.append(this.linkifyStringAsFragment(error.errorStack));
+                appendOrShow(errorElement, this.linkifyStringAsFragment(error.errorStack));
             }
             if (includeCausedByPrefix) {
                 const causeElement = document.createElement('div');
@@ -899,8 +917,35 @@ export class ConsoleViewMessage {
         render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
         return fragment;
     }
+    createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
+        const rootElement = document.createElement('span');
+        const element = rootElement.createChild('span');
+        element.textContent = i18nString(UIStrings.dots);
+        if (!object) {
+            return rootElement;
+        }
+        element.classList.add('object-value-calculate-value-button');
+        UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.invokePropertyGetter));
+        element.addEventListener('click', onInvokeGetterClick, false);
+        function onInvokeGetterClick(event) {
+            event.consume();
+            if (object) {
+                void object.callFunction(invokeGetter, [{ value: JSON.stringify(propertyPath) }]).then(callback);
+            }
+        }
+        function invokeGetter(arrayStr) {
+            let result = this;
+            const properties = JSON.parse(arrayStr);
+            for (let i = 0, n = properties.length; i < n; ++i) {
+                // @ts-expect-error callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
+                result = result[properties[i]];
+            }
+            return result;
+        }
+        return rootElement;
+    }
     formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
-        const rootElement = ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
+        const rootElement = this.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
         function onInvokeGetterClick(result) {
             const wasThrown = result.wasThrown;
             const object = result.object;
@@ -950,7 +995,7 @@ export class ConsoleViewMessage {
                 }
                 case 'string': {
                     if (currentStyle.size === 0) {
-                        formattedResult.append(this.linkifyStringAsFragment(token.value));
+                        appendOrShow(formattedResult, this.linkifyStringAsFragment(token.value));
                     }
                     else {
                         const lines = token.value.split('\n');
@@ -962,7 +1007,7 @@ export class ConsoleViewMessage {
                             wrapper.style.setProperty('contain', 'paint');
                             wrapper.style.setProperty('display', 'inline-block');
                             wrapper.style.setProperty('max-width', '100%');
-                            wrapper.appendChild(this.linkifyStringAsFragment(lines[i]));
+                            appendOrShow(wrapper, this.linkifyStringAsFragment(lines[i]));
                             for (const [property, { value, priority }] of currentStyle) {
                                 wrapper.style.setProperty(property, value, priority);
                             }
@@ -1294,7 +1339,7 @@ export class ConsoleViewMessage {
             return false;
         }
         if (!Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled() ||
-            !AiAssistanceModel.BuiltInAi.BuiltInAi.cachedIsAvailable()) {
+            !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().hasSession()) {
             return false;
         }
         const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
@@ -1541,12 +1586,12 @@ export class ConsoleViewMessage {
         for (let f = 0; f < frames.length; ++f) {
             const { name } = frames[f];
             const formattedLine = document.createElement('span');
-            formattedLine.appendChild(this.linkifyStringAsFragment(`${prefix} ${name} (`));
+            appendOrShow(formattedLine, this.linkifyStringAsFragment(`${prefix} ${name} (`));
             const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), null, url, lineNumber, { columnNumber, inlineFrameIndex: f });
             scriptLocationLink.tabIndex = -1;
             this.selectableChildren.push({ element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus() });
             formattedLine.appendChild(scriptLocationLink);
-            formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
+            appendOrShow(formattedLine, this.linkifyStringAsFragment(suffix));
             formattedLine.classList.add('formatted-stack-frame');
             stackTrace.insertBefore(formattedLine, insertBefore);
         }
@@ -1595,7 +1640,7 @@ export class ConsoleViewMessage {
             // where the error occurred. We use the source location from the
             // exceptionDetails and append it to the end of the message instead.
             if (!link && exceptionDetails && line.startsWith('SyntaxError')) {
-                formattedResult.appendChild(this.linkifyStringAsFragment(line));
+                appendOrShow(formattedResult, this.linkifyStringAsFragment(line));
                 const maybeScriptLocation = this.createScriptLocationLinkForSyntaxError(debuggerModel, exceptionDetails);
                 if (maybeScriptLocation) {
                     formattedResult.append(' (at ');
@@ -1606,18 +1651,18 @@ export class ConsoleViewMessage {
                 continue;
             }
             if (!isCallFrame) {
-                formattedResult.appendChild(this.linkifyStringAsFragment(`${line}${newline}`));
+                appendOrShow(formattedResult, this.linkifyStringAsFragment(`${line}${newline}`));
                 continue;
             }
             const formattedLine = document.createElement('span');
             if (!link) {
-                formattedLine.appendChild(this.linkifyStringAsFragment(`${line}${newline}`));
+                appendOrShow(formattedLine, this.linkifyStringAsFragment(`${line}${newline}`));
                 formattedLine.classList.add('formatted-builtin-stack-frame');
                 formattedResult.appendChild(formattedLine);
                 continue;
             }
             const suffix = `${link.suffix}${newline}`;
-            formattedLine.appendChild(this.linkifyStringAsFragment(link.prefix));
+            appendOrShow(formattedLine, this.linkifyStringAsFragment(link.prefix));
             const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), link.scriptId || null, link.url, link.lineNumber, {
                 columnNumber: link.columnNumber,
                 inlineFrameIndex: 0,
@@ -1626,7 +1671,7 @@ export class ConsoleViewMessage {
             scriptLocationLink.tabIndex = -1;
             this.selectableChildren.push({ element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus() });
             formattedLine.appendChild(scriptLocationLink);
-            formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
+            appendOrShow(formattedLine, this.linkifyStringAsFragment(suffix));
             formattedLine.classList.add('formatted-stack-frame');
             formattedResult.appendChild(formattedLine);
             if (!link.enclosedInBraces) {
@@ -1649,10 +1694,10 @@ export class ConsoleViewMessage {
     }
     linkifyWithCustomLinkifier(string, linkifier) {
         if (string.length > getMaxTokenizableStringLength()) {
-            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(string, getLongStringVisibleLength());
-            const fragment = document.createDocumentFragment();
-            fragment.appendChild(propertyValue.element);
-            return fragment;
+            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue();
+            propertyValue.text = string;
+            propertyValue.maxLength = getLongStringVisibleLength();
+            return propertyValue;
         }
         const container = document.createDocumentFragment();
         const tokens = ConsoleViewMessage.tokenizeMessageText(string);

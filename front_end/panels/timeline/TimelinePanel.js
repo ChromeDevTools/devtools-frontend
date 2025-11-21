@@ -797,16 +797,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             if (!focus) {
                 throw new Error('could not create performance agent focus');
             }
-            const agent = conversationHandler.createAgent("drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */);
-            const conversation = new AiAssistanceModel.AiConversation.AiConversation("drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */, [], agent.id, 
-            /* isReadOnly */ true, 
+            const conversation = new AiAssistanceModel.AiConversation.AiConversation("drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */, [], undefined, 
+            /* isReadOnly */ true, conversationHandler.aidaClient, undefined, 
             /* isExternal */ true);
             const selected = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
             selected.external = true;
             this.#externalAIConversationData = {
                 conversationHandler,
                 conversation,
-                agent,
                 selected,
             };
         }

@@ -28,6 +28,7 @@ interface ViewInput {
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
     highlightedTreeElement: ElementsTreeElement | null;
+    isUpdatingHighlights: boolean;
     alreadyExpandedParentTreeElement: ElementsTreeElement | null;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;

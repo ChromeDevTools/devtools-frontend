@@ -6160,6 +6160,8 @@ __export(AiConversation_exports, {
   AiConversation: () => AiConversation,
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA
 });
+import * as Host8 from "./../../core/host/host.js";
+import * as Root8 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
@@ -6275,11 +6277,6 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.Obj
 var NOT_FOUND_IMAGE_DATA = "";
 var MAX_TITLE_LENGTH = 80;
 var AiConversation = class _AiConversation {
-  id;
-  type;
-  #isReadOnly;
-  history;
-  #isExternal;
   static generateContextDetailsMarkdown(details) {
     const detailsMarkdown = [];
     for (const detail of details) {
@@ -6291,7 +6288,28 @@ ${text}`);
     }
     return detailsMarkdown.join("\n\n");
   }
-  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, isExternal = false) {
+  static fromSerializedConversation(serializedConversation) {
+    const history = serializedConversation.history.map((entry) => {
+      if (entry.type === "side-effect") {
+        return { ...entry, confirm: () => {
+        } };
+      }
+      return entry;
+    });
+    return new _AiConversation(serializedConversation.type, history, serializedConversation.id, true, void 0, void 0, serializedConversation.isExternal);
+  }
+  id;
+  type;
+  #isReadOnly;
+  history;
+  #isExternal;
+  #aidaClient;
+  #changeManager;
+  #agent;
+  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host8.AidaClient.AidaClient(), changeManager, isExternal = false) {
+    this.#changeManager = changeManager;
+    this.#aidaClient = aidaClient;
+    this.#agent = this.#createAgent(type);
     this.type = type;
     this.id = id;
     this.#isReadOnly = isReadOnly;
@@ -6429,17 +6447,48 @@ ${item.text.trim()}`);
       isExternal: this.#isExternal
     };
   }
-  static fromSerializedConversation(serializedConversation) {
-    const history = serializedConversation.history.map((entry) => {
-      if (entry.type === "side-effect") {
-        return { ...entry, confirm: () => {
-        } };
+  #createAgent(conversationType) {
+    const options = {
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+      changeManager: this.#changeManager
+    };
+    let agent;
+    switch (conversationType) {
+      case "freestyler": {
+        agent = new StylingAgent(options);
+        break;
       }
-      return entry;
-    });
-    return new _AiConversation(serializedConversation.type, history, serializedConversation.id, true, serializedConversation.isExternal);
+      case "drjones-network-request": {
+        agent = new NetworkAgent(options);
+        break;
+      }
+      case "drjones-file": {
+        agent = new FileAgent(options);
+        break;
+      }
+      case "drjones-performance-full": {
+        agent = new PerformanceAgent(options);
+        break;
+      }
+    }
+    return agent;
+  }
+  async *run(initialQuery, options, multimodalInput) {
+    for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
+      if (data.type !== "answer" || data.complete) {
+        void this.addHistoryItem(data);
+      }
+      yield data;
+    }
+  }
+  get origin() {
+    return this.#agent.origin;
   }
 };
+function isAiAssistanceServerSideLoggingEnabled() {
+  return !Root8.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+}
 
 // gen/front_end/models/ai_assistance/AiUtils.js
 var AiUtils_exports = {};
@@ -6447,9 +6496,9 @@ __export(AiUtils_exports, {
   getDisabledReasons: () => getDisabledReasons
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
+import * as Host9 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root8 from "./../../core/root/root.js";
+import * as Root9 from "./../../core/root/root.js";
 var UIStrings = {
   /**
    * @description Message shown to the user if the age check is not successful.
@@ -6472,7 +6521,7 @@ var str_ = i18n11.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UISt
 var i18nString = i18n11.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
-  if (Root8.Runtime.hostConfig.isOffTheRecord) {
+  if (Root9.Runtime.hostConfig.isOffTheRecord) {
     reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
   }
   switch (aidaAvailability) {
@@ -6484,7 +6533,7 @@ function getDisabledReasons(aidaAvailability) {
     case "no-internet":
       reasons.push(i18nString(UIStrings.offline));
     case "available": {
-      if (Root8.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
+      if (Root9.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
         reasons.push(i18nString(UIStrings.ageRestricted));
       }
     }
@@ -6498,186 +6547,112 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Host9 from "./../../core/host/host.js";
-import * as Root9 from "./../../core/root/root.js";
+import * as Host10 from "./../../core/host/host.js";
+import * as Root10 from "./../../core/root/root.js";
 var builtInAiInstance;
-var availability;
-var hasGpu;
-var isFirstRun = true;
 var BuiltInAi = class _BuiltInAi {
-  #consoleInsightsSession;
-  static async getLanguageModelAvailability() {
-    if (!Root9.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
-      return "disabled";
-    }
-    try {
-      availability = await window.LanguageModel.availability({ expectedOutputs: [{ type: "text", languages: ["en"] }] });
-      return availability;
-    } catch {
-      return "unavailable";
-    }
-  }
-  static cachedIsAvailable() {
-    return availability === "available" && (hasGpu || Boolean(Root9.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu));
-  }
-  static isGpuAvailable() {
-    const hasGpuHelper = () => {
-      const canvas = document.createElement("canvas");
-      try {
-        const webgl = canvas.getContext("webgl");
-        if (!webgl) {
-          return false;
-        }
-        const debugInfo = webgl.getExtension("WEBGL_debug_renderer_info");
-        if (!debugInfo) {
-          return false;
-        }
-        const renderer = webgl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        if (renderer.includes("SwiftShader")) {
-          return false;
-        }
-      } catch {
-        return false;
-      }
-      return true;
-    };
-    if (hasGpu !== void 0) {
-      return hasGpu;
-    }
-    hasGpu = hasGpuHelper();
-    return hasGpu;
-  }
-  constructor(consoleInsightsSession) {
-    this.#consoleInsightsSession = consoleInsightsSession;
-  }
-  static async instance() {
+  #availability = null;
+  #hasGpu;
+  #consoleInsightsSession = null;
+  static instance() {
     if (builtInAiInstance === void 0) {
-      if (isFirstRun) {
-        const languageModelAvailability = await _BuiltInAi.getLanguageModelAvailability();
-        const hasGpu2 = _BuiltInAi.isGpuAvailable();
-        if (hasGpu2) {
-          switch (languageModelAvailability) {
-            case "unavailable":
-              Host9.userMetrics.builtInAiAvailability(
-                0
-                /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
-              );
-              break;
-            case "downloadable":
-              Host9.userMetrics.builtInAiAvailability(
-                1
-                /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
-              );
-              break;
-            case "downloading":
-              Host9.userMetrics.builtInAiAvailability(
-                2
-                /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
-              );
-              break;
-            case "available":
-              Host9.userMetrics.builtInAiAvailability(
-                3
-                /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
-              );
-              break;
-            case "disabled":
-              Host9.userMetrics.builtInAiAvailability(
-                4
-                /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
-              );
-              break;
-          }
-        } else {
-          switch (languageModelAvailability) {
-            case "unavailable":
-              Host9.userMetrics.builtInAiAvailability(
-                5
-                /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
-              );
-              break;
-            case "downloadable":
-              Host9.userMetrics.builtInAiAvailability(
-                6
-                /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
-              );
-              break;
-            case "downloading":
-              Host9.userMetrics.builtInAiAvailability(
-                7
-                /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
-              );
-              break;
-            case "available":
-              Host9.userMetrics.builtInAiAvailability(
-                8
-                /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
-              );
-              break;
-            case "disabled":
-              Host9.userMetrics.builtInAiAvailability(
-                9
-                /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
-              );
-              break;
-          }
-        }
-        isFirstRun = false;
-        if (!Root9.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !hasGpu2) {
-          return void 0;
-        }
-        if (languageModelAvailability !== "available") {
-          return void 0;
-        }
-      } else {
-        if (!Root9.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !_BuiltInAi.isGpuAvailable()) {
-          return void 0;
-        }
-        if (await _BuiltInAi.getLanguageModelAvailability() !== "available") {
-          return void 0;
-        }
-      }
-      try {
-        const consoleInsightsSession = await window.LanguageModel.create({
-          initialPrompts: [{
-            role: "system",
-            content: `
-  You are an expert web developer. Your goal is to help a human web developer who
-  is using Chrome DevTools to debug a web site or web app. The Chrome DevTools
-  console is showing a message which is either an error or a warning. Please help
-  the user understand the problematic console message.
-
-  Your instructions are as follows:
-    - Explain the reason why the error or warning is showing up.
-    - The explanation has a maximum length of 200 characters. Anything beyond this
-      length will be cut off. Make sure that your explanation is at most 200 characters long.
-    - Your explanation should not end in the middle of a sentence.
-    - Your explanation should consist of a single paragraph only. Do not include any
-      headings or code blocks. Only write a single paragraph of text.
-    - Your response should be concise and to the point. Avoid lengthy explanations
-      or unnecessary details.
-            `
-          }],
-          expectedInputs: [{
-            type: "text",
-            languages: ["en"]
-          }],
-          expectedOutputs: [{
-            type: "text",
-            languages: ["en"]
-          }]
-        });
-        builtInAiInstance = new _BuiltInAi(consoleInsightsSession);
-      } catch {
-        return void 0;
-      }
+      builtInAiInstance = new _BuiltInAi();
     }
     return builtInAiInstance;
+  }
+  constructor() {
+    this.#hasGpu = this.#isGpuAvailable();
+    void this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+  }
+  async getLanguageModelAvailability() {
+    if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
+      this.#availability = "disabled";
+      return this.#availability;
+    }
+    try {
+      this.#availability = await window.LanguageModel.availability({ expectedOutputs: [{ type: "text", languages: ["en"] }] });
+    } catch {
+      this.#availability = "unavailable";
+    }
+    return this.#availability;
+  }
+  #isGpuAvailable() {
+    const canvas = document.createElement("canvas");
+    try {
+      const webgl = canvas.getContext("webgl");
+      if (!webgl) {
+        return false;
+      }
+      const debugInfo = webgl.getExtension("WEBGL_debug_renderer_info");
+      if (!debugInfo) {
+        return false;
+      }
+      const renderer = webgl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+      if (renderer.includes("SwiftShader")) {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+    return true;
+  }
+  hasSession() {
+    return Boolean(this.#consoleInsightsSession);
+  }
+  async initialize() {
+    if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+      return;
+    }
+    if (this.#availability !== "available") {
+      return;
+    }
+    await this.#createSession();
+  }
+  async #createSession() {
+    try {
+      this.#consoleInsightsSession = await window.LanguageModel.create({
+        initialPrompts: [{
+          role: "system",
+          content: `
+You are an expert web developer. Your goal is to help a human web developer who
+is using Chrome DevTools to debug a web site or web app. The Chrome DevTools
+console is showing a message which is either an error or a warning. Please help
+the user understand the problematic console message.
+
+Your instructions are as follows:
+  - Explain the reason why the error or warning is showing up.
+  - The explanation has a maximum length of 200 characters. Anything beyond this
+    length will be cut off. Make sure that your explanation is at most 200 characters long.
+  - Your explanation should not end in the middle of a sentence.
+  - Your explanation should consist of a single paragraph only. Do not include any
+    headings or code blocks. Only write a single paragraph of text.
+  - Your response should be concise and to the point. Avoid lengthy explanations
+    or unnecessary details.
+          `
+        }],
+        expectedInputs: [{
+          type: "text",
+          languages: ["en"]
+        }],
+        expectedOutputs: [{
+          type: "text",
+          languages: ["en"]
+        }]
+      });
+      if (this.#availability !== "available") {
+        void this.getLanguageModelAvailability();
+      }
+    } catch (e) {
+      console.error("Error when creating LanguageModel session", e.message);
+    }
   }
   static removeInstance() {
     builtInAiInstance = void 0;
   }
   async *getConsoleInsight(prompt, abortController) {
+    if (!this.#consoleInsightsSession) {
+      return;
+    }
     let session = null;
     try {
       session = await this.#consoleInsightsSession.clone();
@@ -6693,6 +6668,75 @@ var BuiltInAi = class _BuiltInAi {
       }
     }
   }
+  #sendAvailabilityMetrics() {
+    if (this.#hasGpu) {
+      switch (this.#availability) {
+        case "unavailable":
+          Host10.userMetrics.builtInAiAvailability(
+            0
+            /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
+          );
+          break;
+        case "downloadable":
+          Host10.userMetrics.builtInAiAvailability(
+            1
+            /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
+          );
+          break;
+        case "downloading":
+          Host10.userMetrics.builtInAiAvailability(
+            2
+            /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
+          );
+          break;
+        case "available":
+          Host10.userMetrics.builtInAiAvailability(
+            3
+            /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
+          );
+          break;
+        case "disabled":
+          Host10.userMetrics.builtInAiAvailability(
+            4
+            /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
+          );
+          break;
+      }
+    } else {
+      switch (this.#availability) {
+        case "unavailable":
+          Host10.userMetrics.builtInAiAvailability(
+            5
+            /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
+          );
+          break;
+        case "downloadable":
+          Host10.userMetrics.builtInAiAvailability(
+            6
+            /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
+          );
+          break;
+        case "downloading":
+          Host10.userMetrics.builtInAiAvailability(
+            7
+            /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
+          );
+          break;
+        case "available":
+          Host10.userMetrics.builtInAiAvailability(
+            8
+            /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
+          );
+          break;
+        case "disabled":
+          Host10.userMetrics.builtInAiAvailability(
+            9
+            /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
+          );
+          break;
+      }
+    }
+  }
 };
 
 // gen/front_end/models/ai_assistance/ConversationHandler.js
@@ -6701,10 +6745,10 @@ __export(ConversationHandler_exports, {
   ConversationHandler: () => ConversationHandler
 });
 import * as Common7 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root10 from "./../../core/root/root.js";
+import * as Root11 from "./../../core/root/root.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate4 = {
@@ -6714,8 +6758,8 @@ var UIStringsNotTranslate4 = {
   enableInSettings: "For AI features to be available, you need to enable AI assistance in DevTools settings."
 };
 var lockedString6 = i18n13.i18n.lockedString;
-function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root10.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+function isAiAssistanceServerSideLoggingEnabled2() {
+  return !Root11.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 async function inspectElementBySelector(selector) {
   const whitespaceTrimmedQuery = selector.trim();
@@ -6754,20 +6798,21 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
   constructor(aidaClient, aidaAvailability) {
     super();
     this.#aidaClient = aidaClient;
-    if (aidaAvailability) {
-      this.#aidaAvailability = aidaAvailability;
-    }
+    this.#aidaAvailability = aidaAvailability;
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
   }
   static instance(opts) {
     if (opts?.forceNew || conversationHandlerInstance === void 0) {
-      const aidaClient = opts?.aidaClient ?? new Host10.AidaClient.AidaClient();
+      const aidaClient = opts?.aidaClient ?? new Host11.AidaClient.AidaClient();
       conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability ?? void 0);
     }
     return conversationHandlerInstance;
   }
   static removeInstance() {
     conversationHandlerInstance = void 0;
+  }
+  get aidaClient() {
+    return this.#aidaClient;
   }
   #getAiAssistanceEnabledSetting() {
     try {
@@ -6778,7 +6823,7 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
   }
   async #getDisabledReasons() {
     if (this.#aidaAvailability === void 0) {
-      this.#aidaAvailability = await Host10.AidaClient.AidaClient.checkAccessPreconditions();
+      this.#aidaAvailability = await Host11.AidaClient.AidaClient.checkAccessPreconditions();
     }
     return getDisabledReasons(this.#aidaAvailability);
   }
@@ -6840,17 +6885,18 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
       aiAgent.id,
       /* isReadOnly */
       true,
+      this.#aidaClient,
+      void 0,
       /* isExternal */
       true
     );
-    return yield* this.#doExternalConversation({ conversation, aiAgent, prompt, selected });
+    return yield* this.#doExternalConversation({ conversation, prompt, selected });
   }
   async *#doExternalConversation(opts) {
-    const { conversation, aiAgent, prompt, selected } = opts;
-    const generator = aiAgent.run(prompt, { selected });
-    const generatorWithHistory = this.handleConversationWithHistory(generator, conversation);
+    const { conversation, prompt, selected } = opts;
+    const generator = conversation.run(prompt, { selected });
     const devToolsLogs = [];
-    for await (const data of generatorWithHistory) {
+    for await (const data of generator) {
       if (data.type !== "answer" || data.complete) {
         devToolsLogs.push(data);
       }
@@ -6877,10 +6923,10 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
     };
   }
   async #handleExternalStylingConversation(prompt, selector = "body") {
-    const stylingAgent = this.createAgent(
-      "freestyler"
-      /* ConversationType.STYLING */
-    );
+    const stylingAgent = new StylingAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled2()
+    });
     const node = await inspectElementBySelector(selector);
     if (node) {
       await node.setAsInspectedNode();
@@ -6896,16 +6942,15 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
   async #handleExternalPerformanceConversation(prompt, data) {
     return this.#doExternalConversation({
       conversation: data.conversation,
-      aiAgent: data.agent,
       prompt,
       selected: data.selected
     });
   }
   async #handleExternalNetworkConversation(prompt, requestUrl) {
-    const networkAgent = this.createAgent(
-      "drjones-network-request"
-      /* ConversationType.NETWORK */
-    );
+    const networkAgent = new NetworkAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled2()
+    });
     const request = await inspectNetworkRequestByUrl(requestUrl);
     if (!request) {
       return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
@@ -6918,35 +6963,6 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
       prompt,
       selected: new RequestContext(request, calculator)
     });
-  }
-  createAgent(conversationType, changeManager) {
-    const options = {
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled()
-    };
-    let agent;
-    switch (conversationType) {
-      case "freestyler": {
-        agent = new StylingAgent({
-          ...options,
-          changeManager
-        });
-        break;
-      }
-      case "drjones-network-request": {
-        agent = new NetworkAgent(options);
-        break;
-      }
-      case "drjones-file": {
-        agent = new FileAgent(options);
-        break;
-      }
-      case "drjones-performance-full": {
-        agent = new PerformanceAgent(options);
-        break;
-      }
-    }
-    return agent;
   }
 };
 export {

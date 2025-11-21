@@ -104,6 +104,34 @@ export default `/*
   &:not(.show-hidden-rows) > tfoot > tr.show-less-link {
     --display-toggle-link: none;
   }
+
+  .arrow-icon-button {
+    cursor: pointer;
+    padding: 1px 0;
+    border: none;
+    background: none;
+    margin-left: -4px;
+    margin-right: -2px;
+  }
+
+  .arrow-icon {
+    display: inline-block;
+    mask-image: var(--image-file-triangle-right);
+    background-color: var(--icon-default);
+    margin-top: 2px;
+    height: 14px;
+    width: 14px;
+    transition: transform 200ms;
+  }
+
+  &.expanded .arrow-icon{
+    transform: rotate(90deg);
+  }
+
+  &.expandable:not(.expanded) tbody:not(:first-of-type),
+  &.expandable:not(.expanded) tbody tr:not(:first-of-type) {
+    display: none;
+  }
 }
 
 /* The show more/less links aren't really a part of the content

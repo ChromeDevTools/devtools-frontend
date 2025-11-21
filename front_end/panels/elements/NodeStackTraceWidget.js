@@ -17,14 +17,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
-    const { target: sdkTarget, linkifier, options } = input;
+    const { target: sdkTarget, linkifier, stackTrace } = input;
     // clang-format off
     render(html `
     <style>${nodeStackTraceWidgetStyles}</style>
-    ${target && options.stackTrace ?
+    ${target && stackTrace ?
         html `<devtools-widget
                 class="stack-trace"
-                .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, options })}>
+                .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { target: sdkTarget, linkifier, stackTrace })}>
               </devtools-widget>` :
         html `<div class="gray-info-message">${i18nString(UIStrings.noStackTraceAvailable)}</div>`}`, target);
     // clang-format on
@@ -55,7 +55,7 @@ export class NodeStackTraceWidget extends UI.Widget.VBox {
         const input = {
             target,
             linkifier: this.#linkifier,
-            options: { stackTrace },
+            stackTrace,
         };
         this.#view(input, {}, this.contentElement);
     }

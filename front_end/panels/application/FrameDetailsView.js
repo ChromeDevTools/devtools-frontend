@@ -15,12 +15,11 @@ import * as CspEvaluator from '../../third_party/csp_evaluator/csp_evaluator.js'
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import { OriginTrialTreeView } from './OriginTrialTreeView.js';
-const { until } = Directives;
 const { widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
@@ -256,10 +255,12 @@ const DEFAULT_VIEW = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
-      ${until(input.permissionsPolicies?.then?.(policies => html `
-          <devtools-resources-permissions-policy-section .data=${{ policies, showDetails: false }}>
+      ${input.permissionsPolicies ?
+        html `
+          <devtools-resources-permissions-policy-section
+             .data=${{ policies: input.permissionsPolicies, showDetails: false }}>
           </devtools-resources-permissions-policy-section>
-        `), nothing)}
+        ` : nothing}
       ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing}
     </devtools-report>
   `, target);
@@ -293,6 +294,7 @@ function renderDocumentSection(input) {
     if (!input.frame) {
         return nothing;
     }
+    // clang-format off
     return html `
       <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
       <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
@@ -305,12 +307,12 @@ function renderDocumentSection(input) {
       </devtools-report-value>
       ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
       ${maybeRenderOrigin(input.frame?.securityOrigin)}
-      ${until(input.linkTargetDOMNode?.then?.(value => renderOwnerElement(value)), nothing)}
-      ${maybeRenderCreationStacktrace(input.frame.getCreationStackTraceData())}
+      ${renderOwnerElement(input.linkTargetDOMNode)}
+      ${maybeRenderCreationStacktrace(input.creationStackTrace, input.creationTarget)}
       ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
       ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
-      <devtools-report-divider></devtools-report-divider>
-    `;
+      <devtools-report-divider></devtools-report-divider>`;
+    // clang-format on
 }
 function renderSourcesLinkForURL(onRevealInSources) {
     return ApplicationComponents.PermissionsPolicySection.renderIconLink('label', i18nString(UIStrings.clickToOpenInSourcesPanel), onRevealInSources, 'reveal-in-sources');
@@ -380,18 +382,14 @@ function renderOwnerElement(linkTargetDOMNode) {
     }
     return nothing;
 }
-function maybeRenderCreationStacktrace(creationStackTraceData) {
-    if (creationStackTraceData?.creationStackTrace) {
+function maybeRenderCreationStacktrace(stackTrace, target) {
+    if (stackTrace && target) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return html `
         <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging.section('frame-creation-stack-trace')}>
-          <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.StackTrace.StackTrace, { data: {
-                creationStackTraceData,
-                buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
-            }
-        })}>
+          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
           </devtools-widget>
         </devtools-report-value>
       `;
@@ -484,7 +482,7 @@ function renderIsolationSection(input) {
       <devtools-report-value>
         ${input.frame.isCrossOriginIsolated() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
       </devtools-report-value>
-      ${until(input.securityIsolationInfo?.then?.(value => maybeRenderCoopCoepCSPStatus(value)), nothing)}
+      ${maybeRenderCoopCoepCSPStatus(input.securityIsolationInfo)}
       <devtools-report-divider></devtools-report-divider>
     `;
 }
@@ -508,7 +506,7 @@ function getSecureContextExplanation(frame) {
     }
     return null;
 }
-async function maybeRenderCoopCoepCSPStatus(info) {
+function maybeRenderCoopCoepCSPStatus(info) {
     if (info) {
         return html `
           ${maybeRenderCrossOriginStatus(info.coep, i18n.i18n.lockedString('Cross-Origin Embedder Policy (COEP)'), "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */)}
@@ -726,6 +724,11 @@ function renderAdditionalInfoSection(frame) {
 export class FrameDetailsReportView extends UI.Widget.Widget {
     #frame;
     #target = null;
+    #creationStackTrace = null;
+    #creationTarget = null;
+    #securityIsolationInfo = null;
+    #linkTargetDOMNode = null;
+    #trials = null;
     #protocolMonitorExperimentEnabled = false;
     #permissionsPolicies = null;
     #linkifier = new Components.Linkifier.Linkifier();
@@ -738,6 +741,33 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
     }
     set frame(frame) {
         this.#frame = frame;
+        void this.#frame.getPermissionsPolicyState().then(permissionsPolicies => {
+            this.#permissionsPolicies = permissionsPolicies;
+            this.requestUpdate();
+        });
+        const { creationStackTrace: rawCreationStackTrace, creationStackTraceTarget: creationTarget } = frame.getCreationStackTraceData();
+        this.#creationTarget = creationTarget;
+        if (rawCreationStackTrace) {
+            void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                .createStackTraceFromProtocolRuntime(rawCreationStackTrace, creationTarget)
+                .then(creationStackTrace => {
+                this.#creationStackTrace = creationStackTrace;
+                this.requestUpdate();
+            });
+        }
+        const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+        void networkManager?.getSecurityIsolationStatus(frame.id).then(securityIsolationInfo => {
+            this.#securityIsolationInfo = securityIsolationInfo;
+            this.requestUpdate();
+        });
+        void frame.getOwnerDOMNodeOrDocument().then(linkTargetDOMNode => {
+            this.#linkTargetDOMNode = linkTargetDOMNode;
+            this.requestUpdate();
+        });
+        void frame.getOriginTrials().then(trials => {
+            this.#trials = trials;
+            this.requestUpdate();
+        });
         this.requestUpdate();
     }
     get frame() {
@@ -757,27 +787,23 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
                 null;
             this.#target = debuggerModel?.target() ?? null;
         }
-        if (!this.#permissionsPolicies && this.#frame) {
-            this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
-        }
         const frame = this.#frame;
         if (!frame) {
             return;
         }
-        const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-        const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
-        const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
         const frameRequest = frame.resourceForURL(frame.url)?.request;
         const input = {
             frame,
             target: this.#target,
+            creationStackTrace: this.#creationStackTrace,
+            creationTarget: this.#creationTarget,
             protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
             permissionsPolicies: this.#permissionsPolicies,
             adScriptAncestry: this.#adScriptAncestry,
             linkifier: this.#linkifier,
-            linkTargetDOMNode,
-            trials: await frame.getOriginTrials(),
-            securityIsolationInfo,
+            linkTargetDOMNode: this.#linkTargetDOMNode,
+            trials: this.#trials,
+            securityIsolationInfo: this.#securityIsolationInfo,
             onRevealInNetwork: frameRequest ?
                 () => {
                     const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(frameRequest, "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */);

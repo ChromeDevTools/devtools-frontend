@@ -99,6 +99,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // Node highlighting logic. FIXME: express as a lit template.
     const previousHighlightedNode = output.highlightedTreeElement?.node() ?? null;
     if (previousHighlightedNode !== input.currentHighlightedNode) {
+        output.isUpdatingHighlights = true;
         let treeElement = null;
         if (output.highlightedTreeElement) {
             let currentTreeElement = output.highlightedTreeElement;
@@ -130,6 +131,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         output.highlightedTreeElement = treeElement;
         output.elementsTreeOutline.setHoverEffect(treeElement);
         treeElement?.reveal(true);
+        output.isUpdatingHighlights = false;
     }
 };
 /**
@@ -174,6 +176,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     #viewOutput = {
         highlightedTreeElement: null,
         alreadyExpandedParentTreeElement: null,
+        isUpdatingHighlights: false,
     };
     #highlightThrottler = new Common.Throttler.Throttler(100);
     constructor(element, view) {
@@ -184,7 +187,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.#view = view ?? DEFAULT_VIEW;
         if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "HighlightNodeRequested" /* SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED */, this.#highlightNode, this, { scoped: true });
-            SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "InspectModeWillBeToggled" /* SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED */, this.#clearState, this, { scoped: true });
+            SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "InspectModeWillBeToggled" /* SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED */, this.#clearHighlightedNode, this, { scoped: true });
         }
     }
     #highlightNode(event) {
@@ -193,7 +196,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             this.requestUpdate();
         });
     }
-    #clearState() {
+    #clearHighlightedNode() {
+        // Highlighting an element via tree outline will emit the
+        // INSPECT_MODE_WILL_BE_TOGGLED event, therefore, we skip it if the view
+        // informed us that it is updating the element.
+        if (this.#viewOutput.isUpdatingHighlights) {
+            return;
+        }
         this.#currentHighlightedNode = null;
         this.requestUpdate();
     }
@@ -238,11 +247,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             currentHighlightedNode: this.#currentHighlightedNode,
             onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
             onSelectedNodeChanged: event => {
-                this.#clearState();
+                this.#clearHighlightedNode();
                 this.onSelectedNodeChanged(event);
             },
-            onElementCollapsed: this.#clearState.bind(this),
-            onElementExpanded: this.#clearState.bind(this),
+            onElementCollapsed: this.#clearHighlightedNode.bind(this),
+            onElementExpanded: this.#clearHighlightedNode.bind(this),
         }, this.#viewOutput, this.contentElement);
     }
     modelAdded(domModel) {

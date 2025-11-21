@@ -773,7 +773,7 @@ var MainImpl = class {
     AutofillManager.AutofillManager.AutofillManager.instance();
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();
-    void AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
     new PauseListener();
     const actionRegistryInstance = UI2.ActionRegistry.ActionRegistry.instance({ forceNew: true });
     UI2.ShortcutRegistry.ShortcutRegistry.instance({ forceNew: true, actionRegistry: actionRegistryInstance });

@@ -8,9 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
-import { FileAgent } from './agents/FileAgent.js';
 import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
-import { PerformanceAgent } from './agents/PerformanceAgent.js';
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
 import { AiConversation } from './AiConversation.js';
 import { getDisabledReasons } from './AiUtils.js';
@@ -69,9 +67,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     constructor(aidaClient, aidaAvailability) {
         super();
         this.#aidaClient = aidaClient;
-        if (aidaAvailability) {
-            this.#aidaAvailability = aidaAvailability;
-        }
+        this.#aidaAvailability = aidaAvailability;
         this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
     }
     static instance(opts) {
@@ -83,6 +79,9 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     }
     static removeInstance() {
         conversationHandlerInstance = undefined;
+    }
+    get aidaClient() {
+        return this.#aidaClient;
     }
     #getAiAssistanceEnabledSetting() {
         try {
@@ -150,16 +149,15 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     async *#createAndDoExternalConversation(opts) {
         const { conversationType, aiAgent, prompt, selected } = opts;
         const conversation = new AiConversation(conversationType, [], aiAgent.id, 
-        /* isReadOnly */ true, 
+        /* isReadOnly */ true, this.#aidaClient, undefined, 
         /* isExternal */ true);
-        return yield* this.#doExternalConversation({ conversation, aiAgent, prompt, selected });
+        return yield* this.#doExternalConversation({ conversation, prompt, selected });
     }
     async *#doExternalConversation(opts) {
-        const { conversation, aiAgent, prompt, selected } = opts;
-        const generator = aiAgent.run(prompt, { selected });
-        const generatorWithHistory = this.handleConversationWithHistory(generator, conversation);
+        const { conversation, prompt, selected } = opts;
+        const generator = conversation.run(prompt, { selected });
         const devToolsLogs = [];
-        for await (const data of generatorWithHistory) {
+        for await (const data of generator) {
             if (data.type !== "answer" /* ResponseType.ANSWER */ || data.complete) {
                 devToolsLogs.push(data);
             }
@@ -186,7 +184,10 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
         };
     }
     async #handleExternalStylingConversation(prompt, selector = 'body') {
-        const stylingAgent = this.createAgent("freestyler" /* ConversationType.STYLING */);
+        const stylingAgent = new StylingAgent({
+            aidaClient: this.#aidaClient,
+            serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+        });
         const node = await inspectElementBySelector(selector);
         if (node) {
             await node.setAsInspectedNode();
@@ -202,13 +203,15 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     async #handleExternalPerformanceConversation(prompt, data) {
         return this.#doExternalConversation({
             conversation: data.conversation,
-            aiAgent: data.agent,
             prompt,
             selected: data.selected,
         });
     }
     async #handleExternalNetworkConversation(prompt, requestUrl) {
-        const networkAgent = this.createAgent("drjones-network-request" /* ConversationType.NETWORK */);
+        const networkAgent = new NetworkAgent({
+            aidaClient: this.#aidaClient,
+            serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+        });
         const request = await inspectNetworkRequestByUrl(requestUrl);
         if (!request) {
             return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
@@ -221,35 +224,6 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
             prompt,
             selected: new RequestContext(request, calculator),
         });
-    }
-    createAgent(conversationType, changeManager) {
-        const options = {
-            aidaClient: this.#aidaClient,
-            serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
-        };
-        let agent;
-        switch (conversationType) {
-            case "freestyler" /* ConversationType.STYLING */: {
-                agent = new StylingAgent({
-                    ...options,
-                    changeManager,
-                });
-                break;
-            }
-            case "drjones-network-request" /* ConversationType.NETWORK */: {
-                agent = new NetworkAgent(options);
-                break;
-            }
-            case "drjones-file" /* ConversationType.FILE */: {
-                agent = new FileAgent(options);
-                break;
-            }
-            case "drjones-performance-full" /* ConversationType.PERFORMANCE */: {
-                agent = new PerformanceAgent(options);
-                break;
-            }
-        }
-        return agent;
     }
 }
 //# sourceMappingURL=ConversationHandler.js.map

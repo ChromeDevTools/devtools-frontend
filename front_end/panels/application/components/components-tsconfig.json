@@ -46,7 +46,6 @@
     "../../../../../../../front_end/panels/application/components/ServiceWorkerRouterView.ts",
     "../../../../../../../front_end/panels/application/components/SharedStorageAccessGrid.ts",
     "../../../../../../../front_end/panels/application/components/SharedStorageMetadataView.ts",
-    "../../../../../../../front_end/panels/application/components/StackTrace.ts",
     "../../../../../../../front_end/panels/application/components/StorageMetadataView.ts",
     "../../../../../../../front_end/panels/application/components/TrustTokensView.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",

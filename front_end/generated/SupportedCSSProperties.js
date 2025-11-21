@@ -2141,8 +2141,8 @@ export const generatedProperties = [
             "math",
             "ruby",
             "ruby-text",
-            "masonry",
-            "inline-masonry"
+            "grid-lanes",
+            "inline-grid-lanes"
         ],
         "name": "display"
     },
@@ -5654,8 +5654,8 @@ export const generatedPropertyValues = {
             "math",
             "ruby",
             "ruby-text",
-            "masonry",
-            "inline-masonry"
+            "grid-lanes",
+            "inline-grid-lanes"
         ]
     },
     "dominant-baseline": {

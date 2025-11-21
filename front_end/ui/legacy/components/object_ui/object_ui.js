@@ -47,12 +47,12 @@ var customPreviewComponent_css_default = `/*
 var ObjectPropertiesSection_exports = {};
 __export(ObjectPropertiesSection_exports, {
   ArrayGroupingTreeElement: () => ArrayGroupingTreeElement,
+  EXPANDABLE_TEXT_DEFAULT_VIEW: () => EXPANDABLE_TEXT_DEFAULT_VIEW,
   ExpandableTextPropertyValue: () => ExpandableTextPropertyValue,
   InitialVisibleChildrenLimit: () => InitialVisibleChildrenLimit,
   ObjectPropertiesSection: () => ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeExpandController: () => ObjectPropertiesSectionsTreeExpandController,
   ObjectPropertiesSectionsTreeOutline: () => ObjectPropertiesSectionsTreeOutline,
-  ObjectPropertyPrompt: () => ObjectPropertyPrompt,
   ObjectPropertyTreeElement: () => ObjectPropertyTreeElement,
   ObjectTree: () => ObjectTree,
   ObjectTreeNode: () => ObjectTreeNode,
@@ -588,6 +588,7 @@ var objectValue_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
 // gen/front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.js
+var { widgetConfig } = UI2.Widget;
 var { ref, repeat: repeat2, ifDefined: ifDefined2, classMap } = Directives2;
 var UIStrings2 = {
   /**
@@ -674,7 +675,6 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/object_ui/ObjectPropertiesSection.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var EXPANDABLE_MAX_LENGTH = 50;
 var EXPANDABLE_MAX_DEPTH = 100;
 var objectPropertiesSectionMap = /* @__PURE__ */ new WeakMap();
 var ObjectTreeNodeBase = class {
@@ -1093,12 +1093,12 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (type === "string" && typeof description === "string") {
         const text = JSON.stringify(description);
         const tooLong = description.length > maxRenderableStringLength;
-        return html2`<span class="value object-value-string" title=${ifDefined2(tooLong ? void 0 : description)}>${tooLong ? new ExpandableTextPropertyValue(text, EXPANDABLE_MAX_LENGTH).element : text}</span>`;
+        return html2`<span class="value object-value-string" title=${ifDefined2(tooLong ? void 0 : description)}>${tooLong ? html2`<devtools-widget .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text })}></devtools-widget>` : text}</span>`;
       }
       if (type === "object" && subtype === "trustedtype") {
         const text = `${className} '${description}'`;
         const tooLong = text.length > maxRenderableStringLength;
-        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? new ExpandableTextPropertyValue(text, EXPANDABLE_MAX_LENGTH).element : html2`${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
+        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? html2`<devtools-widget .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text })}></devtools-widget>` : html2`${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
       }
       if (type === "function") {
         return _ObjectPropertiesSection.valueElementForFunctionDescription(description, void 0, void 0, "value");
@@ -1114,7 +1114,8 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
           >${renderNodeTitle(description)}</span>`;
       }
       if (description.length > maxRenderableStringLength) {
-        return html2`<span class="value object-value-${subtype || type}" title=${description}>${new ExpandableTextPropertyValue(description, EXPANDABLE_MAX_LENGTH).element}</span>`;
+        return html2`<span class="value object-value-${subtype || type}" title=${description}><devtools-widget
+                  .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text: description })}></devtools-widget></span>`;
       }
       const hasPreview = value.preview && showPreview;
       return html2`<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview) : description}${isSyntheticProperty ? nothing2 : this.getMemoryIcon(value, variableName)}</span>`;
@@ -1343,7 +1344,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   linkifier;
   maxNumPropertiesToShow;
   readOnly;
-  prompt;
   #editing = false;
   #view;
   #completions = [];
@@ -1429,32 +1429,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     title.textContent = emptyPlaceholder || i18nString2(UIStrings2.noProperties);
     const infoElement = new UI2.TreeOutline.TreeElement(title);
     treeNode.appendChild(infoElement);
-  }
-  static createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
-    const rootElement = document.createElement("span");
-    const element = rootElement.createChild("span");
-    element.textContent = i18nString2(UIStrings2.dots);
-    if (!object) {
-      return rootElement;
-    }
-    element.classList.add("object-value-calculate-value-button");
-    UI2.Tooltip.Tooltip.install(element, i18nString2(UIStrings2.invokePropertyGetter));
-    element.addEventListener("click", onInvokeGetterClick, false);
-    function onInvokeGetterClick(event) {
-      event.consume();
-      if (object) {
-        void object.callFunction(invokeGetter, [{ value: JSON.stringify(propertyPath) }]).then(callback);
-      }
-    }
-    function invokeGetter(arrayStr) {
-      let result = this;
-      const properties = JSON.parse(arrayStr);
-      for (let i = 0, n = properties.length; i < n; ++i) {
-        result = result[properties[i]];
-      }
-      return result;
-    }
-    return rootElement;
   }
   get nameElement() {
     return this.#nameElement;
@@ -1849,12 +1823,6 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
   static bucketThreshold = 100;
   static sparseIterationThreshold = 25e4;
 };
-var ObjectPropertyPrompt = class extends UI2.TextPrompt.TextPrompt {
-  constructor() {
-    super();
-    this.initialize(TextEditor.JavaScript.completeInContext);
-  }
-};
 var ObjectPropertiesSectionsTreeExpandController = class _ObjectPropertiesSectionsTreeExpandController {
   static #propertyPathCache = /* @__PURE__ */ new WeakMap();
   static #sectionMap = /* @__PURE__ */ new WeakMap();
@@ -1950,78 +1918,86 @@ var Renderer = class _Renderer {
     };
   }
 };
-var ExpandableTextPropertyValue = class {
-  text;
-  maxLength;
-  maxDisplayableTextLength;
-  #byteCount;
-  #expanded = false;
-  #element;
-  constructor(text, maxLength) {
-    this.#element = document.createDocumentFragment();
-    this.text = text;
-    this.maxLength = maxLength;
-    this.maxDisplayableTextLength = 1e7;
-    this.#byteCount = Platform3.StringUtilities.countWtf8Bytes(text);
-    this.#render();
-  }
-  get element() {
-    return this.#element;
-  }
-  #render() {
-    const totalBytesText = i18n3.ByteUtilities.bytesToString(this.#byteCount);
-    const onContextMenu = (e) => {
-      const { target } = e;
-      if (!(target instanceof Element)) {
-        return;
-      }
-      const listItem = target.closest("li");
-      const element = listItem && UI2.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
-      if (!(element instanceof ObjectPropertyTreeElement)) {
-        return;
-      }
-      const contextMenu = element.getContextMenu(e);
-      if (this.text.length < this.maxDisplayableTextLength && !this.#expanded) {
-        contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.showMoreS, { PH1: totalBytesText }), this.expandText.bind(this), { jslogContext: "show-more" });
-      }
-      contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copy), this.copyText.bind(this), { jslogContext: "copy" });
-      void contextMenu.show();
-      e.consume(true);
-    };
-    const croppedText = this.text.slice(0, this.maxLength);
-    render2(
-      // clang-format off
-      html2`<span title=${croppedText + "\u2026"} @contextmenu=${onContextMenu}>
-               ${this.#expanded ? this.text : croppedText}
+var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
+  const totalBytesText = i18n3.ByteUtilities.bytesToString(input.byteCount);
+  const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
+  const onContextMenu = (e) => {
+    const { target: target2 } = e;
+    if (!(target2 instanceof Element)) {
+      return;
+    }
+    const listItem = target2.closest("li");
+    const element = listItem && UI2.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+    if (!(element instanceof ObjectPropertyTreeElement)) {
+      return;
+    }
+    const contextMenu = element.getContextMenu(e);
+    if (canExpand && !input.expanded) {
+      contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.showMoreS, { PH1: totalBytesText }), input.expandText, { jslogContext: "show-more" });
+    }
+    contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copy), input.copyText, { jslogContext: "copy" });
+    void contextMenu.show();
+    e.consume(true);
+  };
+  const croppedText = input.text.slice(0, input.maxLength);
+  render2(
+    // clang-format off
+    html2`<span title=${croppedText + "\u2026"} @contextmenu=${onContextMenu}>
+               ${input.expanded ? input.text : croppedText}
                <button
-                 ?hidden=${this.#expanded}
-                 @click=${this.#canExpand ? this.expandText.bind(this) : void 0}
-                 jslog=${ifDefined2(this.#canExpand ? VisualLogging.action("expand").track({ click: true }) : void 0)}
-                 class=${this.#canExpand ? "expandable-inline-button" : "undisplayable-text"}
-                 data-text=${this.#canExpand ? i18nString2(UIStrings2.showMoreS, { PH1: totalBytesText }) : i18nString2(UIStrings2.longTextWasTruncatedS, { PH1: totalBytesText })}
+                 ?hidden=${input.expanded}
+                 @click=${canExpand ? input.expandText : void 0}
+                 jslog=${ifDefined2(canExpand ? VisualLogging.action("expand").track({ click: true }) : void 0)}
+                 class=${canExpand ? "expandable-inline-button" : "undisplayable-text"}
+                 data-text=${canExpand ? i18nString2(UIStrings2.showMoreS, { PH1: totalBytesText }) : i18nString2(UIStrings2.longTextWasTruncatedS, { PH1: totalBytesText })}
                  ></button>
                <button
                  class=expandable-inline-button
-                 @click=${this.copyText.bind(this)}
+                 @click=${input.copyText}
                  data-text=${i18nString2(UIStrings2.copy)}
                  jslog=${VisualLogging.action("copy").track({ click: true })}
                  ></button>
              </span>`,
-      // clang-format on
-      this.#element
-    );
+    // clang-format on
+    target
+  );
+};
+var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2.Widget.Widget {
+  static MAX_DISPLAYABLE_TEXT_LENGTH = 1e7;
+  static EXPANDABLE_MAX_LENGTH = 50;
+  #text = "";
+  #byteCount = 0;
+  #expanded = false;
+  #maxLength = _ExpandableTextPropertyValue.EXPANDABLE_MAX_LENGTH;
+  #view;
+  constructor(target, view = EXPANDABLE_TEXT_DEFAULT_VIEW) {
+    super(target);
+    this.#view = view;
   }
-  get #canExpand() {
-    return this.text.length < this.maxDisplayableTextLength;
+  set text(text) {
+    this.#text = text;
+    this.#byteCount = Platform3.StringUtilities.countWtf8Bytes(text);
+    this.requestUpdate();
   }
-  expandText() {
-    if (!this.#expanded) {
-      this.#expanded = true;
-      this.#render();
-    }
+  set maxLength(maxLength) {
+    this.#maxLength = maxLength;
+    this.requestUpdate();
   }
-  copyText() {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.text);
+  performUpdate() {
+    const input = {
+      copyText: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#text),
+      expandText: () => {
+        if (!this.#expanded) {
+          this.#expanded = true;
+          this.requestUpdate();
+        }
+      },
+      expanded: this.#expanded,
+      byteCount: this.#byteCount,
+      maxLength: this.#maxLength,
+      text: this.#text
+    };
+    this.#view(input, {}, this.contentElement);
   }
 };
 

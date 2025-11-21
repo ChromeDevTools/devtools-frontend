@@ -4401,21 +4401,6 @@ function createPerformanceTraceContext(focus) {
   }
   return new AiAssistanceModel3.PerformanceAgent.PerformanceTraceContext(focus);
 }
-function agentToConversationType(agent) {
-  if (agent instanceof AiAssistanceModel3.StylingAgent.StylingAgent) {
-    return "freestyler";
-  }
-  if (agent instanceof AiAssistanceModel3.NetworkAgent.NetworkAgent) {
-    return "drjones-network-request";
-  }
-  if (agent instanceof AiAssistanceModel3.FileAgent.FileAgent) {
-    return "drjones-file";
-  }
-  if (agent instanceof AiAssistanceModel3.PerformanceAgent.PerformanceAgent) {
-    return "drjones-performance-full";
-  }
-  throw new Error("Provided agent does not have a corresponding conversation type");
-}
 var panelInstance;
 var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   view;
@@ -4428,7 +4413,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   #aiAssistanceEnabledSetting;
   #changeManager = new AiAssistanceModel3.ChangeManager.ChangeManager();
   #mutex = new Common5.Mutex.Mutex();
-  #conversationAgent;
   #conversation;
   #selectedFile = null;
   #selectedElement = null;
@@ -4456,7 +4440,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   // Used to disable send button when there is not text input.
   #isTextInputEmpty = true;
   #timelinePanelInstance = null;
-  #conversationHandler;
   #runAbortController = new AbortController();
   constructor(view = defaultView, { aidaClient, aidaAvailability, syncInfo }) {
     super(_AiAssistancePanel.panelName);
@@ -4469,7 +4452,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       accountImage: syncInfo.accountImage,
       accountFullName: syncInfo.accountFullName
     };
-    this.#conversationHandler = AiAssistanceModel3.ConversationHandler.ConversationHandler.instance({ aidaClient: this.#aidaClient, aidaAvailability });
     if (UI7.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
       this.#toggleSearchElementAction = UI7.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
@@ -4591,41 +4573,29 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   // We select the default agent based on the open panels if
   // there isn't any active conversation.
   #selectDefaultAgentIfNeeded() {
-    if (this.#conversationAgent && this.#conversation && !this.#conversation.isEmpty || this.#isLoading) {
+    if (this.#conversation && !this.#conversation.isEmpty || this.#isLoading) {
       return;
     }
     const targetConversationType = this.#getDefaultConversationType();
     if (this.#conversation?.type === targetConversationType) {
       return;
     }
-    const agent = targetConversationType ? this.#conversationHandler.createAgent(targetConversationType, this.#changeManager) : void 0;
-    this.#updateConversationState({ agent });
+    const conversation = targetConversationType ? new AiAssistanceModel3.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager) : void 0;
+    this.#updateConversationState(conversation);
   }
-  #updateConversationState(opts) {
-    if (this.#conversationAgent !== opts?.agent) {
+  #updateConversationState(conversation) {
+    if (this.#conversation !== conversation) {
       this.#cancel();
       this.#messages = [];
       this.#isLoading = false;
       this.#conversation?.archiveConversation();
-      this.#conversationAgent = opts?.agent;
-      if (opts?.agent) {
-        this.#conversation = new AiAssistanceModel3.AiConversation.AiConversation(agentToConversationType(opts.agent), [], opts.agent.id, false);
+      if (!conversation) {
+        const conversationType = this.#getDefaultConversationType();
+        if (conversationType) {
+          conversation = new AiAssistanceModel3.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
+        }
       }
-    }
-    if (!opts?.agent) {
-      this.#conversation = void 0;
-      this.#messages = [];
-      if (opts?.conversation) {
-        this.#conversation = opts.conversation;
-      }
-    }
-    if (!this.#conversationAgent && !this.#conversation) {
-      const conversationType = this.#getDefaultConversationType();
-      if (conversationType) {
-        const agent = this.#conversationHandler.createAgent(conversationType, this.#changeManager);
-        this.#updateConversationState({ agent });
-        return;
-      }
+      this.#conversation = conversation;
     }
     this.#onContextSelectionChanged();
     this.requestUpdate();
@@ -4639,7 +4609,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.#selectedRequest = createRequestContext(UI7.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI7.Context.Context.instance().flavor(AiAssistanceModel3.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI7.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
-    this.#updateConversationState({ agent: this.#conversationAgent });
+    this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
@@ -4692,7 +4662,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       return;
     }
     this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
-    this.#updateConversationState({ agent: this.#conversationAgent });
+    this.#updateConversationState(this.#conversation);
   };
   #handleDOMNodeAttrChange = (ev) => {
     if (this.#selectedElement?.getItem() === ev.data.node) {
@@ -4711,14 +4681,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     } else {
       this.#selectedRequest = null;
     }
-    this.#updateConversationState({ agent: this.#conversationAgent });
+    this.#updateConversationState(this.#conversation);
   };
   #handlePerformanceTraceFlavorChange = (ev) => {
     if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
       return;
     }
     this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel3.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
-    this.#updateConversationState({ agent: this.#conversationAgent });
+    this.#updateConversationState(this.#conversation);
   };
   #handleUISourceCodeFlavorChange = (ev) => {
     const newFile = ev.data;
@@ -4729,7 +4699,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       return;
     }
     this.#selectedFile = new AiAssistanceModel3.FileAgent.FileContext(ev.data);
-    this.#updateConversationState({ agent: this.#conversationAgent });
+    this.#updateConversationState(this.#conversation);
   };
   #onPrimaryPageChanged() {
     if (!this.#imageInput) {
@@ -4739,11 +4709,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.requestUpdate();
   }
   #getChangeSummary() {
-    if (!isAiAssistancePatchingEnabled() || !this.#conversationAgent || this.#conversation?.isReadOnly) {
+    if (!isAiAssistancePatchingEnabled() || !this.#conversation || this.#conversation?.isReadOnly) {
       return;
     }
     return this.#changeManager.formatChangesForPatching(
-      this.#conversationAgent.id,
+      this.#conversation.id,
       /* includeSourceLocation= */
       true
     );
@@ -4952,11 +4922,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     if (!targetConversationType) {
       return;
     }
-    let agent = this.#conversationAgent;
-    if (!this.#conversation || !this.#conversationAgent || this.#conversation.type !== targetConversationType || this.#conversation?.isEmpty) {
-      agent = this.#conversationHandler.createAgent(targetConversationType, this.#changeManager);
+    let conversation = this.#conversation;
+    if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
+      conversation = new AiAssistanceModel3.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager);
     }
-    this.#updateConversationState({ agent });
+    this.#updateConversationState(conversation);
     const predefinedPrompt = opts?.["prompt"];
     if (predefinedPrompt && typeof predefinedPrompt === "string") {
       if (!this.#canExecuteQuery()) {
@@ -5033,7 +5003,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     if (this.#conversation === conversation) {
       return;
     }
-    this.#updateConversationState({ conversation });
+    this.#updateConversationState(conversation);
     await this.#doConversation(conversation.history);
   }
   #handleNewChatRequest() {
@@ -5147,7 +5117,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.#runAbortController = new AbortController();
   }
   #onContextSelectionChanged() {
-    if (!this.#conversationAgent) {
+    if (!this.#conversation) {
       this.#blockedByCrossOrigin = false;
       return;
     }
@@ -5157,7 +5127,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       this.#viewOutput.chatView?.clearTextInput();
       return;
     }
-    this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversationAgent.origin);
+    this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversation.origin);
   }
   #getConversationContext(conversation) {
     if (!conversation) {
@@ -5181,13 +5151,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     return context;
   }
   async #startConversation(text, imageInput, multimodalInputType) {
-    if (!this.#conversationAgent) {
+    if (!this.#conversation) {
       return;
     }
     this.#cancel();
     const signal = this.#runAbortController.signal;
     const context = this.#getConversationContext(this.#conversation);
-    if (context && !context.isOriginAllowed(this.#conversationAgent.origin)) {
+    if (context && !context.isOriginAllowed(this.#conversation.origin)) {
       throw new Error("cross-origin context data should not be included");
     }
     if (this.#conversation?.isEmpty) {
@@ -5203,12 +5173,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     if (this.#conversation) {
       void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     }
-    const generator = this.#conversationAgent.run(text, {
+    const generator = this.#conversation.run(text, {
       signal,
       selected: context
     }, multimodalInput);
-    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
-    await this.#doConversation(generatorWithHistory);
+    await this.#doConversation(generator);
   }
   async #doConversation(items) {
     const release = await this.#mutex.acquire();

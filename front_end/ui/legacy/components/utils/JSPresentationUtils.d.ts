@@ -7,10 +7,10 @@ export declare function buildStackTraceRowsForLegacyRuntimeStackTrace(stackTrace
 export declare function buildStackTraceRows(stackTrace: StackTrace.StackTrace.StackTrace, target: SDK.Target.Target | null, linkifier: Linkifier, tabStops: boolean | undefined, showColumnNumber?: boolean): Array<StackTraceRegularRow | StackTraceAsyncRow>;
 export interface Options {
     runtimeStackTrace?: Protocol.Runtime.StackTrace;
-    stackTrace?: StackTrace.StackTrace.StackTrace;
     tabStops?: boolean;
     widthConstrained?: boolean;
     showColumnNumber?: boolean;
+    expandable?: boolean;
 }
 export interface StackTraceRegularRow {
     functionName: string;
@@ -27,4 +27,6 @@ export declare class StackTracePreviewContent extends UI.Widget.Widget {
     set target(target: SDK.Target.Target | undefined);
     set linkifier(linkifier: Linkifier);
     set options(options: Options);
+    set stackTrace(stackTrace: StackTrace.StackTrace.StackTrace);
+    onDetach(): void;
 }

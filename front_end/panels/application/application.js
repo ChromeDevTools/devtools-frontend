@@ -2387,7 +2387,7 @@ import * as CspEvaluator from "./../../third_party/csp_evaluator/csp_evaluator.j
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
+import { html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents4 from "./components/components.js";
 
@@ -2850,7 +2850,6 @@ var OriginTrialTreeView = class extends UI5.Widget.Widget {
 };
 
 // gen/front_end/panels/application/FrameDetailsView.js
-var { until } = Directives2;
 var { widgetConfig: widgetConfig2 } = UI6.Widget;
 var UIStrings6 = {
   /**
@@ -3085,10 +3084,11 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
-      ${until(input.permissionsPolicies?.then?.((policies) => html2`
-          <devtools-resources-permissions-policy-section .data=${{ policies, showDetails: false }}>
+      ${input.permissionsPolicies ? html2`
+          <devtools-resources-permissions-policy-section
+             .data=${{ policies: input.permissionsPolicies, showDetails: false }}>
           </devtools-resources-permissions-policy-section>
-        `), nothing2)}
+        ` : nothing2}
       ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing2}
     </devtools-report>
   `, target);
@@ -3131,12 +3131,11 @@ function renderDocumentSection(input) {
       </devtools-report-value>
       ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
       ${maybeRenderOrigin(input.frame?.securityOrigin)}
-      ${until(input.linkTargetDOMNode?.then?.((value) => renderOwnerElement(value)), nothing2)}
-      ${maybeRenderCreationStacktrace(input.frame.getCreationStackTraceData())}
+      ${renderOwnerElement(input.linkTargetDOMNode)}
+      ${maybeRenderCreationStacktrace(input.creationStackTrace, input.creationTarget)}
       ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
       ${maybeRenderCreatorAdScriptAncestry(input.frame?.adFrameType(), input.target, input.adScriptAncestry)}
-      <devtools-report-divider></devtools-report-divider>
-    `;
+      <devtools-report-divider></devtools-report-divider>`;
 }
 function renderSourcesLinkForURL(onRevealInSources) {
   return ApplicationComponents4.PermissionsPolicySection.renderIconLink("label", i18nString6(UIStrings6.clickToOpenInSourcesPanel), onRevealInSources, "reveal-in-sources");
@@ -3203,17 +3202,12 @@ function renderOwnerElement(linkTargetDOMNode) {
   }
   return nothing2;
 }
-function maybeRenderCreationStacktrace(creationStackTraceData) {
-  if (creationStackTraceData?.creationStackTrace) {
+function maybeRenderCreationStacktrace(stackTrace, target) {
+  if (stackTrace && target) {
     return html2`
         <devtools-report-key title=${i18nString6(UIStrings6.creationStackTraceExplanation)}>${i18nString6(UIStrings6.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("frame-creation-stack-trace")}>
-          <devtools-widget .widgetConfig=${widgetConfig2(ApplicationComponents4.StackTrace.StackTrace, {
-      data: {
-        creationStackTraceData,
-        buildStackTraceRows: Components2.JSPresentationUtils.buildStackTraceRowsForLegacyRuntimeStackTrace
-      }
-    })}>
+          <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, { target, stackTrace, options: { expandable: true } })}>
           </devtools-widget>
         </devtools-report-value>
       `;
@@ -3298,7 +3292,7 @@ function renderIsolationSection(input) {
       <devtools-report-value>
         ${input.frame.isCrossOriginIsolated() ? i18nString6(UIStrings6.yes) : i18nString6(UIStrings6.no)}
       </devtools-report-value>
-      ${until(input.securityIsolationInfo?.then?.((value) => maybeRenderCoopCoepCSPStatus(value)), nothing2)}
+      ${maybeRenderCoopCoepCSPStatus(input.securityIsolationInfo)}
       <devtools-report-divider></devtools-report-divider>
     `;
 }
@@ -3322,7 +3316,7 @@ function getSecureContextExplanation(frame) {
   }
   return null;
 }
-async function maybeRenderCoopCoepCSPStatus(info) {
+function maybeRenderCoopCoepCSPStatus(info) {
   if (info) {
     return html2`
           ${maybeRenderCrossOriginStatus(
@@ -3535,6 +3529,11 @@ function renderAdditionalInfoSection(frame) {
 var FrameDetailsReportView = class extends UI6.Widget.Widget {
   #frame;
   #target = null;
+  #creationStackTrace = null;
+  #creationTarget = null;
+  #securityIsolationInfo = null;
+  #linkTargetDOMNode = null;
+  #trials = null;
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies = null;
   #linkifier = new Components2.Linkifier.Linkifier();
@@ -3547,6 +3546,31 @@ var FrameDetailsReportView = class extends UI6.Widget.Widget {
   }
   set frame(frame) {
     this.#frame = frame;
+    void this.#frame.getPermissionsPolicyState().then((permissionsPolicies) => {
+      this.#permissionsPolicies = permissionsPolicies;
+      this.requestUpdate();
+    });
+    const { creationStackTrace: rawCreationStackTrace, creationStackTraceTarget: creationTarget } = frame.getCreationStackTraceData();
+    this.#creationTarget = creationTarget;
+    if (rawCreationStackTrace) {
+      void Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(rawCreationStackTrace, creationTarget).then((creationStackTrace) => {
+        this.#creationStackTrace = creationStackTrace;
+        this.requestUpdate();
+      });
+    }
+    const networkManager = frame.resourceTreeModel().target().model(SDK6.NetworkManager.NetworkManager);
+    void networkManager?.getSecurityIsolationStatus(frame.id).then((securityIsolationInfo) => {
+      this.#securityIsolationInfo = securityIsolationInfo;
+      this.requestUpdate();
+    });
+    void frame.getOwnerDOMNodeOrDocument().then((linkTargetDOMNode) => {
+      this.#linkTargetDOMNode = linkTargetDOMNode;
+      this.requestUpdate();
+    });
+    void frame.getOriginTrials().then((trials) => {
+      this.#trials = trials;
+      this.requestUpdate();
+    });
     this.requestUpdate();
   }
   get frame() {
@@ -3560,27 +3584,23 @@ var FrameDetailsReportView = class extends UI6.Widget.Widget {
       const debuggerModel = firstScript?.debuggerId ? await SDK6.DebuggerModel.DebuggerModel.modelForDebuggerId(firstScript.debuggerId) : null;
       this.#target = debuggerModel?.target() ?? null;
     }
-    if (!this.#permissionsPolicies && this.#frame) {
-      this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
-    }
     const frame = this.#frame;
     if (!frame) {
       return;
     }
-    const networkManager = frame.resourceTreeModel().target().model(SDK6.NetworkManager.NetworkManager);
-    const securityIsolationInfo = networkManager?.getSecurityIsolationStatus(frame.id);
-    const linkTargetDOMNode = frame.getOwnerDOMNodeOrDocument();
     const frameRequest = frame.resourceForURL(frame.url)?.request;
     const input = {
       frame,
       target: this.#target,
+      creationStackTrace: this.#creationStackTrace,
+      creationTarget: this.#creationTarget,
       protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
       permissionsPolicies: this.#permissionsPolicies,
       adScriptAncestry: this.#adScriptAncestry,
       linkifier: this.#linkifier,
-      linkTargetDOMNode,
-      trials: await frame.getOriginTrials(),
-      securityIsolationInfo,
+      linkTargetDOMNode: this.#linkTargetDOMNode,
+      trials: this.#trials,
+      securityIsolationInfo: this.#securityIsolationInfo,
       onRevealInNetwork: frameRequest ? () => {
         const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           frameRequest,

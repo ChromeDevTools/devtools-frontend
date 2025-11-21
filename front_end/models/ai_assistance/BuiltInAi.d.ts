@@ -14,11 +14,11 @@ export declare const enum LanguageModelAvailability {
 }
 export declare class BuiltInAi {
     #private;
-    static getLanguageModelAvailability(): Promise<LanguageModelAvailability>;
-    static cachedIsAvailable(): boolean;
-    static isGpuAvailable(): boolean;
-    private constructor();
-    static instance(): Promise<BuiltInAi | undefined>;
+    static instance(): BuiltInAi;
+    constructor();
+    getLanguageModelAvailability(): Promise<LanguageModelAvailability>;
+    hasSession(): boolean;
+    initialize(): Promise<void>;
     static removeInstance(): void;
     getConsoleInsight(prompt: string, abortController: AbortController): AsyncGenerator<string>;
 }

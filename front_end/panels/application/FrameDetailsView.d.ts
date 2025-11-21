@@ -2,6 +2,7 @@ import '../../ui/components/expandable_list/expandable_list.js';
 import '../../ui/components/report_view/report_view.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface FrameDetailsReportViewData {
     frame: SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -11,12 +12,14 @@ export interface FrameDetailsReportViewData {
 interface FrameDetailsViewInput {
     frame: SDK.ResourceTreeModel.ResourceTreeFrame;
     target: SDK.Target.Target | null;
+    creationStackTrace: StackTrace.StackTrace.StackTrace | null;
+    creationTarget: SDK.Target.Target | null;
     adScriptAncestry: Protocol.Page.AdScriptAncestry | null;
-    linkTargetDOMNode?: Promise<SDK.DOMModel.DOMNode | null>;
-    permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[] | null> | null;
+    linkTargetDOMNode: SDK.DOMModel.DOMNode | null;
+    permissionsPolicies: Protocol.Page.PermissionsPolicyFeatureState[] | null;
     protocolMonitorExperimentEnabled: boolean;
     trials: Protocol.Page.OriginTrial[] | null;
-    securityIsolationInfo?: Promise<Protocol.Network.SecurityIsolationStatus | null>;
+    securityIsolationInfo: Protocol.Network.SecurityIsolationStatus | null;
     onRevealInNetwork?: () => void;
     onRevealInSources: () => void;
 }

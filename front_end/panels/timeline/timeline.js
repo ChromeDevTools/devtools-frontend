@@ -8565,16 +8565,14 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       if (!focus) {
         throw new Error("could not create performance agent focus");
       }
-      const agent = conversationHandler.createAgent(
-        "drjones-performance-full"
-        /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */
-      );
       const conversation = new AiAssistanceModel.AiConversation.AiConversation(
         "drjones-performance-full",
         [],
-        agent.id,
+        void 0,
         /* isReadOnly */
         true,
+        conversationHandler.aidaClient,
+        void 0,
         /* isExternal */
         true
       );
@@ -8583,7 +8581,6 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.#externalAIConversationData = {
         conversationHandler,
         conversation,
-        agent,
         selected
       };
     }
@@ -12387,7 +12384,9 @@ var TimelineDetailsContentHelper = class {
     let callFrameContents;
     if (this.target) {
       const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, this.target);
-      callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { stackTrace, tabStops: true, showColumnNumber: true });
+      callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { tabStops: true, showColumnNumber: true });
+      callFrameContents.stackTrace = stackTrace;
+      await callFrameContents.updateComplete;
     } else {
       callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(void 0, this.target ?? void 0, this.#linkifier, { runtimeStackTrace, tabStops: true, showColumnNumber: true });
     }

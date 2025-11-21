@@ -1,13 +1,16 @@
-import { type ContextDetail, type ResponseData } from './agents/AiAgent.js';
-import { type ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
+import * as Host from '../../core/host/host.js';
+import { type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
+import { ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
+import type { ChangeManager } from './ChangeManager.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare class AiConversation {
     #private;
+    static generateContextDetailsMarkdown(details: ContextDetail[]): string;
+    static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
     type: ConversationType;
     readonly history: ResponseData[];
-    static generateContextDetailsMarkdown(details: ContextDetail[]): string;
-    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, isExternal?: boolean);
+    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean);
     get isReadOnly(): boolean;
     get title(): string | undefined;
     get isEmpty(): boolean;
@@ -15,5 +18,9 @@ export declare class AiConversation {
     archiveConversation(): void;
     addHistoryItem(item: ResponseData): Promise<void>;
     serialize(): SerializedConversation;
-    static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
+    run(initialQuery: string, options: {
+        selected: ConversationContext<unknown> | null;
+        signal?: AbortSignal;
+    }, multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void>;
+    get origin(): string | undefined;
 }

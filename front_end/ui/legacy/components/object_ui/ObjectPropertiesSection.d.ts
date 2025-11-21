@@ -138,12 +138,10 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private linkifier;
     private readonly maxNumPropertiesToShow;
     readOnly: boolean;
-    private prompt;
     constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier, view?: TreeElementView);
     static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
     static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, { properties, internalProperties }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
     private static appendEmptyPlaceholderIfNeeded;
-    static createRemoteObjectAccessorPropertySpan(object: SDK.RemoteObject.RemoteObject | null, propertyPath: string[], callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement;
     get nameElement(): Element | undefined;
     setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
     private applySearch;
@@ -181,9 +179,6 @@ export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement
     static bucketThreshold: number;
     static sparseIterationThreshold: number;
 }
-export declare class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
-    constructor();
-}
 export declare class ObjectPropertiesSectionsTreeExpandController {
     #private;
     constructor(treeOutline: UI.TreeOutline.TreeOutline);
@@ -196,14 +191,23 @@ export declare class Renderer implements UI.UIUtils.Renderer {
     }): Renderer;
     render(object: Object, options?: UI.UIUtils.Options): Promise<UI.UIUtils.RenderedObject | null>;
 }
-export declare class ExpandableTextPropertyValue {
+interface ExpandableTextViewInput {
+    copyText: () => void;
+    expandText: () => void;
+    expanded: boolean;
+    maxLength: number;
+    byteCount: number;
+    text: string;
+}
+type ExpandableTextView = (input: ExpandableTextViewInput, output: object, target: HTMLElement) => void;
+export declare const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView;
+export declare class ExpandableTextPropertyValue extends UI.Widget.Widget {
     #private;
-    private readonly text;
-    private readonly maxLength;
-    private readonly maxDisplayableTextLength;
-    constructor(text: string, maxLength: number);
-    get element(): DocumentFragment;
-    private expandText;
-    private copyText;
+    static readonly MAX_DISPLAYABLE_TEXT_LENGTH = 10000000;
+    static readonly EXPANDABLE_MAX_LENGTH = 50;
+    constructor(target?: HTMLElement, view?: ExpandableTextView);
+    set text(text: string);
+    set maxLength(maxLength: number);
+    performUpdate(): void;
 }
 export {};

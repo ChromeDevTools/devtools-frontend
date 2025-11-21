@@ -83,12 +83,119 @@ const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/135054
 const DATA_USAGE_URL = 'https://developer.chrome.com/docs/devtools/ai-assistance/get-started#data-use';
 const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
 const SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
+function renderGenerating(input) {
+    // clang-format off
+    return html `
+    <div class="teaser-tooltip-container">
+      <div class="response-container">
+        <h2>${input.isSlowGeneration ?
+        lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
+        lockedString(UIStringsNotTranslate.summarizing)}</h2>
+        <div
+          role="presentation"
+          aria-label=${lockedString(UIStringsNotTranslate.loading)}
+          class="loader"
+          style="clip-path: url(${'#clipPath-' + input.uuid});"
+        >
+          <svg width="100%" height="58">
+            <defs>
+            <clipPath id=${'clipPath-' + input.uuid}>
+              <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
+              <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
+              <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
+            </clipPath>
+          </defs>
+          </svg>
+        </div>
+      </div>
+      ${renderFooter(input)}
+    </div>
+  `;
+    // clang-format on
+}
+function renderError(input) {
+    // clang-format off
+    return html `
+    <div class="teaser-tooltip-container">
+      <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
+      ${renderFooter(input)}
+    </div>
+  `;
+    // clang-format on
+}
+function renderDontShowCheckbox(input) {
+    // clang-format off
+    return html `
+    <devtools-checkbox
+      aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
+      @change=${input.dontShowChanged}
+      jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
+      ${lockedString(UIStringsNotTranslate.dontShow)}
+    </devtools-checkbox>
+  `;
+    // clang-format on
+}
+function renderFooter(input) {
+    // clang-format off
+    return html `
+    <div class="tooltip-footer">
+      ${input.hasTellMeMoreButton ? html `
+        <devtools-button
+          title=${lockedString(UIStringsNotTranslate.tellMeMore)}
+          .jslogContext=${'insights-teaser-tell-me-more'}
+          .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
+          @click=${input.onTellMeMoreClick}
+        >
+          <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
+          ${lockedString(UIStringsNotTranslate.tellMeMore)}
+        </devtools-button>
+      ` : Lit.nothing}
+      <devtools-button
+        .iconName=${'info'}
+        .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+        aria-details=${'teaser-info-tooltip-' + input.uuid}
+        .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
+      ></devtools-button>
+      <devtools-tooltip
+        id=${'teaser-info-tooltip-' + input.uuid}
+        variant="rich"
+        jslogContext="teaser-info-tooltip"
+        trigger="both"
+        hover-delay=500
+      >
+        <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
+        <div class="learn-more">
+          <x-link
+            class="devtools-link"
+            title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
+            href=${DATA_USAGE_URL}
+            jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('explain.teaser.learn-more')}
+          >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
+        </div>
+      </devtools-tooltip>
+      ${renderDontShowCheckbox(input)}
+    </div>
+  `;
+    // clang-format on
+}
+function renderTeaser(input) {
+    // clang-format off
+    return html `
+    <div class="teaser-tooltip-container">
+      <div class="response-container">
+        <h2>${input.headerText}</h2>
+        <div class="main-text">${input.mainText}</div>
+      </div>
+      ${renderFooter(input)}
+    </div>
+  `;
+    // clang-format on
+}
 export const DEFAULT_VIEW = (input, _output, target) => {
     if (input.isInactive) {
         render(Lit.nothing, target);
         return;
     }
-    const showPlaceholder = !Boolean(input.mainText);
     // clang-format off
     render(html `
     <style>${consoleInsightTeaserStyles}</style>
@@ -100,81 +207,18 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       prefer-span-left
       jslogContext="console-insight-teaser"
     >
-      <div class="teaser-tooltip-container">
-        ${input.isError ? html `
-          <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
-        ` :
-        showPlaceholder ? html `
-            <div class="response-container">
-              <h2>${input.isSlowGeneration ?
-            lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) :
-            lockedString(UIStringsNotTranslate.summarizing)}</h2>
-              <div
-                role="presentation"
-                aria-label=${lockedString(UIStringsNotTranslate.loading)}
-                class="loader"
-                style="clip-path: url(${'#clipPath-' + input.uuid});"
-              >
-                <svg width="100%" height="58">
-                  <defs>
-                  <clipPath id=${'clipPath-' + input.uuid}>
-                    <rect x="0" y="0" width="100%" height="12" rx="8"></rect>
-                    <rect x="0" y="20" width="100%" height="12" rx="8"></rect>
-                    <rect x="0" y="40" width="100%" height="12" rx="8"></rect>
-                  </clipPath>
-                </defs>
-                </svg>
-              </div>
-            </div>
-          ` : html `
-            <div class="response-container">
-              <h2>${input.headerText}</h2>
-              <div class="main-text">${input.mainText}</div>
-            </div>
-          `}
-        <div class="tooltip-footer">
-          ${input.hasTellMeMoreButton ? html `
-            <devtools-button
-              title=${lockedString(UIStringsNotTranslate.tellMeMore)}
-              .jslogContext=${'insights-teaser-tell-me-more'}
-              .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
-              @click=${input.onTellMeMoreClick}
-            >
-              <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
-              ${lockedString(UIStringsNotTranslate.tellMeMore)}
-            </devtools-button>
-          ` : Lit.nothing}
-          <devtools-button
-            .iconName=${'info'}
-            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-            aria-details=${'teaser-info-tooltip-' + input.uuid}
-            .accessibleLabel=${lockedString(UIStringsNotTranslate.learnDataUsage)}
-          ></devtools-button>
-          <devtools-tooltip
-            id=${'teaser-info-tooltip-' + input.uuid}
-            variant="rich"
-            jslogContext="teaser-info-tooltip"
-            trigger="both"
-            hover-delay=500
-          >
-            <div class="info-tooltip-text">${lockedString(UIStringsNotTranslate.infoTooltipText)}</div>
-            <div class="learn-more">
-              <x-link
-                class="devtools-link"
-                title=${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}
-                href=${DATA_USAGE_URL}
-                jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('explain.teaser.learn-more')}
-              >${lockedString(UIStringsNotTranslate.learnMoreAboutAiSummaries)}</x-link>
-            </div>
-          </devtools-tooltip>
-          <devtools-checkbox
-            aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
-            @change=${input.dontShowChanged}
-            jslog=${VisualLogging.toggle('explain.teaser.dont-show').track({ change: true })}>
-            ${lockedString(UIStringsNotTranslate.dontShow)}
-          </devtools-checkbox>
-        </div>
-      </div>
+      ${(() => {
+        switch (input.state) {
+            case "ready" /* State.READY */:
+            case "generating" /* State.GENERATING */:
+                return renderGenerating(input);
+            case "error" /* State.ERROR */:
+                return renderError(input);
+            case "partial-teaser" /* State.PARTIAL_TEASER */:
+            case "teaser" /* State.TEASER */:
+                return renderTeaser(input);
+        }
+    })()}
     </devtools-tooltip>
   `, target);
     // clang-format on
@@ -182,7 +226,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 export class ConsoleInsightTeaser extends UI.Widget.Widget {
     #view;
     #uuid;
-    #isGenerating = false;
     #builtInAi;
     #promptBuilder;
     #headerText = '';
@@ -192,9 +235,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     #abortController = null;
     #isSlow = false;
     #timeoutId = null;
-    #isError = false;
     #aidaAvailability;
     #boundOnAidaAvailabilityChange;
+    #state;
     constructor(uuid, consoleViewMessage, element, view) {
         super(element);
         this.#view = view ?? DEFAULT_VIEW;
@@ -202,6 +245,8 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         this.#promptBuilder = new PromptBuilder(consoleViewMessage);
         this.#consoleViewMessage = consoleViewMessage;
         this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+        this.#builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+        this.#state = "ready" /* State.READY */;
         this.requestUpdate();
     }
     #getConsoleInsightsEnabledSetting() {
@@ -277,21 +322,35 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         }
     }
     maybeGenerateTeaser() {
-        this.requestUpdate();
-        if (!this.#isInactive && !this.#isGenerating && !Boolean(this.#mainText) &&
-            Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
-            void this.#generateTeaserText();
+        switch (this.#state) {
+            case "ready" /* State.READY */:
+                if (!this.#isInactive &&
+                    Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
+                    void this.#generateTeaserText();
+                }
+                this.requestUpdate();
+                return;
+            case "generating" /* State.GENERATING */:
+                console.error('Trying trigger teaser generation when state is "GENERATING"');
+                return;
+            case "partial-teaser" /* State.PARTIAL_TEASER */:
+                console.error('Trying trigger teaser generation when state is "PARTIAL_TEASER"');
+                return;
+            // These are terminal states. No need to update anything.
+            case "teaser" /* State.TEASER */:
+            case "error" /* State.ERROR */:
+                return;
         }
     }
     abortTeaserGeneration() {
         if (this.#abortController) {
             this.#abortController.abort();
         }
-        if (this.#isGenerating) {
+        if (this.#state === "generating" /* State.GENERATING */ || this.#state === "partial-teaser" /* State.PARTIAL_TEASER */) {
             this.#mainText = '';
+            this.#state = "ready" /* State.READY */;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationAborted);
         }
-        this.#isGenerating = false;
         if (this.#timeoutId) {
             clearTimeout(this.#timeoutId);
         }
@@ -309,7 +368,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     }
     async #generateTeaserText() {
         this.#headerText = this.#consoleViewMessage.toMessageTextString().substring(0, 70);
-        this.#isGenerating = true;
+        this.#state = "generating" /* State.GENERATING */;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationStarted);
         this.#timeoutId = setTimeout(this.#setSlow.bind(this), SLOW_GENERATION_CUTOFF_MILLISECONDS);
         const startTime = performance.now();
@@ -319,6 +378,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             for await (const chunk of this.#getOnDeviceInsight()) {
                 teaserText += chunk;
                 this.#mainText = teaserText;
+                this.#state = "partial-teaser" /* State.PARTIAL_TEASER */;
                 this.requestUpdate();
                 if (!firstChunkReceived) {
                     firstChunkReceived = true;
@@ -328,32 +388,27 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         }
         catch (err) {
             // Ignore `AbortError` errors, which are thrown on mouse leave.
-            if (err.name !== 'AbortError') {
+            if (err.name === 'AbortError') {
+                this.#state = "ready" /* State.READY */;
+            }
+            else {
                 console.error(err.name, err.message);
-                this.#isError = true;
+                this.#state = "error" /* State.ERROR */;
                 Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationErrored);
             }
-            this.#isGenerating = false;
             clearTimeout(this.#timeoutId);
             this.requestUpdate();
             return;
         }
         clearTimeout(this.#timeoutId);
         Host.userMetrics.consoleInsightTeaserGenerated(performance.now() - startTime);
-        this.#isGenerating = false;
+        this.#state = "teaser" /* State.TEASER */;
         this.#mainText = teaserText;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserGenerationCompleted);
         this.requestUpdate();
     }
     async *#getOnDeviceInsight() {
         const { prompt } = await this.#promptBuilder.buildPrompt();
-        if (!this.#builtInAi) {
-            this.#builtInAi = await AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
-            if (!this.#builtInAi) {
-                this.#isInactive = true;
-                throw new Error('Cannot instantiate BuiltInAi');
-            }
-        }
         this.#abortController = new AbortController();
         const stream = this.#builtInAi.getConsoleInsight(prompt, this.#abortController);
         for await (const chunk of stream) {
@@ -388,7 +443,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             dontShowChanged: this.#dontShowChanged.bind(this),
             hasTellMeMoreButton: this.#hasTellMeMoreButton(),
             isSlowGeneration: this.#isSlow,
-            isError: this.#isError,
+            state: this.#state,
         }, undefined, this.contentElement);
     }
     wasShown() {

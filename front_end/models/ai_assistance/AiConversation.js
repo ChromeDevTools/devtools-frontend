@@ -1,15 +1,16 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
+import { FileAgent } from './agents/FileAgent.js';
+import { NetworkAgent } from './agents/NetworkAgent.js';
+import { PerformanceAgent } from './agents/PerformanceAgent.js';
+import { StylingAgent } from './agents/StylingAgent.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 const MAX_TITLE_LENGTH = 80;
 export class AiConversation {
-    id;
-    type;
-    #isReadOnly;
-    history;
-    #isExternal;
     static generateContextDetailsMarkdown(details) {
         const detailsMarkdown = [];
         for (const detail of details) {
@@ -18,7 +19,27 @@ export class AiConversation {
         }
         return detailsMarkdown.join('\n\n');
     }
-    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, isExternal = false) {
+    static fromSerializedConversation(serializedConversation) {
+        const history = serializedConversation.history.map(entry => {
+            if (entry.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
+                return { ...entry, confirm: () => { } };
+            }
+            return entry;
+        });
+        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal);
+    }
+    id;
+    type;
+    #isReadOnly;
+    history;
+    #isExternal;
+    #aidaClient;
+    #changeManager;
+    #agent;
+    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false) {
+        this.#changeManager = changeManager;
+        this.#aidaClient = aidaClient;
+        this.#agent = this.#createAgent(type);
         this.type = type;
         this.id = id;
         this.#isReadOnly = isReadOnly;
@@ -145,14 +166,47 @@ export class AiConversation {
             isExternal: this.#isExternal,
         };
     }
-    static fromSerializedConversation(serializedConversation) {
-        const history = serializedConversation.history.map(entry => {
-            if (entry.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
-                return { ...entry, confirm: () => { } };
+    #createAgent(conversationType) {
+        const options = {
+            aidaClient: this.#aidaClient,
+            serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+            changeManager: this.#changeManager,
+        };
+        let agent;
+        switch (conversationType) {
+            case "freestyler" /* ConversationType.STYLING */: {
+                agent = new StylingAgent(options);
+                break;
             }
-            return entry;
-        });
-        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, serializedConversation.isExternal);
+            case "drjones-network-request" /* ConversationType.NETWORK */: {
+                agent = new NetworkAgent(options);
+                break;
+            }
+            case "drjones-file" /* ConversationType.FILE */: {
+                agent = new FileAgent(options);
+                break;
+            }
+            case "drjones-performance-full" /* ConversationType.PERFORMANCE */: {
+                agent = new PerformanceAgent(options);
+                break;
+            }
+        }
+        return agent;
     }
+    async *run(initialQuery, options, multimodalInput) {
+        for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
+            // We don't want to save partial responses to the conversation history.
+            if (data.type !== "answer" /* ResponseType.ANSWER */ || data.complete) {
+                void this.addHistoryItem(data);
+            }
+            yield data;
+        }
+    }
+    get origin() {
+        return this.#agent.origin;
+    }
+}
+function isAiAssistanceServerSideLoggingEnabled() {
+    return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 //# sourceMappingURL=AiConversation.js.map

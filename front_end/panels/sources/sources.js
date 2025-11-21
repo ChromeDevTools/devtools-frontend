@@ -14041,6 +14041,7 @@ import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Formatter3 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes4 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as TextEditor7 from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "./../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
@@ -14538,6 +14539,12 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     contextMenu.debugSection().appendAction("sources.add-to-watch");
   }
 };
+var ObjectPropertyPrompt = class extends UI27.TextPrompt.TextPrompt {
+  constructor() {
+    super();
+    this.initialize(TextEditor7.JavaScript.completeInContext);
+  }
+};
 var WatchExpression = class _WatchExpression extends Common18.ObjectWrapper.ObjectWrapper {
   #treeElement;
   nameElement;
@@ -14612,7 +14619,7 @@ var WatchExpression = class _WatchExpression extends Common18.ObjectWrapper.Obje
     this.element.removeChildren();
     const newDiv = this.element.createChild("div");
     newDiv.textContent = this.nameElement.textContent;
-    this.textPrompt = new ObjectUI4.ObjectPropertiesSection.ObjectPropertyPrompt();
+    this.textPrompt = new ObjectPropertyPrompt();
     this.textPrompt.renderAsBlock();
     const proxyElement = this.textPrompt.attachAndStartEditing(newDiv, this.finishEditing.bind(this));
     this.#treeElement.listItemElement.classList.add("watch-expression-editing");

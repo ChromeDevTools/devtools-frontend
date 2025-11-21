@@ -2797,6 +2797,10 @@ declare namespace ProtocolProxyApi {
      */
     directTCPSocketChunkReceived(params: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void;
 
+    directUDPSocketJoinedMulticastGroup(params: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void;
+
+    directUDPSocketLeftMulticastGroup(params: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void;
+
     /**
      * Fired upon direct_socket.UDPSocket creation.
      */

@@ -11,8 +11,7 @@ import * as ReportsGrid from './ReportsGrid.js';
 import * as ServiceWorkerRouterView from './ServiceWorkerRouterView.js';
 import * as SharedStorageAccessGrid from './SharedStorageAccessGrid.js';
 import * as SharedStorageMetadataView from './SharedStorageMetadataView.js';
-import * as StackTrace from './StackTrace.js';
 import * as StorageMetadataView from './StorageMetadataView.js';
 import * as TrustTokensView from './TrustTokensView.js';
-export { BackForwardCacheView, BounceTrackingMitigationsView, EndpointsGrid, InterestGroupAccessGrid, PermissionsPolicySection, ProtocolHandlersView, ReportsGrid, ServiceWorkerRouterView, SharedStorageAccessGrid, SharedStorageMetadataView, StackTrace, StorageMetadataView, TrustTokensView, };
+export { BackForwardCacheView, BounceTrackingMitigationsView, EndpointsGrid, InterestGroupAccessGrid, PermissionsPolicySection, ProtocolHandlersView, ReportsGrid, ServiceWorkerRouterView, SharedStorageAccessGrid, SharedStorageMetadataView, StorageMetadataView, TrustTokensView, };
 //# sourceMappingURL=components.prebundle.js.map

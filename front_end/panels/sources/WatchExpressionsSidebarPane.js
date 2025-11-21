@@ -39,6 +39,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -259,6 +260,12 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         contextMenu.debugSection().appendAction('sources.add-to-watch');
     }
 }
+class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
+    constructor() {
+        super();
+        this.initialize(TextEditor.JavaScript.completeInContext);
+    }
+}
 export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     #treeElement;
     nameElement;
@@ -333,7 +340,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
         this.element.removeChildren();
         const newDiv = this.element.createChild('div');
         newDiv.textContent = this.nameElement.textContent;
-        this.textPrompt = new ObjectUI.ObjectPropertiesSection.ObjectPropertyPrompt();
+        this.textPrompt = new ObjectPropertyPrompt();
         this.textPrompt.renderAsBlock();
         const proxyElement = this.textPrompt.attachAndStartEditing(newDiv, this.finishEditing.bind(this));
         this.#treeElement.listItemElement.classList.add('watch-expression-editing');

@@ -406,7 +406,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
             icon.className = 'sort-order-icon';
             cell.createChild('div', 'sort-order-icon-container').appendChild(icon);
             if (column.title) {
-                UI.ARIAUtils.setLabel(cell, i18nString(UIStrings.sortableColumn));
+                const columnLabel = `${column.title} - ${i18nString(UIStrings.sortableColumn)}`;
+                UI.ARIAUtils.setLabel(cell, columnLabel);
             }
         }
     }

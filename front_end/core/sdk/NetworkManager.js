@@ -1226,6 +1226,10 @@ export class NetworkDispatcher {
         networkRequest.responseReceivedTime = event.timestamp;
         this.updateNetworkRequest(networkRequest);
     }
+    directUDPSocketJoinedMulticastGroup(_event) {
+    }
+    directUDPSocketLeftMulticastGroup(_event) {
+    }
     trustTokenOperationDone(event) {
         const request = this.#requestsById.get(event.requestId);
         if (!request) {

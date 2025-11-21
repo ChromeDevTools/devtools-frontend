@@ -76,6 +76,8 @@ describe('WindowControlsOverlay', () => {
 
   it('cleans up on uninstall', () => {
     windowControlsOverlay.uninstall();
-    assert.strictEqual(document.body.innerHTML, '', 'Expect document body to be empty');
+
+    const elementCollection = document.getElementsByClassName('image-group');
+    assert.strictEqual(elementCollection.length, 0, 'Expect toolbars to be removed');
   });
 });

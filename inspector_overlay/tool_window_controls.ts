@@ -38,7 +38,10 @@ export class WindowControlsOverlay extends Overlay {
   }
 
   override uninstall() {
-    this.document.body.innerHTML = '';
+    this.windowsToolBar.remove();
+    this.linuxToolBar.remove();
+    this.macToolbarRight.remove();
+    this.macToolbarLeft.remove();
     super.uninstall();
   }
 

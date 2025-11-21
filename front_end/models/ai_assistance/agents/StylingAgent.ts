@@ -276,12 +276,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
                                    return new ExtensionScope(changes, this.id, this.context?.getItem() ?? null);
                                  });
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel,
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        this.onPrimaryPageChanged,
-        this,
-    );
 
     this.declareFunction<{
       elements: string[],
@@ -416,10 +410,6 @@ const data = {
         return await this.executeAction(params.code, options);
       },
     });
-  }
-
-  onPrimaryPageChanged(): void {
-    void this.#changes.clear();
   }
 
   async generateObservation(

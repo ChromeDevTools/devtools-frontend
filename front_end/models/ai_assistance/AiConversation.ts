@@ -23,16 +23,15 @@ import type {ChangeManager} from './ChangeManager.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 const MAX_TITLE_LENGTH = 80;
 
-export class AiConversation {
-  static generateContextDetailsMarkdown(details: ContextDetail[]): string {
-    const detailsMarkdown: string[] = [];
-    for (const detail of details) {
-      const text = `\`\`\`\`${detail.codeLang || ''}\n${detail.text.trim()}\n\`\`\`\``;
-      detailsMarkdown.push(`**${detail.title}:**\n${text}`);
-    }
-    return detailsMarkdown.join('\n\n');
+export function generateContextDetailsMarkdown(details: ContextDetail[]): string {
+  const detailsMarkdown: string[] = [];
+  for (const detail of details) {
+    const text = `\`\`\`\`${detail.codeLang || ''}\n${detail.text.trim()}\n\`\`\`\``;
+    detailsMarkdown.push(`**${detail.title}:**\n${text}`);
   }
-
+  return detailsMarkdown.join('\n\n');
+}
+export class AiConversation {
   static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation {
     const history = serializedConversation.history.map(entry => {
       if (entry.type === ResponseType.SIDE_EFFECT) {
@@ -142,7 +141,7 @@ export class AiConversation {
         case ResponseType.CONTEXT: {
           contentParts.push(`### ${item.title}`);
           if (item.details && item.details.length > 0) {
-            contentParts.push(AiConversation.generateContextDetailsMarkdown(item.details));
+            contentParts.push(generateContextDetailsMarkdown(item.details));
           }
           break;
         }

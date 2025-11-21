@@ -303,14 +303,6 @@ export class ChatView extends HTMLElement {
     this.#messagesContainerResizeObserver.disconnect();
   }
 
-  clearTextInput(): void {
-    const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
-    if (!textArea) {
-      return;
-    }
-    textArea.value = '';
-  }
-
   focusTextInput(): void {
     const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
     if (!textArea) {
@@ -954,6 +946,9 @@ function renderSelection({
   onInspectElementClick: () => void,
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType,
 }): Lit.LitTemplate {
+  if (!selectedContext) {
+    return Lit.nothing;
+  }
   // TODO: currently the picker behavior is SDKNode specific.
   const hasPickerBehavior = conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
 
@@ -963,10 +958,6 @@ function renderSelection({
     'has-picker-behavior': hasPickerBehavior,
     disabled: isTextInputDisabled,
   });
-
-  if (!selectedContext && !hasPickerBehavior) {
-    return Lit.nothing;
-  }
 
   const handleKeyDown = (ev: KeyboardEvent): void => {
     if (ev.key === 'Enter' || ev.key === ' ') {
@@ -1307,8 +1298,10 @@ function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin, tooltipI
   tooltipId: string,
   disclaimerText: string,
 }): Lit.LitTemplate {
-  const classes =
-      Lit.Directives.classMap({'chat-input-disclaimer': true, 'hide-divider': !isLoading && blockedByCrossOrigin});
+  const classes = Lit.Directives.classMap({
+    'chat-input-disclaimer': true,
+    'hide-divider': !isLoading && blockedByCrossOrigin,
+  });
   // clang-format off
   return html`
     <p class=${classes}>
@@ -1323,7 +1316,7 @@ function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin, tooltipI
           void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
         }}
       >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
-      ${renderDisclamerTooltip(tooltipId, disclaimerText)}
+      ${renderDisclaimerTooltip(tooltipId, disclaimerText)}
     </p>
   `;
   // clang-format on
@@ -1376,50 +1369,80 @@ function renderChatInput({
   onRemoveImageInput?: () => void,
   onImageUpload?: (ev: Event) => void,
 }): Lit.LitTemplate {
-  const shouldShowMultiLine = selectedContext;
   const chatInputContainerCls = Lit.Directives.classMap({
     'chat-input-container': true,
-    'single-line-layout': !shouldShowMultiLine,
+    'single-line-layout': !selectedContext,
     disabled: isTextInputDisabled,
   });
 
   // clang-format off
-  return html`
-  <form class="input-form" @submit=${onSubmit}>
+  return html` <form class="input-form" @submit=${onSubmit}>
     <div class=${chatInputContainerCls}>
-      ${renderImageInput(
-        {multimodalInputEnabled, imageInput, isTextInputDisabled, onRemoveImageInput}
-      )}
-      <textarea class="chat-input"
+      ${renderImageInput({
+        multimodalInputEnabled,
+        imageInput,
+        isTextInputDisabled,
+        onRemoveImageInput,
+      })}
+      <textarea
+        class="chat-input"
         .disabled=${isTextInputDisabled}
         wrap="hard"
         maxlength="10000"
         @keydown=${onTextAreaKeyDown}
-        @input=${(event: KeyboardEvent) => onTextInputChange((event.target as HTMLInputElement).value)}
+        @input=${(event: KeyboardEvent) =>
+          onTextInputChange((event.target as HTMLInputElement).value)}
         placeholder=${inputPlaceholder}
-        jslog=${VisualLogging.textField('query').track({change: true, keydown: 'Enter'})}
+        jslog=${VisualLogging.textField('query').track({
+          change: true,
+          keydown: 'Enter',
+        })}
         aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
+        ${ref(el => {
+          // If the elements is disabled reset the text to show
+          // the place holder
+          if (el && isTextInputDisabled) {
+            (el as HTMLInputElement).value = '';
+          }
+        })}
       ></textarea>
       <div class="chat-input-actions">
         <div class="chat-input-actions-left">
-          ${shouldShowMultiLine ? renderSelection({
+          ${renderSelection({
             selectedContext,
             inspectElementToggled,
             conversationType,
             isTextInputDisabled,
             onContextClick,
             onInspectElementClick,
-          }) : Lit.nothing}
+          })}
         </div>
         <div class="chat-input-actions-right">
           <div class="chat-input-disclaimer-container">
-            ${renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltipId: RELEVANT_DATA_LINK_CHAT_ID, disclaimerText})}
+            ${renderRelevantDataDisclaimer({
+              isLoading,
+              blockedByCrossOrigin,
+              tooltipId: RELEVANT_DATA_LINK_CHAT_ID,
+              disclaimerText,
+            })}
           </div>
           ${renderMultimodalInputButtons({
-            multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, uploadImageInputEnabled, onTakeScreenshot, onImageUpload
+            multimodalInputEnabled,
+            blockedByCrossOrigin,
+            isTextInputDisabled,
+            imageInput,
+            uploadImageInputEnabled,
+            onTakeScreenshot,
+            onImageUpload,
           })}
           ${renderChatInputButtons({
-            isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation
+            isLoading,
+            blockedByCrossOrigin,
+            isTextInputDisabled,
+            isTextInputEmpty,
+            imageInput,
+            onCancel,
+            onNewConversation,
           })}
         </div>
       </div>
@@ -1479,7 +1502,7 @@ function renderMainContents({
   return renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick});
 }
 
-function renderDisclamerTooltip(id: string, disclaimerText: string): Lit.TemplateResult {
+function renderDisclaimerTooltip(id: string, disclaimerText: string): Lit.TemplateResult {
   // clang-format off
   return html`
     <devtools-tooltip

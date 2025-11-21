@@ -483,10 +483,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   // Messages displayed in the `ChatView` component.
   #messages: ChatMessage[] = [];
-  // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
-  // This happens when the conversation's context has a different
-  // origin than the selected context.
-  #blockedByCrossOrigin = false;
+
   // Whether the UI should show loading or not.
   #isLoading = false;
   // Selected conversation context. The reason we keep this as a
@@ -545,7 +542,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       };
     }
 
-    if (this.#conversation?.type) {
+    if (this.#conversation) {
       const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
       const markdownRenderer = getMarkdownRenderer(this.#selectedContext, this.#conversation);
       return {
@@ -659,7 +656,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const isSourcesPanelVisible = viewManager.isViewVisible('sources');
     const isPerformancePanelVisible = viewManager.isViewVisible('timeline');
 
-    let targetConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType|undefined = undefined;
+    let targetConversationType: AiAssistanceModel.AiHistoryStorage.ConversationType|undefined;
     if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
       targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
     } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
@@ -715,8 +712,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
       this.#conversation = conversation;
     }
-
-    this.#onContextSelectionChanged();
 
     this.requestUpdate();
   }
@@ -874,10 +869,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #handleUISourceCodeFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
         const newFile = ev.data;
-        if (!newFile) {
-          return;
-        }
-        if (this.#selectedFile?.getItem() === newFile) {
+
+        if (!newFile || this.#selectedFile?.getItem() === newFile) {
           return;
         }
         this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(ev.data);
@@ -1167,15 +1160,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         serializedConversation =>
             AiAssistanceModel.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
-      if (conversation.isEmpty) {
-        continue;
-      }
-      const title = conversation.title;
-      if (!title) {
+      if (conversation.isEmpty || !conversation.title) {
         continue;
       }
 
-      contextMenu.defaultSection().appendCheckboxItem(title, () => {
+      contextMenu.defaultSection().appendCheckboxItem(conversation.title, () => {
         void this.#openHistoricConversation(conversation);
       }, {checked: (this.#conversation === conversation), jslogContext: 'freestyler.history-item'});
     }
@@ -1308,10 +1297,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#imageInput = {isLoading: true};
       this.requestUpdate();
     }, SHOW_LOADING_STATE_TIMEOUT);
-    const reader = new FileReader();
-    let dataUrl: string|undefined;
     try {
-      dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
         reader.onload = () => {
           if (typeof reader.result === 'string') {
             resolve(reader.result);
@@ -1321,31 +1309,22 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         };
         reader.readAsDataURL(file);
       });
+      const commaIndex = dataUrl.indexOf(',');
+      const bytes = dataUrl.substring(commaIndex + 1);
+      this.#imageInput = {
+        isLoading: false,
+        data: bytes,
+        mimeType: file.type,
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE
+      };
     } catch {
-      clearTimeout(showLoadingTimeout);
       this.#imageInput = undefined;
-      this.requestUpdate();
-      void this.updateComplete.then(() => {
-        this.#viewOutput.chatView?.focusTextInput();
-      });
       Snackbars.Snackbar.Snackbar.show({
         message: lockedString(UIStringsNotTranslate.uploadImageFailureMessage),
       });
-      return;
     }
 
     clearTimeout(showLoadingTimeout);
-    if (!dataUrl) {
-      return;
-    }
-    const commaIndex = dataUrl.indexOf(',');
-    const bytes = dataUrl.substring(commaIndex + 1);
-    this.#imageInput = {
-      isLoading: false,
-      data: bytes,
-      mimeType: file.type,
-      inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE
-    };
     this.requestUpdate();
     void this.updateComplete.then(() => {
       this.#viewOutput.chatView?.focusTextInput();
@@ -1357,21 +1336,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#runAbortController = new AbortController();
   }
 
-  #onContextSelectionChanged(): void {
+  // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+  // This happens when the conversation's context has a different
+  // origin than the selected context.
+  get #blockedByCrossOrigin(): boolean {
     if (!this.#conversation) {
-      this.#blockedByCrossOrigin = false;
-      return;
+      return false;
     }
     this.#selectedContext = this.#getConversationContext(this.#conversation);
     if (!this.#selectedContext) {
-      this.#blockedByCrossOrigin = false;
-
-      // Clear out any text the user has entered into the input but never
-      // submitted now they have no active context
-      this.#viewOutput.chatView?.clearTextInput();
-      return;
+      return false;
     }
-    this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversation.origin);
+    return !this.#selectedContext.isOriginAllowed(this.#conversation.origin);
   }
 
   #getConversationContext(conversation?: AiAssistanceModel.AiConversation.AiConversation):
@@ -1398,8 +1374,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #startConversation(
-      text: string, imageInput?: Host.AidaClient.Part,
-      multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType): Promise<void> {
+      text: string,
+      imageInput?: Host.AidaClient.Part,
+      multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType,
+      ): Promise<void> {
     if (!this.#conversation) {
       return;
     }
@@ -1413,28 +1391,26 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // invariants do not hold anymore.
       throw new Error('cross-origin context data should not be included');
     }
-    if (this.#conversation?.isEmpty) {
+    if (this.#conversation.isEmpty) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
     }
-    const image = isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined;
-    const imageId = image ? crypto.randomUUID() : undefined;
-    const multimodalInput = image && imageId && multimodalInputType ? {
-      input: image,
-      id: imageId,
+    const multimodalInput = isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType ? {
+      input: imageInput,
+      id: crypto.randomUUID(),
       type: multimodalInputType,
     } :
-                                                                      undefined;
-    if (this.#conversation) {
-      void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
-    }
+                                                                                                          undefined;
 
-    const generator = this.#conversation.run(
-        text, {
-          signal,
-          selected: context,
-        },
-        multimodalInput);
-    await this.#doConversation(generator);
+    void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
+
+    await this.#doConversation(
+        this.#conversation.run(
+            text, {
+              signal,
+              selected: context,
+            },
+            multimodalInput),
+    );
   }
 
   async #doConversation(
@@ -1607,8 +1583,7 @@ export function getResponseMarkdown(message: ModelChatMessage): string {
       contentParts.push(`### ${step.title}`);
     }
     if (step.contextDetails) {
-      contentParts.push(
-          AiAssistanceModel.AiConversation.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+      contentParts.push(AiAssistanceModel.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
     }
     if (step.thought) {
       contentParts.push(step.thought);

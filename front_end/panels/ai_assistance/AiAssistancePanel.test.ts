@@ -410,14 +410,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
       const context = AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(fakeParsedTrace);
       UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, context.getItem());
-      // Resets the any prior clears from setup
-      chatView.clearTextInput.reset();
+
       void panel.handleAction('drjones.performance-panel-context');
-      const nextInput = await view.nextInput;
-      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      let nextInput = await view.nextInput;
       // Now clear the context and check we cleared out the text
       UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, null);
-      sinon.assert.callCount(chatView.clearTextInput, 1);
+
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.isTrue(nextInput.props.isTextInputDisabled);
     });
   });
 

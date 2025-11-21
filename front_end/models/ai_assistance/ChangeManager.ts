@@ -35,6 +35,15 @@ export class ChangeManager {
   readonly #stylesheetChanges = new Map<Protocol.CSS.StyleSheetId, Change[]>();
   readonly #backupStylesheetChanges = new Map<Protocol.CSS.StyleSheetId, Change[]>();
 
+  constructor() {
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.clear,
+        this,
+    );
+  }
+
   async stashChanges(): Promise<void> {
     for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
       const stylesheetIds = Array.from(stylesheetMap.values());

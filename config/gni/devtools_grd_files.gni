@@ -531,6 +531,7 @@ grd_files_bundled_sources = [
   "front_end/models/issues_manager/descriptions/genericFormLabelForMatchesNonExistingIdError.md",
   "front_end/models/issues_manager/descriptions/genericFormLabelForNameError.md",
   "front_end/models/issues_manager/descriptions/genericFormLabelHasNeitherForNorNestedInputError.md",
+  "front_end/models/issues_manager/descriptions/genericNavigationEntryMarkedSkippable.md",
   "front_end/models/issues_manager/descriptions/genericResponseWasBlockedByORB.md",
   "front_end/models/issues_manager/descriptions/heavyAd.md",
   "front_end/models/issues_manager/descriptions/mixedContent.md",

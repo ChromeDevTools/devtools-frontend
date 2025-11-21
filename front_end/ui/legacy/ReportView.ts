@@ -50,7 +50,7 @@ export class ReportView extends VBox {
   }
 
   setSubtitle(subtitle: string): void {
-    if (this.subtitleElement && this.subtitleElement.textContent === subtitle) {
+    if (this.subtitleElement?.textContent === subtitle) {
       return;
     }
     if (!this.subtitleElement) {

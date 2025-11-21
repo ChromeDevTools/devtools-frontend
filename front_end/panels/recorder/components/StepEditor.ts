@@ -451,7 +451,7 @@ export class EditorState {
         delete step.selectors;
       }
     }
-    if (state.frame && state.frame.length === 0 && 'frame' in step) {
+    if (state.frame?.length === 0 && 'frame' in step) {
       delete step.frame;
     }
     return cleanUndefineds(Models.SchemaUtils.parseStep(step));

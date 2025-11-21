@@ -434,7 +434,7 @@ export class HeapSnapshotGridNode extends
             }
 
             // Merge with the next range.
-            if (nextRange && newEndOfRange === nextRange.from) {
+            if (newEndOfRange === nextRange?.from) {
               range.to = nextRange.to;
               // Remove "show next" button if there is one.
               this.removeChildByIndex(insertionIndex);

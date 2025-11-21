@@ -694,7 +694,7 @@ export class ElementsTreeOutline extends
   }
 
   resetClipboardIfNeeded(removedNode: SDK.DOMModel.DOMNode): void {
-    if (this.clipboardNodeData && this.clipboardNodeData.node === removedNode) {
+    if (this.clipboardNodeData?.node === removedNode) {
       this.setClipboardData(null);
     }
   }

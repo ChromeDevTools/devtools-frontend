@@ -746,7 +746,7 @@ export class DOMNode {
       }
 
       const oldAttribute = oldAttributesMap.get(name);
-      if (!oldAttribute || oldAttribute.value !== value) {
+      if (oldAttribute?.value !== value) {
         attributesChanged = true;
       }
     }
@@ -1671,7 +1671,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
     const {nodeIds} =
         await this.agent.invoke_getSearchResults({searchId: this.#searchId, fromIndex: index, toIndex: index + 1});
-    return nodeIds && nodeIds.length === 1 ? this.nodeForId(nodeIds[0]) : null;
+    return nodeIds?.length === 1 ? this.nodeForId(nodeIds[0]) : null;
   }
 
   private cancelSearch(): void {

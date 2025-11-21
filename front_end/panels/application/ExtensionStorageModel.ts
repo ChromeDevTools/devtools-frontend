@@ -196,7 +196,7 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   #extensionIdForContext(context: SDK.RuntimeModel.ExecutionContext): string|undefined {
     const url = Common.ParsedURL.ParsedURL.fromString(context.origin);
-    return url && url.scheme === 'chrome-extension' ? url.host : undefined;
+    return url?.scheme === 'chrome-extension' ? url.host : undefined;
   }
 
   #executionContextDestroyed(context: SDK.RuntimeModel.ExecutionContext): void {

@@ -327,7 +327,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   appendRelatedNodeListValueElement(value: Protocol.Accessibility.AXValue): void {
-    if (value.relatedNodes && value.relatedNodes.length === 1 && !value.value) {
+    if (value.relatedNodes?.length === 1 && !value.value) {
       this.appendRelatedNodeInline(value.relatedNodes[0]);
       return;
     }

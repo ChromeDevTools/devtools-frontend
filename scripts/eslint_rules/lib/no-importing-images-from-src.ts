@@ -49,7 +49,7 @@ export default createRule({
 
         const firstArgument = node.arguments[0];
         // Ensure the first argument is a Literal with a string value
-        if (!firstArgument || firstArgument.type !== 'Literal' || typeof firstArgument.value !== 'string') {
+        if (firstArgument?.type !== 'Literal' || typeof firstArgument.value !== 'string') {
           return;
         }
 

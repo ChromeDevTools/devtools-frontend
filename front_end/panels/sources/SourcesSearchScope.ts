@@ -136,7 +136,7 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
         continue;
       }
       const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
-      if (binding && binding.network === uiSourceCode) {
+      if (binding?.network === uiSourceCode) {
         continue;
       }
       if (dirtyOnly && !uiSourceCode.isDirty()) {

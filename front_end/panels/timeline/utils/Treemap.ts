@@ -132,7 +132,7 @@ export function makeScriptNode(src: string, sourceRoot: string, sourcesData: Rec
    * Collapse nodes that have only one child.
    */
   function collapseAll(node: TreemapNode): void {
-    while (node.children && node.children.length === 1) {
+    while (node.children?.length === 1) {
       const child = node.children[0];
       node.name += '/' + child.name;
       if (child.duplicatedNormalizedModuleName) {

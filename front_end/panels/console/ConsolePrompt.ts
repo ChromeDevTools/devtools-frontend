@@ -285,7 +285,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (preview.deepTextContent() !== TextEditor.Config.contentIncludingHint(this.editor.editor).trim()) {
       this.innerPreviewElement.appendChild(preview);
     }
-    if (result && 'object' in result && result.object && result.object.subtype === 'node') {
+    if (result && 'object' in result && result.object?.subtype === 'node') {
       this.highlightingNode = true;
       SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result.object);
     } else if (this.highlightingNode) {

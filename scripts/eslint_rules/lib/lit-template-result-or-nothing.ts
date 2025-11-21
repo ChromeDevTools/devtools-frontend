@@ -122,7 +122,7 @@ export default createRule({
         // Represents the generic type passed to the promise: if our code is
         // Promise<X>, this node represents the X.
         const promiseGenericNode = annotation.typeArguments?.params[0];
-        if (promiseGenericNode && promiseGenericNode.type === 'TSUnionType') {
+        if (promiseGenericNode?.type === 'TSUnionType') {
           checkUnionReturnTypeForLit(promiseGenericNode);
         }
       }

@@ -424,7 +424,7 @@ export class ConsoleViewport {
 
     for (let i = start; i <= end; i++) {
       const element = (this.providerElement(i) as ConsoleViewMessage);
-      if (element && element.consoleMessage().type === 'table') {
+      if (element?.consoleMessage().type === 'table') {
         return true;
       }
     }

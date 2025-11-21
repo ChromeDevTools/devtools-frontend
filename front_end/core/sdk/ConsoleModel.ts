@@ -432,7 +432,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     const callFunctionResult =
         await globalObject.callFunction(saveVariable, [RemoteObject.toCallArgument(remoteObject)]);
     globalObject.release();
-    if (callFunctionResult.wasThrown || !callFunctionResult.object || callFunctionResult.object.type !== 'string') {
+    if (callFunctionResult.wasThrown || callFunctionResult.object?.type !== 'string') {
       failedToSave(callFunctionResult.object || null);
     } else {
       const text = (callFunctionResult.object.value as string);

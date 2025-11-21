@@ -45,7 +45,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
 
   modelRemoved(runtimeModel: SDK.RuntimeModel.RuntimeModel): void {
     const currentExecutionContext = this.#context.flavor(SDK.RuntimeModel.ExecutionContext);
-    if (currentExecutionContext && currentExecutionContext.runtimeModel === runtimeModel) {
+    if (currentExecutionContext?.runtimeModel === runtimeModel) {
       this.#currentExecutionContextGone();
     }
 

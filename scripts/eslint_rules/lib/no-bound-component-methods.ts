@@ -44,7 +44,7 @@ export default createRule<[], MessageIds>({
 
     /** Type parameters for the helper function **/
     function checkPropertyDeclarationForBinding(className: string, node: PropertyDefinition): void {
-      if (!node.value || node.value.type !== 'CallExpression') {
+      if (node.value?.type !== 'CallExpression') {
         return;
       }
       if (node.value.callee.type !== 'MemberExpression') {
@@ -137,7 +137,7 @@ export default createRule<[], MessageIds>({
 
         const methodArg = node.arguments?.[1];
         // Confirm that the argument is this.X, otherwise skip it
-        if (!methodArg || methodArg.type !== 'MemberExpression') {
+        if (methodArg?.type !== 'MemberExpression') {
           return;
         }
 

@@ -52,7 +52,7 @@ export default createRule({
                 bodyNode.expression.callee?.type === 'Super';
           });
 
-      if (!superCallExpressionStatement || superCallExpressionStatement.expression.type !== 'CallExpression') {
+      if (superCallExpressionStatement?.expression.type !== 'CallExpression') {
         // Should not happen if the type guard worked, but good for safety
         return;
       }
@@ -114,8 +114,7 @@ export default createRule({
         // If it exists, check its value.
         if (eventNameProperty) {
           // We only allow static eventName = 'literalvalue';
-          if (!eventNameProperty.value || eventNameProperty.value.type !== 'Literal' ||
-              typeof eventNameProperty.value.value !== 'string') {
+          if (eventNameProperty.value?.type !== 'Literal' || typeof eventNameProperty.value.value !== 'string') {
             // Report on the property value if it's not a string literal
             context.report(
                 {node: eventNameProperty.value ?? eventNameProperty, messageId: 'invalidEventNameReference'});
@@ -150,11 +149,11 @@ export default createRule({
         }
 
         // Check if the class extends the global 'Event'
-        if (!node.superClass || node.superClass.type !== 'Identifier' || node.superClass.name !== 'Event') {
+        if (node.superClass?.type !== 'Identifier' || node.superClass.name !== 'Event') {
           return;
         }
 
-        if (!node.superClass || node.superClass.type !== 'Identifier' || node.superClass.name !== 'Event') {
+        if (node.superClass?.type !== 'Identifier' || node.superClass.name !== 'Event') {
           return;
         }
 

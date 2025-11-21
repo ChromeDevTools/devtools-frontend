@@ -26,7 +26,7 @@ export default createRule({
     return {
       ClassDeclaration(node) {
         // Only enforce this rule for custom elements
-        if (!node.superClass || node.superClass.type !== 'Identifier' || node.superClass.name !== 'HTMLElement') {
+        if (node.superClass?.type !== 'Identifier' || node.superClass.name !== 'HTMLElement') {
           return;
         }
 

@@ -641,7 +641,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       return;
     }
 
-    if (!this.searchConfig || this.searchConfig.query !== query) {
+    if (this.searchConfig?.query !== query) {
       this.onSearchCanceled();
     } else {
       this.hideSearchHighlights();

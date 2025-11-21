@@ -248,7 +248,7 @@ export class Importer {
       }
     }
 
-    if (pageLoad && pageLoad.mainRequest === request) {
+    if (pageLoad?.mainRequest === request) {
       return Common.ResourceType.resourceTypes.Document;
     }
 

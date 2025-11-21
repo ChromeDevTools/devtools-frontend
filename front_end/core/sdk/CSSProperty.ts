@@ -292,7 +292,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       }
       if (cssMetadata().isGridAreaDefiningProperty(propertyName)) {
         const rowResult = GridAreaRowRegex.exec(token);
-        if (rowResult && rowResult.index === 0 && !propertyText.trimEnd().endsWith(']')) {
+        if (rowResult?.index === 0 && !propertyText.trimEnd().endsWith(']')) {
           propertyText = propertyText.trimEnd() + '\n' + doubleIndent;
         }
       }

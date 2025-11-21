@@ -162,7 +162,7 @@ export default createRule<[], MessageIds>({
 
     function isCheckboxStylesReference(elem: Node|null): boolean {
       // Ensure elem is not null and is a MemberExpression before accessing properties
-      if (!elem || elem.type !== 'MemberExpression') {
+      if (elem?.type !== 'MemberExpression') {
         return false;
       }
 

@@ -385,7 +385,7 @@ function getNumberAt(node: CodeMirror.SyntaxNode): {from: number, to: number}|nu
   }
   if (node.name === 'NumberLiteral') {
     const lastChild = node.lastChild;
-    return {from: node.from, to: lastChild && lastChild.name === 'Unit' ? lastChild.from : node.to};
+    return {from: node.from, to: lastChild?.name === 'Unit' ? lastChild.from : node.to};
   }
   return null;
 }

@@ -42,7 +42,7 @@ describe('The Computed pane', function() {
     const h1Properties = await getAllPropertiesFromComputedPane(devToolsPage);
     assert.lengthOf(h1Properties, 11, 'There should be 11 computed properties on the H1 element');
 
-    const colorProperty = h1Properties.find(property => property && property.name === 'color');
+    const colorProperty = h1Properties.find(property => property?.name === 'color');
     assert.exists(colorProperty, 'H1 element should have a color computed property');
     assert.deepEqual(colorProperty, {
       name: 'color',
@@ -58,7 +58,7 @@ describe('The Computed pane', function() {
     const h2Properties = await getAllPropertiesFromComputedPane(devToolsPage);
     assert.lengthOf(h2Properties, 12, 'There should be 12 computed properties on the H2 element');
 
-    const backgroundProperty = h2Properties.find(property => property && property.name === 'background-color');
+    const backgroundProperty = h2Properties.find(property => property?.name === 'background-color');
     assert.exists(backgroundProperty, 'H2 element should have a background-color computed property');
     assert.deepEqual(backgroundProperty, {
       name: 'background-color',
@@ -78,7 +78,7 @@ describe('The Computed pane', function() {
 
     const getAlignContentProperty = async () => {
       const allH1Properties = await getAllPropertiesFromComputedPane(devToolsPage);
-      const prop = allH1Properties.find(property => property && property.name === 'align-content');
+      const prop = allH1Properties.find(property => property?.name === 'align-content');
       return prop;
     };
     const alignContentProperty = await devToolsPage.waitForFunction(getAlignContentProperty);

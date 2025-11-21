@@ -1599,7 +1599,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const recordingData = this.#historyManager.navigate(direction);
     // When navigating programmatically, you cannot navigate to the landing page
     // view, so we can discount that possibility here.
-    if (recordingData && recordingData.type === 'TRACE_INDEX') {
+    if (recordingData?.type === 'TRACE_INDEX') {
       this.#changeView({
         mode: 'VIEWING_TRACE',
         traceIndex: recordingData.parsedTraceIndex,
@@ -1652,7 +1652,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Clarifying the window the code is referring to
     const hostWindow = window;
     function onMessageHandler(ev: MessageEvent): void {
-      if (url && ev.data && ev.data.type === 'REHYDRATING_WINDOW_READY') {
+      if (url && ev.data?.type === 'REHYDRATING_WINDOW_READY') {
         rehydratingWindow?.postMessage({type: 'REHYDRATING_TRACE_FILE', traceJson}, url.origin);
       }
       hostWindow.removeEventListener('message', onMessageHandler);
@@ -2865,8 +2865,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       event: Common.EventTarget
           .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>):
       Promise<void> {
-    if (this.state !== State.RECORDING || !this.recordingPageReload || !this.controller ||
-        this.controller.primaryPageTarget !== event.data.resourceTreeModel.target()) {
+    if (this.state !== State.RECORDING || !this.recordingPageReload ||
+        this.controller?.primaryPageTarget !== event.data.resourceTreeModel.target()) {
       return;
     }
     const controller = this.controller;

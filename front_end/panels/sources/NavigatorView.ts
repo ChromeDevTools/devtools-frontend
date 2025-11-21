@@ -1912,7 +1912,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   }
 
   override wasPopulated(): void {
-    if (!this.treeElement || this.treeElement.node !== this) {
+    if (this.treeElement?.node !== this) {
       return;
     }
     this.addChildrenRecursive();

@@ -67,7 +67,7 @@ export default createRule({
           return;
         }
 
-        const isAwait = callExpression.parent && callExpression.parent.type === 'AwaitExpression';
+        const isAwait = callExpression.parent?.type === 'AwaitExpression';
         if (!isAwait) {
           return;
         }

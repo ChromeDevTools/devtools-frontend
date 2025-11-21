@@ -777,7 +777,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
   hoverAnnotationInSidebar(annotation: Trace.Types.File.Annotation): void {
     const overlay = ModificationsManager.activeManager()?.getOverlaybyAnnotation(annotation);
-    if (overlay && overlay.type === 'ENTRY_LABEL') {
+    if (overlay?.type === 'ENTRY_LABEL') {
       this.#overlays.highlightOverlay(overlay);
     }
   }

@@ -322,7 +322,7 @@ export class DevToolsPage extends PageWrapper {
   waitForNoElementsWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
     return asyncScope.exec(() => this.waitForFunction(async () => {
       const elems = await this.$$textContent(textContent, root);
-      if (elems && elems.length === 0) {
+      if (elems?.length === 0) {
         return true;
       }
 

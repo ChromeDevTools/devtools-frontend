@@ -2342,7 +2342,7 @@ export class DataGridNode<T> {
   }
 
   deselect(supressDeselectedEvent?: boolean): void {
-    if (!this.dataGrid || this.dataGrid.selectedNode !== this || !this.selected) {
+    if (this.dataGrid?.selectedNode !== this || !this.selected) {
       return;
     }
 

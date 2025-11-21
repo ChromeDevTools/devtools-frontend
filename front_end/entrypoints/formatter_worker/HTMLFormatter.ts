@@ -260,8 +260,8 @@ export class HTMLModel {
       this.#updateDOM(token);
 
       const element = this.#stack[this.#stack.length - 1];
-      if (element && (element.name === 'script' || element.name === 'style') && element.openTag &&
-          element.openTag.endOffset === lastOffset) {
+      if (element && (element.name === 'script' || element.name === 'style') &&
+          element.openTag?.endOffset === lastOffset) {
         return AbortTokenization;
       }
 

@@ -22,7 +22,7 @@ for (const entry of entries) {
     path.join(import.meta.dirname, 'lib', entry.name),
   );
   const ruleModule = await import(filename);
-  const name = ruleModule.default.name;
+  const name = path.parse(entry.name).name;
   rules[name] = ruleModule.default;
 }
 

@@ -1166,7 +1166,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
       contextMenu.defaultSection().appendCheckboxItem(conversation.title, () => {
         void this.#openHistoricConversation(conversation);
-      }, {checked: (this.#conversation === conversation), jslogContext: 'freestyler.history-item'});
+      }, {checked: (this.#conversation?.id === conversation.id), jslogContext: 'freestyler.history-item'});
     }
 
     const historyEmpty = contextMenu.defaultSection().items.length === 0;
@@ -1224,7 +1224,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #openHistoricConversation(conversation: AiAssistanceModel.AiConversation.AiConversation): Promise<void> {
-    if (this.#conversation === conversation) {
+    if (this.#conversation?.id === conversation.id) {
       return;
     }
 

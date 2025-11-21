@@ -6,16 +6,16 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("application") {
   sources = [
-    "cookies_test.ts",
-    "frame-tree_test.ts",
-    "manifest_test.ts",
-    "reporting-api_test.ts",
-    "service-worker-network_test.ts",
-    "service-worker-update_test.ts",
-    "session-storage_test.ts",
-    "shared-storage_test.ts",
-    "storage_test.ts",
-    "window-controls_test.ts",
+    "cookies.test.ts",
+    "frame-tree.test.ts",
+    "manifest.test.ts",
+    "reporting-api.test.ts",
+    "service-worker-network.test.ts",
+    "service-worker-update.test.ts",
+    "session-storage.test.ts",
+    "shared-storage.test.ts",
+    "storage.test.ts",
+    "window-controls.test.ts",
   ]
 
   deps = [

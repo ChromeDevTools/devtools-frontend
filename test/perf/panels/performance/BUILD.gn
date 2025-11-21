@@ -5,7 +5,7 @@
 import("../../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("performance") {
-  sources = [ "trace-load_test.ts" ]
+  sources = [ "trace-load.test.ts" ]
 
   deps = [
     "../../../../front_end/panels/timeline:bundle",

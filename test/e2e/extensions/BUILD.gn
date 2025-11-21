@@ -6,11 +6,11 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("extensions") {
   sources = [
-    "can-create-panels_test.ts",
-    "can-open-resources-with-columns_test.ts",
-    "can-reveal-requests_test.ts",
-    "can-search-in-extension-panel_test.ts",
-    "debugger-language-plugins_test.ts",
+    "can-create-panels.test.ts",
+    "can-open-resources-with-columns.test.ts",
+    "can-reveal-requests.test.ts",
+    "can-search-in-extension-panel.test.ts",
+    "debugger-language-plugins.test.ts",
   ]
 
   deps = [

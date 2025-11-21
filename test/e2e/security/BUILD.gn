@@ -6,8 +6,8 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("security") {
   sources = [
-    "privacy_test.ts",
-    "security_test.ts",
+    "privacy.test.ts",
+    "security.test.ts",
   ]
 
   deps = [

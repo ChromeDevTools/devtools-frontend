@@ -5,7 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("layers") {
-  sources = [ "layers_test.ts" ]
+  sources = [ "layers.test.ts" ]
 
   deps = [ "../helpers" ]
 }

@@ -6,16 +6,16 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("performance") {
   sources = [
-    "landing-page_test.ts",
-    "multiple-traces_test.ts",
-    "recording_test.ts",
-    "revealing-insights_test.ts",
-    "selector-stats-tracing_test.ts",
-    "settings-throttle-change_test.ts",
-    "timeline-js-line-level-profile_test.ts",
-    "timeline/treeview_test.ts",
-    "trace-app_test.ts",
-    "wasm/performance_profiling_test.ts",
+    "landing-page.test.ts",
+    "multiple-traces.test.ts",
+    "recording.test.ts",
+    "revealing-insights.test.ts",
+    "selector-stats-tracing.test.ts",
+    "settings-throttle-change.test.ts",
+    "timeline-js-line-level-profile.test.ts",
+    "timeline/treeview.test.ts",
+    "trace-app.test.ts",
+    "wasm/performance_profiling.test.ts",
   ]
   deps = [
     "../helpers",

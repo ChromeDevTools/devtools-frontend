@@ -6,11 +6,11 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("emulation") {
   sources = [
-    "custom-devices_test.ts",
-    "dual-screen_test.ts",
-    "foldable-device_test.ts",
-    "media-query-inspector_test.ts",
-    "responsive_test.ts",
+    "custom-devices.test.ts",
+    "dual-screen.test.ts",
+    "foldable-device.test.ts",
+    "media-query-inspector.test.ts",
+    "responsive.test.ts",
   ]
   deps = [
     "../helpers",

@@ -5,7 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("memory") {
-  sources = [ "memory_test.ts" ]
+  sources = [ "memory.test.ts" ]
 
   deps = [
     "../helpers",

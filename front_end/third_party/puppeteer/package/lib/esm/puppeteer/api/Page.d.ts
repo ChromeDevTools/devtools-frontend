@@ -9,7 +9,6 @@ import type { HTTPRequest } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Accessibility } from '../cdp/Accessibility.js';
 import type { Coverage } from '../cdp/Coverage.js';
-import type { DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
 import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import type { Tracing } from '../cdp/Tracing.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
@@ -26,6 +25,7 @@ import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
 import type { CDPSession } from './CDPSession.js';
+import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { Dialog } from './Dialog.js';
 import type { BoundingBox, ClickOptions, ElementHandle } from './ElementHandle.js';
 import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions, GoToOptions, WaitForOptions } from './Frame.js';
@@ -215,7 +215,7 @@ export interface ScreenshotOptions {
      * relative to current working directory. If no path is provided, the image
      * won't be saved to the disk.
      */
-    path?: `${string}.${ImageFormat}`;
+    path?: string;
     /**
      * Specifies the region of the page/element to clip.
      */

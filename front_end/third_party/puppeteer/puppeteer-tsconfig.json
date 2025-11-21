@@ -6,6 +6,7 @@
     "package/lib/esm/puppeteer/api/Browser.js",
     "package/lib/esm/puppeteer/api/BrowserContext.js",
     "package/lib/esm/puppeteer/api/CDPSession.js",
+    "package/lib/esm/puppeteer/api/DeviceRequestPrompt.js",
     "package/lib/esm/puppeteer/api/Dialog.js",
     "package/lib/esm/puppeteer/api/ElementHandle.js",
     "package/lib/esm/puppeteer/api/ElementHandleSymbol.js",

@@ -13,15 +13,17 @@ export class ConsoleMessage {
     #args;
     #stackTraceLocations;
     #frame;
+    #rawStackTrace;
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations, frame) {
+    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace) {
         this.#type = type;
         this.#text = text;
         this.#args = args;
         this.#stackTraceLocations = stackTraceLocations;
         this.#frame = frame;
+        this.#rawStackTrace = rawStackTrace;
     }
     /**
      * The type of the console message.
@@ -53,6 +55,14 @@ export class ConsoleMessage {
      */
     stackTrace() {
         return this.#stackTraceLocations;
+    }
+    /**
+     * The underlying protocol stack trace if available.
+     *
+     * @internal
+     */
+    _rawStackTrace() {
+        return this.#rawStackTrace;
     }
 }
 //# sourceMappingURL=ConsoleMessage.js.map

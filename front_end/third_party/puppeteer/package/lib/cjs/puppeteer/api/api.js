@@ -22,6 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserContext.js"), exports);
 __exportStar(require("./CDPSession.js"), exports);
+__exportStar(require("./DeviceRequestPrompt.js"), exports);
 __exportStar(require("./Dialog.js"), exports);
 __exportStar(require("./ElementHandle.js"), exports);
 __exportStar(require("./Frame.js"), exports);

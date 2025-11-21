@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
+import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import { Frame } from '../api/Frame.js';
@@ -14,7 +15,6 @@ import { disposeSymbol } from '../util/disposable.js';
 import { Accessibility } from './Accessibility.js';
 import type { Binding } from './Binding.js';
 import type { CdpPreloadScript } from './CdpPreloadScript.js';
-import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { FrameManager } from './FrameManager.js';
 import type { IsolatedWorldChart } from './IsolatedWorld.js';
 import { IsolatedWorld } from './IsolatedWorld.js';

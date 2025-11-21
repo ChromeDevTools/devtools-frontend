@@ -172,9 +172,7 @@ let BidiPage = (() => {
         /**
          * @internal
          */
-        _userAgentHeaders = {};
-        #userAgentInterception;
-        #userAgentPreloadScript;
+        #overrideNavigatorPropertiesPreloadScript;
         async setUserAgent(userAgentOrOptions, userAgentMetadata) {
             let userAgent;
             let metadata;
@@ -204,17 +202,8 @@ let BidiPage = (() => {
             }
             const enable = userAgent !== '';
             userAgent = userAgent ?? (await this.#browserContext.browser().userAgent());
-            this._userAgentHeaders = enable
-                ? {
-                    'User-Agent': userAgent,
-                }
-                : {};
-            this.#userAgentInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#userAgentInterception, enable);
-            const overrideNavigatorProperties = (userAgent, platform) => {
-                Object.defineProperty(navigator, 'userAgent', {
-                    value: userAgent,
-                    configurable: true,
-                });
+            await this.#frame.browsingContext.setUserAgent(enable ? userAgent : null);
+            const overrideNavigatorProperties = (platform) => {
                 if (platform) {
                     Object.defineProperty(navigator, 'platform', {
                         value: platform,
@@ -226,20 +215,20 @@ let BidiPage = (() => {
             for (const frame of frames) {
                 frames.push(...frame.childFrames());
             }
-            if (this.#userAgentPreloadScript) {
-                await this.removeScriptToEvaluateOnNewDocument(this.#userAgentPreloadScript);
+            if (this.#overrideNavigatorPropertiesPreloadScript) {
+                await this.removeScriptToEvaluateOnNewDocument(this.#overrideNavigatorPropertiesPreloadScript);
             }
             const [evaluateToken] = await Promise.all([
                 enable
-                    ? this.evaluateOnNewDocument(overrideNavigatorProperties, userAgent, platform || undefined)
+                    ? this.evaluateOnNewDocument(overrideNavigatorProperties, platform || undefined)
                     : undefined,
                 // When we disable the UserAgent we want to
                 // evaluate the original value in all Browsing Contexts
                 ...frames.map(frame => {
-                    return frame.evaluate(overrideNavigatorProperties, userAgent, platform || undefined);
+                    return frame.evaluate(overrideNavigatorProperties, platform || undefined);
                 }),
             ]);
-            this.#userAgentPreloadScript = evaluateToken?.identifier;
+            this.#overrideNavigatorPropertiesPreloadScript = evaluateToken?.identifier;
         }
         async setBypassCSP(enabled) {
             // TODO: handle CDP-specific cases such as MPArch.
@@ -612,8 +601,7 @@ let BidiPage = (() => {
         get isNetworkInterceptionEnabled() {
             return (Boolean(this.#requestInterception) ||
                 Boolean(this.#extraHeadersInterception) ||
-                Boolean(this.#authInterception) ||
-                Boolean(this.#userAgentInterception));
+                Boolean(this.#authInterception));
         }
         #requestInterception;
         async setRequestInterception(enable) {
@@ -662,7 +650,7 @@ let BidiPage = (() => {
         }
         async setOfflineMode(enabled) {
             if (!this.#browserContext.browser().cdpSupported) {
-                throw new UnsupportedOperation();
+                return await this.#frame.browsingContext.setOfflineMode(enabled);
             }
             if (!this.#emulatedNetworkConditions) {
                 this.#emulatedNetworkConditions = {
@@ -677,7 +665,14 @@ let BidiPage = (() => {
         }
         async emulateNetworkConditions(networkConditions) {
             if (!this.#browserContext.browser().cdpSupported) {
-                throw new UnsupportedOperation();
+                if (!networkConditions?.offline &&
+                    ((networkConditions?.upload ?? -1) >= 0 ||
+                        (networkConditions?.download ?? -1) >= 0 ||
+                        (networkConditions?.latency ?? 0) > 0)) {
+                    // WebDriver BiDi supports only offline mode.
+                    throw new UnsupportedOperation();
+                }
+                return await this.#frame.browsingContext.setOfflineMode(networkConditions?.offline ?? false);
             }
             if (!this.#emulatedNetworkConditions) {
                 this.#emulatedNetworkConditions = {

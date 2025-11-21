@@ -6,8 +6,8 @@ export declare class Mutex {
     #private;
     static Guard: {
         new (mutex: Mutex, onRelease?: () => void): {
-            "__#59758@#mutex": Mutex;
-            "__#59758@#onRelease"?: () => void;
+            "__#59782@#mutex": Mutex;
+            "__#59782@#onRelease"?: () => void;
             [Symbol.dispose](): void;
         };
     };

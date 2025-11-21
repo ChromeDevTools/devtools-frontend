@@ -93,14 +93,10 @@ export class BidiHTTPRequest extends HTTPRequest {
         return await this.#request.fetchPostData();
     }
     get #hasInternalHeaderOverwrite() {
-        return Boolean(Object.keys(this.#extraHTTPHeaders).length ||
-            Object.keys(this.#userAgentHeaders).length);
+        return Boolean(Object.keys(this.#extraHTTPHeaders).length);
     }
     get #extraHTTPHeaders() {
         return this.#frame?.page()._extraHTTPHeaders ?? {};
-    }
-    get #userAgentHeaders() {
-        return this.#frame?.page()._userAgentHeaders ?? {};
     }
     headers() {
         // Callers should not be allowed to mutate internal structure.
@@ -111,7 +107,6 @@ export class BidiHTTPRequest extends HTTPRequest {
         return {
             ...headers,
             ...this.#extraHTTPHeaders,
-            ...this.#userAgentHeaders,
         };
     }
     response() {

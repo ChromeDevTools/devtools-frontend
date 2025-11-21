@@ -399,14 +399,14 @@ class CdpPage extends Page_js_1.Page {
         this.emit("error" /* PageEvent.Error */, new Error('Page crashed!'));
     }
     #onLogEntryAdded(event) {
-        const { level, text, args, source, url, lineNumber } = event.entry;
+        const { level, text, args, source, url, lineNumber, stackTrace } = event.entry;
         if (args) {
             args.map(arg => {
                 void (0, JSHandle_js_1.releaseObject)(this.#primaryTargetClient, arg);
             });
         }
         if (source !== 'worker') {
-            this.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }]));
+            this.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }], undefined, stackTrace));
         }
     }
     mainFrame() {
@@ -671,7 +671,7 @@ class CdpPage extends Page_js_1.Page {
                 });
             }
         }
-        const message = new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(eventType), textTokens.join(' '), args, stackTraceLocations);
+        const message = new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(eventType), textTokens.join(' '), args, stackTraceLocations, undefined, stackTrace);
         this.emit("console" /* PageEvent.Console */, message);
     }
     #onDialog(event) {

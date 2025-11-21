@@ -558,6 +558,22 @@ let BrowsingContext = (() => {
         isJavaScriptEnabled() {
             return this.#emulationState.javaScriptEnabled;
         }
+        async setUserAgent(userAgent) {
+            await this.#session.send('emulation.setUserAgentOverride', {
+                userAgent,
+                contexts: [this.id],
+            });
+        }
+        async setOfflineMode(enabled) {
+            await this.#session.send('emulation.setNetworkConditions', {
+                networkConditions: enabled
+                    ? {
+                        type: 'offline',
+                    }
+                    : null,
+                contexts: [this.id],
+            });
+        }
     };
 })();
 export { BrowsingContext };

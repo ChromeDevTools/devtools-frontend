@@ -2137,6 +2137,7 @@ grd_files_unbundled_sources = [
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/Browser.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/BrowserContext.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/CDPSession.js",
+  "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/DeviceRequestPrompt.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/Dialog.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/ElementHandle.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api/ElementHandleSymbol.js",

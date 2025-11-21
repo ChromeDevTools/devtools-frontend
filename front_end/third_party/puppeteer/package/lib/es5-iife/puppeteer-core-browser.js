@@ -3048,7 +3048,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.30.0';
+  const packageVersion = '24.31.0';
   // x-release-please-end
 
   /**
@@ -4317,6 +4317,57 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return undefined;
     }
   }
+
+  /**
+   * @license
+   * Copyright 2025 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * Device in a request prompt.
+   *
+   * @public
+   */
+  class DeviceRequestPromptDevice {
+    /**
+     * @internal
+     */
+    constructor(id, name) {
+      /**
+       * Device id during a prompt.
+       */
+      _defineProperty(this, "id", void 0);
+      /**
+       * Device name as it appears in a prompt.
+       */
+      _defineProperty(this, "name", void 0);
+      this.id = id;
+      this.name = name;
+    }
+  }
+  /**
+   * Device request prompts let you respond to the page requesting for a device
+   * through an API like WebBluetooth.
+   *
+   * @remarks
+   * `DeviceRequestPrompt` instances are returned via the
+   * {@link Page.waitForDevicePrompt} method.
+   *
+   * @example
+   *
+   * ```ts
+   * const [devicePrompt] = Promise.all([
+   *   page.waitForDevicePrompt(),
+   *   page.click('#connect-bluetooth'),
+   * ]);
+   * await devicePrompt.select(
+   *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
+   * );
+   * ```
+   *
+   * @public
+   */
+  class DeviceRequestPrompt {}
 
   /**
    * @license
@@ -13256,21 +13307,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _args2 = /*#__PURE__*/new WeakMap();
   var _stackTraceLocations = /*#__PURE__*/new WeakMap();
   var _frame = /*#__PURE__*/new WeakMap();
+  var _rawStackTrace = /*#__PURE__*/new WeakMap();
   class ConsoleMessage {
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations, frame) {
+    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace) {
       _classPrivateFieldInitSpec(this, _type2, void 0);
       _classPrivateFieldInitSpec(this, _text, void 0);
       _classPrivateFieldInitSpec(this, _args2, void 0);
       _classPrivateFieldInitSpec(this, _stackTraceLocations, void 0);
       _classPrivateFieldInitSpec(this, _frame, void 0);
+      _classPrivateFieldInitSpec(this, _rawStackTrace, void 0);
       _classPrivateFieldSet(_type2, this, type);
       _classPrivateFieldSet(_text, this, text);
       _classPrivateFieldSet(_args2, this, args);
       _classPrivateFieldSet(_stackTraceLocations, this, stackTraceLocations);
       _classPrivateFieldSet(_frame, this, frame);
+      _classPrivateFieldSet(_rawStackTrace, this, rawStackTrace);
     }
     /**
      * The type of the console message.
@@ -13303,6 +13357,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     stackTrace() {
       return _classPrivateFieldGet(_stackTraceLocations, this);
+    }
+    /**
+     * The underlying protocol stack trace if available.
+     *
+     * @internal
+     */
+    _rawStackTrace() {
+      return _classPrivateFieldGet(_rawStackTrace, this);
     }
   }
 
@@ -14962,48 +15024,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * SPDX-License-Identifier: Apache-2.0
    */
   /**
-   * Device in a request prompt.
-   *
-   * @public
-   */
-  class DeviceRequestPromptDevice {
-    /**
-     * @internal
-     */
-    constructor(id, name) {
-      /**
-       * Device id during a prompt.
-       */
-      _defineProperty(this, "id", void 0);
-      /**
-       * Device name as it appears in a prompt.
-       */
-      _defineProperty(this, "name", void 0);
-      this.id = id;
-      this.name = name;
-    }
-  }
-  /**
-   * Device request prompts let you respond to the page requesting for a device
-   * through an API like WebBluetooth.
-   *
-   * @remarks
-   * `DeviceRequestPrompt` instances are returned via the
-   * {@link Page.waitForDevicePrompt} method.
-   *
-   * @example
-   *
-   * ```ts
-   * const [devicePrompt] = Promise.all([
-   *   page.waitForDevicePrompt(),
-   *   page.click('#connect-bluetooth'),
-   * ]);
-   * await devicePrompt.select(
-   *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
-   * );
-   * ```
-   *
-   * @public
+   * @internal
    */
   var _client6 = /*#__PURE__*/new WeakMap();
   var _timeoutSettings = /*#__PURE__*/new WeakMap();
@@ -15011,22 +15032,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _handled2 = /*#__PURE__*/new WeakMap();
   var _updateDevicesHandle = /*#__PURE__*/new WeakMap();
   var _waitForDevicePromises = /*#__PURE__*/new WeakMap();
-  var _DeviceRequestPrompt_brand = /*#__PURE__*/new WeakSet();
-  class DeviceRequestPrompt {
-    /**
-     * @internal
-     */
+  var _CdpDeviceRequestPrompt_brand = /*#__PURE__*/new WeakSet();
+  class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
     constructor(client, timeoutSettings, firstEvent) {
-      _classPrivateMethodInitSpec(this, _DeviceRequestPrompt_brand);
+      super();
+      _classPrivateMethodInitSpec(this, _CdpDeviceRequestPrompt_brand);
       _classPrivateFieldInitSpec(this, _client6, void 0);
       _classPrivateFieldInitSpec(this, _timeoutSettings, void 0);
       _classPrivateFieldInitSpec(this, _id4, void 0);
       _classPrivateFieldInitSpec(this, _handled2, false);
-      _classPrivateFieldInitSpec(this, _updateDevicesHandle, _assertClassBrand(_DeviceRequestPrompt_brand, this, _updateDevices).bind(this));
+      _classPrivateFieldInitSpec(this, _updateDevicesHandle, _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).bind(this));
       _classPrivateFieldInitSpec(this, _waitForDevicePromises, new Set());
-      /**
-       * Current list of selectable devices.
-       */
       _defineProperty(this, "devices", []);
       _classPrivateFieldSet(_client6, this, client);
       _classPrivateFieldSet(_timeoutSettings, this, timeoutSettings);
@@ -15035,11 +15051,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_client6, this).on('Target.detachedFromTarget', () => {
         _classPrivateFieldSet(_client6, this, null);
       });
-      _assertClassBrand(_DeviceRequestPrompt_brand, this, _updateDevices).call(this, firstEvent);
+      _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).call(this, firstEvent);
     }
-    /**
-     * Resolve to the first device in the prompt matching a filter.
-     */
     async waitForDevice(filter, options = {}) {
       for (const device of this.devices) {
         if (filter(device)) {
@@ -15071,9 +15084,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _classPrivateFieldGet(_waitForDevicePromises, this).delete(handle);
       }
     }
-    /**
-     * Select a device in the prompt's list.
-     */
     async select(device) {
       assert(_classPrivateFieldGet(_client6, this) !== null, 'Cannot select device through detached session!');
       assert(this.devices.includes(device), 'Cannot select unknown device!');
@@ -15085,9 +15095,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         deviceId: device.id
       });
     }
-    /**
-     * Cancel the prompt.
-     */
     async cancel() {
       assert(_classPrivateFieldGet(_client6, this) !== null, 'Cannot cancel prompt through detached session!');
       assert(!_classPrivateFieldGet(_handled2, this), 'Cannot cancel DeviceRequestPrompt which is already handled!');
@@ -15125,13 +15132,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _deviceRequestPromptDeferreds = /*#__PURE__*/new WeakMap();
   var _DeviceRequestPromptManager_brand = /*#__PURE__*/new WeakSet();
   class DeviceRequestPromptManager {
-    /**
-     * @internal
-     */
     constructor(client, timeoutSettings) {
-      /**
-       * @internal
-       */
       _classPrivateMethodInitSpec(this, _DeviceRequestPromptManager_brand);
       _classPrivateFieldInitSpec(this, _client7, void 0);
       _classPrivateFieldInitSpec(this, _timeoutSettings2, void 0);
@@ -15145,10 +15146,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _classPrivateFieldSet(_client7, this, null);
       });
     }
-    /**
-     * Wait for device prompt created by an action like calling WebBluetooth's
-     * requestDevice.
-     */
     async waitForDevicePrompt(options = {}) {
       assert(_classPrivateFieldGet(_client7, this) !== null, 'Cannot wait for device prompt through detached session!');
       const needsEnable = _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size === 0;
@@ -15193,7 +15190,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return;
     }
     assert(_classPrivateFieldGet(_client7, this) !== null);
-    const devicePrompt = new DeviceRequestPrompt(_classPrivateFieldGet(_client7, this), _classPrivateFieldGet(_timeoutSettings2, this), event);
+    const devicePrompt = new CdpDeviceRequestPrompt(_classPrivateFieldGet(_client7, this), _classPrivateFieldGet(_timeoutSettings2, this), event);
     for (const promise of _classPrivateFieldGet(_deviceRequestPromptDeferreds, this)) {
       promise.resolve(devicePrompt);
     }
@@ -21597,7 +21594,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       args,
       source,
       url,
-      lineNumber
+      lineNumber,
+      stackTrace
     } = event.entry;
     if (args) {
       args.map(arg => {
@@ -21608,7 +21606,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       this.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{
         url,
         lineNumber
-      }]));
+      }], undefined, stackTrace));
     }
   }
   function _emitMetrics(event) {
@@ -21689,7 +21687,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         });
       }
     }
-    const message = new ConsoleMessage(convertConsoleMessageLevel(eventType), textTokens.join(' '), args, stackTraceLocations);
+    const message = new ConsoleMessage(convertConsoleMessageLevel(eventType), textTokens.join(' '), args, stackTraceLocations, undefined, stackTrace);
     this.emit("console" /* PageEvent.Console */, message);
   }
   function _onDialog(event) {
@@ -24881,9 +24879,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '142.0.7444.162',
-    'chrome-headless-shell': '142.0.7444.162',
-    firefox: 'stable_145.0'
+    chrome: '142.0.7444.175',
+    'chrome-headless-shell': '142.0.7444.175',
+    firefox: 'stable_145.0.1'
   });
 
   /**
@@ -24920,6 +24918,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.CdpBrowser = CdpBrowser;
   exports.CdpBrowserContext = CdpBrowserContext;
   exports.CdpCDPSession = CdpCDPSession;
+  exports.CdpDeviceRequestPrompt = CdpDeviceRequestPrompt;
   exports.CdpDialog = CdpDialog;
   exports.CdpElementHandle = CdpElementHandle;
   exports.CdpFrame = CdpFrame;

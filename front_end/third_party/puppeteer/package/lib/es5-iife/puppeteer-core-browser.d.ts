@@ -1151,6 +1151,7 @@ export declare class ConsoleMessage {
      * The array of locations on the stack of the console message.
      */
     stackTrace(): ConsoleMessageLocation[];
+
 }
 
 /**
@@ -1671,25 +1672,23 @@ export declare interface Device {
  *
  * @public
  */
-export declare class DeviceRequestPrompt {
-    
+export declare abstract class DeviceRequestPrompt {
     /**
      * Current list of selectable devices.
      */
-    devices: DeviceRequestPromptDevice[];
-
+    abstract get devices(): DeviceRequestPromptDevice[];
     /**
      * Resolve to the first device in the prompt matching a filter.
      */
-    waitForDevice(filter: (device: DeviceRequestPromptDevice) => boolean, options?: WaitTimeoutOptions): Promise<DeviceRequestPromptDevice>;
+    abstract waitForDevice(filter: (device: DeviceRequestPromptDevice) => boolean, options?: WaitTimeoutOptions): Promise<DeviceRequestPromptDevice>;
     /**
      * Select a device in the prompt's list.
      */
-    select(device: DeviceRequestPromptDevice): Promise<void>;
+    abstract select(device: DeviceRequestPromptDevice): Promise<void>;
     /**
      * Cancel the prompt.
      */
-    cancel(): Promise<void>;
+    abstract cancel(): Promise<void>;
 }
 
 /**
@@ -6925,6 +6924,8 @@ declare namespace Puppeteer_2 {
         CDPSessionEvents,
         CommandOptions,
         CDPSession,
+        DeviceRequestPromptDevice,
+        DeviceRequestPrompt,
         Dialog,
         Quad,
         BoxModel,
@@ -7008,8 +7009,6 @@ declare namespace Puppeteer_2 {
         Coverage,
         JSCoverage,
         CSSCoverage,
-        DeviceRequestPromptDevice,
-        DeviceRequestPrompt,
         ExtensionTransport,
         PuppeteerLifeCycleEvent,
         ProtocolLifeCycleEvent,
@@ -7485,7 +7484,7 @@ export declare interface ScreenshotOptions {
      * relative to current working directory. If no path is provided, the image
      * won't be saved to the disk.
      */
-    path?: `${string}.${ImageFormat}`;
+    path?: string;
     /**
      * Specifies the region of the page/element to clip.
      */

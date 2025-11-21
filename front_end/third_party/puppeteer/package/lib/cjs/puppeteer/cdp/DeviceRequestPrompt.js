@@ -5,69 +5,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeviceRequestPromptManager = exports.DeviceRequestPrompt = exports.DeviceRequestPromptDevice = void 0;
+exports.DeviceRequestPromptManager = exports.CdpDeviceRequestPrompt = void 0;
+const DeviceRequestPrompt_js_1 = require("../api/DeviceRequestPrompt.js");
+const DeviceRequestPrompt_js_2 = require("../api/DeviceRequestPrompt.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 /**
- * Device in a request prompt.
- *
- * @public
+ * @internal
  */
-class DeviceRequestPromptDevice {
-    /**
-     * Device id during a prompt.
-     */
-    id;
-    /**
-     * Device name as it appears in a prompt.
-     */
-    name;
-    /**
-     * @internal
-     */
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
-    }
-}
-exports.DeviceRequestPromptDevice = DeviceRequestPromptDevice;
-/**
- * Device request prompts let you respond to the page requesting for a device
- * through an API like WebBluetooth.
- *
- * @remarks
- * `DeviceRequestPrompt` instances are returned via the
- * {@link Page.waitForDevicePrompt} method.
- *
- * @example
- *
- * ```ts
- * const [devicePrompt] = Promise.all([
- *   page.waitForDevicePrompt(),
- *   page.click('#connect-bluetooth'),
- * ]);
- * await devicePrompt.select(
- *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
- * );
- * ```
- *
- * @public
- */
-class DeviceRequestPrompt {
+class CdpDeviceRequestPrompt extends DeviceRequestPrompt_js_1.DeviceRequestPrompt {
     #client;
     #timeoutSettings;
     #id;
     #handled = false;
     #updateDevicesHandle = this.#updateDevices.bind(this);
     #waitForDevicePromises = new Set();
-    /**
-     * Current list of selectable devices.
-     */
     devices = [];
-    /**
-     * @internal
-     */
     constructor(client, timeoutSettings, firstEvent) {
+        super();
         this.#client = client;
         this.#timeoutSettings = timeoutSettings;
         this.#id = firstEvent.id;
@@ -87,7 +42,7 @@ class DeviceRequestPrompt {
             })) {
                 continue;
             }
-            const newDevice = new DeviceRequestPromptDevice(rawDevice.id, rawDevice.name);
+            const newDevice = new DeviceRequestPrompt_js_2.DeviceRequestPromptDevice(rawDevice.id, rawDevice.name);
             this.devices.push(newDevice);
             for (const waitForDevicePromise of this.#waitForDevicePromises) {
                 if (waitForDevicePromise.filter(newDevice)) {
@@ -96,9 +51,6 @@ class DeviceRequestPrompt {
             }
         }
     }
-    /**
-     * Resolve to the first device in the prompt matching a filter.
-     */
     async waitForDevice(filter, options = {}) {
         for (const device of this.devices) {
             if (filter(device)) {
@@ -124,9 +76,6 @@ class DeviceRequestPrompt {
             this.#waitForDevicePromises.delete(handle);
         }
     }
-    /**
-     * Select a device in the prompt's list.
-     */
     async select(device) {
         (0, assert_js_1.assert)(this.#client !== null, 'Cannot select device through detached session!');
         (0, assert_js_1.assert)(this.devices.includes(device), 'Cannot select unknown device!');
@@ -138,9 +87,6 @@ class DeviceRequestPrompt {
             deviceId: device.id,
         });
     }
-    /**
-     * Cancel the prompt.
-     */
     async cancel() {
         (0, assert_js_1.assert)(this.#client !== null, 'Cannot cancel prompt through detached session!');
         (0, assert_js_1.assert)(!this.#handled, 'Cannot cancel DeviceRequestPrompt which is already handled!');
@@ -149,7 +95,7 @@ class DeviceRequestPrompt {
         return await this.#client.send('DeviceAccess.cancelPrompt', { id: this.#id });
     }
 }
-exports.DeviceRequestPrompt = DeviceRequestPrompt;
+exports.CdpDeviceRequestPrompt = CdpDeviceRequestPrompt;
 /**
  * @internal
  */
@@ -157,9 +103,6 @@ class DeviceRequestPromptManager {
     #client;
     #timeoutSettings;
     #deviceRequestPromptDeferreds = new Set();
-    /**
-     * @internal
-     */
     constructor(client, timeoutSettings) {
         this.#client = client;
         this.#timeoutSettings = timeoutSettings;
@@ -170,10 +113,6 @@ class DeviceRequestPromptManager {
             this.#client = null;
         });
     }
-    /**
-     * Wait for device prompt created by an action like calling WebBluetooth's
-     * requestDevice.
-     */
     async waitForDevicePrompt(options = {}) {
         (0, assert_js_1.assert)(this.#client !== null, 'Cannot wait for device prompt through detached session!');
         const needsEnable = this.#deviceRequestPromptDeferreds.size === 0;
@@ -203,15 +142,12 @@ class DeviceRequestPromptManager {
             this.#deviceRequestPromptDeferreds.delete(deferred);
         }
     }
-    /**
-     * @internal
-     */
     #onDeviceRequestPrompted(event) {
         if (!this.#deviceRequestPromptDeferreds.size) {
             return;
         }
         (0, assert_js_1.assert)(this.#client !== null);
-        const devicePrompt = new DeviceRequestPrompt(this.#client, this.#timeoutSettings, event);
+        const devicePrompt = new CdpDeviceRequestPrompt(this.#client, this.#timeoutSettings, event);
         for (const promise of this.#deviceRequestPromptDeferreds) {
             promise.resolve(devicePrompt);
         }

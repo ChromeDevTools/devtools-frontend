@@ -25,6 +25,8 @@ SOURCES = [
   "package/lib/esm/puppeteer/api/BrowserContext.js",
   "package/lib/esm/puppeteer/api/CDPSession.d.ts",
   "package/lib/esm/puppeteer/api/CDPSession.js",
+  "package/lib/esm/puppeteer/api/DeviceRequestPrompt.d.ts",
+  "package/lib/esm/puppeteer/api/DeviceRequestPrompt.js",
   "package/lib/esm/puppeteer/api/Dialog.d.ts",
   "package/lib/esm/puppeteer/api/Dialog.js",
   "package/lib/esm/puppeteer/api/ElementHandle.d.ts",

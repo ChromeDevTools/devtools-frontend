@@ -6,6 +6,7 @@
 export * from './Browser.js';
 export * from './BrowserContext.js';
 export * from './CDPSession.js';
+export * from './DeviceRequestPrompt.js';
 export * from './Dialog.js';
 export * from './ElementHandle.js';
 export * from './Frame.js';

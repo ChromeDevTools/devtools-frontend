@@ -401,6 +401,12 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     const element = document.createElement('div');
     this.#listElements.set(condition, element);
     element.classList.add('blocked-url');
+    this.updateItem(element, condition, editable, index);
+    return element;
+  }
+
+  updateItem(element: HTMLElement, condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number):
+      void {
     const toggle = (e: Event): void => {
       if (editable) {
         e.consume(true);
@@ -437,9 +443,9 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
       @click=${toggle}
       type=checkbox
       title=${i18nString(UIStrings.enableThrottlingToggleLabel, {PH1: constructorStringOrWildcardURL})}
-      ?checked=${enabled}
-      ?disabled=${!editable || !originalOrUpgradedURLPattern}
-      .jslog=${VisualLogging.toggle().track({ change: true })}>
+      .checked=${enabled}
+      .disabled=${!editable || !originalOrUpgradedURLPattern}
+      jslog=${VisualLogging.toggle().track({ change: true })}>
     <devtools-button
       .iconName=${'arrow-up'}
       .variant=${Buttons.Button.Variant.ICON}
@@ -516,15 +522,14 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
     <input class=blocked-url-checkbox
       @click=${toggle}
       type=checkbox
-      ?checked=${condition.enabled}
-      ?disabled=${!editable}
-      .jslog=${VisualLogging.toggle().track({ change: true })}>
+      .checked=${condition.enabled}
+      .disabled=${!editable}
+      jslog=${VisualLogging.toggle().track({ change: true })}>
     <div @click=${toggle} class=blocked-url-label>${wildcardURL}</div>
     <devtools-widget .widgetConfig=${widgetConfig(AffectedCountWidget, {condition, drawer: this})}></devtools-widget>`,
           // clang-format on
           element);
     }
-    return element;
   }
 
   private toggleEnabled(): void {
@@ -609,19 +614,26 @@ export class RequestConditionsDrawer extends UI.Widget.VBox implements
 
   update(): void {
     const enabled = this.manager.requestConditions.conditionsEnabled;
-    this.list.clear();
-    for (const pattern of this.manager.requestConditions.conditions) {
-      if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || pattern.wildcardURL) {
-        this.list.appendItem(
-            pattern,
-            enabled,
-            /* focusable=*/ false,
-            {
-              edit: i18nString(UIStrings.editPattern, {PH1: pattern.constructorStringOrWildcardURL}),
-              delete: i18nString(UIStrings.removePattern, {PH1: pattern.constructorStringOrWildcardURL})
-            },
-        );
-      }
+    const newItems = Array.from(this.manager.requestConditions.conditions.filter(
+        pattern => Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled || pattern.wildcardURL));
+
+    let oldIndex = 0;
+    for (; oldIndex < newItems.length; ++oldIndex) {
+      const pattern = newItems[oldIndex];
+      this.list.updateItem(
+          oldIndex,
+          pattern,
+          enabled,
+          /* focusable=*/ false,
+          {
+            edit: i18nString(UIStrings.editPattern, {PH1: pattern.constructorStringOrWildcardURL}),
+            delete: i18nString(UIStrings.removePattern, {PH1: pattern.constructorStringOrWildcardURL})
+          },
+      );
+    }
+
+    while (oldIndex < this.list.items.length) {
+      this.list.removeItem(oldIndex);
     }
     this.requestUpdate();
   }

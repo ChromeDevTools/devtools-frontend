@@ -75,4 +75,110 @@ describeWithLocale('ListWidget', () => {
     list.addNewItem(0, '');
     assert.isTrue(delegate.committed);
   });
+
+  class MockDelegate implements UI.ListWidget.Delegate<string> {
+    updateItem(content: Element, item: string): void {
+      content.textContent = item;
+    }
+
+    renderItem(item: string): Element {
+      const element = document.createElement('div');
+      element.textContent = item;
+      return element;
+    }
+
+    removeItemRequested(): void {
+    }
+
+    beginEdit(): UI.ListWidget.Editor<string> {
+      return new UI.ListWidget.Editor<string>();
+    }
+
+    commitEdit(): void {
+    }
+  }
+
+  describe('updates', () => {
+    it('an item at the beginning', () => {
+      const listWidget = new UI.ListWidget.ListWidget(new MockDelegate());
+
+      listWidget.appendItem('a', true);
+      listWidget.appendItem('b', true);
+      listWidget.appendItem('c', true);
+
+      listWidget.updateItem(0, 'd', true);
+
+      const items = Array.from(listWidget.element.shadowRoot!.querySelectorAll('.list-item')).map(i => i.textContent);
+      assert.deepEqual(items, ['d', 'b', 'c']);
+    });
+
+    it('an item in the middle', () => {
+      const listWidget = new UI.ListWidget.ListWidget(new MockDelegate());
+
+      listWidget.appendItem('a', true);
+      listWidget.appendItem('b', true);
+      listWidget.appendItem('c', true);
+
+      listWidget.updateItem(1, 'd', true);
+
+      const items = Array.from(listWidget.element.shadowRoot!.querySelectorAll('.list-item')).map(i => i.textContent);
+      assert.deepEqual(items, ['a', 'd', 'c']);
+    });
+
+    it('an item at the end', () => {
+      const listWidget = new UI.ListWidget.ListWidget(new MockDelegate());
+
+      listWidget.appendItem('a', true);
+      listWidget.appendItem('b', true);
+      listWidget.appendItem('c', true);
+
+      listWidget.updateItem(2, 'd', true);
+
+      const items = Array.from(listWidget.element.shadowRoot!.querySelectorAll('.list-item')).map(i => i.textContent);
+      assert.deepEqual(items, ['a', 'b', 'd']);
+    });
+
+    it('an item with an index < 0', () => {
+      const listWidget = new UI.ListWidget.ListWidget(new MockDelegate());
+
+      listWidget.appendItem('a', true);
+      listWidget.appendItem('b', true);
+      listWidget.appendItem('c', true);
+
+      listWidget.updateItem(-1, 'd', true);
+
+      const items = Array.from(listWidget.element.shadowRoot!.querySelectorAll('.list-item')).map(i => i.textContent);
+      assert.deepEqual(items, ['a', 'b', 'c', 'd']);
+    });
+
+    it('an item with an index > list length', () => {
+      const listWidget = new UI.ListWidget.ListWidget(new MockDelegate());
+
+      listWidget.appendItem('a', true);
+      listWidget.appendItem('b', true);
+      listWidget.appendItem('c', true);
+
+      listWidget.updateItem(10, 'd', true);
+
+      const items = Array.from(listWidget.element.shadowRoot!.querySelectorAll('.list-item')).map(i => i.textContent);
+      assert.deepEqual(items, ['a', 'b', 'c', 'd']);
+
+      listWidget.element.remove();
+    });
+
+    it('reorders items', () => {
+      const listWidget = new UI.ListWidget.ListWidget(new MockDelegate());
+
+      listWidget.appendItem('a', true);
+      listWidget.appendItem('b', true);
+      listWidget.appendItem('c', true);
+
+      listWidget.updateItem(2, 'a', true);
+      listWidget.updateItem(1, 'c', true);
+      listWidget.updateItem(0, 'b', true);
+
+      const items = Array.from(listWidget.element.shadowRoot!.querySelectorAll('.list-item')).map(i => i.textContent);
+      assert.deepEqual(items, ['b', 'c', 'a']);
+    });
+  });
 });

@@ -6891,61 +6891,6 @@ var Throttler = class {
   }
 };
 
-// gen/front_end/core/common/Worker.js
-var Worker_exports = {};
-__export(Worker_exports, {
-  WorkerWrapper: () => WorkerWrapper
-});
-var WorkerWrapper = class _WorkerWrapper {
-  #workerPromise;
-  #disposed;
-  #rejectWorkerPromise;
-  constructor(workerLocation) {
-    this.#workerPromise = new Promise((fulfill, reject) => {
-      this.#rejectWorkerPromise = reject;
-      const worker = new Worker(workerLocation, { type: "module" });
-      worker.onerror = (event) => {
-        console.error(`Failed to load worker for ${workerLocation.href}:`, event);
-      };
-      worker.onmessage = (event) => {
-        console.assert(event.data === "workerReady");
-        worker.onmessage = null;
-        fulfill(worker);
-      };
-    });
-  }
-  static fromURL(url) {
-    return new _WorkerWrapper(url);
-  }
-  postMessage(message, transfer) {
-    void this.#workerPromise.then((worker) => {
-      if (!this.#disposed) {
-        worker.postMessage(message, transfer ?? []);
-      }
-    });
-  }
-  dispose() {
-    this.#disposed = true;
-    void this.#workerPromise.then((worker) => worker.terminate());
-  }
-  terminate(immediately = false) {
-    if (immediately) {
-      this.#rejectWorkerPromise?.(new Error("Worker terminated"));
-    }
-    this.dispose();
-  }
-  set onmessage(listener) {
-    void this.#workerPromise.then((worker) => {
-      worker.onmessage = listener;
-    });
-  }
-  set onerror(listener) {
-    void this.#workerPromise.then((worker) => {
-      worker.onerror = listener;
-    });
-  }
-};
-
 // gen/front_end/core/common/common.prebundle.js
 import { UIString } from "./../platform/platform.js";
 export {
@@ -6980,7 +6925,6 @@ export {
   TextDictionary_exports as TextDictionary,
   Throttler_exports as Throttler,
   Trie_exports as Trie,
-  UIString,
-  Worker_exports as Worker
+  UIString
 };
 //# sourceMappingURL=common.js.map

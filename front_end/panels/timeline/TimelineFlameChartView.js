@@ -630,7 +630,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
     }
     hoverAnnotationInSidebar(annotation) {
         const overlay = ModificationsManager.activeManager()?.getOverlaybyAnnotation(annotation);
-        if (overlay && overlay.type === 'ENTRY_LABEL') {
+        if (overlay?.type === 'ENTRY_LABEL') {
             this.#overlays.highlightOverlay(overlay);
         }
     }

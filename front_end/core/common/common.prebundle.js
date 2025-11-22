@@ -32,12 +32,11 @@ import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
 import * as Trie from './Trie.js';
-import * as Worker from './Worker.js';
 /*
  * This is re-exported here because we moved UIString into platform from
  * common and wanted to avoid a huge rename of imports. A future CL will
  * update all references to `Common.UIString` to `Platform.UIString`.
  */
 export { UIString } from '../platform/platform.js';
-export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, StringOutputStream, TextDictionary, Throttler, Trie, Worker, };
+export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, StringOutputStream, TextDictionary, Throttler, Trie, };
 //# sourceMappingURL=common.prebundle.js.map

@@ -75,6 +75,7 @@ export declare function cleanup(): void;
 export declare function openHistoryContextMenu(lastUpdate: AiAssistancePanel.ViewInput, item: string): {
     contextMenu: UI.ContextMenu.ContextMenu;
     id: number | undefined;
+    entry: UI.ContextMenu.Item | undefined;
 };
 export declare function createTestFilesystem(fileSystemPath: string, files?: Array<{
     path: string;

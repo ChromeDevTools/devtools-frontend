@@ -227,7 +227,7 @@ export class Cookie {
         // extension cookie tests currently use the funtionality, and if we
         // ever decide to implement that it should be done by preventing
         // such cookies from being set.
-        if (!domain || domain[0] !== '.') {
+        if (domain?.[0] !== '.') {
             return false;
         }
         // The host with a "." prefixed.

@@ -201,13 +201,6 @@ export class ChatView extends HTMLElement {
     disconnectedCallback() {
         this.#messagesContainerResizeObserver.disconnect();
     }
-    clearTextInput() {
-        const textArea = this.#shadow.querySelector('.chat-input');
-        if (!textArea) {
-            return;
-        }
-        textArea.value = '';
-    }
     focusTextInput() {
         const textArea = this.#shadow.querySelector('.chat-input');
         if (!textArea) {
@@ -720,6 +713,9 @@ function renderContextTitle(context, disabled) {
     return context.getTitle();
 }
 function renderSelection({ selectedContext, inspectElementToggled, conversationType, isTextInputDisabled, onContextClick, onInspectElementClick, }) {
+    if (!selectedContext) {
+        return Lit.nothing;
+    }
     // TODO: currently the picker behavior is SDKNode specific.
     const hasPickerBehavior = conversationType === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
     const resourceClass = Lit.Directives.classMap({
@@ -728,9 +724,6 @@ function renderSelection({ selectedContext, inspectElementToggled, conversationT
         'has-picker-behavior': hasPickerBehavior,
         disabled: isTextInputDisabled,
     });
-    if (!selectedContext && !hasPickerBehavior) {
-        return Lit.nothing;
-    }
     const handleKeyDown = (ev) => {
         if (ev.key === 'Enter' || ev.key === ' ') {
             void onContextClick();
@@ -968,7 +961,10 @@ function renderImageInput({ multimodalInputEnabled, imageInput, isTextInputDisab
     // clang-format on
 }
 function renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltipId, disclaimerText }) {
-    const classes = Lit.Directives.classMap({ 'chat-input-disclaimer': true, 'hide-divider': !isLoading && blockedByCrossOrigin });
+    const classes = Lit.Directives.classMap({
+        'chat-input-disclaimer': true,
+        'hide-divider': !isLoading && blockedByCrossOrigin,
+    });
     // clang-format off
     return html `
     <p class=${classes}>
@@ -983,53 +979,84 @@ function renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltip
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
     }}
       >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
-      ${renderDisclamerTooltip(tooltipId, disclaimerText)}
+      ${renderDisclaimerTooltip(tooltipId, disclaimerText)}
     </p>
   `;
     // clang-format on
 }
 function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled, inputPlaceholder, selectedContext, inspectElementToggled, multimodalInputEnabled, conversationType, imageInput, isTextInputEmpty, uploadImageInputEnabled, disclaimerText, onContextClick, onInspectElementClick, onSubmit, onTextAreaKeyDown, onCancel, onNewConversation, onTakeScreenshot, onRemoveImageInput, onTextInputChange, onImageUpload, }) {
-    const shouldShowMultiLine = selectedContext;
     const chatInputContainerCls = Lit.Directives.classMap({
         'chat-input-container': true,
-        'single-line-layout': !shouldShowMultiLine,
+        'single-line-layout': !selectedContext,
         disabled: isTextInputDisabled,
     });
     // clang-format off
-    return html `
-  <form class="input-form" @submit=${onSubmit}>
+    return html ` <form class="input-form" @submit=${onSubmit}>
     <div class=${chatInputContainerCls}>
-      ${renderImageInput({ multimodalInputEnabled, imageInput, isTextInputDisabled, onRemoveImageInput })}
-      <textarea class="chat-input"
+      ${renderImageInput({
+        multimodalInputEnabled,
+        imageInput,
+        isTextInputDisabled,
+        onRemoveImageInput,
+    })}
+      <textarea
+        class="chat-input"
         .disabled=${isTextInputDisabled}
         wrap="hard"
         maxlength="10000"
         @keydown=${onTextAreaKeyDown}
         @input=${(event) => onTextInputChange(event.target.value)}
         placeholder=${inputPlaceholder}
-        jslog=${VisualLogging.textField('query').track({ change: true, keydown: 'Enter' })}
+        jslog=${VisualLogging.textField('query').track({
+        change: true,
+        keydown: 'Enter',
+    })}
         aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
+        ${ref(el => {
+        // If the elements is disabled reset the text to show
+        // the place holder
+        if (el && isTextInputDisabled) {
+            el.value = '';
+        }
+    })}
       ></textarea>
       <div class="chat-input-actions">
         <div class="chat-input-actions-left">
-          ${shouldShowMultiLine ? renderSelection({
+          ${renderSelection({
         selectedContext,
         inspectElementToggled,
         conversationType,
         isTextInputDisabled,
         onContextClick,
         onInspectElementClick,
-    }) : Lit.nothing}
+    })}
         </div>
         <div class="chat-input-actions-right">
           <div class="chat-input-disclaimer-container">
-            ${renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltipId: RELEVANT_DATA_LINK_CHAT_ID, disclaimerText })}
+            ${renderRelevantDataDisclaimer({
+        isLoading,
+        blockedByCrossOrigin,
+        tooltipId: RELEVANT_DATA_LINK_CHAT_ID,
+        disclaimerText,
+    })}
           </div>
           ${renderMultimodalInputButtons({
-        multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, uploadImageInputEnabled, onTakeScreenshot, onImageUpload
+        multimodalInputEnabled,
+        blockedByCrossOrigin,
+        isTextInputDisabled,
+        imageInput,
+        uploadImageInputEnabled,
+        onTakeScreenshot,
+        onImageUpload,
     })}
           ${renderChatInputButtons({
-        isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation
+        isLoading,
+        blockedByCrossOrigin,
+        isTextInputDisabled,
+        isTextInputEmpty,
+        imageInput,
+        onCancel,
+        onNewConversation,
     })}
         </div>
       </div>
@@ -1056,7 +1083,7 @@ function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackFo
     }
     return renderEmptyState({ isTextInputDisabled, suggestions, onSuggestionClick });
 }
-function renderDisclamerTooltip(id, disclaimerText) {
+function renderDisclaimerTooltip(id, disclaimerText) {
     // clang-format off
     return html `
     <devtools-tooltip

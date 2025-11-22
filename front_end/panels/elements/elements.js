@@ -4810,7 +4810,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
       this.listItemElement.appendChild(tooltip);
     }
     if (this.valueElement) {
-      const lineBreakValue = this.valueElement.firstElementChild && this.valueElement.firstElementChild.tagName === "BR";
+      const lineBreakValue = this.valueElement.firstElementChild?.tagName === "BR";
       const separator = lineBreakValue ? ":" : ": ";
       this.listItemElement.createChild("span", "styles-name-value-separator").textContent = separator;
       if (this.expandElement) {
@@ -14623,7 +14623,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     }
   }
   resetClipboardIfNeeded(removedNode) {
-    if (this.clipboardNodeData && this.clipboardNodeData.node === removedNode) {
+    if (this.clipboardNodeData?.node === removedNode) {
       this.setClipboardData(null);
     }
   }
@@ -17313,7 +17313,7 @@ ${node.simpleSelector()} {}`, false);
     if (!whitespaceTrimmedQuery.length) {
       return;
     }
-    if (!this.searchConfig || this.searchConfig.query !== query) {
+    if (this.searchConfig?.query !== query) {
       this.onSearchCanceled();
     } else {
       this.hideSearchHighlights();

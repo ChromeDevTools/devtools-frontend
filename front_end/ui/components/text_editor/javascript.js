@@ -444,7 +444,7 @@ async function getArgumentsForExpression(callee, doc) {
     }
     const expression = doc.sliceString(callee.from, callee.to);
     const result = await evaluateExpression(context, expression, 'argumentsHint');
-    if (!result || result.type !== 'function') {
+    if (result?.type !== 'function') {
         return null;
     }
     const objGetter = async () => {

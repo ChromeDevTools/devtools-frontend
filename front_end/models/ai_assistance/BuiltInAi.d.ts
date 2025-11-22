@@ -2,7 +2,7 @@ export interface LanguageModel {
     promptStreaming: (arg0: string, opts?: {
         signal?: AbortSignal;
     }) => AsyncGenerator<string>;
-    clone: () => LanguageModel;
+    clone: () => Promise<LanguageModel>;
     destroy: () => void;
 }
 export declare const enum LanguageModelAvailability {
@@ -14,6 +14,7 @@ export declare const enum LanguageModelAvailability {
 }
 export declare class BuiltInAi {
     #private;
+    initDoneForTesting: Promise<void>;
     static instance(): BuiltInAi;
     constructor();
     getLanguageModelAvailability(): Promise<LanguageModelAvailability>;

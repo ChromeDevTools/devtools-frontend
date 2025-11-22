@@ -2052,7 +2052,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           if (this.message.type === "assert") {
             this.messagePrefix = i18nString2(UIStrings2.assertionFailed);
           }
-          if (this.message.parameters && this.message.parameters.length === 1) {
+          if (this.message.parameters?.length === 1) {
             const parameter = this.message.parameters[0];
             if (typeof parameter !== "string" && parameter.type === "string") {
               messageElement = this.tryFormatAsError(parameter.value);
@@ -2520,13 +2520,13 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       } else {
         result.appendChild(errorElement);
       }
-      if (cause && cause.subtype === "error") {
+      if (cause?.subtype === "error") {
         await formatErrorStack(
           cause,
           /* includeCausedByPrefix */
           true
         );
-      } else if (cause && cause.type === "string") {
+      } else if (cause?.type === "string") {
         const stringCauseElement = document.createElement("div");
         stringCauseElement.append(`Caused by: ${cause.value}`);
         result.append(stringCauseElement);
@@ -5423,7 +5423,7 @@ var ConsoleViewport = class {
     const end = this.selectionIsBackward ? this.anchorSelection.item : this.headSelection.item;
     for (let i = start; i <= end; i++) {
       const element = this.providerElement(i);
-      if (element && element.consoleMessage().type === "table") {
+      if (element?.consoleMessage().type === "table") {
         return true;
       }
     }
@@ -7643,7 +7643,7 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     if (preview.deepTextContent() !== TextEditor3.Config.contentIncludingHint(this.editor.editor).trim()) {
       this.innerPreviewElement.appendChild(preview);
     }
-    if (result && "object" in result && result.object && result.object.subtype === "node") {
+    if (result && "object" in result && result.object?.subtype === "node") {
       this.highlightingNode = true;
       SDK8.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result.object);
     } else if (this.highlightingNode) {

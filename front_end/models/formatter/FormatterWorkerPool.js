@@ -1,7 +1,7 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 let formatterWorkerPoolInstance;
 export class FormatterWorkerPool {
     taskQueue;
@@ -31,7 +31,7 @@ export class FormatterWorkerPool {
         formatterWorkerPoolInstance = undefined;
     }
     createWorker() {
-        const worker = Common.Worker.WorkerWrapper.fromURL(new URL('../../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url));
+        const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL('../../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url).toString());
         worker.onmessage = this.onWorkerMessage.bind(this, worker);
         worker.onerror = this.onWorkerError.bind(this, worker);
         return worker;

@@ -25,7 +25,7 @@ export class PreloadingModel extends SDKModel {
         this.agent = target.preloadAgent();
         void this.agent.invoke_enable();
         const targetInfo = target.targetInfo();
-        if (targetInfo !== undefined && targetInfo.subtype === 'prerender') {
+        if (targetInfo?.subtype === 'prerender') {
             this.lastPrimaryPageModel = TargetManager.instance().primaryPageTarget()?.model(PreloadingModel) || null;
         }
         TargetManager.instance().addModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);

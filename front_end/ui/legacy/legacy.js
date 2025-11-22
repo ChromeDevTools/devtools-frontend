@@ -4876,7 +4876,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     if (userGesture && !tab.closeable) {
       return;
     }
-    if (this.currentTab && this.currentTab.id === id2) {
+    if (this.currentTab?.id === id2) {
       this.hideCurrentTab();
     }
     this.tabsById.delete(id2);
@@ -4940,7 +4940,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
       isUserGesture: userGesture
     };
     this.dispatchEventToListeners(Events.TabInvoked, eventData);
-    if (this.currentTab && this.currentTab.id === id2) {
+    if (this.currentTab?.id === id2) {
       return true;
     }
     this.suspendInvalidations();
@@ -5056,7 +5056,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
       return;
     }
     this.suspendInvalidations();
-    const isSelected = this.currentTab && this.currentTab.id === id2;
+    const isSelected = this.currentTab?.id === id2;
     const shouldFocus = tab.view.hasFocus();
     if (isSelected) {
       this.hideTab(tab);
@@ -18030,7 +18030,7 @@ var ListWidget = class extends VBox {
   list;
   lastSeparator;
   focusRestorer;
-  items;
+  #items;
   editable;
   elements;
   editor;
@@ -18045,7 +18045,7 @@ var ListWidget = class extends VBox {
     this.list = this.contentElement.createChild("div", "list");
     this.lastSeparator = false;
     this.focusRestorer = null;
-    this.items = [];
+    this.#items = [];
     this.editable = [];
     this.elements = [];
     this.editor = null;
@@ -18058,8 +18058,11 @@ var ListWidget = class extends VBox {
     }
     this.updatePlaceholder();
   }
+  get items() {
+    return this.#items;
+  }
   clear() {
-    this.items = [];
+    this.#items = [];
     this.editable = [];
     this.elements = [];
     this.lastSeparator = false;
@@ -18067,8 +18070,29 @@ var ListWidget = class extends VBox {
     this.updatePlaceholder();
     this.stopEditing();
   }
-  appendItem(item8, editable) {
-    if (this.lastSeparator && this.items.length) {
+  updateItem(index, newItem, editable, focusable = true, controlLabels = {}) {
+    if (index < 0 || index >= this.#items.length) {
+      this.appendItem(newItem, editable, focusable, controlLabels);
+      return;
+    }
+    this.#items[index] = newItem;
+    this.editable[index] = editable;
+    const element = this.elements[index];
+    const [content, controls] = element.children;
+    if (controls) {
+      element.removeChild(controls);
+    }
+    this.delegate.updateItem?.(content, newItem, editable, index);
+    element.classList.toggle("editable", editable);
+    if (editable) {
+      if (focusable) {
+        element.tabIndex = 0;
+      }
+      element.appendChild(this.createControls(newItem, element, controlLabels));
+    }
+  }
+  appendItem(item8, editable, focusable = true, controlLabels = {}) {
+    if (this.lastSeparator && this.#items.length) {
       const element2 = document.createElement("div");
       element2.classList.add("list-separator");
       if (this.isTable) {
@@ -18077,21 +18101,23 @@ var ListWidget = class extends VBox {
       this.list.appendChild(element2);
     }
     this.lastSeparator = false;
-    this.items.push(item8);
+    this.#items.push(item8);
     this.editable.push(editable);
     const element = this.list.createChild("div", "list-item");
     if (this.isTable) {
       element.role = "rowgroup";
     }
-    const content = this.delegate.renderItem(item8, editable, this.items.length - 1);
+    const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
       element.setAttribute("jslog", `${VisualLogging19.item()}`);
     }
     element.appendChild(content);
     if (editable) {
       element.classList.add("editable");
-      element.tabIndex = 0;
-      element.appendChild(this.createControls(item8, element));
+      if (focusable) {
+        element.tabIndex = 0;
+      }
+      element.appendChild(this.createControls(item8, element, controlLabels));
     }
     this.elements.push(element);
     this.updatePlaceholder();
@@ -18100,7 +18126,7 @@ var ListWidget = class extends VBox {
     this.lastSeparator = true;
   }
   removeItem(index) {
-    if (this.editItem === this.items[index]) {
+    if (this.editItem === this.#items[index]) {
       this.stopEditing();
     }
     const element = this.elements[index];
@@ -18116,7 +18142,7 @@ var ListWidget = class extends VBox {
     }
     element.remove();
     this.elements.splice(index, 1);
-    this.items.splice(index, 1);
+    this.#items.splice(index, 1);
     this.editable.splice(index, 1);
     this.updatePlaceholder();
   }
@@ -18127,7 +18153,7 @@ var ListWidget = class extends VBox {
     this.emptyPlaceholder = element;
     this.updatePlaceholder();
   }
-  createControls(item8, element) {
+  createControls(item8, element, controlLabels) {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
@@ -18138,13 +18164,13 @@ var ListWidget = class extends VBox {
           <devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
-                           .title=${i18nString14(UIStrings14.editString)}
+                           .title=${controlLabels?.edit ?? i18nString14(UIStrings14.editString)}
                            .variant=${"icon"}
                            @click=${onEditClicked}></devtools-button>
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}
-                           .title=${i18nString14(UIStrings14.removeString)}
+                           .title=${controlLabels?.delete ?? i18nString14(UIStrings14.removeString)}
                            .variant=${"icon"}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>
@@ -18158,7 +18184,7 @@ var ListWidget = class extends VBox {
     function onRemoveClicked() {
       const index = this.elements.indexOf(element);
       this.element.focus();
-      this.delegate.removeItemRequested(this.items[index], index);
+      this.delegate.removeItemRequested(this.#items[index], index);
       LiveAnnouncer.alert(i18nString14(UIStrings14.removedItem));
       if (this.elements.length >= 1) {
         this.elements[Math.min(index, this.elements.length - 1)].focus();
@@ -19130,7 +19156,7 @@ var ReportView = class extends VBox {
     this.headerElement.classList.toggle("hidden", Boolean(title));
   }
   setSubtitle(subtitle) {
-    if (this.subtitleElement && this.subtitleElement.textContent === subtitle) {
+    if (this.subtitleElement?.textContent === subtitle) {
       return;
     }
     if (!this.subtitleElement) {
@@ -21871,7 +21897,7 @@ var TreeElement = class {
     this.listItemNode.classList.remove("selected");
     clearSelected(this.listItemNode);
     this.setFocusable(false);
-    if (this.treeOutline && this.treeOutline.selectedTreeElement === this) {
+    if (this.treeOutline?.selectedTreeElement === this) {
       this.treeOutline.selectedTreeElement = null;
       this.treeOutline.updateFocusable();
       if (hadFocus) {

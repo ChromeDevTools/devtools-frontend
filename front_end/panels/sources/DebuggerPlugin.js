@@ -961,7 +961,7 @@ export class DebuggerPlugin extends Plugin {
             }
             if (syntaxType === 'new') {
                 const callee = syntaxNode.parent?.getChild('Expression');
-                if (callee && callee.name === 'VariableName' && state.sliceDoc(callee.from, callee.to) === 'Worker') {
+                if (callee?.name === 'VariableName' && state.sliceDoc(callee.from, callee.to) === 'Worker') {
                     asyncCall = syntaxNode.parent;
                 }
             }
@@ -1311,7 +1311,7 @@ export class DebuggerPlugin extends Plugin {
             return;
         }
         const resource = this.getSourceMapResource();
-        if (resource && resource.success === null) {
+        if (resource?.success === null) {
             // Don't create the infobar until we know whether loading succeeded or failed.
             return;
         }

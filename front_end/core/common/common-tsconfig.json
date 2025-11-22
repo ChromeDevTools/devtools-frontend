@@ -65,7 +65,6 @@
     "../../../../../../front_end/core/common/TextDictionary.ts",
     "../../../../../../front_end/core/common/Throttler.ts",
     "../../../../../../front_end/core/common/Trie.ts",
-    "../../../../../../front_end/core/common/Worker.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"

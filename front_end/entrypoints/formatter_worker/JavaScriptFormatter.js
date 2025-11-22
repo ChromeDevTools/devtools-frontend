@@ -172,7 +172,7 @@ export class JavaScriptFormatter {
             }
         }
         else if (nodeType === 'ObjectPattern') {
-            if (node.parent && node.parent.type === 'VariableDeclarator' && AT.punctuator(token, '{')) {
+            if (node.parent?.type === 'VariableDeclarator' && AT.punctuator(token, '{')) {
                 return 'st';
             }
             if (AT.punctuator(token, ',')) {
@@ -205,7 +205,7 @@ export class JavaScriptFormatter {
         }
         else if (nodeType === 'WithStatement') {
             if (AT.punctuator(token, ')')) {
-                return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
+                return node.body?.type === 'BlockStatement' ? 'ts' : 'tn>';
             }
         }
         else if (nodeType === 'SwitchStatement') {
@@ -279,10 +279,10 @@ export class JavaScriptFormatter {
         }
         else if (nodeType === 'IfStatement') {
             if (AT.punctuator(token, ')')) {
-                return node.consequent && node.consequent.type === 'BlockStatement' ? 'ts' : 'tn>';
+                return node.consequent?.type === 'BlockStatement' ? 'ts' : 'tn>';
             }
             if (AT.keyword(token, 'else')) {
-                const preFormat = node.consequent && node.consequent.type === 'BlockStatement' ? 'st' : 'n<t';
+                const preFormat = node.consequent?.type === 'BlockStatement' ? 'st' : 'n<t';
                 let postFormat = 'n>';
                 if (node.alternate && (node.alternate.type === 'BlockStatement' || node.alternate.type === 'IfStatement')) {
                     postFormat = 's';
@@ -296,7 +296,7 @@ export class JavaScriptFormatter {
             }
         }
         else if (nodeType === 'SequenceExpression' && AT.punctuator(token, ',')) {
-            return node.parent && node.parent.type === 'SwitchCase' ? 'ts' : 'tn';
+            return node.parent?.type === 'SwitchCase' ? 'ts' : 'tn';
         }
         else if (nodeType === 'ForStatement' || nodeType === 'ForOfStatement' || nodeType === 'ForInStatement') {
             if (AT.punctuator(token, ';')) {
@@ -306,16 +306,16 @@ export class JavaScriptFormatter {
                 return 'sts';
             }
             if (AT.punctuator(token, ')')) {
-                return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
+                return node.body?.type === 'BlockStatement' ? 'ts' : 'tn>';
             }
         }
         else if (nodeType === 'WhileStatement') {
             if (AT.punctuator(token, ')')) {
-                return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
+                return node.body?.type === 'BlockStatement' ? 'ts' : 'tn>';
             }
         }
         else if (nodeType === 'DoWhileStatement') {
-            const blockBody = node.body && node.body.type === 'BlockStatement';
+            const blockBody = node.body?.type === 'BlockStatement';
             if (AT.keyword(token, 'do')) {
                 return blockBody ? 'ts' : 'tn>';
             }
@@ -391,34 +391,31 @@ export class JavaScriptFormatter {
             }
         }
         else if (nodeType === 'BlockStatement') {
-            if (node.parent && node.parent.type === 'IfStatement') {
+            if (node.parent?.type === 'IfStatement') {
                 const parentNode = node.parent;
                 if (parentNode.alternate && parentNode.consequent === node) {
                     return '';
                 }
             }
-            if (node.parent && node.parent.type === 'FunctionExpression' && node.parent.parent &&
-                node.parent.parent.type === 'Property') {
+            if (node.parent?.type === 'FunctionExpression' && node.parent.parent?.type === 'Property') {
                 return '';
             }
-            if (node.parent && node.parent.type === 'FunctionExpression' && node.parent.parent &&
-                node.parent.parent.type === 'VariableDeclarator') {
+            if (node.parent?.type === 'FunctionExpression' && node.parent.parent?.type === 'VariableDeclarator') {
                 return '';
             }
-            if (node.parent && node.parent.type === 'FunctionExpression' && node.parent.parent &&
-                node.parent.parent.type === 'CallExpression') {
+            if (node.parent?.type === 'FunctionExpression' && node.parent.parent?.type === 'CallExpression') {
                 return '';
             }
-            if (node.parent && node.parent.type === 'DoWhileStatement') {
+            if (node.parent?.type === 'DoWhileStatement') {
                 return '';
             }
-            if (node.parent && node.parent.type === 'TryStatement') {
+            if (node.parent?.type === 'TryStatement') {
                 const parentNode = node.parent;
                 if (parentNode.block === node) {
                     return 's';
                 }
             }
-            if (node.parent && node.parent.type === 'CatchClause') {
+            if (node.parent?.type === 'CatchClause') {
                 const parentNode = node.parent;
                 // @ts-expect-error We are doing a subtype check, without properly checking whether
                 // it exists. We can't fix that, unless we use proper typechecking

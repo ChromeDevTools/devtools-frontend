@@ -31,7 +31,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
             Common.ColorUtils.getContrastThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
         this.#contrastRatioAPCAThreshold =
             Common.ColorUtils.getAPCAThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
-        if (!contrastInfo.backgroundColors || contrastInfo.backgroundColors.length !== 1) {
+        if (contrastInfo.backgroundColors?.length !== 1) {
             return;
         }
         const bgColorText = contrastInfo.backgroundColors[0];

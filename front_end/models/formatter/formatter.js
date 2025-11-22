@@ -10,7 +10,7 @@ __export(FormatterWorkerPool_exports, {
   FormatterWorkerPool: () => FormatterWorkerPool,
   formatterWorkerPool: () => formatterWorkerPool
 });
-import * as Common from "./../../core/common/common.js";
+import * as Platform from "./../../core/platform/platform.js";
 var formatterWorkerPoolInstance;
 var FormatterWorkerPool = class _FormatterWorkerPool {
   taskQueue;
@@ -43,7 +43,7 @@ var FormatterWorkerPool = class _FormatterWorkerPool {
     formatterWorkerPoolInstance = void 0;
   }
   createWorker() {
-    const worker = Common.Worker.WorkerWrapper.fromURL(new URL("../../entrypoints/formatter_worker/formatter_worker-entrypoint.js", import.meta.url));
+    const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/formatter_worker/formatter_worker-entrypoint.js", import.meta.url).toString());
     worker.onmessage = this.onWorkerMessage.bind(this, worker);
     worker.onerror = this.onWorkerError.bind(this, worker);
     return worker;
@@ -158,14 +158,14 @@ __export(ScriptFormatter_exports, {
   format: () => format,
   formatScriptContent: () => formatScriptContent
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
+import * as Common from "./../../core/common/common.js";
+import * as Platform2 from "./../../core/platform/platform.js";
 function locationToPosition(lineEndings, lineNumber, columnNumber) {
   const position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
   return position + columnNumber;
 }
 function positionToLocation(lineEndings, position) {
-  const lineNumber = Platform.ArrayUtilities.upperBound(lineEndings, position - 1, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+  const lineNumber = Platform2.ArrayUtilities.upperBound(lineEndings, position - 1, Platform2.ArrayUtilities.DEFAULT_COMPARATOR);
   let columnNumber;
   if (!lineNumber) {
     columnNumber = position;
@@ -174,13 +174,13 @@ function positionToLocation(lineEndings, position) {
   }
   return [lineNumber, columnNumber];
 }
-async function format(contentType, mimeType, content, indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get()) {
+async function format(contentType, mimeType, content, indent = Common.Settings.Settings.instance().moduleSetting("text-editor-indent").get()) {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
     return await formatScriptContent(mimeType, content, indent);
   }
   return { formattedContent: content, formattedMapping: new IdentityFormatterSourceMapping() };
 }
-async function formatScriptContent(mimeType, content, indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get()) {
+async function formatScriptContent(mimeType, content, indent = Common.Settings.Settings.instance().moduleSetting("text-editor-indent").get()) {
   const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, "\n").replace(/^\uFEFF/, "");
   const pool = formatterWorkerPool();
   let formatResult = { content: originalContent, mapping: { original: [], formatted: [] } };
@@ -188,8 +188,8 @@ async function formatScriptContent(mimeType, content, indent = Common2.Settings.
     formatResult = await pool.format(mimeType, originalContent, indent);
   } catch {
   }
-  const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(originalContent);
-  const formattedContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(formatResult.content);
+  const originalContentLineEndings = Platform2.StringUtilities.findLineEndingIndexes(originalContent);
+  const formattedContentLineEndings = Platform2.StringUtilities.findLineEndingIndexes(formatResult.content);
   const sourceMapping = new FormatterSourceMappingImpl(originalContentLineEndings, formattedContentLineEndings, formatResult.mapping);
   return { formattedContent: formatResult.content, formattedMapping: sourceMapping };
 }
@@ -221,7 +221,7 @@ var FormatterSourceMappingImpl = class {
     return positionToLocation(this.originalLineEndings, originalPosition);
   }
   convertPosition(positions1, positions2, position) {
-    const index = Platform.ArrayUtilities.upperBound(positions1, position, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
+    const index = Platform2.ArrayUtilities.upperBound(positions1, position, Platform2.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
     let convertedPosition = positions2[index] + position - positions1[index];
     if (index < positions2.length - 1 && convertedPosition > positions2[index + 1]) {
       convertedPosition = positions2[index + 1];

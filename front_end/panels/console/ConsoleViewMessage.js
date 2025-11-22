@@ -401,7 +401,7 @@ export class ConsoleViewMessage {
                     if (this.message.type === "assert" /* Protocol.Runtime.ConsoleAPICalledEventType.Assert */) {
                         this.messagePrefix = i18nString(UIStrings.assertionFailed);
                     }
-                    if (this.message.parameters && this.message.parameters.length === 1) {
+                    if (this.message.parameters?.length === 1) {
                         const parameter = this.message.parameters[0];
                         if (typeof parameter !== 'string' && parameter.type === 'string') {
                             messageElement = this.tryFormatAsError(parameter.value);
@@ -896,10 +896,10 @@ export class ConsoleViewMessage {
             else {
                 result.appendChild(errorElement);
             }
-            if (cause && cause.subtype === 'error') {
+            if (cause?.subtype === 'error') {
                 await formatErrorStack(cause, /* includeCausedByPrefix */ true);
             }
-            else if (cause && cause.type === 'string') {
+            else if (cause?.type === 'string') {
                 const stringCauseElement = document.createElement('div');
                 stringCauseElement.append(`Caused by: ${cause.value}`);
                 result.append(stringCauseElement);

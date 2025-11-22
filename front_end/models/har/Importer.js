@@ -207,7 +207,7 @@ export class Importer {
                 return customResourceType;
             }
         }
-        if (pageLoad && pageLoad.mainRequest === request) {
+        if (pageLoad?.mainRequest === request) {
             return Common.ResourceType.resourceTypes.Document;
         }
         const resourceTypeFromMime = Common.ResourceType.ResourceType.fromMimeType(entry.response.content.mimeType);

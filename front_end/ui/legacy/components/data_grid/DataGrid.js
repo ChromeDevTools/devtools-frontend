@@ -2021,7 +2021,7 @@ export class DataGridNode {
         this.select();
     }
     deselect(supressDeselectedEvent) {
-        if (!this.dataGrid || this.dataGrid.selectedNode !== this || !this.selected) {
+        if (this.dataGrid?.selectedNode !== this || !this.selected) {
             return;
         }
         this.#selected = false;

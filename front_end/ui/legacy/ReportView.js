@@ -41,7 +41,7 @@ export class ReportView extends VBox {
         this.headerElement.classList.toggle('hidden', Boolean(title));
     }
     setSubtitle(subtitle) {
-        if (this.subtitleElement && this.subtitleElement.textContent === subtitle) {
+        if (this.subtitleElement?.textContent === subtitle) {
             return;
         }
         if (!this.subtitleElement) {

@@ -10,15 +10,15 @@ import { StylingAgent } from './agents/StylingAgent.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 const MAX_TITLE_LENGTH = 80;
-export class AiConversation {
-    static generateContextDetailsMarkdown(details) {
-        const detailsMarkdown = [];
-        for (const detail of details) {
-            const text = `\`\`\`\`${detail.codeLang || ''}\n${detail.text.trim()}\n\`\`\`\``;
-            detailsMarkdown.push(`**${detail.title}:**\n${text}`);
-        }
-        return detailsMarkdown.join('\n\n');
+export function generateContextDetailsMarkdown(details) {
+    const detailsMarkdown = [];
+    for (const detail of details) {
+        const text = `\`\`\`\`${detail.codeLang || ''}\n${detail.text.trim()}\n\`\`\`\``;
+        detailsMarkdown.push(`**${detail.title}:**\n${text}`);
     }
+    return detailsMarkdown.join('\n\n');
+}
+export class AiConversation {
     static fromSerializedConversation(serializedConversation) {
         const history = serializedConversation.history.map(entry => {
             if (entry.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
@@ -99,7 +99,7 @@ export class AiConversation {
                 case "context" /* ResponseType.CONTEXT */: {
                     contentParts.push(`### ${item.title}`);
                     if (item.details && item.details.length > 0) {
-                        contentParts.push(AiConversation.generateContextDetailsMarkdown(item.details));
+                        contentParts.push(generateContextDetailsMarkdown(item.details));
                     }
                     break;
                 }

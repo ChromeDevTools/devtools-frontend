@@ -1593,7 +1593,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         return treeElement;
     }
     wasPopulated() {
-        if (!this.treeElement || this.treeElement.node !== this) {
+        if (this.treeElement?.node !== this) {
             return;
         }
         this.addChildrenRecursive();

@@ -229,7 +229,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
         if (userGesture && !tab.closeable) {
             return;
         }
-        if (this.currentTab && this.currentTab.id === id) {
+        if (this.currentTab?.id === id) {
             this.hideCurrentTab();
         }
         this.tabsById.delete(id);
@@ -293,7 +293,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
             isUserGesture: userGesture,
         };
         this.dispatchEventToListeners(Events.TabInvoked, eventData);
-        if (this.currentTab && this.currentTab.id === id) {
+        if (this.currentTab?.id === id) {
             return true;
         }
         this.suspendInvalidations();
@@ -409,7 +409,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
             return;
         }
         this.suspendInvalidations();
-        const isSelected = this.currentTab && this.currentTab.id === id;
+        const isSelected = this.currentTab?.id === id;
         const shouldFocus = tab.view.hasFocus();
         if (isSelected) {
             this.hideTab(tab);

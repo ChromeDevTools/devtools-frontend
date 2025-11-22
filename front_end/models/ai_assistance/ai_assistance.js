@@ -4895,6 +4895,9 @@ var ChangeManager = class {
   #cssModelToStylesheetId = /* @__PURE__ */ new Map();
   #stylesheetChanges = /* @__PURE__ */ new Map();
   #backupStylesheetChanges = /* @__PURE__ */ new Map();
+  constructor() {
+    SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+  }
   async stashChanges() {
     for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
       const stylesheetIds = Array.from(stylesheetMap.values());
@@ -5774,7 +5777,6 @@ var StylingAgent = class _StylingAgent extends AiAgent {
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
       return new ExtensionScope(changes, this.id, this.context?.getItem() ?? null);
     });
-    SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.declareFunction("getStyles", {
       description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
@@ -5893,9 +5895,6 @@ const data = {
         return await this.executeAction(params.code, options);
       }
     });
-  }
-  onPrimaryPageChanged() {
-    void this.#changes.clear();
   }
   async generateObservation(action, { throwOnSideEffect }) {
     const functionDeclaration = `async function ($0) {
@@ -6158,7 +6157,8 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
 var AiConversation_exports = {};
 __export(AiConversation_exports, {
   AiConversation: () => AiConversation,
-  NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA
+  NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
+  generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Host8 from "./../../core/host/host.js";
 import * as Root8 from "./../../core/root/root.js";
@@ -6276,18 +6276,18 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.Obj
 // gen/front_end/models/ai_assistance/AiConversation.js
 var NOT_FOUND_IMAGE_DATA = "";
 var MAX_TITLE_LENGTH = 80;
-var AiConversation = class _AiConversation {
-  static generateContextDetailsMarkdown(details) {
-    const detailsMarkdown = [];
-    for (const detail of details) {
-      const text = `\`\`\`\`${detail.codeLang || ""}
+function generateContextDetailsMarkdown(details) {
+  const detailsMarkdown = [];
+  for (const detail of details) {
+    const text = `\`\`\`\`${detail.codeLang || ""}
 ${detail.text.trim()}
 \`\`\`\``;
-      detailsMarkdown.push(`**${detail.title}:**
+    detailsMarkdown.push(`**${detail.title}:**
 ${text}`);
-    }
-    return detailsMarkdown.join("\n\n");
   }
+  return detailsMarkdown.join("\n\n");
+}
+var AiConversation = class _AiConversation {
   static fromSerializedConversation(serializedConversation) {
     const history = serializedConversation.history.map((entry) => {
       if (entry.type === "side-effect") {
@@ -6374,7 +6374,7 @@ ${item.query}`);
         case "context": {
           contentParts.push(`### ${item.title}`);
           if (item.details && item.details.length > 0) {
-            contentParts.push(_AiConversation.generateContextDetailsMarkdown(item.details));
+            contentParts.push(generateContextDetailsMarkdown(item.details));
           }
           break;
         }
@@ -6553,7 +6553,8 @@ var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi {
   #availability = null;
   #hasGpu;
-  #consoleInsightsSession = null;
+  #consoleInsightsSession;
+  initDoneForTesting;
   static instance() {
     if (builtInAiInstance === void 0) {
       builtInAiInstance = new _BuiltInAi();
@@ -6562,7 +6563,7 @@ var BuiltInAi = class _BuiltInAi {
   }
   constructor() {
     this.#hasGpu = this.#isGpuAvailable();
-    void this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+    this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
   }
   async getLanguageModelAvailability() {
     if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {

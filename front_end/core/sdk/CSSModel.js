@@ -138,7 +138,7 @@ export class CSSModel extends SDKModel {
         try {
             await this.ensureOriginalStyleSheetText(styleSheetId);
             const { styles } = await this.agent.invoke_setStyleTexts({ edits: [{ styleSheetId, range: range.serializeToObject(), text }] });
-            if (!styles || styles.length !== 1) {
+            if (styles?.length !== 1) {
                 return false;
             }
             this.#domModel.markUndoableState(!majorChange);

@@ -2341,7 +2341,7 @@ var ExtensionStorageModel = class extends SDK5.SDKModel.SDKModel {
   }
   #extensionIdForContext(context) {
     const url = Common4.ParsedURL.ParsedURL.fromString(context.origin);
-    return url && url.scheme === "chrome-extension" ? url.host : void 0;
+    return url?.scheme === "chrome-extension" ? url.host : void 0;
   }
   #executionContextDestroyed(context) {
     const extensionId = this.#extensionIdForContext(context);
@@ -7267,7 +7267,7 @@ var ServiceWorkerCacheView = class extends UI12.View.SimpleView {
       preview = new RequestView(request);
       networkRequestToPreview.set(request, preview);
     }
-    if (this.dataGrid?.selectedNode && request === this.dataGrid.selectedNode.data) {
+    if (request === this.dataGrid?.selectedNode?.data) {
       this.showPreview(preview);
     }
   }

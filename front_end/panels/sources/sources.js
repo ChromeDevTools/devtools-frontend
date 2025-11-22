@@ -3539,7 +3539,7 @@ function getNumberAt(node) {
   }
   if (node.name === "NumberLiteral") {
     const lastChild = node.lastChild;
-    return { from: node.from, to: lastChild && lastChild.name === "Unit" ? lastChild.from : node.to };
+    return { from: node.from, to: lastChild?.name === "Unit" ? lastChild.from : node.to };
   }
   return null;
 }
@@ -4345,7 +4345,7 @@ var SourcesSearchScope = class _SourcesSearchScope {
         continue;
       }
       const binding = Persistence3.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
-      if (binding && binding.network === uiSourceCode) {
+      if (binding?.network === uiSourceCode) {
         continue;
       }
       if (dirtyOnly && !uiSourceCode.isDirty()) {
@@ -6047,7 +6047,7 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
     return treeElement;
   }
   wasPopulated() {
-    if (!this.treeElement || this.treeElement.node !== this) {
+    if (this.treeElement?.node !== this) {
       return;
     }
     this.addChildrenRecursive();
@@ -11023,7 +11023,7 @@ var DebuggerPlugin = class extends Plugin {
       }
       if (syntaxType === "new") {
         const callee = syntaxNode.parent?.getChild("Expression");
-        if (callee && callee.name === "VariableName" && state.sliceDoc(callee.from, callee.to) === "Worker") {
+        if (callee?.name === "VariableName" && state.sliceDoc(callee.from, callee.to) === "Worker") {
           asyncCall = syntaxNode.parent;
         }
       }
@@ -11374,7 +11374,7 @@ var DebuggerPlugin = class extends Plugin {
       return;
     }
     const resource = this.getSourceMapResource();
-    if (resource && resource.success === null) {
+    if (resource?.success === null) {
       return;
     }
     if (!resource) {

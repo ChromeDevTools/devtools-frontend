@@ -9096,7 +9096,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   navigateHistory(direction) {
     const recordingData = this.#historyManager.navigate(direction);
-    if (recordingData && recordingData.type === "TRACE_INDEX") {
+    if (recordingData?.type === "TRACE_INDEX") {
       this.#changeView({
         mode: "VIEWING_TRACE",
         traceIndex: recordingData.parsedTraceIndex,
@@ -9142,7 +9142,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     pathToLaunch = url.toString();
     const hostWindow = window;
     function onMessageHandler(ev) {
-      if (url && ev.data && ev.data.type === "REHYDRATING_WINDOW_READY") {
+      if (url && ev.data?.type === "REHYDRATING_WINDOW_READY") {
         rehydratingWindow?.postMessage({ type: "REHYDRATING_TRACE_FILE", traceJson }, url.origin);
       }
       hostWindow.removeEventListener("message", onMessageHandler);
@@ -10134,7 +10134,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
   }
   async loadEventFired(event) {
-    if (this.state !== "Recording" || !this.recordingPageReload || !this.controller || this.controller.primaryPageTarget !== event.data.resourceTreeModel.target()) {
+    if (this.state !== "Recording" || !this.recordingPageReload || this.controller?.primaryPageTarget !== event.data.resourceTreeModel.target()) {
       return;
     }
     const controller = this.controller;
@@ -15893,7 +15893,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
   }
   hoverAnnotationInSidebar(annotation) {
     const overlay = ModificationsManager.activeManager()?.getOverlaybyAnnotation(annotation);
-    if (overlay && overlay.type === "ENTRY_LABEL") {
+    if (overlay?.type === "ENTRY_LABEL") {
       this.#overlays.highlightOverlay(overlay);
     }
   }

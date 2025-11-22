@@ -767,7 +767,7 @@ export class RemoteArray {
         this.#object = object;
     }
     static objectAsArray(object) {
-        if (!object || object.type !== 'object' || (object.subtype !== 'array' && object.subtype !== 'typedarray')) {
+        if (object?.type !== 'object' || (object.subtype !== 'array' && object.subtype !== 'typedarray')) {
             throw new Error('Object is empty or not an array');
         }
         return new RemoteArray(object);

@@ -38,7 +38,6 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     get multimodalInputEnabled(): boolean;
     preambleFeatures(): string[];
     constructor(opts: AgentOptions);
-    onPrimaryPageChanged(): void;
     generateObservation(action: string, { throwOnSideEffect, }: {
         throwOnSideEffect: boolean;
     }): Promise<{

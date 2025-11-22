@@ -5124,7 +5124,7 @@ __export(HeapSnapshotView_exports, {
 import * as Common13 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
@@ -5502,7 +5502,7 @@ var HeapSnapshotGridNode = class _HeapSnapshotGridNode extends Common10.ObjectWr
               insertRetrievedChild.call(this, items[itemIndex++], insertionIndex++);
               ++itemPosition;
             }
-            if (nextRange && newEndOfRange === nextRange.from) {
+            if (newEndOfRange === nextRange?.from) {
               range.to = nextRange.to;
               this.removeChildByIndex(insertionIndex);
               this.retrievedChildrenRanges.splice(rangeIndex + 1, 1);
@@ -7202,6 +7202,7 @@ __export(HeapSnapshotProxy_exports, {
 });
 import * as Common12 from "./../../core/common/common.js";
 import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 var UIStrings12 = {
   /**
    * @description Text in Heap Snapshot Proxy of a profiler tool
@@ -7232,7 +7233,7 @@ var HeapSnapshotWorkerProxy = class extends Common12.ObjectWrapper.ObjectWrapper
     this.nextCallId = 1;
     this.callbacks = /* @__PURE__ */ new Map();
     this.previousCallbacks = /* @__PURE__ */ new Set();
-    this.worker = Common12.Worker.WorkerWrapper.fromURL(new URL("../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js", import.meta.url));
+    this.worker = Platform8.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js", import.meta.url).toString());
     this.worker.onmessage = this.messageReceived.bind(this);
   }
   createLoader(profileUid, snapshotReceivedCallback) {
@@ -7330,8 +7331,6 @@ var HeapSnapshotWorkerProxy = class extends Common12.ObjectWrapper.ObjectWrapper
     }, [port]);
     return done;
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messageReceived(event) {
     const data = event.data;
     if (data.eventName) {
@@ -7355,8 +7354,6 @@ var HeapSnapshotWorkerProxy = class extends Common12.ObjectWrapper.ObjectWrapper
     this.callbacks.delete(data.callId);
     callback(data.result);
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   postMessage(message, transfer) {
     this.worker.postMessage(message, transfer);
   }
@@ -9103,7 +9100,7 @@ var HeapProfileHeader = class extends ProfileHeader {
   async saveToFile() {
     await this.loadPromise;
     const fileOutputStream = new Bindings2.FileUtils.FileOutputStream();
-    this.fileName = this.fileName || "Heap-" + Platform8.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date()) + this.profileType().fileExtension();
+    this.fileName = this.fileName || "Heap-" + Platform9.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date()) + this.profileType().fileExtension();
     const onOpen = async (accepted) => {
       if (!accepted) {
         return;
@@ -9384,7 +9381,7 @@ __export(LiveHeapProfileView_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common14 from "./../../core/common/common.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as Platform10 from "./../../core/platform/platform.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as DataGrid12 from "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -9734,7 +9731,7 @@ var GridNode = class extends DataGrid12.SortableDataGrid.SortableDataGridNode {
         cell.textContent = this.url;
         break;
       case "size":
-        cell.textContent = Platform9.NumberUtilities.withThousandsSeparator(Math.round(this.size / 1e3));
+        cell.textContent = Platform10.NumberUtilities.withThousandsSeparator(Math.round(this.size / 1e3));
         cell.createChild("span", "size-units").textContent = i18nString15(UIStrings16.kb);
         break;
       case "isolates":

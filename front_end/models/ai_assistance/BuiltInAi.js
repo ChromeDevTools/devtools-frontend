@@ -7,7 +7,8 @@ let builtInAiInstance;
 export class BuiltInAi {
     #availability = null;
     #hasGpu;
-    #consoleInsightsSession = null;
+    #consoleInsightsSession;
+    initDoneForTesting;
     static instance() {
         if (builtInAiInstance === undefined) {
             builtInAiInstance = new BuiltInAi();
@@ -16,7 +17,8 @@ export class BuiltInAi {
     }
     constructor() {
         this.#hasGpu = this.#isGpuAvailable();
-        void this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+        this.initDoneForTesting =
+            this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
     }
     async getLanguageModelAvailability() {
         if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {

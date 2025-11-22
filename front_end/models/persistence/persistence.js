@@ -2099,7 +2099,7 @@ var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Commo
     let automaticFileSystem = this.#automaticFileSystem;
     if (projectSettings.workspace) {
       const { root, uuid } = projectSettings.workspace;
-      if (automaticFileSystem === null || automaticFileSystem.root !== root || automaticFileSystem.uuid !== uuid) {
+      if (automaticFileSystem?.root !== root || automaticFileSystem.uuid !== uuid) {
         automaticFileSystem = Object.freeze({ root, uuid, state: "disconnected" });
       }
     } else if (automaticFileSystem !== null) {

@@ -1,2 +1,2 @@
-application/boot-perf_test.js
-panels/performance/trace-load_test.js
+application/boot-perf.test.js
+panels/performance/trace-load.test.js

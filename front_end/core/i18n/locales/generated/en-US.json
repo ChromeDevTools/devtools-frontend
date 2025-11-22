@@ -1400,6 +1400,9 @@
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Range.expand() is deprecated. Please use Selection.modify() instead."
   },
+  "generated/Deprecation.ts | RelatedWebsiteSets": {
+    "message": "Related Website Sets is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details."
+  },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
   },
@@ -1438,6 +1441,9 @@
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XMLNoExternalEntities": {
+    "message": "Externally loaded entities in XML parsing have been deprecated and will be removed from this browser soon."
   },
   "generated/Deprecation.ts | XSLT": {
     "message": "XSLTProcessor and XSLT Processing Instructions have been deprecated by all browsers. These features will be removed from this browser soon."
@@ -10419,7 +10425,10 @@
     "message": "{PH1} blocked"
   },
   "panels/network/RequestConditionsDrawer.ts | decreasePriority": {
-    "message": "Move down (higher patterns are checked first)"
+    "message": "Move down {PH1}"
+  },
+  "panels/network/RequestConditionsDrawer.ts | editPattern": {
+    "message": "Edit {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | enableBlockingAndThrottling": {
     "message": "Enable blocking and throttling"
@@ -10431,7 +10440,7 @@
     "message": "Throttle or block {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | increasePriority": {
-    "message": "Move up (higher patterns are checked first)"
+    "message": "Move up {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | itemDeleted": {
     "message": "Item successfully deleted"
@@ -10463,8 +10472,17 @@
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
     "message": "Pattern input cannot be empty."
   },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
+    "message": "URL pattern was moved down"
+  },
+  "panels/network/RequestConditionsDrawer.ts | patternMovedUp": {
+    "message": "URL pattern was moved up"
+  },
   "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
     "message": "This pattern was upgraded from \"{PH1}\""
+  },
+  "panels/network/RequestConditionsDrawer.ts | removePattern": {
+    "message": "Remove {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
     "message": "Request conditions"

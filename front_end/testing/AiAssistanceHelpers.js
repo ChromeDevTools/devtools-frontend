@@ -243,10 +243,11 @@ export function cleanup() {
 export function openHistoryContextMenu(lastUpdate, item) {
     const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('click'));
     lastUpdate.populateHistoryMenu(contextMenu);
-    const freestylerEntry = findMenuItemWithLabel(contextMenu.defaultSection(), item);
+    const entry = findMenuItemWithLabel(contextMenu.defaultSection(), item);
     return {
         contextMenu,
-        id: freestylerEntry?.id(),
+        id: entry?.id(),
+        entry,
     };
 }
 export function createTestFilesystem(fileSystemPath, files) {

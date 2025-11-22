@@ -102,7 +102,7 @@ export function makeScriptNode(src, sourceRoot, sourcesData) {
      * Collapse nodes that have only one child.
      */
     function collapseAll(node) {
-        while (node.children && node.children.length === 1) {
+        while (node.children?.length === 1) {
             const child = node.children[0];
             node.name += '/' + child.name;
             if (child.duplicatedNormalizedModuleName) {

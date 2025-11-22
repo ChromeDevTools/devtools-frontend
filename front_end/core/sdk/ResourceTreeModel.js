@@ -722,7 +722,7 @@ export class ResourceTreeFrame {
     }
     addRequest(request) {
         let resource = this.resourcesMap.get(request.url());
-        if (resource && resource.request === request) {
+        if (resource?.request === request) {
             // Already in the tree, we just got an extra update.
             return;
         }

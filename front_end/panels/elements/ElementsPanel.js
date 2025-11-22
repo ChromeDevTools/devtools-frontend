@@ -520,7 +520,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         if (!whitespaceTrimmedQuery.length) {
             return;
         }
-        if (!this.searchConfig || this.searchConfig.query !== query) {
+        if (this.searchConfig?.query !== query) {
             this.onSearchCanceled();
         }
         else {

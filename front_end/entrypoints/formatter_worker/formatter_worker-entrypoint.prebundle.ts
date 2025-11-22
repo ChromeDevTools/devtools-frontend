@@ -7,7 +7,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as FormatterWorker from './formatter_worker.js';
 import {FormatterActions} from './FormatterActions.js';
 
-self.onmessage = function(event: MessageEvent): void {
+Platform.HostRuntime.HOST_RUNTIME.workerScope.onmessage = function(event): void {
   const method: FormatterActions = event.data.method;
   const params: {
     indentString: string,
@@ -22,17 +22,20 @@ self.onmessage = function(event: MessageEvent): void {
 
   switch (method) {
     case FormatterActions.FORMAT:
-      self.postMessage(FormatterWorker.FormatterWorker.format(params.mimeType, params.content, params.indentString));
+      Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(
+          FormatterWorker.FormatterWorker.format(params.mimeType, params.content, params.indentString));
       break;
     case FormatterActions.PARSE_CSS:
       FormatterWorker.CSSRuleParser.parseCSS(params.content, self.postMessage);
       break;
     case FormatterActions.JAVASCRIPT_SUBSTITUTE: {
-      self.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, params.mapping));
+      Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(
+          FormatterWorker.Substitute.substituteExpression(params.content, params.mapping));
       break;
     }
     case FormatterActions.JAVASCRIPT_SCOPE_TREE: {
-      self.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content, params.sourceType)?.export());
+      Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(
+          FormatterWorker.ScopeParser.parseScopes(params.content, params.sourceType)?.export());
       break;
     }
     default:
@@ -40,4 +43,4 @@ self.onmessage = function(event: MessageEvent): void {
   }
 };
 
-self.postMessage('workerReady');
+Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage('workerReady');

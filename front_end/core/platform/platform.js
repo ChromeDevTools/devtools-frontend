@@ -226,16 +226,22 @@ var EmptyEncodedPathString = "";
 // gen/front_end/core/platform/HostRuntime.js
 var HostRuntime_exports = {};
 __export(HostRuntime_exports, {
-  HOST_RUNTIME: () => HOST_RUNTIME
+  HOST_RUNTIME: () => HOST_RUNTIME,
+  IS_BROWSER: () => IS_BROWSER,
+  IS_NODE: () => IS_NODE
 });
-import * as Browser from "./browser/browser.js";
-import * as Node from "./node/node.js";
-var HOST_RUNTIME = (() => {
-  if (Node.HostRuntime.IS_NODE) {
-    return Node.HostRuntime.HOST_RUNTIME;
+var IS_NODE = typeof process !== "undefined" && process.versions?.node !== null;
+var IS_BROWSER = (
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore 'window' is not available when type-checking against node.js types.
+  typeof window !== "undefined" || typeof self !== "undefined" && typeof self.postMessage === "function"
+);
+var HOST_RUNTIME = await (async () => {
+  if (IS_NODE) {
+    return (await import("./node/node.js")).HostRuntime.HOST_RUNTIME;
   }
-  if (Browser.HostRuntime.IS_BROWSER) {
-    return Browser.HostRuntime.HOST_RUNTIME;
+  if (IS_BROWSER) {
+    return (await import("./browser/browser.js")).HostRuntime.HOST_RUNTIME;
   }
   throw new Error("Unknown runtime!");
 })();

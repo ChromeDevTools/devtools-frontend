@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
 import * as FormatterWorker from './formatter_worker.js';
-self.onmessage = function (event) {
+Platform.HostRuntime.HOST_RUNTIME.workerScope.onmessage = function (event) {
     const method = event.data.method;
     const params = event.data.params;
     if (!method) {
@@ -11,22 +11,22 @@ self.onmessage = function (event) {
     }
     switch (method) {
         case "format" /* FormatterActions.FORMAT */:
-            self.postMessage(FormatterWorker.FormatterWorker.format(params.mimeType, params.content, params.indentString));
+            Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(FormatterWorker.FormatterWorker.format(params.mimeType, params.content, params.indentString));
             break;
         case "parseCSS" /* FormatterActions.PARSE_CSS */:
             FormatterWorker.CSSRuleParser.parseCSS(params.content, self.postMessage);
             break;
         case "javaScriptSubstitute" /* FormatterActions.JAVASCRIPT_SUBSTITUTE */: {
-            self.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, params.mapping));
+            Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, params.mapping));
             break;
         }
         case "javaScriptScopeTree" /* FormatterActions.JAVASCRIPT_SCOPE_TREE */: {
-            self.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content, params.sourceType)?.export());
+            Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content, params.sourceType)?.export());
             break;
         }
         default:
             Platform.assertNever(method, `Unsupport method name: ${method}`);
     }
 };
-self.postMessage('workerReady');
+Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage('workerReady');
 //# sourceMappingURL=formatter_worker-entrypoint.prebundle.js.map

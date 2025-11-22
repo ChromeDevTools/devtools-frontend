@@ -211,7 +211,6 @@ export class StylingAgent extends AiAgent {
         this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
             return new ExtensionScope(changes, this.id, this.context?.getItem() ?? null);
         });
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this);
         this.declareFunction('getStyles', {
             description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
@@ -330,9 +329,6 @@ const data = {
                 return await this.executeAction(params.code, options);
             },
         });
-    }
-    onPrimaryPageChanged() {
-        void this.#changes.clear();
     }
     async generateObservation(action, { throwOnSideEffect, }) {
         const functionDeclaration = `async function ($0) {

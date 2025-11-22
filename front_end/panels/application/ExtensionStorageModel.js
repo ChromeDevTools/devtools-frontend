@@ -154,7 +154,7 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel {
     }
     #extensionIdForContext(context) {
         const url = Common.ParsedURL.ParsedURL.fromString(context.origin);
-        return url && url.scheme === 'chrome-extension' ? url.host : undefined;
+        return url?.scheme === 'chrome-extension' ? url.host : undefined;
     }
     #executionContextDestroyed(context) {
         const extensionId = this.#extensionIdForContext(context);

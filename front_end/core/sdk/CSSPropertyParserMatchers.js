@@ -1169,7 +1169,7 @@ export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
         if (node.name === 'VariableName') {
             // Double-dashed anchor reference to be rendered with a link to its matching anchor.
             let parent = node.parent;
-            if (!parent || parent.name !== 'ArgList') {
+            if (parent?.name !== 'ArgList') {
                 return null;
             }
             parent = parent.parent;

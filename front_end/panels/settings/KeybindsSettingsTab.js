@@ -269,7 +269,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     }
     onEscapeKeyPressed(event) {
         const deepActiveElement = UI.DOMUtilities.deepActiveElement(document);
-        if (this.editingRow && deepActiveElement && deepActiveElement.nodeName === 'INPUT') {
+        if (this.editingRow && deepActiveElement?.nodeName === 'INPUT') {
             this.editingRow.onEscapeKeyPressed(event);
         }
     }

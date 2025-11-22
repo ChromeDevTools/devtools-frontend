@@ -290,10 +290,10 @@ function toolbarView(input) {
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <x-link
           class="toolbar-feedback-link devtools-link"
-          title=${UIStrings.sendFeedback}
+          title=${i18nString(UIStrings.sendFeedback)}
           href=${AI_ASSISTANCE_SEND_FEEDBACK}
           jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('freestyler.send-feedback')}
-        >${UIStrings.sendFeedback}</x-link>
+        >${i18nString(UIStrings.sendFeedback)}</x-link>
         <div class="toolbar-divider"></div>
         <devtools-button
           title=${i18nString(UIStrings.help)}
@@ -390,10 +390,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedRequest = null;
     // Messages displayed in the `ChatView` component.
     #messages = [];
-    // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
-    // This happens when the conversation's context has a different
-    // origin than the selected context.
-    #blockedByCrossOrigin = false;
     // Whether the UI should show loading or not.
     #isLoading = false;
     // Selected conversation context. The reason we keep this as a
@@ -439,7 +435,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 },
             };
         }
-        if (this.#conversation?.type) {
+        if (this.#conversation) {
             const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
             const markdownRenderer = getMarkdownRenderer(this.#selectedContext, this.#conversation);
             return {
@@ -536,7 +532,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         const isNetworkPanelVisible = viewManager.isViewVisible('network');
         const isSourcesPanelVisible = viewManager.isViewVisible('sources');
         const isPerformancePanelVisible = viewManager.isViewVisible('timeline');
-        let targetConversationType = undefined;
+        let targetConversationType;
         if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
             targetConversationType = "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
         }
@@ -586,7 +582,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             }
             this.#conversation = conversation;
         }
-        this.#onContextSelectionChanged();
         this.requestUpdate();
     }
     wasShown() {
@@ -689,10 +684,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     };
     #handleUISourceCodeFlavorChange = (ev) => {
         const newFile = ev.data;
-        if (!newFile) {
-            return;
-        }
-        if (this.#selectedFile?.getItem() === newFile) {
+        if (!newFile || this.#selectedFile?.getItem() === newFile) {
             return;
         }
         this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(ev.data);
@@ -947,16 +939,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #populateHistoryMenu(contextMenu) {
         const historicalConversations = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map(serializedConversation => AiAssistanceModel.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
         for (const conversation of historicalConversations.reverse()) {
-            if (conversation.isEmpty) {
+            if (conversation.isEmpty || !conversation.title) {
                 continue;
             }
-            const title = conversation.title;
-            if (!title) {
-                continue;
-            }
-            contextMenu.defaultSection().appendCheckboxItem(title, () => {
+            contextMenu.defaultSection().appendCheckboxItem(conversation.title, () => {
                 void this.#openHistoricConversation(conversation);
-            }, { checked: (this.#conversation === conversation), jslogContext: 'freestyler.history-item' });
+            }, { checked: (this.#conversation?.id === conversation.id), jslogContext: 'freestyler.history-item' });
         }
         const historyEmpty = contextMenu.defaultSection().items.length === 0;
         if (historyEmpty) {
@@ -1000,7 +988,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         Workspace.FileManager.FileManager.instance().close(filename);
     }
     async #openHistoricConversation(conversation) {
-        if (this.#conversation === conversation) {
+        if (this.#conversation?.id === conversation.id) {
             return;
         }
         this.#updateConversationState(conversation);
@@ -1064,10 +1052,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#imageInput = { isLoading: true };
             this.requestUpdate();
         }, SHOW_LOADING_STATE_TIMEOUT);
-        const reader = new FileReader();
-        let dataUrl;
         try {
-            dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            const dataUrl = await new Promise((resolve, reject) => {
                 reader.onload = () => {
                     if (typeof reader.result === 'string') {
                         resolve(reader.result);
@@ -1078,31 +1065,22 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 };
                 reader.readAsDataURL(file);
             });
+            const commaIndex = dataUrl.indexOf(',');
+            const bytes = dataUrl.substring(commaIndex + 1);
+            this.#imageInput = {
+                isLoading: false,
+                data: bytes,
+                mimeType: file.type,
+                inputType: "uploaded-image" /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */
+            };
         }
         catch {
-            clearTimeout(showLoadingTimeout);
             this.#imageInput = undefined;
-            this.requestUpdate();
-            void this.updateComplete.then(() => {
-                this.#viewOutput.chatView?.focusTextInput();
-            });
             Snackbars.Snackbar.Snackbar.show({
                 message: lockedString(UIStringsNotTranslate.uploadImageFailureMessage),
             });
-            return;
         }
         clearTimeout(showLoadingTimeout);
-        if (!dataUrl) {
-            return;
-        }
-        const commaIndex = dataUrl.indexOf(',');
-        const bytes = dataUrl.substring(commaIndex + 1);
-        this.#imageInput = {
-            isLoading: false,
-            data: bytes,
-            mimeType: file.type,
-            inputType: "uploaded-image" /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */
-        };
         this.requestUpdate();
         void this.updateComplete.then(() => {
             this.#viewOutput.chatView?.focusTextInput();
@@ -1112,20 +1090,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#runAbortController.abort();
         this.#runAbortController = new AbortController();
     }
-    #onContextSelectionChanged() {
+    // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+    // This happens when the conversation's context has a different
+    // origin than the selected context.
+    get #blockedByCrossOrigin() {
         if (!this.#conversation) {
-            this.#blockedByCrossOrigin = false;
-            return;
+            return false;
         }
         this.#selectedContext = this.#getConversationContext(this.#conversation);
         if (!this.#selectedContext) {
-            this.#blockedByCrossOrigin = false;
-            // Clear out any text the user has entered into the input but never
-            // submitted now they have no active context
-            this.#viewOutput.chatView?.clearTextInput();
-            return;
+            return false;
         }
-        this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversation.origin);
+        return !this.#selectedContext.isOriginAllowed(this.#conversation.origin);
     }
     #getConversationContext(conversation) {
         if (!conversation) {
@@ -1162,25 +1138,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             // invariants do not hold anymore.
             throw new Error('cross-origin context data should not be included');
         }
-        if (this.#conversation?.isEmpty) {
+        if (this.#conversation.isEmpty) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
         }
-        const image = isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined;
-        const imageId = image ? crypto.randomUUID() : undefined;
-        const multimodalInput = image && imageId && multimodalInputType ? {
-            input: image,
-            id: imageId,
+        const multimodalInput = isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType ? {
+            input: imageInput,
+            id: crypto.randomUUID(),
             type: multimodalInputType,
         } :
             undefined;
-        if (this.#conversation) {
-            void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
-        }
-        const generator = this.#conversation.run(text, {
+        void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
+        await this.#doConversation(this.#conversation.run(text, {
             signal,
             selected: context,
-        }, multimodalInput);
-        await this.#doConversation(generator);
+        }, multimodalInput));
     }
     async #doConversation(items) {
         const release = await this.#mutex.acquire();
@@ -1344,7 +1315,7 @@ export function getResponseMarkdown(message) {
             contentParts.push(`### ${step.title}`);
         }
         if (step.contextDetails) {
-            contentParts.push(AiAssistanceModel.AiConversation.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+            contentParts.push(AiAssistanceModel.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
         }
         if (step.thought) {
             contentParts.push(step.thought);

@@ -14,6 +14,7 @@ export interface Change {
  */
 export declare class ChangeManager {
     #private;
+    constructor();
     stashChanges(): Promise<void>;
     dropStashedChanges(): void;
     popStashedChanges(): Promise<void>;

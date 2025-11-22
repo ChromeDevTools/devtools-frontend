@@ -574,7 +574,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
     }
     resetClipboardIfNeeded(removedNode) {
-        if (this.clipboardNodeData && this.clipboardNodeData.node === removedNode) {
+        if (this.clipboardNodeData?.node === removedNode) {
             this.setClipboardData(null);
         }
     }

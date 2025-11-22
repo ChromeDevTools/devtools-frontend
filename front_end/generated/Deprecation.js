@@ -181,6 +181,10 @@ export const UIStrings = {
      */
     RangeExpand: "Range.expand() is deprecated. Please use Selection.modify() instead.",
     /**
+     * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the Storage Access API is automatically granted by Related Website Sets. The placeholder will always be the string `Related Website Sets`.
+     */
+    RelatedWebsiteSets: "`Related Website Sets` is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details.",
+    /**
      * @description This warning occurs when a subresource loaded by a page has a URL with an authority portion. These are disallowed.
      */
     RequestedSubresourceWithEmbeddedCredentials: "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked.",
@@ -232,6 +236,10 @@ export const UIStrings = {
      * @description Warning displayed to developers. It is shown when the `XMLHttpRequest` API is used in a way that it slows down the page load of the next page. The `main thread` refers to an operating systems thread used to run most of the processing of HTML documents, so please use a consistent wording.
      */
     XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload: "Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.",
+    /**
+     * @description Warning displayed to developers that they are using externally loaded entities in an XML document that constitutes a part of the web page. Externally loaded entities are a technical concept of XML document processing.
+     */
+    XMLNoExternalEntities: "Externally loaded entities in XML parsing have been deprecated and will be removed from this browser soon.",
     /**
      * @description Warning displayed to developers that they are using either the XSLTProcessor API, or XSLT processing instructions, both of which have been deprecated and are scheduled to be removed.
      */
@@ -322,6 +330,9 @@ export const DEPRECATIONS_METADATA = {
         "chromeStatusFeature": 4631626228695040,
         "milestone": 117
     },
+    "RelatedWebsiteSets": {
+        "chromeStatusFeature": 5194473869017088
+    },
     "RequestedSubresourceWithEmbeddedCredentials": {
         "chromeStatusFeature": 5669008342777856
     },
@@ -347,6 +358,10 @@ export const DEPRECATIONS_METADATA = {
     },
     "XHRJSONEncodingDetection": {
         "milestone": 93
+    },
+    "XMLNoExternalEntities": {
+        "chromeStatusFeature": 6734457763659776,
+        "milestone": 144
     },
     "XSLT": {
         "chromeStatusFeature": 4709671889534976,

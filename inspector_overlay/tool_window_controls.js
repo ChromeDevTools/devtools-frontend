@@ -23,7 +23,10 @@ export class WindowControlsOverlay extends Overlay {
         super.install();
     }
     uninstall() {
-        this.document.body.innerHTML = '';
+        this.windowsToolBar.remove();
+        this.linuxToolBar.remove();
+        this.macToolbarRight.remove();
+        this.macToolbarLeft.remove();
         super.uninstall();
     }
     drawWindowControlsOverlay(config) {

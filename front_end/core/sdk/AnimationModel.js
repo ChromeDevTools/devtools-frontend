@@ -302,7 +302,7 @@ export class AnimationModel extends SDKModel {
         const animation = await AnimationImpl.parsePayload(this, payload);
         // Ignore Web Animations custom effects & groups.
         const keyframesRule = animation.source().keyframesRule();
-        if (animation.type() === 'WebAnimation' && keyframesRule && keyframesRule.keyframes().length === 0) {
+        if (animation.type() === 'WebAnimation' && keyframesRule?.keyframes().length === 0) {
             this.#pendingAnimations.delete(animation.id());
         }
         else {

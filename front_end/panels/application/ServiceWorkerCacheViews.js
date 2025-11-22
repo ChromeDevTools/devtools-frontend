@@ -364,7 +364,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
             networkRequestToPreview.set(request, preview);
         }
         // It is possible that table selection changes before the preview opens.
-        if (this.dataGrid?.selectedNode && request === this.dataGrid.selectedNode.data) {
+        if (request === this.dataGrid?.selectedNode?.data) {
             this.showPreview(preview);
         }
     }

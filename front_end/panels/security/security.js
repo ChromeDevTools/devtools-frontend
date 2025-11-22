@@ -1924,7 +1924,7 @@ var SecurityPanelSidebar = class extends UI4.Widget.VBox {
     if (this.#cookieControlsTreeElement && this.#securitySidebarLastItemSetting.get() === this.#cookieControlsTreeElement.elemId) {
       this.#cookieControlsTreeElement.select();
       this.#cookieControlsTreeElement.showElement();
-    } else if (this.cookieReportTreeElement && this.#securitySidebarLastItemSetting.get() === this.cookieReportTreeElement.elemId) {
+    } else if (this.#securitySidebarLastItemSetting.get() === this.cookieReportTreeElement?.elemId) {
       this.cookieReportTreeElement.select();
       this.cookieReportTreeElement.showElement();
     } else {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 const UIStrings = {
     /**
      * @description Text in Heap Snapshot Proxy of a profiler tool
@@ -33,7 +34,8 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
         this.nextCallId = 1;
         this.callbacks = new Map();
         this.previousCallbacks = new Set();
-        this.worker = Common.Worker.WorkerWrapper.fromURL(new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js', import.meta.url));
+        this.worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js', import.meta.url)
+            .toString());
         this.worker.onmessage = this.messageReceived.bind(this);
     }
     createLoader(profileUid, snapshotReceivedCallback) {
@@ -131,8 +133,6 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
         }, [port]);
         return done;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     messageReceived(event) {
         const data = event.data;
         if (data.eventName) {
@@ -156,8 +156,6 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
         this.callbacks.delete(data.callId);
         callback(data.result);
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     postMessage(message, transfer) {
         this.worker.postMessage(message, transfer);
     }

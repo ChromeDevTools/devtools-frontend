@@ -3,9 +3,9 @@ import { type ContextDetail, type ConversationContext, type MultimodalInput, typ
 import { ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
+export declare function generateContextDetailsMarkdown(details: ContextDetail[]): string;
 export declare class AiConversation {
     #private;
-    static generateContextDetailsMarkdown(details: ContextDetail[]): string;
     static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
     type: ConversationType;

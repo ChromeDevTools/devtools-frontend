@@ -1081,7 +1081,7 @@ export class TreeElement {
         this.listItemNode.classList.remove('selected');
         ARIAUtils.clearSelected(this.listItemNode);
         this.setFocusable(false);
-        if (this.treeOutline && this.treeOutline.selectedTreeElement === this) {
+        if (this.treeOutline?.selectedTreeElement === this) {
             this.treeOutline.selectedTreeElement = null;
             this.treeOutline.updateFocusable();
             if (hadFocus) {

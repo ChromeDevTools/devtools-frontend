@@ -52,7 +52,7 @@ export class ContrastCheckTrigger {
         // If the target document finished loading, check the contrast immediately.
         // Otherwise, it should be triggered when the page load event fires.
         const response = await frame.resourceTreeModel().target().runtimeAgent().invoke_evaluate({ expression: 'document.readyState', returnByValue: true });
-        if (response.result && response.result.value === 'complete') {
+        if (response.result?.value === 'complete') {
             this.#checkContrast(frame.resourceTreeModel());
         }
     }

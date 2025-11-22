@@ -104,7 +104,7 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
         let automaticFileSystem = this.#automaticFileSystem;
         if (projectSettings.workspace) {
             const { root, uuid } = projectSettings.workspace;
-            if (automaticFileSystem === null || automaticFileSystem.root !== root || automaticFileSystem.uuid !== uuid) {
+            if (automaticFileSystem?.root !== root || automaticFileSystem.uuid !== uuid) {
                 automaticFileSystem = Object.freeze({ root, uuid, state: 'disconnected' });
             }
         }

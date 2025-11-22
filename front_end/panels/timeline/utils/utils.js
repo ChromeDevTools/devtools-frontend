@@ -384,7 +384,7 @@ function makeScriptNode(src, sourceRoot, sourcesData) {
     addAllNodesInSourcePath(source, data);
   }
   function collapseAll(node) {
-    while (node.children && node.children.length === 1) {
+    while (node.children?.length === 1) {
       const child = node.children[0];
       node.name += "/" + child.name;
       if (child.duplicatedNormalizedModuleName) {

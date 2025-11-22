@@ -719,7 +719,7 @@ export class DebuggerModel extends SDKModel {
             let functionName = null;
             if (response.properties) {
                 for (const prop of response.properties) {
-                    if (prop.name === 'name' && prop.value && prop.value.type === 'string') {
+                    if (prop.name === 'name' && prop.value?.type === 'string') {
                         functionName = prop.value;
                     }
                 }

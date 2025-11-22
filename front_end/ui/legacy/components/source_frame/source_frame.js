@@ -975,7 +975,7 @@ var searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
             }
             if (match[0].length) {
               const start = pos + match.index, end = start + match[0].length;
-              const current = active.currentRange && active.currentRange.from === start && active.currentRange.to === end;
+              const current = active.currentRange?.from === start && active.currentRange.to === end;
               builder.add(start, end, current ? currentSearchMatchDeco : searchMatchDeco);
             } else {
               active.regexp.regex.lastIndex = match.index + 1;

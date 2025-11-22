@@ -734,7 +734,7 @@ export const mergeSegments = (segmentsA, segmentsB) => {
         const end = Math.min(a.end, b.end);
         const last = result[result.length - 1];
         const stamp = Math.min(a.stamp, b.stamp);
-        if (!last || last.count !== count || last.stamp !== stamp) {
+        if (last?.count !== count || last.stamp !== stamp) {
             result.push({ end, count, stamp });
         }
         else {
@@ -898,7 +898,7 @@ export class CoverageInfo {
         for (const segment of this.segments) {
             if (segment.count) {
                 const last = ranges.length > 0 ? ranges[ranges.length - 1] : null;
-                if (last && last.end === start + offset) {
+                if (last?.end === start + offset) {
                     // We can extend the last segment.
                     last.end = segment.end + offset;
                 }

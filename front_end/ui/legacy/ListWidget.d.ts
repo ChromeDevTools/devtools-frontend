@@ -1,11 +1,11 @@
 import './Toolbar.js';
 import { VBox } from './Widget.js';
 export declare class ListWidget<T> extends VBox {
+    #private;
     private delegate;
     private readonly list;
     private lastSeparator;
     private focusRestorer;
-    private items;
     private editable;
     private elements;
     private editor;
@@ -14,8 +14,16 @@ export declare class ListWidget<T> extends VBox {
     private emptyPlaceholder;
     private isTable;
     constructor(delegate: Delegate<T>, delegatesFocus?: boolean, isTable?: boolean);
+    get items(): T[];
     clear(): void;
-    appendItem(item: T, editable: boolean): void;
+    updateItem(index: number, newItem: T, editable: boolean, focusable?: boolean, controlLabels?: {
+        edit?: string;
+        delete?: string;
+    }): void;
+    appendItem(item: T, editable: boolean, focusable?: boolean, controlLabels?: {
+        edit?: string;
+        delete?: string;
+    }): void;
     appendSeparator(): void;
     removeItem(index: number): void;
     addNewItem(index: number, item: T): void;
@@ -28,6 +36,7 @@ export declare class ListWidget<T> extends VBox {
     private stopEditing;
 }
 export interface Delegate<T> {
+    updateItem?(content: Element, newItem: T, editable: boolean, index: number): void;
     renderItem(item: T, editable: boolean, index: number): Element;
     removeItemRequested(item: T, index: number): void;
     beginEdit(item: T): Editor<T>;

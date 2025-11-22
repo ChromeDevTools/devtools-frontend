@@ -2014,7 +2014,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             this.listItemElement.appendChild(tooltip);
         }
         if (this.valueElement) {
-            const lineBreakValue = this.valueElement.firstElementChild && this.valueElement.firstElementChild.tagName === 'BR';
+            const lineBreakValue = this.valueElement.firstElementChild?.tagName === 'BR';
             const separator = lineBreakValue ? ':' : ': ';
             this.listItemElement.createChild('span', 'styles-name-value-separator').textContent = separator;
             if (this.expandElement) {

@@ -2486,7 +2486,7 @@ var KeybindsSettingsTab = class extends UI5.Widget.VBox {
   }
   onEscapeKeyPressed(event) {
     const deepActiveElement = UI5.DOMUtilities.deepActiveElement(document);
-    if (this.editingRow && deepActiveElement && deepActiveElement.nodeName === "INPUT") {
+    if (this.editingRow && deepActiveElement?.nodeName === "INPUT") {
       this.editingRow.onEscapeKeyPressed(event);
     }
   }

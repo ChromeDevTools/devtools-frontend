@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import type * as PlatformApi from '../../core/platform/api/api.js';
 import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import type { ChildrenProvider } from './ChildrenProvider.js';
 export declare class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<HeapSnapshotWorkerProxy.EventTypes> {
@@ -7,21 +8,21 @@ export declare class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.Object
     nextCallId: number;
     callbacks: Map<number, (arg0: any) => void>;
     readonly previousCallbacks: Set<number>;
-    readonly worker: Common.Worker.WorkerWrapper;
+    readonly worker: PlatformApi.HostRuntime.Worker;
     interval?: number;
     constructor(eventHandler: (arg0: string, arg1: any) => void);
     createLoader(profileUid: number, snapshotReceivedCallback: (arg0: HeapSnapshotProxy) => void): HeapSnapshotLoaderProxy;
     dispose(): void;
     disposeObject(objectId: number): void;
     evaluateForTest(script: string, callback: (...arg0: any[]) => void): void;
-    callFactoryMethod<T extends Object>(callback: null, objectId: string, methodName: string, proxyConstructor: new (...arg1: any[]) => T, transfer: Transferable[], ...methodArguments: any[]): T;
-    callFactoryMethod<T extends Object>(callback: ((...arg0: any[]) => void), objectId: string, methodName: string, proxyConstructor: new (...arg1: any[]) => T, transfer: Transferable[], ...methodArguments: any[]): null;
+    callFactoryMethod<T extends Object>(callback: null, objectId: string, methodName: string, proxyConstructor: new (...arg1: any[]) => T, transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...methodArguments: any[]): T;
+    callFactoryMethod<T extends Object>(callback: ((...arg0: any[]) => void), objectId: string, methodName: string, proxyConstructor: new (...arg1: any[]) => T, transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...methodArguments: any[]): null;
     callMethod(callback: (...arg0: any[]) => void, objectId: string, methodName: string, ...methodArguments: any[]): void;
     startCheckingForLongRunningCalls(): void;
     checkLongRunningCalls(): void;
     setupForSecondaryInit(port: MessagePort): Promise<void>;
-    messageReceived(event: MessageEvent<any>): void;
-    postMessage(message: any, transfer?: Transferable[]): void;
+    messageReceived(event: PlatformApi.HostRuntime.WorkerMessageEvent): void;
+    postMessage(message: unknown, transfer?: PlatformApi.HostRuntime.WorkerTransferable[]): void;
 }
 export declare namespace HeapSnapshotWorkerProxy {
     const enum Events {
@@ -37,7 +38,7 @@ export declare class HeapSnapshotProxyObject {
     constructor(worker: HeapSnapshotWorkerProxy, objectId: number);
     dispose(): void;
     callFactoryMethod<T extends Object>(methodName: string, proxyConstructor: new (...arg1: any[]) => T, ...args: any[]): T;
-    callFactoryMethodPromise<T extends Object>(methodName: string, proxyConstructor: new (...arg1: any[]) => T, transfer: Transferable[], ...args: any[]): Promise<T>;
+    callFactoryMethodPromise<T extends Object>(methodName: string, proxyConstructor: new (...arg1: any[]) => T, transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...args: any[]): Promise<T>;
     callMethodPromise<T>(methodName: string, ...args: any[]): Promise<T>;
 }
 export declare class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject implements Common.StringOutputStream.OutputStream {

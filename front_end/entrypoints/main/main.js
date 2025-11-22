@@ -35,7 +35,7 @@ var ExecutionContextSelector = class {
   }
   modelRemoved(runtimeModel) {
     const currentExecutionContext = this.#context.flavor(SDK.RuntimeModel.ExecutionContext);
-    if (currentExecutionContext && currentExecutionContext.runtimeModel === runtimeModel) {
+    if (currentExecutionContext?.runtimeModel === runtimeModel) {
       this.#currentExecutionContextGone();
     }
     const models = this.#targetManager.models(SDK.RuntimeModel.RuntimeModel);

@@ -297,12 +297,11 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
-      ${input.permissionsPolicies ?
-        html`
-          <devtools-resources-permissions-policy-section
-             .data=${{policies: input.permissionsPolicies, showDetails: false} as ApplicationComponents.PermissionsPolicySection.PermissionsPolicySectionData}>
-          </devtools-resources-permissions-policy-section>
-        ` : nothing}
+      ${input.permissionsPolicies ? html`
+          <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.PermissionsPolicySection.PermissionsPolicySection, {
+             policies: input.permissionsPolicies,
+             showDetails: false})}>
+          </devtools-widget>` : nothing}
       ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing}
     </devtools-report>
   `, target);

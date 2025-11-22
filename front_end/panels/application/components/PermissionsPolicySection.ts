@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/report_view/report_view.js';
@@ -13,7 +12,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -181,19 +180,71 @@ function renderDisallowed(
   // clang-format on
 }
 
-export class PermissionsPolicySection extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
+interface ViewInput {
+  allowed: Protocol.Page.PermissionsPolicyFeatureState[];
+  disallowed: Array<{
+    policy: Protocol.Page.PermissionsPolicyFeatureState,
+    blockReason?: Protocol.Page.PermissionsPolicyBlockReason,
+    linkTargetDOMNode?: SDK.DOMModel.DOMNode,
+    linkTargetRequest?: SDK.NetworkRequest.NetworkRequest,
+  }>;
+  showDetails: boolean;
+  onToggleShowDetails: () => void;
+  onRevealDOMNode: (linkTargetDOMNode: SDK.DOMModel.DOMNode) => Promise<void>;
+  onRevealHeader: (linkTargetRequest: SDK.NetworkRequest.NetworkRequest) => Promise<void>;
+}
 
-  set data(data: PermissionsPolicySectionData) {
-    this.#permissionsPolicySectionData = data;
-    void this.#render();
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <style>${permissionsPolicySectionStyles}</style>
+    <devtools-report-section-header>
+      ${i18n.i18n.lockedString('Permissions Policy')}
+    </devtools-report-section-header>
+    ${renderAllowed(input.allowed)}
+    ${(input.allowed.length > 0 && input.disallowed.length > 0) ?
+      html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing}
+    ${renderDisallowed(
+        input.disallowed, input.showDetails,
+        input.onToggleShowDetails, input.onRevealDOMNode, input.onRevealHeader)}
+    <devtools-report-divider></devtools-report-divider>`, target);
+  // clang-format on
+};
+
+export class PermissionsPolicySection extends UI.Widget.Widget {
+  #policies: Protocol.Page.PermissionsPolicyFeatureState[] = [];
+  #showDetails = false;
+  #view: View;
+
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+  }
+
+  set policies(policies: Protocol.Page.PermissionsPolicyFeatureState[]) {
+    this.#policies = policies;
+    this.requestUpdate();
+  }
+
+  get policies(): Protocol.Page.PermissionsPolicyFeatureState[] {
+    return this.#policies;
+  }
+
+  set showDetails(showDetails: boolean) {
+    this.#showDetails = showDetails;
+    this.requestUpdate();
+  }
+
+  get showDetails(): boolean {
+    return this.#showDetails;
   }
 
   #toggleShowPermissionsDisallowedDetails(): void {
-    this.#permissionsPolicySectionData.showDetails = !this.#permissionsPolicySectionData.showDetails;
-    void this.#render();
+    this.showDetails = !this.showDetails;
   }
+
   async #revealDOMNode(linkTargetDOMNode: SDK.DOMModel.DOMNode): Promise<void> {
     await Common.Revealer.reveal(linkTargetDOMNode);
   }
@@ -211,13 +262,12 @@ export class PermissionsPolicySection extends HTMLElement {
     await Common.Revealer.reveal(requestLocation);
   }
 
-  async #render(): Promise<void> {
-    const {showDetails} = this.#permissionsPolicySectionData;
+  override async performUpdate(): Promise<void> {
     const frameManager = SDK.FrameManager.FrameManager.instance();
-    const policies = this.#permissionsPolicySectionData.policies.sort((a, b) => a.feature.localeCompare(b.feature));
-    const allowed = policies.filter(p => p.allowed);
-    const disallowed = policies.filter(p => !p.allowed);
-    const disallowedData = showDetails ? await Promise.all(disallowed.map(async policy => {
+    const policies = this.#policies.sort((a, b) => a.feature.localeCompare(b.feature));
+    const allowed = policies.filter(p => p.allowed).sort((a, b) => a.feature.localeCompare(b.feature));
+    const disallowed = policies.filter(p => !p.allowed).sort((a, b) => a.feature.localeCompare(b.feature));
+    const disallowedData = this.#showDetails ? await Promise.all(disallowed.map(async policy => {
       const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : undefined;
       const blockReason = policy.locator?.blockReason;
       const linkTargetDOMNode = await ((blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute &&
@@ -228,35 +278,17 @@ export class PermissionsPolicySection extends HTMLElement {
           (blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource?.request) || undefined;
       return {policy, blockReason, linkTargetDOMNode, linkTargetRequest};
     })) :
-                                         disallowed.map(policy => ({policy}));
+                                               disallowed.map(policy => ({policy}));
 
-    await RenderCoordinator.write('PermissionsPolicySection render', () => {
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      render(html`
-        <style>${permissionsPolicySectionStyles}</style>
-        <devtools-report-section-header>
-          ${i18n.i18n.lockedString('Permissions Policy')}
-        </devtools-report-section-header>
-        ${renderAllowed(allowed)}
-        ${allowed.length && disallowed.length ?
-          html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing}
-        ${renderDisallowed(
-            disallowedData, showDetails,
-            this.#toggleShowPermissionsDisallowedDetails.bind(this), this.#revealDOMNode.bind(this),
-            this.#revealHeader.bind(this))}
-        <devtools-report-divider></devtools-report-divider>`,
-        this.#shadow, {host: this},
-      );
-      // clang-format on
-    });
-  }
-}
-
-customElements.define('devtools-resources-permissions-policy-section', PermissionsPolicySection);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-permissions-policy-section': PermissionsPolicySection;
+    this.#view(
+        {
+          allowed,
+          disallowed: disallowedData,
+          showDetails: this.#showDetails,
+          onToggleShowDetails: this.#toggleShowPermissionsDisallowedDetails.bind(this),
+          onRevealDOMNode: this.#revealDOMNode.bind(this),
+          onRevealHeader: this.#revealHeader.bind(this),
+        },
+        undefined, this.contentElement);
   }
 }

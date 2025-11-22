@@ -5,7 +5,6 @@
 import * as Platform from '../../../core/platform/platform.js';
 import {
   getCleanTextContentFromElements,
-  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -19,7 +18,9 @@ async function renderProtocolHandlersComponent(
     protocolHandlers: ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]) {
   const component = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
   renderElementIntoDOM(component);
-  component.data = {manifestLink, protocolHandlers};
+  component.protocolHandlers = protocolHandlers;
+  component.manifestLink = manifestLink;
+  await component.updateComplete;
   return component;
 }
 
@@ -42,7 +43,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
     const component = await renderProtocolHandlersComponent(
         manifestURL, protocols as ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]);
 
-    const statusElement = component.shadowRoot!.querySelector('.protocol-handlers-row.status');
+    const statusElement = component.contentElement.querySelector('.protocol-handlers-row.status');
     assert.instanceOf(statusElement, HTMLElement);
 
     // Tests if status message for when protocols are detected in the manifest is rendering
@@ -52,7 +53,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
     assert.deepEqual(protocolsDetectedMessage[0], expectedStatusMessage);
 
     // Tests if protocols are rendering properly in dropdown
-    const selectElement = getElementWithinComponent(component, '.protocol-select', HTMLSelectElement);
+    const selectElement = component.contentElement.querySelector<HTMLSelectElement>('.protocol-select')!;
     const values = getCleanTextContentFromElements(selectElement, 'option');
     assert.deepEqual(values, ['web+coffee://', 'web+pwinter://']);
   });
@@ -62,7 +63,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
     const manifestURL = urlString`https://www.example.com/index.html/manifest-protocol.json`;
     const component = await renderProtocolHandlersComponent(manifestURL, protocols);
 
-    const noStatusElement = component.shadowRoot!.querySelector('.protocol-handlers-row.status');
+    const noStatusElement = component.contentElement.querySelector('.protocol-handlers-row.status');
     assert.instanceOf(noStatusElement, HTMLElement);
 
     const protocolsNotDetectedMessage = getCleanTextContentFromElements(noStatusElement, 'span');

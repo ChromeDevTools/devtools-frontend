@@ -1,7 +1,6 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 
@@ -124,6 +123,38 @@ interface HTMLInputElementEvent extends Event {
   target: HTMLInputElement;
 }
 
+interface ViewInput {
+  protocolHandler: ProtocolHandler[];
+  manifestLink: Platform.DevToolsPath.UrlString;
+  queryInputState: string;
+  protocolSelectHandler: (evt: HTMLSelectElementEvent) => void;
+  queryInputChangeHandler: (evt: HTMLInputElementEvent) => void;
+  testProtocolClickHandler: () => void;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  // inspectorCommonStyles is used for the <select> styling that is used for the dropdown
+  // clang-format off
+  render(html`
+    <style>${protocolHandlersViewStyles}</style>
+    <style>${UI.inspectorCommonStyles}</style>
+    <style>${Input.textInputStyles}</style>
+    ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
+    <div class="protocol-handlers-row">
+      ${i18nTemplate(UIStrings.needHelpReadOur, {PH1: html`
+        <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link" jslog=${
+            VisualLogging.link('learn-more').track({click: true, keydown: 'Enter|Space'})}>
+          ${i18nString(UIStrings.protocolHandlerRegistrations)}
+        </x-link>`})}
+    </div>
+    ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler,
+                         input.queryInputChangeHandler, input.testProtocolClickHandler)}
+  `, target);
+  // clang-format on
+};
+
 export interface ProtocolHandler {
   protocol: string;
   url: string;
@@ -134,26 +165,39 @@ export interface ProtocolHandlersData {
   manifestLink: Platform.DevToolsPath.UrlString;
 }
 
-export class ProtocolHandlersView extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class ProtocolHandlersView extends UI.Widget.Widget {
   #protocolHandlers: ProtocolHandler[] = [];
   #manifestLink: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
   #selectedProtocolState = '';
   #queryInputState = '';
+  #view: View;
 
-  set data(data: ProtocolHandlersData) {
-    const isNewManifest = this.#manifestLink !== data.manifestLink;
-    this.#protocolHandlers = data.protocolHandlers;
-    this.#manifestLink = data.manifestLink;
-    if (isNewManifest) {
-      this.#update();
-    }
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: false});
+    this.#view = view;
   }
 
-  #update(): void {
-    this.#queryInputState = '';
-    this.#selectedProtocolState = this.#protocolHandlers[0]?.protocol ?? '';
-    this.#render();
+  set protocolHandlers(protocolHandlers: ProtocolHandler[]) {
+    this.#protocolHandlers = protocolHandlers;
+    this.requestUpdate();
+  }
+
+  get protocolHandlers(): ProtocolHandler[] {
+    return this.#protocolHandlers;
+  }
+
+  set manifestLink(manifestLink: Platform.DevToolsPath.UrlString) {
+    const isNewManifest = this.#manifestLink !== manifestLink;
+    this.#manifestLink = manifestLink;
+    if (isNewManifest) {
+      this.#queryInputState = '';
+      this.#selectedProtocolState = this.#protocolHandlers[0]?.protocol ?? '';
+    }
+    this.requestUpdate();
+  }
+
+  get manifestLink(): Platform.DevToolsPath.UrlString {
+    return this.#manifestLink;
   }
 
   #handleProtocolSelect = (evt: HTMLSelectElementEvent): void => {
@@ -162,7 +206,7 @@ export class ProtocolHandlersView extends HTMLElement {
 
   #handleQueryInputChange = (evt: HTMLInputElementEvent): void => {
     this.#queryInputState = evt.target.value;
-    this.#render();
+    this.requestUpdate();
   };
 
   #handleTestProtocolClick = (): void => {
@@ -171,33 +215,16 @@ export class ProtocolHandlersView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureTestProtocolClicked);
   };
 
-  #render(): void {
-    // inspectorCommonStyles is used for the <select> styling that is used for the dropdown
-    // clang-format off
-    render(html`
-      <style>${protocolHandlersViewStyles}</style>
-      <style>${UI.inspectorCommonStyles}</style>
-      <style>${Input.textInputStyles}</style>
-      ${renderStatusMessage(this.#protocolHandlers, this.#manifestLink)}
-      <div class="protocol-handlers-row">
-        ${i18nTemplate(UIStrings.needHelpReadOur, {PH1: html`
-          <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link"
-                  jslog=${VisualLogging.link('learn-more').track({click: true, keydown:'Enter|Space'})}>
-            ${i18nString(UIStrings.protocolHandlerRegistrations)}
-          </x-link>`})}
-      </div>
-      ${renderProtocolTest(
-        this.#protocolHandlers, this.#queryInputState, this.#handleProtocolSelect, this.#handleQueryInputChange,
-        this.#handleTestProtocolClick)}
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-}
-
-customElements.define('devtools-protocol-handlers-view', ProtocolHandlersView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-protocol-handlers-view': ProtocolHandlersView;
+  override performUpdate(): void {
+    this.#view(
+        {
+          protocolHandler: this.#protocolHandlers,
+          manifestLink: this.#manifestLink,
+          queryInputState: this.#queryInputState,
+          protocolSelectHandler: this.#handleProtocolSelect,
+          queryInputChangeHandler: this.#handleQueryInputChange,
+          testProtocolClickHandler: this.#handleTestProtocolClick,
+        },
+        undefined, this.contentElement);
   }
 }

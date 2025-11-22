@@ -517,7 +517,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.protocolHandlersSection =
         this.reportView.appendSection(i18nString(UIStrings.protocolHandlers), 'undefined,protocol-handlers');
     this.protocolHandlersView = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
-    this.protocolHandlersSection.appendFieldWithCustomView(this.protocolHandlersView);
+    this.protocolHandlersView.show(this.protocolHandlersSection.getFieldElement());
     this.iconsSection = this.reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons', 'icons');
     this.windowControlsSection =
         this.reportView.appendSection(UIStrings.windowControlsOverlay, undefined, 'window-controls-overlay');
@@ -753,7 +753,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
 
     const protocolHandlers = parsedManifest['protocol_handlers'] || [];
-    this.protocolHandlersView.data = {protocolHandlers, manifestLink: url};
+    this.protocolHandlersView.protocolHandlers = protocolHandlers;
+    this.protocolHandlersView.manifestLink = url;
 
     const icons = parsedManifest['icons'] || [];
     this.iconsSection.clearContent();

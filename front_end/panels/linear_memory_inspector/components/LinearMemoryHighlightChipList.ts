@@ -6,7 +6,7 @@
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryHighlightChipListStyles from './linearMemoryHighlightChipList.css.js';
@@ -28,7 +28,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings(
     'panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html} = Lit;
+const {classMap} = Directives;
 
 export interface LinearMemoryHighlightChipListData {
   highlightInfos: HighlightInfo[];
@@ -55,35 +55,27 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    const chips = [];
-    for (const highlightInfo of this.#highlightedAreas) {
-      chips.push(this.#createChip(highlightInfo));
-    }
-    const result = html`
-            <style>${linearMemoryHighlightChipListStyles}</style>
-            <div class="highlight-chip-list">
-              ${chips}
-            </div>
-        `;
-    render(result, this.#shadow, { host: this });
+    render(html`
+      <style>${linearMemoryHighlightChipListStyles}</style>
+      <div class="highlight-chip-list">
+        ${this.#highlightedAreas.map(highlightInfo => this.#createChip(highlightInfo))}
+      </div>`, this.#shadow);
     // clang-format on
   }
 
-  #createChip(highlightInfo: HighlightInfo): Lit.TemplateResult {
+  #createChip(highlightInfo: HighlightInfo): TemplateResult {
     const expressionName = highlightInfo.name || '<anonymous>';
     const expressionType = highlightInfo.type;
     const isFocused = highlightInfo === this.#focusedMemoryHighlight;
-    const classMap = {
-      focused: isFocused,
-      'highlight-chip': true,
-    };
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <div class=${Lit.Directives.classMap(classMap)}>
-        <button class="jump-to-highlight-button" title=${i18nString(UIStrings.jumpToAddress)}
-            jslog=${VisualLogging.action('linear-memory-inspector.jump-to-highlight').track({click:true})}
-            @click=${():void => this.#onJumpToHighlightClick(highlightInfo.startAddress)}>
+      <div class=${classMap({focused: isFocused, 'highlight-chip': true})}>
+        <button class="jump-to-highlight-button"
+                title=${i18nString(UIStrings.jumpToAddress)}
+                jslog=${VisualLogging.action('linear-memory-inspector.jump-to-highlight')
+                          .track({click:true})}
+                @click=${() => this.#onJumpToHighlightClick(highlightInfo.startAddress)}>
           <span class="source-code">
             <span class="value">${expressionName}</span>
             <span class="separator">: </span>
@@ -92,14 +84,14 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
         </button>
         <div class="delete-highlight-container">
           <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
-              jslog=${VisualLogging.action('linear-memory-inspector.delete-highlight').track({click:true})}
-              @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
+              jslog=${VisualLogging.action('linear-memory-inspector.delete-highlight')
+                          .track({click:true})}
+              @click=${() => this.#onDeleteHighlightClick(highlightInfo)}>
             <devtools-icon name="cross" class="medium">
             </devtools-icon>
           </button>
         </div>
-      </div>
-    `;
+      </div>`;
     // clang-format off
   }
 

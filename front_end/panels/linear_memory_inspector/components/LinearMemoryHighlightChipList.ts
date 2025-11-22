@@ -33,36 +33,22 @@ const {render, html} = Lit;
 export interface LinearMemoryHighlightChipListData {
   highlightInfos: HighlightInfo[];
   focusedMemoryHighlight?: HighlightInfo;
-}
-
-export class DeleteMemoryHighlightEvent extends Event {
-  static readonly eventName = 'deletememoryhighlight';
-  data: HighlightInfo;
-
-  constructor(highlightInfo: HighlightInfo) {
-    super(DeleteMemoryHighlightEvent.eventName, {bubbles: true, composed: true});
-    this.data = highlightInfo;
-  }
-}
-
-export class JumpToHighlightedMemoryEvent extends Event {
-  static readonly eventName = 'jumptohighlightedmemory';
-  data: number;
-
-  constructor(address: number) {
-    super(JumpToHighlightedMemoryEvent.eventName);
-    this.data = address;
-  }
+  jumpToAddress?: (address: number) => void;
+  deleteHighlight?: (highlightInfo: HighlightInfo) => void;
 }
 
 export class LinearMemoryHighlightChipList extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #highlightedAreas: HighlightInfo[] = [];
   #focusedMemoryHighlight?: HighlightInfo;
+  #jumpToAddress?: (address: number) => void;
+  #deleteHighlight?: (highlightInfo: HighlightInfo) => void;
 
   set data(data: LinearMemoryHighlightChipListData) {
     this.#highlightedAreas = data.highlightInfos;
     this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
+    this.#jumpToAddress = data.jumpToAddress;
+    this.#deleteHighlight = data.deleteHighlight;
     this.#render();
   }
 
@@ -118,11 +104,11 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
   }
 
   #onJumpToHighlightClick(startAddress: number): void {
-    this.dispatchEvent(new JumpToHighlightedMemoryEvent(startAddress));
+    this.#jumpToAddress?.(startAddress);
   }
 
-  #onDeleteHighlightClick(highlight:HighlightInfo): void {
-    this.dispatchEvent(new DeleteMemoryHighlightEvent(highlight));
+  #onDeleteHighlightClick(highlight: HighlightInfo): void {
+    this.#deleteHighlight?.(highlight);
   }
 }
 

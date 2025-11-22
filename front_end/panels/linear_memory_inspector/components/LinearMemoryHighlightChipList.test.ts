@@ -4,7 +4,6 @@
 
 import {
   getElementWithinComponent,
-  getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
@@ -86,30 +85,44 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
     assert.strictEqual(chips.length, highlightInfos.length);
   });
 
-  it('sends event when clicking on jump to highlighted memory', async () => {
-    const eventPromise =
-        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.JumpToHighlightedMemoryEvent>(
-            component,
-            LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.JumpToHighlightedMemoryEvent.eventName);
+  it('calls callback when clicking on jump to highlighted memory', () => {
+    const jumpToAddress = sinon.spy();
+    const highlightInfo = {
+      startAddress: 10,
+      size: 8,
+      type: 'double',
+      name: 'myNumber',
+    };
+    component.data = {
+      highlightInfos: [highlightInfo],
+      jumpToAddress,
+    };
 
     const button = component.shadowRoot!.querySelector(HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR);
     assert.instanceOf(button, HTMLButtonElement);
     button.click();
 
-    assert.isNotNull(await eventPromise);
+    assert.isTrue(jumpToAddress.calledOnceWith(highlightInfo.startAddress));
   });
 
-  it('sends event when clicking on delete highlight chip', async () => {
-    const eventPromise =
-        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent>(
-            component,
-            LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent.eventName);
+  it('calls callback when clicking on delete highlight chip', () => {
+    const deleteHighlight = sinon.spy();
+    const highlightInfo = {
+      startAddress: 10,
+      size: 8,
+      type: 'double',
+      name: 'myNumber',
+    };
+    component.data = {
+      highlightInfos: [highlightInfo],
+      deleteHighlight,
+    };
 
     const button = component.shadowRoot!.querySelector(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR);
     assert.instanceOf(button, HTMLButtonElement);
     button.click();
 
-    assert.isNotNull(await eventPromise);
+    assert.isTrue(deleteHighlight.calledOnceWith(highlightInfo));
   });
 
   it('shows tooltip on jump to highlighted memory button', () => {

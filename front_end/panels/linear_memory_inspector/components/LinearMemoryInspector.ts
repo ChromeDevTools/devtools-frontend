@@ -11,7 +11,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../../ui/lit/lit.js';
 
-import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
 import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import {
@@ -121,8 +120,8 @@ export interface ViewInput {
   onAddressChange: (e: AddressInputChangedEvent) => void;
   onNavigatePage: (e: PageNavigationEvent) => void;
   onNavigateHistory: (e: HistoryNavigationEvent) => boolean;
-  onJumpToAddress: (e: JumpToPointerAddressEvent|JumpToHighlightedMemoryEvent) => void;
-  onDeleteMemoryHighlight: (e: DeleteMemoryHighlightEvent) => void;
+  onJumpToAddress: (e: JumpToPointerAddressEvent|{data: number}) => void;
+  onDeleteMemoryHighlight: (info: HighlightInfo) => void;
   onByteSelected: (e: ByteSelectedEvent) => void;
   onResize: (e: ResizeEvent) => void;
   onValueTypeToggled: (e: ValueTypeToggledEvent) => void;
@@ -164,9 +163,13 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
         <devtools-linear-memory-highlight-chip-list
-        .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight}}
-        @jumptohighlightedmemory=${input.onJumpToAddress}
-        @deletememoryhighlight=${input.onDeleteMemoryHighlight}>
+        .data=${{
+          highlightInfos: highlightedMemoryAreas,
+          focusedMemoryHighlight,
+          jumpToAddress: (address: number) => input.onJumpToAddress({data: address}),
+          deleteHighlight: input.onDeleteMemoryHighlight,
+        }}
+        >
         </devtools-linear-memory-highlight-chip-list>
       <devtools-linear-memory-inspector-viewer
         .data=${
@@ -376,17 +379,18 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<Event
     this.#view(viewInput, {}, this.contentElement);
   }
 
-  #onJumpToAddress(e: JumpToPointerAddressEvent|JumpToHighlightedMemoryEvent): void {
+  #onJumpToAddress(e: JumpToPointerAddressEvent|{data: number}): void {
     // Stop event from bubbling up, since no element further up needs the event.
-    e.stopPropagation();
+    if (e instanceof Event) {
+      e.stopPropagation();
+    }
     this.#currentNavigatorMode = Mode.SUBMITTED;
     const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }
 
-  #onDeleteMemoryHighlight(e: DeleteMemoryHighlightEvent): void {
-    e.stopPropagation();
-    this.dispatchEventToListeners(Events.DELETE_MEMORY_HIGHLIGHT, e.data);
+  #onDeleteMemoryHighlight(highlight: HighlightInfo): void {
+    this.dispatchEventToListeners(Events.DELETE_MEMORY_HIGHLIGHT, highlight);
   }
 
   #onRefreshRequest(): void {

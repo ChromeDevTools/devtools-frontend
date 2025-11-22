@@ -12,7 +12,14 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
+import {
+  html,
+  i18nTemplate as unboundI18nTemplate,
+  type LitTemplate,
+  nothing,
+  render,
+  type TemplateResult
+} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import protocolHandlersViewStyles from './protocolHandlersView.css.js';
@@ -64,6 +71,50 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/ProtocolHandlersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nTemplate = unboundI18nTemplate.bind(undefined, str_);
+
+function renderStatusMessage(
+    protocolHandlers: readonly ProtocolHandler[], manifestLink: Platform.DevToolsPath.UrlString): TemplateResult {
+  const manifestInTextLink =
+      UI.XLink.XLink.create(manifestLink, i18nString(UIStrings.manifest), undefined, undefined, 'manifest');
+  const statusString = protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
+  // clang-format off
+  return html`
+    <div class="protocol-handlers-row status">
+      <devtools-icon class="inline-icon"
+                     name=${protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
+      </devtools-icon>
+      ${uiI18n.getFormatLocalizedString(str_, statusString, {PH1: manifestInTextLink })}
+    </div>`;
+  // clang-format on
+}
+
+function renderProtocolTest(
+    protocolHandlers: readonly ProtocolHandler[], queryInputState: string,
+    protocolSelectHandler: (evt: HTMLSelectElementEvent) => void,
+    queryInputChangeHandler: (evt: HTMLInputElementEvent) => void, testProtocolClickHandler: () => void): LitTemplate {
+  if (protocolHandlers.length === 0) {
+    return nothing;
+  }
+  // clang-format off
+  return html`
+    <div class="protocol-handlers-row">
+      <select class="protocol-select" @change=${protocolSelectHandler}
+              aria-label=${i18nString(UIStrings.dropdownLabel)}>
+        ${protocolHandlers.filter(p => p.protocol).map(({protocol}) => html`
+          <option value=${protocol} jslog=${VisualLogging.item(protocol).track({click: true})}>
+            ${protocol}://
+          </option>`)}
+      </select>
+      <input .value=${queryInputState} class="devtools-text-input" type="text"
+             @change=${queryInputChangeHandler} aria-label=${i18nString(UIStrings.textboxLabel)}
+             placeholder=${i18nString(UIStrings.textboxPlaceholder)} />
+      <devtools-button .variant=${Buttons.Button.Variant.PRIMARY} @click=${testProtocolClickHandler}>
+        ${i18nString(UIStrings.testProtocol)}
+      </devtools-button>
+    </div>`;
+  // clang-format on
+}
 
 interface HTMLSelectElementEvent extends Event {
   target: HTMLSelectElement;
@@ -105,45 +156,6 @@ export class ProtocolHandlersView extends HTMLElement {
     this.#render();
   }
 
-  #renderStatusMessage(): TemplateResult {
-    const manifestInTextLink =
-        UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest), undefined, undefined, 'manifest');
-    const statusString = this.#protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
-    // clang-format off
-    return html`
-      <div class="protocol-handlers-row status">
-        <devtools-icon class="inline-icon"
-                       name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
-        </devtools-icon>
-        ${uiI18n.getFormatLocalizedString(str_, statusString, {PH1: manifestInTextLink})}
-      </div>`;
-    // clang-format on
-  }
-
-  #renderProtocolTest(): LitTemplate {
-    if (this.#protocolHandlers.length === 0) {
-      return nothing;
-    }
-    // clang-format off
-    return html`
-      <div class="protocol-handlers-row">
-        <select class="protocol-select" @change=${this.#handleProtocolSelect}
-                aria-label=${i18nString(UIStrings.dropdownLabel)}>
-          ${this.#protocolHandlers.filter(p => p.protocol).map(({protocol}) => html`
-            <option value=${protocol} jslog=${VisualLogging.item(protocol).track({click: true})}>
-              ${protocol}://
-            </option>`)}
-        </select>
-        <input .value=${this.#queryInputState} class="devtools-text-input" type="text"
-               @change=${this.#handleQueryInputChange} aria-label=${i18nString(UIStrings.textboxLabel)}
-               placeholder=${i18nString(UIStrings.textboxPlaceholder)} />
-        <devtools-button .variant=${Buttons.Button.Variant.PRIMARY} @click=${this.#handleTestProtocolClick}>
-          ${i18nString(UIStrings.testProtocol)}
-        </devtools-button>
-      </div>`;
-    // clang-format on
-  }
-
   #handleProtocolSelect = (evt: HTMLSelectElementEvent): void => {
     this.#selectedProtocolState = evt.target.value;
   };
@@ -160,19 +172,23 @@ export class ProtocolHandlersView extends HTMLElement {
   };
 
   #render(): void {
-    const protocolDocLink = UI.XLink.XLink.create(
-        PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations), undefined, undefined, 'learn-more');
     // inspectorCommonStyles is used for the <select> styling that is used for the dropdown
     // clang-format off
     render(html`
       <style>${protocolHandlersViewStyles}</style>
       <style>${UI.inspectorCommonStyles}</style>
       <style>${Input.textInputStyles}</style>
-      ${this.#renderStatusMessage()}
+      ${renderStatusMessage(this.#protocolHandlers, this.#manifestLink)}
       <div class="protocol-handlers-row">
-        ${uiI18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}
+        ${i18nTemplate(UIStrings.needHelpReadOur, {PH1: html`
+          <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link"
+                  jslog=${VisualLogging.link('learn-more').track({click: true, keydown:'Enter|Space'})}>
+            ${i18nString(UIStrings.protocolHandlerRegistrations)}
+          </x-link>`})}
       </div>
-      ${this.#renderProtocolTest()}
+      ${renderProtocolTest(
+        this.#protocolHandlers, this.#queryInputState, this.#handleProtocolSelect, this.#handleQueryInputChange,
+        this.#handleTestProtocolClick)}
     `, this.#shadow, {host: this});
     // clang-format on
   }

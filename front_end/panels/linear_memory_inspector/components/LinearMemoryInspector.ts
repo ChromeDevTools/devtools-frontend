@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import './LinearMemoryValueInterpreter.js';
-import './LinearMemoryHighlightChipList.js';
 import './LinearMemoryViewer.js';
 
 import * as Common from '../../../core/common/common.js';
@@ -11,6 +10,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../../ui/lit/lit.js';
 
+import {LinearMemoryHighlightChipList} from './LinearMemoryHighlightChipList.js';
 import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import {
@@ -43,6 +43,8 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widgetConfig} = UI.Widget;
+
 /**
  * If the LinearMemoryInspector only receives a portion
  * of the original Uint8Array to show, it requires information
@@ -162,15 +164,13 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
-        <devtools-linear-memory-highlight-chip-list
-        .data=${{
+        <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
           highlightInfos: highlightedMemoryAreas,
           focusedMemoryHighlight,
           jumpToAddress: (address: number) => input.onJumpToAddress({data: address}),
           deleteHighlight: input.onDeleteMemoryHighlight,
-        }}
-        >
-        </devtools-linear-memory-highlight-chip-list>
+        })}>
+        </devtools-widget>
       <devtools-linear-memory-inspector-viewer
         .data=${
       {

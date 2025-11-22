@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {
-  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
@@ -20,7 +19,7 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
 
   beforeEach(renderHighlightRow);
 
-  function renderHighlightRow() {
+  async function renderHighlightRow() {
     component = new LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList();
     renderElementIntoDOM(component);
     const highlightInfo = {
@@ -29,23 +28,20 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
       type: 'double',
       name: 'myNumber',
     };
-    component.data = {
-      highlightInfos: [
-        highlightInfo,
-      ],
-    };
+    component.highlightInfos = [highlightInfo];
+    await component.updateComplete;
   }
 
   it('renders a highlight chip button', () => {
-    const button = component.shadowRoot!.querySelector(HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR);
+    const button = component.contentElement.querySelector(HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR);
     assert.instanceOf(button, HTMLButtonElement);
-    const expressionName = component.shadowRoot!.querySelector(HIGHLIGHT_PILL_VARIABLE_NAME);
+    const expressionName = component.contentElement.querySelector(HIGHLIGHT_PILL_VARIABLE_NAME);
     assert.instanceOf(expressionName, HTMLSpanElement);
     assert.strictEqual(expressionName.innerText, 'myNumber');
   });
 
   it('focuses a highlight chip button', async () => {
-    const chip = component.shadowRoot!.querySelector(HIGHLIGHT_CHIP);
+    const chip = component.contentElement.querySelector(HIGHLIGHT_CHIP);
     assert.instanceOf(chip, HTMLDivElement);
     assert.isNotOk(chip.classList.contains('focused'));
 
@@ -55,15 +51,13 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
       type: 'double',
       name: 'myNumber',
     };
-    const data = {
-      highlightInfos: [highlightedMemory],
-      focusedMemoryHighlight: highlightedMemory,
-    } as LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.LinearMemoryHighlightChipListData;
-    component.data = data;
+    component.highlightInfos = [highlightedMemory];
+    component.focusedMemoryHighlight = highlightedMemory;
+    await component.updateComplete;
     assert.isTrue(chip.classList.contains('focused'));
   });
 
-  it('renders multiple chips', () => {
+  it('renders multiple chips', async () => {
     const highlightInfos = [
       {
         startAddress: 10,
@@ -78,14 +72,13 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
         name: 'myInt',
       },
     ];
-    component.data = {
-      highlightInfos,
-    };
-    const chips = component.shadowRoot!.querySelectorAll(HIGHLIGHT_CHIP);
+    component.highlightInfos = highlightInfos;
+    await component.updateComplete;
+    const chips = component.contentElement.querySelectorAll(HIGHLIGHT_CHIP);
     assert.strictEqual(chips.length, highlightInfos.length);
   });
 
-  it('calls callback when clicking on jump to highlighted memory', () => {
+  it('calls callback when clicking on jump to highlighted memory', async () => {
     const jumpToAddress = sinon.spy();
     const highlightInfo = {
       startAddress: 10,
@@ -93,19 +86,18 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
       type: 'double',
       name: 'myNumber',
     };
-    component.data = {
-      highlightInfos: [highlightInfo],
-      jumpToAddress,
-    };
+    component.highlightInfos = [highlightInfo];
+    component.jumpToAddress = jumpToAddress;
+    await component.updateComplete;
 
-    const button = component.shadowRoot!.querySelector(HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR);
+    const button = component.contentElement.querySelector(HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR);
     assert.instanceOf(button, HTMLButtonElement);
     button.click();
 
     assert.isTrue(jumpToAddress.calledOnceWith(highlightInfo.startAddress));
   });
 
-  it('calls callback when clicking on delete highlight chip', () => {
+  it('calls callback when clicking on delete highlight chip', async () => {
     const deleteHighlight = sinon.spy();
     const highlightInfo = {
       startAddress: 10,
@@ -113,12 +105,11 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
       type: 'double',
       name: 'myNumber',
     };
-    component.data = {
-      highlightInfos: [highlightInfo],
-      deleteHighlight,
-    };
+    component.highlightInfos = [highlightInfo];
+    component.deleteHighlight = deleteHighlight;
+    await component.updateComplete;
 
-    const button = component.shadowRoot!.querySelector(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR);
+    const button = component.contentElement.querySelector(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR);
     assert.instanceOf(button, HTMLButtonElement);
     button.click();
 
@@ -126,12 +117,12 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
   });
 
   it('shows tooltip on jump to highlighted memory button', () => {
-    const button = getElementWithinComponent(component, HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR, HTMLButtonElement);
+    const button = component.contentElement.querySelector<HTMLButtonElement>(HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR)!;
     assert.strictEqual(button.title, 'Jump to this memory');
   });
 
   it('shows tooltip on delete highlight button', () => {
-    const button = getElementWithinComponent(component, HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR, HTMLButtonElement);
+    const button = component.contentElement.querySelector<HTMLButtonElement>(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR)!;
     assert.strictEqual(button.title, 'Stop highlighting this memory');
   });
 });

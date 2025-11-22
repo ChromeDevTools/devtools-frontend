@@ -14,12 +14,10 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
-
-const {until} = Directives;
 
 const UIStrings = {
   /**
@@ -88,6 +86,101 @@ export function renderIconLink(
   // clang-format on
 }
 
+function renderAllowed(allowed: Protocol.Page.PermissionsPolicyFeatureState[]): LitTemplate {
+  if (!allowed.length) {
+    return nothing;
+  }
+  return html`
+    <devtools-report-key>${i18nString(UIStrings.allowedFeatures)}</devtools-report-key>
+    <devtools-report-value>${allowed.map(({feature}) => feature).join(', ')}</devtools-report-value>`;
+}
+
+function renderDisallowed(
+    data: Array<{
+      policy: Protocol.Page.PermissionsPolicyFeatureState,
+      blockReason?: Protocol.Page.PermissionsPolicyBlockReason,
+      linkTargetDOMNode?: SDK.DOMModel.DOMNode,
+      linkTargetRequest?: SDK.NetworkRequest.NetworkRequest,
+    }>,
+    showDetails: boolean,
+    onToggleShowDetails: () => void,
+    onRevealDOMNode: (linkTargetDOMNode: SDK.DOMModel.DOMNode) => Promise<void>,
+    onRevealHeader: (linkTargetRequest: SDK.NetworkRequest.NetworkRequest) => Promise<void>,
+    ): LitTemplate {
+  if (!data.length) {
+    return nothing;
+  }
+  if (!showDetails) {
+    // clang-format off
+    return html`
+      <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
+      <devtools-report-value>
+        ${data.map(({policy}) => policy.feature).join(', ')}
+        <devtools-button
+            class="disabled-features-button"
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            @click=${onToggleShowDetails}
+            jslog=${VisualLogging.action('show-disabled-features-details').track({click: true})}>
+          ${i18nString(UIStrings.showDetails)}
+        </devtools-button>
+      </devtools-report-value>`;
+    // clang-format on
+  }
+
+  const featureRows = data.map(({policy, blockReason, linkTargetDOMNode, linkTargetRequest}) => {
+    const blockReasonText = (() => {
+      switch (blockReason) {
+        case Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute:
+          return i18nString(UIStrings.disabledByIframe);
+        case Protocol.Page.PermissionsPolicyBlockReason.Header:
+          return i18nString(UIStrings.disabledByHeader);
+        case Protocol.Page.PermissionsPolicyBlockReason.InFencedFrameTree:
+          return i18nString(UIStrings.disabledByFencedFrame);
+        default:
+          return '';
+      }
+    })();
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`
+      <div class="permissions-row">
+        <div>
+          <devtools-icon class="allowed-icon extra-large" name="cross-circle">
+          </devtools-icon>
+        </div>
+        <div class="feature-name text-ellipsis">${policy.feature}</div>
+        <div class="block-reason">${blockReasonText}</div>
+        <div>
+          ${linkTargetDOMNode ?
+            renderIconLink('code-circle', i18nString(UIStrings.clickToShowIframe),
+                           () => onRevealDOMNode(linkTargetDOMNode), 'reveal-in-elements') :
+            nothing}
+          ${linkTargetRequest ?
+            renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToShowHeader),
+                           () => onRevealHeader(linkTargetRequest), 'reveal-in-network') :
+            nothing}
+        </div>
+      </div>`;
+    // clang-format on
+  });
+
+  // clang-format off
+  return html`
+    <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
+    <devtools-report-value class="policies-list">
+      ${featureRows}
+      <div class="permissions-row">
+        <devtools-button
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            @click=${onToggleShowDetails}
+            jslog=${VisualLogging.action('hide-disabled-features-details').track({click: true})}>
+          ${i18nString(UIStrings.hideDetails)}
+        </devtools-button>
+      </div>
+    </devtools-report-value>`;
+  // clang-format on
+}
+
 export class PermissionsPolicySection extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
@@ -101,115 +194,42 @@ export class PermissionsPolicySection extends HTMLElement {
     this.#permissionsPolicySectionData.showDetails = !this.#permissionsPolicySectionData.showDetails;
     void this.#render();
   }
-
-  #renderAllowed(): LitTemplate {
-    const allowed = this.#permissionsPolicySectionData.policies.filter(p => p.allowed).map(p => p.feature).sort();
-    if (!allowed.length) {
-      return nothing;
-    }
-    return html`
-      <devtools-report-key>${i18nString(UIStrings.allowedFeatures)}</devtools-report-key>
-      <devtools-report-value>${allowed.join(', ')}</devtools-report-value>`;
+  async #revealDOMNode(linkTargetDOMNode: SDK.DOMModel.DOMNode): Promise<void> {
+    await Common.Revealer.reveal(linkTargetDOMNode);
   }
 
-  async #renderDisallowed(): Promise<LitTemplate> {
-    const disallowed = this.#permissionsPolicySectionData.policies.filter(p => !p.allowed)
-                           .sort((a, b) => a.feature.localeCompare(b.feature));
-    if (!disallowed.length) {
-      return nothing;
+  async #revealHeader(linkTargetRequest: SDK.NetworkRequest.NetworkRequest): Promise<void> {
+    if (!linkTargetRequest) {
+      return;
     }
-    if (!this.#permissionsPolicySectionData.showDetails) {
-      // clang-format off
-      return html`
-        <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
-        <devtools-report-value>
-          ${disallowed.map(p => p.feature).join(', ')}
-          <devtools-button
-              class="disabled-features-button"
-              .variant=${Buttons.Button.Variant.OUTLINED}
-              @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
-              jslog=${VisualLogging.action('show-disabled-features-details').track({click: true})}>
-            ${i18nString(UIStrings.showDetails)}
-          </devtools-button>
-        </devtools-report-value>`;
-      // clang-format on
-    }
-
-    const frameManager = SDK.FrameManager.FrameManager.instance();
-    const featureRows = await Promise.all(disallowed.map(async policy => {
-      const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : null;
-      const blockReason = policy.locator?.blockReason;
-      const linkTargetDOMNode = await (blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute &&
-                                       frame?.getOwnerDOMNodeOrDocument());
-      const resource = frame?.resourceForURL(frame.url);
-      const linkTargetRequest = blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource?.request;
-      const blockReasonText = (() => {
-        switch (blockReason) {
-          case Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute:
-            return i18nString(UIStrings.disabledByIframe);
-          case Protocol.Page.PermissionsPolicyBlockReason.Header:
-            return i18nString(UIStrings.disabledByHeader);
-          case Protocol.Page.PermissionsPolicyBlockReason.InFencedFrameTree:
-            return i18nString(UIStrings.disabledByFencedFrame);
-          default:
-            return '';
-        }
-      })();
-      const revealHeader = async(): Promise<void> => {
-        if (!linkTargetRequest) {
-          return;
-        }
-        const headerName =
-            linkTargetRequest.responseHeaderValue('permissions-policy') ? 'permissions-policy' : 'feature-policy';
-        const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(
-            linkTargetRequest,
-            {name: headerName, value: ''},
-        );
-        await Common.Revealer.reveal(requestLocation);
-      };
-
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      return html`
-        <div class="permissions-row">
-          <div>
-            <devtools-icon class="allowed-icon extra-large" name="cross-circle">
-            </devtools-icon>
-          </div>
-          <div class="feature-name text-ellipsis">${policy.feature}</div>
-          <div class="block-reason">${blockReasonText}</div>
-          <div>
-            ${linkTargetDOMNode ?
-              renderIconLink('code-circle', i18nString(UIStrings.clickToShowIframe),
-                             () => Common.Revealer.reveal(linkTargetDOMNode), 'reveal-in-elements') :
-              nothing}
-            ${linkTargetRequest ?
-              renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToShowHeader),
-                             revealHeader, 'reveal-in-network') :
-              nothing}
-          </div>
-        </div>`;
-      // clang-format on
-    }));
-
-    // clang-format off
-    return html`
-      <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
-      <devtools-report-value class="policies-list">
-        ${featureRows}
-        <div class="permissions-row">
-          <devtools-button
-              .variant=${Buttons.Button.Variant.OUTLINED}
-              @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
-              jslog=${VisualLogging.action('hide-disabled-features-details').track({click: true})}>
-            ${i18nString(UIStrings.hideDetails)}
-          </devtools-button>
-        </div>
-      </devtools-report-value>`;
-    // clang-format on
+    const headerName =
+        linkTargetRequest.responseHeaderValue('permissions-policy') ? 'permissions-policy' : 'feature-policy';
+    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(
+        linkTargetRequest,
+        {name: headerName, value: ''},
+    );
+    await Common.Revealer.reveal(requestLocation);
   }
 
   async #render(): Promise<void> {
+    const {showDetails} = this.#permissionsPolicySectionData;
+    const frameManager = SDK.FrameManager.FrameManager.instance();
+    const policies = this.#permissionsPolicySectionData.policies.sort((a, b) => a.feature.localeCompare(b.feature));
+    const allowed = policies.filter(p => p.allowed);
+    const disallowed = policies.filter(p => !p.allowed);
+    const disallowedData = showDetails ? await Promise.all(disallowed.map(async policy => {
+      const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : undefined;
+      const blockReason = policy.locator?.blockReason;
+      const linkTargetDOMNode = await ((blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute &&
+                                        frame?.getOwnerDOMNodeOrDocument()) ||
+                                       undefined);
+      const resource = frame?.resourceForURL(frame.url);
+      const linkTargetRequest =
+          (blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource?.request) || undefined;
+      return {policy, blockReason, linkTargetDOMNode, linkTargetRequest};
+    })) :
+                                         disallowed.map(policy => ({policy}));
+
     await RenderCoordinator.write('PermissionsPolicySection render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -218,11 +238,13 @@ export class PermissionsPolicySection extends HTMLElement {
         <devtools-report-section-header>
           ${i18n.i18n.lockedString('Permissions Policy')}
         </devtools-report-section-header>
-        ${this.#renderAllowed()}
-        ${(this.#permissionsPolicySectionData.policies.findIndex(p => p.allowed) > 0 ||
-          this.#permissionsPolicySectionData.policies.findIndex(p => !p.allowed) > 0) ?
+        ${renderAllowed(allowed)}
+        ${allowed.length && disallowed.length ?
           html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing}
-        ${until(this.#renderDisallowed(), nothing)}
+        ${renderDisallowed(
+            disallowedData, showDetails,
+            this.#toggleShowPermissionsDisallowedDetails.bind(this), this.#revealDOMNode.bind(this),
+            this.#revealHeader.bind(this))}
         <devtools-report-divider></devtools-report-divider>`,
         this.#shadow, {host: this},
       );

@@ -14,12 +14,12 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
 
-const {html} = Lit;
+const {until} = Directives;
 
 const UIStrings = {
   /**
@@ -72,19 +72,19 @@ export interface PermissionsPolicySectionData {
 
 export function renderIconLink(
     iconName: string, title: Platform.UIString.LocalizedString, clickHandler: (() => void)|(() => Promise<void>),
-    jsLogContext: string): Lit.TemplateResult {
+    jsLogContext: string): TemplateResult {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   return html`
-  <devtools-button
-    .iconName=${iconName}
-    title=${title}
-    aria-label=${title}
-    .variant=${Buttons.Button.Variant.ICON}
-    .size=${Buttons.Button.Size.SMALL}
-    @click=${clickHandler}
-    jslog=${VisualLogging.action().track({click: true}).context(jsLogContext)}></devtools-button>
-  `;
+    <devtools-button
+      .iconName=${iconName}
+      title=${title}
+      aria-label=${title}
+      .variant=${Buttons.Button.Variant.ICON}
+      .size=${Buttons.Button.Size.SMALL}
+      @click=${clickHandler}
+      jslog=${VisualLogging.action().track({click: true}).context(jsLogContext)}>
+    </devtools-button>`;
   // clang-format on
 }
 
@@ -102,40 +102,37 @@ export class PermissionsPolicySection extends HTMLElement {
     void this.#render();
   }
 
-  #renderAllowed(): Lit.LitTemplate {
+  #renderAllowed(): LitTemplate {
     const allowed = this.#permissionsPolicySectionData.policies.filter(p => p.allowed).map(p => p.feature).sort();
     if (!allowed.length) {
-      return Lit.nothing;
+      return nothing;
     }
     return html`
       <devtools-report-key>${i18nString(UIStrings.allowedFeatures)}</devtools-report-key>
-      <devtools-report-value>
-        ${allowed.join(', ')}
-      </devtools-report-value>
-    `;
+      <devtools-report-value>${allowed.join(', ')}</devtools-report-value>`;
   }
 
-  async #renderDisallowed(): Promise<Lit.LitTemplate> {
+  async #renderDisallowed(): Promise<LitTemplate> {
     const disallowed = this.#permissionsPolicySectionData.policies.filter(p => !p.allowed)
                            .sort((a, b) => a.feature.localeCompare(b.feature));
     if (!disallowed.length) {
-      return Lit.nothing;
+      return nothing;
     }
     if (!this.#permissionsPolicySectionData.showDetails) {
+      // clang-format off
       return html`
         <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
         <devtools-report-value>
           ${disallowed.map(p => p.feature).join(', ')}
           <devtools-button
-          class="disabled-features-button"
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
-          jslog=${VisualLogging.action('show-disabled-features-details').track({
-        click: true,
-      })}>${i18nString(UIStrings.showDetails)}
-        </devtools-button>
-        </devtools-report-value>
-      `;
+              class="disabled-features-button"
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
+              jslog=${VisualLogging.action('show-disabled-features-details').track({click: true})}>
+            ${i18nString(UIStrings.showDetails)}
+          </devtools-button>
+        </devtools-report-value>`;
+      // clang-format on
     }
 
     const frameManager = SDK.FrameManager.FrameManager.instance();
@@ -179,61 +176,54 @@ export class PermissionsPolicySection extends HTMLElement {
             <devtools-icon class="allowed-icon extra-large" name="cross-circle">
             </devtools-icon>
           </div>
-          <div class="feature-name text-ellipsis">
-            ${policy.feature}
-          </div>
+          <div class="feature-name text-ellipsis">${policy.feature}</div>
           <div class="block-reason">${blockReasonText}</div>
           <div>
-            ${
-          linkTargetDOMNode ? renderIconLink(
-                                  'code-circle', i18nString(UIStrings.clickToShowIframe),
-                                  () => Common.Revealer.reveal(linkTargetDOMNode), 'reveal-in-elements') :
-                              Lit.nothing}
-            ${
-          linkTargetRequest ? renderIconLink(
-                                  'arrow-up-down-circle',
-                                  i18nString(UIStrings.clickToShowHeader),
-                                  revealHeader,
-                                  'reveal-in-network') :
-                              Lit.nothing}
+            ${linkTargetDOMNode ?
+              renderIconLink('code-circle', i18nString(UIStrings.clickToShowIframe),
+                             () => Common.Revealer.reveal(linkTargetDOMNode), 'reveal-in-elements') :
+              nothing}
+            ${linkTargetRequest ?
+              renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToShowHeader),
+                             revealHeader, 'reveal-in-network') :
+              nothing}
           </div>
-        </div>
-      `;
+        </div>`;
       // clang-format on
     }));
 
+    // clang-format off
     return html`
       <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
       <devtools-report-value class="policies-list">
         ${featureRows}
         <div class="permissions-row">
-        <devtools-button
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
-          jslog=${VisualLogging.action('hide-disabled-features-details').track({
-      click: true,
-    })}>${i18nString(UIStrings.hideDetails)}
-        </devtools-button>
+          <devtools-button
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
+              jslog=${VisualLogging.action('hide-disabled-features-details').track({click: true})}>
+            ${i18nString(UIStrings.hideDetails)}
+          </devtools-button>
         </div>
-      </devtools-report-value>
-    `;
+      </devtools-report-value>`;
+    // clang-format on
   }
 
   async #render(): Promise<void> {
     await RenderCoordinator.write('PermissionsPolicySection render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      Lit.render(
-        html`
-          <style>${permissionsPolicySectionStyles}</style>
-          <devtools-report-section-header>${i18n.i18n.lockedString('Permissions Policy')}</devtools-report-section-header>
-          ${this.#renderAllowed()}
-          ${(this.#permissionsPolicySectionData.policies.findIndex(p => p.allowed) > 0 ||
-            this.#permissionsPolicySectionData.policies.findIndex(p => !p.allowed) > 0) ?
-            html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : Lit.nothing}
-          ${Lit.Directives.until(this.#renderDisallowed(), Lit.nothing)}
-          <devtools-report-divider></devtools-report-divider>
-        `,
+      render(html`
+        <style>${permissionsPolicySectionStyles}</style>
+        <devtools-report-section-header>
+          ${i18n.i18n.lockedString('Permissions Policy')}
+        </devtools-report-section-header>
+        ${this.#renderAllowed()}
+        ${(this.#permissionsPolicySectionData.policies.findIndex(p => p.allowed) > 0 ||
+          this.#permissionsPolicySectionData.policies.findIndex(p => !p.allowed) > 0) ?
+          html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing}
+        ${until(this.#renderDisallowed(), nothing)}
+        <devtools-report-divider></devtools-report-divider>`,
         this.#shadow, {host: this},
       );
       // clang-format on

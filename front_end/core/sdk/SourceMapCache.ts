@@ -9,6 +9,11 @@ export class SourceMapCache {
   static readonly #INSTANCE = new SourceMapCache('devtools-source-map-cache');
 
   static instance(): SourceMapCache {
+    if (typeof window === 'undefined') {
+      // TODO(crbug.com/451502260): Move this behind a `HostRuntime` interface.
+      return IN_MEMORY_INSTANCE as unknown as
+          SourceMapCache;  // TS doesn't like that our in-memory class doesn't have the same private fields.
+    }
     return this.#INSTANCE;
   }
 
@@ -52,3 +57,19 @@ export class SourceMapCache {
     await window.caches.delete(this.#name);
   }
 }
+
+const IN_MEMORY_INSTANCE = new (class implements Pick<SourceMapCache, 'get'|'set'|'disposeForTest'> {
+  readonly #cache = new Map<DebugId, SourceMapV3>();
+
+  async set(debugId: DebugId, sourceMap: SourceMapV3): Promise<void> {
+    this.#cache.set(debugId, sourceMap);
+  }
+
+  async get(debugId: DebugId): Promise<SourceMapV3|null> {
+    return this.#cache.get(debugId) ?? null;
+  }
+
+  async disposeForTest(): Promise<void> {
+    // Do nothing.
+  }
+})();

@@ -53,14 +53,17 @@ describeWithEnvironment('ChatView', () => {
         messages: [
           {
             entity: AiAssistancePanel.ChatMessageEntity.MODEL,
-            steps: [
+            parts: [
               {
-                isLoading: false,
-                title: 'Updating element styles',
-                thought: 'Updating element styles',
-                code: '$0.style.background = "blue";',
-                sideEffect: {
-                  onAnswer: () => {},
+                type: 'step',
+                step: {
+                  isLoading: false,
+                  title: 'Updating element styles',
+                  thought: 'Updating element styles',
+                  code: '$0.style.background = "blue";',
+                  sideEffect: {
+                    onAnswer: () => {},
+                  },
                 },
               },
             ],

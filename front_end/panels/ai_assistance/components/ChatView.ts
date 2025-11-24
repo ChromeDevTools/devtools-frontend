@@ -204,6 +204,19 @@ export type ImageInputData = {
   inputType: AiAssistanceModel.AiAgent.MultimodalInputType,
 };
 
+export interface AnswerPart {
+  type: 'answer';
+  text: string;
+  suggestions?: [string, ...string[]];
+}
+
+export interface StepPart {
+  type: 'step';
+  step: Step;
+}
+
+export type ModelMessagePart = AnswerPart|StepPart;
+
 export interface UserChatMessage {
   entity: ChatMessageEntity.USER;
   text: string;
@@ -211,9 +224,7 @@ export interface UserChatMessage {
 }
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
-  steps: Step[];
-  suggestions?: [string, ...string[]];
-  answer?: string;
+  parts: ModelMessagePart[];
   error?: AiAssistanceModel.AiAgent.ErrorType;
   rpcId?: Host.AidaClient.RpcGlobalId;
 }
@@ -839,20 +850,21 @@ function renderChatMessage({
         </div>
       </div>
       ${Lit.Directives.repeat(
-        message.steps,
+        message.parts,
         (_, index) => index,
-        step => {
+        (part, index) => {
+          const isLastPart = index === message.parts.length - 1;
+          if (part.type === 'answer') {
+            return html`<p>${renderTextAsMarkdown(part.text, markdownRenderer, { animate: !isReadOnly && isLoading && isLast && isLastPart })}</p>`;
+          }
           return renderStep({
-            step,
+            step: part.step,
             isLoading,
             markdownRenderer,
-            isLast: [...message.steps.values()].at(-1) === step && isLast,
+            isLast: isLastPart && isLast,
           });
         },
       )}
-      ${message.answer
-        ? html`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly && isLoading && isLast })}</p>`
-        : Lit.nothing}
       ${renderError(message)}
       ${isLast && isLoading
         ? Lit.nothing
@@ -864,7 +876,7 @@ function renderChatMessage({
               }
               onFeedbackSubmit(message.rpcId, rating, feedback);
             },
-            suggestions: (isLast && !isReadOnly) ? message.suggestions : undefined,
+            suggestions: (isLast && !isReadOnly && message.parts.at(-1)?.type === 'answer') ? (message.parts.at(-1) as AnswerPart).suggestions : undefined,
             onSuggestionClick,
             onCopyResponseClick: () => onCopyResponseClick(message),
             canShowFeedbackForm,

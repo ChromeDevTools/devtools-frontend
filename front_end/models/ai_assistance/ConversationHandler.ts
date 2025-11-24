@@ -211,6 +211,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
           ): AsyncGenerator<ResponseData, void, void> {
     for await (const data of items) {
       // We don't want to save partial responses to the conversation history.
+      // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
       if (data.type !== ResponseType.ANSWER || data.complete) {
         void conversation?.addHistoryItem(data);
       }

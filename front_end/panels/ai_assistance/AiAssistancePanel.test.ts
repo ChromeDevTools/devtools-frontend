@@ -569,11 +569,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -609,11 +610,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
       view.input.onNewChatClick();
@@ -657,11 +659,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
              imageInput: undefined,
            },
            {
-             answer: 'test',
+             parts: [{
+               type: 'answer',
+               text: 'test',
+             }],
              entity: AiAssistancePanel.ChatMessageEntity.MODEL,
              rpcId: undefined,
-             suggestions: undefined,
-             steps: [],
            },
          ]);
          view.input.onNewChatClick();
@@ -700,11 +703,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -722,11 +726,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test2',
+          parts: [{
+            type: 'answer',
+            text: 'test2',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -743,11 +748,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
     });
@@ -791,11 +797,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
         {
           entity: AiAssistancePanel.ChatMessageEntity.USER,
@@ -803,11 +810,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test2',
+          parts: [{
+            type: 'answer',
+            text: 'test2',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
     });
@@ -842,11 +850,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
             imageInput: undefined,
           },
           {
-            answer: 'test',
+            parts: [{
+              type: 'answer',
+              text: 'test',
+            }],
             entity: AiAssistancePanel.ChatMessageEntity.MODEL,
             rpcId: undefined,
-            suggestions: undefined,
-            steps: [],
           },
         ]);
       });
@@ -944,11 +953,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'Thinking...',
+          parts: [{
+            type: 'answer',
+            text: 'Thinking...',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -964,11 +974,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'Thinking...',
+          parts: [{
+            type: 'answer',
+            text: 'Thinking...',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
           error: AiAssistanceModel.AiAgent.ErrorType.ABORT,
         },
         {
@@ -977,11 +988,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'Interrupted and answered',
+          parts: [{
+            type: 'answer',
+            text: 'Interrupted and answered',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
     });
@@ -1111,11 +1123,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -1146,11 +1159,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
       view.input.onDeleteClick();
@@ -1177,11 +1191,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -1198,11 +1213,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test2',
+          parts: [{
+            type: 'answer',
+            text: 'test2',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -1294,11 +1310,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -1318,11 +1335,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
         {
           entity: AiAssistancePanel.ChatMessageEntity.USER,
@@ -1330,11 +1348,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test2',
+          parts: [{
+            type: 'answer',
+            text: 'test2',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
     });
@@ -1420,8 +1439,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {view} = await createAiAssistancePanel();
       const modelMessage: AiAssistancePanel.ModelChatMessage = {
         entity: AiAssistancePanel.ChatMessageEntity.MODEL,
-        steps: [],
-        answer: 'test',
+        parts: [{
+          type: 'answer',
+          text: 'test',
+        }],
       };
 
       const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
@@ -1611,11 +1632,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
         imageInput: undefined,
       },
       {
-        answer: undefined,
         entity: AiAssistancePanel.ChatMessageEntity.MODEL,
-        rpcId: undefined,
+        parts: [],
         error: AiAssistanceModel.AiAgent.ErrorType.BLOCK,
-        steps: [],
       },
     ]);
   });
@@ -1950,11 +1969,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}}
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
     });
@@ -1994,23 +2014,32 @@ describeWithMockConnection('AI Assistance Panel', () => {
     it('should generate correct markdown from a message object', function() {
       const message: AiAssistancePanel.ModelChatMessage = {
         entity: AiAssistancePanel.ChatMessageEntity.MODEL,
-        steps: [
+        parts: [
           {
-            isLoading: false,
-            contextDetails: [
-              {title: 'Detail 1', text: '*Some markdown text'},
-              {title: 'Detail 2', text: 'Some text', codeLang: 'js'},
-            ],
+            type: 'step',
+            step: {
+              isLoading: false,
+              contextDetails: [
+                {title: 'Detail 1', text: '*Some markdown text'},
+                {title: 'Detail 2', text: 'Some text', codeLang: 'js'},
+              ],
+            },
           },
           {
-            isLoading: false,
-            title: 'Step Title',
-            thought: 'Step Thought',
-            code: 'console.log("hello");',
-            output: 'hello',
+            type: 'step',
+            step: {
+              isLoading: false,
+              title: 'Step Title',
+              thought: 'Step Thought',
+              code: 'console.log("hello");',
+              output: 'hello',
+            },
+          },
+          {
+            type: 'answer',
+            text: 'Final answer.',
           },
         ],
-        answer: 'Final answer.',
       };
 
       const result = AiAssistancePanel.getResponseMarkdown(message);
@@ -2134,11 +2163,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
 
@@ -2160,11 +2190,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test',
+          parts: [{
+            type: 'answer',
+            text: 'test',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
         {
           entity: AiAssistancePanel.ChatMessageEntity.USER,
@@ -2172,13 +2203,121 @@ describeWithMockConnection('AI Assistance Panel', () => {
           imageInput: undefined,
         },
         {
-          answer: 'test3',
+          parts: [{
+            type: 'answer',
+            text: 'test3',
+          }],
           entity: AiAssistancePanel.ChatMessageEntity.MODEL,
           rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
         },
       ]);
+    });
+  });
+
+  describe('Interleaved Responses', () => {
+    beforeEach(() => {
+      enableAllFeatureAndSetting();
+    });
+
+    it('should handle interleaved text and steps correctly', async () => {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+          query: 'Test interleaved',
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.QUERYING,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'First part of answer',
+          complete: false,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.TITLE,
+          title: 'Step 1',
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.THOUGHT,
+          thought: 'Thinking...',
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'console.log("test")',
+          output: 'test',
+          canceled: false,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Second part of answer',
+          complete: true,
+        };
+      })();
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(stubbedResponses);
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      let nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      nextInput.props.onTextSubmit('Test interleaved');
+
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      const lastMessage = nextInput.props.messages.at(-1);
+      assert.exists(lastMessage);
+      assert.strictEqual(lastMessage.entity, AiAssistancePanel.ChatMessageEntity.MODEL);
+      const modelMessage = lastMessage as AiAssistancePanel.ModelChatMessage;
+      assert.lengthOf(modelMessage.parts, 3);
+
+      const [part1, part2, part3] = modelMessage.parts;
+      assert.strictEqual(part1.type, 'answer');
+      assert.strictEqual((part1 as AiAssistancePanel.AnswerPart).text, 'First part of answer');
+
+      assert.strictEqual(part2.type, 'step');
+      assert.strictEqual((part2 as AiAssistancePanel.StepPart).step.title, 'Step 1');
+
+      assert.strictEqual(part3.type, 'answer');
+      assert.strictEqual((part3 as AiAssistancePanel.AnswerPart).text, 'Second part of answer');
+    });
+
+    it('should update existing answer part when receiving consecutive answer chunks', async () => {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+          query: 'Test streaming',
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Part 1',
+          complete: false,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Part 1 updated',
+          complete: true,
+        };
+      })();
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(stubbedResponses);
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      let nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      nextInput.props.onTextSubmit('Test streaming');
+
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      const lastMessage = nextInput.props.messages.at(-1);
+      assert.exists(lastMessage);
+      assert.strictEqual(lastMessage.entity, AiAssistancePanel.ChatMessageEntity.MODEL);
+      const modelMessage = lastMessage as AiAssistancePanel.ModelChatMessage;
+      assert.lengthOf(modelMessage.parts, 1);
+
+      const part1 = modelMessage.parts[0];
+      assert.strictEqual(part1.type, 'answer');
+      assert.strictEqual((part1 as AiAssistancePanel.AnswerPart).text, 'Part 1 updated');
     });
   });
 });

@@ -158,27 +158,15 @@ function createErrorMessageFromResponse(response) {
     console.assert(success === (message.length === 0));
     return { success, description: { statusCode, netError, netErrorName, urlValid, message } };
 }
-const loadXHR = (url) => {
-    return new Promise((successCallback, failureCallback) => {
-        function onReadyStateChanged() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) {
-                return;
-            }
-            if (xhr.status !== 200) {
-                xhr.onreadystatechange = null;
-                failureCallback(new Error(String(xhr.status)));
-                return;
-            }
-            xhr.onreadystatechange = null;
-            successCallback(xhr.responseText);
-        }
-        const xhr = new XMLHttpRequest();
-        xhr.withCredentials = false;
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = onReadyStateChanged;
-        xhr.send(null);
-    });
-};
+async function fetchToString(url) {
+    try {
+        const response = await fetch(url);
+        return await response.text();
+    }
+    catch (cause) {
+        throw new Error(`Failed to fetch ${url}`, { cause });
+    }
+}
 function canBeRemoteFilePath(url) {
     try {
         const urlObject = new URL(url);
@@ -192,7 +180,7 @@ export const loadAsStream = function (url, headers, stream, callback, allowRemot
     const streamId = bindOutputStream(stream);
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
     if (parsedURL.isDataURL()) {
-        loadXHR(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
+        fetchToString(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
         return;
     }
     if (!allowRemoteFilePaths && canBeRemoteFilePath(url)) {

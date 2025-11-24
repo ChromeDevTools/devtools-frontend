@@ -2654,6 +2654,13 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "masonry-direction",
+   "masonry-fill"
+  ],
+  "name": "grid-lanes-flow"
+ },
+ {
+  "longhands": [
    "grid-row-start",
    "grid-row-end"
   ],
@@ -3111,13 +3118,6 @@ export const generatedProperties = [
    "reverse"
   ],
   "name": "masonry-fill"
- },
- {
-  "longhands": [
-   "masonry-direction",
-   "masonry-fill"
-  ],
-  "name": "masonry-flow"
  },
  {
   "inherited": true,

@@ -23306,6 +23306,26 @@
                             "type": "boolean"
                         }
                     ]
+                },
+                {
+                    "name": "getAnnotatedPageContent",
+                    "description": "Get the annotated page content for the main frame.\nThis is an experimental command that is subject to change.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "includeActionableInformation",
+                            "description": "Whether to include actionable information. Defaults to true.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "content",
+                            "description": "The annotated page content as a base64 encoded protobuf.\nThe format is defined by the `AnnotatedPageContent` message in\ncomponents/optimization_guide/proto/features/common_quality_data.proto",
+                            "type": "binary"
+                        }
+                    ]
                 }
             ],
             "events": [

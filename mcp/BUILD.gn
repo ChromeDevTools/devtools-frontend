@@ -8,10 +8,12 @@ devtools_module("mcp") {
   sources = [ "mcp.ts" ]
 
   deps = [
+    "../front_end/core/sdk:meta",
     "../front_end/foundation:bundle",
     "../front_end/models/ai_assistance",
     "../front_end/models/issues_manager:bundle",
     "../front_end/models/trace:bundle",
+    "../front_end/models/workspace:meta",
   ]
 }
 

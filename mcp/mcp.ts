@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// Instantiating a DevTools universe requires settings from these meta files.
+// Until settings registration is handled differently, the easiest solution is to
+// just import relevant meta files (as long as they don't contain any UI related code)
+import '../front_end/core/sdk/sdk-meta.js';
+import '../front_end/models/workspace/workspace-meta.js';
+
 /**
  * IMPORTANT! Make sure that any class that is exported here has related unit
  * tests added to foundation_unittests. See front_end/core/i18n/BUILD.gn as an

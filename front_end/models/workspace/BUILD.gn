@@ -86,7 +86,10 @@ devtools_entrypoint("meta") {
     "../../core/common:bundle",
   ]
 
-  visibility = [ "../../entrypoints/*" ]
+  visibility = [
+    "../../../mcp/*",
+    "../../entrypoints/*",
+  ]
 }
 
 ts_library("unittests") {

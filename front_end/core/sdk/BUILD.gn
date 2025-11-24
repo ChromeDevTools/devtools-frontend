@@ -130,7 +130,10 @@ devtools_entrypoint("meta") {
     "../../core/i18n:bundle",
   ]
 
-  visibility = [ "../../entrypoints/*" ]
+  visibility = [
+    "../../../mcp/*",
+    "../../entrypoints/*",
+  ]
 }
 
 ts_library("unittests") {

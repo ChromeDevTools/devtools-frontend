@@ -12,6 +12,7 @@ devtools_module("host") {
     "GdpClient.ts",
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",
+    "InspectorFrontendHostStub.ts",
     "Platform.ts",
     "ResourceLoader.ts",
     "UserMetrics.ts",

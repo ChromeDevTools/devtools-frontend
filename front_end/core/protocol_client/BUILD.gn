@@ -6,7 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
-devtools_module("protocol_client") {
+devtools_foundation_module("protocol_client") {
   sources = [
     "CDPConnection.ts",
     "ConnectionTransport.ts",

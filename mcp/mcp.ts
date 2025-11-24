@@ -11,6 +11,7 @@ export * as Common from '../front_end/core/common/common.js';
 export * as I18n from '../front_end/core/i18n/i18n.js';
 export type * as CDPConnection from '../front_end/core/protocol_client/CDPConnection.js';
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
+export * as ProtocolClient from '../front_end/core/protocol_client/protocol_client.js';
 export * as Foundation from '../front_end/foundation/foundation.js';
 export {
   PerformanceInsightFormatter

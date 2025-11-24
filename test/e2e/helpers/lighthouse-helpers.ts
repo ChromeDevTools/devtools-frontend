@@ -229,16 +229,13 @@ export async function registerServiceWorker(inspectedPage = getBrowserAndPagesWr
 export async function interceptNextFileSave(devToolsPage = getBrowserAndPagesWrappers().devToolsPage):
     Promise<() => Promise<string>> {
   await devToolsPage.evaluate(() => {
-    // @ts-expect-error
     const original = InspectorFrontendHost.save;
     const nextFilePromise = new Promise(resolve => {
-      // @ts-expect-error
       InspectorFrontendHost.save = (_, content) => {
         resolve(content);
       };
     });
     void nextFilePromise.finally(() => {
-      // @ts-expect-error
       InspectorFrontendHost.save = original;
     });
     // @ts-expect-error

@@ -13,9 +13,14 @@ import {
 import {InspectorFrontendHostStub} from './InspectorFrontendHostStub.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
-// @ts-expect-error Global injected by devtools_compatibility.js
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export let InspectorFrontendHostInstance: InspectorFrontendHostStub = globalThis.InspectorFrontendHost;
+export let InspectorFrontendHostInstance: InspectorFrontendHostAPI;
+
+declare global {
+  // Installed by `devtools_compatibility.js` in non-hosted mode, or set to the stub/custom implementation.
+  var InspectorFrontendHost: InspectorFrontendHostAPI;  // eslint-disable-line @typescript-eslint/naming-convention
+  var InspectorFrontendAPI: InspectorFrontendAPIImpl;   // eslint-disable-line @typescript-eslint/naming-convention
+}
 
 class InspectorFrontendAPIImpl {
   constructor() {
@@ -59,15 +64,20 @@ class InspectorFrontendAPIImpl {
  */
 export type InspectorFrontendAPIImplMethods = keyof InspectorFrontendAPIImpl;
 
-(function(): void {
+/**
+ * Installs the provided host bindings implementation as the globally used one by DevTools.
+ *
+ *   - In non-hosted mode this is provided by `devtools_compatibility.js`.
+ *   - In hosted mode this tends to be the {@link InspectorFrontendHostStub}.
+ *   - For the MCP server this is a custom node.js specific implementation.
+ *
+ * Note that missing methods will be copied over from the stub.
+ */
+export function installInspectorFrontendHost(instance: InspectorFrontendHostAPI): void {
+  globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = instance;
 
-function initializeInspectorFrontendHost(): void {
-  if (!InspectorFrontendHostInstance) {
-    // Instantiate stub for web-hosted mode if necessary.
-    // @ts-expect-error Global injected by devtools_compatibility.js
-    globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
-  } else {
-    // Otherwise add stubs for missing methods that are declared in the interface.
+  if (!(instance instanceof InspectorFrontendHostStub)) {
+    // Add stubs for missing methods.
     const proto = InspectorFrontendHostStub.prototype;
     for (const name of (Object.getOwnPropertyNames(proto) as Array<keyof InspectorFrontendHostAPI>)) {
       const stub = proto[name];
@@ -85,10 +95,10 @@ function initializeInspectorFrontendHost(): void {
   InspectorFrontendHostInstance.events = new Common.ObjectWrapper.ObjectWrapper();
 }
 
+(function(): void {
 // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,
 // so the host instance should not be initialized there.
-initializeInspectorFrontendHost();
-// @ts-expect-error Global injected by devtools_compatibility.js
+installInspectorFrontendHost(globalThis.InspectorFrontendHost ?? new InspectorFrontendHostStub());
 globalThis.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
 })();
 

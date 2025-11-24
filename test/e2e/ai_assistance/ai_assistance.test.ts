@@ -67,7 +67,6 @@ describe('AI Assistance', function() {
     });
     await devtoolsPage.evaluate(messages => {
       let call = 0;
-      // @ts-expect-error devtools context.
       globalThis.InspectorFrontendHost.doAidaConversation = async (request, streamId, cb) => {
         const response = JSON.stringify([
           messages[call],
@@ -76,7 +75,6 @@ describe('AI Assistance', function() {
         let first = true;
         for (const chunk of response.split(',{')) {
           await new Promise(resolve => setTimeout(resolve, 0));
-          // @ts-expect-error devtools context.
           globalThis.InspectorFrontendAPI.streamWrite(streamId, first ? chunk : ',{' + chunk);
           first = false;
         }

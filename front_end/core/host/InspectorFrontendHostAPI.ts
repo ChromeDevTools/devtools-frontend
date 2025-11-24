@@ -334,11 +334,13 @@ export interface InspectorFrontendHostAPI {
 
   requestFileSystems(): void;
 
-  save(url: Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean, isBase64: boolean): void;
+  save(
+      url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean,
+      isBase64: boolean): void;
 
-  append(url: Platform.DevToolsPath.UrlString, content: string): void;
+  append(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string): void;
 
-  close(url: Platform.DevToolsPath.UrlString): void;
+  close(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString): void;
 
   searchInPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, query: string): void;
 
@@ -439,6 +441,7 @@ export interface InspectorFrontendHostAPI {
   dispatchHttpRequest: (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => void;
 
   recordImpression(event: ImpressionEvent): void;
+  recordResize(event: ResizeEvent): void;
   recordClick(event: ClickEvent): void;
   recordHover(event: HoverEvent): void;
   recordDrag(event: DragEvent): void;

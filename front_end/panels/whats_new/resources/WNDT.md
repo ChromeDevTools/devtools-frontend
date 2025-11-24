@@ -1,11 +1,11 @@
-### [Full stack trace AI agent in Performance panel](perf-ai-agent)
-The Performance panel now integrates a more capable AI agent that has full access to the stack trace.
+### [MCP server](mcp-server)
 
-### [AI code completion in Sources and Console](ai-code-completion)
-Code completion powered by AI is now available in the Sources panel and the Console.
+Let your favourite coding agent debug your pages at runtime, using the Chrome DevTools MCP server.
 
-### [Google Developer Program support](gdp)
-The Google Developer Program, a ready-made subscription and community platform, is now in DevTools, offering a more personalized experience, a badge system, and easier discovery of new features.
+### [Improved trace sharing](trace-sharing)
 
-### [One main 'Debug with AI' button](ai-main-button)
-The primary action bar at the top of DevTools now features the primary "Debug with AI" button which opens the 'AI assistance' panel in a right-hand side bar.
+Optionally include resource content and script source maps in exported performance traces.
+
+### [Support for @starting-style](starting-style)
+
+Debug and identify CSS entry animations using the new adorner in the Elements panel.

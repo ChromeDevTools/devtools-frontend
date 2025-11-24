@@ -195,28 +195,14 @@ function createErrorMessageFromResponse(response: LoadNetworkResourceResult): {
   return {success, description: {statusCode, netError, netErrorName, urlValid, message}};
 }
 
-const loadXHR = (url: string): Promise<string> => {
-  return new Promise((successCallback, failureCallback) => {
-    function onReadyStateChanged(): void {
-      if (xhr.readyState !== XMLHttpRequest.DONE) {
-        return;
-      }
-      if (xhr.status !== 200) {
-        xhr.onreadystatechange = null;
-        failureCallback(new Error(String(xhr.status)));
-        return;
-      }
-      xhr.onreadystatechange = null;
-      successCallback(xhr.responseText);
-    }
-
-    const xhr = new XMLHttpRequest();
-    xhr.withCredentials = false;
-    xhr.open('GET', url, true);
-    xhr.onreadystatechange = onReadyStateChanged;
-    xhr.send(null);
-  });
-};
+async function fetchToString(url: string): Promise<string> {
+  try {
+    const response = await fetch(url);
+    return await response.text();
+  } catch (cause) {
+    throw new Error(`Failed to fetch ${url}`, {cause});
+  }
+}
 
 function canBeRemoteFilePath(url: string): boolean {
   try {
@@ -237,7 +223,7 @@ export const loadAsStream = function(
   const streamId = bindOutputStream(stream);
   const parsedURL = new Common.ParsedURL.ParsedURL(url);
   if (parsedURL.isDataURL()) {
-    loadXHR(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
+    fetchToString(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
     return;
   }
 

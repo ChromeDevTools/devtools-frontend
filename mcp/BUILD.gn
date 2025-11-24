@@ -5,13 +5,18 @@
 import("../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("mcp") {
-  sources = [ "mcp.ts" ]
+  sources = [
+    "HostBindings.ts",
+    "mcp.ts",
+  ]
 
   es_target = "es2023"
   es_libs = []
   runs_in = "node_esm"
 
   deps = [
+    "../front_end/core/common:bundle",
+    "../front_end/core/host:bundle",
     "../front_end/core/sdk:meta",
     "../front_end/foundation:bundle",
     "../front_end/models/ai_assistance",

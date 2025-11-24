@@ -8,6 +8,10 @@
 import '../front_end/core/sdk/sdk-meta.js';
 import '../front_end/models/workspace/workspace-meta.js';
 
+import {installInspectorFrontendHost} from '../front_end/core/host/InspectorFrontendHost.js';
+
+import {McpHostBindings} from './HostBindings.js';
+
 /**
  * IMPORTANT! Make sure that any class that is exported here has related unit
  * tests added to foundation_unittests. See front_end/core/i18n/BUILD.gn as an
@@ -41,3 +45,4 @@ export {
 export * as MarkdownIssueDescription from '../front_end/models/issues_manager/MarkdownIssueDescription.js';
 export * as TraceEngine from '../front_end/models/trace/trace.js';
 export * as Marked from '../front_end/third_party/marked/marked.js';
+installInspectorFrontendHost(new McpHostBindings());

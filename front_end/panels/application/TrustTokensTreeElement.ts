@@ -6,8 +6,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
@@ -24,8 +22,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/TrustTokensTreeElem
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
-  private view?: LegacyWrapper.LegacyWrapper
-      .LegacyWrapper<UI.Widget.Widget, ApplicationComponents.TrustTokensView.TrustTokensView>;
+  private view?: ApplicationComponents.TrustTokensView.TrustTokensView;
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.trustTokens), false, 'private-state-tokens');
@@ -40,8 +37,7 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.Widget.Widget, new ApplicationComponents.TrustTokensView.TrustTokensView(), 'trust-tokens');
+      this.view = new ApplicationComponents.TrustTokensView.TrustTokensView();
     }
     this.showView(this.view);
     Host.userMetrics.panelShown('trust-tokens');

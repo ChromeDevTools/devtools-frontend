@@ -186,9 +186,9 @@ describeWithLocale('StylePropertyEditor', () => {
     });
   });
 
-  describe('MasonryEditor', () => {
+  describe('GridLanesEditor', () => {
     it('renders the editor', async () => {
-      const component = new ElementsComponents.StylePropertyEditor.MasonryEditor();
+      const component = new ElementsComponents.StylePropertyEditor.GridLanesEditor();
       renderElementIntoDOM(component);
       component.data = {
         authoredProperties: new Map([
@@ -228,7 +228,7 @@ describeWithLocale('StylePropertyEditor', () => {
     });
 
     it('allows selecting a property value', async () => {
-      const component = new ElementsComponents.StylePropertyEditor.MasonryEditor();
+      const component = new ElementsComponents.StylePropertyEditor.GridLanesEditor();
       renderElementIntoDOM(component);
       component.data = {
         authoredProperties: new Map(),
@@ -247,7 +247,7 @@ describeWithLocale('StylePropertyEditor', () => {
     });
 
     it('allows deselecting a property value', async () => {
-      const component = new ElementsComponents.StylePropertyEditor.MasonryEditor();
+      const component = new ElementsComponents.StylePropertyEditor.GridLanesEditor();
       renderElementIntoDOM(component);
       component.data = {
         authoredProperties: new Map([

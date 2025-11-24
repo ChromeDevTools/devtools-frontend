@@ -187,20 +187,20 @@ declare global {
   }
 }
 
-export class MasonryEditor extends StylePropertyEditor {
-  readonly jslogContext = 'cssMasonryEditor';
-  protected override readonly editableProperties: EditableProperty[] = MasonryEditableProperties;
+export class GridLanesEditor extends StylePropertyEditor {
+  readonly jslogContext = 'cssGridLanesEditor';
+  protected override readonly editableProperties: EditableProperty[] = GridLanesEditableProperties;
 
   protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
     return findGridContainerIcon(query, computedProperties);
   }
 }
 
-customElements.define('devtools-masonry-editor', MasonryEditor);
+customElements.define('devtools-grid-lanes-editor', GridLanesEditor);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-masonry-editor': MasonryEditor;
+    'devtools-grid-lanes-editor': GridLanesEditor;
   }
 }
 
@@ -301,7 +301,7 @@ export const GridEditableProperties = [
   },
 ];
 
-export const MasonryEditableProperties = [
+export const GridLanesEditableProperties = [
   {
     propertyName: 'align-content',
     propertyValues: [

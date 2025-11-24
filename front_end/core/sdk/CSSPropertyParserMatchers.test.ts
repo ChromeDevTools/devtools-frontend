@@ -673,39 +673,39 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     assert.notExists(match, text);
   });
 
-  it('match flex, grid, and masonry values', () => {
+  it('match flex, grid, and grid-lanes values', () => {
     const good = [
       'flex',
       'grid',
-      'masonry',
+      'grid-lanes',
       'inline-flex',
       'inline-grid',
-      'inline-masonry',
+      'inline-grid-lanes',
       'block flex',
       'block grid',
-      'block masonry',
+      'block grid-lanes',
       'inline   flex',
       'inline grid',
-      'inline masonry',
+      'inline grid-lanes',
       'inline grid !important',
       'grid /* comment */',
     ];
     const bad = ['flex block', 'grid inline', 'block', 'inline'];
     for (const value of good) {
       const {match, text} =
-          matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridMasonryMatcher());
+          matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatcher());
       assert.exists(match, text);
       if (match.text.includes('flex')) {
         assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.FLEX);
+      } else if (match.text.includes('grid-lanes')) {
+        assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.GRID_LANES);
       } else if (match.text.includes('grid')) {
         assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.GRID);
-      } else if (match.text.includes('masonry')) {
-        assert.strictEqual(match.layoutType, SDK.CSSPropertyParserMatchers.LayoutType.MASONRY);
       }
     }
     for (const value of bad) {
       const {match, text} =
-          matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridMasonryMatcher());
+          matchSingleValue('display', value, new SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatcher());
       assert.notExists(match, text);
     }
   });

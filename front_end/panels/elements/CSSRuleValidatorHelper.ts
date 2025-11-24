@@ -91,12 +91,12 @@ export const isGridContainer = (computedStyles?: Map<string, string>): boolean =
   return display === 'grid' || display === 'inline-grid';
 };
 
-export const isMasonryContainer = (computedStyles?: Map<string, string>): boolean => {
+export const isGridLanesContainer = (computedStyles?: Map<string, string>): boolean => {
   if (!computedStyles) {
     return false;
   }
   const display = computedStyles.get('display');
-  return display === 'masonry' || display === 'inline-masonry';
+  return display === 'grid-lanes' || display === 'inline-grid-lanes';
 };
 
 export const isMulticolContainer = (computedStyles?: Map<string, string>): boolean => {

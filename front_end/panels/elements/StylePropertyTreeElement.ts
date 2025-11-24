@@ -56,7 +56,7 @@ const {html, nothing, render, Directives: {classMap}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
-const MasonryEditor = ElementsComponents.StylePropertyEditor.MasonryEditor;
+const GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
 
 const UIStrings = {
   /**
@@ -109,9 +109,9 @@ const UIStrings = {
    */
   gridEditorButton: 'Open `grid` editor',
   /**
-   * @description Title of the button that opens the CSS Masonry editor in the Styles panel.
+   * @description Title of the button that opens the CSS Grid Lanes editor in the Styles panel.
    */
-  masonryEditorButton: 'Open `masonry` editor',
+  gridLanesEditorButton: 'Open `grid-lanes` editor',
   /**
    * @description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
    */
@@ -201,7 +201,7 @@ export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatch
   }
 }
 // clang-format off
-export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch) {
+export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch) {
   // clang-format on
   readonly #treeElement: StylePropertyTreeElement|null;
   readonly #stylesPane: StylesSidebarPane;
@@ -211,7 +211,7 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     this.#stylesPane = stylesPane;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): Node[] {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable()) {
       return children;
@@ -220,14 +220,14 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
 
     function getEditorClass(layoutType: SDK.CSSPropertyParserMatchers.LayoutType): typeof FlexboxEditor|
-        typeof GridEditor|typeof MasonryEditor {
+        typeof GridEditor|typeof GridLanesEditor {
       switch (layoutType) {
         case SDK.CSSPropertyParserMatchers.LayoutType.FLEX:
           return FlexboxEditor;
         case SDK.CSSPropertyParserMatchers.LayoutType.GRID:
           return GridEditor;
-        case SDK.CSSPropertyParserMatchers.LayoutType.MASONRY:
-          return MasonryEditor;
+        case SDK.CSSPropertyParserMatchers.LayoutType.GRID_LANES:
+          return GridLanesEditor;
       }
     }
 
@@ -237,8 +237,8 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
           return i18nString(UIStrings.flexboxEditorButton);
         case SDK.CSSPropertyParserMatchers.LayoutType.GRID:
           return i18nString(UIStrings.gridEditorButton);
-        case SDK.CSSPropertyParserMatchers.LayoutType.MASONRY:
-          return i18nString(UIStrings.masonryEditorButton);
+        case SDK.CSSPropertyParserMatchers.LayoutType.GRID_LANES:
+          return i18nString(UIStrings.gridLanesEditorButton);
       }
     }
 
@@ -248,8 +248,8 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
           return Host.UserMetrics.SwatchType.FLEX;
         case SDK.CSSPropertyParserMatchers.LayoutType.GRID:
           return Host.UserMetrics.SwatchType.GRID;
-        case SDK.CSSPropertyParserMatchers.LayoutType.MASONRY:
-          return Host.UserMetrics.SwatchType.MASONRY;
+        case SDK.CSSPropertyParserMatchers.LayoutType.GRID_LANES:
+          return Host.UserMetrics.SwatchType.GRID_LANES;
       }
     }
 

@@ -1075,25 +1075,25 @@ export class CustomFunctionMatcher extends matcherBase(CustomFunctionMatch) {
 export const enum LayoutType {
   FLEX = 'flex',
   GRID = 'grid',
-  MASONRY = 'masonry'
+  GRID_LANES = 'grid-lanes',
 }
 
-export class FlexGridMasonryMatch implements Match {
+export class FlexGridGridLanesMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly layoutType: LayoutType) {
   }
 }
 
 // clang-format off
-export class FlexGridMasonryMatcher extends matcherBase(FlexGridMasonryMatch) {
+export class FlexGridGridLanesMatcher extends matcherBase(FlexGridGridLanesMatch) {
   // clang-format on
   static readonly FLEX = ['flex', 'inline-flex', 'block flex', 'inline flex'];
   static readonly GRID = ['grid', 'inline-grid', 'block grid', 'inline grid'];
-  static readonly MASONRY = ['masonry', 'inline-masonry', 'block masonry', 'inline masonry'];
+  static readonly GRID_LANES = ['grid-lanes', 'inline-grid-lanes', 'block grid-lanes', 'inline grid-lanes'];
   override accepts(propertyName: string): boolean {
     return propertyName === 'display';
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridMasonryMatch|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridGridLanesMatch|null {
     if (node.name !== 'Declaration') {
       return null;
     }
@@ -1105,14 +1105,14 @@ export class FlexGridMasonryMatcher extends matcherBase(FlexGridMasonryMatch) {
                        .map(node => matching.getComputedText(node).trim())
                        .filter(value => value);
     const text = values.join(' ');
-    if (FlexGridMasonryMatcher.FLEX.includes(text)) {
-      return new FlexGridMasonryMatch(matching.ast.text(node), node, LayoutType.FLEX);
+    if (FlexGridGridLanesMatcher.FLEX.includes(text)) {
+      return new FlexGridGridLanesMatch(matching.ast.text(node), node, LayoutType.FLEX);
     }
-    if (FlexGridMasonryMatcher.GRID.includes(text)) {
-      return new FlexGridMasonryMatch(matching.ast.text(node), node, LayoutType.GRID);
+    if (FlexGridGridLanesMatcher.GRID.includes(text)) {
+      return new FlexGridGridLanesMatch(matching.ast.text(node), node, LayoutType.GRID);
     }
-    if (FlexGridMasonryMatcher.MASONRY.includes(text)) {
-      return new FlexGridMasonryMatch(matching.ast.text(node), node, LayoutType.MASONRY);
+    if (FlexGridGridLanesMatcher.GRID_LANES.includes(text)) {
+      return new FlexGridGridLanesMatch(matching.ast.text(node), node, LayoutType.GRID_LANES);
     }
     return null;
   }

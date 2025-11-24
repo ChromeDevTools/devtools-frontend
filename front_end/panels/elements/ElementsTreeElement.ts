@@ -195,11 +195,14 @@ const UIStrings = {
   /**
    * @description ARIA label for Elements Tree adorners
    */
-  enableMasonryMode: 'Enable masonry mode',
   /**
    * @description ARIA label for Elements Tree adorners
    */
-  disableMasonryMode: 'Disable masonry mode',
+  enableGridLanesMode: 'Enable grid-lanes mode',
+  /**
+   * @description ARIA label for Elements Tree adorners
+   */
+  disableGridLanesMode: 'Disable grid-lanes mode',
   /**
    * @description ARIA label for an elements tree adorner
    */
@@ -2625,7 +2628,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     // TODO: move this to the template.
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
-    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.MASONRY);
+    this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER);
@@ -2636,8 +2639,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (layout.isGrid) {
         this.pushGridAdorner(layout.isSubgrid);
       }
-      if (layout.isMasonry) {
-        this.pushMasonryAdorner();
+      if (layout.isGridLanes) {
+        this.pushGridLanesAdorner();
       }
       if (layout.isFlex) {
         this.pushFlexAdorner();
@@ -2746,7 +2749,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  pushMasonryAdorner(): void {
+  pushGridLanesAdorner(): void {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -2754,9 +2757,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        ElementsComponents.AdornerManager.RegisteredAdorners.MASONRY);
+        ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
     const adorner = this.adorn(config);
-    adorner.classList.add('masonry');
+    adorner.classList.add('grid-lanes');
 
     const onClick = ((() => {
                        if (adorner.isActive()) {
@@ -2769,8 +2772,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     adorner.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString(UIStrings.enableMasonryMode),
-      ariaLabelActive: i18nString(UIStrings.disableMasonryMode),
+      ariaLabelDefault: i18nString(UIStrings.enableGridLanesMode),
+      ariaLabelActive: i18nString(UIStrings.disableGridLanesMode),
     });
 
     node.domModel().overlayModel().addEventListener(

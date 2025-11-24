@@ -26,7 +26,7 @@ export enum RegisteredAdorners {
   CONTAINER = 'container',
   FLEX = 'flex',
   GRID = 'grid',
-  MASONRY = 'masonry',
+  GRID_LANES = 'grid-lanes',
   MEDIA = 'media',
   POPOVER = 'popover',
   REVEAL = 'reveal',
@@ -56,9 +56,9 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };
-    case RegisteredAdorners.MASONRY:
+    case RegisteredAdorners.GRID_LANES:
       return {
-        name: 'masonry',
+        name: 'grid-lanes',
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };

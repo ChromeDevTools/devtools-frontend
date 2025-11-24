@@ -101,7 +101,7 @@ describeWithMockConnection('LayoutPane', () => {
     getNodesByStyle
         .withArgs([
           {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'},
-          {name: 'display', value: 'masonry'}, {name: 'display', value: 'inline-masonry'}
+          {name: 'display', value: 'grid-lanes'}, {name: 'display', value: 'inline-grid-lanes'}
         ])
         .resolves([
           ID_1,
@@ -144,7 +144,7 @@ describeWithMockConnection('LayoutPane', () => {
     getNodesByStyle
         .withArgs([
           {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'},
-          {name: 'display', value: 'masonry'}, {name: 'display', value: 'inline-masonry'}
+          {name: 'display', value: 'grid-lanes'}, {name: 'display', value: 'inline-grid-lanes'}
         ])
         .resolves([
           ID_1,
@@ -164,7 +164,7 @@ describeWithMockConnection('LayoutPane', () => {
     getNodesByStyle
         .withArgs([
           {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'},
-          {name: 'display', value: 'masonry'}, {name: 'display', value: 'inline-masonry'}
+          {name: 'display', value: 'grid-lanes'}, {name: 'display', value: 'inline-grid-lanes'}
         ])
         .resolves([
           ID_1,

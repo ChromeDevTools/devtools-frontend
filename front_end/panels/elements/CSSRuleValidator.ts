@@ -12,8 +12,8 @@ import {
   isBlockContainer,
   isFlexContainer,
   isGridContainer,
+  isGridLanesContainer,
   isInlineElement,
-  isMasonryContainer,
   isMulticolContainer,
   isPossiblyReplacedElement,
 } from './CSSRuleValidatorHelper.js';
@@ -145,7 +145,7 @@ export class AlignContentValidator extends CSSRuleValidator {
     }
     const isFlex = isFlexContainer(computedStyles);
     if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles) &&
-        !isMasonryContainer(computedStyles)) {
+        !isGridLanesContainer(computedStyles)) {
       const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
       const affectedPropertyDeclarationCode = buildPropertyName('align-content');
 
@@ -257,7 +257,7 @@ export class GridContainerValidator extends CSSRuleValidator {
   }
 
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+    if (isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
@@ -293,7 +293,7 @@ export class GridItemValidator extends CSSRuleValidator {
     if (!parentComputedStyles) {
       return;
     }
-    if (isGridContainer(parentComputedStyles) || isMasonryContainer(parentComputedStyles)) {
+    if (isGridContainer(parentComputedStyles) || isGridLanesContainer(parentComputedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
@@ -358,13 +358,13 @@ export class FlexGridValidator extends CSSRuleValidator {
       return;
     }
 
-    if (isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+    if (isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
       return;
     }
 
     if (parentComputedStyles &&
         (isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles) ||
-         isMasonryContainer(parentComputedStyles))) {
+         isGridLanesContainer(parentComputedStyles))) {
       const reasonContainerDisplayName = buildPropertyValue(parentComputedStyles.get('display') as string);
       const reasonPropertyName = buildPropertyName(propertyName);
       const reasonAlternativePropertyName = buildPropertyName('justify-self');
@@ -414,7 +414,7 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     }
 
     if (isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles) ||
-        isMasonryContainer(computedStyles)) {
+        isGridLanesContainer(computedStyles)) {
       return;
     }
 

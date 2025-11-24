@@ -1211,7 +1211,7 @@ export const enum SwatchType {
   LENGTH = 8,
   POSITION_TRY_LINK = 10,
   ATTR_LINK = 11,
-  MASONRY = 12,
+  GRID_LANES = 12,
   MAX_VALUE = 13,
 }
 

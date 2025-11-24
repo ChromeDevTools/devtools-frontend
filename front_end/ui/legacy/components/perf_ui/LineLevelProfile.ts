@@ -231,18 +231,21 @@ export class Helper {
                         String(scriptIdOrUrl) as Protocol.Runtime.ScriptId, zeroBasedLine, zeroBasedColumn || 0);
                 if (rawLocation) {
                   pending.push(workspaceBinding.rawLocationToUILocation(rawLocation).then(uiLocation => {
-                    if (uiLocation) {
-                      let lineMap = decorationsBySource.get(uiLocation.uiSourceCode);
-                      if (!lineMap) {
-                        lineMap = new Map();
-                        decorationsBySource.set(uiLocation.uiSourceCode, lineMap);
+                    if (!uiLocation) {
+                      return;
+                    }
+
+                    this.addLineColumnData(
+                        decorationsBySource, uiLocation.uiSourceCode, uiLocation.lineNumber + 1,
+                        (uiLocation.columnNumber ?? 0) + 1, data);
+
+                    // If the above was a source mapped UILocation, then we also need to add it to the generated UILocation.
+                    if (uiLocation.uiSourceCode.contentType().isFromSourceMap()) {
+                      const script = rawLocation.script();
+                      const uiSourceCode = script ? workspaceBinding.uiSourceCodeForScript(script) : null;
+                      if (uiSourceCode) {
+                        this.addLineColumnData(decorationsBySource, uiSourceCode, lineNumber, columnNumber, data);
                       }
-                      let columnMap = lineMap.get(lineNumber);
-                      if (!columnMap) {
-                        columnMap = new Map();
-                        lineMap.set(lineNumber, columnMap);
-                      }
-                      columnMap.set((zeroBasedColumn || 0) + 1, data);
                     }
                   }));
                 }
@@ -266,5 +269,23 @@ export class Helper {
         uiSourceCode.setDecorationData(this.type, undefined);
       }
     }
+  }
+
+  private addLineColumnData(
+      decorationsBySource: ProfileDataMap, uiSourceCode: Workspace.UISourceCode.UISourceCode, lineOneIndexed: number,
+      columnOneIndexed: number, data: number): void {
+    let lineMap = decorationsBySource.get(uiSourceCode);
+    if (!lineMap) {
+      lineMap = new Map();
+      decorationsBySource.set(uiSourceCode, lineMap);
+    }
+
+    let columnMap = lineMap.get(lineOneIndexed);
+    if (!columnMap) {
+      columnMap = new Map();
+      lineMap.set(lineOneIndexed, columnMap);
+    }
+
+    columnMap.set(columnOneIndexed, (columnMap.get(columnOneIndexed) ?? 0) + data);
   }
 }

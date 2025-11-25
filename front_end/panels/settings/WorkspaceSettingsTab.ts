@@ -4,7 +4,7 @@
 
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/buttons/buttons.js';
-import '../../ui/components/cards/cards.js';
+import '../../ui/kit/cards/cards.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';

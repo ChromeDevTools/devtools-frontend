@@ -15,7 +15,7 @@ generate_css("css_files") {
 devtools_ui_module("card") {
   sources = [ "Card.ts" ]
 
-  deps = [ "../../../ui/lit:bundle" ]
+  deps = [ "../../lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -26,9 +26,7 @@ devtools_entrypoint("bundle") {
     ":css_files",
   ]
 
-  visibility = [ "../../../models/persistence/*" ]
-
-  visibility += default_components_visibility
+  visibility = uikit_visibility
 }
 
 devtools_ui_module("unittests") {

@@ -12,7 +12,7 @@ import {
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import type * as UI from '../../legacy.js';
 
 import * as InlineEditor from './inline_editor.js';
@@ -46,7 +46,8 @@ function getClickTarget(swatch: InlineEditor.ColorSwatch.ColorSwatch) {
   return swatch.shadowRoot!.querySelector('.color-swatch-inner')!;
 }
 
-describeWithLocale('ColorSwatch', () => {
+describe('ColorSwatch', () => {
+  setupLocaleHooks();
   it('accepts colors as color objects', () => {
     const swatch = createSwatch(Common.Color.parse('red') as Common.Color.Color);
 

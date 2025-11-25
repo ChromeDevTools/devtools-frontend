@@ -6,7 +6,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as ApplicationComponents from './components.js';
 
@@ -20,7 +20,9 @@ async function renderServiceWorkerRouterView(rules: SDK.ServiceWorkerManager.Ser
   return component;
 }
 
-describeWithLocale('ServiceWorkerRouterView', () => {
+describe('ServiceWorkerRouterView', () => {
+  setupLocaleHooks();
+
   const routerRules = [
     {
       condition: JSON.stringify({urlPattern: '/foo/bar'}),

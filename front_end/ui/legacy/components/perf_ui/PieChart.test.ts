@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -25,7 +25,8 @@ const testChartNoLegendData = {
   slices: [{value: 75, color: 'crimson', title: 'Filling'}, {value: 25, color: 'burlywood', title: 'Crust'}],
 };
 
-describeWithLocale('PieChart', () => {
+describe('PieChart', () => {
+  setupLocaleHooks();
   describe('with legend', () => {
     it('is labelled by the chart name', () => {
       const chart = new PerfUI.PieChart.PieChart();

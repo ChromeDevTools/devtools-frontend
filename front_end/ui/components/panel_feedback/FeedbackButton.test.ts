@@ -8,14 +8,15 @@ import {
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as PanelFeedback from './panel_feedback.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithLocale('Feedback button', () => {
+describe('Feedback button', () => {
+  setupLocaleHooks();
   it('calls out to the Host API to open the link in a new tab', async () => {
     const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
     const component = new PanelFeedback.FeedbackButton.FeedbackButton();

@@ -9,7 +9,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 
@@ -24,7 +24,8 @@ function makeView(origin: string, metadata: Protocol.Storage.SharedStorageMetada
       origin);
 }
 
-describeWithLocale('SharedStorageMetadataView', () => {
+describe('SharedStorageMetadataView', () => {
+  setupLocaleHooks();
   it('renders with a title', async () => {
     const component = makeView('https://a.test', {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,

@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import * as HAR from './har.js';
@@ -22,7 +22,8 @@ const simulateRequestWithStartTime = (startTime: number) => {
   return request;
 };
 
-describeWithLocale('HARWriter', () => {
+describe('HARWriter', () => {
+  setupLocaleHooks();
   it('can correctly sort exported requests logs', async () => {
     const req1Time = new Date(2020, 0, 3);
     const req2Time = new Date(2020, 1, 3);

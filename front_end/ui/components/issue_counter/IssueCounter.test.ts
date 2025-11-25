@@ -7,7 +7,7 @@ import {
   assertElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {MockIssuesManager} from '../../../testing/MockIssuesManager.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
@@ -52,7 +52,8 @@ export const extractButton = (shadowRoot: ShadowRoot) => {
   return button;
 };
 
-describeWithLocale('IssueCounter', () => {
+describe('IssueCounter', () => {
+  setupLocaleHooks();
   describe('with omitting zero-count issue kinds', () => {
     it('renders correctly', () => {
       const issuesManager = new MockIssuesManager([]);
@@ -218,7 +219,8 @@ describeWithLocale('IssueCounter', () => {
   });
 });
 
-describeWithLocale('getIssueCountsEnumeration', () => {
+describe('getIssueCountsEnumeration', () => {
+  setupLocaleHooks();
   it('formats issue counts correctly', () => {
     const issuesManager = new MockIssuesManager([]);
     const string = IssueCounter.IssueCounter.getIssueCountsEnumeration(

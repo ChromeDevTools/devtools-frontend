@@ -14,7 +14,6 @@ import {
   createStackTrace,
 } from '../../testing/ConsoleHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 
@@ -22,7 +21,7 @@ import * as Console from './console.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithLocale('PromptBuilder', () => {
+describe('PromptBuilder', () => {
   describe('allowHeader', () => {
     it('disallows cookie headers', () => {
       assert.isNotOk(Console.PromptBuilder.allowHeader({name: 'Cookie', value: ''}));

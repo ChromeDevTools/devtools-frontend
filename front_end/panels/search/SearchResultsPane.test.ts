@@ -4,7 +4,7 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Search from './search.js';
@@ -130,7 +130,8 @@ class FakeSearchResult implements Search.SearchScope.SearchResult {
   }
 }
 
-describeWithLocale('SearchResultsPane', () => {
+describe('SearchResultsPane', () => {
+  setupLocaleHooks();
   it('shows one entry per line with matches when matchColumn/matchLength is NOT present', async () => {
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
     const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);

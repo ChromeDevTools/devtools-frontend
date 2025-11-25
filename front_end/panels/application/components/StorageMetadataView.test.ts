@@ -9,7 +9,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -33,7 +33,8 @@ async function makeView(
   return component;
 }
 
-describeWithLocale('SharedStorageMetadataView', () => {
+describe('SharedStorageMetadataView', () => {
+  setupLocaleHooks();
   it('renders with an origin only', async () => {
     const component = await makeView('https://example.com/');
 

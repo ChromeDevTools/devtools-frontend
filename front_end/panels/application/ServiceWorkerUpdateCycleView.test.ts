@@ -4,13 +4,14 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import * as Resources from './application.js';
 
 import View = Resources.ServiceWorkerUpdateCycleView;
 
-describeWithLocale('ServiceWorkerUpdateCycleView', () => {
+describe('ServiceWorkerUpdateCycleView', () => {
+  setupLocaleHooks();
   let versionId = 0;
   const registrationId = 'fake-sw-id' as Protocol.ServiceWorker.RegistrationID;
 

@@ -6,12 +6,13 @@ import * as Common from '../../core/common/common.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import * as UI from './legacy.js';
 
-describeWithLocale('Toolbar', () => {
+describe('Toolbar', () => {
+  setupLocaleHooks();
   const {Toolbar} = UI.Toolbar;
 
   describe('Toolbar', () => {

@@ -29,24 +29,7 @@ export function deinitializeGlobalLocaleVars() {
   i18n.DevToolsLocale.DevToolsLocale.removeInstance();
 }
 
-export function describeWithLocale(title: string, fn: (this: Mocha.Suite) => void) {
-  return describe(title, function() {
-    before(async () => await initializeGlobalLocaleVars());
-    fn.call(this);
-    after(deinitializeGlobalLocaleVars);
-  });
+export function setupLocaleHooks() {
+  beforeEach(async () => await initializeGlobalLocaleVars());
+  afterEach(deinitializeGlobalLocaleVars);
 }
-describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => void) {
-  // eslint-disable-next-line mocha/no-exclusive-tests
-  return describe.only(title, function() {
-    before(async () => await initializeGlobalLocaleVars());
-    fn.call(this);
-    after(deinitializeGlobalLocaleVars);
-  });
-};
-describeWithLocale.skip = function(title: string, fn: (this: Mocha.Suite) => void) {
-  // eslint-disable-next-line @devtools/check-test-definitions
-  return describe.skip(title, function() {
-    fn.call(this);
-  });
-};

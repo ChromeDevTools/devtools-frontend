@@ -6,7 +6,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
@@ -32,7 +32,7 @@ const initiator = {
   initiatorUrl: Platform.DevToolsPath.EmptyUrlString,
 };
 
-describeWithLocale('PageResourceLoader', () => {
+describe('PageResourceLoader', () => {
   const foo1Url = urlString`foo1`;
   const foo2Url = urlString`foo2`;
   const foo3Url = urlString`foo3`;
@@ -51,6 +51,7 @@ describeWithLocale('PageResourceLoader', () => {
     loads.length = 0;
   });
 
+  setupLocaleHooks();
   setupSettingsHooks();
 
   it('registers extension loads', async () => {
@@ -280,12 +281,13 @@ describe('PageResourceLoader', () => {
   });
 });
 
-describeWithLocale('PageResourceLoader', () => {
+describe('PageResourceLoader', () => {
   const initiatorUrl = urlString`htp://example.com`;
   const foo1Url = urlString`foo1`;
   const foo2Url = urlString`foo2`;
   const foo3Url = urlString`foo3`;
 
+  setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
 

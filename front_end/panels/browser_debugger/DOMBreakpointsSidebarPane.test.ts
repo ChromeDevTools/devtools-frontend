@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import * as BrowserDebugger from './browser_debugger.js';
 
-describeWithLocale('DOMBreakpointsSidebarPane placeholder', () => {
+describe('DOMBreakpointsSidebarPane placeholder', () => {
+  setupLocaleHooks();
   function assertElementDisplayStyle(selector: string, style: string) {
     const element =
         BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane.instance().contentElement.querySelector(

@@ -4,19 +4,21 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-function createProtocolIssue(sriMessageSignatureIssueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails):
-    Protocol.Audits.InspectorIssue {
-  return {
-    code: Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue,
-    details: {sriMessageSignatureIssueDetails},
-  };
-}
+describe('SRIMessageSignatureIssue', () => {
+  setupLocaleHooks();
 
-describeWithLocale('SRIMessageSignatureIssue', () => {
+  function createProtocolIssue(sriMessageSignatureIssueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails):
+      Protocol.Audits.InspectorIssue {
+    return {
+      code: Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue,
+      details: {sriMessageSignatureIssueDetails},
+    };
+  }
+
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
 
   it('can be created for various error reasons', () => {

@@ -7,7 +7,7 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as Models from '../models/models.js';
 import {installMocksForRecordingPlayer} from '../testing/RecorderHelpers.js';
@@ -29,7 +29,8 @@ const triggerMicroTaskQueue = async (n = 1) => {
   }
 };
 
-describeWithLocale('StepEditor', () => {
+describe('StepEditor', () => {
+  setupLocaleHooks();
   async function renderEditor(
       step: Models.Schema.Step,
       ): Promise<Components.StepEditor.StepEditor> {

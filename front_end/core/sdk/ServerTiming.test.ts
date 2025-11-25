@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import * as SDK from './sdk.js';
 
@@ -15,7 +15,8 @@ describe('ServerTiming', () => {
   });
 });
 
-describeWithLocale('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
+describe('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
+  setupLocaleHooks();
   it('parses headers correctly', () => {
     // A real-world-like example with some edge cases.
     const actual = SDK.ServerTiming.ServerTiming.createFromHeaderValue(

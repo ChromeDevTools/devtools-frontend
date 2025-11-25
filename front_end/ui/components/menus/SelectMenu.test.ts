@@ -4,7 +4,7 @@
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
-  describeWithLocale,
+  setupLocaleHooks,
 } from '../../../testing/LocaleHelpers.js';
 import {html} from '../../lit/lit.js';
 import * as Dialogs from '../dialogs/dialogs.js';
@@ -49,7 +49,8 @@ async function createMenu(): Promise<Menus.SelectMenu.SelectMenu> {
   return menu;
 }
 
-describeWithLocale('SelectMenu', () => {
+describe('SelectMenu', () => {
+  setupLocaleHooks();
   it('will use the buttonTitle property if that is provided', async () => {
     const menu = await createMenu();
     const firsItem = menu.querySelector('devtools-menu-item');

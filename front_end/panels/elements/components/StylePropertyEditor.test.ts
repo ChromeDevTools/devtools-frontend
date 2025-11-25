@@ -6,11 +6,12 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
-describeWithLocale('StylePropertyEditor', () => {
+describe('StylePropertyEditor', () => {
+  setupLocaleHooks();
   function assertValues(component: HTMLElement, values: string[]) {
     const propertyElements = component.shadowRoot!.querySelectorAll('.property');
     const properties = [];

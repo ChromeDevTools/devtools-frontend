@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import type * as Platform from '../platform/platform.js';
 
 import * as i18n from './i18n.js';
 
-describeWithLocale('preciseMillisToString', () => {
+describe('preciseMillisToString', () => {
+  setupLocaleHooks();
   it('formats without a given precision', () => {
     const inputNumber = 7.84;
     const outputString = i18n.TimeUtilities.preciseMillisToString(inputNumber);
@@ -40,7 +41,8 @@ describeWithLocale('preciseMillisToString', () => {
   });
 });
 
-describeWithLocale('formatMicroSecondsTime', () => {
+describe('formatMicroSecondsTime', () => {
+  setupLocaleHooks();
   const {formatMicroSecondsTime} = i18n.TimeUtilities;
 
   it('formats small microsecond values', async () => {
@@ -70,7 +72,8 @@ describeWithLocale('formatMicroSecondsTime', () => {
   });
 });
 
-describeWithLocale('formatMicroSecondsAsSeconds', () => {
+describe('formatMicroSecondsAsSeconds', () => {
+  setupLocaleHooks();
   const {formatMicroSecondsAsSeconds} = i18n.TimeUtilities;
   it('formats smaller second values', async () => {
     const time = 0.03 * 1_000 * 1_000 as Platform.Timing.MicroSeconds;
@@ -83,7 +86,8 @@ describeWithLocale('formatMicroSecondsAsSeconds', () => {
   });
 });
 
-describeWithLocale('millisToString', () => {
+describe('millisToString', () => {
+  setupLocaleHooks();
   it('formats when number is infinite', () => {
     const inputNumber = Infinity;
     const outputString = i18n.TimeUtilities.millisToString(inputNumber);
@@ -149,7 +153,8 @@ describeWithLocale('millisToString', () => {
   });
 });
 
-describeWithLocale('secondsToString', () => {
+describe('secondsToString', () => {
+  setupLocaleHooks();
   it('formats infinte numbers correctly', () => {
     const inputNumber = Infinity;
     const outputString = i18n.TimeUtilities.secondsToString(inputNumber);

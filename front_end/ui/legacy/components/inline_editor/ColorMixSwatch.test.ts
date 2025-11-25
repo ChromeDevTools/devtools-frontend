@@ -5,7 +5,7 @@
 import {
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -18,7 +18,8 @@ function createSwatch(text: string, firstColor: string, secondColor: string) {
   return swatch;
 }
 
-describeWithLocale('ColorMixSwatch', () => {
+describe('ColorMixSwatch', () => {
+  setupLocaleHooks();
   it('should render color-mix swatch icon when the syntax is correct', () => {
     const swatch = createSwatch('color-mix(in srgb, red, blue)', 'red', 'blue');
 

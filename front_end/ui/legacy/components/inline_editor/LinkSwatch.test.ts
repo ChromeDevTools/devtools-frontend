@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -21,7 +21,8 @@ function assertLinkSwatch(swatch: InlineEditor.LinkSwatch.LinkSwatch, expected: 
   assert.strictEqual(link!.textContent, expected.text, 'The link has the right text content');
 }
 
-describeWithLocale('LinkSwatch', () => {
+describe('LinkSwatch', () => {
+  setupLocaleHooks();
   it('can be instantiated successfully', () => {
     const component = new InlineEditor.LinkSwatch.LinkSwatch();
     renderElementIntoDOM(component);

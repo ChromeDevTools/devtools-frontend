@@ -6,7 +6,7 @@ import {
   assertScreenshot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {
   createViewFunctionStub,
   type ViewFunctionStub,
@@ -16,7 +16,8 @@ import * as LinearMemoryInspectorComponents from './components.js';
 
 const LinearMemoryInspector = LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector;
 
-describeWithLocale('LinearMemoryInspector', () => {
+describe('LinearMemoryInspector', () => {
+  setupLocaleHooks();
   it('renders the inspector', async () => {
     const target = document.createElement('div');
     target.style.width = 'var(--sys-size-40)';
@@ -77,7 +78,8 @@ describeWithLocale('LinearMemoryInspector', () => {
   });
 });
 
-describeWithLocale('LinearMemoryInspector', () => {
+describe('LinearMemoryInspector', () => {
+  setupLocaleHooks();
   let component: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector;
   let view: ViewFunctionStub<typeof LinearMemoryInspector>;
 

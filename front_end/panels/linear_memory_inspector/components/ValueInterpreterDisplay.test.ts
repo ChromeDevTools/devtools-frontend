@@ -9,13 +9,14 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
 export const DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR = '[data-jump]';
 
-describeWithLocale('ValueInterpreterDisplay', () => {
+describe('ValueInterpreterDisplay', () => {
+  setupLocaleHooks();
   const combinationsForNumbers = [
     {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE, signed: true},
     {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE, signed: false},

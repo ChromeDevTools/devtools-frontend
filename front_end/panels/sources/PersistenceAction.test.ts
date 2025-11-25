@@ -12,14 +12,16 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithLocale('ContextMenuProvider', () => {
+describe('ContextMenuProvider', () => {
+  setupLocaleHooks();
+
   beforeEach(() => {
     // Rather then setting up a whole Workspace/BreakpointManager/TargetManager/... chain. Let's stub out the NetworkPersistenceManager.
     sinon.stub(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, 'instance')

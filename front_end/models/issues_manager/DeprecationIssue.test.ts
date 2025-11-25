@@ -4,12 +4,14 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-describeWithLocale('DeprecationIssue', () => {
+describe('DeprecationIssue', () => {
+  setupLocaleHooks();
+
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
   const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
 

@@ -8,7 +8,7 @@ import * as IssuesManager from '../../../models/issues_manager/issues_manager.js
 import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
@@ -76,7 +76,8 @@ class MockIssueResolver {
   }
 }
 
-describeWithLocale('IssueLinkIcon', () => {
+describe('IssueLinkIcon', () => {
+  setupLocaleHooks();
   const issueId = 'issue1' as Protocol.Audits.IssueId;
   const mockIssue = {
     getKind() {

@@ -9,11 +9,12 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as NetworkComponents from './components.js';
 
-describeWithLocale('RequestTrustTokensView', () => {
+describe('RequestTrustTokensView', () => {
+  setupLocaleHooks();
   const mockId = 'mockId' as Protocol.Network.RequestId;
 
   const makeRequest =

@@ -4,20 +4,22 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-function createProtocolIssue(
-    federatedAuthUserInfoRequestIssueDetails: Protocol.Audits.FederatedAuthUserInfoRequestIssueDetails):
-    Protocol.Audits.InspectorIssue {
-  return {
-    code: Protocol.Audits.InspectorIssueCode.FederatedAuthUserInfoRequestIssue,
-    details: {federatedAuthUserInfoRequestIssueDetails},
-  };
-}
+describe('FederatedAuthUserInfoRequestIssue', () => {
+  setupLocaleHooks();
 
-describeWithLocale('FederatedAuthUserInfoRequestIssue', () => {
+  function createProtocolIssue(
+      federatedAuthUserInfoRequestIssueDetails: Protocol.Audits.FederatedAuthUserInfoRequestIssueDetails):
+      Protocol.Audits.InspectorIssue {
+    return {
+      code: Protocol.Audits.InspectorIssueCode.FederatedAuthUserInfoRequestIssue,
+      details: {federatedAuthUserInfoRequestIssueDetails},
+    };
+  }
+
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
 
   it('can be created for various error reasons', () => {

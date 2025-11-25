@@ -4,20 +4,22 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-function createProtocolIssue(propertyRuleIssueDetails: Protocol.Audits.PropertyRuleIssueDetails):
-    Protocol.Audits.InspectorIssue {
-  return {
-    code: Protocol.Audits.InspectorIssueCode.PropertyRuleIssue,
-    details: {propertyRuleIssueDetails},
-  };
-}
+describe('PropertyRuleIssue', () => {
+  setupLocaleHooks();
 
-describeWithLocale('PropertyRuleIssue', () => {
+  function createProtocolIssue(propertyRuleIssueDetails: Protocol.Audits.PropertyRuleIssueDetails):
+      Protocol.Audits.InspectorIssue {
+    return {
+      code: Protocol.Audits.InspectorIssueCode.PropertyRuleIssue,
+      details: {propertyRuleIssueDetails},
+    };
+  }
+
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
   const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
 

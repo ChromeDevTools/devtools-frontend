@@ -7,7 +7,7 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
@@ -35,7 +35,8 @@ function clickSettingsButton(
   settingsButton.click();
 }
 
-describeWithLocale('LinearMemoryValueInterpreter', () => {
+describe('LinearMemoryValueInterpreter', () => {
+  setupLocaleHooks();
   function setUpComponent() {
     const buffer = new Uint8Array([34, 234, 12, 3]).buffer;
     const component = new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter();

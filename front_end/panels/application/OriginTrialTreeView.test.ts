@@ -6,7 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -174,7 +174,9 @@ async function waitForRenderedTreeNodeCount(shadowRoot: ShadowRoot, expectedNode
   });
 }
 
-describeWithLocale('OriginTrialTreeView', () => {
+describe('OriginTrialTreeView', () => {
+  setupLocaleHooks();
+
   it('renders trial names as root tree nodes', async () => {
     const {shadowRoot} = await renderOriginTrialTreeViewTreeOutline({
       trials: [

@@ -9,7 +9,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {assertScreenshot, getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import * as Network from './network.js';
 
@@ -60,7 +60,8 @@ function createNetworkRequest(
   return request;
 }
 
-describeWithLocale('ResourceTimingView', () => {
+describe('ResourceTimingView', () => {
+  setupLocaleHooks();
   it('RequestTimeRanges has router evaluation field with SW router source as network', async () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.Network, Protocol.Network.ServiceWorkerRouterSource.Network);

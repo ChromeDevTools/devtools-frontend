@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ElementsComponents from './components.js';
 
-describeWithLocale('AccessibilityTreeNode', () => {
+describe('AccessibilityTreeNode', () => {
+  setupLocaleHooks();
   it('renders role and name correctly for unignored nodes', async () => {
     const component = new ElementsComponents.AccessibilityTreeNode.AccessibilityTreeNode();
     renderElementIntoDOM(component);

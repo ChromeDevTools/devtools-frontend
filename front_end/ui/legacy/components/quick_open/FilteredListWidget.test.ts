@@ -5,7 +5,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {createFakeSetting} from '../../../../testing/EnvironmentHelpers.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {ListModel} from '../../legacy.js';
 
 import * as QuickOpen from './quick_open.js';
@@ -43,7 +43,8 @@ async function testMatch(inputs: string[], query: string, expectedSelection: num
   assert.deepEqual(expectedMatches, listModelReplaceAll.lastCall.args[0]);
 }
 
-describeWithLocale('FilteredListWidget', () => {
+describe('FilteredListWidget', () => {
+  setupLocaleHooks();
   beforeEach(() => {
     sinon.reset();
   });

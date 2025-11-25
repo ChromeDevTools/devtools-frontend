@@ -10,7 +10,7 @@ import {
   raf,
   renderElementIntoDOM
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as Dialogs from './dialogs.js';
@@ -496,7 +496,8 @@ describe('Dialog', () => {
     });
   });
 
-  describeWithLocale('rendering', () => {
+  describe('rendering', () => {
+    setupLocaleHooks();
     it('do not render dialog header line if title is empty and there is no close button', async () => {
       const dialog = new Dialogs.Dialog.Dialog();
       dialog.closeButton = false;
@@ -587,7 +588,8 @@ describe('clo lick', () => {
   });
 });
 
-describeWithLocale('visual appearance', () => {
+describe('visual appearance', () => {
+  setupLocaleHooks();
   /** FIXME: clean up and modularize these test  **/
   async function renderDialogs() {
     const verticalPositions = [Dialogs.Dialog.DialogVerticalPosition.TOP, Dialogs.Dialog.DialogVerticalPosition.BOTTOM];

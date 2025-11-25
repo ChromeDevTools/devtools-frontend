@@ -4,7 +4,7 @@
 
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
@@ -22,7 +22,8 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
   return {formatter, parsedTrace};
 }
 
-describeWithLocale('PerformanceTraceFormatter', function() {
+describe('PerformanceTraceFormatter', function() {
+  setupLocaleHooks();
   const snapshotTester = new SnapshotTester(this, import.meta);
 
   setupRuntimeHooks();

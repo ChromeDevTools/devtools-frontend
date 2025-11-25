@@ -4,14 +4,15 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as PanelFeedback from './panel_feedback.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithLocale('Panel Feedback', () => {
+describe('Panel Feedback', () => {
+  setupLocaleHooks();
   async function renderFeedbackComponent(): Promise<PanelFeedback.PanelFeedback.PanelFeedback> {
     const component = new PanelFeedback.PanelFeedback.PanelFeedback();
     component.data = {

@@ -11,7 +11,7 @@ import {
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -650,7 +650,8 @@ describe('StylesSidebarPane', () => {
     });
   });
 
-  describeWithLocale('CSSPropertyPrompt', () => {
+  describe('CSSPropertyPrompt', () => {
+    setupLocaleHooks();
     const CSSPropertyPrompt = Elements.StylesSidebarPane.CSSPropertyPrompt;
 
     const CSS_VARIABLES_FOR_TEST: Record<string, string> = {

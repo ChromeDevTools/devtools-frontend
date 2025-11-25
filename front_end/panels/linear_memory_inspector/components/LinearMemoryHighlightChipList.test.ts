@@ -6,7 +6,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
@@ -15,7 +15,8 @@ export const HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR = '.jump-to-highlight-button';
 export const HIGHLIGHT_PILL_VARIABLE_NAME = HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR + ' .value';
 export const HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR = '.delete-highlight-button';
 
-describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
+describe('LinearMemoryInspectorHighlightChipList', () => {
+  setupLocaleHooks();
   let component: LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList;
 
   beforeEach(renderHighlightRow);

@@ -10,7 +10,7 @@ import {
   deinitializeGlobalVars,
   initializeGlobalVars
 } from '../../../../testing/EnvironmentHelpers.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as QuickOpen from './quick_open.js';
 
@@ -40,7 +40,8 @@ function setupElements() {
   return {toplevel, container, title, subtitle};
 }
 
-describeWithLocale('CommandMenu', () => {
+describe('CommandMenu', () => {
+  setupLocaleHooks();
   let elements: {title: HTMLDivElement, subtitle: HTMLDivElement, toplevel: HTMLDivElement, container: HTMLDivElement};
   beforeEach(() => {
     elements = setupElements();

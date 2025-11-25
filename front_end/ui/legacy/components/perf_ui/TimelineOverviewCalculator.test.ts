@@ -3,13 +3,14 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../../../models/trace/trace.js';
-import {describeWithLocale} from '../../../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as PerfUI from './perf_ui.js';
 
 const {Milli: MilliSeconds} = Trace.Types.Timing;
 
-describeWithLocale('TimelineOverviewCalculator', () => {
+describe('TimelineOverviewCalculator', () => {
+  setupLocaleHooks();
   it('can calculate pixels for a given time', async () => {
     const calculator = new PerfUI.TimelineOverviewCalculator.TimelineOverviewCalculator();
     calculator.setDisplayWidth(200);

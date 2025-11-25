@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithLocale} from '../../testing/LocaleHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as Platform from '../platform/platform.js';
 
 import * as Common from './common.js';
@@ -25,7 +25,8 @@ describe('ResourceCategory class', () => {
   });
 });
 
-describeWithLocale('ResourceType class', () => {
+describe('ResourceType class', () => {
+  setupLocaleHooks();
   it('is able to be instantiated successfully', () => {
     const testResourceCategory = new ResourceCategory('category name', categoryTestTitle, categoryTestShortTitle);
     const resourceType = new ResourceType('Type Test Name', typeTestTitle, testResourceCategory, true);

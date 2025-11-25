@@ -268,7 +268,9 @@ def main():
     if runs_in_node_cjs_environment or runs_in_node_esm_environment or opts.test_only:
         tsconfig['compilerOptions']['typeRoots'] += [
             get_relative_path_from_output_directory(
-                TYPES_NODE_MODULES_DIRECTORY)
+                TYPES_NODE_MODULES_DIRECTORY),
+            get_relative_path_from_output_directory(
+                NODE_MODULES_DIRECTORY),  # for undici-types
         ]
 
     if opts.test_only:
@@ -293,7 +295,7 @@ def main():
         tsconfig['compilerOptions']['module'] = 'esnext'
 
     if runs_in_node_cjs_environment or runs_in_node_esm_environment:
-        tsconfig['compilerOptions']['types'] += ["node"]
+        tsconfig['compilerOptions']['types'] += ["node", "undici-types"]
 
     if opts.no_emit:
         tsconfig['compilerOptions']['noEmit'] = True

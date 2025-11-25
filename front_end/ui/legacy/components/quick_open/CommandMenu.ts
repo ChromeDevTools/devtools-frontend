@@ -343,8 +343,8 @@ export class CommandMenuProvider extends Provider {
   override renderItem(itemIndex: number, query: string, wrapperElement: Element): void {
     const command = this.commands[itemIndex];
 
-    const itemElement = wrapperElement.createChild('div', 'filtered-list-widget-item one-row');
-    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
+    const itemElement = wrapperElement.createChild('div');
+    const titleElement = itemElement.createChild('div');
 
     titleElement.removeChildren();
     const icon = IconButton.Icon.create(categoryIcons[command.category]);
@@ -352,7 +352,7 @@ export class CommandMenuProvider extends Provider {
     UI.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);
 
-    const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
+    const subtitleElement = itemElement.createChild('div');
     if (command.featurePromotionId) {
       const badge = UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
       if (badge) {

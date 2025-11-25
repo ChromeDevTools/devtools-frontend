@@ -1933,6 +1933,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/sources/components/HeadersView.js",
   "front_end/panels/sources/debuggerPausedMessage.css.js",
   "front_end/panels/sources/dialog.css.js",
+  "front_end/panels/sources/filteredUISourceCodeListProvider.css.js",
   "front_end/panels/sources/navigatorTree.css.js",
   "front_end/panels/sources/navigatorView.css.js",
   "front_end/panels/sources/scopeChainSidebarPane.css.js",

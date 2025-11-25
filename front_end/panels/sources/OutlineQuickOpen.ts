@@ -319,8 +319,8 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 
   override renderItem(itemIndex: number, query: string, wrapperElement: Element): void {
     const item = this.items[itemIndex];
-    const itemElement = wrapperElement.createChild('div', 'filtered-list-widget-item one-row');
-    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
+    const itemElement = wrapperElement.createChild('div');
+    const titleElement = itemElement.createChild('div');
 
     const icon = IconButton.Icon.create('deployed');
     wrapperElement.insertBefore(icon, itemElement);

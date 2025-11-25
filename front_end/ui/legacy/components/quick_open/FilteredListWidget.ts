@@ -282,7 +282,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
 
   createElementForItem(item: number): Element {
     const wrapperElement = document.createElement('div');
-    wrapperElement.className = 'filtered-list-widget-item-wrapper';
+    wrapperElement.className = 'filtered-list-widget-item';
 
     if (this.provider) {
       this.provider.renderItem(item, this.cleanValue(), wrapperElement);

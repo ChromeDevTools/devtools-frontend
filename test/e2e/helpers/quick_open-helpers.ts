@@ -10,8 +10,7 @@ import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
 
 export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"],[aria-label="Abrir rápido"]';
-const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item-wrapper';
-const QUICK_OPEN_ITEM_TITLE_SELECTOR = '.filtered-list-widget-title';
+const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item';
 
 const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected`;
 
@@ -60,8 +59,8 @@ export const openFileQuickOpen = async (devtoolsPage = getBrowserAndPagesWrapper
 
 export async function readQuickOpenResults(devtoolsPage = getBrowserAndPagesWrappers().devToolsPage):
     Promise<string[]> {
-  const items = await devtoolsPage.$$('.filtered-list-widget-title');
-  return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
+  const items = await devtoolsPage.$$('.filtered-list-widget-item');
+  return await Promise.all(items.map(element => element.evaluate(el => el.deepInnerText().split('\n')[0])));
 }
 
 /** Does not play well with pptr:evaluate scripts. crbug.com/391533572 */
@@ -113,7 +112,7 @@ export async function getAvailableSnippets(devtoolsPage = getBrowserAndPagesWrap
 export async function getMenuItemAtPosition(
     position: number, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
-  await devtoolsPage.waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
+  await devtoolsPage.waitFor(QUICK_OPEN_ITEMS_SELECTOR);
   const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
   const item = itemsHandles[position];
   assert.isOk(item, `Quick open: could not find item at position: ${position}.`);
@@ -123,11 +122,11 @@ export async function getMenuItemAtPosition(
 export async function getMenuItemTitleAtPosition(
     position: number, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
-  await devtoolsPage.waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
-  const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEM_TITLE_SELECTOR, quickOpenElement);
+  await devtoolsPage.waitFor(QUICK_OPEN_ITEMS_SELECTOR);
+  const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
   const item = itemsHandles[position];
   assert.isOk(item, `Quick open: could not find item at position: ${position}.`);
-  const title = await item.evaluate(elem => elem.textContent);
+  const title = await item.evaluate(elem => elem.deepInnerText().split('\n')[0]);
   return title;
 }
 
@@ -154,6 +153,6 @@ export async function typeIntoQuickOpen(
     // Because each highlighted character is in its own div, we can count the highlighted
     // characters in one item to see that the list reflects the full query.
     const highlightSelector = new Array(query.length).fill('.highlight').join(' ~ ');
-    await devtoolsPage.waitFor('.filtered-list-widget-title ' + highlightSelector);
+    await devtoolsPage.waitFor('.filtered-list-widget-item ' + highlightSelector);
   }
 }

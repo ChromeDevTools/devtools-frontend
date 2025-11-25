@@ -47,8 +47,8 @@ export class HelpQuickOpen extends Provider {
   override renderItem(itemIndex: number, _query: string, wrapperElement: Element): void {
     const provider = this.providers[itemIndex];
 
-    const itemElement = wrapperElement.createChild('div', 'filtered-list-widget-item one-row');
-    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
+    const itemElement = wrapperElement.createChild('div');
+    const titleElement = itemElement.createChild('div');
 
     const iconElement = new IconButton.Icon.Icon();
     iconElement.name = provider.iconName;

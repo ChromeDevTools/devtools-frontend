@@ -228,7 +228,7 @@ describe('User Metrics', () => {
     await setupInspectorFrontendHostStub(devToolsPage);
     await openCommandMenu(devToolsPage);
     await devToolsPage.typeText('issues');
-    await devToolsPage.waitFor('.filtered-list-widget-title');
+    await devToolsPage.waitFor('.filtered-list-widget-item');
     await devToolsPage.pressKey('Enter');
     await devToolsPage.waitFor('[aria-label="Issues panel"]');
 

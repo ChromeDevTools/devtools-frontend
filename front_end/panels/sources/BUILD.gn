@@ -15,6 +15,7 @@ generate_css("css_files") {
     "callStackSidebarPane.css",
     "debuggerPausedMessage.css",
     "dialog.css",
+    "filteredUISourceCodeListProvider.css",
     "navigatorTree.css",
     "navigatorView.css",
     "scopeChainSidebarPane.css",

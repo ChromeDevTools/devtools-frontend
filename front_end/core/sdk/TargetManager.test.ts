@@ -74,7 +74,8 @@ describe('TargetManager', () => {
   });
 
   it('allows overriding which models to autostart', () => {
-    const targetManager = new SDK.TargetManager.TargetManager(new Set([SDK.DebuggerModel.DebuggerModel]));
+    const targetManager = new SDK.TargetManager.TargetManager(
+        new Root.DevToolsContext.DevToolsContext(), new Set([SDK.DebuggerModel.DebuggerModel]));
     const target = createTarget({targetManager});
 
     assert.isTrue(target.models().has(SDK.DebuggerModel.DebuggerModel));

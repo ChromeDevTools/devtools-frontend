@@ -858,6 +858,7 @@
   // See crbug.com/747724
   TestSuite.prototype.testOfflineNetworkConditions = async function() {
     const test = this;
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.conditionsEnabled = true;
     SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.OfflineConditions);
 
     function finishRequest(request) {

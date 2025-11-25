@@ -1912,8 +1912,10 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
         promises.push(agent.invoke_overrideNetworkState({
           offline,
           latency: globalConditions?.latency ?? 0,
-          downloadThroughput: !globalConditions || globalConditions.download < 0 ? 0 : globalConditions.download,
-          uploadThroughput: !globalConditions || globalConditions.upload < 0 ? 0 : globalConditions.upload,
+          downloadThroughput: globalConditions?.download ?? -1,
+          uploadThroughput: globalConditions?.upload ?? -1,
+          connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) :
+                                             Protocol.Network.ConnectionType.None,
         }));
       }
 

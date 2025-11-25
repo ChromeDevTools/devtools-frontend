@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as FormatterWorker from './formatter_worker.js';
+import * as FormatterAction from './FormatterActions.js';  // eslint-disable-line @devtools/es-modules-import
 
 describe('ScopeParser', () => {
   describe('parseScopes', () => {
@@ -14,6 +15,7 @@ describe('ScopeParser', () => {
       const innerScope = scopes?.children[0];
       assert.strictEqual(innerScope?.start, 12);
       assert.strictEqual(innerScope?.end, 17);
+      assert.strictEqual(innerScope?.kind, FormatterAction.ScopeKind.FUNCTION);
       assert.deepEqual(innerScope?.variables?.get('a')?.uses.map(u => u.offset), [13]);
     });
 
@@ -24,6 +26,7 @@ describe('ScopeParser', () => {
       const innerScope = scopes?.children[0];
       assert.strictEqual(innerScope?.start, 8);
       assert.strictEqual(innerScope?.end, 17);
+      assert.strictEqual(innerScope?.kind, FormatterAction.ScopeKind.ARROW_FUNCTION);
       assert.deepEqual(innerScope?.variables?.size, 1);
       assert.deepEqual(innerScope?.variables?.get('a')?.uses.map(u => u.offset), [9]);
     });

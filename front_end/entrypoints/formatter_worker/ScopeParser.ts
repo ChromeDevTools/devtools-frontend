@@ -172,7 +172,7 @@ export class ScopeVariableAnalysis {
         node.elements.forEach(item => this.#processNode(item));
         break;
       case 'ArrowFunctionExpression': {
-        this.#pushScope(node.start, node.end, ScopeKind.FUNCTION);
+        this.#pushScope(node.start, node.end, ScopeKind.ARROW_FUNCTION);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.VAR, false));
         if (node.body.type === 'BlockStatement') {
           // Include the body of the arrow function in the same scope as the arguments.

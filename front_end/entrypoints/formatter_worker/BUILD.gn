@@ -92,5 +92,8 @@ devtools_foundation_module("unittests") {
     "Substitute.test.ts",
   ]
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    ":formatter_actions",
+  ]
 }

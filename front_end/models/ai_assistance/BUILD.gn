@@ -46,6 +46,7 @@ devtools_module("ai_assistance") {
     "../../models/persistence:bundle",
     "../../services/tracing:bundle",
     "../../third_party/diff:bundle",
+    "../../ui/components/annotations:bundle",
     "../bindings:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",

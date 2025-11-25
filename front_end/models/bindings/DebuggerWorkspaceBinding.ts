@@ -338,6 +338,13 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return [];
   }
 
+  async functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location):
+      Promise<Workspace.UISourceCode.UIFunctionBounds|null> {
+    // TODO(crbug.com/463452667): first try pluginManager.
+    const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);
+    return modelData ? await modelData.functionBoundsAtRawLocation(rawLocation) : null;
+  }
+
   async normalizeUILocation(uiLocation: Workspace.UISourceCode.UILocation): Promise<Workspace.UISourceCode.UILocation> {
     const rawLocations =
         await this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
@@ -580,6 +587,16 @@ class ModelData {
     ranges ??= this.#resourceMapping.uiLocationRangeToJSLocationRanges(uiSourceCode, textRange);
     ranges ??= this.#defaultMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     return ranges;
+  }
+
+  async functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location):
+      Promise<Workspace.UISourceCode.UIFunctionBounds|null> {
+    let scope: Workspace.UISourceCode.UIFunctionBounds|null = null;
+    scope = scope || await this.compilerMapping.functionBoundsAtRawLocation(rawLocation);
+    scope = scope || await this.#resourceScriptMapping.functionBoundsAtRawLocation(rawLocation);
+    // TODO(crbug.com/463452667): Use resourceMapping to support locations referring
+    // to HTML inline scripts.
+    return scope;
   }
 
   translateRawFramesStep(

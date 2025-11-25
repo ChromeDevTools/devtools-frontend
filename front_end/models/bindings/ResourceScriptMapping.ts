@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -154,6 +155,55 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
       this.removeScripts([script]);
       this.addScript(script);
     }
+  }
+
+  async functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location):
+      Promise<Workspace.UISourceCode.UIFunctionBounds|null> {
+    const script = rawLocation.script();
+    if (!script) {
+      return null;
+    }
+
+    const uiSourceCode = this.#scriptToUISourceCode.get(script);
+    if (!uiSourceCode) {
+      return null;
+    }
+
+    const scopeTreeAndText = script ? await SDK.ScopeTreeCache.scopeTreeForScript(script) : null;
+    if (!scopeTreeAndText) {
+      return null;
+    }
+
+    // Find the inner-most scope that maps to the given position.
+
+    const offset = scopeTreeAndText.text.offsetFromPosition(rawLocation.lineNumber, rawLocation.columnNumber);
+
+    const results = [];
+    (function walk(nodes: Formatter.FormatterWorkerPool.ScopeTreeNode[]) {
+      for (const node of nodes) {
+        if (!(offset >= node.start && offset < node.end)) {
+          continue;
+        }
+        results.push(node);
+        walk(node.children);
+      }
+    })([scopeTreeAndText.scopeTree]);
+
+    const result = results.findLast(
+        node => node.kind === Formatter.FormatterWorkerPool.ScopeKind.FUNCTION ||
+            Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION);
+    if (!result) {
+      return null;
+    }
+
+    // Map back to positions.
+    const startPosition = scopeTreeAndText.text.positionFromOffset(result.start);
+    const endPosition = scopeTreeAndText.text.positionFromOffset(result.end);
+
+    const name = '';  // TODO(crbug.com/452333154): update ScopeVariableAnalysis to include function name.
+    const range = new TextUtils.TextRange.TextRange(
+        startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
+    return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
 
   private addScript(script: SDK.Script.Script): void {

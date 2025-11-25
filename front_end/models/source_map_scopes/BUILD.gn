@@ -9,6 +9,7 @@ import("../visibility.gni")
 
 devtools_module("source_map_scopes") {
   sources = [
+    "FunctionCodeResolver.ts",
     "NamesResolver.ts",
     "ScopeChainModel.ts",
   ]
@@ -45,6 +46,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
   sources = [
+    "FunctionCodeResolver.test.ts",
     "NamesResolver.test.ts",
     "ScopeChainModel.test.ts",
   ]

@@ -779,6 +779,12 @@ export class SourceMap {
     return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }
 
+  findOriginalFunctionScope(position: ScopesCodec.Position):
+      {scope: ScopesCodec.OriginalScope, url?: Platform.DevToolsPath.UrlString}|null {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
+  }
+
   isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;

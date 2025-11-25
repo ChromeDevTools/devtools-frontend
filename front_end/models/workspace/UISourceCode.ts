@@ -634,6 +634,21 @@ export class UILocationRange {
 }
 
 /**
+ * A text range inside a specific {@link UISourceCode}, representing a function.
+ */
+export class UIFunctionBounds {
+  readonly uiSourceCode: UISourceCode;
+  readonly range: TextUtils.TextRange.TextRange;
+  readonly name: string;
+
+  constructor(uiSourceCode: UISourceCode, range: TextUtils.TextRange.TextRange, name: string) {
+    this.uiSourceCode = uiSourceCode;
+    this.range = range;
+    this.name = name;
+  }
+}
+
+/**
  * A message associated with a range in a `UISourceCode`. The range will be
  * underlined starting at the range's start and ending at the line end (the
  * end of the range is currently disregarded).

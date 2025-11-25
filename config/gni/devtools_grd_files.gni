@@ -1162,6 +1162,7 @@ grd_files_unbundled_sources = [
   "front_end/models/persistence/PersistenceImpl.js",
   "front_end/models/persistence/PlatformFileSystem.js",
   "front_end/models/project_settings/ProjectSettingsModel.js",
+  "front_end/models/source_map_scopes/FunctionCodeResolver.js",
   "front_end/models/source_map_scopes/NamesResolver.js",
   "front_end/models/source_map_scopes/ScopeChainModel.js",
   "front_end/models/stack_trace/StackTrace.js",

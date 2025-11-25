@@ -270,6 +270,49 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     return ranges;
   }
 
+  async functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location):
+      Promise<Workspace.UISourceCode.UIFunctionBounds|null> {
+    const script = rawLocation.script();
+    if (!script) {
+      return null;
+    }
+
+    const sourceMap = this.#sourceMapManager.sourceMapForClient(script);
+    if (!sourceMap) {
+      return null;
+    }
+
+    const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawLocation);
+    const {url, scope} = sourceMap.findOriginalFunctionScope({line: lineNumber, column: columnNumber}) ?? {};
+    if (!scope || !url) {
+      return null;
+    }
+
+    const project = this.#sourceMapToProject.get(sourceMap);
+    if (!project) {
+      return null;
+    }
+
+    const uiSourceCode = project.uiSourceCodeForURL(url);
+    if (!uiSourceCode) {
+      return null;
+    }
+
+    // If there's no original source content, callers can't get the source code for
+    // the given scope. Presently that's the only reason to get a function's bounds,
+    // so in that case return null and allow ResourceScriptMapping to fulfill this
+    // request.
+    const contentData = await uiSourceCode.requestContentData();
+    if ('error' in contentData) {
+      return null;
+    }
+
+    const name = scope.name ?? '';
+    const range =
+        new TextUtils.TextRange.TextRange(scope.start.line, scope.start.column, scope.end.line, scope.end.column);
+    return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
+  }
+
   translateRawFramesStep(
       rawFrames: StackTraceImpl.Trie.RawFrame[],
       translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): boolean {

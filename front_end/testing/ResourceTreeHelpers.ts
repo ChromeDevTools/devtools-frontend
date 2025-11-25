@@ -7,6 +7,7 @@ import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
 
+import type {MockCDPConnection} from './MockCDPConnection.js';
 import {
   clearMockConnectionResponseHandler,
   setMockConnectionResponseHandler,
@@ -48,6 +49,17 @@ export function setMockResourceTree(shouldMock: boolean) {
   } else {
     clearMockConnectionResponseHandler('Page.getResourceTree');
   }
+}
+
+export function mockResourceTree(connection: MockCDPConnection) {
+  connection.setHandler('Page.getResourceTree', () => ({
+                                                  result: {
+                                                    frameTree: {
+                                                      frame: MAIN_FRAME,
+                                                      resources: [],
+                                                    }
+                                                  }
+                                                }));
 }
 
 export async function getInitializedResourceTreeModel(target: SDK.Target.Target):

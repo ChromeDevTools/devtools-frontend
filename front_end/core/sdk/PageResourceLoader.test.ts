@@ -5,13 +5,12 @@
 import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
-  describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithLocale} from '../../testing/LocaleHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
@@ -50,6 +49,8 @@ describeWithLocale('PageResourceLoader', () => {
   beforeEach(() => {
     loads.length = 0;
   });
+
+  setupSettingsHooks();
 
   it('registers extension loads', async () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
@@ -155,7 +156,9 @@ describeWithLocale('PageResourceLoader', () => {
 });
 
 // Loading via host bindings requires the settings infra to be booted.
-describeWithEnvironment('PageResourceLoader', () => {
+describe('PageResourceLoader', () => {
+  setupSettingsHooks();
+
   it('blocks UNC file paths with the default setting', async () => {
     if (!Host.Platform.isWin()) {
       return;
@@ -229,36 +232,42 @@ describeWithEnvironment('PageResourceLoader', () => {
   });
 });
 
-describeWithMockConnection('PageResourceLoader', () => {
+describe('PageResourceLoader', () => {
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
   describe('loadResource', () => {
     const stream = 'STREAM_ID' as Protocol.IO.StreamHandle;
     const initiatorUrl = urlString`htp://example.com`;
     const url = urlString`${`${initiatorUrl}/test.txt`}`;
 
-    function setupLoadingSourceMapsAsNetworkResource(): Promise<Protocol.Network.LoadNetworkResourceRequest> {
+    function setupLoadingSourceMapsAsNetworkResource(connection: MockCDPConnection):
+        Promise<Protocol.Network.LoadNetworkResourceRequest> {
       return new Promise(resolve => {
         let contentToRead: string|null = 'foo';
-        setMockConnectionResponseHandler('IO.read', () => {
+        connection.setHandler('IO.read', () => {
           const data = contentToRead;
           contentToRead = null;
-          return {data} as Protocol.IO.ReadResponse;
+          return {result: {data} as Protocol.IO.ReadResponse};
         });
-        setMockConnectionResponseHandler('IO.close', () => ({}));
-        setMockConnectionResponseHandler('Network.loadNetworkResource', request => {
+        connection.setHandler('IO.close', () => ({result: {}}));
+        connection.setHandler('Network.loadNetworkResource', request => {
           resolve(request);
-          return {resource: {success: true, stream, statusCode: 200}};
+          return {result: {resource: {success: true, stream, statusCode: 200}}};
         });
       });
     }
 
     for (const disableCache of [true, false]) {
       it(`loads with ${disableCache ? 'disabled' : 'enabled'} cache based on the setting`, async () => {
-        Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(disableCache);
-        const target = createTarget();
+        const settings = Common.Settings.Settings.instance();
+        settings.moduleSetting('cache-disabled').set(disableCache);
+        const connection = new MockCDPConnection();
+        const target = createTarget({connection});
         const initiator = {target, frameId: null, initiatorUrl};
-        const loader = SDK.PageResourceLoader.PageResourceLoader.instance();
+        const loader = new SDK.PageResourceLoader.PageResourceLoader(target.targetManager(), null);
         const [{options}, {content}] = await Promise.all([
-          setupLoadingSourceMapsAsNetworkResource(),
+          setupLoadingSourceMapsAsNetworkResource(connection),
           loader.loadResource(url, initiator),
         ]);
         // Check that we loaded the resources with appropriately enabled caching.
@@ -270,15 +279,21 @@ describeWithMockConnection('PageResourceLoader', () => {
   });
 });
 
-describeWithMockConnection('PageResourceLoader', () => {
+describeWithLocale('PageResourceLoader', () => {
   const initiatorUrl = urlString`htp://example.com`;
   const foo1Url = urlString`foo1`;
   const foo2Url = urlString`foo2`;
   const foo3Url = urlString`foo3`;
 
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
   it('handles scoped resources', async () => {
-    const target = createTarget({id: 'main' as Protocol.Target.TargetID});
-    const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID});
+    const targetManager = new SDK.TargetManager.TargetManager();
+    const connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    const target = createTarget({id: 'main' as Protocol.Target.TargetID, connection, targetManager});
+    const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID, connection, targetManager});
     const initiator = {target, frameId: null, initiatorUrl};
     const prerenderInitiator = {target: prerenderTarget, frameId: null, initiatorUrl};
     const load = async () => {
@@ -289,8 +304,7 @@ describeWithMockConnection('PageResourceLoader', () => {
         errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
       };
     };
-    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
-        {forceNew: true, loadOverride: load, maxConcurrentLoads: 500});
+    const loader = new SDK.PageResourceLoader.PageResourceLoader(target.targetManager(), load);
 
     void loader.loadResource(foo1Url, initiator);
     void loader.loadResource(foo2Url, initiator);
@@ -303,7 +317,7 @@ describeWithMockConnection('PageResourceLoader', () => {
     let resourceUrls = [...resources.values()].map(x => x.url);
     assert.deepEqual(resourceUrls, [foo1Url, foo2Url]);
 
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    targetManager.setScopeTarget(prerenderTarget);
     assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 1, resources: 1});
 
     resources = loader.getScopedResourcesLoaded();
@@ -312,8 +326,11 @@ describeWithMockConnection('PageResourceLoader', () => {
   });
 
   it('handles prerender activation', async () => {
-    const target = createTarget({id: 'main' as Protocol.Target.TargetID});
-    const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID});
+    const targetManager = new SDK.TargetManager.TargetManager();
+    const connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    const target = createTarget({id: 'main' as Protocol.Target.TargetID, connection, targetManager});
+    const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID, connection, targetManager});
     const initiator = {target, frameId: null, initiatorUrl};
     const prerenderInitiator = {target: prerenderTarget, frameId: null, initiatorUrl};
 
@@ -324,8 +341,7 @@ describeWithMockConnection('PageResourceLoader', () => {
         errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
       };
     };
-    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
-        {forceNew: true, loadOverride: load, maxConcurrentLoads: 500});
+    const loader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, load);
 
     await Promise.all([
       loader.loadResource(foo1Url, initiator),
@@ -359,7 +375,7 @@ describeWithMockConnection('PageResourceLoader', () => {
     });
     assert.deepEqual(loader.getNumberOfResources(), {loading: 0, queued: 0, resources: 1});
 
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    targetManager.setScopeTarget(prerenderTarget);
     assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 0, resources: 1});
 
     resources = loader.getScopedResourcesLoaded();

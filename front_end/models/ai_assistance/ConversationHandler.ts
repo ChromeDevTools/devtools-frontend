@@ -14,7 +14,6 @@ import {
   type AiAgent,
   type ExternalRequestResponse,
   ExternalRequestResponseType,
-  type ResponseData,
   ResponseType
 } from './agents/AiAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
@@ -201,21 +200,6 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
       }
     } catch (error) {
       return this.#generateErrorResponse(error.message);
-    }
-  }
-
-  async *
-      handleConversationWithHistory(
-          items: AsyncIterable<ResponseData, void, void>,
-          conversation: AiConversation|undefined,
-          ): AsyncGenerator<ResponseData, void, void> {
-    for await (const data of items) {
-      // We don't want to save partial responses to the conversation history.
-      // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
-      if (data.type !== ResponseType.ANSWER || data.complete) {
-        void conversation?.addHistoryItem(data);
-      }
-      yield data;
     }
   }
 

@@ -26,14 +26,10 @@ describe('Snippet creation', () => {
     await openCommandMenu(devToolsPage);
     await showSnippetsAutocompletion(devToolsPage);
 
-    assert.deepEqual(await getAvailableSnippets(devToolsPage), [
-      'New snippet\u200B',
-    ]);
+    assert.deepEqual(await getAvailableSnippets(devToolsPage), ['New snippet']);
 
     await devToolsPage.typeText('New ');
-    assert.deepEqual(await getAvailableSnippets(devToolsPage), [
-      'New snippet\u200B',
-    ]);
+    assert.deepEqual(await getAvailableSnippets(devToolsPage), ['New snippet']);
 
     await devToolsPage.typeText('w');
     assert.deepEqual(await getAvailableSnippets(devToolsPage), []);
@@ -41,9 +37,7 @@ describe('Snippet creation', () => {
     await devToolsPage.pressKey('Backspace');
     // TODO: it should actually wait for rendering to finish.
     await devToolsPage.drainTaskQueue();
-    assert.deepEqual(await getAvailableSnippets(devToolsPage), [
-      'New snippet\u200B',
-    ]);
+    assert.deepEqual(await getAvailableSnippets(devToolsPage), ['New snippet']);
   });
 });
 

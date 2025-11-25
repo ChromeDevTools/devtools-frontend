@@ -40,9 +40,12 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     return !project.isServiceProject();
   }
 
-  override renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
-    super.renderItem(itemIndex, query, titleElement, subtitleElement);
-
+  override renderItem(itemIndex: number, query: string, wrapperElement: Element): void {
+    super.renderItem(itemIndex, query, wrapperElement);
+    const itemElement = wrapperElement.firstChild;
+    if (!itemElement) {
+      return;
+    }
     const iconElement = new IconButton.Icon.Icon();
     const {iconName, color} = PanelUtils.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
     iconElement.name = iconName;
@@ -50,10 +53,6 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
       iconElement.style.color = color;
     }
     iconElement.classList.add('large');
-    titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
-  }
-
-  override renderAsTwoRows(): boolean {
-    return true;
+    wrapperElement.insertBefore(iconElement, itemElement);
   }
 }

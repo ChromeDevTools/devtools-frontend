@@ -317,10 +317,13 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return -item.lineNumber - 1;
   }
 
-  override renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
+  override renderItem(itemIndex: number, query: string, wrapperElement: Element): void {
     const item = this.items[itemIndex];
+    const itemElement = wrapperElement.createChild('div', 'filtered-list-widget-item one-row');
+    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
+
     const icon = IconButton.Icon.create('deployed');
-    titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
+    wrapperElement.insertBefore(icon, itemElement);
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
 
@@ -329,7 +332,7 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       return;
     }
 
-    const tagElement = titleElement.parentElement?.parentElement?.createChild('span', 'tag');
+    const tagElement = wrapperElement.createChild('span', 'tag');
     if (!tagElement) {
       return;
     }

@@ -143,8 +143,12 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     return score + multiplier * (contentTypeBonus + this.scorer.calculateScore(fullDisplayName, null));
   }
 
-  override renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
-    titleElement.parentElement?.parentElement?.classList.toggle('search-mode', Boolean(query));
+  override renderItem(itemIndex: number, query: string, wrapperElement: Element): void {
+    const itemElement = wrapperElement.createChild('div', 'filtered-list-widget-item two-rows');
+
+    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
+
+    wrapperElement.classList.toggle('search-mode', Boolean(query));
     query = this.rewriteQuery(query);
     const uiSourceCode = this.uiSourceCodes[itemIndex];
     const fullDisplayName = uiSourceCode.fullDisplayName();
@@ -157,11 +161,12 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     let tooltipText = fullDisplayName;
 
     if (isIgnoreListed) {
-      titleElement.parentElement?.classList.add('is-ignore-listed');
+      itemElement.classList.add('is-ignore-listed');
       tooltipText = i18nString(UIStrings.sIgnoreListed, {PH1: tooltipText});
     }
 
     titleElement.textContent = uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '');
+    const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     this.renderSubtitleElement(subtitleElement, fullDisplayName.substring(0, fileNameIndex + 1));
     UI.Tooltip.Tooltip.install((subtitleElement as HTMLElement), tooltipText);
 

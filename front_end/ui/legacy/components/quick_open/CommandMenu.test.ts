@@ -58,7 +58,7 @@ describeWithLocale('CommandMenu', () => {
     const deprecation = {disabled: true, warning};
     const {provider} = createCommandMenuProvider(deprecation);
 
-    provider.renderItem(0, 'Test', elements.title, elements.subtitle);
+    provider.renderItem(0, 'Test', elements.toplevel);
 
     const tags = Array.from(elements.toplevel.querySelectorAll('.deprecated-tag')) as HTMLElement[];
     assert.deepEqual(tags.map(e => e.textContent), ['— deprecated']);

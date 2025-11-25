@@ -284,18 +284,12 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     const wrapperElement = document.createElement('div');
     wrapperElement.className = 'filtered-list-widget-item-wrapper';
 
-    const itemElement = wrapperElement.createChild('div');
-    const renderAsTwoRows = this.provider?.renderAsTwoRows();
-    itemElement.className = 'filtered-list-widget-item ' + (renderAsTwoRows ? 'two-rows' : 'one-row');
-    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
-    const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
-    subtitleElement.textContent = '\u200B';
     if (this.provider) {
-      this.provider.renderItem(item, this.cleanValue(), titleElement, subtitleElement);
+      this.provider.renderItem(item, this.cleanValue(), wrapperElement);
       wrapperElement.setAttribute(
           'jslog', `${VisualLogging.item(this.provider.jslogContextAt(item)).track({click: true})}`);
     }
-    UI.ARIAUtils.markAsOption(itemElement);
+    UI.ARIAUtils.markAsOption(wrapperElement);
     return wrapperElement;
   }
 
@@ -627,15 +621,11 @@ export class Provider {
     return 1;
   }
 
-  renderItem(_itemIndex: number, _query: string, _titleElement: Element, _subtitleElement: Element): void {
+  renderItem(_itemIndex: number, _query: string, _wrapperElement: Element): void {
   }
 
   jslogContextAt(_itemIndex: number): string {
     return this.jslogContext;
-  }
-
-  renderAsTwoRows(): boolean {
-    return false;
   }
 
   selectItem(_itemIndex: number|null, _promptValue: string): void {

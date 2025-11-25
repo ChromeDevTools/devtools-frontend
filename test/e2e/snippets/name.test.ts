@@ -29,9 +29,7 @@ describe('Snippets subpane', () => {
       const availableSnippets = await getAvailableSnippets(devToolsPage);
       return availableSnippets.length > 0 ? availableSnippets : undefined;
     });
-    assert.deepEqual(availableSnippets, [
-      name + '\u200B',
-    ]);
+    assert.deepEqual(availableSnippets, [name]);
   }
 
   it('can create snippet with simple name', async ({devToolsPage}) => {

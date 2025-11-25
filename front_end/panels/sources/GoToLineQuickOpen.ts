@@ -77,9 +77,11 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
 
-  override renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
+  override renderItem(itemIndex: number, _query: string, wrapperElement: Element): void {
+    const itemElement = wrapperElement.createChild('div', 'filtered-list-widget-item one-row');
+    const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
     const icon = IconButton.Icon.create('colon');
-    titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
+    wrapperElement.insertBefore(icon, itemElement);
     UI.UIUtils.createTextChild(titleElement, this.#goToLineStrings[itemIndex]);
   }
 

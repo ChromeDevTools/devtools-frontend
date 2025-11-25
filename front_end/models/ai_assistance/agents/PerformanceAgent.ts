@@ -9,6 +9,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
+import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import {
   PerformanceInsightFormatter,
@@ -883,12 +884,77 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     });
 
+    this.declareFunction<{scriptUrl: string, line: number, column: number}, {result: string}>('getFunctionCode', {
+      description: 'Returns the code for a function defined at the given location.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          scriptUrl: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The url of the function.',
+            nullable: false,
+          },
+          line: {
+            type: Host.AidaClient.ParametersTypes.INTEGER,
+            description: 'The line number where the function is defined.',
+            nullable: false,
+          },
+          column: {
+            type: Host.AidaClient.ParametersTypes.INTEGER,
+            description: 'The column number where the function is defined.',
+            nullable: false,
+          },
+        },
+      },
+      displayInfoFromArgs: args => {
+        return {
+          title: lockedString('Looking up function code…'),
+          action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+        };
+      },
+      handler: async args => {
+        debugLog('Function call: getFunctionCode');
+
+        if (args.line === undefined) {
+          return {error: 'Missing arg: line'};
+        }
+
+        if (args.column === undefined) {
+          return {error: 'Missing arg: column'};
+        }
+
+        if (!this.#formatter) {
+          throw new Error('missing formatter');
+        }
+
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        if (!target) {
+          throw new Error('missing target');
+        }
+
+        const url = args.scriptUrl as Platform.DevToolsPath.UrlString;
+        const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
+            target, url, args.line, args.column, {contextLength: 200, contextLineLength: 5});
+        if (!code) {
+          return {error: 'Could not find code'};
+        }
+
+        const result = this.#formatter.formatFunctionCode(code);
+
+        const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
+        this.#cacheFunctionResult(focus, key, result);
+        return {result: {result}};
+      },
+    });
+
     const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
     const isTraceApp = Root.Runtime.Runtime.isTraceApp();
 
     this.declareFunction<{url: string}, {content: string}>('getResourceContent', {
       description:
-          'Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.',
+          'Returns the content of the resource with the given url. Only use this for text resource types. Prefer getFunctionCode when possible.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',

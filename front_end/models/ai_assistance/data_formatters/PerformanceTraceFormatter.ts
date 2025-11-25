@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
+import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import type {AICallTree} from '../performance/AICallTree.js';
 import type {AgentFocus} from '../performance/AIContext.js';
@@ -812,5 +813,28 @@ The order of headers corresponds to an internal fixed list. If a header is not p
       `[${headerValues ?? ''}]`,
     ];
     return parts.join(';');
+  }
+
+  formatFunctionCode(code: SourceMapScopes.FunctionCodeResolver.FunctionCode): string {
+    const {startLine, startColumn} = code.range;
+    const {
+      startLine: contextStartLine,
+      startColumn: contextStartColumn,
+      endLine: contextEndLine,
+      endColumn: contextEndColumn
+    } = code.rangeWithContext;
+    const name = code.functionBounds.name;
+    const url = code.functionBounds.uiSourceCode.url();
+
+    const parts = [];
+    parts.push(`${name} @ ${url}:${startLine}:${startColumn}. With added context, chunk is from ${contextStartLine}:${
+        contextStartColumn} to ${contextEndLine}:${contextEndColumn}`);
+    parts.push(
+        '\nThe following is a markdown block of JavaScript. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Do not show the user the function markers or the additional context.\n');
+    parts.push('```');
+    parts.push(code.codeWithContext);
+    parts.push('```');
+
+    return parts.join('\n');
   }
 }

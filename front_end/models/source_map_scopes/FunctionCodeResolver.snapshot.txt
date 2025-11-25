@@ -1,11 +1,20 @@
 Title: FunctionCodeResolver getFunctionCodeFromLocation [no source maps] lookup named function
 Content:
-use strict";function fibonacci<FUNCTION_START>(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}<FUNCTION_END>const btn=document.querySelect
+se strict";
+function fibonacci<FUNCTION_START>(e) {
+	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)
+}
+<FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [no source maps] lookup anonymous function
 Content:
-;btn.addEventListener("click",<FUNCTION_START>()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"}<FUNCTION_END>);const input=document.querySe
+btn.addEventListener("click", <FUNCTION_START>() => {
+	console.log(fibonacci(Number(params.get("x")))),
+	btn.style.backgroundColor = "red"
+}
+<FUNCTION_END>);
+const input = document.quer
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps] lookup named function with generated location
@@ -32,12 +41,20 @@ function <FUNCTION_START>fibonacci(num) {
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup named function with generated location
 Content:
-use strict";function fibonacci<FUNCTION_START>(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}<FUNCTION_END>const btn=document.querySelect
+se strict";
+function fibonacci<FUNCTION_START>(e) {
+	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)
+}
+<FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup named function with original location
 Content:
-use strict";function fibonacci<FUNCTION_START>(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}<FUNCTION_END>const btn=document.querySelect
+se strict";
+function fibonacci<FUNCTION_START>(e) {
+	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)
+}
+<FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps] lookup anonymous function with generated location
@@ -62,10 +79,20 @@ const input = document.que
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup anonymous function with generated location
 Content:
-;btn.addEventListener("click",<FUNCTION_START>()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"}<FUNCTION_END>);const input=document.querySe
+btn.addEventListener("click", <FUNCTION_START>() => {
+	console.log(fibonacci(Number(params.get("x")))),
+	btn.style.backgroundColor = "red"
+}
+<FUNCTION_END>);
+const input = document.quer
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup anonymous function with original location
 Content:
-;btn.addEventListener("click",<FUNCTION_START>()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"}<FUNCTION_END>);const input=document.querySe
+btn.addEventListener("click", <FUNCTION_START>() => {
+	console.log(fibonacci(Number(params.get("x")))),
+	btn.style.backgroundColor = "red"
+}
+<FUNCTION_END>);
+const input = document.quer
 === end content

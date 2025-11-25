@@ -5,6 +5,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
+import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -13,27 +14,42 @@ export interface FunctionCode {
   functionBounds: Workspace.UISourceCode.UIFunctionBounds;
   /** The text of `uiSourceCode`. */
   text: TextUtils.Text.Text;
-  /** The scope/function text. */
+  /** The function text. */
   code: string;
   /** The range of `code` within `text`. */
   range: TextUtils.TextRange.TextRange;
-  /** The scope/function text, plus some additional context before and after. The actual function scope is wrapped in <FUNCTION_START>...<FUNCTION_END> */
+  /** The function text, plus some additional context before and after. The actual function is wrapped in <FUNCTION_START>...<FUNCTION_END> */
   codeWithContext: string;
   /** The range of `codeWithContext` within `text`. */
   rangeWithContext: TextUtils.TextRange.TextRange;
 }
 
 export interface CreateFunctionCodeOptions {
-  /** Number of characters to include before and after the function scope. Stacks with `contextLineLength`. */
+  /** Number of characters to include before and after the function. Stacks with `contextLineLength`. */
   contextLength?: number;
-  /** Number of lines to include before and after the function scope. Stacks with `contextLength`. */
+  /** Number of lines to include before and after the function. Stacks with `contextLength`. */
   contextLineLength?: number;
 }
 
 function createFunctionCode(
-    text: TextUtils.Text.Text, functionBounds: Workspace.UISourceCode.UIFunctionBounds,
-    options?: CreateFunctionCodeOptions): FunctionCode {
-  const {startLine, startColumn, endLine, endColumn} = functionBounds.range;
+    uiSourceCodeContent: string, formattedContent: Formatter.ScriptFormatter.FormattedContent|null,
+    functionBounds: Workspace.UISourceCode.UIFunctionBounds, options?: CreateFunctionCodeOptions): FunctionCode {
+  let {startLine, startColumn, endLine, endColumn} = functionBounds.range;
+  let text;
+  if (formattedContent) {
+    text = new TextUtils.Text.Text(formattedContent.formattedContent);
+
+    const startMapped = formattedContent.formattedMapping.originalToFormatted(startLine, startColumn);
+    startLine = startMapped[0];
+    startColumn = startMapped[1];
+
+    const endMapped = formattedContent.formattedMapping.originalToFormatted(endLine, endColumn);
+    endLine = endMapped[0];
+    endColumn = endMapped[1];
+  } else {
+    text = new TextUtils.Text.Text(uiSourceCodeContent);
+  }
+
   const content = text.value();
 
   // Define two ranges - the first is just the function bounds, the second includes
@@ -121,6 +137,28 @@ export async function getFunctionCodeFromLocation(
   return await getFunctionCodeFromRawLocation(rawLocation, options);
 }
 
+const formatCache =
+    new WeakMap<Workspace.UISourceCode.UISourceCode, Promise<Formatter.ScriptFormatter.FormattedContent|null>>();
+
+async function formatAndCache(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string):
+    Promise<Formatter.ScriptFormatter.FormattedContent|null> {
+  let cachedPromise = formatCache.get(uiSourceCode);
+  if (cachedPromise) {
+    return await cachedPromise;
+  }
+
+  const contentType = uiSourceCode.contentType();
+  const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) &&
+      TextUtils.TextUtils.isMinified(content);
+  if (!shouldFormat) {
+    return null;
+  }
+
+  cachedPromise = Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, '\t');
+  formatCache.set(uiSourceCode, cachedPromise);
+  return await cachedPromise;
+}
+
 /**
  * Returns a {@link FunctionCode} for the given raw location.
  */
@@ -138,6 +176,6 @@ export async function getFunctionCodeFromRawLocation(
     return null;
   }
 
-  const text = new TextUtils.Text.Text(content);
-  return createFunctionCode(text, functionBounds, options);
+  const formattedContent = await formatAndCache(functionBounds.uiSourceCode, content);
+  return createFunctionCode(content, formattedContent, functionBounds, options);
 }

@@ -65,7 +65,7 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         line: 0,
         column: 35,
         sourceMap: null,
-        expectedCode: `(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}`
+        expectedCode: `(e) {\n\treturn e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)\n}\n`
       },
       {
         name: '[no source maps] lookup anonymous function',
@@ -73,7 +73,8 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         line: 0,
         column: 201,
         sourceMap: null,
-        expectedCode: `()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"}`
+        expectedCode:
+            `() => {\n\tconsole.log(fibonacci(Number(params.get(\"x\")))),\n\tbtn.style.backgroundColor = \"red\"\n}\n`
       },
 
       {
@@ -102,7 +103,7 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         column: 35,
         sourceMap: {url: sourceMapUrl, content: sourceMapContentButNoSources},
         // TODO: createFromAst does not include function identifiers in the created scope start position.
-        expectedCode: `(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}`
+        expectedCode: `(e) {\n\treturn e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)\n}\n`
       },
       {
         name: '[source maps, no source contents] lookup named function with original location',
@@ -110,7 +111,7 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         line: 1,
         column: 5,
         sourceMap: {url: sourceMapUrl, content: sourceMapContentButNoSources},
-        expectedCode: `(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}`
+        expectedCode: `(e) {\n\treturn e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)\n}\n`
       },
 
       {
@@ -138,7 +139,8 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         line: 0,
         column: 201,
         sourceMap: {url: sourceMapUrl, content: sourceMapContentButNoSources},
-        expectedCode: `()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"}`
+        expectedCode:
+            `() => {\n\tconsole.log(fibonacci(Number(params.get(\"x\")))),\n\tbtn.style.backgroundColor = \"red\"\n}\n`
       },
       {
         name: '[source maps, no source contents] lookup anonymous function with original location',
@@ -146,7 +148,8 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         line: 10,
         column: 3,
         sourceMap: {url: sourceMapUrl, content: sourceMapContentButNoSources},
-        expectedCode: `()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"}`
+        expectedCode:
+            `() => {\n\tconsole.log(fibonacci(Number(params.get(\"x\")))),\n\tbtn.style.backgroundColor = \"red\"\n}\n`
       },
     ];
 

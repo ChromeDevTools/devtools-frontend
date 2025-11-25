@@ -77,8 +77,7 @@ expression, i.e., \`@callback\` or \`@function\` (or its aliases \`@func\` or
 \`@method\`) (including those associated with an \`@interface\`).
 
 See the ["AST and Selectors"](../#advanced-ast-and-selectors)
-section of our Advanced docs for more on the expected format.
-`,
+section of our Advanced docs for more on the expected format.`,
             items: {
               anyOf: [
                 {

@@ -89,7 +89,6 @@ class HTTPRequest {
      * `respond()` aren't called).
      */
     continueRequestOverrides() {
-        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
         return this.interception.requestOverrides;
     }
     /**
@@ -97,14 +96,12 @@ class HTTPRequest {
      * interception is allowed to respond (ie, `abort()` is not called).
      */
     responseForRequest() {
-        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
         return this.interception.response;
     }
     /**
      * The most recent reason for aborting the request
      */
     abortErrorReason() {
-        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
         return this.interception.abortReason;
     }
     /**
@@ -165,8 +162,12 @@ class HTTPRequest {
                 return await this._continue(this.interception.requestOverrides);
         }
     }
-    #canBeIntercepted() {
-        return !this.url().startsWith('data:') && !this._fromMemoryCache;
+    /**
+     * @internal
+     */
+    verifyInterception() {
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
     }
     /**
      * Continues request with optional request overrides.
@@ -197,11 +198,10 @@ class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async continue(overrides = {}, priority) {
-        if (!this.#canBeIntercepted()) {
+        this.verifyInterception();
+        if (!this.canBeIntercepted()) {
             return;
         }
-        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
-        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
         if (priority === undefined) {
             return await this._continue(overrides);
         }
@@ -257,11 +257,10 @@ class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async respond(response, priority) {
-        if (!this.#canBeIntercepted()) {
+        this.verifyInterception();
+        if (!this.canBeIntercepted()) {
             return;
         }
-        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
-        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
         if (priority === undefined) {
             return await this._respond(response);
         }
@@ -297,13 +296,12 @@ class HTTPRequest {
      * throw an exception immediately.
      */
     async abort(errorCode = 'failed', priority) {
-        if (!this.#canBeIntercepted()) {
+        this.verifyInterception();
+        if (!this.canBeIntercepted()) {
             return;
         }
         const errorReason = errorReasons[errorCode];
         (0, assert_js_1.assert)(errorReason, 'Unknown error code: ' + errorCode);
-        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
-        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
         if (priority === undefined) {
             return await this._abort(errorReason);
         }

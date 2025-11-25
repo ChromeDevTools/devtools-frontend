@@ -214,8 +214,7 @@ templates of this format:
  */
 \`\`\`
 
-Defaults to \`false\`.
-`,
+Defaults to \`false\`.`,
             type: 'boolean',
           },
         },

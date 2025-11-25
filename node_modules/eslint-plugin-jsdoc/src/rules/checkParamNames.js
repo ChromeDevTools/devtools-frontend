@@ -40,9 +40,9 @@ const validateParameterNames = (
   let dotted = 0;
   let thisOffset = 0;
 
-  // eslint-disable-next-line complexity
   return paramTags.some(([
     , tag,
+  // eslint-disable-next-line complexity
   ], index) => {
     /** @type {import('../iterateJsdoc.js').Integer} */
     let tagsIndex;

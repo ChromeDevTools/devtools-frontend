@@ -83,11 +83,11 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
             return target.browserContext() === this;
         });
     }
-    async pages() {
+    async pages(includeAll = false) {
         const pages = await Promise.all(this.targets()
             .filter(target => {
             return (target.type() === 'page' ||
-                (target.type() === 'other' &&
+                ((target.type() === 'other' || includeAll) &&
                     this.#browser._getIsPageTargetCallback()?.(target)));
         })
             .map(target => {
@@ -116,11 +116,11 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
             browserContextId: this.#id || undefined,
         });
     }
-    async newPage() {
+    async newPage(options) {
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {
             const _guard = __addDisposableResource(env_1, await this.waitForScreenshotOperations(), false);
-            return await this.#browser._createPageInContext(this.#id);
+            return await this.#browser._createPageInContext(this.#id, options);
         }
         catch (e_1) {
             env_1.error = e_1;

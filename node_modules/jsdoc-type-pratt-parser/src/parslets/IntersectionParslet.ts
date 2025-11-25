@@ -1,6 +1,6 @@
 import { composeParslet } from './Parslet.js'
 import { Precedence } from '../Precedence.js'
-import { assertRootResult } from '../assertTypes.js'
+import { assertRootResult, assertResultIsNotReservedWord } from '../assertTypes.js'
 
 export const intersectionParslet = composeParslet({
   name: 'intersectionParslet',
@@ -16,7 +16,10 @@ export const intersectionParslet = composeParslet({
 
     return {
       type: 'JsdocTypeIntersection',
-      elements: [assertRootResult(left), ...elements]
+      elements: [
+        assertResultIsNotReservedWord(parser, assertRootResult(left)),
+        ...elements.map((element) => assertResultIsNotReservedWord(parser, element))
+      ]
     }
   }
 })

@@ -1,6 +1,8 @@
 import type { IndexSignatureResult, KeyValueResult, MappedTypeResult } from './result/NonRootResult.js';
 import type { NameResult, NumberResult, RootResult, VariadicResult, TupleResult, GenericResult } from './result/RootResult.js';
 import type { IntermediateResult } from './result/IntermediateResult.js';
+import type { Parser } from './Parser.js';
+export declare function assertResultIsNotReservedWord<T extends RootResult | IntermediateResult>(parser: Parser, result: T): T;
 /**
  * Throws an error if the provided result is not a {@link RootResult}
  */

@@ -199,7 +199,7 @@ let BidiFrame = (() => {
                 this.page().trustedEmitter.emit("framedetached" /* PageEvent.FrameDetached */, this);
             });
             this.browsingContext.on('request', ({ request }) => {
-                const httpRequest = HTTPRequest_js_1.BidiHTTPRequest.from(request, this);
+                const httpRequest = HTTPRequest_js_1.BidiHTTPRequest.from(request, this, this.page().isNetworkInterceptionEnabled);
                 request.once('success', () => {
                     this.page().trustedEmitter.emit("requestfinished" /* PageEvent.RequestFinished */, httpRequest);
                 });

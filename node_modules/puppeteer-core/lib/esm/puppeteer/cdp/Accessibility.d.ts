@@ -73,9 +73,19 @@ export interface SerializedAXNode {
     invalid?: string;
     orientation?: string;
     /**
+     * Url for link elements.
+     */
+    url?: string;
+    /**
      * Children of this node, if there are any.
      */
     children?: SerializedAXNode[];
+    /**
+     * CDP-specifc ID to reference the DOM node.
+     *
+     * @internal
+     */
+    backendNodeId?: number;
     /**
      * Get an ElementHandle for this AXNode if available.
      *

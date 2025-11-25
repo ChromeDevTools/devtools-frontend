@@ -38,7 +38,10 @@ export class CdpHTTPRequest extends HTTPRequest {
         this._redirectChain = redirectChain;
         this.#initiator = data.initiator;
         this.interception.enabled = allowInterception;
-        for (const [key, value] of Object.entries(data.request.headers)) {
+        this.updateHeaders(data.request.headers);
+    }
+    updateHeaders(headers) {
+        for (const [key, value] of Object.entries(headers)) {
             this.#headers[key.toLowerCase()] = value;
         }
     }
@@ -70,7 +73,8 @@ export class CdpHTTPRequest extends HTTPRequest {
         }
     }
     headers() {
-        return this.#headers;
+        // Callers should not be allowed to mutate internal structure.
+        return structuredClone(this.#headers);
     }
     response() {
         return this._response;
@@ -94,6 +98,9 @@ export class CdpHTTPRequest extends HTTPRequest {
         return {
             errorText: this._failureText,
         };
+    }
+    canBeIntercepted() {
+        return !this.url().startsWith('data:') && !this._fromMemoryCache;
     }
     /**
      * @internal

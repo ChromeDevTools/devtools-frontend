@@ -104,9 +104,7 @@ const infoUC = {
  *   typeName?: string,
  *   url?: string,
  * }} cfg
- * @returns {import('@eslint/core').RuleDefinition<
- *   import('@eslint/core').RuleDefinitionTypeOptions
- * >}
+ * @returns {import('eslint').Rule.RuleModule}
  */
 export const buildRejectOrPreferRuleDefinition = ({
   checkNativeTypes = null,

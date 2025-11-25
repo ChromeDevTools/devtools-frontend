@@ -1695,6 +1695,12 @@
                             "type": "number"
                         },
                         {
+                            "name": "stackDepth",
+                            "description": "Maximum stack depth. The default value is 128.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
                             "name": "includeObjectsCollectedByMajorGC",
                             "description": "By default, the sampling heap profiler reports only objects which are\nstill alive when the profile is returned via getSamplingProfile or\nstopSampling, which is useful for determining what functions contribute\nthe most to steady-state memory usage. This flag instructs the sampling\nheap profiler to also include information about objects discarded by\nmajor GC, which will show which functions cause large temporary memory\nusage or long GC pauses.",
                             "optional": true,
@@ -2356,7 +2362,8 @@
                                 "arraybuffer",
                                 "dataview",
                                 "webassemblymemory",
-                                "wasmvalue"
+                                "wasmvalue",
+                                "trustedtype"
                             ]
                         },
                         {
@@ -2474,7 +2481,8 @@
                                 "arraybuffer",
                                 "dataview",
                                 "webassemblymemory",
-                                "wasmvalue"
+                                "wasmvalue",
+                                "trustedtype"
                             ]
                         },
                         {
@@ -2569,7 +2577,8 @@
                                 "arraybuffer",
                                 "dataview",
                                 "webassemblymemory",
-                                "wasmvalue"
+                                "wasmvalue",
+                                "trustedtype"
                             ]
                         }
                     ]

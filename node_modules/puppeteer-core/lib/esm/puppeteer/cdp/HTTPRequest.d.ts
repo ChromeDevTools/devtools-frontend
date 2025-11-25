@@ -44,6 +44,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
          */
         type?: Protocol.Network.ResourceType;
     }, redirectChain: CdpHTTPRequest[]);
+    updateHeaders(headers: Protocol.Network.Headers): void;
     url(): string;
     resourceType(): ResourceType;
     method(): string;
@@ -59,6 +60,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     failure(): {
         errorText: string;
     } | null;
+    protected canBeIntercepted(): boolean;
     /**
      * @internal
      */

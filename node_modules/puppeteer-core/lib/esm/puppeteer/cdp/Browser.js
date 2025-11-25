@@ -13,8 +13,8 @@ import { TargetManager } from './TargetManager.js';
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, handleDevToolsAsPage);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -33,7 +33,8 @@ export class CdpBrowser extends BrowserBase {
     #contexts = new Map();
     #networkEnabled = true;
     #targetManager;
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
+    #handleDevToolsAsPage = false;
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
         super();
         this.#networkEnabled = networkEnabled;
         this.#defaultViewport = defaultViewport;
@@ -45,6 +46,7 @@ export class CdpBrowser extends BrowserBase {
                 (() => {
                     return true;
                 });
+        this.#handleDevToolsAsPage = handleDevToolsAsPage;
         this.#setIsPageTargetCallback(isPageTargetCallback);
         this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
         this.#defaultContext = new CdpBrowserContext(this.#connection, this);
@@ -85,7 +87,10 @@ export class CdpBrowser extends BrowserBase {
                 ((target) => {
                     return (target.type() === 'page' ||
                         target.type() === 'background_page' ||
-                        target.type() === 'webview');
+                        target.type() === 'webview' ||
+                        (this.#handleDevToolsAsPage &&
+                            target.type() === 'other' &&
+                            target.url().startsWith('devtools://')));
                 });
     }
     _getIsPageTargetCallback() {
@@ -174,10 +179,15 @@ export class CdpBrowser extends BrowserBase {
     async newPage() {
         return await this.#defaultContext.newPage();
     }
-    async _createPageInContext(contextId) {
+    async _createPageInContext(contextId, options) {
+        const hasTargets = this.targets().filter(t => {
+            return t.browserContext().id === contextId;
+        }).length > 0;
         const { targetId } = await this.#connection.send('Target.createTarget', {
             url: 'about:blank',
             browserContextId: contextId || undefined,
+            // Works around crbug.com/454825274.
+            newWindow: hasTargets && options?.type === 'window' ? true : undefined,
         });
         const target = (await this.waitForTarget(t => {
             return t._targetId === targetId;
@@ -193,6 +203,27 @@ export class CdpBrowser extends BrowserBase {
         const page = await target.page();
         if (!page) {
             throw new Error(`Failed to create a page for context (id = ${contextId})`);
+        }
+        return page;
+    }
+    async _createDevToolsPage(pageTargetId) {
+        const openDevToolsResponse = await this.#connection.send('Target.openDevTools', {
+            targetId: pageTargetId,
+        });
+        const target = (await this.waitForTarget(t => {
+            return t._targetId === openDevToolsResponse.targetId;
+        }));
+        if (!target) {
+            throw new Error(`Missing target for DevTools page (id = ${pageTargetId})`);
+        }
+        const initialized = (await target._initializedDeferred.valueOrThrow()) ===
+            InitializationStatus.SUCCESS;
+        if (!initialized) {
+            throw new Error(`Failed to create target for DevTools page (id = ${pageTargetId})`);
+        }
+        const page = await target.page();
+        if (!page) {
+            throw new Error(`Failed to create a DevTools Page for target (id = ${pageTargetId})`);
         }
         return page;
     }

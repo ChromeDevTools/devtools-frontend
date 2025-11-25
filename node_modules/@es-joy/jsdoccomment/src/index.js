@@ -27,9 +27,16 @@
  * }} JsdocBlockWithInline
  */
 
+/* eslint-disable jsdoc/reject-any-type -- API */
 /**
- * @typedef {{preferRawType?: boolean}} ESTreeToStringOptions
+ * @typedef {{
+ *   preferRawType?: boolean,
+ *   jtppStringificationRules?: (
+ *     node: import('estree').Node, options?: any
+ *   ) => string
+ * }} ESTreeToStringOptions
  */
+/* eslint-enable jsdoc/reject-any-type -- API */
 
 /**
  * @callback CommentHandler

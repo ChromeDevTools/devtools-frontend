@@ -42,11 +42,12 @@ To see the rules that this config uses, please read the [config itself](./index.
     left: calc(var(--offset) + 50%);
   }
 
-  /* Flush nested single line comment */
-  a::after {
-    display: block;
-    content: "→";
-    background-image: url("x.svg");
+  @layer layer-foo.layer-bar {
+    a::after {
+      display: block;
+      content: "→";
+      background-image: url("x.svg");
+    }
   }
 }
 
@@ -55,6 +56,7 @@ To see the rules that this config uses, please read the [config itself](./index.
     opacity: 0;
   }
 
+  /* Flush nested single line comment */
   to {
     opacity: 1;
   }

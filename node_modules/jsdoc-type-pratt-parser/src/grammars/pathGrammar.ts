@@ -4,6 +4,7 @@ import { createNameParslet } from '../parslets/NameParslet.js'
 import { stringValueParslet } from '../parslets/StringValueParslet.js'
 import { numberParslet } from '../parslets/NumberParslet.js'
 import { createSpecialNamePathParslet } from '../parslets/SpecialNamePathParslet.js'
+import { baseNameTokens } from '../lexer/Token.js'
 
 const basePathGrammar: Grammar = [
   createNameParslet({
@@ -23,5 +24,8 @@ export const pathGrammar: Grammar = [
   createSpecialNamePathParslet({
     allowedTypes: ['event'],
     pathGrammar: basePathGrammar
+  }),
+  createNameParslet({
+    allowedAdditionalTokens: baseNameTokens
   })
 ]

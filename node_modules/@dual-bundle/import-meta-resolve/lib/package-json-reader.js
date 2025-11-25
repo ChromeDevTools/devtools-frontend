@@ -5,7 +5,7 @@
 // Also: no need to cache, we do that in resolve already.
 
 /**
- * @typedef {import('./errors.js').ErrnoException} ErrnoException
+ * @import {ErrnoException} from './errors.js'
  *
  * @typedef {'commonjs' | 'module' | 'none'} PackageType
  *

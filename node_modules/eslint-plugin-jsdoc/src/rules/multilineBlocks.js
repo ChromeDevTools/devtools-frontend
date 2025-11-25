@@ -494,8 +494,7 @@ such a tag will cause multiline blocks to be allowed.
 You may set this to an empty array to prevent any tag from permitting multiple
 lines.
 
-Defaults to \`['*']\`.
-`,
+Defaults to \`['*']\`.`,
           },
           noFinalLineText: {
             description: `For multiline blocks, any non-whitespace text preceding the \`*/\` on the final
@@ -518,8 +517,7 @@ Defaults to \`false\`.`,
             description: `If this is \`true\`, any single line blocks will be reported, except those which
 are whitelisted in \`singleLineTags\`.
 
-Defaults to \`false\`.
-`,
+Defaults to \`false\`.`,
             type: 'boolean',
           },
           noZeroLineText: {
@@ -539,8 +537,7 @@ for such cases. Blocks are not reported which have multi-line descriptions,
 multiple tags, a block description and tag, or tags with multi-line types or
 descriptions.
 
-Defaults to \`null\`.
-`,
+Defaults to \`null\`.`,
             type: 'number',
           },
           singleLineTags: {

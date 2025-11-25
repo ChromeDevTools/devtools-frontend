@@ -89,13 +89,17 @@ export class BidiBrowser extends Browser {
         // yet because WebDriver BiDi behavior is not specified. See
         // https://github.com/w3c/webdriver-bidi/issues/321.
         'goog:prerenderingDisabled': true,
+        // TODO: remove after Puppeteer rolled Chrome to 142 after Oct 28, 2025.
+        'goog:disableNetworkDurableMessages': true,
       },
     });
 
+    // Subscribe to all WebDriver BiDi events. Also subscribe to CDP events if CDP
+    // connection is available.
     await session.subscribe(
-      (session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
-        ? BidiBrowser.subscribeModules
-        : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]
+      (opts.cdpConnection
+        ? [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]
+        : BidiBrowser.subscribeModules
       ).filter(module => {
         if (!opts.networkEnabled) {
           return (
@@ -107,20 +111,28 @@ export class BidiBrowser extends Browser {
       }) as [string, ...string[]],
     );
 
-    try {
-      await session.send('network.addDataCollector', {
-        dataTypes: [Bidi.Network.DataType.Response],
-        // Buffer size of 20 MB is equivalent to the CDP:
-        maxEncodedDataSize: 20 * 1000 * 1000, // 20 MB
-      });
-    } catch (err) {
-      if (err instanceof ProtocolError) {
-        // Ignore protocol errors, as the data collectors can be not implemented.
-        debugError(err);
-      } else {
-        throw err;
-      }
-    }
+    await Promise.all(
+      [Bidi.Network.DataType.Request, Bidi.Network.DataType.Response].map(
+        // Data collectors might be not implemented for specific data type, so create them
+        // separately and ignore protocol errors.
+        async dataType => {
+          try {
+            await session.send('network.addDataCollector', {
+              dataTypes: [dataType],
+              // Buffer size of 20 MB is equivalent to the CDP:
+              maxEncodedDataSize: 20_000_000,
+            });
+          } catch (err) {
+            if (err instanceof ProtocolError) {
+              debugError(err);
+            } else {
+              throw err;
+            }
+          }
+        },
+      ),
+    );
+
     const browser = new BidiBrowser(session.browser, opts);
     browser.#initialize();
     return browser;

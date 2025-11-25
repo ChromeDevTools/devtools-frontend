@@ -25,7 +25,12 @@ import {
 import {asyncDisposeSymbol, disposeSymbol} from '../util/disposable.js';
 import {Mutex} from '../util/Mutex.js';
 
-import type {Browser, Permission, WaitForTargetOptions} from './Browser.js';
+import type {
+  Browser,
+  CreatePageOptions,
+  Permission,
+  WaitForTargetOptions,
+} from './Browser.js';
 import type {Page} from './Page.js';
 import type {Target} from './Target.js';
 
@@ -181,10 +186,12 @@ export abstract class BrowserContext extends EventEmitter<BrowserContextEvents> 
    * Gets a list of all open {@link Page | pages} inside this
    * {@link BrowserContext | browser context}.
    *
+   * @param includeAll - experimental, setting to true includes all kinds of pages.
+   *
    * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
    * will not be listed here. You can find them using {@link Target.page}.
    */
-  abstract pages(): Promise<Page[]>;
+  abstract pages(includeAll?: boolean): Promise<Page[]>;
 
   /**
    * Grants this {@link BrowserContext | browser context} the given
@@ -230,7 +237,7 @@ export abstract class BrowserContext extends EventEmitter<BrowserContextEvents> 
    * Creates a new {@link Page | page} in this
    * {@link BrowserContext | browser context}.
    */
-  abstract newPage(): Promise<Page>;
+  abstract newPage(options?: CreatePageOptions): Promise<Page>;
 
   /**
    * Gets the {@link Browser | browser} associated with this

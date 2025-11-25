@@ -13,20 +13,14 @@ module.exports = class EventEmitterError extends Error {
   }
 
   static OPERATION_ABORTED(cause, msg = 'Operation aborted') {
-    return new EventEmitterError(
-      msg,
-      'OPERATION_ABORTED',
-      EventEmitterError.OPERATION_ABORTED,
-      { cause }
-    )
+    return new EventEmitterError(msg, 'OPERATION_ABORTED', EventEmitterError.OPERATION_ABORTED, {
+      cause
+    })
   }
 
   static UNHANDLED_ERROR(cause, msg = 'Unhandled error') {
-    return new EventEmitterError(
-      msg,
-      'UNHANDLED_ERROR',
-      EventEmitterError.UNHANDLED_ERROR,
-      { cause }
-    )
+    return new EventEmitterError(msg, 'UNHANDLED_ERROR', EventEmitterError.UNHANDLED_ERROR, {
+      cause
+    })
   }
 }

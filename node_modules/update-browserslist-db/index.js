@@ -295,7 +295,7 @@ module.exports = function updateDB(print = defaultPrint) {
   if (lock.mode === 'yarn' && lock.version !== 1) {
     updateWith(print, yarnCommand + ' up -R caniuse-lite')
   } else if (lock.mode === 'pnpm') {
-    updateWith(print, 'pnpm up caniuse-lite')
+    updateWith(print, 'pnpm up --no-save caniuse-lite')
   } else if (lock.mode === 'bun') {
     updateWith(print, 'bun update caniuse-lite')
   } else {

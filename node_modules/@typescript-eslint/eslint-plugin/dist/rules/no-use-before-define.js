@@ -165,6 +165,7 @@ exports.default = (0, util_1.createRule)({
                 oneOf: [
                     {
                         type: 'string',
+                        description: 'Broadly set functions and allowNamedExports to false.',
                         enum: ['nofunc'],
                     },
                     {

@@ -1,6 +1,6 @@
 import { composeParslet } from './Parslet.js'
 import { Precedence } from '../Precedence.js'
-import { assertRootResult } from '../assertTypes.js'
+import { assertRootResult, assertResultIsNotReservedWord } from '../assertTypes.js'
 
 export const unionParslet = composeParslet({
   name: 'unionParslet',
@@ -16,7 +16,10 @@ export const unionParslet = composeParslet({
 
     return {
       type: 'JsdocTypeUnion',
-      elements: [assertRootResult(left), ...elements]
+      elements: [
+        assertResultIsNotReservedWord(parser, assertRootResult(left)),
+        ...elements.map((element) => assertResultIsNotReservedWord(parser, element))
+      ]
     }
   }
 })

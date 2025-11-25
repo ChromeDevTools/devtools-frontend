@@ -8,6 +8,7 @@ import type {Protocol} from 'devtools-protocol';
 
 import type {ElementHandle} from '../api/ElementHandle.js';
 import type {Realm} from '../api/Realm.js';
+import {debugError} from '../common/util.js';
 
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
@@ -76,10 +77,22 @@ export interface SerializedAXNode {
    */
   invalid?: string;
   orientation?: string;
+
+  /**
+   * Url for link elements.
+   */
+  url?: string;
   /**
    * Children of this node, if there are any.
    */
   children?: SerializedAXNode[];
+
+  /**
+   * CDP-specifc ID to reference the DOM node.
+   *
+   * @internal
+   */
+  backendNodeId?: number;
 
   /**
    * Get an ElementHandle for this AXNode if available.
@@ -226,8 +239,13 @@ export class Accessibility {
         if (!frame) {
           return;
         }
-        const iframeSnapshot = await frame.accessibility.snapshot(options);
-        root.iframeSnapshot = iframeSnapshot ?? undefined;
+        try {
+          const iframeSnapshot = await frame.accessibility.snapshot(options);
+          root.iframeSnapshot = iframeSnapshot ?? undefined;
+        } catch (error) {
+          // Frames can get detached at any time resulting in errors.
+          debugError(error);
+        }
       }
       for (const child of root.children) {
         await populateIframes(child);
@@ -319,6 +337,7 @@ class AXNode {
   #name: string;
   #role: string;
   #ignored: boolean;
+  #cachedHasFocusableChild?: boolean;
   #realm: Realm;
 
   constructor(realm: Realm, payload: Protocol.Accessibility.AXNode) {
@@ -359,6 +378,19 @@ class AXNode {
       role === 'InlineTextBox' ||
       role === 'StaticText'
     );
+  }
+
+  #hasFocusableChild(): boolean {
+    if (this.#cachedHasFocusableChild === undefined) {
+      this.#cachedHasFocusableChild = false;
+      for (const child of this.children) {
+        if (child.#focusable || child.#hasFocusableChild()) {
+          this.#cachedHasFocusableChild = true;
+          break;
+        }
+      }
+    }
+    return this.#cachedHasFocusableChild;
   }
 
   public find(predicate: (x: AXNode) => boolean): AXNode | null {
@@ -406,6 +438,10 @@ class AXNode {
         break;
     }
 
+    if (this.#hasFocusableChild()) {
+      return false;
+    }
+
     if (this.#role === 'heading' && this.#name) {
       return true;
     }
@@ -442,10 +478,30 @@ class AXNode {
     }
   }
 
+  public isLandmark(): boolean {
+    switch (this.#role) {
+      case 'banner':
+      case 'complementary':
+      case 'contentinfo':
+      case 'form':
+      case 'main':
+      case 'navigation':
+      case 'region':
+      case 'search':
+        return true;
+      default:
+        return false;
+    }
+  }
+
   public isInteresting(insideControl: boolean): boolean {
     const role = this.#role;
     if (role === 'Ignored' || this.#hidden || this.#ignored) {
       return false;
+    }
+
+    if (this.isLandmark()) {
+      return true;
     }
 
     if (this.#focusable || this.#richlyEditable) {
@@ -496,6 +552,7 @@ class AXNode {
           return node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
         })) as ElementHandle<Element>;
       },
+      backendNodeId: this.payload.backendDOMNodeId,
     };
 
     type UserStringProperty =
@@ -504,7 +561,8 @@ class AXNode {
       | 'description'
       | 'keyshortcuts'
       | 'roledescription'
-      | 'valuetext';
+      | 'valuetext'
+      | 'url';
 
     const userStringProperties: UserStringProperty[] = [
       'name',
@@ -513,6 +571,7 @@ class AXNode {
       'keyshortcuts',
       'roledescription',
       'valuetext',
+      'url',
     ];
     const getUserStringPropertyValue = (key: UserStringProperty): string => {
       return properties.get(key) as string;

@@ -118,8 +118,7 @@ fixes found by the likes of \`disallowName\` even when a different tag has the
 disallowed name. An alternative is to ensure that \`comment\` finds the specific
 tag of the desired tag and/or name and no \`disallowName\` (or \`allowName\`) is
 supplied. In such a case, only one error will be reported, but no fixer will
-be applied, however.
-`,
+be applied, however.`,
             items: {
               additionalProperties: false,
               properties: {

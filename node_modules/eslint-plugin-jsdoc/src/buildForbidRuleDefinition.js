@@ -21,9 +21,7 @@ import iterateJsdoc from './iterateJsdoc.js';
  *   schema?: import('eslint').Rule.RuleMetaData['schema']
  *   url?: string,
  * }} cfg
- * @returns {import('@eslint/core').RuleDefinition<
- *   import('@eslint/core').RuleDefinitionTypeOptions
- * >}
+ * @returns {import('eslint').Rule.RuleModule}
  */
 export const buildForbidRuleDefinition = ({
   contextName,

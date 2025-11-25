@@ -48,6 +48,7 @@ class NetworkEventManager {
     #requestWillBeSentMap = new Map();
     #requestPausedMap = new Map();
     #httpRequestsMap = new Map();
+    #requestWillBeSentExtraInfoMap = new Map();
     /*
      * The below maps are used to reconcile Network.responseReceivedExtraInfo
      * events with their corresponding request. Each response and redirect
@@ -63,9 +64,16 @@ class NetworkEventManager {
     forget(networkRequestId) {
         this.#requestWillBeSentMap.delete(networkRequestId);
         this.#requestPausedMap.delete(networkRequestId);
+        this.#requestWillBeSentExtraInfoMap.delete(networkRequestId);
         this.#queuedEventGroupMap.delete(networkRequestId);
         this.#queuedRedirectInfoMap.delete(networkRequestId);
         this.#responseReceivedExtraInfoMap.delete(networkRequestId);
+    }
+    requestExtraInfo(networkRequestId) {
+        if (!this.#requestWillBeSentExtraInfoMap.has(networkRequestId)) {
+            this.#requestWillBeSentExtraInfoMap.set(networkRequestId, []);
+        }
+        return this.#requestWillBeSentExtraInfoMap.get(networkRequestId);
     }
     responseExtraInfo(networkRequestId) {
         if (!this.#responseReceivedExtraInfoMap.has(networkRequestId)) {

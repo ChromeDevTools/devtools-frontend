@@ -175,6 +175,10 @@ var OperatorPrecedence;
     // parsing to stop.
     OperatorPrecedence[OperatorPrecedence["Invalid"] = -1] = "Invalid";
 })(OperatorPrecedence || (exports.OperatorPrecedence = OperatorPrecedence = {}));
+/**
+ * Note that this does not take into account parenthesization. You should check
+ * for parenthesization separately if it's relevant to your usage.
+ */
 function getOperatorPrecedenceForNode(node) {
     switch (node.type) {
         case utils_1.AST_NODE_TYPES.SpreadElement:

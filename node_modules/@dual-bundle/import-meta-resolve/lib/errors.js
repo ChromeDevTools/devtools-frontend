@@ -18,9 +18,6 @@
 // Last checked on: Apr 29, 2024.
 import v8 from 'node:v8'
 import assert from 'node:assert'
-// Needed for types.
-// eslint-disable-next-line no-unused-vars
-import {URL} from 'node:url'
 import {format, inspect} from 'node:util'
 
 const own = {}.hasOwnProperty
@@ -73,7 +70,7 @@ codes.ERR_INVALID_ARG_TYPE = createError(
    * @param {unknown} actual
    */
   (name, expected, actual) => {
-    assert(typeof name === 'string', "'name' must be a string")
+    assert.ok(typeof name === 'string', "'name' must be a string")
     if (!Array.isArray(expected)) {
       expected = [expected]
     }
@@ -97,7 +94,7 @@ codes.ERR_INVALID_ARG_TYPE = createError(
     const other = []
 
     for (const value of expected) {
-      assert(
+      assert.ok(
         typeof value === 'string',
         'All expected entries have to be of type string'
       )
@@ -105,7 +102,7 @@ codes.ERR_INVALID_ARG_TYPE = createError(
       if (kTypes.has(value)) {
         types.push(value.toLowerCase())
       } else if (classRegExp.exec(value) === null) {
-        assert(
+        assert.ok(
           value !== 'object',
           'The value "object" should be written as "Object"'
         )
@@ -200,7 +197,7 @@ codes.ERR_INVALID_PACKAGE_TARGET = createError(
       target.length > 0 &&
       !target.startsWith('./')
     if (key === '.') {
-      assert(isImport === false)
+      assert.ok(isImport === false)
       return (
         `Invalid "exports" main target ${JSON.stringify(target)} defined ` +
         `in the package config ${packagePath}package.json${
@@ -450,10 +447,10 @@ const captureLargerStackTrace = hideStackFrames(
  */
 function getMessage(key, parameters, self) {
   const message = messages.get(key)
-  assert(message !== undefined, 'expected `message` to be found')
+  assert.ok(message !== undefined, 'expected `message` to be found')
 
   if (typeof message === 'function') {
-    assert(
+    assert.ok(
       message.length <= parameters.length, // Default options do not count.
       `Code: ${key}; The provided arguments length (${parameters.length}) does not ` +
         `match the required ones (${message.length}).`
@@ -464,7 +461,7 @@ function getMessage(key, parameters, self) {
   const regex = /%[dfijoOs]/g
   let expectedLength = 0
   while (regex.exec(message) !== null) expectedLength++
-  assert(
+  assert.ok(
     expectedLength === parameters.length,
     `Code: ${key}; The provided arguments length (${parameters.length}) does not ` +
       `match the required ones (${expectedLength}).`

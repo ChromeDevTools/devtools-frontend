@@ -92,6 +92,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Browser = void 0;
+const Errors_js_1 = require("../../common/Errors.js");
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
 const decorators_js_1 = require("../../util/decorators.js");
 const disposable_js_1 = require("../../util/disposable.js");
@@ -260,10 +261,31 @@ let Browser = (() => {
                     sslProxy: options.proxyServer,
                     noProxy: options.proxyBypassList,
                 };
-            const { result: { userContext: context }, } = await this.session.send('browser.createUserContext', {
+            const { result: { userContext }, } = await this.session.send('browser.createUserContext', {
                 proxy: proxyConfig,
             });
-            return this.#createUserContext(context);
+            if (options.downloadBehavior?.policy === 'allowAndName') {
+                throw new Errors_js_1.UnsupportedOperation('`allowAndName` is not supported in WebDriver BiDi');
+            }
+            if (options.downloadBehavior?.policy === 'allow') {
+                if (options.downloadBehavior.downloadPath === undefined) {
+                    throw new Errors_js_1.UnsupportedOperation('`downloadPath` is required in `allow` download behavior');
+                }
+                await this.session.send('browser.setDownloadBehavior', {
+                    downloadBehavior: {
+                        type: 'allowed',
+                        destinationFolder: options.downloadBehavior.downloadPath,
+                    },
+                    userContexts: [userContext],
+                });
+            }
+            if (options.downloadBehavior?.policy === 'deny') {
+                await this.session.send('browser.setDownloadBehavior', {
+                    downloadBehavior: { type: 'denied' },
+                    userContexts: [userContext],
+                });
+            }
+            return this.#createUserContext(userContext);
         }
         async installExtension(path) {
             const { result: { extension }, } = await this.session.send('webExtension.install', {

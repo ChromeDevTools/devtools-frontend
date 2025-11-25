@@ -1,21 +1,9 @@
 import {
   buildRejectOrPreferRuleDefinition,
 } from '../buildRejectOrPreferRuleDefinition.js';
-
-const strictNativeTypes = [
-  'undefined',
-  'null',
-  'boolean',
-  'number',
-  'bigint',
-  'string',
-  'symbol',
-  'object',
-  'Array',
-  'Function',
-  'Date',
-  'RegExp',
-];
+import {
+  strictNativeTypes,
+} from '../jsdocUtils.js';
 
 /**
  * @callback CheckNativeTypes

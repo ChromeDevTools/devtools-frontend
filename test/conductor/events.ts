@@ -96,6 +96,10 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
   });
 
   page.on('pageerror', error => {
+    if (!(error instanceof Error)) {
+      throw new Error(`Page error in Frontend: ${error}`);
+    }
+
     if (error.message.includes(path.join('ui', 'components', 'docs'))) {
       uiComponentDocErrors.push(error);
     }

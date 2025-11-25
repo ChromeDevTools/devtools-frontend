@@ -23,6 +23,7 @@ __exportStar(require("./getDeclaration"), exports);
 __exportStar(require("./getSourceFileOfNode"), exports);
 __exportStar(require("./getTypeName"), exports);
 __exportStar(require("./isSymbolFromDefaultLibrary"), exports);
+__exportStar(require("./isTypeBrandedLiteralLike"), exports);
 __exportStar(require("./isTypeReadonly"), exports);
 __exportStar(require("./isUnsafeAssignment"), exports);
 __exportStar(require("./predicates"), exports);

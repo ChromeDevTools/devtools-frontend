@@ -1,9 +1,0 @@
-[submodule "specs/webdriver-bidi"]
-	path = specs/webdriver-bidi
-	url = https://github.com/w3c/webdriver-bidi.git
-[submodule "specs/permissions"]
-	path = specs/permissions
-	url = https://github.com/w3c/permissions.git
-[submodule "specs/web-bluetooth"]
-	path = specs/web-bluetooth
-	url = https://github.com/WebBluetoothCG/web-bluetooth.git

@@ -23,13 +23,14 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
     #delay;
     #timeout = 0;
     #closed = false;
-    #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
+    #callbacks;
     #emitters = [];
-    constructor(url, transport, delay = 0, timeout) {
+    constructor(url, transport, idGenerator, delay = 0, timeout) {
         super();
         this.#url = url;
         this.#delay = delay;
         this.#timeout = timeout ?? 180_000;
+        this.#callbacks = new CallbackRegistry_js_1.CallbackRegistry(idGenerator);
         this.#transport = transport;
         this.#transport.onmessage = this.onMessage.bind(this);
         this.#transport.onclose = this.unbind.bind(this);
@@ -43,7 +44,23 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
     pipeTo(emitter) {
         this.#emitters.push(emitter);
     }
+    #toWebDriverOnlyEvent(event) {
+        for (const key in event) {
+            if (key.startsWith('goog:')) {
+                delete event[key];
+            }
+            else {
+                if (typeof event[key] === 'object' && event[key] !== null) {
+                    this.#toWebDriverOnlyEvent(event[key]);
+                }
+            }
+        }
+    }
     emit(type, event) {
+        if (process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true') {
+            // Required for WebDriver-only testing.
+            this.#toWebDriverOnlyEvent(event);
+        }
         for (const emitter of this.#emitters) {
             emitter.emit(type, event);
         }

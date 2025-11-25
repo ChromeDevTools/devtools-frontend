@@ -58,6 +58,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Accessibility = void 0;
+const util_js_1 = require("../common/util.js");
 /**
  * The Accessibility class provides methods for inspecting the browser's
  * accessibility tree. The accessibility tree is used by assistive technology
@@ -157,8 +158,14 @@ class Accessibility {
                     if (!frame) {
                         return;
                     }
-                    const iframeSnapshot = await frame.accessibility.snapshot(options);
-                    root.iframeSnapshot = iframeSnapshot ?? undefined;
+                    try {
+                        const iframeSnapshot = await frame.accessibility.snapshot(options);
+                        root.iframeSnapshot = iframeSnapshot ?? undefined;
+                    }
+                    catch (error) {
+                        // Frames can get detached at any time resulting in errors.
+                        (0, util_js_1.debugError)(error);
+                    }
                 }
                 catch (e_1) {
                     env_1.error = e_1;
@@ -239,6 +246,7 @@ class AXNode {
     #name;
     #role;
     #ignored;
+    #cachedHasFocusableChild;
     #realm;
     constructor(realm, payload) {
         this.payload = payload;
@@ -274,6 +282,18 @@ class AXNode {
             role === 'text' ||
             role === 'InlineTextBox' ||
             role === 'StaticText');
+    }
+    #hasFocusableChild() {
+        if (this.#cachedHasFocusableChild === undefined) {
+            this.#cachedHasFocusableChild = false;
+            for (const child of this.children) {
+                if (child.#focusable || child.#hasFocusableChild()) {
+                    this.#cachedHasFocusableChild = true;
+                    break;
+                }
+            }
+        }
+        return this.#cachedHasFocusableChild;
     }
     find(predicate) {
         if (predicate(this)) {
@@ -316,6 +336,9 @@ class AXNode {
             default:
                 break;
         }
+        if (this.#hasFocusableChild()) {
+            return false;
+        }
         if (this.#role === 'heading' && this.#name) {
             return true;
         }
@@ -349,10 +372,28 @@ class AXNode {
                 return false;
         }
     }
+    isLandmark() {
+        switch (this.#role) {
+            case 'banner':
+            case 'complementary':
+            case 'contentinfo':
+            case 'form':
+            case 'main':
+            case 'navigation':
+            case 'region':
+            case 'search':
+                return true;
+            default:
+                return false;
+        }
+    }
     isInteresting(insideControl) {
         const role = this.#role;
         if (role === 'Ignored' || this.#hidden || this.#ignored) {
             return false;
+        }
+        if (this.isLandmark()) {
+            return true;
         }
         if (this.#focusable || this.#richlyEditable) {
             return true;
@@ -404,6 +445,7 @@ class AXNode {
                     __disposeResources(env_2);
                 }
             },
+            backendNodeId: this.payload.backendDOMNodeId,
         };
         const userStringProperties = [
             'name',
@@ -412,6 +454,7 @@ class AXNode {
             'keyshortcuts',
             'roledescription',
             'valuetext',
+            'url',
         ];
         const getUserStringPropertyValue = (key) => {
             return properties.get(key);

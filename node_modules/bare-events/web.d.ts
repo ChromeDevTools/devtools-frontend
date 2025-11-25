@@ -25,6 +25,18 @@ export class Event {
   constructor(type: string, options?: EventOptions)
 }
 
+export interface CustomEventOptions<T = any> extends EventOptions {
+  detail?: T
+}
+
+export interface CustomEvent<T = any> extends Event {
+  readonly detail: T
+}
+
+export class CustomEvent<T = any> {
+  constructor(type: string, options?: CustomEventOptions<T>)
+}
+
 export interface AddEventListenerOptions {
   capture?: boolean
   passive?: boolean

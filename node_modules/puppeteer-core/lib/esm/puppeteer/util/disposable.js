@@ -16,7 +16,7 @@ export const asyncDisposeSymbol = Symbol.asyncDispose;
 /**
  * @internal
  */
-class DisposableStackPolyfill {
+export class DisposableStackPolyfill {
     #disposed = false;
     #stack = [];
     /**
@@ -157,7 +157,7 @@ export const DisposableStack = globalThis.DisposableStack ?? DisposableStackPoly
 /**
  * @internal
  */
-class AsyncDisposableStackPolyfill {
+export class AsyncDisposableStackPolyfill {
     #disposed = false;
     #stack = [];
     /**

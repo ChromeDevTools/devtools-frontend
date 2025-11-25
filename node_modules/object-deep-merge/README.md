@@ -65,7 +65,7 @@ function merge<TData extends MergeableObject = MergeableObject, TResult extends 
 ```
 
 > [!IMPORTANT]  
-> The [`Merge`](https://github.com/sindresorhus/type-fest/blob/main/source/merge.d.ts) and [`MergeDeep`](https://github.com/sindresorhus/type-fest/blob/main/source/merge-deep.d.ts) types from [`type-fest`](https://github.com/sindresorhus/type-fest) are shipped from this library as a convenience. It is not unreasonable to use those types directly instead.
+> The [`Merge`](https://github.com/sindresorhus/type-fest/blob/main/source/merge.d.ts) and [`MergeDeep`](https://github.com/sindresorhus/type-fest/blob/main/source/merge-deep.d.ts) types from [`type-fest`](https://github.com/sindresorhus/type-fest) are great additions to this library. It is not unreasonable to use those types for your merge typing needs.
 
 Without explicitly passing in types the function will infer the shape of the object(s) passed in.
 

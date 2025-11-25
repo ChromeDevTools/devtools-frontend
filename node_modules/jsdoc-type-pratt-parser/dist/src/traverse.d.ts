@@ -7,7 +7,7 @@ import type { RootResult } from './result/RootResult.js';
  * @param property the property on the parent node that contains the visited node. It can be the node itself or
  *  an array of nodes.
  */
-export type NodeVisitor = (node: NonRootResult, parentNode?: NonRootResult, property?: string) => void;
+export type NodeVisitor = (node: NonRootResult, parentNode?: NonRootResult, property?: string, index?: number) => void;
 /**
  * A function to traverse an AST. It traverses it depth first.
  * @param node the node to start traversing at.

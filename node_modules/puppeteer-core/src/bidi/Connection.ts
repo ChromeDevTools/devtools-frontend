@@ -14,6 +14,7 @@ import {ConnectionClosedError} from '../common/Errors.js';
 import type {EventsWithWildcard} from '../common/EventEmitter.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import {debugError} from '../common/util.js';
+import type {GetIdFn} from '../util/incremental-id-generator.js';
 
 import {BidiCdpSession} from './CDPSession.js';
 import type {
@@ -57,12 +58,13 @@ export class BidiConnection
   #delay: number;
   #timeout = 0;
   #closed = false;
-  #callbacks = new CallbackRegistry();
+  #callbacks: CallbackRegistry;
   #emitters: Array<EventEmitter<any>> = [];
 
   constructor(
     url: string,
     transport: ConnectionTransport,
+    idGenerator: GetIdFn,
     delay = 0,
     timeout?: number,
   ) {
@@ -70,6 +72,7 @@ export class BidiConnection
     this.#url = url;
     this.#delay = delay;
     this.#timeout = timeout ?? 180_000;
+    this.#callbacks = new CallbackRegistry(idGenerator);
 
     this.#transport = transport;
     this.#transport.onmessage = this.onMessage.bind(this);
@@ -88,10 +91,26 @@ export class BidiConnection
     this.#emitters.push(emitter);
   }
 
+  #toWebDriverOnlyEvent(event: Record<string, any>) {
+    for (const key in event) {
+      if (key.startsWith('goog:')) {
+        delete event[key];
+      } else {
+        if (typeof event[key] === 'object' && event[key] !== null) {
+          this.#toWebDriverOnlyEvent(event[key]);
+        }
+      }
+    }
+  }
+
   override emit<Key extends keyof EventsWithWildcard<BidiEvents>>(
     type: Key,
     event: EventsWithWildcard<BidiEvents>[Key],
   ): boolean {
+    if (process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true') {
+      // Required for WebDriver-only testing.
+      this.#toWebDriverOnlyEvent(event);
+    }
     for (const emitter of this.#emitters) {
       emitter.emit(type, event);
     }

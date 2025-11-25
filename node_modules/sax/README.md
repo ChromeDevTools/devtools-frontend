@@ -7,25 +7,25 @@ the browser or other CommonJS implementations.
 
 ## What This Is
 
-* A very simple tool to parse through an XML string.
-* A stepping stone to a streaming HTML parser.
-* A handy way to deal with RSS and other mostly-ok-but-kinda-broken XML
+- A very simple tool to parse through an XML string.
+- A stepping stone to a streaming HTML parser.
+- A handy way to deal with RSS and other mostly-ok-but-kinda-broken XML
   docs.
 
 ## What This Is (probably) Not
 
-* An HTML Parser - That's a fine goal, but this isn't it.  It's just
+- An HTML Parser - That's a fine goal, but this isn't it. It's just
   XML.
-* A DOM Builder - You can use it to build an object model out of XML,
+- A DOM Builder - You can use it to build an object model out of XML,
   but it doesn't do that out of the box.
-* XSLT - No DOM = no querying.
-* 100% Compliant with (some other SAX implementation) - Most SAX
+- XSLT - No DOM = no querying.
+- 100% Compliant with (some other SAX implementation) - Most SAX
   implementations are in Java and do a lot more than this does.
-* An XML Validator - It does a little validation when in strict mode, but
+- An XML Validator - It does a little validation when in strict mode, but
   not much.
-* A Schema-Aware XSD Thing - Schemas are an exercise in fetishistic
+- A Schema-Aware XSD Thing - Schemas are an exercise in fetishistic
   masochism.
-* A DTD-aware Thing - Fetching DTDs is a much bigger job.
+- A DTD-aware Thing - Fetching DTDs is a much bigger job.
 
 ## Regarding `<!DOCTYPE`s and `<!ENTITY`s
 
@@ -42,71 +42,70 @@ through unmolested.
 ## Usage
 
 ```javascript
-var sax = require("./lib/sax"),
+var sax = require('./lib/sax'),
   strict = true, // set to false for html-mode
-  parser = sax.parser(strict);
+  parser = sax.parser(strict)
 
 parser.onerror = function (e) {
   // an error happened.
-};
+}
 parser.ontext = function (t) {
   // got some text.  t is the string of text.
-};
+}
 parser.onopentag = function (node) {
   // opened a tag.  node has "name" and "attributes"
-};
+}
 parser.onattribute = function (attr) {
   // an attribute.  attr has "name" and "value"
-};
+}
 parser.onend = function () {
   // parser stream is done, and ready to have more stuff written to it.
-};
+}
 
-parser.write('<xml>Hello, <who name="world">world</who>!</xml>').close();
+parser.write('<xml>Hello, <who name="world">world</who>!</xml>').close()
 
 // stream usage
 // takes the same options as the parser
-var saxStream = require("sax").createStream(strict, options)
-saxStream.on("error", function (e) {
+var saxStream = require('sax').createStream(strict, options)
+saxStream.on('error', function (e) {
   // unhandled errors will throw, since this is a proper node
   // event emitter.
-  console.error("error!", e)
+  console.error('error!', e)
   // clear the error
   this._parser.error = null
   this._parser.resume()
 })
-saxStream.on("opentag", function (node) {
+saxStream.on('opentag', function (node) {
   // same object as above
 })
 // pipe is supported, and it's readable/writable
 // same chunks coming in also go out.
-fs.createReadStream("file.xml")
+fs.createReadStream('file.xml')
   .pipe(saxStream)
-  .pipe(fs.createWriteStream("file-copy.xml"))
+  .pipe(fs.createWriteStream('file-copy.xml'))
 ```
-
 
 ## Arguments
 
-Pass the following arguments to the parser function.  All are optional.
+Pass the following arguments to the parser function. All are optional.
 
 `strict` - Boolean. Whether or not to be a jerk. Default: `false`.
 
-`opt` - Object bag of settings regarding string formatting.  All default to `false`.
+`opt` - Object bag of settings regarding string formatting. All default to `false`.
 
 Settings supported:
 
-* `trim` - Boolean. Whether or not to trim text and comment nodes.
-* `normalize` - Boolean. If true, then turn any whitespace into a single
+- `trim` - Boolean. Whether or not to trim text and comment nodes.
+- `normalize` - Boolean. If true, then turn any whitespace into a single
   space.
-* `lowercase` - Boolean. If true, then lowercase tag names and attribute names
+- `lowercase` - Boolean. If true, then lowercase tag names and attribute names
   in loose mode, rather than uppercasing them.
-* `xmlns` - Boolean. If true, then namespaces are supported.
-* `position` - Boolean. If false, then don't track line/col/position.
-* `strictEntities` - Boolean. If true, only parse [predefined XML
+- `xmlns` - Boolean. If true, then namespaces are supported.
+- `position` - Boolean. If false, then don't track line/col/position.
+- `strictEntities` - Boolean. If true, only parse [predefined XML
   entities](http://www.w3.org/TR/REC-xml/#sec-predefined-ent)
   (`&amp;`, `&apos;`, `&gt;`, `&lt;`, and `&quot;`)
-* `unquotedAttributeValues` - Boolean. If true, then unquoted
+- `unquotedAttributeValues` - Boolean. If true, then unquoted
   attribute values are allowed. Defaults to `false` when `strict`
   is true, `true` otherwise.
 
@@ -156,7 +155,7 @@ When using the stream interface, assign handlers using the EventEmitter
 `error` - Indication that something bad happened. The error will be hanging
 out on `parser.error`, and must be deleted before parsing can continue. By
 listening to this event, you can keep an eye on that kind of stuff. Note:
-this happens *much* more in strict mode. Argument: instance of `Error`.
+this happens _much_ more in strict mode. Argument: instance of `Error`.
 
 `text` - Text node. Argument: string of text.
 
@@ -172,13 +171,13 @@ might go away at some point. SAX isn't intended to be used to parse SGML,
 after all.
 
 `opentagstart` - Emitted immediately when the tag name is available,
-but before any attributes are encountered.  Argument: object with a
-`name` field and an empty `attributes` set.  Note that this is the
+but before any attributes are encountered. Argument: object with a
+`name` field and an empty `attributes` set. Note that this is the
 same object that will later be emitted in the `opentag` event.
 
 `opentag` - An opening tag. Argument: object with `name` and `attributes`.
 In non-strict mode, tag names are uppercased, unless the `lowercase`
-option is set.  If the `xmlns` option is set, then it will contain
+option is set. If the `xmlns` option is set, then it will contain
 namespace binding information on the `ns` member, and will have a
 `local`, `prefix`, and `uri` member.
 
@@ -187,12 +186,12 @@ parent closes. In strict mode, well-formedness is enforced. Note that
 self-closing tags will have `closeTag` emitted immediately after `openTag`.
 Argument: tag name.
 
-`attribute` - An attribute node.  Argument: object with `name` and `value`.
+`attribute` - An attribute node. Argument: object with `name` and `value`.
 In non-strict mode, attribute names are uppercased, unless the `lowercase`
-option is set.  If the `xmlns` option is set, it will also contains namespace
+option is set. If the `xmlns` option is set, it will also contains namespace
 information.
 
-`comment` - A comment node.  Argument: the string of the comment.
+`comment` - A comment node. Argument: the string of the comment.
 
 `opencdata` - The opening tag of a `<![CDATA[` block.
 
@@ -220,9 +219,9 @@ If you pass `noscript: true`, then this behavior is suppressed.
 
 ## Reporting Problems
 
-It's best to write a failing test if you find an issue.  I will always
+It's best to write a failing test if you find an issue. I will always
 accept pull requests with failing tests if they demonstrate intended
 behavior, but it is very hard to figure out what issue you're describing
-without a test.  Writing a test is also the best way for you yourself
+without a test. Writing a test is also the best way for you yourself
 to figure out if you really understand the issue you think you have with
 sax-js.

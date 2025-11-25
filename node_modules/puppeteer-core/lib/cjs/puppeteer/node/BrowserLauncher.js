@@ -48,6 +48,7 @@ const Browser_js_1 = require("../cdp/Browser.js");
 const Connection_js_1 = require("../cdp/Connection.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
+const incremental_id_generator_js_1 = require("../util/incremental-id-generator.js");
 const NodeWebSocketTransport_js_1 = require("./NodeWebSocketTransport.js");
 const PipeTransport_js_1 = require("./PipeTransport.js");
 /**
@@ -72,7 +73,7 @@ class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
+        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)(), } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -129,6 +130,7 @@ class BrowserLauncher {
                     defaultViewport,
                     acceptInsecureCerts,
                     networkEnabled,
+                    idGenerator,
                 });
             }
             else {
@@ -137,6 +139,7 @@ class BrowserLauncher {
                         timeout,
                         protocolTimeout,
                         slowMo,
+                        idGenerator,
                     });
                 }
                 else {
@@ -144,6 +147,7 @@ class BrowserLauncher {
                         timeout,
                         protocolTimeout,
                         slowMo,
+                        idGenerator,
                     });
                 }
                 if (protocol === 'webDriverBiDi') {
@@ -154,16 +158,23 @@ class BrowserLauncher {
                     });
                 }
                 else {
-                    browser = await Browser_js_1.CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled);
+                    browser = await Browser_js_1.CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled, handleDevToolsAsPage);
                 }
             }
         }
         catch (error) {
             void browserCloseCallback();
-            if (browserProcess.getRecentLogs().some(line => {
-                return line.includes('Failed to create a ProcessSingleton for your profile directory');
-            })) {
+            const logs = browserProcess.getRecentLogs().join('\n');
+            if (logs.includes('Failed to create a ProcessSingleton for your profile directory') ||
+                // On Windows we will not get logs due to the singleton process
+                // handover. See
+                // https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/process_singleton_win.cc;l=46;drc=fc7952f0422b5073515a205a04ec9c3a1ae81658
+                (process.platform === 'win32' &&
+                    (0, node_fs_1.existsSync)((0, node_path_1.join)(launchArgs.userDataDir, 'lockfile')))) {
                 throw new Error(`The browser is already running for ${launchArgs.userDataDir}. Use a different \`userDataDir\` or stop the running browser first.`);
+            }
+            if (logs.includes('Missing X server') && options.headless === false) {
+                throw new Error(`Missing X server to start the headful browser. Either set headless to true or use xvfb-run to run your Puppeteer script.`);
             }
             if (error instanceof browsers_1.TimeoutError) {
                 throw new Errors_js_1.TimeoutError(error.message);
@@ -227,7 +238,8 @@ class BrowserLauncher {
     async createCdpSocketConnection(browserProcess, opts) {
         const browserWSEndpoint = await browserProcess.waitForLineOutput(browsers_1.CDP_WEBSOCKET_ENDPOINT_REGEX, opts.timeout);
         const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
-        return new Connection_js_1.Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
+        return new Connection_js_1.Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout, 
+        /* rawErrors */ false, opts.idGenerator);
     }
     /**
      * @internal
@@ -237,17 +249,21 @@ class BrowserLauncher {
         // 4th and 5th items to stdio array
         const { 3: pipeWrite, 4: pipeRead } = browserProcess.nodeProcess.stdio;
         const transport = new PipeTransport_js_1.PipeTransport(pipeWrite, pipeRead);
-        return new Connection_js_1.Connection('', transport, opts.slowMo, opts.protocolTimeout);
+        return new Connection_js_1.Connection('', transport, opts.slowMo, opts.protocolTimeout, 
+        /* rawErrors */ false, opts.idGenerator);
     }
     /**
      * @internal
      */
-    async createBiDiOverCdpBrowser(browserProcess, connection, closeCallback, opts) {
+    async createBiDiOverCdpBrowser(browserProcess, cdpConnection, closeCallback, opts) {
+        const bidiOnly = process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true';
         const BiDi = await Promise.resolve().then(() => __importStar(require(/* webpackIgnore: true */ '../bidi/bidi.js')));
-        const bidiConnection = await BiDi.connectBidiOverCdp(connection);
+        const bidiConnection = await BiDi.connectBidiOverCdp(cdpConnection);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
-            cdpConnection: connection,
+            // Do not provide CDP connection to Browser, if BiDi-only mode is enabled. This
+            // would restrict Browser to use only BiDi endpoint.
+            cdpConnection: bidiOnly ? undefined : cdpConnection,
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
@@ -262,7 +278,7 @@ class BrowserLauncher {
         const browserWSEndpoint = (await browserProcess.waitForLineOutput(browsers_1.WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, opts.timeout)) + '/session';
         const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
         const BiDi = await Promise.resolve().then(() => __importStar(require(/* webpackIgnore: true */ '../bidi/bidi.js')));
-        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
+        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.idGenerator, opts.slowMo, opts.protocolTimeout);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             closeCallback,

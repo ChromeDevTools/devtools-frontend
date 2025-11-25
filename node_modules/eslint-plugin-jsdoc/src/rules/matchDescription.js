@@ -184,8 +184,7 @@ Overrides the default contexts (\`ArrowFunctionExpression\`, \`FunctionDeclarati
 JSDoc block throughout your files.
 
 See the ["AST and Selectors"](../#advanced-ast-and-selectors)
-section of our Advanced docs for more on the expected format.
-`,
+section of our Advanced docs for more on the expected format.`,
             items: {
               anyOf: [
                 {
@@ -302,8 +301,7 @@ literal, e.g., \`/[A-Z].*\\./vi\`.
 \`\`\`
 
 This can be overridden per tag or for the main block description by setting
-\`message\` within \`tags\` or \`mainDescription\`, respectively.
-`,
+\`message\` within \`tags\` or \`mainDescription\`, respectively.`,
             type: 'string',
           },
           nonemptyTags: {

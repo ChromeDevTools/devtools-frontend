@@ -106,8 +106,7 @@ export default iterateJsdoc(({
 a multi-comment block and at-sign \`/* @\`.
 
 Defaults to \`['ts-check', 'ts-expect-error', 'ts-ignore', 'ts-nocheck']\`
-(some directives [used by TypeScript](https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check)).
-`,
+(some directives [used by TypeScript](https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check)).`,
             items: {
               type: 'string',
             },

@@ -222,11 +222,14 @@ let BidiBrowserContext = (() => {
                 return [target, ...frames.values()];
             });
         }
-        async newPage() {
+        async newPage(options) {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {
                 const _guard = __addDisposableResource(env_1, await this.waitForScreenshotOperations(), false);
-                const context = await this.userContext.createBrowsingContext("tab" /* Bidi.BrowsingContext.CreateType.Tab */);
+                const type = options?.type === 'window'
+                    ? "window" /* Bidi.BrowsingContext.CreateType.Window */
+                    : "tab" /* Bidi.BrowsingContext.CreateType.Tab */;
+                const context = await this.userContext.createBrowsingContext(type);
                 const page = this.#pages.get(context);
                 if (!page) {
                     throw new Error('Page is not found');
@@ -262,7 +265,7 @@ let BidiBrowserContext = (() => {
         browser() {
             return this.#browser;
         }
-        async pages() {
+        async pages(_includeAll = false) {
             return [...this.userContext.browsingContexts].map(context => {
                 return this.#pages.get(context);
             });

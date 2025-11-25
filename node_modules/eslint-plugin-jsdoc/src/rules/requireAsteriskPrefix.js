@@ -180,8 +180,7 @@ which applies to the main JSDoc block description.
     }
   }]
 }
-\`\`\`
-`,
+\`\`\``,
             properties: {
               always: {
                 description: `If it is \`"always"\` then a problem is raised when there is no asterisk

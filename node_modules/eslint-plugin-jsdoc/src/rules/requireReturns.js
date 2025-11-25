@@ -254,8 +254,7 @@ otherwise noted):
 - \`ancestorsOnly\` - Optimization to only check node ancestors to check if node is exported
 - \`esm\` - ESM exports are checked for \`@returns\` JSDoc comments (Defaults to \`true\`)
 - \`cjs\` - CommonJS exports are checked for \`@returns\` JSDoc comments  (Defaults to \`true\`)
-- \`window\` - Window global exports are checked for \`@returns\` JSDoc comments
-`,
+- \`window\` - Window global exports are checked for \`@returns\` JSDoc comments`,
             oneOf: [
               {
                 default: false,

@@ -171,8 +171,7 @@ The default \`aliases\` option is:
 {
   "a": ["an", "our"]
 }
-\`\`\`
-`,
+\`\`\``,
             patternProperties: {
               '.*': {
                 items: {
@@ -194,8 +193,7 @@ function computeTypes(node) {
 }
 \`\`\`
 
-No tags are excluded by default.
-`,
+No tags are excluded by default.`,
             items: {
               type: 'string',
             },
@@ -215,8 +213,7 @@ The default \`uselessWords\` option is:
 
 \`\`\`json
 ["a", "an", "i", "in", "of", "s", "the"]
-\`\`\`
-`,
+\`\`\``,
             items: {
               type: 'string',
             },

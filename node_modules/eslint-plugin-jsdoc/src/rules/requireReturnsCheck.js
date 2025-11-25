@@ -1,4 +1,7 @@
 import iterateJsdoc from '../iterateJsdoc.js';
+import {
+  strictNativeTypes,
+} from '../jsdocUtils.js';
 
 /**
  * @param {import('../iterateJsdoc.js').Utils} utils
@@ -43,6 +46,7 @@ export default iterateJsdoc(({
   const {
     exemptAsync = true,
     exemptGenerators = settings.mode === 'typescript',
+    noNativeTypes = true,
     reportMissingReturnForUndefinedTypes = false,
   } = context.options[0] || {};
 
@@ -50,7 +54,8 @@ export default iterateJsdoc(({
     return;
   }
 
-  if (exemptAsync && utils.isAsync()) {
+  const isAsync = utils.isAsync();
+  if (exemptAsync && isAsync) {
     return;
   }
 
@@ -89,6 +94,11 @@ export default iterateJsdoc(({
   if (returnNever && utils.hasValueOrExecutorHasNonEmptyResolveValue(false)) {
     report(`JSDoc @${tagName} declaration set with "never" but return expression is present in function.`);
 
+    return;
+  }
+
+  if (noNativeTypes && isAsync && strictNativeTypes.includes(type)) {
+    report('Function is async or otherwise returns a Promise but the return type is a native type.');
     return;
   }
 
@@ -145,6 +155,11 @@ leverage \`@returns\` in generators even without a \`return\` statement. This
 option is therefore \`true\` by default in \`typescript\` mode (in "jsdoc" mode,
 one might be more likely to take advantage of \`@yields\`). Set it to \`false\`
 if you wish for a missing \`return\` to be flagged regardless.`,
+            type: 'boolean',
+          },
+          noNativeTypes: {
+            description: `Whether to check that async functions do not
+indicate they return non-native types. Defaults to \`true\`.`,
             type: 'boolean',
           },
           reportMissingReturnForUndefinedTypes: {

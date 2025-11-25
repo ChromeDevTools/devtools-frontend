@@ -222,8 +222,8 @@ exports.default = (0, util_1.createRule)({
             }
             return fixer.removeRange([startAt, endAt]);
         }
-        function insertAwait(fixer, node, isHighPrecendence) {
-            if (isHighPrecendence) {
+        function insertAwait(fixer, node, isHighPrecedence) {
+            if (isHighPrecedence) {
                 return fixer.insertTextBefore(node, 'await ');
             }
             return [

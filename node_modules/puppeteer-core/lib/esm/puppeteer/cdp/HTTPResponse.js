@@ -102,7 +102,7 @@ export class CdpHTTPResponse extends HTTPResponse {
                     if (error instanceof ProtocolError &&
                         error.originalMessage ===
                             'No resource with given identifier found') {
-                        throw new ProtocolError('Could not load body for this request. This might happen if the request is a preflight request.');
+                        throw new ProtocolError('Could not load response body for this request. This might happen if the request is a preflight request.');
                     }
                     throw error;
                 }

@@ -140,20 +140,18 @@ exports.throwIfDetached = (0, decorators_js_1.throwIfDisposed)(frame => {
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://www.google.com/chrome/browser/canary.html');
- *   dumpFrameTree(page.mainFrame(), '');
- *   await browser.close();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://www.google.com/chrome/browser/canary.html');
+ * dumpFrameTree(page.mainFrame(), '');
+ * await browser.close();
  *
- *   function dumpFrameTree(frame, indent) {
- *     console.log(indent + frame.url());
- *     for (const child of frame.childFrames()) {
- *       dumpFrameTree(child, indent + '  ');
- *     }
+ * function dumpFrameTree(frame, indent) {
+ *   console.log(indent + frame.url());
+ *   for (const child of frame.childFrames()) {
+ *     dumpFrameTree(child, indent + '  ');
  *   }
- * })();
+ * }
  * ```
  *
  * @example
@@ -397,7 +395,7 @@ let Frame = (() => {
          * matching the given selector. Otherwise, `null`.
          */
         async $(selector) {
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$(selector);
         }
@@ -424,7 +422,7 @@ let Frame = (() => {
          * elements matching the given selector.
          */
         async $$(selector, options) {
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$$(selector, options);
         }
@@ -464,7 +462,7 @@ let Frame = (() => {
          */
         async $eval(selector, pageFunction, ...args) {
             pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.$eval.name, pageFunction);
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$eval(selector, pageFunction, ...args);
         }
@@ -504,7 +502,7 @@ let Frame = (() => {
          */
         async $$eval(selector, pageFunction, ...args) {
             pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.$$eval.name, pageFunction);
-            // eslint-disable-next-line rulesdir/use-using -- This is cached.
+            // eslint-disable-next-line @puppeteer/use-using -- This is cached.
             const document = await this.#document();
             return await document.$$eval(selector, pageFunction, ...args);
         }
@@ -518,24 +516,22 @@ let Frame = (() => {
          * ```ts
          * import puppeteer from 'puppeteer';
          *
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   let currentURL;
-         *   page
-         *     .mainFrame()
-         *     .waitForSelector('img')
-         *     .then(() => console.log('First URL with image: ' + currentURL));
+         * const browser = await puppeteer.launch();
+         * const page = await browser.newPage();
+         * let currentURL;
+         * page
+         *   .mainFrame()
+         *   .waitForSelector('img')
+         *   .then(() => console.log('First URL with image: ' + currentURL));
          *
-         *   for (currentURL of [
-         *     'https://example.com',
-         *     'https://google.com',
-         *     'https://bbc.com',
-         *   ]) {
-         *     await page.goto(currentURL);
-         *   }
-         *   await browser.close();
-         * })();
+         * for (currentURL of [
+         *   'https://example.com',
+         *   'https://google.com',
+         *   'https://bbc.com',
+         * ]) {
+         *   await page.goto(currentURL);
+         * }
+         * await browser.close();
          * ```
          *
          * @param selector - The selector to query and wait for.
@@ -557,14 +553,14 @@ let Frame = (() => {
          * ```ts
          * import puppeteer from 'puppeteer';
          *
-         * (async () => {
-         * .  const browser = await puppeteer.launch();
-         * .  const page = await browser.newPage();
-         * .  const watchDog = page.mainFrame().waitForFunction('window.innerWidth < 100');
-         * .  page.setViewport({width: 50, height: 50});
-         * .  await watchDog;
-         * .  await browser.close();
-         * })();
+         * const browser = await puppeteer.launch();
+         * const page = await browser.newPage();
+         * const watchDog = page
+         *   .mainFrame()
+         *   .waitForFunction('window.innerWidth < 100');
+         * page.setViewport({width: 50, height: 50});
+         * await watchDog;
+         * await browser.close();
          * ```
          *
          * To pass arguments from Node.js to the predicate of `page.waitForFunction` function:

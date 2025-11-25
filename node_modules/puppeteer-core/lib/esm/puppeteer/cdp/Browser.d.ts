@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ChildProcess } from 'node:child_process';
-import type { DebugInfo } from '../api/Browser.js';
+import type { CreatePageOptions, DebugInfo } from '../api/Browser.js';
 import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
@@ -19,8 +19,8 @@ import { TargetManager } from './TargetManager.js';
 export declare class CdpBrowser extends BrowserBase {
     #private;
     readonly protocol = "cdp";
-    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean): Promise<CdpBrowser>;
-    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean);
+    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, handleDevToolsAsPage?: boolean): Promise<CdpBrowser>;
+    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, handleDevToolsAsPage?: boolean);
     _attach(downloadBehavior: DownloadBehavior | undefined): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;
@@ -32,7 +32,8 @@ export declare class CdpBrowser extends BrowserBase {
     _disposeContext(contextId?: string): Promise<void>;
     wsEndpoint(): string;
     newPage(): Promise<Page>;
-    _createPageInContext(contextId?: string): Promise<Page>;
+    _createPageInContext(contextId?: string, options?: CreatePageOptions): Promise<Page>;
+    _createDevToolsPage(pageTargetId: string): Promise<Page>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     targets(): CdpTarget[];

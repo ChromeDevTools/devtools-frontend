@@ -11,11 +11,11 @@ export declare function createEvaluationError(details: Protocol.Runtime.Exceptio
 /**
  * @internal
  */
-export declare function createClientError(details: Protocol.Runtime.ExceptionDetails): Error;
+export declare function createClientError(details: Protocol.Runtime.ExceptionDetails): Error | unknown;
 /**
  * @internal
  */
-export declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.RemoteObject): any;
+export declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.RemoteObject): unknown;
 /**
  * @internal
  */

@@ -2,7 +2,6 @@ import { composeParslet } from './Parslet.js'
 import type { RootResult } from '../result/RootResult.js'
 import { Precedence } from '../Precedence.js'
 import { getTemplateLiteralLiteral } from '../lexer/LexerRules.js'
-import { typescriptGrammar } from '../grammars/typescriptGrammar.js'
 import { Parser } from '../Parser.js'
 import { Lexer } from '../lexer/Lexer.js'
 
@@ -45,7 +44,7 @@ export const templateLiteralParslet = composeParslet({
           //   so we avoid processing them (may be part of a literal)
           try {
             templateParser = new Parser(
-              typescriptGrammar,
+              parser.grammar,
               Lexer.create(parser.lexer.lexerRules, snipped)
             )
             interpolationType = templateParser.parseType(Precedence.ALL)

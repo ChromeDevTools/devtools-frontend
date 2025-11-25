@@ -346,8 +346,7 @@ All other tags will treat the text following the tag name, a space, and
 an optional curly-bracketed type expression (and another space) as part of
 its "description" (e.g., for \`@returns {someType} some description\`, the
 description is \`some description\` while for \`@some-tag xyz\`, the description
-is \`xyz\`).
-`,
+is \`xyz\`).`,
             items: {
               type: 'string',
             },

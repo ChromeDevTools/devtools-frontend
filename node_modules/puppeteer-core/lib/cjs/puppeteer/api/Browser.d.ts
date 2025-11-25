@@ -137,6 +137,14 @@ export interface DebugInfo {
     pendingProtocolErrors: Error[];
 }
 /**
+ * @public
+ */
+export type CreatePageOptions = {
+    type: 'tab';
+} | {
+    type: 'window';
+};
+/**
  * {@link Browser} represents a browser instance that is either:
  *
  * - connected to via {@link Puppeteer.connect} or
@@ -240,7 +248,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * Creates a new {@link Page | page} in the
      * {@link Browser.defaultBrowserContext | default browser context}.
      */
-    abstract newPage(): Promise<Page>;
+    abstract newPage(options?: CreatePageOptions): Promise<Page>;
     /**
      * Gets all active {@link Target | targets}.
      *
@@ -277,10 +285,12 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * returns all {@link Page | pages} in all
      * {@link BrowserContext | browser contexts}.
      *
+     * @param includeAll - experimental, setting to true includes all kinds of pages.
+     *
      * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
      * will not be listed here. You can find them using {@link Target.page}.
      */
-    pages(): Promise<Page[]>;
+    pages(includeAll?: boolean): Promise<Page[]>;
     /**
      * Gets a string representing this {@link Browser | browser's} name and
      * version.

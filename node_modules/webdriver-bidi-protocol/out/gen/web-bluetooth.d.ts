@@ -51,8 +51,7 @@ export type BluetoothCommand =
   | Bluetooth.SimulateCharacteristic
   | Bluetooth.SimulateCharacteristicResponse
   | Bluetooth.SimulateDescriptor
-  | Bluetooth.SimulateDescriptorResponse
-  | Record<string, never>;
+  | Bluetooth.SimulateDescriptorResponse;
 export declare namespace Bluetooth {
   type HandleRequestDevicePrompt = {
     method: 'bluetooth.handleRequestDevicePrompt';

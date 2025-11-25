@@ -716,6 +716,7 @@ const ignorableNestedTypes = new Set([
  * @returns {import('eslint').Rule.Node|false}
  */
 const getExportAncestor = function (nde) {
+  /** @type {import('eslint').Rule.Node|null} */
   let node = nde;
   let idx = 0;
   const ignorableIfDeep = ignorableNestedTypes.has(nde?.type);

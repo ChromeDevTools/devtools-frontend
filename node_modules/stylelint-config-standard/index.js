@@ -82,7 +82,7 @@ module.exports = {
 			},
 		],
 		'layer-name-pattern': [
-			'^([a-z][a-z0-9]*)(-[a-z0-9]+)*$',
+			'^([a-z][a-z0-9]*)([.-][a-z0-9]+)*$',
 			{
 				message: (name) => `Expected layer name "${name}" to be kebab-case`,
 			},

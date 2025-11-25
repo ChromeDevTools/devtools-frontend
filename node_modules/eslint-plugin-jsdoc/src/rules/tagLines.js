@@ -37,18 +37,22 @@ const checkMaxBlockLines = ({
         line: excessIndexLine,
       },
       () => {
-        utils.setBlockDescription((info, seedTokens, descLines) => {
+        utils.setBlockDescription((info, seedTokens, descLines, postDelims) => {
+          const newPostDelims = [
+            ...postDelims.slice(0, excessIndexLine),
+            ...postDelims.slice(excessIndexLine + excessBlockLines - 1 - maxBlockLines),
+          ];
           return [
             ...descLines.slice(0, excessIndexLine),
             ...descLines.slice(excessIndexLine + excessBlockLines - 1 - maxBlockLines),
-          ].map((desc) => {
+          ].map((desc, idx) => {
             return {
               number: 0,
               source: '',
               tokens: seedTokens({
                 ...info,
                 description: desc,
-                postDelimiter: desc.trim() ? ' ' : '',
+                postDelimiter: newPostDelims[idx],
               }),
             };
           });
@@ -310,15 +314,15 @@ export default iterateJsdoc(({
           line: lastDescriptionLine - trailingDiff,
         },
         () => {
-          utils.setBlockDescription((info, seedTokens, descLines) => {
-            return descLines.slice(0, -trailingDiff).map((desc) => {
+          utils.setBlockDescription((info, seedTokens, descLines, postDelims) => {
+            return descLines.slice(0, -trailingDiff).map((desc, idx) => {
               return {
                 number: 0,
                 source: '',
                 tokens: seedTokens({
                   ...info,
                   description: desc,
-                  postDelimiter: desc.trim() ? info.postDelimiter : '',
+                  postDelimiter: postDelims[idx],
                 }),
               };
             });
@@ -332,7 +336,7 @@ export default iterateJsdoc(({
           line: lastDescriptionLine,
         },
         () => {
-          utils.setBlockDescription((info, seedTokens, descLines) => {
+          utils.setBlockDescription((info, seedTokens, descLines, postDelims) => {
             return [
               ...descLines,
               ...Array.from({
@@ -340,14 +344,14 @@ export default iterateJsdoc(({
               }, () => {
                 return '';
               }),
-            ].map((desc) => {
+            ].map((desc, idx) => {
               return {
                 number: 0,
                 source: '',
                 tokens: seedTokens({
                   ...info,
                   description: desc,
-                  postDelimiter: desc.trim() ? info.postDelimiter : '',
+                  postDelimiter: desc.trim() ? postDelims[idx] : '',
                 }),
               };
             });

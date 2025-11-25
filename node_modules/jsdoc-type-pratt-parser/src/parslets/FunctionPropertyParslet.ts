@@ -1,16 +1,18 @@
 import { composeParslet } from './Parslet.js'
-import type { CallSignatureResult, ConstructorSignatureResult, MethodSignatureResult } from '../result/NonRootResult.js'
+import type { TypeParameterResult, CallSignatureResult, ConstructorSignatureResult, MethodSignatureResult } from '../result/NonRootResult.js'
 import type { NameResult } from '../result/RootResult.js'
+import { Precedence } from '../Precedence.js'
+import { UnexpectedTypeError } from '../errors.js'
 
 // (optional new or optionally quoted other optional name) +
 //    (...args) + ":" + return value
 export const functionPropertyParslet = composeParslet({
   name: 'functionPropertyParslet',
   accept: (type, next) =>
-    type === 'new' && next ==='(' ||
-    type === 'Identifier' && next === '(' ||
-    type === 'StringValue' && next === '(' ||
-    type === '(',
+    type === 'new' && (next ==='(' || next === '<') ||
+    type === 'Identifier' && (next === '(' || next === '<') ||
+    type === 'StringValue' && (next === '(' || next === '<') ||
+    type === '(' || type === '<',
   parsePrefix: parser => {
     let result: CallSignatureResult | ConstructorSignatureResult | MethodSignatureResult
 
@@ -61,6 +63,51 @@ export const functionPropertyParslet = composeParslet({
           }
         }
       }
+    }
+
+    const typeParameters: TypeParameterResult[] = []
+    if (parser.consume('<')) {
+      do {
+        let defaultValue = undefined
+        let name = parser.parseIntermediateType(Precedence.SYMBOL)
+        if (name.type === 'JsdocTypeOptional') {
+          name = name.element
+          defaultValue = parser.parseType(Precedence.SYMBOL)
+        }
+        if (name.type !== 'JsdocTypeName') {
+          throw new UnexpectedTypeError(name)
+        }
+        let constraint = undefined
+        if (parser.consume('extends')) {
+          constraint = parser.parseType(Precedence.SYMBOL)
+          // Got an equal sign
+          if (constraint.type === 'JsdocTypeOptional') {
+            constraint = constraint.element
+            defaultValue = parser.parseType(Precedence.SYMBOL)
+          }
+        }
+
+        const typeParameter: TypeParameterResult = {
+          type: 'JsdocTypeTypeParameter',
+          name
+        }
+
+        if (constraint !== undefined) {
+          typeParameter.constraint = constraint
+        }
+
+        if (defaultValue !== undefined) {
+          typeParameter.defaultValue = defaultValue
+        }
+
+        typeParameters.push(typeParameter)
+
+        if (parser.consume('>')) {
+          break
+        }
+      } while (parser.consume(','))
+
+      result.typeParameters = typeParameters
     }
 
     const hasParenthesis = parser.lexer.current.type === '('

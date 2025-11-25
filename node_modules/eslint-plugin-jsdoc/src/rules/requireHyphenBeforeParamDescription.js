@@ -199,8 +199,7 @@ other tags besides the \`@param\` tag (or the \`@arg\` tag if so set).`,
   to ensure \`@property\` never uses hyphens. A key can also be set as \`*\`, e.g.,
   \`'*': 'always'\` to apply hyphen checking to any tag (besides the preferred
   \`@param\` tag which follows the main string option setting and besides any
-  other \`tags\` entries).
-`,
+  other \`tags\` entries).`,
           },
         },
         type: 'object',

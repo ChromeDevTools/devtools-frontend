@@ -91,8 +91,7 @@ add them within this option.
 {
   'jsdoc/empty-tags': ['error', {tags: ['event']}]
 }
-\`\`\`
-`,
+\`\`\``,
             items: {
               type: 'string',
             },

@@ -18,7 +18,7 @@ const getDefaultTagStructureForMode = (mode) => {
   const isJsdocTypescriptOrPermissive = isJsdocOrTypescript || isPermissive;
 
   // Properties:
-  // `namepathRole` - 'namepath-referencing'|'namepath-defining'|'namepath-or-url-referencing'|'text'|false
+  // `namepathRole` - 'namepath-referencing'|'name-defining'|'namepath-defining'|'namepath-or-url-referencing'|'text'|false
   // `typeAllowed` - boolean
   // `nameRequired` - boolean
   // `typeRequired` - boolean
@@ -35,11 +35,7 @@ const getDefaultTagStructureForMode = (mode) => {
 
   // Among `namepath-defining` and `namepath-referencing`, these do not seem
   //  to allow curly brackets in their doc signature or examples (`modifies`
-  //  references namepaths within its type brackets and `param` is
-  //  name-defining but not namepath-defining, so not part of these groups)
-
-  // Todo: Should support special processing for "name" as distinct from
-  //   "namepath" (e.g., param can't define a namepath)
+  //  references namepaths within its type brackets)
 
   // Todo: Should support a `tutorialID` type (for `@tutorial` block and
   //  inline)
@@ -249,6 +245,9 @@ const getDefaultTagStructureForMode = (mode) => {
 
     [
       'enum', new Map(/** @type {[string, string|boolean][]} */ ([
+        [
+          'namepathRole', 'name-defining',
+        ],
         // Has example showing curly brackets but not in doc signature
         [
           'typeAllowed', true,
@@ -614,7 +613,7 @@ const getDefaultTagStructureForMode = (mode) => {
       'module', new Map(/** @type {[string, string|boolean][]} */ ([
         // Optional "name" and no curly brackets
         //  this block impacts `no-undefined-types` and `valid-types` (search for
-        //  "isNamepathDefiningTag|tagMightHaveNamepath|tagMightHaveEitherTypeOrNamePosition")
+        //  "isNameOrNamepathDefiningTag|tagMightHaveNameOrNamepath|tagMightHaveEitherTypeOrNamePosition")
         [
           'namepathRole', isJsdoc ? 'namepath-defining' : 'text',
         ],
@@ -907,7 +906,7 @@ const getDefaultTagStructureForMode = (mode) => {
         // Seems to require a "namepath" in the signature (with no
         //  counter-examples)
         [
-          'namepathRole', 'namepath-defining',
+          'namepathRole', 'name-defining',
         ],
 
         // TypeScript may allow it to be dropped if followed by @property or @member;

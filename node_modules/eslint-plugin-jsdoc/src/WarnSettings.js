@@ -5,7 +5,7 @@ const WarnSettings = function () {
   return {
     /**
      * Warn only once for each context and setting
-     * @param {{}} context
+     * @param {import('eslint').Rule.RuleContext} context
      * @param {string} setting
      * @returns {boolean}
      */
@@ -16,7 +16,7 @@ const WarnSettings = function () {
     },
 
     /**
-     * @param {{}} context
+     * @param {import('eslint').Rule.RuleContext} context
      * @param {string} setting
      * @returns {void}
      */

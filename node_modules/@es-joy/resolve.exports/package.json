@@ -1,0 +1,53 @@
+{
+  "version": "1.2.0",
+  "name": "@es-joy/resolve.exports",
+  "repository": "es-joy/resolve.exports",
+  "description": "A tiny (952b), correct, general-purpose, and configurable \"exports\" and \"imports\" resolver without file-system reliance",
+  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "types": "index.d.ts",
+  "license": "MIT",
+  "author": {
+    "name": "Luke Edwards",
+    "email": "luke.edwards05@gmail.com",
+    "url": "https://lukeed.com"
+  },
+  "contributors": [
+    "Brett Zamir"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "files": [
+    "*.d.ts",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "esm",
+    "exports",
+    "esmodules",
+    "fields",
+    "modules",
+    "resolution",
+    "resolve"
+  ],
+  "devDependencies": {
+    "bundt": "next",
+    "tsm": "2.3.0",
+    "typescript": "5.9.3",
+    "uvu": "0.5.6"
+  },
+  "scripts": {
+    "build": "bundt -m",
+    "types": "tsc --noEmit",
+    "test": "uvu -r tsm test"
+  }
+}

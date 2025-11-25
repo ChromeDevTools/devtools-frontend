@@ -5,9 +5,9 @@
  */
 import { filter, from, fromEvent, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
 import { environment } from '../environment.js';
-import { packageVersion } from '../generated/version.js';
 import { assert } from '../util/assert.js';
 import { mergeUint8Arrays, stringToTypedArray } from '../util/encoding.js';
+import { packageVersion } from '../util/version.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
 import { paperFormats } from './PDFOptions.js';

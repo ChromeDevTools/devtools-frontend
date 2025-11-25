@@ -3,7 +3,7 @@ import { Precedence } from '../Precedence.js'
 
 export const readonlyPropertyParslet = composeParslet({
   name: 'readonlyPropertyParslet',
-  accept: type => type === 'readonly',
+  accept: (type, next) => type === 'readonly' && next !== ':',
   parsePrefix: parser => {
     parser.consume('readonly')
     return {

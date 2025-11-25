@@ -3,6 +3,7 @@ import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { Viewport } from '../common/Viewport.js';
+import { type GetIdFn } from '../util/incremental-id-generator.js';
 import type { ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
@@ -58,6 +59,7 @@ export declare abstract class BrowserLauncher {
         timeout: number;
         protocolTimeout: number | undefined;
         slowMo: number;
+        idGenerator: GetIdFn;
     }): Promise<Connection>;
     /**
      * @internal
@@ -66,11 +68,12 @@ export declare abstract class BrowserLauncher {
         timeout: number;
         protocolTimeout: number | undefined;
         slowMo: number;
+        idGenerator: GetIdFn;
     }): Promise<Connection>;
     /**
      * @internal
      */
-    protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, connection: Connection, closeCallback: BrowserCloseCallback, opts: {
+    protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, cdpConnection: Connection, closeCallback: BrowserCloseCallback, opts: {
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
         networkEnabled: boolean;
@@ -82,6 +85,7 @@ export declare abstract class BrowserLauncher {
         timeout: number;
         protocolTimeout: number | undefined;
         slowMo: number;
+        idGenerator: GetIdFn;
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
         networkEnabled?: boolean;

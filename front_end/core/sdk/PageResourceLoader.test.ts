@@ -14,6 +14,7 @@ import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import * as SDK from './sdk.js';
 
@@ -289,7 +290,7 @@ describeWithLocale('PageResourceLoader', () => {
   setupRuntimeHooks();
 
   it('handles scoped resources', async () => {
-    const targetManager = new SDK.TargetManager.TargetManager();
+    const targetManager = new SDK.TargetManager.TargetManager(new Root.DevToolsContext.DevToolsContext());
     const connection = new MockCDPConnection();
     mockResourceTree(connection);
     const target = createTarget({id: 'main' as Protocol.Target.TargetID, connection, targetManager});
@@ -326,7 +327,7 @@ describeWithLocale('PageResourceLoader', () => {
   });
 
   it('handles prerender activation', async () => {
-    const targetManager = new SDK.TargetManager.TargetManager();
+    const targetManager = new SDK.TargetManager.TargetManager(new Root.DevToolsContext.DevToolsContext());
     const connection = new MockCDPConnection();
     mockResourceTree(connection);
     const target = createTarget({id: 'main' as Protocol.Target.TargetID, connection, targetManager});

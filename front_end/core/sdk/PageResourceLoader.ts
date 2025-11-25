@@ -81,6 +81,7 @@ interface LoadQueueEntry {
  * resources were loaded, and whether there was a load error.
  */
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+  readonly #targetManager: TargetManager;
   #currentlyLoading = 0;
   #currentlyLoadingPerTarget = new Map<Protocol.Target.TargetID|'main', number>();
   readonly #maxConcurrentLoads: number;
@@ -92,34 +93,36 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
                              errorDescription: Host.ResourceLoader.LoadErrorDescription,
                            }>)|null;
   constructor(
-      loadOverride: ((arg0: string) => Promise<{
-                       success: boolean,
-                       content: string,
-                       errorDescription: Host.ResourceLoader.LoadErrorDescription,
-                     }>)|null,
-      maxConcurrentLoads: number) {
+      targetManager: TargetManager, loadOverride: ((arg0: string) => Promise<{
+                                                     success: boolean,
+                                                     content: string,
+                                                     errorDescription: Host.ResourceLoader.LoadErrorDescription,
+                                                   }>)|null,
+      maxConcurrentLoads = 500) {
     super();
+    this.#targetManager = targetManager;
     this.#maxConcurrentLoads = maxConcurrentLoads;
-    TargetManager.instance().addModelListener(
+    this.#targetManager.addModelListener(
         ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.#loadOverride = loadOverride;
   }
 
-  static instance({forceNew, loadOverride, maxConcurrentLoads}: {
+  static instance({forceNew, targetManager, loadOverride, maxConcurrentLoads}: {
     forceNew: boolean,
     loadOverride: (null|((arg0: string) => Promise<{
                            success: boolean,
                            content: string,
                            errorDescription: Host.ResourceLoader.LoadErrorDescription,
                          }>)),
-    maxConcurrentLoads: number,
+    targetManager?: TargetManager,
+    maxConcurrentLoads?: number,
   } = {
     forceNew: false,
     loadOverride: null,
-    maxConcurrentLoads: 500,
   }): PageResourceLoader {
     if (!pageResourceLoader || forceNew) {
-      pageResourceLoader = new PageResourceLoader(loadOverride, maxConcurrentLoads);
+      pageResourceLoader =
+          new PageResourceLoader(targetManager ?? TargetManager.instance(), loadOverride, maxConcurrentLoads);
     }
 
     return pageResourceLoader;
@@ -159,7 +162,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
   getScopedResourcesLoaded(): Map<string, PageResource> {
     return new Map([...this.#pageResources].filter(
-        ([_, pageResource]) => TargetManager.instance().isInScope(pageResource.initiator.target) ||
+        ([_, pageResource]) => this.#targetManager.isInScope(pageResource.initiator.target) ||
             isExtensionInitiator(pageResource.initiator)));
   }
 
@@ -180,11 +183,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     loading: number,
     resources: number,
   } {
-    const targetManager = TargetManager.instance();
     let loadingCount = 0;
     for (const [targetId, count] of this.#currentlyLoadingPerTarget) {
-      const target = targetManager.targetById(targetId);
-      if (targetManager.isInScope(target)) {
+      const target = this.#targetManager.targetById(targetId);
+      if (this.#targetManager.isInScope(target)) {
         loadingCount += count;
       }
     }

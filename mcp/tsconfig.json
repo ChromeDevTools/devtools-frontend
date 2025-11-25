@@ -10,7 +10,12 @@
       "ESNext.Iterator",
       "ESNext.Collection",
       "ESNext.Array"
-    ]
+    ],
+    "typeRoots": [
+      "../node_modules/@types",
+      "../node_modules",
+    ],
+    "types": ["node", "undici-types"]
   },
   "references": [{ "path": "../front_end/tsconfig.json" }]
 }

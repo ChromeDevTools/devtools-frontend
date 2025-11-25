@@ -2,8 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {readFile} from 'node:fs/promises';
+import {URL} from 'node:url';
+
 import type * as Common from '../front_end/core/common/common.js';
 import type * as Host from '../front_end/core/host/host.js';
+import {streamWrite} from '../front_end/core/host/ResourceLoader.js';
 
 export class McpHostBindings implements Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI {
   declare events: Common.EventTarget.EventTarget<Host.InspectorFrontendHostAPI.EventTypes>;
@@ -80,11 +84,53 @@ export class McpHostBindings implements Host.InspectorFrontendHostAPI.InspectorF
   inspectedURLChanged(): void {
   }
 
-  isolatedFileSystem(): FileSystem|null {
+  isolatedFileSystem(): null {
     return null;
   }
 
-  loadNetworkResource(): void {
+  loadNetworkResource(
+      urlString: string, _headers: string, streamId: number,
+      callback: (arg0: Host.InspectorFrontendHostAPI.LoadNetworkResourceResult) => void): void {
+    let url: URL;
+
+    try {
+      url = new URL(urlString);
+    } catch {
+      callback({
+        statusCode: 404,
+        urlValid: false,
+      });
+      return;
+    }
+
+    let contentPromise: Promise<string>;
+    if (url.protocol === 'file:') {
+      contentPromise = readFile(url, {encoding: 'utf8'});
+    } else if (url.protocol === 'http:' || url.protocol === 'https:') {
+      // We skip parsing headers. DevTools only sets cache and user agent, which is probably fine to not forward.
+      contentPromise = fetch(url).then(response => {
+        if (!response.ok) {
+          throw new Error('Fetch failed');
+        }
+        return response.text();
+      });
+    } else {
+      // Unknown protocol.
+      callback({
+        statusCode: 404,
+        urlValid: false,
+      });
+      return;
+    }
+
+    contentPromise
+        .then(content => {
+          streamWrite(streamId, content);
+          callback({statusCode: 200});
+        })
+        .catch(() => {
+          callback({statusCode: 404});
+        });
   }
 
   registerPreference(): void {

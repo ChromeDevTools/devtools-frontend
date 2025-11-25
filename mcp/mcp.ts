@@ -22,6 +22,9 @@ export * as I18n from '../front_end/core/i18n/i18n.js';
 export type * as CDPConnection from '../front_end/core/protocol_client/CDPConnection.js';
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
 export * as ProtocolClient from '../front_end/core/protocol_client/protocol_client.js';
+export {DebuggerModel} from '../front_end/core/sdk/DebuggerModel.js';
+export {Target} from '../front_end/core/sdk/Target.js';
+export {TargetManager} from '../front_end/core/sdk/TargetManager.js';
 export * as Foundation from '../front_end/foundation/foundation.js';
 export {
   PerformanceInsightFormatter
@@ -30,6 +33,7 @@ export {
   PerformanceTraceFormatter
 } from '../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js';
 export {AgentFocus} from '../front_end/models/ai_assistance/performance/AIContext.js';
+export {DebuggerWorkspaceBinding} from '../front_end/models/bindings/DebuggerWorkspaceBinding.js';
 export {Issue} from '../front_end/models/issues_manager/Issue.js';
 export {
   AggregatedIssue,
@@ -45,4 +49,5 @@ export {
 export * as MarkdownIssueDescription from '../front_end/models/issues_manager/MarkdownIssueDescription.js';
 export * as TraceEngine from '../front_end/models/trace/trace.js';
 export * as Marked from '../front_end/third_party/marked/marked.js';
+
 installInspectorFrontendHost(new McpHostBindings());

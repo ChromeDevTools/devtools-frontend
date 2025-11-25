@@ -936,7 +936,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const url = args.scriptUrl as Platform.DevToolsPath.UrlString;
         const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
-            target, url, args.line, args.column, {contextLength: 200, contextLineLength: 5});
+            target, url, args.line, args.column, {contextLength: 200, contextLineLength: 5, appendProfileData: true});
         if (!code) {
           return {error: 'Could not find code'};
         }

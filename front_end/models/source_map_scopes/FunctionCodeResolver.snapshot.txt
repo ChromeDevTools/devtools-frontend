@@ -1,17 +1,17 @@
 Title: FunctionCodeResolver getFunctionCodeFromLocation [no source maps] lookup named function
 Content:
 se strict";
-function fibonacci<FUNCTION_START>(e) {
-	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)
-}
+function fibonacci<FUNCTION_START>(e) { // 67 ms
+	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2) // 2022 ms
+} // 13 ms
 <FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [no source maps] lookup anonymous function
 Content:
 btn.addEventListener("click", <FUNCTION_START>() => {
-	console.log(fibonacci(Number(params.get("x")))),
-	btn.style.backgroundColor = "red"
+	console.log(fibonacci(Number(params.get("x")))), // 5000 ms
+	btn.style.backgroundColor = "red" // 333 ms
 }
 <FUNCTION_END>);
 const input = document.quer
@@ -19,22 +19,22 @@ const input = document.quer
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps] lookup named function with generated location
 Content:
-function <FUNCTION_START>fibonacci(num) {
-  if (num <= 1) return 1;
+function <FUNCTION_START>fibonacci(num) { // 67 ms
+  if (num <= 1) return 1; // 23 ms
 
-  return fibonacci(num - 1) + fibonacci(num - 2);
-}
+  return fibonacci(num - 1) + fibonacci(num - 2); // 1999 ms
+} // 13 ms
 
 <FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps] lookup named function with original location
 Content:
-function <FUNCTION_START>fibonacci(num) {
-  if (num <= 1) return 1;
+function <FUNCTION_START>fibonacci(num) { // 67 ms
+  if (num <= 1) return 1; // 23 ms
 
-  return fibonacci(num - 1) + fibonacci(num - 2);
-}
+  return fibonacci(num - 1) + fibonacci(num - 2); // 1999 ms
+} // 13 ms
 
 <FUNCTION_END>const btn = document.querySele
 === end content
@@ -42,26 +42,26 @@ function <FUNCTION_START>fibonacci(num) {
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup named function with generated location
 Content:
 se strict";
-function fibonacci<FUNCTION_START>(e) {
-	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)
-}
+function fibonacci<FUNCTION_START>(e) { // 67 ms
+	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2) // 2022 ms
+} // 13 ms
 <FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup named function with original location
 Content:
 se strict";
-function fibonacci<FUNCTION_START>(e) {
-	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2)
-}
+function fibonacci<FUNCTION_START>(e) { // 67 ms
+	return e <= 1 ? 1 : fibonacci(e - 1) + fibonacci(e - 2) // 2022 ms
+} // 13 ms
 <FUNCTION_END>const btn = document.querySele
 === end content
 
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps] lookup anonymous function with generated location
 Content:
 btn.addEventListener('click', <FUNCTION_START>() => {
-  console.log(fibonacci(Number(params.get('x'))));
-  btn.style.backgroundColor = 'red';
+  console.log(fibonacci(Number(params.get('x')))); // 5000 ms
+  btn.style.backgroundColor = 'red'; // 333 ms
 }<FUNCTION_END>);
 
 const input = document.que
@@ -70,8 +70,8 @@ const input = document.que
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps] lookup anonymous function with original location
 Content:
 btn.addEventListener('click', <FUNCTION_START>() => {
-  console.log(fibonacci(Number(params.get('x'))));
-  btn.style.backgroundColor = 'red';
+  console.log(fibonacci(Number(params.get('x')))); // 5000 ms
+  btn.style.backgroundColor = 'red'; // 333 ms
 }<FUNCTION_END>);
 
 const input = document.que
@@ -80,8 +80,8 @@ const input = document.que
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup anonymous function with generated location
 Content:
 btn.addEventListener("click", <FUNCTION_START>() => {
-	console.log(fibonacci(Number(params.get("x")))),
-	btn.style.backgroundColor = "red"
+	console.log(fibonacci(Number(params.get("x")))), // 5000 ms
+	btn.style.backgroundColor = "red" // 333 ms
 }
 <FUNCTION_END>);
 const input = document.quer
@@ -90,8 +90,8 @@ const input = document.quer
 Title: FunctionCodeResolver getFunctionCodeFromLocation [source maps, no source contents] lookup anonymous function with original location
 Content:
 btn.addEventListener("click", <FUNCTION_START>() => {
-	console.log(fibonacci(Number(params.get("x")))),
-	btn.style.backgroundColor = "red"
+	console.log(fibonacci(Number(params.get("x")))), // 5000 ms
+	btn.style.backgroundColor = "red" // 333 ms
 }
 <FUNCTION_END>);
 const input = document.quer

@@ -41,6 +41,20 @@ describeWithMockConnection('FunctionCodeResolver', function() {
   // This was minified with 'esbuild --sourcemap=linked --minify' v0.25.9.
   const exampleSource =
       `"use strict";function fibonacci(e){return e<=1?1:fibonacci(e-1)+fibonacci(e-2)}const btn=document.querySelector("button"),params=new URLSearchParams(location.search);btn.addEventListener("click",()=>{console.log(fibonacci(Number(params.get("x")))),btn.style.backgroundColor="red"});const input=document.querySelector('input[type="text"]');input.addEventListener("input",()=>{console.log(fibonacci(Number(params.get("x"))))});\n//# sourceMappingURL=file:///tmp/example.js.min.map`;
+  const exampleRawPerformanceData = new Map([
+    [
+      1, new Map([
+        [1, 1],       // "use strict"
+        [35, 67],     // starting } of fibonacci
+        [43, 23],     // e<=1
+        [50, 1000],   // fibonacci(e-1)
+        [65, 999],    // fibonacci(e-2)
+        [79, 13],     // ending } of fibonacci
+        [213, 5000],  // fibonacci(Number(params.get("x")))
+        [274, 333],   // btn.style.backgroundColor="red"
+      ])
+    ],
+  ]);
   const exampleSourceMap = {
     version: 3,
     sources: ['index.js'],
@@ -165,8 +179,37 @@ describeWithMockConnection('FunctionCodeResolver', function() {
           await sourceMap.scopesFallbackPromiseForTest;
         }
 
+        // Add raw performance data to script's UISourceCode.
+        const uiSourceCode =
+            Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForScript(script);
+        assert.isOk(uiSourceCode);
+        uiSourceCode.setDecorationData(Workspace.UISourceCode.DecoratorType.PERFORMANCE, exampleRawPerformanceData);
+
+        // Add mapped performance data to source map url's UISourceCode.
+        if (sourceMap) {
+          const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+          assert.isOk(debuggerModel);
+          const url = sourceMap.sourceURLForSourceIndex(0);
+          assert.isOk(url);
+          const uiSourceCode =
+              Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForSourceMapSourceURL(
+                  debuggerModel, url, false);
+          assert.isOk(uiSourceCode);
+
+          const mappedPerformanceData =
+              Workspace.UISourceCode.createMappedProfileData(exampleRawPerformanceData, (line, column) => {
+                const entry = sourceMap.findEntry(line, column);
+                if (entry?.sourceURL) {
+                  return [entry.sourceLineNumber, entry.sourceColumnNumber];
+                }
+
+                return null;
+              });
+          uiSourceCode.setDecorationData(Workspace.UISourceCode.DecoratorType.PERFORMANCE, mappedPerformanceData);
+        }
+
         const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
-            target, testCase.url, testCase.line, testCase.column, {contextLength: 30});
+            target, testCase.url, testCase.line, testCase.column, {contextLength: 30, appendProfileData: true});
         assert.isOk(code);
         assert.strictEqual(code.code, testCase.expectedCode);
         snapshotTester.assert(this, code.codeWithContext);

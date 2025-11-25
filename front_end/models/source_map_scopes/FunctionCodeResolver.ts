@@ -29,27 +29,96 @@ export interface CreateFunctionCodeOptions {
   contextLength?: number;
   /** Number of lines to include before and after the function. Stacks with `contextLength`. */
   contextLineLength?: number;
+  /** If true, appends profile data from the trace at the end of every line of the function in `codeWithContext`. This should match what is seen in the formatted view in the Sources panel. */
+  appendProfileData?: boolean;
+}
+
+interface InputData {
+  text: TextUtils.Text.Text;
+  formattedContent: Formatter.ScriptFormatter.FormattedContent|null;
+  performanceData: Workspace.UISourceCode.LineColumnProfileMap|undefined;
+}
+
+const inputCache = new WeakMap<Workspace.UISourceCode.UISourceCode, Promise<InputData>>();
+
+async function prepareInput(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<InputData> {
+  const formattedContent = await format(uiSourceCode, content);
+  const text = new TextUtils.Text.Text(formattedContent ? formattedContent.formattedContent : content);
+  let performanceData = uiSourceCode.getDecorationData(Workspace.UISourceCode.DecoratorType.PERFORMANCE) as
+          Workspace.UISourceCode.LineColumnProfileMap |
+      undefined;
+
+  // Map profile data to the formatted view of the text.
+  if (formattedContent && performanceData) {
+    performanceData = Workspace.UISourceCode.createMappedProfileData(performanceData, (line, column) => {
+      return formattedContent.formattedMapping.originalToFormatted(line, column);
+    });
+  }
+
+  return {text, formattedContent, performanceData};
+}
+
+/** Formatting and parsing line endings for Text is expensive, so cache it. */
+async function prepareInputAndCache(
+    uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<InputData> {
+  let cachedPromise = inputCache.get(uiSourceCode);
+  if (cachedPromise) {
+    return await cachedPromise;
+  }
+
+  cachedPromise = prepareInput(uiSourceCode, content);
+  inputCache.set(uiSourceCode, cachedPromise);
+  return await cachedPromise;
+}
+
+function extractPerformanceDataByLine(
+    textRange: TextUtils.TextRange.TextRange, performanceData: Workspace.UISourceCode.LineColumnProfileMap): number[] {
+  const {startLine, startColumn, endLine, endColumn} = textRange;
+  const byLine = new Array(endLine - startLine + 1).fill(0);
+
+  for (let line = startLine; line <= endLine; line++) {
+    const lineData = performanceData.get(line + 1);
+    if (!lineData) {
+      continue;
+    }
+
+    // Fast-path for when the entire line's data is relevant.
+    if (line !== startLine && line !== endLine) {
+      byLine[line - startLine] = lineData.values().reduce((acc, cur) => acc + cur);
+      continue;
+    }
+
+    const column0 = line === startLine ? startColumn + 1 : 0;
+    const column1 = line === endLine ? endColumn + 1 : Number.POSITIVE_INFINITY;
+
+    let totalData = 0;
+    for (const [column, data] of lineData) {
+      if (column >= column0 && column <= column1) {
+        totalData += data;
+      }
+    }
+
+    byLine[line - startLine] = totalData;
+  }
+
+  return byLine.map(data => Math.round(data * 10) / 10);
 }
 
 function createFunctionCode(
-    uiSourceCodeContent: string, formattedContent: Formatter.ScriptFormatter.FormattedContent|null,
-    functionBounds: Workspace.UISourceCode.UIFunctionBounds, options?: CreateFunctionCodeOptions): FunctionCode {
+    inputData: InputData, functionBounds: Workspace.UISourceCode.UIFunctionBounds,
+    options?: CreateFunctionCodeOptions): FunctionCode {
   let {startLine, startColumn, endLine, endColumn} = functionBounds.range;
-  let text;
-  if (formattedContent) {
-    text = new TextUtils.Text.Text(formattedContent.formattedContent);
-
-    const startMapped = formattedContent.formattedMapping.originalToFormatted(startLine, startColumn);
+  if (inputData.formattedContent) {
+    const startMapped = inputData.formattedContent.formattedMapping.originalToFormatted(startLine, startColumn);
     startLine = startMapped[0];
     startColumn = startMapped[1];
 
-    const endMapped = formattedContent.formattedMapping.originalToFormatted(endLine, endColumn);
+    const endMapped = inputData.formattedContent.formattedMapping.originalToFormatted(endLine, endColumn);
     endLine = endMapped[0];
     endColumn = endMapped[1];
-  } else {
-    text = new TextUtils.Text.Text(uiSourceCodeContent);
   }
 
+  const text = inputData.text;
   const content = text.value();
 
   // Define two ranges - the first is just the function bounds, the second includes
@@ -91,7 +160,37 @@ function createFunctionCode(
   const code = content.substring(functionStartOffset, functionEndOffset);
   const before = content.substring(contextStartOffset, functionStartOffset);
   const after = content.substring(functionEndOffset, contextEndOffset);
-  const codeWithContext = before + `<FUNCTION_START>${code}<FUNCTION_END>` + after;
+
+  let codeWithContext;
+  if (options?.appendProfileData && inputData.performanceData) {
+    const performanceDataByLine = extractPerformanceDataByLine(range, inputData.performanceData);
+    const lines = performanceDataByLine.map((data, i) => {
+      let line = text.lineAt(startLine + i);
+
+      const isLastLine = i === performanceDataByLine.length - 1;
+      if (i === 0) {
+        if (isLastLine) {
+          line = line.substring(startColumn, endColumn);
+        } else {
+          line = line.substring(startColumn);
+        }
+      } else if (isLastLine) {
+        line = line.substring(0, endColumn);
+      }
+
+      if (isLastLine) {
+        // Don't ever annotate the last line - it could make the rest of the code on
+        // that line get commented out.
+        data = 0;
+      }
+
+      return data ? `${line} // ${data} ms` : line;
+    });
+    const annotatedCode = lines.join('\n');
+    codeWithContext = before + `<FUNCTION_START>${annotatedCode}<FUNCTION_END>` + after;
+  } else {
+    codeWithContext = before + `<FUNCTION_START>${code}<FUNCTION_END>` + after;
+  }
 
   return {
     functionBounds,
@@ -137,16 +236,8 @@ export async function getFunctionCodeFromLocation(
   return await getFunctionCodeFromRawLocation(rawLocation, options);
 }
 
-const formatCache =
-    new WeakMap<Workspace.UISourceCode.UISourceCode, Promise<Formatter.ScriptFormatter.FormattedContent|null>>();
-
-async function formatAndCache(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string):
+async function format(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string):
     Promise<Formatter.ScriptFormatter.FormattedContent|null> {
-  let cachedPromise = formatCache.get(uiSourceCode);
-  if (cachedPromise) {
-    return await cachedPromise;
-  }
-
   const contentType = uiSourceCode.contentType();
   const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) &&
       TextUtils.TextUtils.isMinified(content);
@@ -154,9 +245,7 @@ async function formatAndCache(uiSourceCode: Workspace.UISourceCode.UISourceCode,
     return null;
   }
 
-  cachedPromise = Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, '\t');
-  formatCache.set(uiSourceCode, cachedPromise);
-  return await cachedPromise;
+  return await Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, '\t');
 }
 
 /**
@@ -176,6 +265,6 @@ export async function getFunctionCodeFromRawLocation(
     return null;
   }
 
-  const formattedContent = await formatAndCache(functionBounds.uiSourceCode, content);
-  return createFunctionCode(content, formattedContent, functionBounds, options);
+  const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content);
+  return createFunctionCode(inputData, functionBounds, options);
 }

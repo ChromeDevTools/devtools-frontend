@@ -830,7 +830,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     parts.push(`${name} @ ${url}:${startLine}:${startColumn}. With added context, chunk is from ${contextStartLine}:${
         contextStartColumn} to ${contextEndLine}:${contextEndColumn}`);
     parts.push(
-        '\nThe following is a markdown block of JavaScript. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Do not show the user the function markers or the additional context.\n');
+        '\nThe following is a markdown block of JavaScript. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.\n');
     parts.push('```');
     parts.push(code.codeWithContext);
     parts.push('```');

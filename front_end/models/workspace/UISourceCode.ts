@@ -717,3 +717,39 @@ export const enum DecoratorType {
   MEMORY = 'memory',
   COVERAGE = 'coverage',
 }
+
+/** 1-based. line => column => value */
+export type LineColumnProfileMap = Map<number, Map<number, number>>;
+/** Used by ProfilePlugin to track runtime/memory costs. */
+export type ProfileDataMap = Map<UISourceCode, LineColumnProfileMap>;
+
+/**
+ * Converts an existing LineColumnProfileMap to a new one using the provided mapping.
+ *
+ * The input and output line/column of originalToMappedLocation is 0-indexed.
+ */
+export function createMappedProfileData(
+    profileData: LineColumnProfileMap,
+    originalToMappedLocation: (line: number, column: number) => number[] | null): LineColumnProfileMap {
+  const mappedProfileData: LineColumnProfileMap = new Map();
+  for (const [lineNumber, columnData] of profileData) {
+    for (const [columnNumber, data] of columnData) {
+      const mappedLocation = originalToMappedLocation(lineNumber - 1, columnNumber - 1);
+      if (!mappedLocation) {
+        continue;
+      }
+
+      const oneBasedFormattedLineNumber = mappedLocation[0] + 1;
+      const oneBasedFormattedColumnNumber = mappedLocation[1] + 1;
+      let mappedColumnData = mappedProfileData.get(oneBasedFormattedLineNumber);
+      if (!mappedColumnData) {
+        mappedColumnData = new Map();
+        mappedProfileData.set(oneBasedFormattedLineNumber, mappedColumnData);
+      }
+      mappedColumnData.set(
+          oneBasedFormattedColumnNumber, (mappedColumnData.get(oneBasedFormattedColumnNumber) || 0) + data);
+    }
+  }
+
+  return mappedProfileData;
+}

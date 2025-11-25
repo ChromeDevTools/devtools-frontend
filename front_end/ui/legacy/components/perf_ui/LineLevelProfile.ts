@@ -20,10 +20,6 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 import type * as CPUProfile from '../../../../models/cpu_profile/cpu_profile.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 
-/** 1-based. line => column => value */
-export type LineColumnProfileMap = Map<number, Map<number, number>>;
-export type ProfileDataMap = Map<Workspace.UISourceCode.UISourceCode, LineColumnProfileMap>;
-
 let performanceInstance: Performance;
 
 export class Performance {
@@ -170,8 +166,9 @@ export class Helper {
    * Given a location in a script (with line and column numbers being 1-based) stores
    * the time spent at that location in a performance profile.
    */
-  private locationData =
-      new Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, LineColumnProfileMap>>();
+  private locationData = new Map<
+      SDK.Target.Target|null,
+      Map<Platform.DevToolsPath.UrlString|number, Workspace.UISourceCode.LineColumnProfileMap>>();
   constructor(type: Workspace.UISourceCode.DecoratorType) {
     this.type = type;
     this.reset();
@@ -209,7 +206,7 @@ export class Helper {
   async update(): Promise<void> {
     this.locationPool.disposeAll();
     // Map from sources to line->value profile maps.
-    const decorationsBySource: ProfileDataMap = new Map();
+    const decorationsBySource: Workspace.UISourceCode.ProfileDataMap = new Map();
     const pending: Array<Promise<void>> = [];
     for (const [target, scriptToLineMap] of this.locationData) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
@@ -272,8 +269,8 @@ export class Helper {
   }
 
   private addLineColumnData(
-      decorationsBySource: ProfileDataMap, uiSourceCode: Workspace.UISourceCode.UISourceCode, lineOneIndexed: number,
-      columnOneIndexed: number, data: number): void {
+      decorationsBySource: Workspace.UISourceCode.ProfileDataMap, uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      lineOneIndexed: number, columnOneIndexed: number, data: number): void {
     let lineMap = decorationsBySource.get(uiSourceCode);
     if (!lineMap) {
       lineMap = new Map();

@@ -1343,6 +1343,7 @@
   };
 
   TestSuite.prototype.testExtensionWebSocketOfflineNetworkConditions = async function(websocketPort) {
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.conditionsEnabled = true;
     SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.OfflineConditions);
 
     // TODO(crbug.com/1263900): Currently we don't send loadingFailed for web sockets.

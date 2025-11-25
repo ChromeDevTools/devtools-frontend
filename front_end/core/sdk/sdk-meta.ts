@@ -387,6 +387,10 @@ const UIStrings = {
    * @description Title of a setting under the Sources category that can be invoked through the Command Menu
    */
   disableCssSourceMaps: 'Disable CSS source maps',
+  /**
+   * @description Title of a setting under the Console category in Settings
+   */
+  logXmlhttprequests: 'Log XMLHttpRequests',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1193,4 +1197,13 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.disableCssSourceMaps),
     },
   ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.logXmlhttprequests),
+  settingName: 'monitoring-xhr-enabled',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
 });

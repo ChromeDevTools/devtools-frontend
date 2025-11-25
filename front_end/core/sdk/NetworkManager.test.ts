@@ -481,7 +481,11 @@ describeWithMockConnection('NetworkManager', () => {
             sendBufferSize: 2003,
             receiveBufferSize: 2004,
             dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv6,
-          }
+            multicastLoopback: undefined,
+            multicastTimeToLive: undefined,
+            multicastAllowAddressSharing: undefined,
+          },
+          joinedMulticastGroups: new Set<string>(),
         });
         assert.strictEqual(req.resourceType(), Common.ResourceType.resourceTypes.DirectSocket);
         assert.strictEqual(req.issueTime(), 2000);
@@ -503,6 +507,9 @@ describeWithMockConnection('NetworkManager', () => {
             localPort: 2005,
             sendBufferSize: 2006,
             receiveBufferSize: 2007,
+            multicastLoopback: undefined,
+            multicastTimeToLive: undefined,
+            multicastAllowAddressSharing: undefined,
           },
           timestamp: 2100,
         });
@@ -529,7 +536,11 @@ describeWithMockConnection('NetworkManager', () => {
             sendBufferSize: 2006,
             receiveBufferSize: 2007,
             dnsQueryType: undefined,
-          }
+            multicastLoopback: undefined,
+            multicastTimeToLive: undefined,
+            multicastAllowAddressSharing: undefined,
+          },
+          joinedMulticastGroups: new Set<string>(),
         });
         assert.strictEqual(req.resourceType(), Common.ResourceType.resourceTypes.DirectSocket);
         assert.strictEqual(req.issueTime(), 2100);
@@ -950,6 +961,156 @@ describeWithMockConnection('NetworkManager', () => {
           assert.lengthOf(chunks, 1, 'Should have exactly one chunk added');
           assert.deepEqual(chunks[0], testCase.expectedChunk, 'Chunk details should match expected');
         });
+      });
+    });
+
+    describe('on Join Multicast Group events', () => {
+      let networkManager: SDK.NetworkManager.NetworkManager;
+      let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+      let updatedRequests: SDK.NetworkRequest.NetworkRequest[];
+      let request: SDK.NetworkRequest.NetworkRequest|null;
+      const mockIdentifier = 'mockUdpMulticastId' as Protocol.Network.RequestId;
+
+      beforeEach(() => {
+        networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        updatedRequests = [];
+
+        request = null;
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          if (event.data.request.requestId() === mockIdentifier) {
+            request = event.data.request;
+            // Reset state for the new request instance for each test
+            if (request?.directSocketInfo) {
+              request.directSocketInfo.joinedMulticastGroups = new Set();
+            }
+          }
+        });
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: mockIdentifier,
+          options: {localAddr: '0.0.0.0', localPort: 8080},
+          timestamp: 3000,
+        });
+      });
+
+      it('directUDPSocketJoinedMulticastGroup adds the first group', () => {
+        assert.strictEqual(request!.directSocketInfo?.joinedMulticastGroups?.size, 0);
+
+        networkDispatcher.directUDPSocketJoinedMulticastGroup({
+          identifier: mockIdentifier,
+          IPAddress: '237.132.100.17',
+        });
+
+        assert.deepEqual(request!.directSocketInfo?.joinedMulticastGroups, new Set(['237.132.100.17']));
+        assert.lengthOf(updatedRequests, 1);
+        assert.strictEqual(updatedRequests[0], request);
+      });
+
+      it('directUDPSocketJoinedMulticastGroup adds subsequent groups', () => {
+        request!.directSocketInfo!.joinedMulticastGroups = new Set(['237.132.100.17']);
+
+        networkDispatcher.directUDPSocketJoinedMulticastGroup({
+          identifier: mockIdentifier,
+          IPAddress: '237.132.100.18',
+        });
+
+        assert.deepEqual(
+            request!.directSocketInfo?.joinedMulticastGroups, new Set(['237.132.100.17', '237.132.100.18']));
+        assert.lengthOf(updatedRequests, 1);
+        assert.strictEqual(updatedRequests[0], request);
+      });
+
+      it('directUDPSocketJoinedMulticastGroup does not add a duplicate group', () => {
+        request!.directSocketInfo!.joinedMulticastGroups = new Set(['237.132.100.17']);
+
+        networkDispatcher.directUDPSocketJoinedMulticastGroup({
+          identifier: mockIdentifier,
+          IPAddress: '237.132.100.17',
+        });
+
+        assert.deepEqual(request!.directSocketInfo?.joinedMulticastGroups, new Set(['237.132.100.17']));
+        assert.lengthOf(updatedRequests, 0);
+      });
+    });
+
+    describe('on Leave Multicast Group events', () => {
+      let networkManager: SDK.NetworkManager.NetworkManager;
+      let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+      let updatedRequests: SDK.NetworkRequest.NetworkRequest[];
+      let request: SDK.NetworkRequest.NetworkRequest|null;
+      const mockIdentifier = 'mockUdpMulticastId' as Protocol.Network.RequestId;
+
+      beforeEach(() => {
+        networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        updatedRequests = [];
+
+        request = null;
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          if (event.data.request.requestId() === mockIdentifier) {
+            request = event.data.request;
+            // Reset state for the new request instance for each test
+            if (request?.directSocketInfo) {
+              request.directSocketInfo.joinedMulticastGroups = new Set();
+            }
+          }
+        });
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: mockIdentifier,
+          options: {localAddr: '0.0.0.0', localPort: 8080},
+          timestamp: 3000,
+        });
+      });
+
+      it('directUDPSocketLeftMulticastGroup removes an existing group', () => {
+        request!.directSocketInfo!.joinedMulticastGroups = new Set(['237.132.100.17', '237.132.100.18']);
+        updatedRequests.length = 0;
+
+        networkDispatcher.directUDPSocketLeftMulticastGroup({
+          identifier: mockIdentifier,
+          IPAddress: '237.132.100.17',
+        });
+
+        assert.deepEqual(request!.directSocketInfo?.joinedMulticastGroups, new Set(['237.132.100.18']));
+        assert.lengthOf(updatedRequests, 1);
+      });
+
+      it('directUDPSocketLeftMulticastGroup does not remove a non-existing group', () => {
+        request!.directSocketInfo!.joinedMulticastGroups = new Set(['237.132.100.17']);
+        updatedRequests.length = 0;
+
+        networkDispatcher.directUDPSocketLeftMulticastGroup({
+          identifier: mockIdentifier,
+          IPAddress: '237.132.100.18',
+        });
+
+        assert.deepEqual(request!.directSocketInfo?.joinedMulticastGroups, new Set(['237.132.100.17']));
+        assert.lengthOf(updatedRequests, 0);
+      });
+
+      it('directUDPSocketLeftMulticastGroup handles empty array', () => {
+        request!.directSocketInfo!.joinedMulticastGroups = new Set();
+        updatedRequests.length = 0;
+
+        networkDispatcher.directUDPSocketLeftMulticastGroup({
+          identifier: mockIdentifier,
+          IPAddress: '237.132.100.17',
+        });
+
+        assert.deepEqual(request!.directSocketInfo?.joinedMulticastGroups, new Set());
+        assert.lengthOf(updatedRequests, 0);
       });
     });
   });

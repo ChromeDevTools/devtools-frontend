@@ -2215,6 +2215,9 @@ export interface DirectSocketCreateOptions {
   sendBufferSize?: number;
   receiveBufferSize?: number;
   dnsQueryType?: Protocol.Network.DirectSocketDnsQueryType;
+  multicastLoopback?: boolean;
+  multicastTimeToLive?: number;
+  multicastAllowAddressSharing?: boolean;
 }
 
 export interface DirectSocketOpenInfo {
@@ -2230,6 +2233,7 @@ export interface DirectSocketInfo {
   errorMessage?: string;
   createOptions: DirectSocketCreateOptions;
   openInfo?: DirectSocketOpenInfo;
+  joinedMulticastGroups?: Set<string>;
 }
 
 export interface DirectSocketChunk {

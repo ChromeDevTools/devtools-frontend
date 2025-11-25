@@ -1404,7 +1404,11 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         sendBufferSize: event.options.sendBufferSize,
         receiveBufferSize: event.options.receiveBufferSize,
         dnsQueryType: event.options.dnsQueryType,
-      }
+        multicastLoopback: event.options.multicastLoopback,
+        multicastTimeToLive: event.options.multicastTimeToLive,
+        multicastAllowAddressSharing: event.options.multicastAllowAddressSharing,
+      },
+      joinedMulticastGroups: new Set(),
     };
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.DirectSocket);
     networkRequest.setIssueTime(event.timestamp, event.timestamp);
@@ -1502,10 +1506,28 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.updateNetworkRequest(networkRequest);
   }
 
-  directUDPSocketJoinedMulticastGroup(_event: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void {
+  directUDPSocketJoinedMulticastGroup(event: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    if (!networkRequest.directSocketInfo.joinedMulticastGroups) {
+      networkRequest.directSocketInfo.joinedMulticastGroups = new Set();
+    }
+    if (!networkRequest.directSocketInfo.joinedMulticastGroups.has(event.IPAddress)) {
+      networkRequest.directSocketInfo.joinedMulticastGroups.add(event.IPAddress);
+      this.updateNetworkRequest(networkRequest);
+    }
   }
 
-  directUDPSocketLeftMulticastGroup(_event: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void {
+  directUDPSocketLeftMulticastGroup(event: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo?.joinedMulticastGroups) {
+      return;
+    }
+    if (networkRequest.directSocketInfo.joinedMulticastGroups.delete(event.IPAddress)) {
+      this.updateNetworkRequest(networkRequest);
+    }
   }
 
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {

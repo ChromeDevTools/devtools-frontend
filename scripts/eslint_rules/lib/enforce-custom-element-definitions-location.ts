@@ -18,7 +18,7 @@ export default createRule<[{rootFrontendDirectory: string}], 'definitionInWrongF
     messages: {
       definitionInWrongFolder: 'A custom element definition was found in a folder that ' +
           'should not contain element definitions. If you want to define a custom element, ' +
-          'either place it in `ui/components/` or in a `components` sub-folder of a panel. ' +
+          'either place it in `ui/kit/` or in a `components` sub-folder of a panel. ' +
           'E.g. `panels/elements/components/`.',
     },
     schema: [
@@ -51,13 +51,10 @@ export default createRule<[{rootFrontendDirectory: string}], 'definitionInWrongF
     const PANELS_DIRECTORY = path.join(frontEndDirectory, 'panels');
 
     const ALLOWED_CUSTOM_ELEMENT_LOCATIONS = new Set([
-      path.join(frontEndDirectory, 'ui', 'components'),
+      path.join(frontEndDirectory, 'ui', 'kit'),
 
-      // These should be moved to `ui/components` at some point
+      // These should be either moved to ui/kit, or become a UI.Widget.
       path.join(frontEndDirectory, 'ui', 'legacy'),
-      // path.join(frontEndDirectory, 'ui', 'legacy', 'components', 'inline_editor'),
-      // path.join(frontEndDirectory, 'ui', 'legacy', 'components', 'perf_ui', 'PieChart.ts'),
-      // path.join(frontEndDirectory, 'ui', 'legacy', 'XElement.ts'),
     ]);
 
     return {

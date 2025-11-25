@@ -15,7 +15,7 @@ new RuleTester().run('enforce-custom-element-definitions-location', rule, {
   valid: [
     {
       code: 'class Foo extends HTMLElement {}',
-      filename: 'front_end/ui/components/foo/Foo.ts',
+      filename: 'front_end/ui/kit/foo/Foo.ts',
       options: [{rootFrontendDirectory}],
     },
     {
@@ -49,6 +49,18 @@ new RuleTester().run('enforce-custom-element-definitions-location', rule, {
     {
       code: 'class Foo extends HTMLElement {}',
       filename: 'front_end/models/bindings/Bindings.ts',
+      errors: [{messageId: 'definitionInWrongFolder'}],
+      options: [{rootFrontendDirectory}],
+    },
+    {
+      code: 'class Foo extends HTMLElement {}',
+      filename: 'front_end/ui/components/Icon.ts',
+      errors: [{messageId: 'definitionInWrongFolder'}],
+      options: [{rootFrontendDirectory}],
+    },
+    {
+      code: 'class Foo extends HTMLElement {}',
+      filename: 'front_end/ui/components/icon/Icon.ts',
       errors: [{messageId: 'definitionInWrongFolder'}],
       options: [{rootFrontendDirectory}],
     },

@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/enforce-custom-element-definitions-location*/
 
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as UI from '../../legacy/legacy.js';

@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './LinearMemoryValueInterpreter.js';
-import './LinearMemoryHighlightChipList.js';
 import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../../ui/lit/lit.js';
+import { LinearMemoryHighlightChipList } from './LinearMemoryHighlightChipList.js';
 import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import { formatAddress, parseAddress } from './LinearMemoryInspectorUtils.js';
 import { getDefaultValueTypeMapping, VALUE_INTEPRETER_MAX_NUM_BYTES, } from './ValueInterpreterDisplayUtils.js';
@@ -21,6 +21,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { widgetConfig } = UI.Widget;
 class AddressHistoryEntry {
     #address = 0;
     #callback;
@@ -63,11 +64,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
-        <devtools-linear-memory-highlight-chip-list
-        .data=${{ highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight }}
-        @jumptohighlightedmemory=${input.onJumpToAddress}
-        @deletememoryhighlight=${input.onDeleteMemoryHighlight}>
-        </devtools-linear-memory-highlight-chip-list>
+        <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
+        highlightInfos: highlightedMemoryAreas,
+        focusedMemoryHighlight,
+        jumpToAddress: (address) => input.onJumpToAddress({ data: address }),
+        deleteHighlight: input.onDeleteMemoryHighlight,
+    })}>
+        </devtools-widget>
       <devtools-linear-memory-inspector-viewer
         .data=${{
         memory: input.memorySlice,
@@ -241,14 +244,15 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
     }
     #onJumpToAddress(e) {
         // Stop event from bubbling up, since no element further up needs the event.
-        e.stopPropagation();
+        if (e instanceof Event) {
+            e.stopPropagation();
+        }
         this.#currentNavigatorMode = "Submitted" /* Mode.SUBMITTED */;
         const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
         this.#jumpToAddress(addressInRange);
     }
-    #onDeleteMemoryHighlight(e) {
-        e.stopPropagation();
-        this.dispatchEventToListeners("DeleteMemoryHighlight" /* Events.DELETE_MEMORY_HIGHLIGHT */, e.data);
+    #onDeleteMemoryHighlight(highlight) {
+        this.dispatchEventToListeners("DeleteMemoryHighlight" /* Events.DELETE_MEMORY_HIGHLIGHT */, highlight);
     }
     #onRefreshRequest() {
         const { start, end } = getPageRangeForAddress(this.#address, this.#numBytesPerPage, this.#outerMemoryLength);

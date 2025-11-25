@@ -2716,6 +2716,13 @@ var generatedProperties = [
   },
   {
     "longhands": [
+      "masonry-direction",
+      "masonry-fill"
+    ],
+    "name": "grid-lanes-flow"
+  },
+  {
+    "longhands": [
       "grid-row-start",
       "grid-row-end"
     ],
@@ -3173,13 +3180,6 @@ var generatedProperties = [
       "reverse"
     ],
     "name": "masonry-fill"
-  },
-  {
-    "longhands": [
-      "masonry-direction",
-      "masonry-fill"
-    ],
-    "name": "masonry-flow"
   },
   {
     "inherited": true,
@@ -18880,13 +18880,14 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       const endEntry = sourceMap.findEntry(end.line, end.column);
       const sourceIndex = startEntry?.sourceIndex;
       const canMapOriginalPosition = startEntry && endEntry && sourceIndex !== void 0 && startEntry.sourceIndex === endEntry.sourceIndex && startEntry.sourceIndex !== void 0 && sourceIndex >= 0 && sourceIndex < numSourceUrls;
-      const isStackFrame = node.kind === 2;
+      const isStackFrame = node.kind === 2 || node.kind === 4;
+      const name = node.kind === 2 ? startEntry?.name : void 0;
       let scope;
       if (canMapOriginalPosition) {
         scope = {
           start: { line: startEntry.sourceLineNumber, column: startEntry.sourceColumnNumber },
           end: { line: endEntry.sourceLineNumber, column: endEntry.sourceColumnNumber },
-          name: startEntry.name,
+          name,
           isStackFrame,
           variables: [],
           children: []
@@ -19867,6 +19868,9 @@ __export(SourceMapCache_exports, {
 var SourceMapCache = class _SourceMapCache {
   static #INSTANCE = new _SourceMapCache("devtools-source-map-cache");
   static instance() {
+    if (typeof window === "undefined") {
+      return IN_MEMORY_INSTANCE;
+    }
     return this.#INSTANCE;
   }
   static createForTest(name) {
@@ -19901,6 +19905,17 @@ var SourceMapCache = class _SourceMapCache {
     await window.caches.delete(this.#name);
   }
 };
+var IN_MEMORY_INSTANCE = new class {
+  #cache = /* @__PURE__ */ new Map();
+  async set(debugId, sourceMap) {
+    this.#cache.set(debugId, sourceMap);
+  }
+  async get(debugId) {
+    return this.#cache.get(debugId) ?? null;
+  }
+  async disposeForTest() {
+  }
+}();
 
 // gen/front_end/core/sdk/SourceMapManager.js
 var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.ObjectWrapper {

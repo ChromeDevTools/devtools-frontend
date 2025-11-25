@@ -400,9 +400,8 @@ var UIStrings2 = {
   textPatternToBlockMatching: "Text pattern to block matching requests; use * for wildcard",
   /**
    * @description Text in Blocked URLs Pane of the Network panel
-   * @example {Learn more} PH1
    */
-  textEditPattern: "Text pattern to block or throttle matching requests; use URL Pattern syntax. {PH1}",
+  textEditPattern: "Text pattern to block or throttle matching requests; use URL Pattern syntax.",
   /**
    * @description Error text for empty list widget input in Request Blocking tool
    */
@@ -807,7 +806,8 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     if (Root.Runtime.hostConfig.devToolsIndividualRequestThrottling?.enabled) {
       const learnMore2 = UI2.XLink.XLink.create(PATTERN_API_DOCS_URL, i18nString2(UIStrings2.learnMore), void 0, void 0, "learn-more");
       learnMore2.title = i18nString2(UIStrings2.learnMoreLabel);
-      label.append(uiI18n.getFormatLocalizedString(str_2, UIStrings2.textEditPattern, { PH1: learnMore2 }));
+      titles.append("\xA0", learnMore2);
+      label.textContent = i18nString2(UIStrings2.textEditPattern);
     } else {
       label.textContent = i18nString2(UIStrings2.textPatternToBlockMatching);
     }

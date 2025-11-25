@@ -1,9 +1,7 @@
 import './LinearMemoryValueInterpreter.js';
-import './LinearMemoryHighlightChipList.js';
 import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import type { DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent } from './LinearMemoryHighlightChipList.js';
 import { type AddressInputChangedEvent, type HistoryNavigationEvent, Mode, type PageNavigationEvent } from './LinearMemoryNavigator.js';
 import type { EndiannessChangedEvent, ValueTypeToggledEvent } from './LinearMemoryValueInterpreter.js';
 import type { ByteSelectedEvent, ResizeEvent } from './LinearMemoryViewer.js';
@@ -66,8 +64,10 @@ export interface ViewInput {
     onAddressChange: (e: AddressInputChangedEvent) => void;
     onNavigatePage: (e: PageNavigationEvent) => void;
     onNavigateHistory: (e: HistoryNavigationEvent) => boolean;
-    onJumpToAddress: (e: JumpToPointerAddressEvent | JumpToHighlightedMemoryEvent) => void;
-    onDeleteMemoryHighlight: (e: DeleteMemoryHighlightEvent) => void;
+    onJumpToAddress: (e: JumpToPointerAddressEvent | {
+        data: number;
+    }) => void;
+    onDeleteMemoryHighlight: (info: HighlightInfo) => void;
     onByteSelected: (e: ByteSelectedEvent) => void;
     onResize: (e: ResizeEvent) => void;
     onValueTypeToggled: (e: ValueTypeToggledEvent) => void;

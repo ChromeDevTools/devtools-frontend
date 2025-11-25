@@ -178,6 +178,9 @@
       "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/components/quick_open/bundle-tsconfig.json"
     },
     {

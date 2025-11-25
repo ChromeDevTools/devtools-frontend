@@ -84,3 +84,10 @@ export declare const genericResponseWasBlockedbyORB: {
         linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
     }[];
 };
+export declare const genericNavigationEntryMarkedSkippable: {
+    file: string;
+    links: {
+        link: string;
+        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
+    }[];
+};

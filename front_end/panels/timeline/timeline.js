@@ -9563,7 +9563,6 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       return;
     }
     Trace23.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
-    PerfUI12.LineLevelProfile.Performance.instance().reset();
     this.#minimapComponent.reset();
     const data = parsedTrace.data;
     TraceBounds9.TraceBounds.BoundsManager.instance().resetWithNewBounds(data.Meta.traceBounds);
@@ -9595,17 +9594,12 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
       this.flameChart.bulkAddOverlays(currModificationManager.getOverlays());
     }
-    PerfUI12.LineLevelProfile.Performance.instance().reset();
-    if (parsedTrace.data.Samples.profilesInProcess.size) {
-      const primaryPageTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
-      const cpuProfiles = Array.from(parsedTrace.data.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
-        const profiles = Array.from(threadsInProcess.values()).map((profileData) => profileData.parsedProfile);
-        return profiles;
-      });
-      for (const profile of cpuProfiles) {
-        PerfUI12.LineLevelProfile.Performance.instance().appendCPUProfile(profile, primaryPageTarget);
-      }
-    }
+    const primaryPageTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
+    const cpuProfiles = Array.from(parsedTrace.data.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
+      const profiles = Array.from(threadsInProcess.values()).map((profileData) => profileData.parsedProfile);
+      return profiles;
+    });
+    PerfUI12.LineLevelProfile.Performance.instance().initialize(cpuProfiles, primaryPageTarget);
     this.#entityMapper = new Trace23.EntityMapper.EntityMapper(parsedTrace);
     this.#sourceMapsResolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
     this.#sourceMapsResolver.addEventListener(SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);

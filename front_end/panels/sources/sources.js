@@ -6617,13 +6617,9 @@ function markersFromProfileData(map, state, type) {
   const aggregatedByLine = /* @__PURE__ */ new Map();
   for (const [line, value2] of map) {
     if (line <= state.doc.lines) {
-      if (value2 instanceof Map) {
-        for (const [, data] of value2) {
-          aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
-        }
-        continue;
+      for (const [, data] of value2) {
+        aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
       }
-      aggregatedByLine.set(line, value2);
     }
   }
   for (const [line, value2] of aggregatedByLine) {
@@ -6632,12 +6628,13 @@ function markersFromProfileData(map, state, type) {
   }
   return CodeMirror4.RangeSet.of(markers, true);
 }
-var makeLineLevelProfilePlugin = (type) => class extends Plugin {
+var makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
   updateEffect = CodeMirror4.StateEffect.define();
   field;
   gutter;
   compartment = new CodeMirror4.Compartment();
-  constructor(uiSourceCode) {
+  #transformer;
+  constructor(uiSourceCode, transformer) {
     super(uiSourceCode);
     this.field = CodeMirror4.StateField.define({
       create() {
@@ -6653,12 +6650,31 @@ var makeLineLevelProfilePlugin = (type) => class extends Plugin {
       markers: (view) => view.state.field(this.field),
       class: `cm-${type}Gutter`
     });
+    this.#transformer = transformer;
   }
   static accepts(uiSourceCode) {
     return uiSourceCode.contentType().hasScripts();
   }
   getLineMap() {
-    return this.uiSourceCode.getDecorationData(type);
+    const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(type);
+    if (!uiSourceCodeProfileMap) {
+      return void 0;
+    }
+    const editorProfileMap = /* @__PURE__ */ new Map();
+    for (const [lineNumber, columnData] of uiSourceCodeProfileMap) {
+      for (const [columnNumber, data] of columnData) {
+        const editorLocation = this.#transformer.uiLocationToEditorLocation(lineNumber - 1, columnNumber - 1);
+        const oneBasedFormattedLineNumber = editorLocation.lineNumber + 1;
+        const oneBasedFormattedColumnNumber = editorLocation.columnNumber + 1;
+        let columnData2 = editorProfileMap.get(oneBasedFormattedLineNumber);
+        if (!columnData2) {
+          columnData2 = /* @__PURE__ */ new Map();
+          editorProfileMap.set(oneBasedFormattedLineNumber, columnData2);
+        }
+        columnData2.set(oneBasedFormattedColumnNumber, (columnData2.get(oneBasedFormattedColumnNumber) || 0) + data);
+      }
+    }
+    return editorProfileMap;
   }
   editorExtension() {
     const map = this.getLineMap();
@@ -6987,7 +7003,6 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     this.#muteSourceCodeEvents = false;
   }
   async setContent(content) {
-    this.#uiSourceCode.formatChanged(this.formattedMap);
     this.disposePlugins();
     this.loadPlugins();
     await super.setContent(content);

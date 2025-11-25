@@ -434,6 +434,7 @@
   "front_end/models/issues_manager/descriptions/genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError.md",
   "front_end/models/issues_manager/descriptions/genericFormLabelHasNeitherForNorNestedInputError.md",
   "front_end/models/issues_manager/descriptions/genericFormLabelForMatchesNonExistingIdError.md",
+  "front_end/models/issues_manager/descriptions/genericNavigationEntryMarkedSkippable.md",
   "front_end/models/issues_manager/descriptions/genericResponseWasBlockedByORB.md",
   "front_end/models/issues_manager/descriptions/federatedAuthRequestApprovalDeclined.md",
   "front_end/models/issues_manager/descriptions/federatedAuthRequestTooManyRequests.md",

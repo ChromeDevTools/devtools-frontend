@@ -25,6 +25,10 @@ const UIStrings = {
      * @description title for CORB explainer.
      */
     corbExplainerPageTitle: 'CORB explainer',
+    /**
+     * @description title for history intervention documentation page.
+     */
+    historyManipulationInterventionPageTitle: 'History manipulation intervention explainer'
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -146,6 +150,13 @@ export const genericResponseWasBlockedbyORB = {
             linkTitle: i18nLazyString(UIStrings.corbExplainerPageTitle),
         }],
 };
+export const genericNavigationEntryMarkedSkippable = {
+    file: 'genericNavigationEntryMarkedSkippable.md',
+    links: [{
+            link: 'https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md',
+            linkTitle: i18nLazyString(UIStrings.historyManipulationInterventionPageTitle),
+        }],
+};
 const issueDescriptions = new Map([
     ["FormLabelForNameError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForNameError */, genericFormLabelForNameError],
     ["FormInputWithNoLabelError" /* Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError */, genericFormInputWithNoLabelError],
@@ -181,6 +192,10 @@ const issueDescriptions = new Map([
     [
         "ResponseWasBlockedByORB" /* Protocol.Audits.GenericIssueErrorType.ResponseWasBlockedByORB */,
         genericResponseWasBlockedbyORB,
+    ],
+    [
+        "NavigationEntryMarkedSkippable" /* Protocol.Audits.GenericIssueErrorType.NavigationEntryMarkedSkippable */,
+        genericNavigationEntryMarkedSkippable,
     ],
 ]);
 const issueTypes = new Map([

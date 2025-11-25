@@ -176,7 +176,7 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Sources"
   },
-  "core/host/InspectorFrontendHost.ts | devtoolsS": {
+  "core/host/InspectorFrontendHostStub.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
@@ -1618,6 +1618,9 @@
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB explainer"
+  },
+  "models/issues_manager/GenericIssue.ts | historyManipulationInterventionPageTitle": {
+    "message": "History manipulation intervention explainer"
   },
   "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
     "message": "How does autofill work?"
@@ -10488,7 +10491,7 @@
     "message": "Request conditions"
   },
   "panels/network/RequestConditionsDrawer.ts | textEditPattern": {
-    "message": "Text pattern to block or throttle matching requests; use URL Pattern syntax. {PH1}"
+    "message": "Text pattern to block or throttle matching requests; use URL Pattern syntax."
   },
   "panels/network/RequestConditionsDrawer.ts | textPatternToBlockMatching": {
     "message": "Text pattern to block matching requests; use * for wildcard"

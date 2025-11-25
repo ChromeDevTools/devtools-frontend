@@ -1,19 +1,18 @@
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
-export interface TrustTokensViewData {
+export interface TrustTokensViewInput {
     tokens: Protocol.Storage.TrustTokens[];
     deleteClickHandler: (issuerOrigin: string) => void;
 }
-export declare class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
+type View = (input: TrustTokensViewInput, output: undefined, target: HTMLElement) => void;
+export declare class TrustTokensView extends UI.Widget.VBox {
     #private;
-    connectedCallback(): void;
-    render(): Promise<void>;
+    constructor(element?: HTMLElement, view?: View);
+    wasShown(): void;
+    willHide(): void;
+    performUpdate(): Promise<void>;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-trust-tokens-storage-view': TrustTokensView;
-    }
-}
+export {};

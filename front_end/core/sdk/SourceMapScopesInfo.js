@@ -98,13 +98,17 @@ export class SourceMapScopesInfo {
             const canMapOriginalPosition = startEntry && endEntry && sourceIndex !== undefined &&
                 startEntry.sourceIndex === endEntry.sourceIndex && startEntry.sourceIndex !== undefined && sourceIndex >= 0 &&
                 sourceIndex < numSourceUrls;
-            const isStackFrame = node.kind === 2 /* Formatter.FormatterWorkerPool.ScopeKind.FUNCTION */;
+            const isStackFrame = node.kind === 2 /* Formatter.FormatterWorkerPool.ScopeKind.FUNCTION */ ||
+                node.kind === 4 /* Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION */;
+            // TODO(crbug.com/368222773): Instead of mapping `start`, we should report a number of candidates. e.g. for arrow functions we should
+            //     follow the spec and map the `=>` as the spec says that is where the original name (if any) for arrow functions can be found.
+            const name = node.kind === 2 /* Formatter.FormatterWorkerPool.ScopeKind.FUNCTION */ ? startEntry?.name : undefined;
             let scope;
             if (canMapOriginalPosition) {
                 scope = {
                     start: { line: startEntry.sourceLineNumber, column: startEntry.sourceColumnNumber },
                     end: { line: endEntry.sourceLineNumber, column: endEntry.sourceColumnNumber },
-                    name: startEntry.name,
+                    name,
                     isStackFrame,
                     variables: [],
                     children: [],

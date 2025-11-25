@@ -51,14 +51,16 @@ export class LiveHeapProfile {
             if (sessionId !== this.sessionId) {
                 break;
             }
-            Memory.instance().reset();
+            const profilesAndTargets = [];
             for (let i = 0; i < profiles.length; ++i) {
                 const profile = profiles[i];
                 if (!profile) {
                     continue;
                 }
-                Memory.instance().appendHeapProfile(profile, models[i].target());
+                const target = models[i].target();
+                profilesAndTargets.push({ profile, target });
             }
+            Memory.instance().initialize(profilesAndTargets);
             await Promise.race([
                 new Promise(r => window.setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)),
                 new Promise(r => {

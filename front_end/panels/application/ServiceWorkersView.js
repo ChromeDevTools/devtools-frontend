@@ -605,9 +605,9 @@ export class Section {
                 this.routerField = this.wrapWidget(this.section.appendField(title));
             }
             if (!this.routerField.lastElementChild) {
-                this.routerField.appendChild(this.routerView);
+                this.routerView.show(this.routerField);
             }
-            this.routerView.update(active.routerRules);
+            this.routerView.rules = active.routerRules;
         }
         else {
             // If no active worker or no registered rules, remove the field.

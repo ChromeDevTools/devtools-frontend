@@ -5030,8 +5030,12 @@ var Performance = class _Performance {
     }
     return performanceInstance;
   }
-  reset() {
+  initialize(profiles, target) {
     this.helper.reset();
+    for (const profile of profiles) {
+      this.appendCPUProfile(profile, target);
+    }
+    void this.helper.update();
   }
   appendLegacyCPUProfile(profile, target) {
     const nodesToGo = [profile.profileHead];
@@ -5056,7 +5060,6 @@ var Performance = class _Performance {
   appendCPUProfile(profile, target) {
     if (!profile.lines) {
       this.appendLegacyCPUProfile(profile, target);
-      this.helper.scheduleUpdate();
       return;
     }
     if (!profile.samples || !profile.columns) {
@@ -5079,7 +5082,6 @@ var Performance = class _Performance {
       const time = profile.timestamps[i] - profile.timestamps[i - 1];
       this.helper.addLocationData(target, scriptIdOrUrl, { line, column }, time);
     }
-    this.helper.scheduleUpdate();
   }
 };
 var memoryInstance;
@@ -5100,11 +5102,18 @@ var Memory = class _Memory {
   }
   reset() {
     this.helper.reset();
+    void this.helper.update();
+  }
+  initialize(profilesAndTargets) {
+    this.helper.reset();
+    for (const { profile, target } of profilesAndTargets) {
+      this.appendHeapProfile(profile, target);
+    }
+    void this.helper.update();
   }
   appendHeapProfile(profile, target) {
     const helper = this.helper;
     processNode(profile.head);
-    helper.scheduleUpdate();
     function processNode(node) {
       node.children.forEach(processNode);
       if (!node.selfSize) {
@@ -5115,14 +5124,14 @@ var Memory = class _Memory {
         return;
       }
       const line = node.callFrame.lineNumber + 1;
-      helper.addLocationData(target, script, { line, column: 1 }, node.selfSize);
+      const column = node.callFrame.columnNumber + 1;
+      helper.addLocationData(target, script, { line, column }, node.selfSize);
     }
   }
 };
 var Helper = class {
   type;
   locationPool = new Bindings.LiveLocation.LiveLocationPool();
-  updateTimer = null;
   /**
    * Given a location in a script (with line and column numbers being 1-based) stores
    * the time spent at that location in a performance profile.
@@ -5134,7 +5143,6 @@ var Helper = class {
   }
   reset() {
     this.locationData = /* @__PURE__ */ new Map();
-    this.scheduleUpdate();
   }
   /**
    * Stores the time taken running a given script location (line and column)
@@ -5157,16 +5165,7 @@ var Helper = class {
     }
     lineData.set(column, (lineData.get(column) || 0) + data);
   }
-  scheduleUpdate() {
-    if (this.updateTimer) {
-      return;
-    }
-    this.updateTimer = window.setTimeout(() => {
-      this.updateTimer = null;
-      void this.doUpdate();
-    }, 0);
-  }
-  async doUpdate() {
+  async update() {
     this.locationPool.disposeAll();
     const decorationsBySource = /* @__PURE__ */ new Map();
     const pending = [];
@@ -5184,18 +5183,16 @@ var Helper = class {
                 const rawLocation = typeof scriptIdOrUrl === "string" ? debuggerModel.createRawLocationByURL(scriptIdOrUrl, zeroBasedLine, zeroBasedColumn || 0) : debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), zeroBasedLine, zeroBasedColumn || 0);
                 if (rawLocation) {
                   pending.push(workspaceBinding.rawLocationToUILocation(rawLocation).then((uiLocation) => {
-                    if (uiLocation) {
-                      let lineMap = decorationsBySource.get(uiLocation.uiSourceCode);
-                      if (!lineMap) {
-                        lineMap = /* @__PURE__ */ new Map();
-                        decorationsBySource.set(uiLocation.uiSourceCode, lineMap);
+                    if (!uiLocation) {
+                      return;
+                    }
+                    this.addLineColumnData(decorationsBySource, uiLocation.uiSourceCode, uiLocation.lineNumber + 1, (uiLocation.columnNumber ?? 0) + 1, data);
+                    if (uiLocation.uiSourceCode.contentType().isFromSourceMap()) {
+                      const script = rawLocation.script();
+                      const uiSourceCode = script ? workspaceBinding.uiSourceCodeForScript(script) : null;
+                      if (uiSourceCode) {
+                        this.addLineColumnData(decorationsBySource, uiSourceCode, lineNumber, columnNumber, data);
                       }
-                      let columnMap = lineMap.get(lineNumber);
-                      if (!columnMap) {
-                        columnMap = /* @__PURE__ */ new Map();
-                        lineMap.set(lineNumber, columnMap);
-                      }
-                      columnMap.set((zeroBasedColumn || 0) + 1, data);
                     }
                   }));
                 }
@@ -5219,6 +5216,19 @@ var Helper = class {
         uiSourceCode.setDecorationData(this.type, void 0);
       }
     }
+  }
+  addLineColumnData(decorationsBySource, uiSourceCode, lineOneIndexed, columnOneIndexed, data) {
+    let lineMap = decorationsBySource.get(uiSourceCode);
+    if (!lineMap) {
+      lineMap = /* @__PURE__ */ new Map();
+      decorationsBySource.set(uiSourceCode, lineMap);
+    }
+    let columnMap = lineMap.get(lineOneIndexed);
+    if (!columnMap) {
+      columnMap = /* @__PURE__ */ new Map();
+      lineMap.set(lineOneIndexed, columnMap);
+    }
+    columnMap.set(columnOneIndexed, (columnMap.get(columnOneIndexed) ?? 0) + data);
   }
 };
 
@@ -5276,14 +5286,16 @@ var LiveHeapProfile = class _LiveHeapProfile {
       if (sessionId !== this.sessionId) {
         break;
       }
-      Memory.instance().reset();
+      const profilesAndTargets = [];
       for (let i = 0; i < profiles.length; ++i) {
         const profile = profiles[i];
         if (!profile) {
           continue;
         }
-        Memory.instance().appendHeapProfile(profile, models[i].target());
+        const target = models[i].target();
+        profilesAndTargets.push({ profile, target });
       }
+      Memory.instance().initialize(profilesAndTargets);
       await Promise.race([
         new Promise((r) => window.setTimeout(r, Host3.InspectorFrontendHost.isUnderTest() ? 10 : 5e3)),
         new Promise((r) => {

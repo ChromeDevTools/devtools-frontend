@@ -1787,6 +1787,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "grid-gap",
   "grid-how",
   "grid-lanes",
+  "grid-lanes-flow",
   "grid-overlays",
   "grid-row",
   "grid-row-end",

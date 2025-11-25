@@ -5063,8 +5063,8 @@ var ScopeVariableAnalysis = class {
         this.#pushScope(
           node.start,
           node.end,
-          2
-          /* ScopeKind.FUNCTION */
+          4
+          /* ScopeKind.ARROW_FUNCTION */
         );
         node.params.forEach(this.#processNodeAsDefinition.bind(this, 2, false));
         if (node.body.type === "BlockStatement") {

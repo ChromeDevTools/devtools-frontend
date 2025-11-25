@@ -2418,6 +2418,7 @@ __export(GenericIssue_exports, {
   genericFormLabelForMatchesNonExistingIdError: () => genericFormLabelForMatchesNonExistingIdError,
   genericFormLabelForNameError: () => genericFormLabelForNameError,
   genericFormLabelHasNeitherForNorNestedInputError: () => genericFormLabelHasNeitherForNorNestedInputError,
+  genericNavigationEntryMarkedSkippable: () => genericNavigationEntryMarkedSkippable,
   genericResponseWasBlockedbyORB: () => genericResponseWasBlockedbyORB
 });
 import * as i18n19 from "./../../core/i18n/i18n.js";
@@ -2441,7 +2442,11 @@ var UIStrings11 = {
   /**
    * @description title for CORB explainer.
    */
-  corbExplainerPageTitle: "CORB explainer"
+  corbExplainerPageTitle: "CORB explainer",
+  /**
+   * @description title for history intervention documentation page.
+   */
+  historyManipulationInterventionPageTitle: "History manipulation intervention explainer"
 };
 var str_10 = i18n19.i18n.registerUIStrings("models/issues_manager/GenericIssue.ts", UIStrings11);
 var i18nLazyString7 = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
@@ -2563,6 +2568,13 @@ var genericResponseWasBlockedbyORB = {
     linkTitle: i18nLazyString7(UIStrings11.corbExplainerPageTitle)
   }]
 };
+var genericNavigationEntryMarkedSkippable = {
+  file: "genericNavigationEntryMarkedSkippable.md",
+  links: [{
+    link: "https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md",
+    linkTitle: i18nLazyString7(UIStrings11.historyManipulationInterventionPageTitle)
+  }]
+};
 var issueDescriptions7 = /* @__PURE__ */ new Map([
   ["FormLabelForNameError", genericFormLabelForNameError],
   ["FormInputWithNoLabelError", genericFormInputWithNoLabelError],
@@ -2598,6 +2610,10 @@ var issueDescriptions7 = /* @__PURE__ */ new Map([
   [
     "ResponseWasBlockedByORB",
     genericResponseWasBlockedbyORB
+  ],
+  [
+    "NavigationEntryMarkedSkippable",
+    genericNavigationEntryMarkedSkippable
   ]
 ]);
 var issueTypes = /* @__PURE__ */ new Map([

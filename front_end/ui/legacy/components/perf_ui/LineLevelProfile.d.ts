@@ -3,15 +3,18 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import type * as CPUProfile from '../../../../models/cpu_profile/cpu_profile.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+/** 1-based. line => column => value */
+export type LineColumnProfileMap = Map<number, Map<number, number>>;
+export type ProfileDataMap = Map<Workspace.UISourceCode.UISourceCode, LineColumnProfileMap>;
 export declare class Performance {
     private readonly helper;
     private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
     }): Performance;
-    reset(): void;
+    initialize(profiles: CPUProfile.CPUProfileDataModel.CPUProfileDataModel[], target: SDK.Target.Target | null): void;
     private appendLegacyCPUProfile;
-    appendCPUProfile(profile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target | null): void;
+    private appendCPUProfile;
 }
 export declare class Memory {
     private readonly helper;
@@ -20,12 +23,15 @@ export declare class Memory {
         forceNew: boolean | null;
     }): Memory;
     reset(): void;
-    appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.Target.Target | null): void;
+    initialize(profilesAndTargets: Array<{
+        profile: Protocol.HeapProfiler.SamplingHeapProfile;
+        target: SDK.Target.Target;
+    }>): void;
+    private appendHeapProfile;
 }
 export declare class Helper {
     private readonly type;
     private readonly locationPool;
-    private updateTimer;
     /**
      * Given a location in a script (with line and column numbers being 1-based) stores
      * the time spent at that location in a performance profile.
@@ -40,6 +46,6 @@ export declare class Helper {
         line: number;
         column: number;
     }, data: number): void;
-    scheduleUpdate(): void;
-    private doUpdate;
+    update(): Promise<void>;
+    private addLineColumnData;
 }

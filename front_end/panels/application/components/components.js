@@ -1033,9 +1033,9 @@ function renderExplanations(category, explainerText, explanations, reasonToFrame
 }
 function maybeRenderReasonContext(explanation) {
   if (explanation.reason === "EmbedderExtensionSentMessageToCachedFrame" && explanation.context) {
-    const link5 = "chrome://extensions/?id=" + explanation.context;
+    const link6 = "chrome://extensions/?id=" + explanation.context;
     return html`${i18nString(UIStrings2.blockingExtensionId)}
-      <devtools-chrome-link .href=${link5}>${explanation.context}</devtools-chrome-link>`;
+      <devtools-chrome-link .href=${link6}>${explanation.context}</devtools-chrome-link>`;
   }
   return nothing;
 }
@@ -1732,8 +1732,8 @@ import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as NetworkForward from "./../../network/forward/forward.js";
 import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as Lit4 from "./../../../ui/lit/lit.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing3, render as render5 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/permissionsPolicySection.css.js
@@ -1800,7 +1800,6 @@ button.link {
 /*# sourceURL=${import.meta.resolve("./permissionsPolicySection.css")} */`;
 
 // gen/front_end/panels/application/components/PermissionsPolicySection.js
-var { html: html5 } = Lit4;
 var UIStrings6 = {
   /**
    * @description Label for a button. When clicked more details (for the content this button refers to) will be shown.
@@ -1846,134 +1845,153 @@ var str_6 = i18n11.i18n.registerUIStrings("panels/application/components/Permiss
 var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 function renderIconLink(iconName, title, clickHandler, jsLogContext) {
   return html5`
-  <devtools-button
-    .iconName=${iconName}
-    title=${title}
-    aria-label=${title}
-    .variant=${"icon"}
-    .size=${"SMALL"}
-    @click=${clickHandler}
-    jslog=${VisualLogging4.action().track({ click: true }).context(jsLogContext)}></devtools-button>
-  `;
+    <devtools-button
+      .iconName=${iconName}
+      title=${title}
+      aria-label=${title}
+      .variant=${"icon"}
+      .size=${"SMALL"}
+      @click=${clickHandler}
+      jslog=${VisualLogging4.action().track({ click: true }).context(jsLogContext)}>
+    </devtools-button>`;
 }
-var PermissionsPolicySection = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #permissionsPolicySectionData = { policies: [], showDetails: false };
-  set data(data) {
-    this.#permissionsPolicySectionData = data;
-    void this.#render();
+function renderAllowed(allowed) {
+  if (!allowed.length) {
+    return nothing3;
   }
-  #toggleShowPermissionsDisallowedDetails() {
-    this.#permissionsPolicySectionData.showDetails = !this.#permissionsPolicySectionData.showDetails;
-    void this.#render();
+  return html5`
+    <devtools-report-key>${i18nString5(UIStrings6.allowedFeatures)}</devtools-report-key>
+    <devtools-report-value>${allowed.map(({ feature }) => feature).join(", ")}</devtools-report-value>`;
+}
+function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNode, onRevealHeader) {
+  if (!data.length) {
+    return nothing3;
   }
-  #renderAllowed() {
-    const allowed = this.#permissionsPolicySectionData.policies.filter((p) => p.allowed).map((p) => p.feature).sort();
-    if (!allowed.length) {
-      return Lit4.nothing;
-    }
-    return html5`
-      <devtools-report-key>${i18nString5(UIStrings6.allowedFeatures)}</devtools-report-key>
-      <devtools-report-value>
-        ${allowed.join(", ")}
-      </devtools-report-value>
-    `;
-  }
-  async #renderDisallowed() {
-    const disallowed = this.#permissionsPolicySectionData.policies.filter((p) => !p.allowed).sort((a, b) => a.feature.localeCompare(b.feature));
-    if (!disallowed.length) {
-      return Lit4.nothing;
-    }
-    if (!this.#permissionsPolicySectionData.showDetails) {
-      return html5`
-        <devtools-report-key>${i18nString5(UIStrings6.disabledFeatures)}</devtools-report-key>
-        <devtools-report-value>
-          ${disallowed.map((p) => p.feature).join(", ")}
-          <devtools-button
-          class="disabled-features-button"
-          .variant=${"outlined"}
-          @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
-          jslog=${VisualLogging4.action("show-disabled-features-details").track({
-        click: true
-      })}>${i18nString5(UIStrings6.showDetails)}
-        </devtools-button>
-        </devtools-report-value>
-      `;
-    }
-    const frameManager = SDK3.FrameManager.FrameManager.instance();
-    const featureRows = await Promise.all(disallowed.map(async (policy) => {
-      const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : null;
-      const blockReason = policy.locator?.blockReason;
-      const linkTargetDOMNode = await (blockReason === "IframeAttribute" && frame?.getOwnerDOMNodeOrDocument());
-      const resource = frame?.resourceForURL(frame.url);
-      const linkTargetRequest = blockReason === "Header" && resource?.request;
-      const blockReasonText = (() => {
-        switch (blockReason) {
-          case "IframeAttribute":
-            return i18nString5(UIStrings6.disabledByIframe);
-          case "Header":
-            return i18nString5(UIStrings6.disabledByHeader);
-          case "InFencedFrameTree":
-            return i18nString5(UIStrings6.disabledByFencedFrame);
-          default:
-            return "";
-        }
-      })();
-      const revealHeader = async () => {
-        if (!linkTargetRequest) {
-          return;
-        }
-        const headerName = linkTargetRequest.responseHeaderValue("permissions-policy") ? "permissions-policy" : "feature-policy";
-        const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(linkTargetRequest, { name: headerName, value: "" });
-        await Common2.Revealer.reveal(requestLocation);
-      };
-      return html5`
-        <div class="permissions-row">
-          <div>
-            <devtools-icon class="allowed-icon extra-large" name="cross-circle">
-            </devtools-icon>
-          </div>
-          <div class="feature-name text-ellipsis">
-            ${policy.feature}
-          </div>
-          <div class="block-reason">${blockReasonText}</div>
-          <div>
-            ${linkTargetDOMNode ? renderIconLink("code-circle", i18nString5(UIStrings6.clickToShowIframe), () => Common2.Revealer.reveal(linkTargetDOMNode), "reveal-in-elements") : Lit4.nothing}
-            ${linkTargetRequest ? renderIconLink("arrow-up-down-circle", i18nString5(UIStrings6.clickToShowHeader), revealHeader, "reveal-in-network") : Lit4.nothing}
-          </div>
-        </div>
-      `;
-    }));
+  if (!showDetails) {
     return html5`
       <devtools-report-key>${i18nString5(UIStrings6.disabledFeatures)}</devtools-report-key>
-      <devtools-report-value class="policies-list">
-        ${featureRows}
-        <div class="permissions-row">
+      <devtools-report-value>
+        ${data.map(({ policy }) => policy.feature).join(", ")}
         <devtools-button
-          .variant=${"outlined"}
-          @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
-          jslog=${VisualLogging4.action("hide-disabled-features-details").track({
-      click: true
-    })}>${i18nString5(UIStrings6.hideDetails)}
+            class="disabled-features-button"
+            .variant=${"outlined"}
+            @click=${onToggleShowDetails}
+            jslog=${VisualLogging4.action("show-disabled-features-details").track({ click: true })}>
+          ${i18nString5(UIStrings6.showDetails)}
         </devtools-button>
-        </div>
-      </devtools-report-value>
-    `;
+      </devtools-report-value>`;
   }
-  async #render() {
-    await RenderCoordinator.write("PermissionsPolicySection render", () => {
-      Lit4.render(html5`
-          <style>${permissionsPolicySection_css_default}</style>
-          <devtools-report-section-header>${i18n11.i18n.lockedString("Permissions Policy")}</devtools-report-section-header>
-          ${this.#renderAllowed()}
-          ${this.#permissionsPolicySectionData.policies.findIndex((p) => p.allowed) > 0 || this.#permissionsPolicySectionData.policies.findIndex((p) => !p.allowed) > 0 ? html5`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : Lit4.nothing}
-          ${Lit4.Directives.until(this.#renderDisallowed(), Lit4.nothing)}
-          <devtools-report-divider></devtools-report-divider>
-        `, this.#shadow, { host: this });
-    });
+  const featureRows = data.map(({ policy, blockReason, linkTargetDOMNode, linkTargetRequest }) => {
+    const blockReasonText = (() => {
+      switch (blockReason) {
+        case "IframeAttribute":
+          return i18nString5(UIStrings6.disabledByIframe);
+        case "Header":
+          return i18nString5(UIStrings6.disabledByHeader);
+        case "InFencedFrameTree":
+          return i18nString5(UIStrings6.disabledByFencedFrame);
+        default:
+          return "";
+      }
+    })();
+    return html5`
+      <div class="permissions-row">
+        <div>
+          <devtools-icon class="allowed-icon extra-large" name="cross-circle">
+          </devtools-icon>
+        </div>
+        <div class="feature-name text-ellipsis">${policy.feature}</div>
+        <div class="block-reason">${blockReasonText}</div>
+        <div>
+          ${linkTargetDOMNode ? renderIconLink("code-circle", i18nString5(UIStrings6.clickToShowIframe), () => onRevealDOMNode(linkTargetDOMNode), "reveal-in-elements") : nothing3}
+          ${linkTargetRequest ? renderIconLink("arrow-up-down-circle", i18nString5(UIStrings6.clickToShowHeader), () => onRevealHeader(linkTargetRequest), "reveal-in-network") : nothing3}
+        </div>
+      </div>`;
+  });
+  return html5`
+    <devtools-report-key>${i18nString5(UIStrings6.disabledFeatures)}</devtools-report-key>
+    <devtools-report-value class="policies-list">
+      ${featureRows}
+      <div class="permissions-row">
+        <devtools-button
+            .variant=${"outlined"}
+            @click=${onToggleShowDetails}
+            jslog=${VisualLogging4.action("hide-disabled-features-details").track({ click: true })}>
+          ${i18nString5(UIStrings6.hideDetails)}
+        </devtools-button>
+      </div>
+    </devtools-report-value>`;
+}
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render5(html5`
+    <style>${permissionsPolicySection_css_default}</style>
+    <devtools-report-section-header>
+      ${i18n11.i18n.lockedString("Permissions Policy")}
+    </devtools-report-section-header>
+    ${renderAllowed(input.allowed)}
+    ${input.allowed.length > 0 && input.disallowed.length > 0 ? html5`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing3}
+    ${renderDisallowed(input.disallowed, input.showDetails, input.onToggleShowDetails, input.onRevealDOMNode, input.onRevealHeader)}
+    <devtools-report-divider></devtools-report-divider>`, target);
+};
+var PermissionsPolicySection = class extends UI4.Widget.Widget {
+  #policies = [];
+  #showDetails = false;
+  #view;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set policies(policies) {
+    this.#policies = policies;
+    this.requestUpdate();
+  }
+  get policies() {
+    return this.#policies;
+  }
+  set showDetails(showDetails) {
+    this.#showDetails = showDetails;
+    this.requestUpdate();
+  }
+  get showDetails() {
+    return this.#showDetails;
+  }
+  #toggleShowPermissionsDisallowedDetails() {
+    this.showDetails = !this.showDetails;
+  }
+  async #revealDOMNode(linkTargetDOMNode) {
+    await Common2.Revealer.reveal(linkTargetDOMNode);
+  }
+  async #revealHeader(linkTargetRequest) {
+    if (!linkTargetRequest) {
+      return;
+    }
+    const headerName = linkTargetRequest.responseHeaderValue("permissions-policy") ? "permissions-policy" : "feature-policy";
+    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(linkTargetRequest, { name: headerName, value: "" });
+    await Common2.Revealer.reveal(requestLocation);
+  }
+  async performUpdate() {
+    const frameManager = SDK3.FrameManager.FrameManager.instance();
+    const policies = this.#policies.sort((a, b) => a.feature.localeCompare(b.feature));
+    const allowed = policies.filter((p) => p.allowed).sort((a, b) => a.feature.localeCompare(b.feature));
+    const disallowed = policies.filter((p) => !p.allowed).sort((a, b) => a.feature.localeCompare(b.feature));
+    const disallowedData = this.#showDetails ? await Promise.all(disallowed.map(async (policy) => {
+      const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : void 0;
+      const blockReason = policy.locator?.blockReason;
+      const linkTargetDOMNode = await (blockReason === "IframeAttribute" && frame?.getOwnerDOMNodeOrDocument() || void 0);
+      const resource = frame?.resourceForURL(frame.url);
+      const linkTargetRequest = blockReason === "Header" && resource?.request || void 0;
+      return { policy, blockReason, linkTargetDOMNode, linkTargetRequest };
+    })) : disallowed.map((policy) => ({ policy }));
+    this.#view({
+      allowed,
+      disallowed: disallowedData,
+      showDetails: this.#showDetails,
+      onToggleShowDetails: this.#toggleShowPermissionsDisallowedDetails.bind(this),
+      onRevealDOMNode: this.#revealDOMNode.bind(this),
+      onRevealHeader: this.#revealHeader.bind(this)
+    }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-resources-permissions-policy-section", PermissionsPolicySection);
 
 // gen/front_end/panels/application/components/ProtocolHandlersView.js
 var ProtocolHandlersView_exports = {};
@@ -1987,8 +2005,8 @@ import * as Platform from "./../../../core/platform/platform.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n from "./../../../ui/i18n/i18n.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
+import { html as html6, i18nTemplate as unboundI18nTemplate, nothing as nothing4, render as render6 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/protocolHandlersView.css.js
@@ -2053,7 +2071,6 @@ input.devtools-text-input[type="text"]::placeholder {
 /*# sourceURL=${import.meta.resolve("./protocolHandlersView.css")} */`;
 
 // gen/front_end/panels/application/components/ProtocolHandlersView.js
-var { html: html6 } = Lit5;
 var PROTOCOL_DOCUMENT_URL = "https://web.dev/url-protocol-handler/";
 var UIStrings7 = {
   /**
@@ -2098,99 +2115,119 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/application/components/ProtocolHandlersView.ts", UIStrings7);
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var ProtocolHandlersView = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var i18nTemplate = unboundI18nTemplate.bind(void 0, str_7);
+function renderStatusMessage(protocolHandlers, manifestLink) {
+  const manifestInTextLink = UI5.XLink.XLink.create(manifestLink, i18nString6(UIStrings7.manifest), void 0, void 0, "manifest");
+  const statusString = protocolHandlers.length > 0 ? UIStrings7.protocolDetected : UIStrings7.protocolNotDetected;
+  return html6`
+    <div class="protocol-handlers-row status">
+      <devtools-icon class="inline-icon"
+                     name=${protocolHandlers.length > 0 ? "check-circle" : "info"}>
+      </devtools-icon>
+      ${uiI18n.getFormatLocalizedString(str_7, statusString, { PH1: manifestInTextLink })}
+    </div>`;
+}
+function renderProtocolTest(protocolHandlers, queryInputState, protocolSelectHandler, queryInputChangeHandler, testProtocolClickHandler) {
+  if (protocolHandlers.length === 0) {
+    return nothing4;
+  }
+  return html6`
+    <div class="protocol-handlers-row">
+      <select class="protocol-select" @change=${protocolSelectHandler}
+              aria-label=${i18nString6(UIStrings7.dropdownLabel)}>
+        ${protocolHandlers.filter((p) => p.protocol).map(({ protocol }) => html6`
+          <option value=${protocol} jslog=${VisualLogging5.item(protocol).track({ click: true })}>
+            ${protocol}://
+          </option>`)}
+      </select>
+      <input .value=${queryInputState} class="devtools-text-input" type="text"
+             @change=${queryInputChangeHandler} aria-label=${i18nString6(UIStrings7.textboxLabel)}
+             placeholder=${i18nString6(UIStrings7.textboxPlaceholder)} />
+      <devtools-button .variant=${"primary"} @click=${testProtocolClickHandler}>
+        ${i18nString6(UIStrings7.testProtocol)}
+      </devtools-button>
+    </div>`;
+}
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render6(html6`
+    <style>${protocolHandlersView_css_default}</style>
+    <style>${UI5.inspectorCommonStyles}</style>
+    <style>${Input.textInputStyles}</style>
+    ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
+    <div class="protocol-handlers-row">
+      ${i18nTemplate(UIStrings7.needHelpReadOur, { PH1: html6`
+        <x-link href=${PROTOCOL_DOCUMENT_URL} tabindex=0 class="devtools-link" jslog=${VisualLogging5.link("learn-more").track({ click: true, keydown: "Enter|Space" })}>
+          ${i18nString6(UIStrings7.protocolHandlerRegistrations)}
+        </x-link>` })}
+    </div>
+    ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler, input.queryInputChangeHandler, input.testProtocolClickHandler)}
+  `, target);
+};
+var ProtocolHandlersView = class extends UI5.Widget.Widget {
   #protocolHandlers = [];
   #manifestLink = Platform.DevToolsPath.EmptyUrlString;
   #selectedProtocolState = "";
   #queryInputState = "";
-  set data(data) {
-    const isNewManifest = this.#manifestLink !== data.manifestLink;
-    this.#protocolHandlers = data.protocolHandlers;
-    this.#manifestLink = data.manifestLink;
+  #view;
+  constructor(element, view = DEFAULT_VIEW4) {
+    super(element, { useShadowDom: false });
+    this.#view = view;
+  }
+  set protocolHandlers(protocolHandlers) {
+    this.#protocolHandlers = protocolHandlers;
+    this.requestUpdate();
+  }
+  get protocolHandlers() {
+    return this.#protocolHandlers;
+  }
+  set manifestLink(manifestLink) {
+    const isNewManifest = this.#manifestLink !== manifestLink;
+    this.#manifestLink = manifestLink;
     if (isNewManifest) {
-      this.#update();
+      this.#queryInputState = "";
+      this.#selectedProtocolState = this.#protocolHandlers[0]?.protocol ?? "";
     }
+    this.requestUpdate();
   }
-  #update() {
-    this.#queryInputState = "";
-    this.#selectedProtocolState = this.#protocolHandlers[0]?.protocol ?? "";
-    this.#render();
-  }
-  #renderStatusMessage() {
-    const manifestInTextLink = UI4.XLink.XLink.create(this.#manifestLink, i18nString6(UIStrings7.manifest), void 0, void 0, "manifest");
-    const statusString = this.#protocolHandlers.length > 0 ? UIStrings7.protocolDetected : UIStrings7.protocolNotDetected;
-    return html6`
-    <div class="protocol-handlers-row status">
-            <devtools-icon class="inline-icon"
-                           name=${this.#protocolHandlers.length > 0 ? "check-circle" : "info"}>
-            </devtools-icon>
-            ${uiI18n.getFormatLocalizedString(str_7, statusString, {
-      PH1: manifestInTextLink
-    })}
-    </div>
-    `;
-  }
-  #renderProtocolTest() {
-    if (this.#protocolHandlers.length === 0) {
-      return Lit5.nothing;
-    }
-    const protocolOptions = this.#protocolHandlers.filter((p) => p.protocol).map((p) => html6`<option value=${p.protocol} jslog=${VisualLogging5.item(p.protocol).track({
-      click: true
-    })}>${p.protocol}://</option>`);
-    return html6`
-       <div class="protocol-handlers-row">
-        <select class="protocol-select" @change=${this.#handleProtocolSelect} aria-label=${i18nString6(UIStrings7.dropdownLabel)}>
-           ${protocolOptions}
-        </select>
-        <input .value=${this.#queryInputState} class="devtools-text-input" type="text" @change=${this.#handleQueryInputChange} aria-label=${i18nString6(UIStrings7.textboxLabel)}
-        placeholder=${i18nString6(UIStrings7.textboxPlaceholder)} />
-        <devtools-button .variant=${"primary"} @click=${this.#handleTestProtocolClick}>
-            ${i18nString6(UIStrings7.testProtocol)}
-        </devtools-button>
-        </div>
-      `;
+  get manifestLink() {
+    return this.#manifestLink;
   }
   #handleProtocolSelect = (evt) => {
     this.#selectedProtocolState = evt.target.value;
   };
   #handleQueryInputChange = (evt) => {
     this.#queryInputState = evt.target.value;
-    this.#render();
+    this.requestUpdate();
   };
   #handleTestProtocolClick = () => {
     const protocolURL = `${this.#selectedProtocolState}://${this.#queryInputState}`;
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(protocolURL);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureTestProtocolClicked);
   };
-  #render() {
-    const protocolDocLink = UI4.XLink.XLink.create(PROTOCOL_DOCUMENT_URL, i18nString6(UIStrings7.protocolHandlerRegistrations), void 0, void 0, "learn-more");
-    Lit5.render(html6`
-      <style>${protocolHandlersView_css_default}</style>
-      <style>${UI4.inspectorCommonStyles}</style>
-      <style>${Input.textInputStyles}</style>
-      ${this.#renderStatusMessage()}
-      <div class="protocol-handlers-row">
-          ${uiI18n.getFormatLocalizedString(str_7, UIStrings7.needHelpReadOur, { PH1: protocolDocLink })}
-      </div>
-      ${this.#renderProtocolTest()}
-    `, this.#shadow, { host: this });
+  performUpdate() {
+    this.#view({
+      protocolHandler: this.#protocolHandlers,
+      manifestLink: this.#manifestLink,
+      queryInputState: this.#queryInputState,
+      protocolSelectHandler: this.#handleProtocolSelect,
+      queryInputChangeHandler: this.#handleQueryInputChange,
+      testProtocolClickHandler: this.#handleTestProtocolClick
+    }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-protocol-handlers-view", ProtocolHandlersView);
 
 // gen/front_end/panels/application/components/ReportsGrid.js
 var ReportsGrid_exports = {};
 __export(ReportsGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   ReportsGrid: () => ReportsGrid,
   i18nString: () => i18nString7
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../ui/lit/lit.js";
+import * as UI6 from "./../../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/reportsGrid.css.js
@@ -2265,12 +2302,12 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/application/components/ReportsGrid.ts", UIStrings8);
 var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { render: render7, html: html7 } = Lit6;
+var { render: render7, html: html7 } = Lit4;
 var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilities/web-apis/reporting-api";
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   render7(html7`
     <style>${reportsGrid_css_default}</style>
-    <style>${UI5.inspectorCommonStyles}</style>
+    <style>${UI6.inspectorCommonStyles}</style>
     <div class="reporting-container" jslog=${VisualLogging6.section("reports")}>
       <div class="reporting-header">${i18n15.i18n.lockedString("Reports")}</div>
       ${input.reports.length > 0 ? html7`
@@ -2324,13 +2361,13 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     </div>
   `, target);
 };
-var ReportsGrid = class extends UI5.Widget.Widget {
+var ReportsGrid = class extends UI6.Widget.Widget {
   reports = [];
   #protocolMonitorExperimentEnabled = false;
   #view;
   onReportSelected = () => {
   };
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled("protocol-monitor");
@@ -2351,8 +2388,8 @@ var ServiceWorkerRouterView_exports = {};
 __export(ServiceWorkerRouterView_exports, {
   ServiceWorkerRouterView: () => ServiceWorkerRouterView
 });
-import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as Lit7 from "./../../../ui/lit/lit.js";
+import * as UI7 from "./../../../ui/legacy/legacy.js";
+import { html as html8, render as render8 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/serviceWorkerRouterView.css.js
 var serviceWorkerRouterView_css_default = `/*
@@ -2414,55 +2451,61 @@ var serviceWorkerRouterView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./serviceWorkerRouterView.css")} */`;
 
 // gen/front_end/panels/application/components/ServiceWorkerRouterView.js
-var { html: html8, render: render8 } = Lit7;
-var ServiceWorkerRouterView = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
+function renderRouterRule(rule) {
+  return html8`
+    <li class="router-rule">
+      <div class="rule-id">Rule ${rule.id}</div>
+      <ul class="item">
+        <li class="condition">
+          <div class="rule-type">Condition</div>
+          <div class="rule-value">${rule.condition}</div>
+        </li>
+        <li class="source">
+          <div class="rule-type">Source</div>
+          <div class="rule-value">${rule.source}</div>
+        </li>
+      </ul>
+    </li>`;
+}
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render8(html8`
+    <style>${serviceWorkerRouterView_css_default}</style>
+    <ul class="router-rules">
+      ${input.rules.map(renderRouterRule)}
+    </ul>`, target);
+};
+var ServiceWorkerRouterView = class extends UI7.Widget.Widget {
   #rules = [];
-  update(rules) {
+  #view;
+  constructor(element, view = DEFAULT_VIEW6) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set rules(rules) {
     this.#rules = rules;
     if (this.#rules.length > 0) {
-      this.#render();
+      this.requestUpdate();
     }
   }
-  #render() {
-    render8(html8`
-      <style>${serviceWorkerRouterView_css_default}</style>
-      <ul class="router-rules">
-        ${this.#rules.map(this.#renderRouterRule)}
-      </ul>
-    `, this.#shadow, { host: this });
+  get rules() {
+    return this.#rules;
   }
-  #renderRouterRule(rule) {
-    return html8`
-      <li class="router-rule">
-        <div class="rule-id">Rule ${rule.id}</div>
-        <ul class="item">
-          <li class="condition">
-            <div class="rule-type">Condition</div>
-            <div class="rule-value">${rule.condition}</div>
-          </li>
-          <li class="source">
-            <div class="rule-type">Source</div>
-            <div class="rule-value">${rule.source}</div>
-          </li>
-        </ul>
-      </li>
-    `;
+  performUpdate() {
+    this.#view({ rules: this.#rules }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-service-worker-router-view", ServiceWorkerRouterView);
 
 // gen/front_end/panels/application/components/SharedStorageAccessGrid.js
 var SharedStorageAccessGrid_exports = {};
 __export(SharedStorageAccessGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   SharedStorageAccessGrid: () => SharedStorageAccessGrid,
   i18nString: () => i18nString8
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n17 from "./../../../core/i18n/i18n.js";
-import * as UI6 from "./../../../ui/legacy/legacy.js";
-import * as Lit8 from "./../../../ui/lit/lit.js";
+import * as UI8 from "./../../../ui/legacy/legacy.js";
+import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/sharedStorageAccessGrid.css.js
@@ -2500,7 +2543,7 @@ var sharedStorageAccessGrid_css_default = `/*
 
 // gen/front_end/panels/application/components/SharedStorageAccessGrid.js
 var SHARED_STORAGE_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/private-advertising/shared-storage";
-var { render: render9, html: html9 } = Lit8;
+var { render: render9, html: html9 } = Lit5;
 var UIStrings9 = {
   /**
    * @description Text in Shared Storage Events View of the Application panel
@@ -2562,7 +2605,7 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/application/components/SharedStorageAccessGrid.ts", UIStrings9);
 var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   render9(html9`
     <style>${sharedStorageAccessGrid_css_default}</style>
     ${input.events.length === 0 ? html9`
@@ -2624,12 +2667,12 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
           </devtools-data-grid>
         </div>`}`, target);
 };
-var SharedStorageAccessGrid = class extends UI6.Widget.Widget {
+var SharedStorageAccessGrid = class extends UI8.Widget.Widget {
   #view;
   #events = [];
   #onSelect = () => {
   };
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.performUpdate();
@@ -2661,7 +2704,7 @@ __export(SharedStorageMetadataView_exports, {
 import "./../../../ui/components/icon_button/icon_button.js";
 import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
-import * as Lit10 from "./../../../ui/lit/lit.js";
+import * as Lit7 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/sharedStorageMetadataView.css.js
 var sharedStorageMetadataView_css_default = `/*
@@ -2705,10 +2748,10 @@ import "./../../../ui/components/report_view/report_view.js";
 import * as i18n19 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper5 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI7 from "./../../../ui/legacy/legacy.js";
-import * as Lit9 from "./../../../ui/lit/lit.js";
+import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as Lit6 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
 var storageMetadataView_css_default = `/*
@@ -2724,7 +2767,7 @@ var storageMetadataView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./storageMetadataView.css")} */`;
 
 // gen/front_end/panels/application/components/StorageMetadataView.js
-var { html: html10 } = Lit9;
+var { html: html10 } = Lit6;
 var UIStrings10 = {
   /**
    * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
@@ -2820,7 +2863,7 @@ var UIStrings10 = {
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/application/components/StorageMetadataView.ts", UIStrings10);
 var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
-var StorageMetadataView = class extends LegacyWrapper5.LegacyWrapper.WrappableComponent {
+var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #storageBucketsModel;
   #storageKey = null;
@@ -2844,8 +2887,8 @@ var StorageMetadataView = class extends LegacyWrapper5.LegacyWrapper.WrappableCo
     }
   }
   render() {
-    return RenderCoordinator2.write("StorageMetadataView render", async () => {
-      Lit9.render(html10`
+    return RenderCoordinator.write("StorageMetadataView render", async () => {
+      Lit6.render(html10`
         <style>
           ${storageMetadataView_css_default}
         </style>
@@ -2870,7 +2913,7 @@ var StorageMetadataView = class extends LegacyWrapper5.LegacyWrapper.WrappableCo
   }
   async renderReportContent() {
     if (!this.#storageKey) {
-      return Lit9.nothing;
+      return Lit6.nothing;
     }
     const origin = this.#storageKey.origin;
     const ancestorChainHasCrossSite = Boolean(this.#storageKey.components.get(
@@ -2893,16 +2936,16 @@ var StorageMetadataView = class extends LegacyWrapper5.LegacyWrapper.WrappableCo
     const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
     return html10`
         ${isIframeOrEmbedded ? html10`${this.key(i18nString9(UIStrings10.origin))}
-            ${this.value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : Lit9.nothing}
-        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.topLevelSite)) : Lit9.nothing}
-        ${topLevelSite ? this.value(topLevelSite) : Lit9.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.opaque)) : Lit9.nothing}
-        ${thirdPartyReason ? html10`${this.key(i18nString9(UIStrings10.isThirdParty))}${this.value(thirdPartyReason)}` : Lit9.nothing}
-        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.isOpaque)) : Lit9.nothing}
-        ${hasNonce ? this.value(i18nString9(UIStrings10.yes)) : Lit9.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : Lit9.nothing}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : Lit9.nothing}
-        ${this.#storageBucketsModel ? this.#renderBucketControls() : Lit9.nothing}`;
+            ${this.value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : Lit6.nothing}
+        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.topLevelSite)) : Lit6.nothing}
+        ${topLevelSite ? this.value(topLevelSite) : Lit6.nothing}
+        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.opaque)) : Lit6.nothing}
+        ${thirdPartyReason ? html10`${this.key(i18nString9(UIStrings10.isThirdParty))}${this.value(thirdPartyReason)}` : Lit6.nothing}
+        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.isOpaque)) : Lit6.nothing}
+        ${hasNonce ? this.value(i18nString9(UIStrings10.yes)) : Lit6.nothing}
+        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : Lit6.nothing}
+        ${this.#storageBucket ? this.#renderStorageBucketInfo() : Lit6.nothing}
+        ${this.#storageBucketsModel ? this.#renderBucketControls() : Lit6.nothing}`;
   }
   #renderStorageBucketInfo() {
     if (!this.#storageBucket) {
@@ -2958,7 +3001,7 @@ var StorageMetadataView = class extends LegacyWrapper5.LegacyWrapper.WrappableCo
     if (!this.#storageBucketsModel || !this.#storageBucket) {
       throw new Error("Should not call #deleteBucket if #storageBucketsModel or #storageBucket is null.");
     }
-    const ok = await UI7.UIUtils.ConfirmDialog.show(i18nString9(UIStrings10.bucketWillBeRemoved), i18nString9(UIStrings10.confirmBucketDeletion, { PH1: this.#storageBucket.bucket.name || "" }), this, { jslogContext: "delete-bucket-confirmation" });
+    const ok = await UI9.UIUtils.ConfirmDialog.show(i18nString9(UIStrings10.bucketWillBeRemoved), i18nString9(UIStrings10.confirmBucketDeletion, { PH1: this.#storageBucket.bucket.name || "" }), this, { jslogContext: "delete-bucket-confirmation" });
     if (ok) {
       this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);
     }
@@ -2967,7 +3010,7 @@ var StorageMetadataView = class extends LegacyWrapper5.LegacyWrapper.WrappableCo
 customElements.define("devtools-storage-metadata-view", StorageMetadataView);
 
 // gen/front_end/panels/application/components/SharedStorageMetadataView.js
-var { html: html11 } = Lit10;
+var { html: html11 } = Lit7;
 var UIStrings11 = {
   /**
    * @description Text in SharedStorage Metadata View of the Application panel
@@ -3072,10 +3115,8 @@ import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper7 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator3 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI8 from "./../../../ui/legacy/legacy.js";
-import * as Lit11 from "./../../../ui/lit/lit.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as Lit8 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/trustTokensView.css.js
@@ -3117,7 +3158,7 @@ devtools-icon {
 
 // gen/front_end/panels/application/components/TrustTokensView.js
 var PRIVATE_STATE_TOKENS_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/protections/private-state-tokens";
-var { html: html12 } = Lit11;
+var { html: html12 } = Lit8;
 var UIStrings12 = {
   /**
    * @description Text for the issuer of an item
@@ -3158,52 +3199,26 @@ var UIStrings12 = {
 var str_12 = i18n23.i18n.registerUIStrings("panels/application/components/TrustTokensView.ts", UIStrings12);
 var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var REFRESH_INTERVAL_MS = 1e3;
-var TrustTokensView = class extends LegacyWrapper7.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
-  #deleteClickHandler(issuerOrigin) {
-    const mainTarget = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
-    void mainTarget?.storageAgent().invoke_clearTrustTokens({ issuerOrigin });
-  }
-  connectedCallback() {
-    this.wrapper?.contentElement.classList.add("vbox");
-    void this.render();
-  }
-  async render() {
-    const mainTarget = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      return;
-    }
-    const { tokens } = await mainTarget.storageAgent().invoke_getTrustTokens();
-    tokens.sort((a, b) => a.issuerOrigin.localeCompare(b.issuerOrigin));
-    await RenderCoordinator3.write("Render TrustTokensView", () => {
-      Lit11.render(html12`
-        <style>${trustTokensView_css_default}</style>
-        <style>${UI8.inspectorCommonStyles}</style>
-        ${this.#renderGridOrNoDataMessage(tokens)}
-      `, this.#shadow, { host: this });
-      if (this.isConnected) {
-        setTimeout(() => this.render(), REFRESH_INTERVAL_MS);
-      }
-    });
-  }
-  #renderGridOrNoDataMessage(tokens) {
-    if (tokens.length === 0) {
-      return html12`
-        <div class="empty-state" jslog=${VisualLogging8.section().context("empty-view")}>
-          <div class="empty-state-header">${i18nString11(UIStrings12.noTrustTokens)}</div>
-          <div class="empty-state-description">
-            <span>${i18nString11(UIStrings12.trustTokensDescription)}</span>
-            <x-link
-              class="x-link devtools-link"
-              href=${PRIVATE_STATE_TOKENS_EXPLANATION_URL}
-              jslog=${VisualLogging8.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
-            >${i18nString11(UIStrings12.learnMore)}</x-link>
+function renderGridOrNoDataMessage(input) {
+  if (input.tokens.length === 0) {
+    return html12`
+        <div jslog=${VisualLogging8.pane("trust-tokens")}>
+          <div class="empty-state" jslog=${VisualLogging8.section().context("empty-view")}>
+            <div class="empty-state-header">${i18nString11(UIStrings12.noTrustTokens)}</div>
+            <div class="empty-state-description">
+              <span>${i18nString11(UIStrings12.trustTokensDescription)}</span>
+              <x-link
+                class="x-link devtools-link"
+                href=${PRIVATE_STATE_TOKENS_EXPLANATION_URL}
+                jslog=${VisualLogging8.link().track({ click: true, keydown: "Enter|Space" }).context("learn-more")}
+              >${i18nString11(UIStrings12.learnMore)}</x-link>
+            </div>
           </div>
         </div>
       `;
-    }
-    return html12`
-      <div>
+  }
+  return html12`
+      <div jslog=${VisualLogging8.pane("trust-tokens")}>
         <span class="heading">${i18nString11(UIStrings12.trustTokens)}</span>
         <devtools-icon name="info" title=${i18nString11(UIStrings12.allStoredTrustTokensAvailableIn)}></devtools-icon>
         <devtools-data-grid striped inline>
@@ -3213,7 +3228,7 @@ var TrustTokensView = class extends LegacyWrapper7.LegacyWrapper.WrappableCompon
               <th id="count" weight="5" sortable>${i18nString11(UIStrings12.storedTokenCount)}</th>
               <th id="delete-button" weight="1" sortable></th>
             </tr>
-            ${tokens.filter((token) => token.count > 0).map((token) => html12`
+            ${input.tokens.filter((token) => token.count > 0).map((token) => html12`
                 <tr>
                   <td>${removeTrailingSlash(token.issuerOrigin)}</td>
                   <td>${token.count}</td>
@@ -3223,7 +3238,7 @@ var TrustTokensView = class extends LegacyWrapper7.LegacyWrapper.WrappableCompon
                                     .size=${"SMALL"}
                                     .title=${i18nString11(UIStrings12.deleteTrustTokens, { PH1: removeTrailingSlash(token.issuerOrigin) })}
                                     .variant=${"icon"}
-                                    @click=${this.#deleteClickHandler.bind(this, removeTrailingSlash(token.issuerOrigin))}></devtools-button>
+                                    @click=${() => input.deleteClickHandler(removeTrailingSlash(token.issuerOrigin))}></devtools-button>
                   </td>
                 </tr>
               `)}
@@ -3231,12 +3246,50 @@ var TrustTokensView = class extends LegacyWrapper7.LegacyWrapper.WrappableCompon
         </devtools-data-grid>
       </div>
     `;
+}
+var DEFAULT_VIEW8 = (input, output, target) => {
+  Lit8.render(html12`
+    <style>${trustTokensView_css_default}</style>
+    <style>${UI10.inspectorCommonStyles}</style>
+    ${renderGridOrNoDataMessage(input)}
+  `, target);
+};
+var TrustTokensView = class extends UI10.Widget.VBox {
+  #updateInterval = 0;
+  #tokens = [];
+  #view;
+  constructor(element, view = DEFAULT_VIEW8) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+    this.#updateInterval = setInterval(this.requestUpdate.bind(this), REFRESH_INTERVAL_MS);
+  }
+  willHide() {
+    super.willHide();
+    clearInterval(this.#updateInterval);
+    this.#updateInterval = 0;
+  }
+  async performUpdate() {
+    const mainTarget = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      return;
+    }
+    const { tokens } = await mainTarget.storageAgent().invoke_getTrustTokens();
+    tokens.sort((a, b) => a.issuerOrigin.localeCompare(b.issuerOrigin));
+    this.#tokens = tokens;
+    this.#view({ tokens: this.#tokens, deleteClickHandler: this.#deleteClickHandler.bind(this) }, void 0, this.contentElement);
+  }
+  #deleteClickHandler(issuerOrigin) {
+    const mainTarget = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
+    void mainTarget?.storageAgent().invoke_clearTrustTokens({ issuerOrigin });
   }
 };
 function removeTrailingSlash(s) {
   return s.replace(/\/$/, "");
 }
-customElements.define("devtools-trust-tokens-storage-view", TrustTokensView);
 export {
   BackForwardCacheView_exports as BackForwardCacheView,
   BounceTrackingMitigationsView_exports as BounceTrackingMitigationsView,

@@ -6,9 +6,16 @@ import * as Host from '../core/host/host.js';
  * @returns True, iff a metric event with the provided name and code was recorded. False otherwise.
  */
 export function recordedMetricsContain(actionName, actionCode) {
-    return Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms.some(event => event.actionName === actionName && event.actionCode === actionCode);
+    const instance = Host.InspectorFrontendHost.InspectorFrontendHostInstance;
+    if (instance instanceof Host.InspectorFrontendHost.InspectorFrontendHostStub) {
+        return instance.recordedEnumeratedHistograms.some(event => event.actionName === actionName && event.actionCode === actionCode);
+    }
+    return false;
 }
 export function resetRecordedMetrics() {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms = [];
+    const instance = Host.InspectorFrontendHost.InspectorFrontendHostInstance;
+    if (instance instanceof Host.InspectorFrontendHost.InspectorFrontendHostStub) {
+        instance.recordedEnumeratedHistograms = [];
+    }
 }
 //# sourceMappingURL=UserMetricsHelpers.js.map

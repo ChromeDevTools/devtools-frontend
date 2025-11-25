@@ -3472,6 +3472,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setPrerenderingAllowed(params: Protocol.Page.SetPrerenderingAllowedRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Get the annotated page content for the main frame.
+     * This is an experimental command that is subject to change.
+     */
+    invoke_getAnnotatedPageContent(params: Protocol.Page.GetAnnotatedPageContentRequest): Promise<Protocol.Page.GetAnnotatedPageContentResponse>;
+
   }
   export interface PageDispatcher {
     domContentEventFired(params: Protocol.Page.DomContentEventFiredEvent): void;

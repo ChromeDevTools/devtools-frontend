@@ -24,7 +24,7 @@ __export(AidaClient_exports, {
   UserTier: () => UserTier,
   convertToUserTierEnum: () => convertToUserTierEnum
 });
-import * as Common3 from "./../common/common.js";
+import * as Common4 from "./../common/common.js";
 import * as Root2 from "./../root/root.js";
 
 // gen/front_end/core/host/DispatchHttpRequestClient.js
@@ -40,11 +40,10 @@ var InspectorFrontendHost_exports = {};
 __export(InspectorFrontendHost_exports, {
   InspectorFrontendHostInstance: () => InspectorFrontendHostInstance,
   InspectorFrontendHostStub: () => InspectorFrontendHostStub,
+  installInspectorFrontendHost: () => installInspectorFrontendHost,
   isUnderTest: () => isUnderTest
 });
-import * as Common2 from "./../common/common.js";
-import * as i18n3 from "./../i18n/i18n.js";
-import * as Platform from "./../platform/platform.js";
+import * as Common3 from "./../common/common.js";
 import * as Root from "./../root/root.js";
 
 // gen/front_end/core/host/InspectorFrontendHostAPI.js
@@ -114,6 +113,11 @@ var EventDescriptors = [
   [Events.SetUseSoftMenu, ["useSoftMenu"]],
   [Events.ShowPanel, ["panelName"]]
 ];
+
+// gen/front_end/core/host/InspectorFrontendHostStub.js
+import * as Common2 from "./../common/common.js";
+import * as i18n3 from "./../i18n/i18n.js";
+import * as Platform from "./../platform/platform.js";
 
 // gen/front_end/core/host/ResourceLoader.js
 var ResourceLoader_exports = {};
@@ -342,7 +346,7 @@ var loadAsStream = function(url, headers, stream, callback, allowRemoteFilePaths
   }
 };
 
-// gen/front_end/core/host/InspectorFrontendHost.js
+// gen/front_end/core/host/InspectorFrontendHostStub.js
 var UIStrings2 = {
   /**
    * @description Document title in Inspector Frontend Host of the DevTools window
@@ -350,7 +354,7 @@ var UIStrings2 = {
    */
   devtoolsS: "DevTools - {PH1}"
 };
-var str_2 = i18n3.i18n.registerUIStrings("core/host/InspectorFrontendHost.ts", UIStrings2);
+var str_2 = i18n3.i18n.registerUIStrings("core/host/InspectorFrontendHostStub.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var MAX_RECORDED_HISTOGRAMS_SIZE = 100;
 var OVERRIDES_FILE_SYSTEM_PATH = "/overrides";
@@ -734,7 +738,9 @@ var InspectorFrontendHostStub = class {
   recordFunctionCall(_event) {
   }
 };
-var InspectorFrontendHostInstance = globalThis.InspectorFrontendHost;
+
+// gen/front_end/core/host/InspectorFrontendHost.js
+var InspectorFrontendHostInstance;
 var InspectorFrontendAPIImpl = class {
   constructor() {
     for (const descriptor of EventDescriptors) {
@@ -764,24 +770,23 @@ var InspectorFrontendAPIImpl = class {
     streamWrite(id, chunk);
   }
 };
-(function() {
-  function initializeInspectorFrontendHost() {
-    if (!InspectorFrontendHostInstance) {
-      globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
-    } else {
-      const proto = InspectorFrontendHostStub.prototype;
-      for (const name of Object.getOwnPropertyNames(proto)) {
-        const stub = proto[name];
-        if (typeof stub !== "function" || InspectorFrontendHostInstance[name]) {
-          continue;
-        }
-        console.error(`Incompatible embedder: method Host.InspectorFrontendHost.${name} is missing. Using stub instead.`);
-        InspectorFrontendHostInstance[name] = stub;
+function installInspectorFrontendHost(instance) {
+  globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = instance;
+  if (!(instance instanceof InspectorFrontendHostStub)) {
+    const proto = InspectorFrontendHostStub.prototype;
+    for (const name of Object.getOwnPropertyNames(proto)) {
+      const stub = proto[name];
+      if (typeof stub !== "function" || InspectorFrontendHostInstance[name]) {
+        continue;
       }
+      console.error(`Incompatible embedder: method Host.InspectorFrontendHost.${name} is missing. Using stub instead.`);
+      InspectorFrontendHostInstance[name] = stub;
     }
-    InspectorFrontendHostInstance.events = new Common2.ObjectWrapper.ObjectWrapper();
   }
-  initializeInspectorFrontendHost();
+  InspectorFrontendHostInstance.events = new Common3.ObjectWrapper.ObjectWrapper();
+}
+(function() {
+  installInspectorFrontendHost(globalThis.InspectorFrontendHost ?? new InspectorFrontendHostStub());
   globalThis.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
 })();
 function isUnderTest(prefs) {
@@ -791,7 +796,7 @@ function isUnderTest(prefs) {
   if (prefs) {
     return prefs["isUnderTest"] === "true";
   }
-  return Common2.Settings.Settings.hasInstance() && Common2.Settings.Settings.instance().createSetting("isUnderTest", false).get();
+  return Common3.Settings.Settings.hasInstance() && Common3.Settings.Settings.instance().createSetting("isUnderTest", false).get();
 }
 
 // gen/front_end/core/host/DispatchHttpRequestClient.js
@@ -1181,7 +1186,7 @@ function convertToUserTierEnum(userTier) {
   return UserTier.PUBLIC;
 }
 var hostConfigTrackerInstance;
-var HostConfigTracker = class _HostConfigTracker extends Common3.ObjectWrapper.ObjectWrapper {
+var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.ObjectWrapper {
   #pollTimer;
   #aidaAvailability;
   constructor() {
@@ -2353,9 +2358,9 @@ var IssueCreated;
   IssueCreated2[IssueCreated2["GenericIssue::FormInputWithNoLabelError"] = 67] = "GenericIssue::FormInputWithNoLabelError";
   IssueCreated2[IssueCreated2["GenericIssue::FormAutocompleteAttributeEmptyError"] = 68] = "GenericIssue::FormAutocompleteAttributeEmptyError";
   IssueCreated2[IssueCreated2["GenericIssue::FormEmptyIdAndNameAttributesForInputError"] = 69] = "GenericIssue::FormEmptyIdAndNameAttributesForInputError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormAriaLabelledByToNonExistingId"] = 70] = "GenericIssue::FormAriaLabelledByToNonExistingId";
+  IssueCreated2[IssueCreated2["GenericIssue::FormAriaLabelledByToNonExistingIdError"] = 70] = "GenericIssue::FormAriaLabelledByToNonExistingIdError";
   IssueCreated2[IssueCreated2["GenericIssue::FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = 71] = "GenericIssue::FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormLabelHasNeitherForNorNestedInput"] = 72] = "GenericIssue::FormLabelHasNeitherForNorNestedInput";
+  IssueCreated2[IssueCreated2["GenericIssue::FormLabelHasNeitherForNorNestedInputError"] = 72] = "GenericIssue::FormLabelHasNeitherForNorNestedInputError";
   IssueCreated2[IssueCreated2["GenericIssue::FormLabelForMatchesNonExistingIdError"] = 73] = "GenericIssue::FormLabelForMatchesNonExistingIdError";
   IssueCreated2[IssueCreated2["GenericIssue::FormHasPasswordFieldWithoutUsernameFieldError"] = 74] = "GenericIssue::FormHasPasswordFieldWithoutUsernameFieldError";
   IssueCreated2[IssueCreated2["GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError"] = 75] = "GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError";

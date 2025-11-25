@@ -87,13 +87,9 @@ function markersFromProfileData(map, state, type) {
     const aggregatedByLine = new Map();
     for (const [line, value] of map) {
         if (line <= state.doc.lines) {
-            if (value instanceof Map) {
-                for (const [, data] of value) {
-                    aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
-                }
-                continue;
+            for (const [, data] of value) {
+                aggregatedByLine.set(line, (aggregatedByLine.get(line) || 0) + data);
             }
-            aggregatedByLine.set(line, value);
         }
     }
     for (const [line, value] of aggregatedByLine) {
@@ -102,12 +98,13 @@ function markersFromProfileData(map, state, type) {
     }
     return CodeMirror.RangeSet.of(markers, true);
 }
-const makeLineLevelProfilePlugin = (type) => class extends Plugin {
+const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
     updateEffect = CodeMirror.StateEffect.define();
     field;
     gutter;
     compartment = new CodeMirror.Compartment();
-    constructor(uiSourceCode) {
+    #transformer;
+    constructor(uiSourceCode, transformer) {
         super(uiSourceCode);
         this.field = CodeMirror.StateField.define({
             create() {
@@ -123,12 +120,31 @@ const makeLineLevelProfilePlugin = (type) => class extends Plugin {
             markers: view => view.state.field(this.field),
             class: `cm-${type}Gutter`,
         });
+        this.#transformer = transformer;
     }
     static accepts(uiSourceCode) {
         return uiSourceCode.contentType().hasScripts();
     }
     getLineMap() {
-        return this.uiSourceCode.getDecorationData(type);
+        const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(type);
+        if (!uiSourceCodeProfileMap) {
+            return undefined;
+        }
+        const editorProfileMap = new Map();
+        for (const [lineNumber, columnData] of uiSourceCodeProfileMap) {
+            for (const [columnNumber, data] of columnData) {
+                const editorLocation = this.#transformer.uiLocationToEditorLocation(lineNumber - 1, columnNumber - 1);
+                const oneBasedFormattedLineNumber = editorLocation.lineNumber + 1;
+                const oneBasedFormattedColumnNumber = editorLocation.columnNumber + 1;
+                let columnData = editorProfileMap.get(oneBasedFormattedLineNumber);
+                if (!columnData) {
+                    columnData = new Map();
+                    editorProfileMap.set(oneBasedFormattedLineNumber, columnData);
+                }
+                columnData.set(oneBasedFormattedColumnNumber, (columnData.get(oneBasedFormattedColumnNumber) || 0) + data);
+            }
+        }
+        return editorProfileMap;
     }
     editorExtension() {
         const map = this.getLineMap();

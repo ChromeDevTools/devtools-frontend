@@ -14278,6 +14278,20 @@ export declare namespace Page {
     interface SetPrerenderingAllowedRequest {
         isAllowed: boolean;
     }
+    interface GetAnnotatedPageContentRequest {
+        /**
+         * Whether to include actionable information. Defaults to true.
+         */
+        includeActionableInformation?: boolean;
+    }
+    interface GetAnnotatedPageContentResponse extends ProtocolResponseWithError {
+        /**
+         * The annotated page content as a base64 encoded protobuf.
+         * The format is defined by the `AnnotatedPageContent` message in
+         * components/optimization_guide/proto/features/common_quality_data.proto
+         */
+        content: binary;
+    }
     interface DomContentEventFiredEvent {
         timestamp: Network.MonotonicTime;
     }

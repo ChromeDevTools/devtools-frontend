@@ -29,9 +29,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     #contentType;
     #requestContentPromise = null;
     #decorations = new Map();
-    #formattedDecorations = new Map();
     #hasCommits = false;
-    #prettied = false;
     #messages = null;
     #content = null;
     #forceLoadOnCheckContent = false;
@@ -409,9 +407,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     getDecorationData(type) {
-        if (this.#prettied && this.#formattedDecorations.get(type)) {
-            return this.#formattedDecorations.get(type);
-        }
         return this.#decorations.get(type);
     }
     disableEdit() {
@@ -419,42 +414,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
     editDisabled() {
         return this.#disableEdit;
-    }
-    formatChanged(format) {
-        if (this.#prettied === Boolean(format)) {
-            return;
-        }
-        this.#prettied = Boolean(format);
-        if (!format) {
-            this.dispatchEventToListeners(Events.DecorationChanged, "performance" /* DecoratorType.PERFORMANCE */);
-            return;
-        }
-        const performanceDecorations = this.#decorations.get("performance" /* DecoratorType.PERFORMANCE */);
-        if (!performanceDecorations) {
-            return;
-        }
-        let formattedPerformanceDecorations = this.#formattedDecorations.get("performance" /* DecoratorType.PERFORMANCE */);
-        if (!formattedPerformanceDecorations) {
-            formattedPerformanceDecorations = new Map();
-            this.#formattedDecorations.set("performance" /* DecoratorType.PERFORMANCE */, formattedPerformanceDecorations);
-        }
-        else {
-            formattedPerformanceDecorations.clear();
-        }
-        for (const [lineNumber, columnData] of performanceDecorations) {
-            for (const [columnNumber, data] of columnData) {
-                const [formattedLineNumber, formattedColumnNumber] = format.originalToFormatted(lineNumber - 1, columnNumber - 1);
-                const oneBasedFormattedLineNumber = formattedLineNumber + 1;
-                const oneBasedFormattedColumnNumber = formattedColumnNumber + 1;
-                let lineData = formattedPerformanceDecorations.get(oneBasedFormattedLineNumber);
-                if (!lineData) {
-                    lineData = new Map();
-                    formattedPerformanceDecorations.set(oneBasedFormattedLineNumber, lineData);
-                }
-                lineData.set(oneBasedFormattedColumnNumber, (lineData.get(oneBasedFormattedColumnNumber) || 0) + data);
-            }
-        }
-        this.dispatchEventToListeners(Events.DecorationChanged, 'performance');
     }
     isIgnoreListed() {
         return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this);

@@ -65,9 +65,6 @@ export declare class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<Eve
     getDecorationData(type: string): any;
     disableEdit(): void;
     editDisabled(): boolean;
-    formatChanged(format: {
-        originalToFormatted(lineNumber: number, columnNumber?: number): number[];
-    } | null): void;
     isIgnoreListed(): boolean;
 }
 export declare enum Events {

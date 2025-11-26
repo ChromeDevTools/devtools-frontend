@@ -10,6 +10,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import type * as Foundation from '../../foundation/foundation.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -52,10 +53,12 @@ export const defaultOptionsForTabs = {
 
 export class PreRegisteredView implements View {
   private readonly viewRegistration: ViewRegistration;
+  private readonly universe?: Foundation.Universe.Universe;
   private widgetPromise: Promise<Widget>|null;
 
-  constructor(viewRegistration: ViewRegistration) {
+  constructor(viewRegistration: ViewRegistration, universe?: Foundation.Universe.Universe) {
     this.viewRegistration = viewRegistration;
+    this.universe = universe;
     this.widgetPromise = null;
   }
 
@@ -124,7 +127,10 @@ export class PreRegisteredView implements View {
 
   widget(): Promise<Widget> {
     if (this.widgetPromise === null) {
-      this.widgetPromise = this.viewRegistration.loadView();
+      if (!this.universe) {
+        throw new Error('Creating views via ViewManager requires a Foundation.Universe');
+      }
+      this.widgetPromise = this.viewRegistration.loadView(this.universe);
     }
     return this.widgetPromise;
   }
@@ -170,7 +176,9 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   private readonly preRegisteredViews: PreRegisteredView[] = [];
 
-  private constructor() {
+  // TODO(crbug.com/458180550): Pass the universe unconditionally once tests no longer rely
+  //   on `instance()` to create ViewManagers lazily in after/afterEach blocks.
+  private constructor(universe?: Foundation.Universe.Universe) {
     super();
 
     // Read override setting for location
@@ -184,7 +192,7 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     for (const view of getRegisteredViewExtensions()) {
       const location = view.location || 'none';
       const views = viewsByLocation.get(location) || [];
-      views.push(new PreRegisteredView(view));
+      views.push(new PreRegisteredView(view, universe));
       viewsByLocation.set(location, views);
     }
 
@@ -220,10 +228,11 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   static instance(opts: {
     forceNew: boolean|null,
+    universe?: Foundation.Universe.Universe,
   } = {forceNew: null}): ViewManager {
-    const {forceNew} = opts;
+    const {forceNew, universe} = opts;
     if (!viewManagerInstance || forceNew) {
-      viewManagerInstance = new ViewManager();
+      viewManagerInstance = new ViewManager(universe);
     }
 
     return viewManagerInstance;

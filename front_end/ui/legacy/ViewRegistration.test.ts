@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as QuickOpen from './components/quick_open/quick_open.js';
@@ -41,6 +42,8 @@ describeWithEnvironment('ViewRegistration', () => {
         return new MockView();
       },
     });
+    UI.ViewManager.ViewManager.instance(
+        {forceNew: true, universe: {context: new Root.DevToolsContext.DevToolsContext()}});
   });
 
   it('retrieves a registered view', async () => {

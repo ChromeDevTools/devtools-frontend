@@ -132,6 +132,7 @@ let loadedPanelCommonModule: typeof PanelCommon|undefined;
 export class MainImpl {
   #readyForTestPromise = Promise.withResolvers<void>();
   #veStartPromise!: Promise<void>;
+  #universe!: Foundation.Universe.Universe;
 
   constructor() {
     MainImpl.instanceForTest = this;
@@ -175,8 +176,8 @@ export class MainImpl {
         runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
       },
     };
-    const universe = new Foundation.Universe.Universe(creationOptions);
-    Root.DevToolsContext.setGlobalInstance(universe.context);
+    this.#universe = new Foundation.Universe.Universe(creationOptions);
+    Root.DevToolsContext.setGlobalInstance(this.#universe.context);
 
     await this.requestAndRegisterLocaleData();
 
@@ -425,6 +426,7 @@ export class MainImpl {
         {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
     UI.ContextMenu.ContextMenu.initialize();
     UI.ContextMenu.ContextMenu.installHandler(document);
+    UI.ViewManager.ViewManager.instance({forceNew: true, universe: this.#universe});
 
     // These instances need to be created early so they don't miss any events about requests/issues/etc.
     Logs.NetworkLog.NetworkLog.instance();

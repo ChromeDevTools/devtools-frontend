@@ -663,6 +663,7 @@ export default defineConfig([
       '@devtools/jslog-context-list': 'error',
       '@devtools/es-modules-import': 'error',
       '@devtools/html-tagged-template': 'error',
+      '@devtools/enforce-ui-kit-named-import': 'error',
       '@devtools/enforce-custom-element-definitions-location': [
         'error',
         {

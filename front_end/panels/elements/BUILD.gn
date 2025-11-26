@@ -94,6 +94,7 @@ devtools_ui_module("elements") {
     "../../panels/mobile_throttling:bundle",
     "../../panels/utils:bundle",
     "../../ui/components/adorners:bundle",
+    "../../ui/components/annotations:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",
     "../../ui/components/highlighting:bundle",

@@ -27,6 +27,7 @@ devtools_ui_module("common") {
     "AiCodeCompletionSummaryToolbar.ts",
     "AiCodeCompletionTeaser.ts",
     "AiCodeGenerationTeaser.ts",
+    "AnnotationManager.ts",
     "BadgeNotification.ts",
     "DOMLinkifier.ts",
     "ExtensionPanel.ts",

@@ -19,7 +19,7 @@ interface BaseAnnotationData {
   anchorToString?: string;
 }
 
-interface ElementsAnnotationData extends BaseAnnotationData {
+export interface ElementsAnnotationData extends BaseAnnotationData {
   type: AnnotationType.ELEMENT_NODE;
   anchor?: SDK.DOMModel.DOMNode;
 }

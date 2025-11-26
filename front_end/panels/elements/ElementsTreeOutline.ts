@@ -299,6 +299,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return this.#viewOutput.elementsTreeOutline;
   }
 
+  treeElementForNode(node: SDK.DOMModel.DOMNode): ElementsTreeElement|null {
+    return this.#viewOutput.elementsTreeOutline?.findTreeElement(node) || null;
+  }
+
   override performUpdate(): void {
     this.#view(
         {

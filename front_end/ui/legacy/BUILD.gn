@@ -111,6 +111,7 @@ devtools_ui_module("ui") {
     "../../models/geometry:bundle",
     "../../models/text_utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../components/annotations:bundle",
     "../components/buttons:bundle",
     "../components/helpers:bundle",
     "../components/highlighting:bundle",

@@ -47,7 +47,7 @@ const UIStringsNotTranslated = {
   mainThreadActivity: 'Investigating main thread activity…',
 } as const;
 const lockedString = i18n.i18n.lockedString;
-const annotationsEnabled = Annotations.AnnotationRepository.AnnotationRepository.annotationsEnabled();
+const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
 
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -1094,15 +1094,15 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
   async addElementAnnotation(elementId: string, annotationMessage: string):
       Promise<FunctionCallHandlerResult<unknown>> {
-    if (!Annotations.AnnotationRepository.AnnotationRepository.annotationsEnabled()) {
+    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
       console.warn('Received agent request to add annotation with annotations disabled');
       return {error: 'Annotations are not currently enabled'};
     }
 
     // eslint-disable-next-line no-console
     console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
-    Annotations.AnnotationRepository.AnnotationRepository.instance().addAnnotationWithAnchor(
-        annotationMessage, elementId, Annotations.AnnotationType.AnnotationType.ELEMENT_NODE);
+    Annotations.AnnotationRepository.instance().addAnnotationWithAnchor(
+        annotationMessage, elementId, Annotations.AnnotationType.ELEMENT_NODE);
     return {result: {success: true}};
   }
 }

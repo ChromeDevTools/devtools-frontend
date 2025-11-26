@@ -10,6 +10,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
@@ -53,6 +54,10 @@ const UIStrings = {
    * @description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
    */
   previewFeature: 'Preview feature',
+  /**
+   * @description Indicates that a tab contains annotation(s).
+   */
+  panelContainsAnnotation: 'This panel has one or more annotations',
   /**
    * @description Text to move a tab forwar.
    */
@@ -121,6 +126,11 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.currentDevicePixelRatio = window.devicePixelRatio;
     ZoomManager.instance().addEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.zoomChanged, this);
     this.makeTabSlider();
+
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      Annotations.AnnotationRepository.instance().addEventListener(
+          Annotations.Events.ANNOTATION_ADDED, this.#onAnnotationAdded, this);
+    }
   }
 
   setAccessibleName(name: string): void {
@@ -555,6 +565,36 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.performUpdate();
   }
 
+  updateTabAnnotationIcons(): void {
+    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+      return;
+    }
+
+    const annotations = Annotations.AnnotationRepository.instance();
+    if (!annotations) {
+      return;
+    }
+
+    for (const tab of this.tabs) {
+      let primaryType = -1;
+      let secondaryType = -1;
+      switch (tab.id) {
+        case 'elements':
+          primaryType = Annotations.AnnotationType.ELEMENT_NODE;
+          secondaryType = Annotations.AnnotationType.STYLE_RULE;
+          break;
+        case 'network':
+          primaryType = Annotations.AnnotationType.NETWORK_REQUEST;
+          secondaryType = Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS;
+          break;
+      }
+
+      const showTabAnnotationIcon = annotations.getAnnotationsByType(primaryType).length > 0 ||
+          annotations.getAnnotationsByType(secondaryType).length > 0;
+      this.setTabAnnotationIcon(tab.id, showTabAnnotationIcon);
+    }
+  }
+
   override performUpdate(): void {
     if (!this.isShowing()) {
       return;
@@ -583,6 +623,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateWidths();
     this.updateTabsDropDown();
     this.updateTabSlider();
+    this.updateTabAnnotationIcons();
   }
 
   private adjustToolbarWidth(): void {
@@ -939,6 +980,17 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.automaticReorder = automatic;
   }
 
+  setTabAnnotationIcon(id: string, iconVisible: boolean): void {
+    const tab = this.tabsById.get(id);
+    if (tab) {
+      tab.tabAnnotationIcon = iconVisible;
+    }
+  }
+
+  #onAnnotationAdded(): void {
+    this.updateTabAnnotationIcons();
+  }
+
   private keyDown(event: KeyboardEvent): void {
     if (!this.currentTab) {
       return;
@@ -1009,6 +1061,7 @@ export interface EventTypes {
 export class TabbedPaneTab {
   closeable: boolean;
   previewFeature = false;
+  #tabAnnotationIcon = false;
   private readonly tabbedPane: TabbedPane;
   #id: string;
   #title: string;
@@ -1062,6 +1115,32 @@ export class TabbedPaneTab {
 
   get jslogContext(): string {
     return this.#jslogContext ?? (this.#id === 'console-view' ? 'console' : this.#id);
+  }
+
+  get tabAnnotationIcon(): boolean {
+    return this.#tabAnnotationIcon;
+  }
+
+  set tabAnnotationIcon(iconVisible: boolean) {
+    if (this.#tabAnnotationIcon === iconVisible) {
+      return;
+    }
+    this.#tabAnnotationIcon = iconVisible;
+    if (!this.#tabElement) {
+      return;
+    }
+    const iconElement = this.#tabElement.querySelector('.ai-icon');
+    if (iconVisible) {
+      if (!iconElement) {
+        const closeButton = this.#tabElement.querySelector('.close-button');
+        this.#tabElement.insertBefore(this.createTabAnnotationIcon(), closeButton);
+      }
+    } else {
+      iconElement?.remove();
+    }
+    this.#tabElement.classList.toggle('ai', iconVisible);
+    delete this.measuredWidth;
+    this.tabbedPane.requestUpdate();
   }
 
   isCloseable(): boolean {
@@ -1204,6 +1283,12 @@ export class TabbedPaneTab {
       tabElement.classList.add('preview');
     }
 
+    if (this.tabAnnotationIcon) {
+      const tabAnnotationIcon = this.createTabAnnotationIcon();
+      tabElement.appendChild(tabAnnotationIcon);
+      tabElement.classList.add('ai');
+    }
+
     if (this.closeable) {
       const closeIcon = this.createCloseIconButton();
       tabElement.appendChild(closeIcon);
@@ -1228,6 +1313,19 @@ export class TabbedPaneTab {
     }
 
     return tabElement as HTMLElement;
+  }
+
+  private createTabAnnotationIcon(): HTMLDivElement {
+    // TODO(finnur): Replace the ai-icon with the squiggly svg once it becomes available.
+    const iconContainer = document.createElement('div');
+    iconContainer.classList.add('ai-icon');
+    const tabAnnotationIcon = new IconButton.Icon.Icon();
+    tabAnnotationIcon.name = 'smart-assistant';
+    tabAnnotationIcon.classList.add('small');
+    iconContainer.appendChild(tabAnnotationIcon);
+    iconContainer.setAttribute('title', i18nString(UIStrings.panelContainsAnnotation));
+    iconContainer.setAttribute('aria-label', i18nString(UIStrings.panelContainsAnnotation));
+    return iconContainer;
   }
 
   private createCloseIconButton(): Buttons.Button.Button {

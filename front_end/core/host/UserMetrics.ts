@@ -973,7 +973,7 @@ export enum IssueCreated {
 
 export const enum DeveloperResourceLoaded {
   LOAD_THROUGH_PAGE_VIA_TARGET = 0,
-  LOAD_THROUGH_PAGE_VIA_FRAME = 1,
+  /* LOAD_THROUGH_PAGE_VIA_FRAME = 1 was barely used */
   LOAD_THROUGH_PAGE_FAILURE = 2,
   LOAD_THROUGH_PAGE_FALLBACK = 3,
   FALLBACK_AFTER_FAILURE = 4,

@@ -8,7 +8,6 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
 
-import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager, NetworkManager} from './NetworkManager.js';
 import {
@@ -313,24 +312,14 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     }
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
     const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL &&
-        parsedURL.scheme !== 'file' && parsedURL.scheme !== 'data' && parsedURL.scheme !== 'devtools';
+        parsedURL.scheme !== 'file' && parsedURL.scheme !== 'data' && parsedURL.scheme !== 'devtools' &&
+        initiator.target;
     Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
       try {
-        if (initiator.target) {
-          Host.userMetrics.developerResourceLoaded(
-              Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
-          const result = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
-          return result;
-        }
-        const frame = FrameManager.instance().getFrame(initiator.frameId);
-        if (frame) {
-          Host.userMetrics.developerResourceLoaded(
-              Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_FRAME);
-          const result =
-              await this.loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url, isBinary);
-          return result;
-        }
+        Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
+        const result = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
+        return result;
       } catch (e) {
         if (e instanceof Error) {
           Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);

@@ -2740,7 +2740,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       // non-final navigations during the trace will never have their source maps
       // fetched by the debugger model. That's only ever done here.
 
-      const initiator = {target: null, frameId: frame, initiatorUrl: sourceUrl};
+      const initiator = {
+        target: debuggerModelForFrameId.get(frame)?.target() ?? null,
+        frameId: frame,
+        initiatorUrl: sourceUrl
+      };
       const payload = await SDK.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
       return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };

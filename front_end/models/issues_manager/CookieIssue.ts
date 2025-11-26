@@ -68,27 +68,20 @@ export interface CookieReportInfo {
   insight?: Protocol.Audits.CookieIssueInsight;
 }
 
-export class CookieIssue extends Issue {
-  #issueDetails: Protocol.Audits.CookieIssueDetails;
-
-  constructor(
-      code: string, issueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
-      issueId: Protocol.Audits.IssueId|undefined) {
-    super(code, issuesModel, issueId);
-    this.#issueDetails = issueDetails;
-  }
-
+export class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetails> {
   cookieId(): string {
-    if (this.#issueDetails.cookie) {
-      const {domain, path, name} = this.#issueDetails.cookie;
+    const details = this.details();
+    if (details.cookie) {
+      const {domain, path, name} = details.cookie;
       const cookieId = `${domain};${path};${name}`;
       return cookieId;
     }
-    return this.#issueDetails.rawCookieLine ?? 'no-cookie-info';
+    return this.details().rawCookieLine ?? 'no-cookie-info';
   }
 
   primaryKey(): string {
-    const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : 'no-request';
+    const details = this.details();
+    const requestId = details.request ? details.request.requestId : 'no-request';
     return `${this.code()}-(${this.cookieId()})-(${requestId})`;
   }
 
@@ -210,22 +203,25 @@ export class CookieIssue extends Issue {
   }
 
   override cookies(): Iterable<Protocol.Audits.AffectedCookie> {
-    if (this.#issueDetails.cookie) {
-      return [this.#issueDetails.cookie];
+    const details = this.details();
+    if (details.cookie) {
+      return [details.cookie];
     }
     return [];
   }
 
   override rawCookieLines(): Iterable<string> {
-    if (this.#issueDetails.rawCookieLine) {
-      return [this.#issueDetails.rawCookieLine];
+    const details = this.details();
+    if (details.rawCookieLine) {
+      return [details.rawCookieLine];
     }
     return [];
   }
 
   override requests(): Iterable<Protocol.Audits.AffectedRequest> {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    const details = this.details();
+    if (details.request) {
+      return [details.request];
     }
     return [];
   }
@@ -244,27 +240,28 @@ export class CookieIssue extends Issue {
 
   override isCausedByThirdParty(): boolean {
     const outermostFrame = SDK.FrameManager.FrameManager.instance().getOutermostFrame();
-    return isCausedByThirdParty(outermostFrame, this.#issueDetails.cookieUrl, this.#issueDetails.siteForCookies);
+    return isCausedByThirdParty(outermostFrame, this.details().cookieUrl, this.details().siteForCookies);
   }
 
   getKind(): IssueKind {
-    if (this.#issueDetails.cookieExclusionReasons?.length > 0) {
+    if (this.details().cookieExclusionReasons?.length > 0) {
       return IssueKind.PAGE_ERROR;
     }
     return IssueKind.BREAKING_CHANGE;
   }
 
   makeCookieReportEntry(): CookieReportInfo|undefined {
-    const status = CookieIssue.getCookieStatus(this.#issueDetails);
-    if (this.#issueDetails.cookie && this.#issueDetails.cookieUrl && status !== undefined) {
-      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(this.#issueDetails.cookieUrl);
+    const status = CookieIssue.getCookieStatus(this.details());
+    const details = this.details();
+    if (details.cookie && details.cookieUrl && status !== undefined) {
+      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(details.cookieUrl);
       return {
-        name: this.#issueDetails.cookie.name,
-        domain: this.#issueDetails.cookie.domain,
+        name: details.cookie.name,
+        domain: details.cookie.domain,
         type: entity?.category,
         platform: entity?.name,
         status,
-        insight: this.#issueDetails.insight,
+        insight: this.details().insight,
       };
     }
 
@@ -332,8 +329,8 @@ export class CookieIssue extends Issue {
       return new SDK.ConsoleModel.ConsoleMessage(
           issuesModel.target().model(SDK.RuntimeModel.RuntimeModel), Common.Console.FrontendMessageSource.ISSUE_PANEL,
           Protocol.Log.LogEntryLevel.Warning, UIStrings.consoleTpcdErrorMessage, {
-            url: this.#issueDetails.request?.url as Platform.DevToolsPath.UrlString | undefined,
-            affectedResources: {requestId: this.#issueDetails.request?.requestId, issueId: this.issueId},
+            url: this.details().request?.url as Platform.DevToolsPath.UrlString | undefined,
+            affectedResources: {requestId: this.details().request?.requestId, issueId: this.issueId},
             isCookieReportIssue: true
           });
     }

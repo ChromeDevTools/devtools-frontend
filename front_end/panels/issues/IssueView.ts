@@ -159,7 +159,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
     let count = 0;
     for (const issue of mixedContentIssues) {
-      const details = issue.getDetails();
+      const details = issue.details();
       this.appendAffectedMixedContent(details);
       count++;
     }

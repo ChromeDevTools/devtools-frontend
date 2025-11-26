@@ -48,9 +48,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class GenericIssue extends Issue {
-  #issueDetails: Protocol.Audits.GenericIssueDetails;
-
+export class GenericIssue extends Issue<Protocol.Audits.GenericIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.GenericIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId?: Protocol.Audits.IssueId) {
@@ -58,13 +56,13 @@ export class GenericIssue extends Issue {
       Protocol.Audits.InspectorIssueCode.GenericIssue,
       issueDetails.errorType,
     ].join('::');
-    super(issueCode, issuesModel, issueId);
-    this.#issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel, issueId);
   }
 
   override requests(): Iterable<Protocol.Audits.AffectedRequest> {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    const details = this.details();
+    if (details.request) {
+      return [details.request];
     }
     return [];
   }
@@ -74,25 +72,22 @@ export class GenericIssue extends Issue {
   }
 
   primaryKey(): string {
-    const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : 'no-request';
-    return `${this.code()}-(${this.#issueDetails.frameId})-(${this.#issueDetails.violatingNodeId})-(${
-        this.#issueDetails.violatingNodeAttribute})-(${requestId})`;
+    const details = this.details();
+    const requestId = details.request ? details.request.requestId : 'no-request';
+    return `${this.code()}-(${details.frameId})-(${details.violatingNodeId})-(${details.violatingNodeAttribute})-(${
+        requestId})`;
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.#issueDetails.errorType);
+    const description = issueDescriptions.get(this.details().errorType);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
 
-  details(): Protocol.Audits.GenericIssueDetails {
-    return this.#issueDetails;
-  }
-
   getKind(): IssueKind {
-    return issueTypes.get(this.#issueDetails.errorType) || IssueKind.IMPROVEMENT;
+    return issueTypes.get(this.details().errorType) || IssueKind.IMPROVEMENT;
   }
 
   static fromInspectorIssue(

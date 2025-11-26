@@ -42,25 +42,22 @@ export function isCrossOriginEmbedderPolicyIssue(reason: Protocol.Audits.Blocked
   return false;
 }
 
-export class CrossOriginEmbedderPolicyIssue extends Issue {
-  #issueDetails: Protocol.Audits.BlockedByResponseIssueDetails;
-
+export class CrossOriginEmbedderPolicyIssue extends Issue<Protocol.Audits.BlockedByResponseIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.BlockedByResponseIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
-    super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
-    this.#issueDetails = issueDetails;
+    super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issueDetails, issuesModel);
   }
 
   primaryKey(): string {
-    return `${this.code()}-(${this.#issueDetails.request.requestId})`;
+    return `${this.code()}-(${this.details().request.requestId})`;
   }
 
   override getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
-    return [this.#issueDetails];
+    return [this.details()];
   }
 
   override requests(): Iterable<Protocol.Audits.AffectedRequest> {
-    return [this.#issueDetails.request];
+    return [this.details().request];
   }
 
   getCategory(): IssueCategory {

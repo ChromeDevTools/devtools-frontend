@@ -38,9 +38,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ContentSecurityPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class ContentSecurityPolicyIssue extends Issue {
-  #issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails;
-
+export class ContentSecurityPolicyIssue extends Issue<Protocol.Audits.ContentSecurityPolicyIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId?: Protocol.Audits.IssueId) {
@@ -48,8 +46,7 @@ export class ContentSecurityPolicyIssue extends Issue {
       Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
       issueDetails.contentSecurityPolicyViolationType,
     ].join('::');
-    super(issueCode, issuesModel, issueId);
-    this.#issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel, issueId);
   }
 
   getCategory(): IssueCategory {
@@ -57,7 +54,7 @@ export class ContentSecurityPolicyIssue extends Issue {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails, [
+    return JSON.stringify(this.details(), [
       'blockedURL',
       'contentSecurityPolicyViolationType',
       'violatedDirective',
@@ -71,19 +68,15 @@ export class ContentSecurityPolicyIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.#issueDetails.contentSecurityPolicyViolationType);
+    const description = issueDescriptions.get(this.details().contentSecurityPolicyViolationType);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
 
-  details(): Protocol.Audits.ContentSecurityPolicyIssueDetails {
-    return this.#issueDetails;
-  }
-
   getKind(): IssueKind {
-    if (this.#issueDetails.isReportOnly) {
+    if (this.details().isReportOnly) {
       return IssueKind.IMPROVEMENT;
     }
     return IssueKind.PAGE_ERROR;

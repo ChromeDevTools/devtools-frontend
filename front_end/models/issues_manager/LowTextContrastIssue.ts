@@ -18,27 +18,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/LowTextContrastIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class LowTextContrastIssue extends Issue {
-  #issueDetails: Protocol.Audits.LowTextContrastIssueDetails;
-
+export class LowTextContrastIssue extends Issue<Protocol.Audits.LowTextContrastIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.LowTextContrastIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
-    super('LowTextContrastIssue', issuesModel);
-    this.#issueDetails = issueDetails;
+    super('LowTextContrastIssue', issueDetails, issuesModel);
   }
 
   primaryKey(): string {
     // We intend to keep only one issue per element so other issues for the element will be discarded even
     // if the issue content is slightly different.
-    return `${this.code()}-(${this.#issueDetails.violatingNodeId})`;
+    return `${this.code()}-(${this.details().violatingNodeId})`;
   }
 
   getCategory(): IssueCategory {
     return IssueCategory.LOW_TEXT_CONTRAST;
-  }
-
-  details(): Protocol.Audits.LowTextContrastIssueDetails {
-    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription {

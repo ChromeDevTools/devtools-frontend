@@ -19,7 +19,7 @@ export class StubIssue extends Issue {
   private mockIssueCategory?: IssueCategory;
 
   constructor(code: string, requestIds: string[], cookieNames: string[], issueKind = IssueKind.IMPROVEMENT) {
-    super(code);
+    super(code, null);
     this.requestIds = requestIds;
     this.cookieNames = cookieNames;
     this.issueKind = issueKind;

@@ -8,22 +8,16 @@ import * as Protocol from '../../generated/protocol.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
-export class PropertyRuleIssue extends Issue {
-  readonly #issueDetails: Protocol.Audits.PropertyRuleIssueDetails;
+export class PropertyRuleIssue extends Issue<Protocol.Audits.PropertyRuleIssueDetails> {
   readonly #primaryKey: string;
   constructor(issueDetails: Protocol.Audits.PropertyRuleIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const code = JSON.stringify(issueDetails);
-    super(code, issuesModel);
+    super(code, issueDetails, issuesModel);
     this.#primaryKey = code;
-    this.#issueDetails = issueDetails;
   }
 
   override sources(): Protocol.Audits.SourceCodeLocation[] {
-    return [this.#issueDetails.sourceCodeLocation];
-  }
-
-  details(): Protocol.Audits.PropertyRuleIssueDetails {
-    return this.#issueDetails;
+    return [this.details().sourceCodeLocation];
   }
 
   primaryKey(): string {
@@ -31,7 +25,7 @@ export class PropertyRuleIssue extends Issue {
   }
 
   getPropertyName(): string {
-    switch (this.#issueDetails.propertyRuleIssueReason) {
+    switch (this.details().propertyRuleIssueReason) {
       case Protocol.Audits.PropertyRuleIssueReason.InvalidInherits:
         return 'inherits';
       case Protocol.Audits.PropertyRuleIssueReason.InvalidInitialValue:
@@ -43,13 +37,13 @@ export class PropertyRuleIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription {
-    if (this.#issueDetails.propertyRuleIssueReason === Protocol.Audits.PropertyRuleIssueReason.InvalidName) {
+    if (this.details().propertyRuleIssueReason === Protocol.Audits.PropertyRuleIssueReason.InvalidName) {
       return {
         file: 'propertyRuleInvalidNameIssue.md',
         links: [],
       };
     }
-    const value = this.#issueDetails.propertyValue ? `: ${this.#issueDetails.propertyValue}` : '';
+    const value = this.details().propertyValue ? `: ${this.details().propertyValue}` : '';
     const property = `${this.getPropertyName()}${value}`;
     return {
       file: 'propertyRuleIssue.md',

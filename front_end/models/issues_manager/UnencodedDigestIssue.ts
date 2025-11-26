@@ -26,9 +26,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/UnencodedDigestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class UnencodedDigestIssue extends Issue<string> {
-  readonly #issueDetails: Protocol.Audits.UnencodedDigestIssueDetails;
-
+export class UnencodedDigestIssue extends Issue<Protocol.Audits.UnencodedDigestIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.UnencodedDigestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
@@ -36,12 +34,7 @@ export class UnencodedDigestIssue extends Issue<string> {
           code: `${Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue}::${issueDetails.error}`,
           umaCode: `${Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue}::${issueDetails.error}`,
         },
-        issuesModel);
-    this.#issueDetails = issueDetails;
-  }
-
-  details(): Protocol.Audits.UnencodedDigestIssueDetails {
-    return this.#issueDetails;
+        issueDetails, issuesModel);
   }
 
   override primaryKey(): string {

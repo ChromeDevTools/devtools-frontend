@@ -108,9 +108,7 @@ function getIssueCode(details: Protocol.Audits.SharedDictionaryIssueDetails): Is
   }
 }
 
-export class SharedDictionaryIssue extends Issue {
-  readonly #issueDetails: Protocol.Audits.SharedDictionaryIssueDetails;
-
+export class SharedDictionaryIssue extends Issue<Protocol.Audits.SharedDictionaryIssueDetails, IssueCode> {
   constructor(
       issueDetails: Protocol.Audits.SharedDictionaryIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
@@ -121,13 +119,12 @@ export class SharedDictionaryIssue extends Issue {
             issueDetails.sharedDictionaryError,
           ].join('::'),
         },
-        issuesModel);
-    this.#issueDetails = issueDetails;
+        issueDetails, issuesModel);
   }
 
   override requests(): Iterable<Protocol.Audits.AffectedRequest> {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    if (this.details().request) {
+      return [this.details().request];
     }
     return [];
   }
@@ -136,12 +133,8 @@ export class SharedDictionaryIssue extends Issue {
     return IssueCategory.OTHER;
   }
 
-  details(): Protocol.Audits.SharedDictionaryIssueDetails {
-    return this.#issueDetails;
-  }
-
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.#issueDetails.sharedDictionaryError);
+    const description = issueDescriptions.get(this.details().sharedDictionaryError);
     if (!description) {
       return null;
     }
@@ -149,7 +142,7 @@ export class SharedDictionaryIssue extends Issue {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
 
   getKind(): IssueKind {

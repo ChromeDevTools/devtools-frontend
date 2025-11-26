@@ -115,26 +115,19 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
   }
 }
 
-export class CorsIssue extends Issue<IssueCode> {
-  #issueDetails: Protocol.Audits.CorsIssueDetails;
-
+export class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode> {
   constructor(
       issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId: Protocol.Audits.IssueId|undefined) {
-    super(getIssueCode(issueDetails), issuesModel, issueId);
-    this.#issueDetails = issueDetails;
+    super(getIssueCode(issueDetails), issueDetails, issuesModel, issueId);
   }
 
   getCategory(): IssueCategory {
     return IssueCategory.CORS;
   }
 
-  details(): Protocol.Audits.CorsIssueDetails {
-    return this.#issueDetails;
-  }
-
   getDescription(): MarkdownIssueDescription|null {
-    switch (getIssueCode(this.#issueDetails)) {
+    switch (getIssueCode(this.details())) {
       case IssueCode.INSECURE_PRIVATE_NETWORK:
         return {
           file: 'corsInsecurePrivateNetwork.md',
@@ -269,16 +262,14 @@ export class CorsIssue extends Issue<IssueCode> {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
 
   getKind(): IssueKind {
-    if (this.#issueDetails.isWarning &&
-        (this.#issueDetails.corsErrorStatus.corsError === Protocol.Network.CorsError.InsecurePrivateNetwork ||
-         this.#issueDetails.corsErrorStatus.corsError ===
-             Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork ||
-         this.#issueDetails.corsErrorStatus.corsError ===
-             Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork)) {
+    if (this.details().isWarning &&
+        (this.details().corsErrorStatus.corsError === Protocol.Network.CorsError.InsecurePrivateNetwork ||
+         this.details().corsErrorStatus.corsError === Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork ||
+         this.details().corsErrorStatus.corsError === Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork)) {
       return IssueKind.BREAKING_CHANGE;
     }
     return IssueKind.PAGE_ERROR;

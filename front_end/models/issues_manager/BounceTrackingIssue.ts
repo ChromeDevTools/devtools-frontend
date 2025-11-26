@@ -18,12 +18,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/BounceTrackingIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class BounceTrackingIssue extends Issue {
-  readonly #issueDetails: Protocol.Audits.BounceTrackingIssueDetails;
-
+export class BounceTrackingIssue extends Issue<Protocol.Audits.BounceTrackingIssueDetails> {
   constructor(issueDetails: Protocol.Audits.BounceTrackingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
-    super(Protocol.Audits.InspectorIssueCode.BounceTrackingIssue, issuesModel);
-    this.#issueDetails = issueDetails;
+    super(Protocol.Audits.InspectorIssueCode.BounceTrackingIssue, issueDetails, issuesModel);
   }
 
   getCategory(): IssueCategory {
@@ -42,23 +39,16 @@ export class BounceTrackingIssue extends Issue {
     };
   }
 
-  details(): Protocol.Audits.BounceTrackingIssueDetails {
-    return this.#issueDetails;
-  }
-
   getKind(): IssueKind {
     return IssueKind.BREAKING_CHANGE;
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
 
   override trackingSites(): Iterable<string> {
-    if (this.#issueDetails.trackingSites) {
-      return this.#issueDetails.trackingSites;
-    }
-    return [];
+    return this.details().trackingSites;
   }
 
   static fromInspectorIssue(

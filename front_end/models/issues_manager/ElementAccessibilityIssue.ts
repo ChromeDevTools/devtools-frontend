@@ -12,9 +12,7 @@ import {
   resolveLazyDescription
 } from './MarkdownIssueDescription.js';
 
-export class ElementAccessibilityIssue extends Issue {
-  private issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails;
-
+export class ElementAccessibilityIssue extends Issue<Protocol.Audits.ElementAccessibilityIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null,
       issueId?: Protocol.Audits.IssueId) {
@@ -22,12 +20,11 @@ export class ElementAccessibilityIssue extends Issue {
       Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
       issueDetails.elementAccessibilityIssueReason,
     ].join('::');
-    super(issueCode, issuesModel, issueId);
-    this.issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel, issueId);
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.details());
   }
 
   getDescription(): MarkdownIssueDescription|null {
@@ -37,7 +34,7 @@ export class ElementAccessibilityIssue extends Issue {
         links: [],
       };
     }
-    const description = issueDescriptions.get(this.issueDetails.elementAccessibilityIssueReason);
+    const description = issueDescriptions.get(this.details().elementAccessibilityIssueReason);
     if (!description) {
       return null;
     }
@@ -52,15 +49,11 @@ export class ElementAccessibilityIssue extends Issue {
     return IssueCategory.OTHER;
   }
 
-  details(): Protocol.Audits.ElementAccessibilityIssueDetails {
-    return this.issueDetails;
-  }
-
   isInteractiveContentAttributesSelectDescendantIssue(): boolean {
-    return this.issueDetails.hasDisallowedAttributes &&
-        (this.issueDetails.elementAccessibilityIssueReason !==
+    return this.details().hasDisallowedAttributes &&
+        (this.details().elementAccessibilityIssueReason !==
              Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild &&
-         this.issueDetails.elementAccessibilityIssueReason !==
+         this.details().elementAccessibilityIssueReason !==
              Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant);
   }
 

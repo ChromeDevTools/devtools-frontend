@@ -47,6 +47,7 @@ export type AggregationKey = {
  * of all resources that are affected by the aggregated issues.
  */
 export class AggregatedIssue extends Issue {
+  #allIssues = new Set<Issue>();
   #affectedCookies = new Map<string, {
     cookie: Protocol.Audits.AffectedCookie,
     hasRequest: boolean,
@@ -76,7 +77,7 @@ export class AggregatedIssue extends Issue {
   #key: AggregationKey;
 
   constructor(code: string, aggregationKey: AggregationKey) {
-    super(code);
+    super(code, null);
     this.#key = aggregationKey;
   }
 
@@ -203,6 +204,7 @@ export class AggregatedIssue extends Issue {
     if (!this.#representative) {
       this.#representative = issue;
     }
+    this.#allIssues.add(issue);
     this.#issueKind = unionIssueKind(this.#issueKind, issue.getKind());
     let hasRequest = false;
     for (const request of issue.requests()) {
@@ -284,6 +286,10 @@ export class AggregatedIssue extends Issue {
 
   getKind(): IssueKind {
     return this.#issueKind;
+  }
+
+  getAllIssues(): Issue[] {
+    return Array.from(this.#allIssues);
   }
 
   override isHidden(): boolean {
@@ -374,7 +380,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#hiddenAggregatedIssuesByKey.size;
   }
 
-  keyForIssue(issue: Issue<string>): AggregationKey {
+  keyForIssue(issue: Issue): AggregationKey {
     return issue.code() as unknown as AggregationKey;
   }
 }

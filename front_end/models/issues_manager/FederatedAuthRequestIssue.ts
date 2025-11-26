@@ -22,9 +22,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/FederatedAuthRequestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class FederatedAuthRequestIssue extends Issue {
-  readonly #issueDetails: Protocol.Audits.FederatedAuthRequestIssueDetails;
-
+export class FederatedAuthRequestIssue extends Issue<Protocol.Audits.FederatedAuthRequestIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.FederatedAuthRequestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     super(
@@ -35,20 +33,15 @@ export class FederatedAuthRequestIssue extends Issue {
             issueDetails.federatedAuthRequestIssueReason,
           ].join('::'),
         },
-        issuesModel);
-    this.#issueDetails = issueDetails;
+        issueDetails, issuesModel);
   }
 
   getCategory(): IssueCategory {
     return IssueCategory.OTHER;
   }
 
-  details(): Protocol.Audits.FederatedAuthRequestIssueDetails {
-    return this.#issueDetails;
-  }
-
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.#issueDetails.federatedAuthRequestIssueReason);
+    const description = issueDescriptions.get(this.details().federatedAuthRequestIssueReason);
     if (!description) {
       return null;
     }
@@ -56,7 +49,7 @@ export class FederatedAuthRequestIssue extends Issue {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
 
   getKind(): IssueKind {

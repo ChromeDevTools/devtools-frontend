@@ -109,7 +109,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
-    const details = issue.issueDetails;
+    const details = issue.details();
 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.INVALID_REGISTER_SOURCE_HEADER:
@@ -154,7 +154,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
 
   async #appendElementOrEmptyCell(
       parent: HTMLElement, issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): Promise<void> {
-    const details = issue.issueDetails;
+    const details = issue.details();
     if (details.violatingNodeId !== undefined) {
       const target = issue.model()?.target() || null;
       parent.appendChild(await this.createElementCell(

@@ -19,16 +19,13 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieDeprecatio
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** TODO(b/305738703): Move this issue into a warning on CookieIssue. **/
-export class CookieDeprecationMetadataIssue extends Issue {
-  readonly #issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails;
-
+export class CookieDeprecationMetadataIssue extends Issue<Protocol.Audits.CookieDeprecationMetadataIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails,
       issuesModel: SDK.IssuesModel.IssuesModel|null) {
     // Set a distinct code for ReadCookie and SetCookie issues, so they are grouped separately.
     const issueCode = Protocol.Audits.InspectorIssueCode.CookieDeprecationMetadataIssue + '_' + issueDetails.operation;
-    super(issueCode, issuesModel);
-    this.#issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel);
   }
 
   getCategory(): IssueCategory {
@@ -36,12 +33,12 @@ export class CookieDeprecationMetadataIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription {
-    const fileName = this.#issueDetails.operation === 'SetCookie' ? 'cookieWarnMetadataGrantSet.md' :
-                                                                    'cookieWarnMetadataGrantRead.md';
+    const fileName =
+        this.details().operation === 'SetCookie' ? 'cookieWarnMetadataGrantSet.md' : 'cookieWarnMetadataGrantRead.md';
 
     let optOutText = '';
-    if (this.#issueDetails.isOptOutTopLevel) {
-      optOutText = '\n\n (Top level site opt-out: ' + this.#issueDetails.optOutPercentage +
+    if (this.details().isOptOutTopLevel) {
+      optOutText = '\n\n (Top level site opt-out: ' + this.details().optOutPercentage +
           '% - [learn more](gracePeriodStagedControlExplainer))';
     }
 
@@ -59,16 +56,12 @@ export class CookieDeprecationMetadataIssue extends Issue {
     };
   }
 
-  details(): Protocol.Audits.CookieDeprecationMetadataIssueDetails {
-    return this.#issueDetails;
-  }
-
   getKind(): IssueKind {
     return IssueKind.BREAKING_CHANGE;
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
 
   static fromInspectorIssue(

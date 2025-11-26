@@ -19,22 +19,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedArrayBufferIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SharedArrayBufferIssue extends Issue {
-  #issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
-
+export class SharedArrayBufferIssue extends Issue<Protocol.Audits.SharedArrayBufferIssueDetails> {
   constructor(
       issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel|null) {
     const umaCode = [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issueDetails.type].join('::');
-    super({code: Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, umaCode}, issuesModel);
-    this.#issueDetails = issueDetails;
+    super({code: Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, umaCode}, issueDetails, issuesModel);
   }
 
   getCategory(): IssueCategory {
     return IssueCategory.OTHER;
-  }
-
-  details(): Protocol.Audits.SharedArrayBufferIssueDetails {
-    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription {
@@ -48,11 +41,11 @@ export class SharedArrayBufferIssue extends Issue {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
 
   getKind(): IssueKind {
-    if (this.#issueDetails.isWarning) {
+    if (this.details().isWarning) {
       return IssueKind.BREAKING_CHANGE;
     }
     return IssueKind.PAGE_ERROR;

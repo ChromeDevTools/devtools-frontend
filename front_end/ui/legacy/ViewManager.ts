@@ -168,6 +168,8 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   private readonly locationNameByViewId = new Map<string, string>();
   private readonly locationOverrideSetting: Common.Settings.Setting<Record<string, string>>;
 
+  private readonly preRegisteredViews: PreRegisteredView[] = [];
+
   private constructor() {
     super();
 
@@ -180,9 +182,9 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const viewsByLocation = new Map<ViewLocationValues|'none', PreRegisteredView[]>();
     for (const view of getRegisteredViewExtensions()) {
-      const location = view.location() || 'none';
+      const location = view.location || 'none';
       const views = viewsByLocation.get(location) || [];
-      views.push(view);
+      views.push(new PreRegisteredView(view));
       viewsByLocation.set(location, views);
     }
 
@@ -209,6 +211,7 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
+      this.preRegisteredViews.push(view);
       // Use the preferred user location if available
       const locationName = preferredExtensionLocations[viewId] || location;
       this.locationNameByViewId.set(viewId, locationName as string);
@@ -239,6 +242,10 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       toolbar.appendToolbarItem(item);
     }
     return toolbar;
+  }
+
+  getRegisteredViewExtensions(): PreRegisteredView[] {
+    return this.preRegisteredViews;
   }
 
   locationNameForViewId(viewId: string): string {
@@ -1004,7 +1011,6 @@ class StackLocation extends Location implements ViewLocation {
 export {
   getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
-  getRegisteredViewExtensions,
   maybeRemoveViewExtension,
   registerLocationResolver,
   registerViewExtension,

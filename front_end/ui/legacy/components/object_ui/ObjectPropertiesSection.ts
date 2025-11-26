@@ -37,6 +37,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
+import * as Highlighting from '../../../components/highlighting/highlighting.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -992,7 +993,7 @@ export const TREE_ELEMENT_DEFAULT_VIEW: TreeElementView = (input, output, target
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   property: ObjectTreeNode;
   override toggleOnClick: boolean;
-  private highlightChanges: UI.UIUtils.HighlightChange[];
+  private highlightChanges: Highlighting.HighlightChange[];
   private linkifier: Components.Linkifier.Linkifier|undefined;
   private readonly maxNumPropertiesToShow: number;
   readOnly!: boolean;
@@ -1115,7 +1116,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean {
-    let cssClasses = UI.UIUtils.highlightedSearchResultClassName;
+    let cssClasses = Highlighting.highlightedSearchResultClassName;
     if (additionalCssClassName) {
       cssClasses += ' ' + additionalCssClassName;
     }
@@ -1144,7 +1145,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       match = regex.exec(content);
     }
     if (ranges.length) {
-      UI.UIUtils.highlightRangesWithStyleClass(element, ranges, cssClassName, this.highlightChanges);
+      Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.highlightChanges);
     }
   }
 
@@ -1171,7 +1172,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   revertHighlightChanges(): void {
-    UI.UIUtils.revertDomChanges(this.highlightChanges);
+    Highlighting.revertDomChanges(this.highlightChanges);
     this.highlightChanges = [];
   }
 

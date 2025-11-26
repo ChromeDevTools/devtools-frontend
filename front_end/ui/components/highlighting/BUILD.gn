@@ -12,6 +12,7 @@ devtools_ui_module("highlighting") {
   sources = [
     "HighlightElement.ts",
     "HighlightManager.ts",
+    "MarkupHighlight.ts",
   ]
   deps = [ "../../../models/text_utils:bundle" ]
 }
@@ -30,6 +31,7 @@ devtools_ui_module("unittests") {
   sources = [
     "HighlightElement.test.ts",
     "HighlightManager.test.ts",
+    "MarkupHighlight.test.ts",
   ]
 
   deps = [

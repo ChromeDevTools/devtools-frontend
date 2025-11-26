@@ -92,6 +92,7 @@ devtools_ui_module("sources") {
     "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/highlighting:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/components/text_editor:bundle",

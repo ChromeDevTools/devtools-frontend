@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -181,9 +182,9 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
       for (let i = 0; i < ranges.length; ++i) {
         ranges[i].offset -= fileNameIndex + 1;
       }
-      UI.UIUtils.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
+      Highlighting.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
     } else {
-      UI.UIUtils.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
+      Highlighting.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
     }
   }
 

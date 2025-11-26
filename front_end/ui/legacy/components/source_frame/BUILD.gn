@@ -44,6 +44,7 @@ devtools_ui_module("source_frame") {
     "../../../../panels/common:bundle",
     "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../third_party/diff:bundle",
+    "../../../../ui/components/highlighting:bundle",
     "../../../../ui/components/text_editor:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/object_ui:bundle",

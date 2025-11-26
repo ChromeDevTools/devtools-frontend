@@ -592,10 +592,12 @@ class ModelData {
   async functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location):
       Promise<Workspace.UISourceCode.UIFunctionBounds|null> {
     let scope: Workspace.UISourceCode.UIFunctionBounds|null = null;
+    // Check source maps.
     scope = scope || await this.compilerMapping.functionBoundsAtRawLocation(rawLocation);
+    // Check debugger scripts.
     scope = scope || await this.#resourceScriptMapping.functionBoundsAtRawLocation(rawLocation);
-    // TODO(crbug.com/463452667): Use resourceMapping to support locations referring
-    // to HTML inline scripts.
+    // Check inline scripts inside HTML resources.
+    scope = scope || await this.#resourceMapping.functionBoundsAtRawLocation(rawLocation);
     return scope;
   }
 

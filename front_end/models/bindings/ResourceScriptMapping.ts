@@ -191,7 +191,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
 
     const result = results.findLast(
         node => node.kind === Formatter.FormatterWorkerPool.ScopeKind.FUNCTION ||
-            Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION);
+            node.kind === Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION);
     if (!result) {
       return null;
     }

@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -51,6 +51,9 @@ describeWithMockConnection('ResourceMapping', () => {
       endColumn: 0,
       sourceURL: urlString`webpack:///src/foo.js`,
       hasSourceURLComment: true,
+      source: `\nfunction foo() { console.log("foo"); }
+  foo();
+  //# sourceURL=webpack:///src/foo.js`,
     },
     {
       scriptId: '2' as Protocol.Runtime.ScriptId,
@@ -60,6 +63,7 @@ describeWithMockConnection('ResourceMapping', () => {
       endColumn: 27,
       sourceURL: url,
       hasSourceURLComment: false,
+      source: 'console.log("bar");',
     },
   ];
   const OTHER_SCRIPT_ID = '3' as Protocol.Runtime.ScriptId;
@@ -97,6 +101,15 @@ describeWithMockConnection('ResourceMapping', () => {
           undefined, hasSourceURLComment, false, length, false, null, null, null, null, embedderName, null);
     });
     assert.lengthOf(debuggerModel.scripts(), SCRIPTS.length);
+
+    setMockConnectionResponseHandler('Debugger.getScriptSource', param => {
+      return {
+        scriptSource: SCRIPTS.find(s => s.scriptId === param.scriptId)?.source ?? '',
+        getError() {
+          return undefined;
+        },
+      };
+    });
   });
 
   it('creates UISourceCode for added target', () => {
@@ -249,6 +262,28 @@ describeWithMockConnection('ResourceMapping', () => {
       });
       const mappedLines = resourceMapping.getMappedLines(uiSourceCode);
       assert.deepEqual(mappedLines, expectedLines);
+    });
+  });
+
+  describe('functionBoundsAtRawLocation', () => {
+    function makeLocation(script: typeof SCRIPTS[number], line: number, column: number): SDK.DebuggerModel.Location {
+      return new SDK.DebuggerModel.Location(debuggerModel, script.scriptId, line, column);
+    }
+
+    it('finds the function bounds for an inline script', async () => {
+      const functionBounds = await resourceMapping.functionBoundsAtRawLocation(makeLocation(SCRIPTS[0], 5, 16));
+      assert.isOk(functionBounds);
+      // TODO(crbug.com/452333154)
+      // assert.strictEqual(functionBounds.name, 'foo');
+      assert.strictEqual(functionBounds.range.startLine, 5);
+      assert.strictEqual(functionBounds.range.startColumn, 12);
+      assert.strictEqual(functionBounds.range.endLine, 5);
+      assert.strictEqual(functionBounds.range.endColumn, 38);
+    });
+
+    it('finds no function bounds for an inline script with no functions', async () => {
+      const functionBounds = await resourceMapping.functionBoundsAtRawLocation(makeLocation(SCRIPTS[1], 11, 9));
+      assert.isNotOk(functionBounds);
     });
   });
 });

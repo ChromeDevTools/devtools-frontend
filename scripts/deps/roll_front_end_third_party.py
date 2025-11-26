@@ -190,6 +190,19 @@ def main():
         revision=package_json['gitHead'],
     )
 
+    # Update README.chromium for puppeteer-core transitive dependencies.
+    if package_name == 'puppeteer-core':
+        dependencies = package_json.get('devDependencies', {})
+        for dep_name in ['mitt', 'parsel-js', 'rxjs']:
+            if dep_name in dependencies:
+                version = dependencies[dep_name].lstrip('^~')
+                # parsel-js has a different folder in devtools tree.
+                if dep_name == 'parsel-js':
+                    dep_name = 'parsel'
+                update_readme_chromium(
+                    f'./front_end/third_party/puppeteer/third_party/{dep_name}/README.chromium',
+                    version=version)
+
     tar.close()
 
     subprocess.check_call(['git', 'cl', 'format'], cwd=DEVTOOLS_PATH)

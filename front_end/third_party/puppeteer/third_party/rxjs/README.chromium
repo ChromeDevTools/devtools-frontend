@@ -1,6 +1,7 @@
 Name: rxjs
 Short Name: rxjs
 URL: https://github.com/ReactiveX/rxjs
+Version: 7.8.2
 License: Apache-2.0
 License File: LICENSE
 Security Critical: no

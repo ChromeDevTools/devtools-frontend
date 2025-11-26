@@ -39,6 +39,7 @@ DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {
 DEFAULT_FEATURE_SET.enable('DevToolsWellKnown');
 DEFAULT_FEATURE_SET.enable('DevToolsVerticalDrawer');
 DEFAULT_FEATURE_SET.enable('DevToolsAiPromptApi');
+DEFAULT_FEATURE_SET.enable('DevToolsAiAssistanceContextSelectionAgent');
 
 // The unstable feature set (can be enabled via `--enable-unstable-features`).
 const UNSTABLE_FEATURE_SET = new FeatureSet();

@@ -71,9 +71,9 @@ export class AiConversation {
   ) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
-    this.#agent = this.#createAgent(type);
-
     this.type = type;
+    this.#agent = this.#createAgent();
+
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
@@ -212,14 +212,14 @@ export class AiConversation {
     };
   }
 
-  #createAgent(conversationType: ConversationType): AiAgent<unknown> {
+  #createAgent(): AiAgent<unknown> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
       changeManager: this.#changeManager,
     };
     let agent: AiAgent<unknown>;
-    switch (conversationType) {
+    switch (this.type) {
       case ConversationType.STYLING: {
         agent = new StylingAgent(options);
         break;

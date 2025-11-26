@@ -1569,6 +1569,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 systemMessage.parts.pop();
               }
             }
+            break;
           }
         }
 

@@ -237,7 +237,8 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
   /**
    * Function implementation that the LLM will try to execute,
    */
-  handler: (args: Args, options?: FunctionHandlerOptions) => Promise<FunctionCallHandlerResult<ReturnType>>;
+
+  handler(args: Args, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<ReturnType>>;
 }
 
 interface AidaFetchResult {
@@ -618,10 +619,12 @@ export abstract class AiAgent<T> {
     }
   }
 
-  async * #callFunction(name: string, args: Record<string, unknown>, options?: {
-    signal?: AbortSignal,
-    approved?: boolean,
-  }): AsyncGenerator<FunctionCallResponseData, {result: unknown}> {
+  async *
+      #callFunction(
+          name: string,
+          args: Record<string, unknown>,
+          options?: FunctionHandlerOptions,
+          ): AsyncGenerator<FunctionCallResponseData, {result: unknown}> {
     const call = this.#functionDeclarations.get(name);
     if (!call) {
       throw new Error(`Function ${name} is not found.`);
@@ -655,7 +658,7 @@ export abstract class AiAgent<T> {
       }
     }
 
-    let result = await call.handler(args, options) as FunctionCallHandlerResult<unknown>;
+    let result = await call.handler(args, options);
 
     if ('requiresApproval' in result) {
       if (code) {

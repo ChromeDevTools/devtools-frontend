@@ -154,3 +154,38 @@ if (Root.Runtime.experiments.isEnabled('yourExperimentNameHere')) {
   // Experiment code here
 }
 ```
+
+## A/B Testing with Finch and `base::Feature`
+
+`base::Feature` flags can be used with Finch to conduct A/B testing by toggling feature flags for a defined percentage of users. A/B testing can be a good way of testing the waters. However, since the time to get meaningful metrics may take a long time, it shouldn't be used to get feedback on options quickly.
+
+### Advantages and Disadvantages
+
+#### Advantages
+
+*   **Straightforward Setup**: Finch configuration for A/B testing is simple, with reusable templates. Upcoming [automation tools](http://go/finch-automation-doc) will make this even easier.
+*   **Integrated Dashboard**: UMA-based Finch dashboards are available for monitoring experiments and tracking UMA histograms.
+*   **Flexible Rollout**: Rollout percentages can be dynamically managed.
+
+#### Disadvantages
+
+*   **Time-to-Meaningful Metrics**: It can take a long time to gather enough data from users, which may delay releases. This is especially true when waiting for features to reach the Stable channel.
+*   **Deployment Restrictions**: Finch changes are subject to freezes (e.g., around holidays) and cannot be deployed on weekends.
+*   **Potential Rollout Latency**: Rollouts can take from 1-2 days to several weeks to reach all users.
+*   **Launch Coordination**: A/B testing on Beta and Stable channels requires coordination with the formal launch process.
+
+### General Information
+
+#### Deployment Cycle of Finch changes: How and when do Finch changes propagate to the user?
+
+1.  A Finch CL is pushed to servers.
+2.  The client pulls the configuration (usually within hours).
+3.  The change is applied after a Chrome restart (which can take days).
+
+#### Querying Visual Logging Data for Experiments
+
+To query VE (Visual Logging) data for your experiment, you will need the decimal hashes of your study and study groups.
+
+*   **Finding Field Trial Hashes**: Use the [go/finch-hashes](http://go/finch-hashes) tool.
+*   **Study Name/ID (`name_id`)**: This is your study name plus the `StructuredMetrics` suffix (e.g., `DevToolsAiSubmenuPromptsStructuredMetrics`).
+*   **Experiment Group ID (`group_id`)**: This is the experiment group name plus the `StructuredMetrics` suffix (e.g., `LaunchStructuredMetrics`).

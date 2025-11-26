@@ -1101,8 +1101,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     // eslint-disable-next-line no-console
     console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
-    Annotations.AnnotationRepository.instance().addAnnotationWithAnchor(
-        annotationMessage, elementId, Annotations.AnnotationType.ELEMENT_NODE);
+    Annotations.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
     return {result: {success: true}};
   }
 }

@@ -6,19 +6,22 @@ import * as Common from '../../../core/common/common.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 
-import type {AnnotationType} from './AnnotationType.js';
+import {AnnotationType} from './AnnotationType.js';
 
-interface AnnotationData {
+interface BaseAnnotationData {
   id: number;
   type: AnnotationType;
   message: string;
   // Sometimes the anchor for an annotation is not known, but is provided using a
   // string id instead (which can be converted to an `anchor` later).
   lookupId: string;
-  // What to anchor the annotation to.
-  anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest|null;
   // Sometimes we want annotations to anchor to a particular string on the page.
   anchorToString?: string;
+}
+
+interface ElementsAnnotationData extends BaseAnnotationData {
+  type: AnnotationType.ELEMENT_NODE;
+  anchor?: SDK.DOMModel.DOMNode;
 }
 
 export const enum Events {
@@ -26,13 +29,13 @@ export const enum Events {
 }
 
 export interface EventTypes {
-  [Events.ANNOTATION_ADDED]: AnnotationData;
+  [Events.ANNOTATION_ADDED]: BaseAnnotationData;
 }
 
 export class AnnotationRepository {
   static #instance: AnnotationRepository|null = null;
   #events = new Common.ObjectWrapper.ObjectWrapper<EventTypes>();
-  #annotations: AnnotationData[] = [];
+  #annotations: BaseAnnotationData[] = [];
   #nextId = 0;
 
   static instance(): AnnotationRepository {
@@ -55,7 +58,7 @@ export class AnnotationRepository {
     return this.#events.addEventListener(eventType, listener, thisObject);
   }
 
-  getAnnotationsByType(type: AnnotationType): AnnotationData[] {
+  getAnnotationsByType(type: AnnotationType): BaseAnnotationData[] {
     if (!AnnotationRepository.annotationsEnabled()) {
       console.warn('Received query for annotation types with annotations disabled');
       return [];
@@ -65,23 +68,23 @@ export class AnnotationRepository {
     return annotations;
   }
 
-  addAnnotationWithAnchor(
+  addElementsAnnotation(
       label: string,
-      anchor: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest|string|null,
-      type: AnnotationType,
-      anchorToString = '',
+      lookupId?: string,
+      anchor?: SDK.DOMModel.DOMNode,
+      anchorToString?: string,
       ): void {
     if (!AnnotationRepository.annotationsEnabled()) {
       console.warn('Received annotation registration with annotations disabled');
       return;
     }
 
-    const annotationData = {
+    const annotationData: ElementsAnnotationData = {
       id: this.#nextId++,
-      type,
+      type: AnnotationType.ELEMENT_NODE,
       message: label,
-      lookupId: typeof anchor === 'string' ? anchor : 'None',
-      anchor: typeof anchor === 'string' ? null : anchor,
+      lookupId: lookupId || '',
+      anchor,
       anchorToString
     };
     this.#annotations.push(annotationData);

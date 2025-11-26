@@ -5,6 +5,5 @@ export declare class OpenFileQuickOpen extends FilteredUISourceCodeListProvider 
     attach(): void;
     uiSourceCodeSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode | null, lineNumber?: number, columnNumber?: number): void;
     filterProject(project: Workspace.Workspace.Project): boolean;
-    renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void;
-    renderAsTwoRows(): boolean;
+    renderItem(itemIndex: number, query: string, wrapperElement: Element): void;
 }

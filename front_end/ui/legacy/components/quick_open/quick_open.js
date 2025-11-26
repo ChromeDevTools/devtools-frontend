@@ -99,16 +99,20 @@ devtools-text-prompt {
   overflow: hidden auto;
 }
 
-.filtered-list-widget-item-wrapper {
+.filtered-list-widget-item {
   color: var(--sys-color-on-surface);
   display: flex;
   font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
   padding: 0 var(--sys-size-7);
   gap: var(--sys-size-7);
   height: var(--sys-size-14);
+  white-space: break-spaces;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--sys-typescale-body4-size);
 }
 
-.filtered-list-widget-item-wrapper devtools-icon {
+.filtered-list-widget-item devtools-icon {
   align-self: center;
   flex: none;
   width: 18px;
@@ -119,63 +123,15 @@ devtools-text-prompt {
   }
 }
 
-.filtered-list-widget-item-wrapper.selected {
+.filtered-list-widget-item.selected {
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-.filtered-list-widget-item {
-  white-space: break-spaces;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  align-self: center;
-  font-size: var(--sys-typescale-body4-size);
+.filtered-list-widget-item > div {
   flex: auto;
-}
-
-.filtered-list-widget-item.is-ignore-listed * {
-  color: var(--sys-color-state-disabled);
-}
-
-.filtered-list-widget-item span.highlight {
-  font-weight: var(--ref-typeface-weight-bold);
-}
-
-.filtered-list-widget-item .filtered-list-widget-title {
   white-space: nowrap;
-  flex: initial;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.filtered-list-widget-item .filtered-list-widget-subtitle {
-  flex: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--sys-color-on-surface-subtle);
-  padding-left: var(--sys-size-3);
-  display: flex;
-  white-space: pre;
-}
-
-.filtered-list-widget-item .filtered-list-widget-subtitle .first-part {
-  flex-shrink: 1000;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.filtered-list-widget-item-wrapper .tag {
-  font-size: var(--sys-typescale-body5-size);
-  line-height: var(--sys-typescale-headline5-line-height);
-  align-self: center;
-  flex-shrink: 0;
-}
-
-.filtered-list-widget-item-wrapper .deprecated-tag {
-  font-size: 11px;
-  color: var(--sys-color-token-subtle);
-}
-
-.filtered-list-widget-item.one-row {
   line-height: var(--sys-typescale-body3-line-height);
   align-items: center;
   align-content: center;
@@ -183,18 +139,20 @@ devtools-text-prompt {
   gap: var(--sys-size-4);
 }
 
-.filtered-list-widget-item.one-row .filtered-list-widget-title {
-  display: inline;
-}
-
-.filtered-list-widget-item.two-rows {
-  display: grid;
-  align-content: center;
-  gap: var(--sys-size-2);
-}
-
-.filtered-list-widget-item-wrapper:not(.search-mode) .filtered-list-widget-item.two-rows .filtered-list-widget-title {
+.filtered-list-widget-item span.highlight {
   font-weight: var(--ref-typeface-weight-bold);
+}
+
+.filtered-list-widget-item .tag {
+  font-size: var(--sys-typescale-body5-size);
+  line-height: var(--sys-typescale-headline5-line-height);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.filtered-list-widget-item .deprecated-tag {
+  font-size: 11px;
+  color: var(--sys-color-token-subtle);
 }
 
 .not-found-text {
@@ -220,18 +178,13 @@ devtools-text-prompt {
     border-color: ButtonText;
   }
 
-  .filtered-list-widget-item-wrapper .filtered-list-widget-title,
-  .filtered-list-widget-item-wrapper .filtered-list-widget-subtitle,
+  .filtered-list-widget-item,
   .quickpick-description {
     color: ButtonText;
   }
 
-  .filtered-list-widget-item-wrapper.selected {
+  .filtered-list-widget-item.selected {
     background-color: Highlight;
-  }
-
-  .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item .filtered-list-widget-title,
-  .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item .filtered-list-widget-subtitle {
     color: HighlightText;
   }
 
@@ -486,18 +439,12 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
   }
   createElementForItem(item2) {
     const wrapperElement = document.createElement("div");
-    wrapperElement.className = "filtered-list-widget-item-wrapper";
-    const itemElement = wrapperElement.createChild("div");
-    const renderAsTwoRows = this.provider?.renderAsTwoRows();
-    itemElement.className = "filtered-list-widget-item " + (renderAsTwoRows ? "two-rows" : "one-row");
-    const titleElement = itemElement.createChild("div", "filtered-list-widget-title");
-    const subtitleElement = itemElement.createChild("div", "filtered-list-widget-subtitle");
-    subtitleElement.textContent = "\u200B";
+    wrapperElement.className = "filtered-list-widget-item";
     if (this.provider) {
-      this.provider.renderItem(item2, this.cleanValue(), titleElement, subtitleElement);
+      this.provider.renderItem(item2, this.cleanValue(), wrapperElement);
       wrapperElement.setAttribute("jslog", `${VisualLogging.item(this.provider.jslogContextAt(item2)).track({ click: true })}`);
     }
-    UI.ARIAUtils.markAsOption(itemElement);
+    UI.ARIAUtils.markAsOption(wrapperElement);
     return wrapperElement;
   }
   heightForItem(_item) {
@@ -765,13 +712,10 @@ var Provider = class {
   itemScoreAt(_itemIndex, _query) {
     return 1;
   }
-  renderItem(_itemIndex, _query, _titleElement, _subtitleElement) {
+  renderItem(_itemIndex, _query, _wrapperElement) {
   }
   jslogContextAt(_itemIndex) {
     return this.jslogContext;
-  }
-  renderAsTwoRows() {
-    return false;
   }
   selectItem(_itemIndex, _promptValue) {
   }
@@ -1133,32 +1077,30 @@ var CommandMenuProvider = class extends Provider {
     }
     return score;
   }
-  renderItem(itemIndex, query, titleElement, subtitleElement) {
+  renderItem(itemIndex, query, wrapperElement) {
     const command = this.commands[itemIndex];
+    const itemElement = wrapperElement.createChild("div");
+    const titleElement = itemElement.createChild("div");
     titleElement.removeChildren();
     const icon = IconButton.Icon.create(categoryIcons[command.category]);
-    titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
+    wrapperElement.insertBefore(icon, itemElement);
     UI2.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);
+    const subtitleElement = itemElement.createChild("div");
     if (command.featurePromotionId) {
       const badge = UI2.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
       if (badge) {
-        titleElement.parentElement?.insertBefore(badge, subtitleElement);
+        itemElement.insertBefore(badge, subtitleElement);
       }
     }
     subtitleElement.textContent = command.shortcut;
     const deprecationWarning = command.deprecationWarning;
     if (deprecationWarning) {
-      const deprecatedTagElement = titleElement.parentElement?.createChild("span", "deprecated-tag");
-      if (deprecatedTagElement) {
-        deprecatedTagElement.textContent = i18nString3(UIStrings3.deprecated);
-        deprecatedTagElement.title = deprecationWarning;
-      }
+      const deprecatedTagElement = itemElement.createChild("span", "deprecated-tag");
+      deprecatedTagElement.textContent = i18nString3(UIStrings3.deprecated);
+      deprecatedTagElement.title = deprecationWarning;
     }
-    const tagElement = titleElement.parentElement?.parentElement?.createChild("span", "tag");
-    if (!tagElement) {
-      return;
-    }
+    const tagElement = wrapperElement.createChild("span", "tag");
     tagElement.textContent = command.category;
   }
   jslogContextAt(itemIndex) {
@@ -1274,12 +1216,14 @@ var HelpQuickOpen = class extends Provider {
   itemScoreAt(itemIndex, _query) {
     return -this.providers[itemIndex].prefix.length;
   }
-  renderItem(itemIndex, _query, titleElement, _subtitleElement) {
+  renderItem(itemIndex, _query, wrapperElement) {
     const provider = this.providers[itemIndex];
+    const itemElement = wrapperElement.createChild("div");
+    const titleElement = itemElement.createChild("div");
     const iconElement = new IconButton2.Icon.Icon();
     iconElement.name = provider.iconName;
     iconElement.classList.add("large");
-    titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
+    wrapperElement.insertBefore(iconElement, itemElement);
     UI3.UIUtils.createTextChild(titleElement, provider.title);
   }
   jslogContextAt(itemIndex) {
@@ -1289,9 +1233,6 @@ var HelpQuickOpen = class extends Provider {
     if (itemIndex !== null) {
       QuickOpenImpl.show(this.providers[itemIndex].prefix);
     }
-  }
-  renderAsTwoRows() {
-    return false;
   }
 };
 registerProvider({

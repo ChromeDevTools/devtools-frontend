@@ -130,21 +130,10 @@ const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin 
         if (!uiSourceCodeProfileMap) {
             return undefined;
         }
-        const editorProfileMap = new Map();
-        for (const [lineNumber, columnData] of uiSourceCodeProfileMap) {
-            for (const [columnNumber, data] of columnData) {
-                const editorLocation = this.#transformer.uiLocationToEditorLocation(lineNumber - 1, columnNumber - 1);
-                const oneBasedFormattedLineNumber = editorLocation.lineNumber + 1;
-                const oneBasedFormattedColumnNumber = editorLocation.columnNumber + 1;
-                let columnData = editorProfileMap.get(oneBasedFormattedLineNumber);
-                if (!columnData) {
-                    columnData = new Map();
-                    editorProfileMap.set(oneBasedFormattedLineNumber, columnData);
-                }
-                columnData.set(oneBasedFormattedColumnNumber, (columnData.get(oneBasedFormattedColumnNumber) || 0) + data);
-            }
-        }
-        return editorProfileMap;
+        return Workspace.UISourceCode.createMappedProfileData(uiSourceCodeProfileMap, (line, column) => {
+            const editorLocation = this.#transformer.uiLocationToEditorLocation(line, column);
+            return [editorLocation.lineNumber, editorLocation.columnNumber];
+        });
     }
     editorExtension() {
         const map = this.getLineMap();

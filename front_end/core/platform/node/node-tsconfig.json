@@ -29,10 +29,12 @@
     "target": "es2023",
     "tsBuildInfoFile": "node-tsconfig.json.tsbuildinfo",
     "typeRoots": [
-      "../../../../../../../node_modules/@types"
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../node_modules"
     ],
     "types": [
-      "node"
+      "node",
+      "undici-types"
     ],
     "useUnknownInCatchVariables": false
   },

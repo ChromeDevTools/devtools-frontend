@@ -32,7 +32,8 @@
     "target": "ES2023",
     "tsBuildInfoFile": "testing-tsconfig.json.tsbuildinfo",
     "typeRoots": [
-      "../../../../../node_modules/@types"
+      "../../../../../node_modules/@types",
+      "../../../../../node_modules"
     ],
     "types": [
       "mocha",

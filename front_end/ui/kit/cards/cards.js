@@ -4,14 +4,14 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/cards/Card.js
+// gen/front_end/ui/kit/cards/Card.js
 var Card_exports = {};
 __export(Card_exports, {
   Card: () => Card
 });
 import { html, nothing, render } from "./../../lit/lit.js";
 
-// gen/front_end/ui/components/cards/card.css.js
+// gen/front_end/ui/kit/cards/card.css.js
 var card_css_default = `/*
  * Copyright 2024 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
@@ -72,7 +72,7 @@ var card_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./card.css")} */`;
 
-// gen/front_end/ui/components/cards/Card.js
+// gen/front_end/ui/kit/cards/Card.js
 var Card = class extends HTMLElement {
   static observedAttributes = ["heading"];
   #shadow = this.attachShadow({ mode: "open" });

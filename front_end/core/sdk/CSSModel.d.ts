@@ -21,7 +21,7 @@ export interface LayoutProperties {
     isFlex: boolean;
     isGrid: boolean;
     isSubgrid: boolean;
-    isMasonry: boolean;
+    isGridLanes: boolean;
     isContainer: boolean;
     hasScroll: boolean;
 }

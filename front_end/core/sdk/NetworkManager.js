@@ -1140,7 +1140,11 @@ export class NetworkDispatcher {
                 sendBufferSize: event.options.sendBufferSize,
                 receiveBufferSize: event.options.receiveBufferSize,
                 dnsQueryType: event.options.dnsQueryType,
-            }
+                multicastLoopback: event.options.multicastLoopback,
+                multicastTimeToLive: event.options.multicastTimeToLive,
+                multicastAllowAddressSharing: event.options.multicastAllowAddressSharing,
+            },
+            joinedMulticastGroups: new Set(),
         };
         networkRequest.setResourceType(Common.ResourceType.resourceTypes.DirectSocket);
         networkRequest.setIssueTime(event.timestamp, event.timestamp);
@@ -1226,9 +1230,27 @@ export class NetworkDispatcher {
         networkRequest.responseReceivedTime = event.timestamp;
         this.updateNetworkRequest(networkRequest);
     }
-    directUDPSocketJoinedMulticastGroup(_event) {
+    directUDPSocketJoinedMulticastGroup(event) {
+        const networkRequest = this.#requestsById.get(event.identifier);
+        if (!networkRequest?.directSocketInfo) {
+            return;
+        }
+        if (!networkRequest.directSocketInfo.joinedMulticastGroups) {
+            networkRequest.directSocketInfo.joinedMulticastGroups = new Set();
+        }
+        if (!networkRequest.directSocketInfo.joinedMulticastGroups.has(event.IPAddress)) {
+            networkRequest.directSocketInfo.joinedMulticastGroups.add(event.IPAddress);
+            this.updateNetworkRequest(networkRequest);
+        }
     }
-    directUDPSocketLeftMulticastGroup(_event) {
+    directUDPSocketLeftMulticastGroup(event) {
+        const networkRequest = this.#requestsById.get(event.identifier);
+        if (!networkRequest?.directSocketInfo?.joinedMulticastGroups) {
+            return;
+        }
+        if (networkRequest.directSocketInfo.joinedMulticastGroups.delete(event.IPAddress)) {
+            this.updateNetworkRequest(networkRequest);
+        }
     }
     trustTokenOperationDone(event) {
         const request = this.#requestsById.get(event.requestId);
@@ -1551,8 +1573,10 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
                 promises.push(agent.invoke_overrideNetworkState({
                     offline,
                     latency: globalConditions?.latency ?? 0,
-                    downloadThroughput: !globalConditions || globalConditions.download < 0 ? 0 : globalConditions.download,
-                    uploadThroughput: !globalConditions || globalConditions.upload < 0 ? 0 : globalConditions.upload,
+                    downloadThroughput: globalConditions?.download ?? -1,
+                    uploadThroughput: globalConditions?.upload ?? -1,
+                    connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) :
+                        "none" /* Protocol.Network.ConnectionType.None */,
                 }));
             }
             this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));

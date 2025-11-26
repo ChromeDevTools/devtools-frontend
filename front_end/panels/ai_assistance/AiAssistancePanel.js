@@ -1158,16 +1158,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         try {
             let systemMessage = {
                 entity: "model" /* ChatMessageEntity.MODEL */,
-                steps: [],
+                parts: [],
             };
             let step = { isLoading: true };
             /**
              * Commits the step to props only if necessary.
              */
             function commitStep() {
-                if (systemMessage.steps.at(-1) !== step) {
-                    systemMessage.steps.push(step);
+                const lastPart = systemMessage.parts.at(-1);
+                if (lastPart?.type === 'step' && lastPart.step === step) {
+                    return;
                 }
+                systemMessage.parts.push({
+                    type: 'step',
+                    step,
+                });
             }
             this.#isLoading = true;
             let announcedAnswerLoading = false;
@@ -1183,15 +1188,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         });
                         systemMessage = {
                             entity: "model" /* ChatMessageEntity.MODEL */,
-                            steps: [],
+                            parts: [],
                         };
                         this.#messages.push(systemMessage);
                         break;
                     }
                     case "querying" /* AiAssistanceModel.AiAgent.ResponseType.QUERYING */: {
                         step = { isLoading: true };
-                        if (!systemMessage.steps.length) {
-                            systemMessage.steps.push(step);
+                        if (!systemMessage.parts.length) {
+                            commitStep();
                         }
                         break;
                     }
@@ -1214,7 +1219,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "suggestions" /* AiAssistanceModel.AiAgent.ResponseType.SUGGESTIONS */: {
-                        systemMessage.suggestions = data.suggestions;
+                        const lastPart = systemMessage.parts.at(-1);
+                        if (lastPart?.type === 'answer') {
+                            lastPart.suggestions = data.suggestions;
+                        }
+                        else {
+                            systemMessage.parts.push({
+                                type: 'answer',
+                                text: '',
+                                suggestions: data.suggestions,
+                            });
+                        }
                         break;
                     }
                     case "side-effect" /* AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT */: {
@@ -1239,32 +1254,55 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "answer" /* AiAssistanceModel.AiAgent.ResponseType.ANSWER */: {
-                        systemMessage.suggestions ??= data.suggestions;
-                        systemMessage.answer = data.text;
                         systemMessage.rpcId = data.rpcId;
+                        const lastPart = systemMessage.parts.at(-1);
+                        if (lastPart?.type === 'answer') {
+                            lastPart.text = data.text;
+                            if (data.suggestions) {
+                                lastPart.suggestions = data.suggestions;
+                            }
+                        }
+                        else {
+                            const newPart = {
+                                type: 'answer',
+                                text: data.text,
+                            };
+                            if (data.suggestions) {
+                                newPart.suggestions = data.suggestions;
+                            }
+                            systemMessage.parts.push(newPart);
+                        }
                         // When there is an answer without any thinking steps, we don't want to show the thinking step.
-                        if (systemMessage.steps.length === 1 && systemMessage.steps[0].isLoading) {
-                            systemMessage.steps.pop();
+                        // TODO(crbug.com/463323934): Remove specially handling this case.
+                        if (systemMessage.parts.length > 1) {
+                            const firstPart = systemMessage.parts[0];
+                            if (firstPart.type === 'step' && firstPart.step.isLoading && !firstPart.step.thought &&
+                                !firstPart.step.code && !firstPart.step.contextDetails) {
+                                systemMessage.parts.shift();
+                            }
                         }
                         step.isLoading = false;
                         break;
                     }
                     case "error" /* AiAssistanceModel.AiAgent.ResponseType.ERROR */: {
                         systemMessage.error = data.error;
-                        systemMessage.rpcId = undefined;
-                        const lastStep = systemMessage.steps.at(-1);
-                        if (lastStep) {
+                        const lastPart = systemMessage.parts.at(-1);
+                        if (lastPart?.type === 'step') {
+                            const lastStep = lastPart.step;
                             // Mark the last step as cancelled to make the UI feel better.
                             if (data.error === "abort" /* AiAssistanceModel.AiAgent.ErrorType.ABORT */) {
                                 lastStep.canceled = true;
                                 // If error happens while the step is still loading remove it.
                             }
                             else if (lastStep.isLoading) {
-                                systemMessage.steps.pop();
+                                systemMessage.parts.pop();
                             }
                         }
                         if (data.error === "block" /* AiAssistanceModel.AiAgent.ErrorType.BLOCK */) {
-                            systemMessage.answer = undefined;
+                            const lastPart = systemMessage.parts.at(-1);
+                            if (lastPart?.type === 'answer') {
+                                systemMessage.parts.pop();
+                            }
                         }
                     }
                 }
@@ -1310,25 +1348,28 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 }
 export function getResponseMarkdown(message) {
     const contentParts = ['## AI'];
-    for (const step of message.steps) {
-        if (step.title) {
-            contentParts.push(`### ${step.title}`);
+    for (const part of message.parts) {
+        if (part.type === 'answer') {
+            contentParts.push(`### Answer\n\n${part.text}`);
         }
-        if (step.contextDetails) {
-            contentParts.push(AiAssistanceModel.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+        else {
+            const step = part.step;
+            if (step.title) {
+                contentParts.push(`### ${step.title}`);
+            }
+            if (step.contextDetails) {
+                contentParts.push(AiAssistanceModel.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+            }
+            if (step.thought) {
+                contentParts.push(step.thought);
+            }
+            if (step.code) {
+                contentParts.push(`**Code executed:**\n\`\`\`\n${step.code.trim()}\n\`\`\``);
+            }
+            if (step.output) {
+                contentParts.push(`**Data returned:**\n\`\`\`\n${step.output}\n\`\`\``);
+            }
         }
-        if (step.thought) {
-            contentParts.push(step.thought);
-        }
-        if (step.code) {
-            contentParts.push(`**Code executed:**\n\`\`\`\n${step.code.trim()}\n\`\`\``);
-        }
-        if (step.output) {
-            contentParts.push(`**Data returned:**\n\`\`\`\n${step.output}\n\`\`\``);
-        }
-    }
-    if (message.answer) {
-        contentParts.push(`### Answer\n\n${message.answer}`);
     }
     return contentParts.join('\n\n');
 }

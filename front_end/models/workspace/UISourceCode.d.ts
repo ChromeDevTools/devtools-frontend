@@ -112,6 +112,15 @@ export declare class UILocationRange {
     constructor(uiSourceCode: UISourceCode, range: TextUtils.TextRange.TextRange);
 }
 /**
+ * A text range inside a specific {@link UISourceCode}, representing a function.
+ */
+export declare class UIFunctionBounds {
+    readonly uiSourceCode: UISourceCode;
+    readonly range: TextUtils.TextRange.TextRange;
+    readonly name: string;
+    constructor(uiSourceCode: UISourceCode, range: TextUtils.TextRange.TextRange, name: string);
+}
+/**
  * A message associated with a range in a `UISourceCode`. The range will be
  * underlined starting at the range's start and ending at the line end (the
  * end of the range is currently disregarded).
@@ -147,3 +156,13 @@ export declare const enum DecoratorType {
     MEMORY = "memory",
     COVERAGE = "coverage"
 }
+/** 1-based. line => column => value */
+export type LineColumnProfileMap = Map<number, Map<number, number>>;
+/** Used by ProfilePlugin to track runtime/memory costs. */
+export type ProfileDataMap = Map<UISourceCode, LineColumnProfileMap>;
+/**
+ * Converts an existing LineColumnProfileMap to a new one using the provided mapping.
+ *
+ * The input and output line/column of originalToMappedLocation is 0-indexed.
+ */
+export declare function createMappedProfileData(profileData: LineColumnProfileMap, originalToMappedLocation: (line: number, column: number) => number[] | null): LineColumnProfileMap;

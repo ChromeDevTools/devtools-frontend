@@ -17,6 +17,10 @@ export default `/*
   flex: auto;
   border: none;
 
+  .resource-chunk-view-td {
+    border-bottom: 1px solid var(--sys-color-divider);
+  }
+
   & tr {
     &.resource-chunk-view-row-send td:first-child::before {
       content: "\\2B06";

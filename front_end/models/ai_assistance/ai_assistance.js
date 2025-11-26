@@ -1729,6 +1729,7 @@ import * as Platform from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
+import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as Trace6 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js
@@ -2819,6 +2820,19 @@ The order of headers corresponds to an internal fixed list. If a header is not p
       `[${headerValues ?? ""}]`
     ];
     return parts.join(";");
+  }
+  formatFunctionCode(code) {
+    const { startLine, startColumn } = code.range;
+    const { startLine: contextStartLine, startColumn: contextStartColumn, endLine: contextEndLine, endColumn: contextEndColumn } = code.rangeWithContext;
+    const name = code.functionBounds.name;
+    const url = code.functionBounds.uiSourceCode.url();
+    const parts = [];
+    parts.push(`${name} @ ${url}:${startLine}:${startColumn}. With added context, chunk is from ${contextStartLine}:${contextStartColumn} to ${contextEndLine}:${contextEndColumn}`);
+    parts.push("\nThe following is a markdown block of JavaScript. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.\n");
+    parts.push("```");
+    parts.push(code.codeWithContext);
+    parts.push("```");
+    return parts.join("\n");
   }
 };
 
@@ -4632,10 +4646,66 @@ ${result}`,
         return { result: { callTree } };
       }
     });
+    this.declareFunction("getFunctionCode", {
+      description: "Returns the code for a function defined at the given location.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          scriptUrl: {
+            type: 1,
+            description: "The url of the function.",
+            nullable: false
+          },
+          line: {
+            type: 3,
+            description: "The line number where the function is defined.",
+            nullable: false
+          },
+          column: {
+            type: 3,
+            description: "The column number where the function is defined.",
+            nullable: false
+          }
+        }
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString3("Looking up function code\u2026"),
+          action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+        };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getFunctionCode");
+        if (args.line === void 0) {
+          return { error: "Missing arg: line" };
+        }
+        if (args.column === void 0) {
+          return { error: "Missing arg: column" };
+        }
+        if (!this.#formatter) {
+          throw new Error("missing formatter");
+        }
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        if (!target) {
+          throw new Error("missing target");
+        }
+        const url = args.scriptUrl;
+        const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, args.line, args.column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
+        if (!code) {
+          return { error: "Could not find code" };
+        }
+        const result = this.#formatter.formatFunctionCode(code);
+        const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
+        this.#cacheFunctionResult(focus, key, result);
+        return { result: { result } };
+      }
+    });
     const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
     const isTraceApp = Root5.Runtime.Runtime.isTraceApp();
     this.declareFunction("getResourceContent", {
-      description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
+      description: "Returns the content of the resource with the given url. Only use this for text resource types. Prefer getFunctionCode when possible.",
       parameters: {
         type: 6,
         description: "",
@@ -6868,14 +6938,6 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
       }
     } catch (error) {
       return this.#generateErrorResponse(error.message);
-    }
-  }
-  async *handleConversationWithHistory(items, conversation) {
-    for await (const data of items) {
-      if (data.type !== "answer" || data.complete) {
-        void conversation?.addHistoryItem(data);
-      }
-      yield data;
     }
   }
   async *#createAndDoExternalConversation(opts) {

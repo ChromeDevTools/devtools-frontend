@@ -4,6 +4,187 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
+// gen/front_end/models/source_map_scopes/FunctionCodeResolver.js
+var FunctionCodeResolver_exports = {};
+__export(FunctionCodeResolver_exports, {
+  getFunctionCodeFromLocation: () => getFunctionCodeFromLocation,
+  getFunctionCodeFromRawLocation: () => getFunctionCodeFromRawLocation
+});
+import * as SDK from "./../../core/sdk/sdk.js";
+import * as Bindings from "./../bindings/bindings.js";
+import * as Formatter from "./../formatter/formatter.js";
+import * as TextUtils from "./../text_utils/text_utils.js";
+import * as Workspace from "./../workspace/workspace.js";
+var inputCache = /* @__PURE__ */ new WeakMap();
+async function prepareInput(uiSourceCode, content) {
+  const formattedContent = await format(uiSourceCode, content);
+  const text = new TextUtils.Text.Text(formattedContent ? formattedContent.formattedContent : content);
+  let performanceData = uiSourceCode.getDecorationData(
+    "performance"
+    /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */
+  );
+  if (formattedContent && performanceData) {
+    performanceData = Workspace.UISourceCode.createMappedProfileData(performanceData, (line, column) => {
+      return formattedContent.formattedMapping.originalToFormatted(line, column);
+    });
+  }
+  return { text, formattedContent, performanceData };
+}
+async function prepareInputAndCache(uiSourceCode, content) {
+  let cachedPromise = inputCache.get(uiSourceCode);
+  if (cachedPromise) {
+    return await cachedPromise;
+  }
+  cachedPromise = prepareInput(uiSourceCode, content);
+  inputCache.set(uiSourceCode, cachedPromise);
+  return await cachedPromise;
+}
+function extractPerformanceDataByLine(textRange, performanceData) {
+  const { startLine, startColumn, endLine, endColumn } = textRange;
+  const byLine = new Array(endLine - startLine + 1).fill(0);
+  for (let line = startLine; line <= endLine; line++) {
+    const lineData = performanceData.get(line + 1);
+    if (!lineData) {
+      continue;
+    }
+    if (line !== startLine && line !== endLine) {
+      byLine[line - startLine] = lineData.values().reduce((acc, cur) => acc + cur);
+      continue;
+    }
+    const column0 = line === startLine ? startColumn + 1 : 0;
+    const column1 = line === endLine ? endColumn + 1 : Number.POSITIVE_INFINITY;
+    let totalData = 0;
+    for (const [column, data] of lineData) {
+      if (column >= column0 && column <= column1) {
+        totalData += data;
+      }
+    }
+    byLine[line - startLine] = totalData;
+  }
+  return byLine.map((data) => Math.round(data * 10) / 10);
+}
+function createFunctionCode(inputData, functionBounds, options) {
+  let { startLine, startColumn, endLine, endColumn } = functionBounds.range;
+  if (inputData.formattedContent) {
+    const startMapped = inputData.formattedContent.formattedMapping.originalToFormatted(startLine, startColumn);
+    startLine = startMapped[0];
+    startColumn = startMapped[1];
+    const endMapped = inputData.formattedContent.formattedMapping.originalToFormatted(endLine, endColumn);
+    endLine = endMapped[0];
+    endColumn = endMapped[1];
+  }
+  const text = inputData.text;
+  const content = text.value();
+  const range = new TextUtils.TextRange.TextRange(startLine, startColumn, endLine, endColumn);
+  const functionStartOffset = text.offsetFromPosition(startLine, startColumn);
+  const functionEndOffset = text.offsetFromPosition(endLine, endColumn);
+  let contextStartOffset = 0;
+  if (options?.contextLength !== void 0) {
+    const contextLength = options.contextLength;
+    contextStartOffset = Math.max(contextStartOffset, functionStartOffset - contextLength);
+  }
+  if (options?.contextLineLength !== void 0) {
+    const contextLineLength = options.contextLineLength;
+    const position = text.offsetFromPosition(Math.max(startLine - contextLineLength, 0), 0);
+    contextStartOffset = Math.max(contextStartOffset, position);
+  }
+  let contextEndOffset = content.length;
+  if (options?.contextLength !== void 0) {
+    const contextLength = options.contextLength;
+    contextEndOffset = Math.min(contextEndOffset, functionEndOffset + contextLength);
+  }
+  if (options?.contextLineLength !== void 0) {
+    const contextLineLength = options.contextLineLength;
+    const position = text.offsetFromPosition(Math.min(endLine + contextLineLength, text.lineCount() - 1), Number.POSITIVE_INFINITY);
+    contextEndOffset = Math.min(contextEndOffset, position);
+  }
+  const contextStart = text.positionFromOffset(contextStartOffset);
+  const contextEnd = text.positionFromOffset(contextEndOffset);
+  const rangeWithContext = new TextUtils.TextRange.TextRange(contextStart.lineNumber, contextStart.columnNumber, contextEnd.lineNumber, contextEnd.columnNumber);
+  const code = content.substring(functionStartOffset, functionEndOffset);
+  const before = content.substring(contextStartOffset, functionStartOffset);
+  const after = content.substring(functionEndOffset, contextEndOffset);
+  let codeWithContext;
+  if (options?.appendProfileData && inputData.performanceData) {
+    const performanceDataByLine = extractPerformanceDataByLine(range, inputData.performanceData);
+    const lines = performanceDataByLine.map((data, i) => {
+      let line = text.lineAt(startLine + i);
+      const isLastLine = i === performanceDataByLine.length - 1;
+      if (i === 0) {
+        if (isLastLine) {
+          line = line.substring(startColumn, endColumn);
+        } else {
+          line = line.substring(startColumn);
+        }
+      } else if (isLastLine) {
+        line = line.substring(0, endColumn);
+      }
+      if (isLastLine) {
+        data = 0;
+      }
+      return data ? `${line} // ${data} ms` : line;
+    });
+    const annotatedCode = lines.join("\n");
+    codeWithContext = before + `<FUNCTION_START>${annotatedCode}<FUNCTION_END>` + after;
+  } else {
+    codeWithContext = before + `<FUNCTION_START>${code}<FUNCTION_END>` + after;
+  }
+  return {
+    functionBounds,
+    text,
+    code,
+    range,
+    codeWithContext,
+    rangeWithContext
+  };
+}
+async function getFunctionCodeFromLocation(target, url, line, column, options) {
+  const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+  if (!debuggerModel) {
+    throw new Error("missing debugger model");
+  }
+  let uiSourceCode;
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
+  for (const project of projects) {
+    uiSourceCode = project.uiSourceCodeForURL(url);
+    if (uiSourceCode) {
+      break;
+    }
+  }
+  if (!uiSourceCode) {
+    return null;
+  }
+  const rawLocations = await debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
+  const rawLocation = rawLocations.at(-1);
+  if (!rawLocation) {
+    return null;
+  }
+  return await getFunctionCodeFromRawLocation(rawLocation, options);
+}
+async function format(uiSourceCode, content) {
+  const contentType = uiSourceCode.contentType();
+  const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) && TextUtils.TextUtils.isMinified(content);
+  if (!shouldFormat) {
+    return null;
+  }
+  return await Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, "	");
+}
+async function getFunctionCodeFromRawLocation(rawLocation, options) {
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  const functionBounds = await debuggerWorkspaceBinding.functionBoundsAtRawLocation(rawLocation);
+  if (!functionBounds) {
+    return null;
+  }
+  await functionBounds.uiSourceCode.requestContentData();
+  const content = functionBounds.uiSourceCode.content();
+  if (!content) {
+    return null;
+  }
+  const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content);
+  return createFunctionCode(inputData, functionBounds, options);
+}
+
 // gen/front_end/models/source_map_scopes/NamesResolver.js
 var NamesResolver_exports = {};
 __export(NamesResolver_exports, {
@@ -24,15 +205,15 @@ __export(NamesResolver_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../bindings/bindings.js";
-import * as Formatter from "./../formatter/formatter.js";
-import * as TextUtils from "./../text_utils/text_utils.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as Bindings2 from "./../bindings/bindings.js";
+import * as Formatter2 from "./../formatter/formatter.js";
+import * as TextUtils3 from "./../text_utils/text_utils.js";
 var scopeToCachedIdentifiersMap = /* @__PURE__ */ new WeakMap();
 var cachedMapByCallFrame = /* @__PURE__ */ new WeakMap();
 async function getTextFor(contentProvider) {
   const contentData = await contentProvider.requestContentData();
-  if (TextUtils.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
+  if (TextUtils3.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
     return null;
   }
   return contentData.textObj;
@@ -52,7 +233,7 @@ var computeScopeTree = async function(script) {
   if (!script.sourceMapURL) {
     return null;
   }
-  return await SDK.ScopeTreeCache.scopeTreeForScript(script);
+  return await SDK2.ScopeTreeCache.scopeTreeForScript(script);
 };
 var findScopeChain = function(scopeTree, scopeNeedle) {
   if (!contains(scopeTree, scopeNeedle)) {
@@ -113,7 +294,7 @@ var scopeIdentifiers = async function(script, scope, ancestorScopes) {
     return null;
   }
   const boundVariables = [];
-  const cursor = new TextUtils.TextCursor.TextCursor(text.lineEndings());
+  const cursor = new TextUtils3.TextCursor.TextCursor(text.lineEndings());
   for (const variable of scope.variables) {
     if (variable.kind === 3 && variable.offsets.length <= 1) {
       continue;
@@ -221,7 +402,7 @@ var resolveScope = async (script, scopeChain) => {
     if (!ranges) {
       return null;
     }
-    const uiSourceCode = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForSourceMapSourceURL(script2.debuggerModel, ranges.sourceURL, script2.isContentScript());
+    const uiSourceCode = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForSourceMapSourceURL(script2.debuggerModel, ranges.sourceURL, script2.isContentScript());
     if (!uiSourceCode) {
       return null;
     }
@@ -287,7 +468,7 @@ var resolveScope = async (script, scopeChain) => {
   }
 };
 var resolveScopeChain = async function(callFrame) {
-  const { pluginManager } = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  const { pluginManager } = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   let scopeChain = await pluginManager.resolveScopeChain(callFrame);
   if (scopeChain) {
     return scopeChain;
@@ -430,7 +611,7 @@ var ScopeWithSourceMappedVariables = class {
   extraProperties() {
     const extraProperties = this.#debuggerScope.extraProperties();
     if (this.#thisObject && this.type() === "local") {
-      extraProperties.unshift(new SDK.RemoteObject.RemoteObjectProperty(
+      extraProperties.unshift(new SDK2.RemoteObject.RemoteObjectProperty(
         "this",
         this.#thisObject,
         void 0,
@@ -445,7 +626,7 @@ var ScopeWithSourceMappedVariables = class {
     return extraProperties;
   }
 };
-var RemoteObject2 = class extends SDK.RemoteObject.RemoteObject {
+var RemoteObject2 = class extends SDK2.RemoteObject.RemoteObject {
   scope;
   object;
   constructor(scope) {
@@ -554,7 +735,7 @@ async function getFunctionNameFromScopeStart(script, lineNumber, columnNumber) {
   if (!text) {
     return null;
   }
-  const openRange = new TextUtils.TextRange.TextRange(lineNumber, columnNumber, lineNumber, columnNumber + 1);
+  const openRange = new TextUtils3.TextRange.TextRange(lineNumber, columnNumber, lineNumber, columnNumber + 1);
   if (text.extract(openRange) !== "(") {
     return null;
   }
@@ -571,13 +752,13 @@ async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNum
   if (!target || lineNumber === void 0 || columnNumber === void 0 || scriptId === void 0) {
     return null;
   }
-  const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+  const debuggerModel = target.model(SDK2.DebuggerModel.DebuggerModel);
   const script = debuggerModel?.scriptForId(String(scriptId));
   if (!debuggerModel || !script) {
     return null;
   }
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  const location = new SDK.DebuggerModel.Location(debuggerModel, scriptId, lineNumber, columnNumber);
+  const debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  const location = new SDK2.DebuggerModel.Location(debuggerModel, scriptId, lineNumber, columnNumber);
   const functionInfoFromPlugin = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(script, location);
   if (functionInfoFromPlugin && "frames" in functionInfoFromPlugin) {
     const last = functionInfoFromPlugin.frames.at(-1);
@@ -603,7 +784,7 @@ __export(ScopeChainModel_exports, {
   ScopeChainModel: () => ScopeChainModel
 });
 import * as Common2 from "./../../core/common/common.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 var ScopeChainModel = class extends Common2.ObjectWrapper.ObjectWrapper {
   #callFrame;
   /** We use the `Throttler` here to make sure that `#boundUpdate` is not run multiple times simultanously */
@@ -612,13 +793,13 @@ var ScopeChainModel = class extends Common2.ObjectWrapper.ObjectWrapper {
   constructor(callFrame) {
     super();
     this.#callFrame = callFrame;
-    this.#callFrame.debuggerModel.addEventListener(SDK2.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
-    this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK2.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+    this.#callFrame.debuggerModel.addEventListener(SDK3.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
+    this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK3.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
     void this.#throttler.schedule(this.#boundUpdate);
   }
   dispose() {
-    this.#callFrame.debuggerModel.removeEventListener(SDK2.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
-    this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK2.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+    this.#callFrame.debuggerModel.removeEventListener(SDK3.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
+    this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK3.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
     this.listeners?.clear();
   }
   async #update() {
@@ -643,6 +824,7 @@ var ScopeChain = class {
   }
 };
 export {
+  FunctionCodeResolver_exports as FunctionCodeResolver,
   NamesResolver_exports as NamesResolver,
   ScopeChainModel_exports as ScopeChainModel
 };

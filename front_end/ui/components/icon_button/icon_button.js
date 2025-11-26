@@ -152,7 +152,9 @@ var Icon = class extends HTMLElement {
   #icon;
   constructor() {
     super();
-    this.role = "presentation";
+    if (!this.role) {
+      this.role = "presentation";
+    }
     const style = document.createElement("style");
     style.textContent = icon_css_default;
     this.#icon = document.createElement("span");

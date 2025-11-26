@@ -11,7 +11,6 @@ __export(LinearMemoryHighlightChipList_exports, {
 });
 import "./../../../ui/components/icon_button/icon_button.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
-import * as UI from "./../../../ui/legacy/legacy.js";
 import { Directives, html, render } from "./../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -165,93 +164,65 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var { classMap } = Directives;
-var DEFAULT_VIEW = (input, output, target) => {
-  render(html`
-    <style>${linearMemoryHighlightChipList_css_default}</style>
-    <div class="highlight-chip-list">
-      ${input.highlightInfos.map((highlightInfo) => renderChip(highlightInfo, input))}
-    </div>`, target);
-};
-function renderChip(highlightInfo, input) {
-  const expressionName = highlightInfo.name || "<anonymous>";
-  const expressionType = highlightInfo.type;
-  const isFocused = highlightInfo === input.focusedMemoryHighlight;
-  return html`
-    <div class=${classMap({ focused: isFocused, "highlight-chip": true })}>
-      <button class="jump-to-highlight-button"
-              title=${i18nString(UIStrings.jumpToAddress)}
-              jslog=${VisualLogging.action("linear-memory-inspector.jump-to-highlight").track({ click: true })}
-              @click=${input.onJumpToAddress(highlightInfo.startAddress)}>
-        <span class="source-code">
-          <span class="value">${expressionName}</span>
-          <span class="separator">: </span>
-          <span>${expressionType}</span>
-        </span>
-      </button>
-      <div class="delete-highlight-container">
-        <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
-            jslog=${VisualLogging.action("linear-memory-inspector.delete-highlight").track({ click: true })}
-            @click=${input.onDeleteHighlight(highlightInfo)}>
-          <devtools-icon name="cross" class="medium">
-          </devtools-icon>
-        </button>
-      </div>
-    </div>`;
-}
-var LinearMemoryHighlightChipList = class extends UI.Widget.Widget {
+var LinearMemoryHighlightChipList = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
   #highlightedAreas = [];
   #focusedMemoryHighlight;
-  #jumpToAddress = (_) => {
-  };
-  #deleteHighlight = (_) => {
-  };
-  #view;
-  constructor(element, view = DEFAULT_VIEW) {
-    super(element, { useShadowDom: true });
-    this.#view = view;
+  #jumpToAddress;
+  #deleteHighlight;
+  set data(data) {
+    this.#highlightedAreas = data.highlightInfos;
+    this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
+    this.#jumpToAddress = data.jumpToAddress;
+    this.#deleteHighlight = data.deleteHighlight;
+    this.#render();
   }
-  set highlightInfos(highlightInfos) {
-    this.#highlightedAreas = highlightInfos;
-    this.requestUpdate();
+  #render() {
+    render(html`
+      <style>${linearMemoryHighlightChipList_css_default}</style>
+      <div class="highlight-chip-list">
+        ${this.#highlightedAreas.map((highlightInfo) => this.#createChip(highlightInfo))}
+      </div>`, this.#shadow);
   }
-  get highlightInfos() {
-    return this.#highlightedAreas;
+  #createChip(highlightInfo) {
+    const expressionName = highlightInfo.name || "<anonymous>";
+    const expressionType = highlightInfo.type;
+    const isFocused = highlightInfo === this.#focusedMemoryHighlight;
+    return html`
+      <div class=${classMap({ focused: isFocused, "highlight-chip": true })}>
+        <button class="jump-to-highlight-button"
+                title=${i18nString(UIStrings.jumpToAddress)}
+                jslog=${VisualLogging.action("linear-memory-inspector.jump-to-highlight").track({ click: true })}
+                @click=${() => this.#onJumpToHighlightClick(highlightInfo.startAddress)}>
+          <span class="source-code">
+            <span class="value">${expressionName}</span>
+            <span class="separator">: </span>
+            <span>${expressionType}</span>
+          </span>
+        </button>
+        <div class="delete-highlight-container">
+          <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
+              jslog=${VisualLogging.action("linear-memory-inspector.delete-highlight").track({ click: true })}
+              @click=${() => this.#onDeleteHighlightClick(highlightInfo)}>
+            <devtools-icon name="cross" class="medium">
+            </devtools-icon>
+          </button>
+        </div>
+      </div>`;
   }
-  set focusedMemoryHighlight(focusedMemoryHighlight) {
-    this.#focusedMemoryHighlight = focusedMemoryHighlight;
-    this.requestUpdate();
+  #onJumpToHighlightClick(startAddress) {
+    this.#jumpToAddress?.(startAddress);
   }
-  get focusedMemoryHighlight() {
-    return this.#focusedMemoryHighlight;
-  }
-  set jumpToAddress(jumpToAddress) {
-    this.#jumpToAddress = jumpToAddress;
-    this.requestUpdate();
-  }
-  get jumpToAddress() {
-    return this.#jumpToAddress;
-  }
-  set deleteHighlight(deleteHighlight) {
-    this.#deleteHighlight = deleteHighlight;
-    this.requestUpdate();
-  }
-  get deleteHighlight() {
-    return this.#deleteHighlight;
-  }
-  performUpdate() {
-    this.#view({
-      highlightInfos: this.#highlightedAreas,
-      focusedMemoryHighlight: this.#focusedMemoryHighlight,
-      onJumpToAddress: this.#jumpToAddress.bind(this),
-      onDeleteHighlight: this.#deleteHighlight.bind(this)
-    }, void 0, this.contentElement);
+  #onDeleteHighlightClick(highlight) {
+    this.#deleteHighlight?.(highlight);
   }
 };
+customElements.define("devtools-linear-memory-highlight-chip-list", LinearMemoryHighlightChipList);
 
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 var LinearMemoryInspector_exports = {};
 __export(LinearMemoryInspector_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   LinearMemoryInspector: () => LinearMemoryInspector
 });
 
@@ -273,7 +244,7 @@ __export(ValueInterpreterDisplay_exports, {
 });
 import "./../../../ui/components/icon_button/icon_button.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
+import * as UI from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -629,7 +600,7 @@ var ValueInterpreterDisplay = class extends HTMLElement {
   }
   #render() {
     render2(html2`
-      <style>${UI2.inspectorCommonStyles}</style>
+      <style>${UI.inspectorCommonStyles}</style>
       <style>${valueInterpreterDisplay_css_default}</style>
       <div class="value-types">
         ${SORTED_VALUE_TYPES.map((type) => this.#valueTypes.has(type) ? this.#showValue(type) : "")}
@@ -865,7 +836,7 @@ customElements.define("devtools-linear-memory-inspector-interpreter-settings", V
 import * as i18n9 from "./../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../core/platform/platform.js";
 import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
+import * as UI2 from "./../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -969,7 +940,7 @@ var LinearMemoryValueInterpreter = class extends HTMLElement {
   }
   #render() {
     render4(html4`
-      <style>${UI3.inspectorCommonStyles}</style>
+      <style>${UI2.inspectorCommonStyles}</style>
       <style>${linearMemoryValueInterpreter_css_default}</style>
       <div class="value-interpreter">
         <div class="settings-toolbar">
@@ -1396,7 +1367,7 @@ customElements.define("devtools-linear-memory-inspector-viewer", LinearMemoryVie
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 import * as Common from "./../../../core/common/common.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as UI3 from "./../../../ui/legacy/legacy.js";
 import { html as html6, nothing, render as render6 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/linearMemoryInspector.css.js
@@ -1453,7 +1424,6 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryInspector.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { widgetConfig } = UI4.Widget;
 var AddressHistoryEntry = class {
   #address = 0;
   #callback;
@@ -1471,7 +1441,7 @@ var AddressHistoryEntry = class {
     this.#callback(this.#address);
   }
 };
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW = (input, _output, target) => {
   const navigatorAddressToShow = input.currentNavigatorMode === "Submitted" ? formatAddress(input.address) : input.currentNavigatorAddressLine;
   const navigatorAddressIsValid = isValidAddress(navigatorAddressToShow, input.outerMemoryLength);
   const invalidAddressMsg = i18nString6(UIStrings6.addressHasToBeANumberBetweenSAnd, { PH1: formatAddress(0), PH2: formatAddress(input.outerMemoryLength) });
@@ -1494,13 +1464,15 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
-        <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
+        <devtools-linear-memory-highlight-chip-list
+        .data=${{
     highlightInfos: highlightedMemoryAreas,
     focusedMemoryHighlight,
     jumpToAddress: (address) => input.onJumpToAddress({ data: address }),
     deleteHighlight: input.onDeleteMemoryHighlight
-  })}>
-        </devtools-widget>
+  }}
+        >
+        </devtools-linear-memory-highlight-chip-list>
       <devtools-linear-memory-inspector-viewer
         .data=${{
     memory: input.memorySlice,
@@ -1556,7 +1528,7 @@ function getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas, address) {
   }
   return smallestEnclosingHighlight;
 }
-var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI4.Widget.Widget) {
+var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.Widget) {
   #history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
   #memory = new Uint8Array();
   #memoryOffset = 0;
@@ -1573,7 +1545,7 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI4.Wi
   #view;
   constructor(element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW2;
+    this.#view = view ?? DEFAULT_VIEW;
   }
   set memory(value) {
     this.#memory = value;

@@ -1,6 +1,6 @@
-import '../../ui/components/cards/cards.js';
+import '../../ui/kit/cards/cards.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Cards from '../../ui/components/cards/cards.js';
+import type * as Cards from '../../ui/kit/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class CPUThrottlingCard {
     element: Cards.Card.Card;

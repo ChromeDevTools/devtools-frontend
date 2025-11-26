@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/enforce-custom-element-definitions-location */
 import '../../../Images/Images.js';
 import iconStyles from './icon.css.js';
 /**
@@ -49,7 +49,9 @@ export class Icon extends HTMLElement {
     #icon;
     constructor() {
         super();
-        this.role = 'presentation';
+        if (!this.role) {
+            this.role = 'presentation';
+        }
         const style = document.createElement('style');
         style.textContent = iconStyles;
         this.#icon = document.createElement('span');

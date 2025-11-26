@@ -121,7 +121,7 @@ var RegisteredAdorners;
   RegisteredAdorners2["CONTAINER"] = "container";
   RegisteredAdorners2["FLEX"] = "flex";
   RegisteredAdorners2["GRID"] = "grid";
-  RegisteredAdorners2["MASONRY"] = "masonry";
+  RegisteredAdorners2["GRID_LANES"] = "grid-lanes";
   RegisteredAdorners2["MEDIA"] = "media";
   RegisteredAdorners2["POPOVER"] = "popover";
   RegisteredAdorners2["REVEAL"] = "reveal";
@@ -146,9 +146,9 @@ function getRegisteredAdorner(which) {
         category: "Layout",
         enabledByDefault: true
       };
-    case RegisteredAdorners.MASONRY:
+    case RegisteredAdorners.GRID_LANES:
       return {
-        name: "masonry",
+        name: "grid-lanes",
         category: "Layout",
         enabledByDefault: true
       };
@@ -2292,8 +2292,8 @@ __export(StylePropertyEditor_exports, {
   FlexboxEditor: () => FlexboxEditor,
   GridEditableProperties: () => GridEditableProperties,
   GridEditor: () => GridEditor,
-  MasonryEditableProperties: () => MasonryEditableProperties,
-  MasonryEditor: () => MasonryEditor,
+  GridLanesEditableProperties: () => GridLanesEditableProperties,
+  GridLanesEditor: () => GridLanesEditor,
   PropertyDeselectedEvent: () => PropertyDeselectedEvent,
   PropertySelectedEvent: () => PropertySelectedEvent,
   StylePropertyEditor: () => StylePropertyEditor
@@ -2511,14 +2511,14 @@ var GridEditor = class extends StylePropertyEditor {
   }
 };
 customElements.define("devtools-grid-editor", GridEditor);
-var MasonryEditor = class extends StylePropertyEditor {
-  jslogContext = "cssMasonryEditor";
-  editableProperties = MasonryEditableProperties;
+var GridLanesEditor = class extends StylePropertyEditor {
+  jslogContext = "cssGridLanesEditor";
+  editableProperties = GridLanesEditableProperties;
   findIcon(query, computedProperties) {
     return findGridContainerIcon(query, computedProperties);
   }
 };
-customElements.define("devtools-masonry-editor", MasonryEditor);
+customElements.define("devtools-grid-lanes-editor", GridLanesEditor);
 var FlexboxEditableProperties = [
   {
     propertyName: "flex-direction",
@@ -2614,7 +2614,7 @@ var GridEditableProperties = [
     ]
   }
 ];
-var MasonryEditableProperties = [
+var GridLanesEditableProperties = [
   {
     propertyName: "align-content",
     propertyValues: [

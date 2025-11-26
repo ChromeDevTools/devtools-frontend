@@ -8,7 +8,7 @@ export declare const getHeaderCells: (node: ParentNode, options?: {
 }) => HTMLTableCellElement[];
 export declare const getAllRows: (node: ParentNode) => HTMLTableRowElement[];
 export declare const assertGridContents: (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
-    #private: any;
+    "__#private@#private": any;
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     get striped(): boolean;
     set striped(striped: boolean);
@@ -26,7 +26,7 @@ export declare const assertGridContents: (gridComponent: HTMLElement, headerExpe
     onChange(mutationList: MutationRecord[]): void;
     addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void, options?: boolean | AddEventListenerOptions | undefined): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void;
-    #private: any;
+    "__#private@#private": any;
     get templateRoot(): DocumentFragment | HTMLElement;
     set template(template: import("../ui/lit/lit.js").LitTemplate);
     accessKey: string;

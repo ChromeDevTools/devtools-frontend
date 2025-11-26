@@ -630,17 +630,18 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
           <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
         </div>
       </div>
-      ${Lit.Directives.repeat(message.steps, (_, index) => index, step => {
+      ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+        const isLastPart = index === message.parts.length - 1;
+        if (part.type === 'answer') {
+            return html `<p>${renderTextAsMarkdown(part.text, markdownRenderer, { animate: !isReadOnly && isLoading && isLast && isLastPart })}</p>`;
+        }
         return renderStep({
-            step,
+            step: part.step,
             isLoading,
             markdownRenderer,
-            isLast: [...message.steps.values()].at(-1) === step && isLast,
+            isLast: isLastPart && isLast,
         });
     })}
-      ${message.answer
-        ? html `<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly && isLoading && isLast })}</p>`
-        : Lit.nothing}
       ${renderError(message)}
       ${isLast && isLoading
         ? Lit.nothing
@@ -652,7 +653,7 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
                 }
                 onFeedbackSubmit(message.rpcId, rating, feedback);
             },
-            suggestions: (isLast && !isReadOnly) ? message.suggestions : undefined,
+            suggestions: (isLast && !isReadOnly && message.parts.at(-1)?.type === 'answer') ? message.parts.at(-1).suggestions : undefined,
             onSuggestionClick,
             onCopyResponseClick: () => onCopyResponseClick(message),
             canShowFeedbackForm,

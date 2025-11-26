@@ -11,6 +11,7 @@ import type { DataDisplayDelegate } from './ProfileHeader.js';
 declare class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {
 }
 declare const HeapSnapshotSortableDataGrid_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;

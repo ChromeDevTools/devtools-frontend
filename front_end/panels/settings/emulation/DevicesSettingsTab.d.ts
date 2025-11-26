@@ -1,4 +1,4 @@
-import '../../../ui/components/cards/cards.js';
+import '../../../ui/kit/cards/cards.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 export declare class DevicesSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {

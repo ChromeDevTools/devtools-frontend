@@ -1,6 +1,10 @@
 export type ConstructorT<T> = new (...args: any[]) => T;
 /**
  * Container for singletons scoped to a single DevTools universe.
+ *
+ * When wiring up dependencies, strongly prefer to pass all direct dependencies
+ * via constructor, and not just pass a {@link DevToolsContext} around. That would hide
+ * dependencies and we want to be explicit.
  */
 export declare class DevToolsContext {
     #private;

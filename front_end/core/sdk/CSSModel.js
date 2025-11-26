@@ -308,7 +308,7 @@ export class CSSModel extends SDKModel {
             (styles.get('grid-template-columns')?.startsWith('subgrid') ||
                 styles.get('grid-template-rows')?.startsWith('subgrid'))) ??
             false;
-        const isMasonry = display === 'masonry' || display === 'inline-masonry';
+        const isGridLanes = display === 'grid-lanes' || display === 'inline-grid-lanes';
         const containerType = styles.get('container-type');
         const isContainer = Boolean(containerType) && containerType !== '' && containerType !== 'normal';
         const hasScroll = Boolean(styles.get('scroll-snap-type')) && styles.get('scroll-snap-type') !== 'none';
@@ -316,7 +316,7 @@ export class CSSModel extends SDKModel {
             isFlex,
             isGrid,
             isSubgrid,
-            isMasonry,
+            isGridLanes,
             isContainer,
             hasScroll,
         };

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { ContentProviderBasedProject } from './ContentProviderBasedProject.js';
@@ -237,6 +238,64 @@ export class ResourceMapping {
             return [];
         }
         return cssModel.createRawLocationsByURL(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
+    }
+    async functionBoundsAtRawLocation(rawLocation) {
+        const script = rawLocation.script();
+        if (!script) {
+            return null;
+        }
+        const info = this.infoForTarget(script.debuggerModel.target());
+        if (!info) {
+            return null;
+        }
+        const embedderName = script.embedderName();
+        if (!embedderName) {
+            return null;
+        }
+        const uiSourceCode = info.getProject().uiSourceCodeForURL(embedderName);
+        if (!uiSourceCode) {
+            return null;
+        }
+        let { lineNumber, columnNumber } = rawLocation;
+        lineNumber -= script.lineOffset;
+        if (lineNumber === 0) {
+            columnNumber -= script.columnOffset;
+        }
+        const scopeTreeAndText = script ? await SDK.ScopeTreeCache.scopeTreeForScript(script) : null;
+        if (!scopeTreeAndText) {
+            return null;
+        }
+        // Find the inner-most scope that maps to the given position.
+        const offset = scopeTreeAndText.text.offsetFromPosition(lineNumber, columnNumber);
+        const results = [];
+        (function walk(nodes) {
+            for (const node of nodes) {
+                if (!(offset >= node.start && offset < node.end)) {
+                    continue;
+                }
+                results.push(node);
+                walk(node.children);
+            }
+        })([scopeTreeAndText.scopeTree]);
+        const result = results.findLast(node => node.kind === 2 /* Formatter.FormatterWorkerPool.ScopeKind.FUNCTION */ ||
+            node.kind === 4 /* Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION */);
+        if (!result) {
+            return null;
+        }
+        // Map back to positions.
+        const startPosition = scopeTreeAndText.text.positionFromOffset(result.start);
+        const endPosition = scopeTreeAndText.text.positionFromOffset(result.end);
+        startPosition.lineNumber += script.lineOffset;
+        if (startPosition.lineNumber === script.lineOffset) {
+            startPosition.columnNumber += script.columnOffset;
+        }
+        endPosition.lineNumber += script.lineOffset;
+        if (endPosition.lineNumber === script.lineOffset) {
+            endPosition.columnNumber += script.columnOffset;
+        }
+        const name = ''; // TODO(crbug.com/452333154): update ScopeVariableAnalysis to include function name.
+        const range = new TextUtils.TextRange.TextRange(startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
+        return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
     }
     resetForTest(target) {
         const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);

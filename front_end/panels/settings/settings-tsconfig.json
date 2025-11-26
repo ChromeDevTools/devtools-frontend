@@ -89,9 +89,6 @@
       "path": "../../models/workspace/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/cards/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/icon_button/bundle-tsconfig.json"
     },
     {
@@ -105,6 +102,9 @@
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/cards/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

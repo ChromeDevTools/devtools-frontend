@@ -305,17 +305,19 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
         }
         return -item.lineNumber - 1;
     }
-    renderItem(itemIndex, query, titleElement, _subtitleElement) {
+    renderItem(itemIndex, query, wrapperElement) {
         const item = this.items[itemIndex];
+        const itemElement = wrapperElement.createChild('div');
+        const titleElement = itemElement.createChild('div');
         const icon = IconButton.Icon.create('deployed');
-        titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
+        wrapperElement.insertBefore(icon, itemElement);
         titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
         QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
         const sourceFrame = this.currentSourceFrame();
         if (!sourceFrame) {
             return;
         }
-        const tagElement = titleElement.parentElement?.parentElement?.createChild('span', 'tag');
+        const tagElement = wrapperElement.createChild('span', 'tag');
         if (!tagElement) {
             return;
         }

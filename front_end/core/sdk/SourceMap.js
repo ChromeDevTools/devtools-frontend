@@ -609,6 +609,10 @@ export class SourceMap {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
     }
+    findOriginalFunctionScope(position) {
+        this.#ensureSourceMapProcessed();
+        return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
+    }
     isOutlinedFrame(generatedLine, generatedColumn) {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;

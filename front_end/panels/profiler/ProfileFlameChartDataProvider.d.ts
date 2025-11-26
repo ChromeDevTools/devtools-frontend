@@ -31,6 +31,7 @@ export declare class ProfileFlameChartDataProvider implements PerfUI.FlameChart.
     entryNodesLength(): number;
 }
 declare const ProfileFlameChart_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<PerfUI.FlameChart.EventTypes>;
     addEventListener<T extends keyof PerfUI.FlameChart.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<PerfUI.FlameChart.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<PerfUI.FlameChart.EventTypes, T>;
     once<T extends keyof PerfUI.FlameChart.EventTypes>(eventType: T): Promise<PerfUI.FlameChart.EventTypes[T]>;
     removeEventListener<T extends keyof PerfUI.FlameChart.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<PerfUI.FlameChart.EventTypes[T], any>) => void, thisObject?: Object): void;
@@ -75,6 +76,7 @@ export declare class OverviewCalculator implements NetworkTimeCalculator.Calcula
     boundarySpan(): number;
 }
 declare const OverviewPane_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<OverviewPaneEventTypes>;
     addEventListener<T extends OverviewPaneEvents.WINDOW_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<OverviewPaneEventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<OverviewPaneEventTypes, T>;
     once<T extends OverviewPaneEvents.WINDOW_CHANGED>(eventType: T): Promise<OverviewPaneEventTypes[T]>;
     removeEventListener<T extends OverviewPaneEvents.WINDOW_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<OverviewPaneEventTypes[T], any>) => void, thisObject?: Object): void;

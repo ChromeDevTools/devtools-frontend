@@ -3,6 +3,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import { type DataGridData, DataGridImpl, DataGridNode, type Parameters } from './DataGrid.js';
 declare const ViewportDataGrid_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T_1], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T_1>;
     once<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1): Promise<EventTypes[T_1]>;
     removeEventListener<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T_1], any>) => void, thisObject?: Object): void;

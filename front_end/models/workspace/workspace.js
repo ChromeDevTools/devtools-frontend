@@ -97,10 +97,12 @@ var UISourceCode_exports = {};
 __export(UISourceCode_exports, {
   Events: () => Events2,
   Message: () => Message,
+  UIFunctionBounds: () => UIFunctionBounds,
   UILocation: () => UILocation,
   UILocationRange: () => UILocationRange,
   UISourceCode: () => UISourceCode,
-  UISourceCodeMetadata: () => UISourceCodeMetadata
+  UISourceCodeMetadata: () => UISourceCodeMetadata,
+  createMappedProfileData: () => createMappedProfileData
 });
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -593,6 +595,16 @@ var UILocationRange = class {
     this.range = range;
   }
 };
+var UIFunctionBounds = class {
+  uiSourceCode;
+  range;
+  name;
+  constructor(uiSourceCode, range, name) {
+    this.uiSourceCode = uiSourceCode;
+    this.range = range;
+    this.name = name;
+  }
+};
 var Message = class {
   #level;
   #text;
@@ -631,6 +643,26 @@ var UISourceCodeMetadata = class {
     this.contentSize = contentSize;
   }
 };
+function createMappedProfileData(profileData, originalToMappedLocation) {
+  const mappedProfileData = /* @__PURE__ */ new Map();
+  for (const [lineNumber, columnData] of profileData) {
+    for (const [columnNumber, data] of columnData) {
+      const mappedLocation = originalToMappedLocation(lineNumber - 1, columnNumber - 1);
+      if (!mappedLocation) {
+        continue;
+      }
+      const oneBasedFormattedLineNumber = mappedLocation[0] + 1;
+      const oneBasedFormattedColumnNumber = mappedLocation[1] + 1;
+      let mappedColumnData = mappedProfileData.get(oneBasedFormattedLineNumber);
+      if (!mappedColumnData) {
+        mappedColumnData = /* @__PURE__ */ new Map();
+        mappedProfileData.set(oneBasedFormattedLineNumber, mappedColumnData);
+      }
+      mappedColumnData.set(oneBasedFormattedColumnNumber, (mappedColumnData.get(oneBasedFormattedColumnNumber) || 0) + data);
+    }
+  }
+  return mappedProfileData;
+}
 
 // gen/front_end/models/workspace/WorkspaceImpl.js
 var projectTypes;

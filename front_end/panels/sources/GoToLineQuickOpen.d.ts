@@ -4,7 +4,7 @@ export declare class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Prov
     constructor();
     selectItem(_itemIndex: number | null, promptValue: string): void;
     itemCount(): number;
-    renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void;
+    renderItem(itemIndex: number, _query: string, wrapperElement: Element): void;
     rewriteQuery(_query: string): string;
     queryChanged(query: string): void;
     notFoundText(_query: string): string;

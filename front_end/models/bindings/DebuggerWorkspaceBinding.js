@@ -258,6 +258,11 @@ export class DebuggerWorkspaceBinding {
         }
         return [];
     }
+    async functionBoundsAtRawLocation(rawLocation) {
+        // TODO(crbug.com/463452667): first try pluginManager.
+        const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);
+        return modelData ? await modelData.functionBoundsAtRawLocation(rawLocation) : null;
+    }
     async normalizeUILocation(uiLocation) {
         const rawLocations = await this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
         for (const location of rawLocations) {
@@ -457,6 +462,16 @@ class ModelData {
         ranges ??= this.#resourceMapping.uiLocationRangeToJSLocationRanges(uiSourceCode, textRange);
         ranges ??= this.#defaultMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
         return ranges;
+    }
+    async functionBoundsAtRawLocation(rawLocation) {
+        let scope = null;
+        // Check source maps.
+        scope = scope || await this.compilerMapping.functionBoundsAtRawLocation(rawLocation);
+        // Check debugger scripts.
+        scope = scope || await this.#resourceScriptMapping.functionBoundsAtRawLocation(rawLocation);
+        // Check inline scripts inside HTML resources.
+        scope = scope || await this.#resourceMapping.functionBoundsAtRawLocation(rawLocation);
+        return scope;
     }
     translateRawFramesStep(rawFrames, translatedFrames) {
         if (!this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {

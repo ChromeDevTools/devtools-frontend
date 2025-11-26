@@ -8,6 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { TimelineRegExp } from './TimelineFilters.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 declare const TimelineTreeView_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<TimelineTreeView.EventTypes>;
     addEventListener<T extends keyof TimelineTreeView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineTreeView.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<TimelineTreeView.EventTypes, T>;
     once<T extends keyof TimelineTreeView.EventTypes>(eventType: T): Promise<TimelineTreeView.EventTypes[T]>;
     removeEventListener<T extends keyof TimelineTreeView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineTreeView.EventTypes[T], any>) => void, thisObject?: Object): void;
@@ -182,6 +183,7 @@ export declare class BottomUpTimelineTreeView extends AggregatedTimelineTreeView
     buildTree(): Trace.Extras.TraceTree.Node;
 }
 declare const TimelineStackView_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<TimelineStackView.EventTypes>;
     addEventListener<T extends keyof TimelineStackView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineStackView.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<TimelineStackView.EventTypes, T>;
     once<T extends keyof TimelineStackView.EventTypes>(eventType: T): Promise<TimelineStackView.EventTypes[T]>;
     removeEventListener<T extends keyof TimelineStackView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineStackView.EventTypes[T], any>) => void, thisObject?: Object): void;

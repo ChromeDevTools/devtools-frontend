@@ -65,9 +65,11 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     itemKeyAt(itemIndex) {
         return this.snippets[itemIndex].name();
     }
-    renderItem(itemIndex, query, titleElement, _subtitleElement) {
+    renderItem(itemIndex, query, wrapperElement) {
+        const itemElement = wrapperElement.createChild('div');
+        const titleElement = itemElement.createChild('div');
         const icon = IconButton.Icon.create('snippet', 'snippet');
-        titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
+        wrapperElement.insertBefore(icon, itemElement);
         titleElement.textContent = this.snippets[itemIndex].name();
         QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);
     }

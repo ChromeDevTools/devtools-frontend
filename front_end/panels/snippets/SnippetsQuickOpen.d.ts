@@ -12,5 +12,5 @@ export declare class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Prov
     itemScoreAt(itemIndex: number, query: string): number;
     itemCount(): number;
     itemKeyAt(itemIndex: number): string;
-    renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void;
+    renderItem(itemIndex: number, query: string, wrapperElement: Element): void;
 }

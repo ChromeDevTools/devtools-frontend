@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-import '../../../ui/components/cards/cards.js';
+import '../../../ui/kit/cards/cards.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as UI from '../../../ui/legacy/legacy.js';

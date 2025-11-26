@@ -1745,12 +1745,12 @@ var isGridContainer = (computedStyles) => {
   const display = computedStyles.get("display");
   return display === "grid" || display === "inline-grid";
 };
-var isMasonryContainer = (computedStyles) => {
+var isGridLanesContainer = (computedStyles) => {
   if (!computedStyles) {
     return false;
   }
   const display = computedStyles.get("display");
-  return display === "masonry" || display === "inline-masonry";
+  return display === "grid-lanes" || display === "inline-grid-lanes";
 };
 var isMulticolContainer = (computedStyles) => {
   if (!computedStyles) {
@@ -1860,7 +1860,7 @@ var AlignContentValidator = class extends CSSRuleValidator {
       return;
     }
     const isFlex = isFlexContainer(computedStyles);
-    if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles) && !isMasonryContainer(computedStyles)) {
+    if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles) && !isGridLanesContainer(computedStyles)) {
       const reasonPropertyDeclaration2 = buildPropertyDefinitionText("display", computedStyles?.get("display"));
       const affectedPropertyDeclarationCode2 = buildPropertyName("align-content");
       return new Hint(i18nString4(UIStrings4.ruleViolatedBySameElementRuleReason, {
@@ -1948,7 +1948,7 @@ var GridContainerValidator = class extends CSSRuleValidator {
     ]);
   }
   getHint(propertyName, computedStyles) {
-    if (isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+    if (isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
@@ -1977,7 +1977,7 @@ var GridItemValidator = class extends CSSRuleValidator {
     if (!parentComputedStyles) {
       return;
     }
-    if (isGridContainer(parentComputedStyles) || isMasonryContainer(parentComputedStyles)) {
+    if (isGridContainer(parentComputedStyles) || isGridLanesContainer(parentComputedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", parentComputedStyles?.get("display"));
@@ -2025,10 +2025,10 @@ var FlexGridValidator = class extends CSSRuleValidator {
     if (!computedStyles) {
       return;
     }
-    if (isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+    if (isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
       return;
     }
-    if (parentComputedStyles && (isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles) || isMasonryContainer(parentComputedStyles))) {
+    if (parentComputedStyles && (isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles) || isGridLanesContainer(parentComputedStyles))) {
       const reasonContainerDisplayName = buildPropertyValue(parentComputedStyles.get("display"));
       const reasonPropertyName = buildPropertyName(propertyName);
       const reasonAlternativePropertyName = buildPropertyName("justify-self");
@@ -2066,7 +2066,7 @@ var MulticolFlexGridValidator = class extends CSSRuleValidator {
     if (!computedStyles) {
       return;
     }
-    if (isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+    if (isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
@@ -2870,7 +2870,7 @@ var { html: html5, nothing, render: render4, Directives: { classMap: classMap2 }
 var ASTUtils = SDK6.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 var GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
-var MasonryEditor = ElementsComponents.StylePropertyEditor.MasonryEditor;
+var GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
 var UIStrings5 = {
   /**
    * @description Text in Color Swatch Popover Icon of the Elements panel
@@ -2922,9 +2922,9 @@ var UIStrings5 = {
    */
   gridEditorButton: "Open `grid` editor",
   /**
-   * @description Title of the button that opens the CSS Masonry editor in the Styles panel.
+   * @description Title of the button that opens the CSS Grid Lanes editor in the Styles panel.
    */
-  masonryEditorButton: "Open `masonry` editor",
+  gridLanesEditorButton: "Open `grid-lanes` editor",
   /**
    * @description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
    */
@@ -2996,7 +2996,7 @@ var EnvFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatch
     return [span];
   }
 };
-var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.FlexGridMasonryMatch) {
+var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.FlexGridGridLanesMatch) {
   // clang-format on
   #treeElement;
   #stylesPane;
@@ -3017,8 +3017,8 @@ var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
           return FlexboxEditor;
         case "grid":
           return GridEditor;
-        case "masonry":
-          return MasonryEditor;
+        case "grid-lanes":
+          return GridLanesEditor;
       }
     }
     function getButtonTitle(layoutType) {
@@ -3027,8 +3027,8 @@ var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
           return i18nString5(UIStrings5.flexboxEditorButton);
         case "grid":
           return i18nString5(UIStrings5.gridEditorButton);
-        case "masonry":
-          return i18nString5(UIStrings5.masonryEditorButton);
+        case "grid-lanes":
+          return i18nString5(UIStrings5.gridLanesEditorButton);
       }
     }
     function getSwatchType(layoutType) {
@@ -3037,7 +3037,7 @@ var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
           return 6;
         case "grid":
           return 5;
-        case "masonry":
+        case "grid-lanes":
           return 12;
       }
     }
@@ -11224,11 +11224,14 @@ var UIStrings12 = {
   /**
    * @description ARIA label for Elements Tree adorners
    */
-  enableMasonryMode: "Enable masonry mode",
   /**
    * @description ARIA label for Elements Tree adorners
    */
-  disableMasonryMode: "Disable masonry mode",
+  enableGridLanesMode: "Enable grid-lanes mode",
+  /**
+   * @description ARIA label for Elements Tree adorners
+   */
+  disableGridLanesMode: "Disable grid-lanes mode",
   /**
    * @description ARIA label for an elements tree adorner
    */
@@ -13158,7 +13161,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     const layout = await node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(nodeId);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID);
-    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.MASONRY);
+    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER);
@@ -13169,8 +13172,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       if (layout.isGrid) {
         this.pushGridAdorner(layout.isSubgrid);
       }
-      if (layout.isMasonry) {
-        this.pushMasonryAdorner();
+      if (layout.isGridLanes) {
+        this.pushGridLanesAdorner();
       }
       if (layout.isFlex) {
         this.pushFlexAdorner();
@@ -13263,15 +13266,15 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       adorner.toggle(true);
     }
   }
-  pushMasonryAdorner() {
+  pushGridLanesAdorner() {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
       return;
     }
-    const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.MASONRY);
+    const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES);
     const adorner = this.adorn(config);
-    adorner.classList.add("masonry");
+    adorner.classList.add("grid-lanes");
     const onClick = () => {
       if (adorner.isActive()) {
         node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
@@ -13283,8 +13286,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     adorner.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString11(UIStrings12.enableMasonryMode),
-      ariaLabelActive: i18nString11(UIStrings12.disableMasonryMode)
+      ariaLabelDefault: i18nString11(UIStrings12.enableGridLanesMode),
+      ariaLabelActive: i18nString11(UIStrings12.disableGridLanesMode)
     });
     node.domModel().overlayModel().addEventListener("PersistentGridOverlayStateChanged", (event) => {
       const { nodeId: eventNodeId, enabled } = event.data;
@@ -15874,9 +15877,9 @@ var UIStrings16 = {
    */
   showElementInTheElementsPanel: "Show element in the Elements panel",
   /**
-   * @description Title of a section on CSS Grid/Masonry tooling
+   * @description Title of a section on CSS Grid/Grid Lanes tooling
    */
-  gridOrMasonry: "Grid / Masonry",
+  gridOrGridLanes: "Grid / Grid Lanes",
   /**
    * @description Title of a section in the Layout Sidebar pane of the Elements panel
    */
@@ -15884,11 +15887,11 @@ var UIStrings16 = {
   /**
    * @description Title of a section in Layout sidebar pane
    */
-  gridOrMasonryOverlays: "Grid / Masonry overlays",
+  gridOrGridLanesOverlays: "Grid / Grid Lanes overlays",
   /**
-   * @description Message in the Layout panel informing users that no CSS Grid/Masonry layouts were found on the page
+   * @description Message in the Layout panel informing users that no CSS Grid/Grid Lanes layouts were found on the page
    */
-  noGridOrMasonryLayoutsFoundOnThisPage: "No grid or masonry layouts found on this page",
+  noGridOrGridLanesLayoutsFoundOnThisPage: "No grid or grid lanes layouts found on this page",
   /**
    * @description Title of the Flexbox section in the Layout panel
    */
@@ -16063,7 +16066,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           <summary class="header"
             @keydown=${input.onSummaryKeyDown}
             jslog=${VisualLogging9.sectionHeader("grid-settings").track({ click: true })}>
-            ${i18nString15(UIStrings16.gridOrMasonry)}
+            ${i18nString15(UIStrings16.gridOrGridLanes)}
           </summary>
           <div class="content-section" jslog=${VisualLogging9.section("grid-settings")}>
             <h3 class="content-section-title">${i18nString15(UIStrings16.overlayDisplaySettings)}</h3>
@@ -16096,7 +16099,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           </div>
           ${input.gridElements ? html10`<div class="content-section" jslog=${VisualLogging9.section("grid-overlays")}>
               <h3 class="content-section-title">
-                ${input.gridElements.length ? i18nString15(UIStrings16.gridOrMasonryOverlays) : i18nString15(UIStrings16.noGridOrMasonryLayoutsFoundOnThisPage)}
+                ${input.gridElements.length ? i18nString15(UIStrings16.gridOrGridLanesOverlays) : i18nString15(UIStrings16.noGridOrGridLanesLayoutsFoundOnThisPage)}
               </h3>
               ${input.gridElements.length ? html10`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
             </div>` : ""}
@@ -16177,8 +16180,8 @@ var LayoutPane = class _LayoutPane extends UI19.Widget.Widget {
     return await this.#fetchNodesByStyle([
       { name: "display", value: "grid" },
       { name: "display", value: "inline-grid" },
-      { name: "display", value: "masonry" },
-      { name: "display", value: "inline-masonry" }
+      { name: "display", value: "grid-lanes" },
+      { name: "display", value: "inline-grid-lanes" }
     ]);
   }
   async #fetchFlexContainerNodes() {

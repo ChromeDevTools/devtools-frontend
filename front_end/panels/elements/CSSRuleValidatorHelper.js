@@ -80,12 +80,12 @@ export const isGridContainer = (computedStyles) => {
     const display = computedStyles.get('display');
     return display === 'grid' || display === 'inline-grid';
 };
-export const isMasonryContainer = (computedStyles) => {
+export const isGridLanesContainer = (computedStyles) => {
     if (!computedStyles) {
         return false;
     }
     const display = computedStyles.get('display');
-    return display === 'masonry' || display === 'inline-masonry';
+    return display === 'grid-lanes' || display === 'inline-grid-lanes';
 };
 export const isMulticolContainer = (computedStyles) => {
     if (!computedStyles) {

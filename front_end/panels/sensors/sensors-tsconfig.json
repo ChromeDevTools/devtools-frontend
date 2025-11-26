@@ -64,7 +64,7 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/cards/bundle-tsconfig.json"
+      "path": "../../ui/kit/cards/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

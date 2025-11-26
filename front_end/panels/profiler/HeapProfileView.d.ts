@@ -31,6 +31,7 @@ export declare class HeapProfileView extends ProfileView implements UI.Searchabl
     createFlameChartDataProvider(): ProfileFlameChartDataProvider;
 }
 declare const SamplingHeapProfileTypeBase_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<SamplingHeapProfileType.EventTypes>;
     addEventListener<T extends keyof SamplingHeapProfileType.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<SamplingHeapProfileType.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<SamplingHeapProfileType.EventTypes, T>;
     once<T extends keyof SamplingHeapProfileType.EventTypes>(eventType: T): Promise<SamplingHeapProfileType.EventTypes[T]>;
     removeEventListener<T extends keyof SamplingHeapProfileType.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<SamplingHeapProfileType.EventTypes[T], any>) => void, thisObject?: Object): void;

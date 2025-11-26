@@ -193,6 +193,7 @@ models/persistence/NetworkPersistenceManager.test.js
 models/persistence/PersistenceImpl.test.js
 models/persistence/PlatformFileSystem.test.js
 models/project_settings/ProjectSettingsModel.test.js
+models/source_map_scopes/FunctionCodeResolver.test.js
 models/source_map_scopes/NamesResolver.test.js
 models/source_map_scopes/ScopeChainModel.test.js
 models/stack_trace/StackTraceImpl.test.js
@@ -615,7 +616,6 @@ third_party/chromium/client-variations/ClientVariations.test.js
 third_party/i18n/i18n.test.js
 ui/components/adorners/Adorner.test.js
 ui/components/buttons/Button.test.js
-ui/components/cards/Card.test.js
 ui/components/chrome_link/ChromeLink.test.js
 ui/components/code_highlighter/CodeHighlighter.test.js
 ui/components/dialogs/ButtonDialog.test.js
@@ -661,6 +661,7 @@ ui/components/tooltips/Tooltip.test.js
 ui/components/tree_outline/TreeOutline.test.js
 ui/helpers/OpenInNewTab.test.js
 ui/i18n/i18n.test.js
+ui/kit/cards/Card.test.js
 ui/legacy/ARIAUtils.test.js
 ui/legacy/ActionRegistration.test.js
 ui/legacy/Context.test.js

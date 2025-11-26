@@ -19,6 +19,7 @@ interface ViewInput {
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: HTMLElement) => void;
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 declare const StorageItemsToolbar_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<StorageItemsToolbar.EventTypes>;
     addEventListener<T extends keyof StorageItemsToolbar.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<StorageItemsToolbar.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<StorageItemsToolbar.EventTypes, T>;
     once<T extends keyof StorageItemsToolbar.EventTypes>(eventType: T): Promise<StorageItemsToolbar.EventTypes[T]>;
     removeEventListener<T extends keyof StorageItemsToolbar.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<StorageItemsToolbar.EventTypes[T], any>) => void, thisObject?: Object): void;

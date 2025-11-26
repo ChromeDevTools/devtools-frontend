@@ -30,10 +30,12 @@
     "target": "es2023",
     "tsBuildInfoFile": "formatter_worker_node_typecheck-tsconfig.json.tsbuildinfo",
     "typeRoots": [
-      "../../../../../../node_modules/@types"
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
     ],
     "types": [
-      "node"
+      "node",
+      "undici-types"
     ],
     "useUnknownInCatchVariables": false
   },

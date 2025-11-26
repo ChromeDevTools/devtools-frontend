@@ -54,10 +54,6 @@ const UIStrings = {
    */
   showMessagesFromAllContexts: 'Show messages from all contexts',
   /**
-   * @description Title of a setting under the Console category in Settings
-   */
-  logXmlhttprequests: 'Log XMLHttpRequests',
-  /**
    * @description Title of a setting under the Console category
    */
   timestamps: 'Timestamps',
@@ -281,15 +277,6 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.showMessagesFromAllContexts),
     },
   ],
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.logXmlhttprequests),
-  settingName: 'monitoring-xhr-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

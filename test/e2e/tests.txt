@@ -63,8 +63,8 @@ elements/elements-tree.test.js
 elements/filter-matched-styles.test.js
 elements/flexbox-editor.test.js
 elements/grid-editor.test.js
+elements/grid-lanes-editor.test.js
 elements/layout-pane.test.js
-elements/masonry-editor.test.js
 elements/oopif-elements.test.js
 elements/prerender.test.js
 elements/pseudo-states.test.js

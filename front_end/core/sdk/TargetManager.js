@@ -9,6 +9,16 @@ import * as Root from '../root/root.js';
 import { SDKModel } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
+    /**
+     * @deprecated
+     *
+     * Intended for {@link SDKModel} classes to be able to retrieve scoped singletons like
+     * the "PageResourceLoader" or the "FrameManager".
+     *
+     * This is only an intermediate step to migrate towards our "layering vision" where
+     * SDKModels don't require things from the next layer.
+     */
+    context;
     #targets;
     #observers;
     /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -25,8 +35,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     /**
      * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
      */
-    constructor(overrideAutoStartModels) {
+    constructor(context, overrideAutoStartModels) {
         super();
+        this.context = context;
         this.#targets = new Set();
         this.#observers = new Set();
         this.#modelListeners = new Platform.MapUtilities.Multimap();
@@ -41,7 +52,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(TargetManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(TargetManager, new TargetManager());
+            Root.DevToolsContext.globalInstance().set(TargetManager, new TargetManager(Root.DevToolsContext.globalInstance()));
         }
         return Root.DevToolsContext.globalInstance().get(TargetManager);
     }

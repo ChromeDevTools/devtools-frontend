@@ -31,13 +31,13 @@ export declare class EnvFunctionRenderer extends EnvFunctionRenderer_base {
     render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[];
 }
 declare const FlexGridRenderer_base: abstract new () => {
-    readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch, any[]>;
-    render(_match: SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch, _context: RenderingContext): Node[];
+    readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, any[]>;
+    render(_match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, _context: RenderingContext): Node[];
 };
 export declare class FlexGridRenderer extends FlexGridRenderer_base {
     #private;
     constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.FlexGridMasonryMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): Node[];
 }
 declare const CSSWideKeywordRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, any[]>;

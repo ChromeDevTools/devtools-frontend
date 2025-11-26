@@ -255,32 +255,30 @@ export class CommandMenuProvider extends Provider {
         }
         return score;
     }
-    renderItem(itemIndex, query, titleElement, subtitleElement) {
+    renderItem(itemIndex, query, wrapperElement) {
         const command = this.commands[itemIndex];
+        const itemElement = wrapperElement.createChild('div');
+        const titleElement = itemElement.createChild('div');
         titleElement.removeChildren();
         const icon = IconButton.Icon.create(categoryIcons[command.category]);
-        titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
+        wrapperElement.insertBefore(icon, itemElement);
         UI.UIUtils.createTextChild(titleElement, command.title);
         FilteredListWidget.highlightRanges(titleElement, query, true);
+        const subtitleElement = itemElement.createChild('div');
         if (command.featurePromotionId) {
             const badge = UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
             if (badge) {
-                titleElement.parentElement?.insertBefore(badge, subtitleElement);
+                itemElement.insertBefore(badge, subtitleElement);
             }
         }
         subtitleElement.textContent = command.shortcut;
         const deprecationWarning = command.deprecationWarning;
         if (deprecationWarning) {
-            const deprecatedTagElement = titleElement.parentElement?.createChild('span', 'deprecated-tag');
-            if (deprecatedTagElement) {
-                deprecatedTagElement.textContent = i18nString(UIStrings.deprecated);
-                deprecatedTagElement.title = deprecationWarning;
-            }
+            const deprecatedTagElement = itemElement.createChild('span', 'deprecated-tag');
+            deprecatedTagElement.textContent = i18nString(UIStrings.deprecated);
+            deprecatedTagElement.title = deprecationWarning;
         }
-        const tagElement = titleElement.parentElement?.parentElement?.createChild('span', 'tag');
-        if (!tagElement) {
-            return;
-        }
+        const tagElement = wrapperElement.createChild('span', 'tag');
         tagElement.textContent = command.category;
     }
     jslogContextAt(itemIndex) {

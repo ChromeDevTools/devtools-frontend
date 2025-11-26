@@ -516,6 +516,19 @@ export class UILocationRange {
     }
 }
 /**
+ * A text range inside a specific {@link UISourceCode}, representing a function.
+ */
+export class UIFunctionBounds {
+    uiSourceCode;
+    range;
+    name;
+    constructor(uiSourceCode, range, name) {
+        this.uiSourceCode = uiSourceCode;
+        this.range = range;
+        this.name = name;
+    }
+}
+/**
  * A message associated with a range in a `UISourceCode`. The range will be
  * underlined starting at the range's start and ending at the line end (the
  * end of the range is currently disregarded).
@@ -560,5 +573,30 @@ export class UISourceCodeMetadata {
         this.modificationTime = modificationTime;
         this.contentSize = contentSize;
     }
+}
+/**
+ * Converts an existing LineColumnProfileMap to a new one using the provided mapping.
+ *
+ * The input and output line/column of originalToMappedLocation is 0-indexed.
+ */
+export function createMappedProfileData(profileData, originalToMappedLocation) {
+    const mappedProfileData = new Map();
+    for (const [lineNumber, columnData] of profileData) {
+        for (const [columnNumber, data] of columnData) {
+            const mappedLocation = originalToMappedLocation(lineNumber - 1, columnNumber - 1);
+            if (!mappedLocation) {
+                continue;
+            }
+            const oneBasedFormattedLineNumber = mappedLocation[0] + 1;
+            const oneBasedFormattedColumnNumber = mappedLocation[1] + 1;
+            let mappedColumnData = mappedProfileData.get(oneBasedFormattedLineNumber);
+            if (!mappedColumnData) {
+                mappedColumnData = new Map();
+                mappedProfileData.set(oneBasedFormattedLineNumber, mappedColumnData);
+            }
+            mappedColumnData.set(oneBasedFormattedColumnNumber, (mappedColumnData.get(oneBasedFormattedColumnNumber) || 0) + data);
+        }
+    }
+    return mappedProfileData;
 }
 //# sourceMappingURL=UISourceCode.js.map

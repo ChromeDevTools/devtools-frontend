@@ -8,6 +8,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { FilePathScoreFunction } from './FilePathScoreFunction.js';
+import filteredUISourceCodeListProviderStyles from './filteredUISourceCodeListProvider.css.js';
 const UIStrings = {
     /**
      * @description Text in Filtered UISource Code List Provider of the Sources panel
@@ -117,8 +118,11 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
         const fullDisplayName = uiSourceCode.fullDisplayName();
         return score + multiplier * (contentTypeBonus + this.scorer.calculateScore(fullDisplayName, null));
     }
-    renderItem(itemIndex, query, titleElement, subtitleElement) {
-        titleElement.parentElement?.parentElement?.classList.toggle('search-mode', Boolean(query));
+    renderItem(itemIndex, query, wrapperElement) {
+        wrapperElement.createChild('style').textContent = filteredUISourceCodeListProviderStyles;
+        const itemElement = wrapperElement.createChild('div', 'filtered-ui-source-code-list-item');
+        const titleElement = itemElement.createChild('div', 'filtered-ui-source-code-title');
+        titleElement.classList.toggle('search-mode', Boolean(query));
         query = this.rewriteQuery(query);
         const uiSourceCode = this.uiSourceCodes[itemIndex];
         const fullDisplayName = uiSourceCode.fullDisplayName();
@@ -128,10 +132,11 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
         const isIgnoreListed = Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode);
         let tooltipText = fullDisplayName;
         if (isIgnoreListed) {
-            titleElement.parentElement?.classList.add('is-ignore-listed');
+            itemElement.classList.add('is-ignore-listed');
             tooltipText = i18nString(UIStrings.sIgnoreListed, { PH1: tooltipText });
         }
         titleElement.textContent = uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '');
+        const subtitleElement = itemElement.createChild('div', 'filtered-ui-source-code-subtitle');
         this.renderSubtitleElement(subtitleElement, fullDisplayName.substring(0, fileNameIndex + 1));
         UI.Tooltip.Tooltip.install(subtitleElement, tooltipText);
         const ranges = [];

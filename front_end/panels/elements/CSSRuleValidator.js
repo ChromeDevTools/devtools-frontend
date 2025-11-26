@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import { buildPropertyDefinitionText, buildPropertyName, buildPropertyValue, isBlockContainer, isFlexContainer, isGridContainer, isInlineElement, isMasonryContainer, isMulticolContainer, isPossiblyReplacedElement, } from './CSSRuleValidatorHelper.js';
+import { buildPropertyDefinitionText, buildPropertyName, buildPropertyValue, isBlockContainer, isFlexContainer, isGridContainer, isGridLanesContainer, isInlineElement, isMulticolContainer, isPossiblyReplacedElement, } from './CSSRuleValidatorHelper.js';
 const UIStrings = {
     /**
      * @description The message shown in the Style pane when the user hovers over a property that has no effect due to some other property.
@@ -103,7 +103,7 @@ export class AlignContentValidator extends CSSRuleValidator {
         }
         const isFlex = isFlexContainer(computedStyles);
         if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles) &&
-            !isMasonryContainer(computedStyles)) {
+            !isGridLanesContainer(computedStyles)) {
             const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
             const affectedPropertyDeclarationCode = buildPropertyName('align-content');
             return new Hint(i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
@@ -191,7 +191,7 @@ export class GridContainerValidator extends CSSRuleValidator {
         ]);
     }
     getHint(propertyName, computedStyles) {
-        if (isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+        if (isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
             return;
         }
         const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
@@ -220,7 +220,7 @@ export class GridItemValidator extends CSSRuleValidator {
         if (!parentComputedStyles) {
             return;
         }
-        if (isGridContainer(parentComputedStyles) || isMasonryContainer(parentComputedStyles)) {
+        if (isGridContainer(parentComputedStyles) || isGridLanesContainer(parentComputedStyles)) {
             return;
         }
         const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
@@ -269,12 +269,12 @@ export class FlexGridValidator extends CSSRuleValidator {
         if (!computedStyles) {
             return;
         }
-        if (isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isMasonryContainer(computedStyles)) {
+        if (isFlexContainer(computedStyles) || isGridContainer(computedStyles) || isGridLanesContainer(computedStyles)) {
             return;
         }
         if (parentComputedStyles &&
             (isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles) ||
-                isMasonryContainer(parentComputedStyles))) {
+                isGridLanesContainer(parentComputedStyles))) {
             const reasonContainerDisplayName = buildPropertyValue(parentComputedStyles.get('display'));
             const reasonPropertyName = buildPropertyName(propertyName);
             const reasonAlternativePropertyName = buildPropertyName('justify-self');
@@ -313,7 +313,7 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
             return;
         }
         if (isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles) ||
-            isMasonryContainer(computedStyles)) {
+            isGridLanesContainer(computedStyles)) {
             return;
         }
         const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));

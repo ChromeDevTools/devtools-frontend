@@ -147,6 +147,10 @@ export declare class SourceMap {
     expandCallFrame(frame: CallFrame): CallFrame[];
     resolveScopeChain(frame: CallFrame): ScopeChainEntry[] | null;
     findOriginalFunctionName(position: ScopesCodec.Position): string | null;
+    findOriginalFunctionScope(position: ScopesCodec.Position): {
+        scope: ScopesCodec.OriginalScope;
+        url?: Platform.DevToolsPath.UrlString;
+    } | null;
     isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean;
     hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean;
     translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[];

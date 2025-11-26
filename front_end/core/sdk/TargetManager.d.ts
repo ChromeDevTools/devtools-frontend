@@ -1,14 +1,25 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 import { SDKModel, type SDKModelConstructor } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
 export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     /**
+     * @deprecated
+     *
+     * Intended for {@link SDKModel} classes to be able to retrieve scoped singletons like
+     * the "PageResourceLoader" or the "FrameManager".
+     *
+     * This is only an intermediate step to migrate towards our "layering vision" where
+     * SDKModels don't require things from the next layer.
+     */
+    readonly context: Root.DevToolsContext.DevToolsContext;
+    /**
      * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
      */
-    constructor(overrideAutoStartModels?: Set<SDKModelConstructor>);
+    constructor(context: Root.DevToolsContext.DevToolsContext, overrideAutoStartModels?: Set<SDKModelConstructor>);
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): TargetManager;

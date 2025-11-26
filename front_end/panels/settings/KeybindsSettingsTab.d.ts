@@ -1,4 +1,4 @@
-import '../../ui/components/cards/cards.js';
+import '../../ui/kit/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListControl.ListDelegate<KeybindsItem> {
     private readonly items;

@@ -137,15 +137,6 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
             return this.#generateErrorResponse(error.message);
         }
     }
-    async *handleConversationWithHistory(items, conversation) {
-        for await (const data of items) {
-            // We don't want to save partial responses to the conversation history.
-            if (data.type !== "answer" /* ResponseType.ANSWER */ || data.complete) {
-                void conversation?.addHistoryItem(data);
-            }
-            yield data;
-        }
-    }
     async *#createAndDoExternalConversation(opts) {
         const { conversationType, aiAgent, prompt, selected } = opts;
         const conversation = new AiConversation(conversationType, [], aiAgent.id, 

@@ -34,25 +34,27 @@ let pageResourceLoader = null;
  * resources were loaded, and whether there was a load error.
  */
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
+    #targetManager;
     #currentlyLoading = 0;
     #currentlyLoadingPerTarget = new Map();
     #maxConcurrentLoads;
     #pageResources = new Map();
     #queuedLoads = [];
     #loadOverride;
-    constructor(loadOverride, maxConcurrentLoads) {
+    constructor(targetManager, loadOverride, maxConcurrentLoads = 500) {
         super();
+        this.#targetManager = targetManager;
         this.#maxConcurrentLoads = maxConcurrentLoads;
-        TargetManager.instance().addModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+        this.#targetManager.addModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
         this.#loadOverride = loadOverride;
     }
-    static instance({ forceNew, loadOverride, maxConcurrentLoads } = {
+    static instance({ forceNew, targetManager, loadOverride, maxConcurrentLoads } = {
         forceNew: false,
         loadOverride: null,
-        maxConcurrentLoads: 500,
     }) {
         if (!pageResourceLoader || forceNew) {
-            pageResourceLoader = new PageResourceLoader(loadOverride, maxConcurrentLoads);
+            pageResourceLoader =
+                new PageResourceLoader(targetManager ?? TargetManager.instance(), loadOverride, maxConcurrentLoads);
         }
         return pageResourceLoader;
     }
@@ -85,7 +87,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         return this.#pageResources;
     }
     getScopedResourcesLoaded() {
-        return new Map([...this.#pageResources].filter(([_, pageResource]) => TargetManager.instance().isInScope(pageResource.initiator.target) ||
+        return new Map([...this.#pageResources].filter(([_, pageResource]) => this.#targetManager.isInScope(pageResource.initiator.target) ||
             isExtensionInitiator(pageResource.initiator)));
     }
     /**
@@ -97,11 +99,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         return { loading: this.#currentlyLoading, queued: this.#queuedLoads.length, resources: this.#pageResources.size };
     }
     getScopedNumberOfResources() {
-        const targetManager = TargetManager.instance();
         let loadingCount = 0;
         for (const [targetId, count] of this.#currentlyLoadingPerTarget) {
-            const target = targetManager.targetById(targetId);
-            if (targetManager.isInScope(target)) {
+            const target = this.#targetManager.targetById(targetId);
+            if (this.#targetManager.isInScope(target)) {
                 loadingCount += count;
             }
         }

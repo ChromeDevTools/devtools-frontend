@@ -1,4 +1,4 @@
-import '../../ui/components/cards/cards.js';
+import '../../ui/kit/cards/cards.js';
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem> {

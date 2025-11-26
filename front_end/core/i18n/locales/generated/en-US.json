@@ -683,6 +683,9 @@
   "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
     "message": "JavaScript source maps"
   },
+  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
+    "message": "Log XMLHttpRequests"
+  },
   "core/sdk/sdk-meta.ts | networkCacheExplanation": {
     "message": "Disabling the network cache will simulate a network experience similar to a first time visitor."
   },
@@ -6143,9 +6146,6 @@
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Hide timestamps"
   },
-  "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Log XMLHttpRequests"
-  },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
   },
@@ -7250,11 +7250,11 @@
   "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "Disable flex mode"
   },
+  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
+    "message": "Disable grid-lanes mode"
+  },
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Disable grid mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
-    "message": "Disable masonry mode"
   },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Disable scroll-snap overlay"
@@ -7283,11 +7283,11 @@
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Enable flex mode"
   },
+  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
+    "message": "Enable grid-lanes mode"
+  },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Enable grid mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
-    "message": "Enable masonry mode"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Enable scroll-snap overlay"
@@ -7433,17 +7433,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox overlays"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonry": {
-    "message": "Grid / Masonry"
+  "panels/elements/LayoutPane.ts | gridOrGridLanes": {
+    "message": "Grid / Grid Lanes"
   },
-  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
-    "message": "Grid / Masonry overlays"
+  "panels/elements/LayoutPane.ts | gridOrGridLanesOverlays": {
+    "message": "Grid / Grid Lanes overlays"
   },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "No flexbox layouts found on this page"
   },
-  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
-    "message": "No grid or masonry layouts found on this page"
+  "panels/elements/LayoutPane.ts | noGridOrGridLanesLayoutsFoundOnThisPage": {
+    "message": "No grid or grid lanes layouts found on this page"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Overlay display settings"
@@ -7565,6 +7565,9 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Open grid editor"
   },
+  "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
+    "message": "Open grid-lanes editor"
+  },
   "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
     "message": "Invalid property value"
   },
@@ -7576,9 +7579,6 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Jump to Animations panel"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | masonryEditorButton": {
-    "message": "Open masonry editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Open color picker. {PH1}"
@@ -16325,11 +16325,17 @@
   "panels/timeline/utils/IgnoreList.ts | unknown": {
     "message": "Unknown"
   },
+  "panels/utils/utils.ts | prefetchFailed": {
+    "message": "{PH1} prefetch request failed"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Both request content and headers are overridden"
   },
   "panels/utils/utils.ts | requestContentOverridden": {
     "message": "Request content is overridden"
+  },
+  "panels/utils/utils.ts | requestFailed": {
+    "message": "{PH1} request failed"
   },
   "panels/utils/utils.ts | requestHeadersOverridden": {
     "message": "Request headers are overridden"

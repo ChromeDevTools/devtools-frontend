@@ -3103,15 +3103,18 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
           <h2>${lockedString4(UIStringsNotTranslate4.ai)}</h2>
         </div>
       </div>
-      ${Lit2.Directives.repeat(message.steps, (_, index) => index, (step) => {
+      ${Lit2.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+    const isLastPart = index === message.parts.length - 1;
+    if (part.type === "answer") {
+      return html4`<p>${renderTextAsMarkdown(part.text, markdownRenderer, { animate: !isReadOnly && isLoading && isLast && isLastPart })}</p>`;
+    }
     return renderStep({
-      step,
+      step: part.step,
       isLoading,
       markdownRenderer,
-      isLast: [...message.steps.values()].at(-1) === step && isLast
+      isLast: isLastPart && isLast
     });
   })}
-      ${message.answer ? html4`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly && isLoading && isLast })}</p>` : Lit2.nothing}
       ${renderError(message)}
       ${isLast && isLoading ? Lit2.nothing : html4`<devtools-widget class="actions" .widgetConfig=${UI4.Widget.widgetConfig(UserActionRow, {
     showRateButtons: message.rpcId !== void 0,
@@ -3121,7 +3124,7 @@ function renderChatMessage({ message, isLoading, isReadOnly, canShowFeedbackForm
       }
       onFeedbackSubmit(message.rpcId, rating, feedback);
     },
-    suggestions: isLast && !isReadOnly ? message.suggestions : void 0,
+    suggestions: isLast && !isReadOnly && message.parts.at(-1)?.type === "answer" ? message.parts.at(-1).suggestions : void 0,
     onSuggestionClick,
     onCopyResponseClick: () => onCopyResponseClick(message),
     canShowFeedbackForm
@@ -5169,13 +5172,18 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     const release = await this.#mutex.acquire();
     try {
       let commitStep = function() {
-        if (systemMessage.steps.at(-1) !== step) {
-          systemMessage.steps.push(step);
+        const lastPart = systemMessage.parts.at(-1);
+        if (lastPart?.type === "step" && lastPart.step === step) {
+          return;
         }
+        systemMessage.parts.push({
+          type: "step",
+          step
+        });
       };
       let systemMessage = {
         entity: "model",
-        steps: []
+        parts: []
       };
       let step = { isLoading: true };
       this.#isLoading = true;
@@ -5192,15 +5200,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
             });
             systemMessage = {
               entity: "model",
-              steps: []
+              parts: []
             };
             this.#messages.push(systemMessage);
             break;
           }
           case "querying": {
             step = { isLoading: true };
-            if (!systemMessage.steps.length) {
-              systemMessage.steps.push(step);
+            if (!systemMessage.parts.length) {
+              commitStep();
             }
             break;
           }
@@ -5223,7 +5231,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
             break;
           }
           case "suggestions": {
-            systemMessage.suggestions = data.suggestions;
+            const lastPart = systemMessage.parts.at(-1);
+            if (lastPart?.type === "answer") {
+              lastPart.suggestions = data.suggestions;
+            } else {
+              systemMessage.parts.push({
+                type: "answer",
+                text: "",
+                suggestions: data.suggestions
+              });
+            }
             break;
           }
           case "side-effect": {
@@ -5248,28 +5265,48 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
             break;
           }
           case "answer": {
-            systemMessage.suggestions ??= data.suggestions;
-            systemMessage.answer = data.text;
             systemMessage.rpcId = data.rpcId;
-            if (systemMessage.steps.length === 1 && systemMessage.steps[0].isLoading) {
-              systemMessage.steps.pop();
+            const lastPart = systemMessage.parts.at(-1);
+            if (lastPart?.type === "answer") {
+              lastPart.text = data.text;
+              if (data.suggestions) {
+                lastPart.suggestions = data.suggestions;
+              }
+            } else {
+              const newPart = {
+                type: "answer",
+                text: data.text
+              };
+              if (data.suggestions) {
+                newPart.suggestions = data.suggestions;
+              }
+              systemMessage.parts.push(newPart);
+            }
+            if (systemMessage.parts.length > 1) {
+              const firstPart = systemMessage.parts[0];
+              if (firstPart.type === "step" && firstPart.step.isLoading && !firstPart.step.thought && !firstPart.step.code && !firstPart.step.contextDetails) {
+                systemMessage.parts.shift();
+              }
             }
             step.isLoading = false;
             break;
           }
           case "error": {
             systemMessage.error = data.error;
-            systemMessage.rpcId = void 0;
-            const lastStep = systemMessage.steps.at(-1);
-            if (lastStep) {
+            const lastPart = systemMessage.parts.at(-1);
+            if (lastPart?.type === "step") {
+              const lastStep = lastPart.step;
               if (data.error === "abort") {
                 lastStep.canceled = true;
               } else if (lastStep.isLoading) {
-                systemMessage.steps.pop();
+                systemMessage.parts.pop();
               }
             }
             if (data.error === "block") {
-              systemMessage.answer = void 0;
+              const lastPart2 = systemMessage.parts.at(-1);
+              if (lastPart2?.type === "answer") {
+                systemMessage.parts.pop();
+              }
             }
           }
         }
@@ -5303,33 +5340,35 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
 };
 function getResponseMarkdown(message) {
   const contentParts = ["## AI"];
-  for (const step of message.steps) {
-    if (step.title) {
-      contentParts.push(`### ${step.title}`);
-    }
-    if (step.contextDetails) {
-      contentParts.push(AiAssistanceModel3.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
-    }
-    if (step.thought) {
-      contentParts.push(step.thought);
-    }
-    if (step.code) {
-      contentParts.push(`**Code executed:**
+  for (const part of message.parts) {
+    if (part.type === "answer") {
+      contentParts.push(`### Answer
+
+${part.text}`);
+    } else {
+      const step = part.step;
+      if (step.title) {
+        contentParts.push(`### ${step.title}`);
+      }
+      if (step.contextDetails) {
+        contentParts.push(AiAssistanceModel3.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+      }
+      if (step.thought) {
+        contentParts.push(step.thought);
+      }
+      if (step.code) {
+        contentParts.push(`**Code executed:**
 \`\`\`
 ${step.code.trim()}
 \`\`\``);
-    }
-    if (step.output) {
-      contentParts.push(`**Data returned:**
+      }
+      if (step.output) {
+        contentParts.push(`**Data returned:**
 \`\`\`
 ${step.output}
 \`\`\``);
+      }
     }
-  }
-  if (message.answer) {
-    contentParts.push(`### Answer
-
-${message.answer}`);
   }
   return contentParts.join("\n\n");
 }

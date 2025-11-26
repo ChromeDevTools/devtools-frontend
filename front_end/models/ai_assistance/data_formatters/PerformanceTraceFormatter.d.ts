@@ -1,3 +1,4 @@
+import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import type { AICallTree } from '../performance/AICallTree.js';
 import type { AgentFocus } from '../performance/AIContext.js';
@@ -24,4 +25,5 @@ export declare class PerformanceTraceFormatter {
      * Network requests format description that is sent to the model as a fact.
      */
     static networkDataFormatDescription: string;
+    formatFunctionCode(code: SourceMapScopes.FunctionCodeResolver.FunctionCode): string;
 }

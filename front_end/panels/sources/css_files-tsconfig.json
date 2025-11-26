@@ -9,6 +9,7 @@
         "callStackSidebarPane.css.js",
         "debuggerPausedMessage.css.js",
         "dialog.css.js",
+        "filteredUISourceCodeListProvider.css.js",
         "navigatorTree.css.js",
         "navigatorView.css.js",
         "scopeChainSidebarPane.css.js",

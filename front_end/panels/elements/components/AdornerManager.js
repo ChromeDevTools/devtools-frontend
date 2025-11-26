@@ -7,7 +7,7 @@ export var RegisteredAdorners;
     RegisteredAdorners["CONTAINER"] = "container";
     RegisteredAdorners["FLEX"] = "flex";
     RegisteredAdorners["GRID"] = "grid";
-    RegisteredAdorners["MASONRY"] = "masonry";
+    RegisteredAdorners["GRID_LANES"] = "grid-lanes";
     RegisteredAdorners["MEDIA"] = "media";
     RegisteredAdorners["POPOVER"] = "popover";
     RegisteredAdorners["REVEAL"] = "reveal";
@@ -36,9 +36,9 @@ export function getRegisteredAdorner(which) {
                 category: "Layout" /* AdornerCategories.LAYOUT */,
                 enabledByDefault: true,
             };
-        case RegisteredAdorners.MASONRY:
+        case RegisteredAdorners.GRID_LANES:
             return {
-                name: 'masonry',
+                name: 'grid-lanes',
                 category: "Layout" /* AdornerCategories.LAYOUT */,
                 enabledByDefault: true,
             };

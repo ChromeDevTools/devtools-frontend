@@ -648,5 +648,18 @@ The order of headers corresponds to an internal fixed list. If a header is not p
         ];
         return parts.join(';');
     }
+    formatFunctionCode(code) {
+        const { startLine, startColumn } = code.range;
+        const { startLine: contextStartLine, startColumn: contextStartColumn, endLine: contextEndLine, endColumn: contextEndColumn } = code.rangeWithContext;
+        const name = code.functionBounds.name;
+        const url = code.functionBounds.uiSourceCode.url();
+        const parts = [];
+        parts.push(`${name} @ ${url}:${startLine}:${startColumn}. With added context, chunk is from ${contextStartLine}:${contextStartColumn} to ${contextEndLine}:${contextEndColumn}`);
+        parts.push('\nThe following is a markdown block of JavaScript. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.\n');
+        parts.push('```');
+        parts.push(code.codeWithContext);
+        parts.push('```');
+        return parts.join('\n');
+    }
 }
 //# sourceMappingURL=PerformanceTraceFormatter.js.map

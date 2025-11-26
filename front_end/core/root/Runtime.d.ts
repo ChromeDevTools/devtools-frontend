@@ -159,6 +159,9 @@ export interface HostConfigAiCodeGeneration {
 export interface HostConfigDeepLinksViaExtensibilityApi {
     enabled: boolean;
 }
+export interface HostConfigGreenDevUi {
+    enabled: boolean;
+}
 export interface HostConfigVeLogging {
     enabled: boolean;
     testing: boolean;
@@ -255,6 +258,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsConsoleInsights: HostConfigConsoleInsights;
     devToolsDeepLinksViaExtensibilityApi: HostConfigDeepLinksViaExtensibilityApi;
     devToolsFreestyler: HostConfigFreestyler;
+    devToolsGreenDevUi: HostConfigGreenDevUi;
     devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent;
     devToolsAiDebugWithAi: AiDebugWithAi;
     devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent;

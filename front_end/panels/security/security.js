@@ -13,7 +13,7 @@ __export(CookieControlsView_exports, {
   showInfobar: () => showInfobar
 });
 import "./../../ui/components/switch/switch.js";
-import "./../../ui/components/cards/cards.js";
+import "./../../ui/kit/cards/cards.js";
 import "./../../ui/components/chrome_link/chrome_link.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";

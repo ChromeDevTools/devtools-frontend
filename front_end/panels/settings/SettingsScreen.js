@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 /* eslint-disable @devtools/no-imperative-dom-api */
-import '../../ui/components/cards/cards.js';
+import '../../ui/kit/cards/cards.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';

@@ -66,6 +66,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
      *          the {@link uiSourceCode} does not belong to this instance.
      */
     uiLocationRangeToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, textRange: TextUtils.TextRange.TextRange): Promise<SDK.DebuggerModel.LocationRange[]>;
+    functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UIFunctionBounds | null>;
     normalizeUILocation(uiLocation: Workspace.UISourceCode.UILocation): Promise<Workspace.UISourceCode.UILocation>;
     /**
      * Computes the set of lines in the {@link uiSourceCode} that map to scripts by either looking at

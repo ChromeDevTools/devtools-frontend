@@ -135,14 +135,14 @@ export class GridEditor extends StylePropertyEditor {
     }
 }
 customElements.define('devtools-grid-editor', GridEditor);
-export class MasonryEditor extends StylePropertyEditor {
-    jslogContext = 'cssMasonryEditor';
-    editableProperties = MasonryEditableProperties;
+export class GridLanesEditor extends StylePropertyEditor {
+    jslogContext = 'cssGridLanesEditor';
+    editableProperties = GridLanesEditableProperties;
     findIcon(query, computedProperties) {
         return findGridContainerIcon(query, computedProperties);
     }
 }
-customElements.define('devtools-masonry-editor', MasonryEditor);
+customElements.define('devtools-grid-lanes-editor', GridLanesEditor);
 export const FlexboxEditableProperties = [
     {
         propertyName: 'flex-direction',
@@ -238,7 +238,7 @@ export const GridEditableProperties = [
         ],
     },
 ];
-export const MasonryEditableProperties = [
+export const GridLanesEditableProperties = [
     {
         propertyName: 'align-content',
         propertyValues: [

@@ -4,6 +4,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LinearMemoryInspectorComponents from './components/components.js';
 import { type LazyUint8Array } from './LinearMemoryInspectorController.js';
 declare const LinearMemoryInspectorPane_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.VIEW_CLOSED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends Events.VIEW_CLOSED>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends Events.VIEW_CLOSED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;

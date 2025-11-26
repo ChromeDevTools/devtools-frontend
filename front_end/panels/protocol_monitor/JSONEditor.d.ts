@@ -78,6 +78,7 @@ export interface EventTypes {
     [Events.SUBMIT_EDITOR]: Command;
 }
 declare const JSONEditor_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.SUBMIT_EDITOR>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends Events.SUBMIT_EDITOR>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends Events.SUBMIT_EDITOR>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;

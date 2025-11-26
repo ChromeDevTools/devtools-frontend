@@ -243,18 +243,12 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
     }
     createElementForItem(item) {
         const wrapperElement = document.createElement('div');
-        wrapperElement.className = 'filtered-list-widget-item-wrapper';
-        const itemElement = wrapperElement.createChild('div');
-        const renderAsTwoRows = this.provider?.renderAsTwoRows();
-        itemElement.className = 'filtered-list-widget-item ' + (renderAsTwoRows ? 'two-rows' : 'one-row');
-        const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
-        const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
-        subtitleElement.textContent = '\u200B';
+        wrapperElement.className = 'filtered-list-widget-item';
         if (this.provider) {
-            this.provider.renderItem(item, this.cleanValue(), titleElement, subtitleElement);
+            this.provider.renderItem(item, this.cleanValue(), wrapperElement);
             wrapperElement.setAttribute('jslog', `${VisualLogging.item(this.provider.jslogContextAt(item)).track({ click: true })}`);
         }
-        UI.ARIAUtils.markAsOption(itemElement);
+        UI.ARIAUtils.markAsOption(wrapperElement);
         return wrapperElement;
     }
     heightForItem(_item) {
@@ -536,13 +530,10 @@ export class Provider {
     itemScoreAt(_itemIndex, _query) {
         return 1;
     }
-    renderItem(_itemIndex, _query, _titleElement, _subtitleElement) {
+    renderItem(_itemIndex, _query, _wrapperElement) {
     }
     jslogContextAt(_itemIndex) {
         return this.jslogContext;
-    }
-    renderAsTwoRows() {
-        return false;
     }
     selectItem(_itemIndex, _promptValue) {
     }

@@ -39,6 +39,16 @@ export function setMockResourceTree(shouldMock) {
         clearMockConnectionResponseHandler('Page.getResourceTree');
     }
 }
+export function mockResourceTree(connection) {
+    connection.setHandler('Page.getResourceTree', () => ({
+        result: {
+            frameTree: {
+                frame: MAIN_FRAME,
+                resources: [],
+            }
+        }
+    }));
+}
 export async function getInitializedResourceTreeModel(target) {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel.cachedResourcesLoaded() ?

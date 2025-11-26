@@ -3,9 +3,6 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import type * as CPUProfile from '../../../../models/cpu_profile/cpu_profile.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-/** 1-based. line => column => value */
-export type LineColumnProfileMap = Map<number, Map<number, number>>;
-export type ProfileDataMap = Map<Workspace.UISourceCode.UISourceCode, LineColumnProfileMap>;
 export declare class Performance {
     private readonly helper;
     private constructor();

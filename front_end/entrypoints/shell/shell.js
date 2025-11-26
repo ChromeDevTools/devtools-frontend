@@ -2264,10 +2264,6 @@ var UIStrings3 = {
    */
   showMessagesFromAllContexts: "Show messages from all contexts",
   /**
-   * @description Title of a setting under the Console category in Settings
-   */
-  logXmlhttprequests: "Log XMLHttpRequests",
-  /**
    * @description Title of a setting under the Console category
    */
   timestamps: "Timestamps",
@@ -2481,14 +2477,6 @@ Common2.Settings.registerSettingExtension({
       title: i18nLazyString3(UIStrings3.showMessagesFromAllContexts)
     }
   ]
-});
-Common2.Settings.registerSettingExtension({
-  category: "CONSOLE",
-  storageType: "Synced",
-  title: i18nLazyString3(UIStrings3.logXmlhttprequests),
-  settingName: "monitoring-xhr-enabled",
-  settingType: "boolean",
-  defaultValue: false
 });
 Common2.Settings.registerSettingExtension({
   category: "CONSOLE",
@@ -4822,7 +4810,11 @@ var UIStrings14 = {
   /**
    * @description Title of a setting under the Sources category that can be invoked through the Command Menu
    */
-  disableCssSourceMaps: "Disable CSS source maps"
+  disableCssSourceMaps: "Disable CSS source maps",
+  /**
+   * @description Title of a setting under the Console category in Settings
+   */
+  logXmlhttprequests: "Log XMLHttpRequests"
 };
 var str_14 = i18n28.i18n.registerUIStrings("core/sdk/sdk-meta.ts", UIStrings14);
 var i18nLazyString14 = i18n28.i18n.getLazilyComputedLocalizedString.bind(void 0, str_14);
@@ -5590,6 +5582,14 @@ Common9.Settings.registerSettingExtension({
       title: i18nLazyString14(UIStrings14.disableCssSourceMaps)
     }
   ]
+});
+Common9.Settings.registerSettingExtension({
+  category: "CONSOLE",
+  storageType: "Synced",
+  title: i18nLazyString14(UIStrings14.logXmlhttprequests),
+  settingName: "monitoring-xhr-enabled",
+  settingType: "boolean",
+  defaultValue: false
 });
 
 // gen/front_end/models/workspace/workspace-meta.js

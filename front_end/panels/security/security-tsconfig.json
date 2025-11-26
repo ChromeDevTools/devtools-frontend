@@ -77,9 +77,6 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/cards/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/chrome_link/bundle-tsconfig.json"
     },
     {
@@ -90,6 +87,9 @@
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/cards/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

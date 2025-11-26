@@ -692,7 +692,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     <devtools-button
       .iconName=${"arrow-up"}
       .variant=${"icon"}
-      .title=${i18nString2(UIStrings2.decreasePriority, { PH1: constructorStringOrWildcardURL })}
+      .title=${i18nString2(UIStrings2.increasePriority, { PH1: constructorStringOrWildcardURL })}
       .jslogContext=${"decrease-priority"}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       @click=${moveUp}>
@@ -700,7 +700,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     <devtools-button
       .iconName=${"arrow-down"}
       .variant=${"icon"}
-      .title=${i18nString2(UIStrings2.increasePriority, { PH1: constructorStringOrWildcardURL })}
+      .title=${i18nString2(UIStrings2.decreasePriority, { PH1: constructorStringOrWildcardURL })}
       .jslogContext=${"increase-priority"}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       @click=${moveDown}></devtools-button>
@@ -6242,6 +6242,10 @@ var resourceChunkView_css_default = `/*
 .resource-chunk-view .data-grid {
   flex: auto;
   border: none;
+
+  .resource-chunk-view-td {
+    border-bottom: 1px solid var(--sys-color-divider);
+  }
 
   & tr {
     &.resource-chunk-view-row-send td:first-child::before {

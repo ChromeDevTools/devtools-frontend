@@ -6,8 +6,7 @@ export declare class HelpQuickOpen extends Provider {
     itemCount(): number;
     itemKeyAt(itemIndex: number): string;
     itemScoreAt(itemIndex: number, _query: string): number;
-    renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void;
+    renderItem(itemIndex: number, _query: string, wrapperElement: Element): void;
     jslogContextAt(itemIndex: number): string;
     selectItem(itemIndex: number | null, _promptValue: string): void;
-    renderAsTwoRows(): boolean;
 }

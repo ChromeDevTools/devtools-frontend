@@ -28,6 +28,16 @@ export type ImageInputData = {
     mimeType: string;
     inputType: AiAssistanceModel.AiAgent.MultimodalInputType;
 };
+export interface AnswerPart {
+    type: 'answer';
+    text: string;
+    suggestions?: [string, ...string[]];
+}
+export interface StepPart {
+    type: 'step';
+    step: Step;
+}
+export type ModelMessagePart = AnswerPart | StepPart;
 export interface UserChatMessage {
     entity: ChatMessageEntity.USER;
     text: string;
@@ -35,9 +45,7 @@ export interface UserChatMessage {
 }
 export interface ModelChatMessage {
     entity: ChatMessageEntity.MODEL;
-    steps: Step[];
-    suggestions?: [string, ...string[]];
-    answer?: string;
+    parts: ModelMessagePart[];
     error?: AiAssistanceModel.AiAgent.ErrorType;
     rpcId?: Host.AidaClient.RpcGlobalId;
 }

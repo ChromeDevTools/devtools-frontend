@@ -141,6 +141,7 @@ export declare class StatisticsPerspective extends Perspective {
     masterGrid(_heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid | null;
 }
 declare const HeapSnapshotProfileType_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<HeapSnapshotProfileTypeEventTypes>;
     addEventListener<T extends HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<HeapSnapshotProfileTypeEventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<HeapSnapshotProfileTypeEventTypes, T>;
     once<T extends HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED>(eventType: T): Promise<HeapSnapshotProfileTypeEventTypes[T]>;
     removeEventListener<T extends HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<HeapSnapshotProfileTypeEventTypes[T], any>) => void, thisObject?: Object): void;
@@ -178,6 +179,7 @@ export interface HeapSnapshotProfileTypeEventTypes {
     [HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED]: ProfileHeader;
 }
 declare const TrackingHeapSnapshotProfileType_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<TrackingHeapSnapshotProfileTypeEventTypes>;
     addEventListener<T extends keyof TrackingHeapSnapshotProfileTypeEventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TrackingHeapSnapshotProfileTypeEventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<TrackingHeapSnapshotProfileTypeEventTypes, T>;
     once<T extends keyof TrackingHeapSnapshotProfileTypeEventTypes>(eventType: T): Promise<TrackingHeapSnapshotProfileTypeEventTypes[T]>;
     removeEventListener<T extends keyof TrackingHeapSnapshotProfileTypeEventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TrackingHeapSnapshotProfileTypeEventTypes[T], any>) => void, thisObject?: Object): void;

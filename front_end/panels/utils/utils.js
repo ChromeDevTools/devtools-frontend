@@ -32,7 +32,17 @@ var UIStrings = {
    * @example {Image} PH1
    * @example {3G} PH2
    */
-  resourceTypeWithThrottling: "{PH1} (throttled to {PH2})"
+  resourceTypeWithThrottling: "{PH1} (throttled to {PH2})",
+  /**
+   * @description Tooltip for a failed request
+   * @example {Document} PH1
+   */
+  requestFailed: "{PH1} request failed",
+  /**
+   * @description Tooltip for a failed request
+   * @example {Document} PH1
+   */
+  prefetchFailed: "{PH1} prefetch request failed"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/utils/utils.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -60,19 +70,23 @@ var PanelUtils = class _PanelUtils {
     let type = request.resourceType();
     if (_PanelUtils.isFailedNetworkRequest(request)) {
       let iconName2;
+      let title;
       if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
+        title = i18nString(UIStrings.prefetchFailed, { PH1: type.title() });
         iconName2 = "warning-filled";
       } else {
+        title = i18nString(UIStrings.requestFailed, { PH1: type.title() });
         iconName2 = "cross-circle-filled";
       }
       return html`<devtools-icon
-          class="icon" name=${iconName2} title=${type.title()}>
+          class="icon" name=${iconName2} title=${title}> role=img
         </devtools-icon>`;
     }
     if (request.hasThirdPartyCookiePhaseoutIssue()) {
       return html`<devtools-icon
         class="icon"
         name="warning-filled"
+        role=img
         title=${i18nString(UIStrings.thirdPartyPhaseout)}
       ></devtools-icon>`;
     }
@@ -88,7 +102,7 @@ var PanelUtils = class _PanelUtils {
         title = i18nString(UIStrings.requestHeadersOverridden);
       }
       return html`<div class="network-override-marker">
-          <devtools-icon class="icon" name="document" title=${title}></devtools-icon>
+          <devtools-icon class="icon" name="document" role=img title=${title}></devtools-icon>
         </div>`;
     }
     const typeFromMime = Common.ResourceType.ResourceType.fromMimeType(request.mimeType);
@@ -111,7 +125,7 @@ var PanelUtils = class _PanelUtils {
     }
     if (type !== Common.ResourceType.resourceTypes.Manifest && Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === "application/json") {
       return html`<devtools-icon
-          class="icon" name="file-json" title=${iconTitleForRequest(request)}
+          class="icon" name="file-json" title=${iconTitleForRequest(request)} role=img
           style="color:var(--icon-file-script)">
         </devtools-icon>`;
     }

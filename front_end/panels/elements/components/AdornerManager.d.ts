@@ -18,7 +18,7 @@ export declare enum RegisteredAdorners {
     CONTAINER = "container",
     FLEX = "flex",
     GRID = "grid",
-    MASONRY = "masonry",
+    GRID_LANES = "grid-lanes",
     MEDIA = "media",
     POPOVER = "popover",
     REVEAL = "reveal",

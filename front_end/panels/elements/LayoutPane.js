@@ -21,9 +21,9 @@ const UIStrings = {
      */
     showElementInTheElementsPanel: 'Show element in the Elements panel',
     /**
-     * @description Title of a section on CSS Grid/Masonry tooling
+     * @description Title of a section on CSS Grid/Grid Lanes tooling
      */
-    gridOrMasonry: 'Grid / Masonry',
+    gridOrGridLanes: 'Grid / Grid Lanes',
     /**
      * @description Title of a section in the Layout Sidebar pane of the Elements panel
      */
@@ -31,11 +31,11 @@ const UIStrings = {
     /**
      * @description Title of a section in Layout sidebar pane
      */
-    gridOrMasonryOverlays: 'Grid / Masonry overlays',
+    gridOrGridLanesOverlays: 'Grid / Grid Lanes overlays',
     /**
-     * @description Message in the Layout panel informing users that no CSS Grid/Masonry layouts were found on the page
+     * @description Message in the Layout panel informing users that no CSS Grid/Grid Lanes layouts were found on the page
      */
-    noGridOrMasonryLayoutsFoundOnThisPage: 'No grid or masonry layouts found on this page',
+    noGridOrGridLanesLayoutsFoundOnThisPage: 'No grid or grid lanes layouts found on this page',
     /**
      * @description Title of the Flexbox section in the Layout panel
      */
@@ -213,7 +213,7 @@ const DEFAULT_VIEW = (input, output, target) => {
           <summary class="header"
             @keydown=${input.onSummaryKeyDown}
             jslog=${VisualLogging.sectionHeader('grid-settings').track({ click: true })}>
-            ${i18nString(UIStrings.gridOrMasonry)}
+            ${i18nString(UIStrings.gridOrGridLanes)}
           </summary>
           <div class="content-section" jslog=${VisualLogging.section('grid-settings')}>
             <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
@@ -248,8 +248,8 @@ const DEFAULT_VIEW = (input, output, target) => {
         html `<div class="content-section" jslog=${VisualLogging.section('grid-overlays')}>
               <h3 class="content-section-title">
                 ${input.gridElements.length ?
-            i18nString(UIStrings.gridOrMasonryOverlays) :
-            i18nString(UIStrings.noGridOrMasonryLayoutsFoundOnThisPage)}
+            i18nString(UIStrings.gridOrGridLanesOverlays) :
+            i18nString(UIStrings.noGridOrGridLanesLayoutsFoundOnThisPage)}
               </h3>
               ${input.gridElements.length ?
             html `<div class="elements">${input.gridElements.map(renderElement)}</div>` :
@@ -336,8 +336,10 @@ export class LayoutPane extends UI.Widget.Widget {
     }
     async #fetchGridNodes() {
         return await this.#fetchNodesByStyle([
-            { name: 'display', value: 'grid' }, { name: 'display', value: 'inline-grid' }, { name: 'display', value: 'masonry' },
-            { name: 'display', value: 'inline-masonry' }
+            { name: 'display', value: 'grid' },
+            { name: 'display', value: 'inline-grid' },
+            { name: 'display', value: 'grid-lanes' },
+            { name: 'display', value: 'inline-grid-lanes' },
         ]);
     }
     async #fetchFlexContainerNodes() {

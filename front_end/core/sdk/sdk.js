@@ -9772,6 +9772,16 @@ var Type;
 
 // gen/front_end/core/sdk/TargetManager.js
 var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWrapper {
+  /**
+   * @deprecated
+   *
+   * Intended for {@link SDKModel} classes to be able to retrieve scoped singletons like
+   * the "PageResourceLoader" or the "FrameManager".
+   *
+   * This is only an intermediate step to migrate towards our "layering vision" where
+   * SDKModels don't require things from the next layer.
+   */
+  context;
   #targets;
   #observers;
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -9788,8 +9798,9 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
   /**
    * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
    */
-  constructor(overrideAutoStartModels) {
+  constructor(context, overrideAutoStartModels) {
     super();
+    this.context = context;
     this.#targets = /* @__PURE__ */ new Set();
     this.#observers = /* @__PURE__ */ new Set();
     this.#modelListeners = new Platform2.MapUtilities.Multimap();
@@ -9804,7 +9815,7 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager());
+      Root.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root.DevToolsContext.globalInstance()));
     }
     return Root.DevToolsContext.globalInstance().get(_TargetManager);
   }
@@ -11229,8 +11240,12 @@ var NetworkDispatcher = class {
         localPort: event.options.localPort,
         sendBufferSize: event.options.sendBufferSize,
         receiveBufferSize: event.options.receiveBufferSize,
-        dnsQueryType: event.options.dnsQueryType
-      }
+        dnsQueryType: event.options.dnsQueryType,
+        multicastLoopback: event.options.multicastLoopback,
+        multicastTimeToLive: event.options.multicastTimeToLive,
+        multicastAllowAddressSharing: event.options.multicastAllowAddressSharing
+      },
+      joinedMulticastGroups: /* @__PURE__ */ new Set()
     };
     networkRequest.setResourceType(Common5.ResourceType.resourceTypes.DirectSocket);
     networkRequest.setIssueTime(event.timestamp, event.timestamp);
@@ -11314,9 +11329,27 @@ var NetworkDispatcher = class {
     networkRequest.responseReceivedTime = event.timestamp;
     this.updateNetworkRequest(networkRequest);
   }
-  directUDPSocketJoinedMulticastGroup(_event) {
+  directUDPSocketJoinedMulticastGroup(event) {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    if (!networkRequest.directSocketInfo.joinedMulticastGroups) {
+      networkRequest.directSocketInfo.joinedMulticastGroups = /* @__PURE__ */ new Set();
+    }
+    if (!networkRequest.directSocketInfo.joinedMulticastGroups.has(event.IPAddress)) {
+      networkRequest.directSocketInfo.joinedMulticastGroups.add(event.IPAddress);
+      this.updateNetworkRequest(networkRequest);
+    }
   }
-  directUDPSocketLeftMulticastGroup(_event) {
+  directUDPSocketLeftMulticastGroup(event) {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo?.joinedMulticastGroups) {
+      return;
+    }
+    if (networkRequest.directSocketInfo.joinedMulticastGroups.delete(event.IPAddress)) {
+      this.updateNetworkRequest(networkRequest);
+    }
   }
   trustTokenOperationDone(event) {
     const request = this.#requestsById.get(event.requestId);
@@ -11643,8 +11676,9 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
         promises.push(agent.invoke_overrideNetworkState({
           offline,
           latency: globalConditions?.latency ?? 0,
-          downloadThroughput: !globalConditions || globalConditions.download < 0 ? 0 : globalConditions.download,
-          uploadThroughput: !globalConditions || globalConditions.upload < 0 ? 0 : globalConditions.upload
+          downloadThroughput: globalConditions?.download ?? -1,
+          uploadThroughput: globalConditions?.upload ?? -1,
+          connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) : "none"
         }));
       }
       this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));
@@ -12408,8 +12442,8 @@ __export(CSSPropertyParserMatchers_exports, {
   CustomFunctionMatcher: () => CustomFunctionMatcher,
   EnvFunctionMatch: () => EnvFunctionMatch,
   EnvFunctionMatcher: () => EnvFunctionMatcher,
-  FlexGridMasonryMatch: () => FlexGridMasonryMatch,
-  FlexGridMasonryMatcher: () => FlexGridMasonryMatcher,
+  FlexGridGridLanesMatch: () => FlexGridGridLanesMatch,
+  FlexGridGridLanesMatcher: () => FlexGridGridLanesMatcher,
   FontMatch: () => FontMatch,
   FontMatcher: () => FontMatcher,
   GridTemplateMatch: () => GridTemplateMatch,
@@ -13403,7 +13437,7 @@ var CustomFunctionMatcher = class extends matcherBase(CustomFunctionMatch) {
     return new CustomFunctionMatch(text, node, callee, args);
   }
 };
-var FlexGridMasonryMatch = class {
+var FlexGridGridLanesMatch = class {
   text;
   node;
   layoutType;
@@ -13413,11 +13447,11 @@ var FlexGridMasonryMatch = class {
     this.layoutType = layoutType;
   }
 };
-var FlexGridMasonryMatcher = class _FlexGridMasonryMatcher extends matcherBase(FlexGridMasonryMatch) {
+var FlexGridGridLanesMatcher = class _FlexGridGridLanesMatcher extends matcherBase(FlexGridGridLanesMatch) {
   // clang-format on
   static FLEX = ["flex", "inline-flex", "block flex", "inline flex"];
   static GRID = ["grid", "inline-grid", "block grid", "inline grid"];
-  static MASONRY = ["masonry", "inline-masonry", "block masonry", "inline masonry"];
+  static GRID_LANES = ["grid-lanes", "inline-grid-lanes", "block grid-lanes", "inline grid-lanes"];
   accepts(propertyName) {
     return propertyName === "display";
   }
@@ -13431,28 +13465,28 @@ var FlexGridMasonryMatcher = class _FlexGridMasonryMatcher extends matcherBase(F
     }
     const values = valueNodes.filter((node2) => node2.name !== "Important").map((node2) => matching.getComputedText(node2).trim()).filter((value) => value);
     const text = values.join(" ");
-    if (_FlexGridMasonryMatcher.FLEX.includes(text)) {
-      return new FlexGridMasonryMatch(
+    if (_FlexGridGridLanesMatcher.FLEX.includes(text)) {
+      return new FlexGridGridLanesMatch(
         matching.ast.text(node),
         node,
         "flex"
         /* LayoutType.FLEX */
       );
     }
-    if (_FlexGridMasonryMatcher.GRID.includes(text)) {
-      return new FlexGridMasonryMatch(
+    if (_FlexGridGridLanesMatcher.GRID.includes(text)) {
+      return new FlexGridGridLanesMatch(
         matching.ast.text(node),
         node,
         "grid"
         /* LayoutType.GRID */
       );
     }
-    if (_FlexGridMasonryMatcher.MASONRY.includes(text)) {
-      return new FlexGridMasonryMatch(
+    if (_FlexGridGridLanesMatcher.GRID_LANES.includes(text)) {
+      return new FlexGridGridLanesMatch(
         matching.ast.text(node),
         node,
-        "masonry"
-        /* LayoutType.MASONRY */
+        "grid-lanes"
+        /* LayoutType.GRID_LANES */
       );
     }
     return null;
@@ -16233,7 +16267,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       new LinearGradientMatcher(),
       new AnchorFunctionMatcher(),
       new PositionAnchorMatcher(),
-      new FlexGridMasonryMatcher(),
+      new FlexGridGridLanesMatcher(),
       new PositionTryMatcher(),
       new LengthMatcher(),
       new MathFunctionMatcher(),
@@ -18201,25 +18235,26 @@ var ResourceKey = class {
 };
 var pageResourceLoader = null;
 var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrapper.ObjectWrapper {
+  #targetManager;
   #currentlyLoading = 0;
   #currentlyLoadingPerTarget = /* @__PURE__ */ new Map();
   #maxConcurrentLoads;
   #pageResources = /* @__PURE__ */ new Map();
   #queuedLoads = [];
   #loadOverride;
-  constructor(loadOverride, maxConcurrentLoads) {
+  constructor(targetManager, loadOverride, maxConcurrentLoads = 500) {
     super();
+    this.#targetManager = targetManager;
     this.#maxConcurrentLoads = maxConcurrentLoads;
-    TargetManager.instance().addModelListener(ResourceTreeModel, Events3.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+    this.#targetManager.addModelListener(ResourceTreeModel, Events3.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.#loadOverride = loadOverride;
   }
-  static instance({ forceNew, loadOverride, maxConcurrentLoads } = {
+  static instance({ forceNew, targetManager, loadOverride, maxConcurrentLoads } = {
     forceNew: false,
-    loadOverride: null,
-    maxConcurrentLoads: 500
+    loadOverride: null
   }) {
     if (!pageResourceLoader || forceNew) {
-      pageResourceLoader = new _PageResourceLoader(loadOverride, maxConcurrentLoads);
+      pageResourceLoader = new _PageResourceLoader(targetManager ?? TargetManager.instance(), loadOverride, maxConcurrentLoads);
     }
     return pageResourceLoader;
   }
@@ -18252,7 +18287,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
     return this.#pageResources;
   }
   getScopedResourcesLoaded() {
-    return new Map([...this.#pageResources].filter(([_, pageResource]) => TargetManager.instance().isInScope(pageResource.initiator.target) || isExtensionInitiator(pageResource.initiator)));
+    return new Map([...this.#pageResources].filter(([_, pageResource]) => this.#targetManager.isInScope(pageResource.initiator.target) || isExtensionInitiator(pageResource.initiator)));
   }
   /**
    * Loading is the number of currently loading and queued items. Resources is the total number of resources,
@@ -18263,11 +18298,10 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
     return { loading: this.#currentlyLoading, queued: this.#queuedLoads.length, resources: this.#pageResources.size };
   }
   getScopedNumberOfResources() {
-    const targetManager = TargetManager.instance();
     let loadingCount = 0;
     for (const [targetId, count] of this.#currentlyLoadingPerTarget) {
-      const target = targetManager.targetById(targetId);
-      if (targetManager.isInScope(target)) {
+      const target = this.#targetManager.targetById(targetId);
+      if (this.#targetManager.isInScope(target)) {
         loadingCount += count;
       }
     }
@@ -19787,6 +19821,10 @@ var SourceMap = class {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }
+  findOriginalFunctionScope(position) {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
+  }
   isOutlinedFrame(generatedLine, generatedColumn) {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;
@@ -20367,7 +20405,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     const isFlex = display === "flex" || display === "inline-flex";
     const isGrid = display === "grid" || display === "inline-grid";
     const isSubgrid = (isGrid && (styles.get("grid-template-columns")?.startsWith("subgrid") || styles.get("grid-template-rows")?.startsWith("subgrid"))) ?? false;
-    const isMasonry = display === "masonry" || display === "inline-masonry";
+    const isGridLanes = display === "grid-lanes" || display === "inline-grid-lanes";
     const containerType = styles.get("container-type");
     const isContainer = Boolean(containerType) && containerType !== "" && containerType !== "normal";
     const hasScroll = Boolean(styles.get("scroll-snap-type")) && styles.get("scroll-snap-type") !== "none";
@@ -20375,7 +20413,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       isFlex,
       isGrid,
       isSubgrid,
-      isMasonry,
+      isGridLanes,
       isContainer,
       hasScroll
     };

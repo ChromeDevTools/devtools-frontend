@@ -20,6 +20,7 @@ export declare const FUNCTION_SECTION_NAME = "@function";
 /** Title of the general at-rule section */
 export declare const AT_RULE_SECTION_NAME = "@font-*";
 declare const StylesSidebarPane_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;

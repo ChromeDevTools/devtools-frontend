@@ -382,7 +382,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
     <devtools-button
       .iconName=${'arrow-up'}
       .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-      .title=${i18nString(UIStrings.decreasePriority, { PH1: constructorStringOrWildcardURL })}
+      .title=${i18nString(UIStrings.increasePriority, { PH1: constructorStringOrWildcardURL })}
       .jslogContext=${'decrease-priority'}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       @click=${moveUp}>
@@ -390,7 +390,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
     <devtools-button
       .iconName=${'arrow-down'}
       .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-      .title=${i18nString(UIStrings.increasePriority, { PH1: constructorStringOrWildcardURL })}
+      .title=${i18nString(UIStrings.decreasePriority, { PH1: constructorStringOrWildcardURL })}
       .jslogContext=${'increase-priority'}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       @click=${moveDown}></devtools-button>

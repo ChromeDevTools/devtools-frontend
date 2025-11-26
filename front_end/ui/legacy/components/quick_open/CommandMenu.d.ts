@@ -52,7 +52,7 @@ export declare class CommandMenuProvider extends Provider {
     itemCount(): number;
     itemKeyAt(itemIndex: number): string;
     itemScoreAt(itemIndex: number, query: string): number;
-    renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void;
+    renderItem(itemIndex: number, query: string, wrapperElement: Element): void;
     jslogContextAt(itemIndex: number): string;
     selectItem(itemIndex: number | null, _promptValue: string): void;
     notFoundText(): string;

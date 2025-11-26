@@ -19,7 +19,7 @@ export declare class FilteredUISourceCodeListProvider extends QuickOpen.Filtered
     itemKeyAt(itemIndex: number): string;
     setDefaultScores(defaultScores: Map<Workspace.UISourceCode.UISourceCode, number> | null): void;
     itemScoreAt(itemIndex: number, query: string): number;
-    renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void;
+    renderItem(itemIndex: number, query: string, wrapperElement: Element): void;
     private renderSubtitleElement;
     selectItem(itemIndex: number | null, promptValue: string): void;
     rewriteQuery(query: string): string;

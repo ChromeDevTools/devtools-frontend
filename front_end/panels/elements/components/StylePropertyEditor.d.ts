@@ -57,14 +57,14 @@ declare global {
         'devtools-grid-editor': GridEditor;
     }
 }
-export declare class MasonryEditor extends StylePropertyEditor {
-    readonly jslogContext = "cssMasonryEditor";
+export declare class GridLanesEditor extends StylePropertyEditor {
+    readonly jslogContext = "cssGridLanesEditor";
     protected readonly editableProperties: EditableProperty[];
     protected findIcon(query: string, computedProperties: Map<string, string>): IconInfo | null;
 }
 declare global {
     interface HTMLElementTagNameMap {
-        'devtools-masonry-editor': MasonryEditor;
+        'devtools-grid-lanes-editor': GridLanesEditor;
     }
 }
 export declare const FlexboxEditableProperties: {
@@ -75,7 +75,7 @@ export declare const GridEditableProperties: {
     propertyName: string;
     propertyValues: string[];
 }[];
-export declare const MasonryEditableProperties: {
+export declare const GridLanesEditableProperties: {
     propertyName: string;
     propertyValues: string[];
 }[];

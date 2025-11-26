@@ -1,12 +1,14 @@
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
+import type { MockCDPConnection } from './MockCDPConnection.js';
 export declare const LOADER_ID: Protocol.Network.LoaderId;
 export declare const MAIN_FRAME_ID: Protocol.Page.FrameId;
 export declare const DOMAIN = "example.com";
 export declare const SECURITY_ORIGIN = "https://example.com";
 export declare const FRAME_URL: Platform.DevToolsPath.UrlString;
 export declare function setMockResourceTree(shouldMock: boolean): void;
+export declare function mockResourceTree(connection: MockCDPConnection): void;
 export declare function getInitializedResourceTreeModel(target: SDK.Target.Target): Promise<SDK.ResourceTreeModel.ResourceTreeModel>;
 export declare function getMainFrame(target: SDK.Target.Target, framePayload?: Partial<Protocol.Page.Frame>): SDK.ResourceTreeModel.ResourceTreeFrame;
 export declare function addChildFrame(target: SDK.Target.Target, framePayload?: Partial<Protocol.Page.Frame>): Promise<SDK.ResourceTreeModel.ResourceTreeFrame>;

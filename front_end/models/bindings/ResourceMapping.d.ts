@@ -21,5 +21,6 @@ export declare class ResourceMapping implements SDK.TargetManager.SDKModelObserv
     uiLocationRangeToJSLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, textRange: TextUtils.TextRange.TextRange): SDK.DebuggerModel.LocationRange[] | null;
     getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number> | null;
     uiLocationToCSSLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[];
+    functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UIFunctionBounds | null>;
     resetForTest(target: SDK.Target.Target): void;
 }

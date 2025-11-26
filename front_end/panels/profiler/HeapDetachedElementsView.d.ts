@@ -18,6 +18,7 @@ export declare class DetachedElementsProfileView extends UI.View.SimpleView impl
     toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;
 }
 declare const DetachedElementsProfileType_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<DetachedElementsProfileType.EventTypes>;
     addEventListener<T extends keyof DetachedElementsProfileType.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<DetachedElementsProfileType.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<DetachedElementsProfileType.EventTypes, T>;
     once<T extends keyof DetachedElementsProfileType.EventTypes>(eventType: T): Promise<DetachedElementsProfileType.EventTypes[T]>;
     removeEventListener<T extends keyof DetachedElementsProfileType.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<DetachedElementsProfileType.EventTypes[T], any>) => void, thisObject?: Object): void;

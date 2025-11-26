@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/ui/kit/cards"},"files":["../../../../../../../front_end/ui/kit/cards/cards.ts"],"references":[{"path":"./card-tsconfig.json"},{"path":"./css_files-tsconfig.json"}]}

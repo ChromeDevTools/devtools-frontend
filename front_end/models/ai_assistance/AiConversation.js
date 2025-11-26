@@ -196,6 +196,7 @@ export class AiConversation {
     async *run(initialQuery, options, multimodalInput) {
         for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
             // We don't want to save partial responses to the conversation history.
+            // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
             if (data.type !== "answer" /* ResponseType.ANSWER */ || data.complete) {
                 void this.addHistoryItem(data);
             }

@@ -2704,7 +2704,7 @@ __export(SharedStorageMetadataView_exports, {
 import "./../../../ui/components/icon_button/icon_button.js";
 import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
-import * as Lit7 from "./../../../ui/lit/lit.js";
+import * as Lit6 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/sharedStorageMetadataView.css.js
 var sharedStorageMetadataView_css_default = `/*
@@ -2751,7 +2751,7 @@ import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI9 from "./../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../ui/lit/lit.js";
+import { html as html10, nothing as nothing5, render as render10 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
 var storageMetadataView_css_default = `/*
@@ -2767,7 +2767,6 @@ var storageMetadataView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./storageMetadataView.css")} */`;
 
 // gen/front_end/panels/application/components/StorageMetadataView.js
-var { html: html10 } = Lit6;
 var UIStrings10 = {
   /**
    * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
@@ -2888,10 +2887,8 @@ var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableCo
   }
   render() {
     return RenderCoordinator.write("StorageMetadataView render", async () => {
-      Lit6.render(html10`
-        <style>
-          ${storageMetadataView_css_default}
-        </style>
+      render10(html10`
+        <style>${storageMetadataView_css_default}</style>
         <devtools-report .data=${{ reportTitle: this.getTitle() ?? i18nString9(UIStrings10.loading) }}>
           ${await this.renderReportContent()}
         </devtools-report>`, this.#shadow, { host: this });
@@ -2913,7 +2910,7 @@ var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableCo
   }
   async renderReportContent() {
     if (!this.#storageKey) {
-      return Lit6.nothing;
+      return nothing5;
     }
     const origin = this.#storageKey.origin;
     const ancestorChainHasCrossSite = Boolean(this.#storageKey.components.get(
@@ -2936,16 +2933,17 @@ var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableCo
     const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
     return html10`
         ${isIframeOrEmbedded ? html10`${this.key(i18nString9(UIStrings10.origin))}
-            ${this.value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : Lit6.nothing}
-        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.topLevelSite)) : Lit6.nothing}
-        ${topLevelSite ? this.value(topLevelSite) : Lit6.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.opaque)) : Lit6.nothing}
-        ${thirdPartyReason ? html10`${this.key(i18nString9(UIStrings10.isThirdParty))}${this.value(thirdPartyReason)}` : Lit6.nothing}
-        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.isOpaque)) : Lit6.nothing}
-        ${hasNonce ? this.value(i18nString9(UIStrings10.yes)) : Lit6.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : Lit6.nothing}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : Lit6.nothing}
-        ${this.#storageBucketsModel ? this.#renderBucketControls() : Lit6.nothing}`;
+            ${this.value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : nothing5}
+        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.topLevelSite)) : nothing5}
+        ${topLevelSite ? this.value(topLevelSite) : nothing5}
+        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.opaque)) : nothing5}
+        ${thirdPartyReason ? html10`
+          ${this.key(i18nString9(UIStrings10.isThirdParty))}${this.value(thirdPartyReason)}` : nothing5}
+        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.isOpaque)) : nothing5}
+        ${hasNonce ? this.value(i18nString9(UIStrings10.yes)) : nothing5}
+        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : nothing5}
+        ${this.#storageBucket ? this.#renderStorageBucketInfo() : nothing5}
+        ${this.#storageBucketsModel ? this.#renderBucketControls() : nothing5}`;
   }
   #renderStorageBucketInfo() {
     if (!this.#storageBucket) {
@@ -2987,15 +2985,14 @@ var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableCo
   }
   #renderBucketControls() {
     return html10`
-      <devtools-report-divider></devtools-report-divider>
-      <devtools-report-section>
-        <devtools-button
-          aria-label=${i18nString9(UIStrings10.deleteBucket)}
-          .variant=${"outlined"}
-          @click=${this.#deleteBucket}>
-          ${i18nString9(UIStrings10.deleteBucket)}
-        </devtools-button>
-      </devtools-report-section>`;
+    <devtools-report-divider></devtools-report-divider>
+    <devtools-report-section>
+      <devtools-button aria-label=${i18nString9(UIStrings10.deleteBucket)}
+                       .variant=${"outlined"}
+                       @click=${this.#deleteBucket}>
+        ${i18nString9(UIStrings10.deleteBucket)}
+      </devtools-button>
+    </devtools-report-section>`;
   }
   async #deleteBucket() {
     if (!this.#storageBucketsModel || !this.#storageBucket) {
@@ -3010,7 +3007,7 @@ var StorageMetadataView = class extends LegacyWrapper3.LegacyWrapper.WrappableCo
 customElements.define("devtools-storage-metadata-view", StorageMetadataView);
 
 // gen/front_end/panels/application/components/SharedStorageMetadataView.js
-var { html: html11 } = Lit7;
+var { html: html11 } = Lit6;
 var UIStrings11 = {
   /**
    * @description Text in SharedStorage Metadata View of the Application panel
@@ -3116,7 +3113,7 @@ import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as UI10 from "./../../../ui/legacy/legacy.js";
-import * as Lit8 from "./../../../ui/lit/lit.js";
+import * as Lit7 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/trustTokensView.css.js
@@ -3158,7 +3155,7 @@ devtools-icon {
 
 // gen/front_end/panels/application/components/TrustTokensView.js
 var PRIVATE_STATE_TOKENS_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/protections/private-state-tokens";
-var { html: html12 } = Lit8;
+var { html: html12 } = Lit7;
 var UIStrings12 = {
   /**
    * @description Text for the issuer of an item
@@ -3248,7 +3245,7 @@ function renderGridOrNoDataMessage(input) {
     `;
 }
 var DEFAULT_VIEW8 = (input, output, target) => {
-  Lit8.render(html12`
+  Lit7.render(html12`
     <style>${trustTokensView_css_default}</style>
     <style>${UI10.inspectorCommonStyles}</style>
     ${renderGridOrNoDataMessage(input)}

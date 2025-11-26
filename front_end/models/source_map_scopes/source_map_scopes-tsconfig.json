@@ -35,6 +35,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/source_map_scopes/FunctionCodeResolver.ts",
     "../../../../../../front_end/models/source_map_scopes/NamesResolver.ts",
     "../../../../../../front_end/models/source_map_scopes/ScopeChainModel.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",

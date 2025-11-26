@@ -145,7 +145,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     updateStyleAdorners(): Promise<void>;
     pushPopoverAdorner(): void;
     pushGridAdorner(isSubgrid: boolean): void;
-    pushMasonryAdorner(): void;
+    pushGridLanesAdorner(): void;
     pushScrollSnapAdorner(): void;
     pushStartingStyleAdorner(): void;
     pushFlexAdorner(): void;

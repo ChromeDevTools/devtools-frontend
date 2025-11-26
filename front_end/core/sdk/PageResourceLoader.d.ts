@@ -4,6 +4,7 @@ import * as Host from '../host/host.js';
 import type * as Platform from '../platform/platform.js';
 import { PrimaryPageChangeType, type ResourceTreeFrame } from './ResourceTreeModel.js';
 import type { Target } from './Target.js';
+import { TargetManager } from './TargetManager.js';
 export interface ExtensionInitiator {
     target: null;
     frameId: null;
@@ -39,19 +40,20 @@ export declare class ResourceKey {
  */
 export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(loadOverride: ((arg0: string) => Promise<{
+    constructor(targetManager: TargetManager, loadOverride: ((arg0: string) => Promise<{
         success: boolean;
         content: string;
         errorDescription: Host.ResourceLoader.LoadErrorDescription;
-    }>) | null, maxConcurrentLoads: number);
-    static instance({ forceNew, loadOverride, maxConcurrentLoads }?: {
+    }>) | null, maxConcurrentLoads?: number);
+    static instance({ forceNew, targetManager, loadOverride, maxConcurrentLoads }?: {
         forceNew: boolean;
         loadOverride: (null | ((arg0: string) => Promise<{
             success: boolean;
             content: string;
             errorDescription: Host.ResourceLoader.LoadErrorDescription;
         }>));
-        maxConcurrentLoads: number;
+        targetManager?: TargetManager;
+        maxConcurrentLoads?: number;
     }): PageResourceLoader;
     static removeInstance(): void;
     onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<{

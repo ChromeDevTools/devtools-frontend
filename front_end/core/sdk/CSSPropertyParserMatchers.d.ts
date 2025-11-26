@@ -441,27 +441,27 @@ export declare class CustomFunctionMatcher extends CustomFunctionMatcher_base {
 export declare const enum LayoutType {
     FLEX = "flex",
     GRID = "grid",
-    MASONRY = "masonry"
+    GRID_LANES = "grid-lanes"
 }
-export declare class FlexGridMasonryMatch implements Match {
+export declare class FlexGridGridLanesMatch implements Match {
     readonly text: string;
     readonly node: CodeMirror.SyntaxNode;
     readonly layoutType: LayoutType;
     constructor(text: string, node: CodeMirror.SyntaxNode, layoutType: LayoutType);
 }
-declare const FlexGridMasonryMatcher_base: {
+declare const FlexGridGridLanesMatcher_base: {
     new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<FlexGridMasonryMatch>;
+        matchType: Platform.Constructor.ConstructorOrAbstract<FlexGridGridLanesMatch>;
         accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): FlexGridMasonryMatch | null;
+        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): FlexGridGridLanesMatch | null;
     };
 };
-export declare class FlexGridMasonryMatcher extends FlexGridMasonryMatcher_base {
+export declare class FlexGridGridLanesMatcher extends FlexGridGridLanesMatcher_base {
     static readonly FLEX: string[];
     static readonly GRID: string[];
-    static readonly MASONRY: string[];
+    static readonly GRID_LANES: string[];
     accepts(propertyName: string): boolean;
-    matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridMasonryMatch | null;
+    matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridGridLanesMatch | null;
 }
 export declare class GridTemplateMatch implements Match {
     readonly text: string;

@@ -157,8 +157,8 @@ export declare class NetworkDispatcher implements ProtocolProxyApi.NetworkDispat
     directUDPSocketClosed(event: Protocol.Network.DirectUDPSocketClosedEvent): void;
     directUDPSocketChunkSent(event: Protocol.Network.DirectUDPSocketChunkSentEvent): void;
     directUDPSocketChunkReceived(event: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void;
-    directUDPSocketJoinedMulticastGroup(_event: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void;
-    directUDPSocketLeftMulticastGroup(_event: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void;
+    directUDPSocketJoinedMulticastGroup(event: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void;
+    directUDPSocketLeftMulticastGroup(event: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void;
     trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void;
     reportingApiReportAdded(data: Protocol.Network.ReportingApiReportAddedEvent): void;
     reportingApiReportUpdated(data: Protocol.Network.ReportingApiReportUpdatedEvent): void;

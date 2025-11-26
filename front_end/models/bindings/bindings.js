@@ -724,6 +724,36 @@ var CompilerScriptMapping = class {
     }
     return ranges;
   }
+  async functionBoundsAtRawLocation(rawLocation) {
+    const script = rawLocation.script();
+    if (!script) {
+      return null;
+    }
+    const sourceMap = this.#sourceMapManager.sourceMapForClient(script);
+    if (!sourceMap) {
+      return null;
+    }
+    const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(rawLocation);
+    const { url, scope } = sourceMap.findOriginalFunctionScope({ line: lineNumber, column: columnNumber }) ?? {};
+    if (!scope || !url) {
+      return null;
+    }
+    const project = this.#sourceMapToProject.get(sourceMap);
+    if (!project) {
+      return null;
+    }
+    const uiSourceCode = project.uiSourceCodeForURL(url);
+    if (!uiSourceCode) {
+      return null;
+    }
+    const contentData = await uiSourceCode.requestContentData();
+    if ("error" in contentData) {
+      return null;
+    }
+    const name = scope.name ?? "";
+    const range = new TextUtils2.TextRange.TextRange(scope.start.line, scope.start.column, scope.end.line, scope.end.column);
+    return new Workspace3.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
+  }
   translateRawFramesStep(rawFrames, translatedFrames) {
     const frame = rawFrames[0];
     if (Trie_exports.isBuiltinFrame(frame)) {
@@ -2902,6 +2932,7 @@ import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as Formatter from "./../formatter/formatter.js";
 import * as TextUtils6 from "./../text_utils/text_utils.js";
 import * as Workspace15 from "./../workspace/workspace.js";
 var UIStrings3 = {
@@ -3021,6 +3052,43 @@ var ResourceScriptMapping = class {
       this.removeScripts([script]);
       this.addScript(script);
     }
+  }
+  async functionBoundsAtRawLocation(rawLocation) {
+    const script = rawLocation.script();
+    if (!script) {
+      return null;
+    }
+    const uiSourceCode = this.#scriptToUISourceCode.get(script);
+    if (!uiSourceCode) {
+      return null;
+    }
+    const scopeTreeAndText = script ? await SDK10.ScopeTreeCache.scopeTreeForScript(script) : null;
+    if (!scopeTreeAndText) {
+      return null;
+    }
+    const offset = scopeTreeAndText.text.offsetFromPosition(rawLocation.lineNumber, rawLocation.columnNumber);
+    const results = [];
+    (function walk(nodes) {
+      for (const node of nodes) {
+        if (!(offset >= node.start && offset < node.end)) {
+          continue;
+        }
+        results.push(node);
+        walk(node.children);
+      }
+    })([scopeTreeAndText.scopeTree]);
+    const result = results.findLast(
+      (node) => node.kind === 2 || node.kind === 4
+      /* Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION */
+    );
+    if (!result) {
+      return null;
+    }
+    const startPosition = scopeTreeAndText.text.positionFromOffset(result.start);
+    const endPosition = scopeTreeAndText.text.positionFromOffset(result.end);
+    const name = "";
+    const range = new TextUtils6.TextRange.TextRange(startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
+    return new Workspace15.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
   addScript(script) {
     if (script.isLiveEdit() || script.isBreakpointCondition) {
@@ -3525,6 +3593,10 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     }
     return [];
   }
+  async functionBoundsAtRawLocation(rawLocation) {
+    const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);
+    return modelData ? await modelData.functionBoundsAtRawLocation(rawLocation) : null;
+  }
   async normalizeUILocation(uiLocation) {
     const rawLocations = await this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     for (const location of rawLocations) {
@@ -3712,6 +3784,13 @@ var ModelData2 = class {
     ranges ??= this.#resourceMapping.uiLocationRangeToJSLocationRanges(uiSourceCode, textRange);
     ranges ??= this.#defaultMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     return ranges;
+  }
+  async functionBoundsAtRawLocation(rawLocation) {
+    let scope = null;
+    scope = scope || await this.compilerMapping.functionBoundsAtRawLocation(rawLocation);
+    scope = scope || await this.#resourceScriptMapping.functionBoundsAtRawLocation(rawLocation);
+    scope = scope || await this.#resourceMapping.functionBoundsAtRawLocation(rawLocation);
+    return scope;
   }
   translateRawFramesStep(rawFrames, translatedFrames) {
     if (!this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
@@ -4265,6 +4344,7 @@ __export(ResourceMapping_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as Formatter2 from "./../formatter/formatter.js";
 import * as TextUtils9 from "./../text_utils/text_utils.js";
 import * as Workspace22 from "./../workspace/workspace.js";
 var styleSheetRangeMap = /* @__PURE__ */ new WeakMap();
@@ -4490,6 +4570,64 @@ var ResourceMapping = class {
       return [];
     }
     return cssModel.createRawLocationsByURL(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
+  }
+  async functionBoundsAtRawLocation(rawLocation) {
+    const script = rawLocation.script();
+    if (!script) {
+      return null;
+    }
+    const info = this.infoForTarget(script.debuggerModel.target());
+    if (!info) {
+      return null;
+    }
+    const embedderName = script.embedderName();
+    if (!embedderName) {
+      return null;
+    }
+    const uiSourceCode = info.getProject().uiSourceCodeForURL(embedderName);
+    if (!uiSourceCode) {
+      return null;
+    }
+    let { lineNumber, columnNumber } = rawLocation;
+    lineNumber -= script.lineOffset;
+    if (lineNumber === 0) {
+      columnNumber -= script.columnOffset;
+    }
+    const scopeTreeAndText = script ? await SDK13.ScopeTreeCache.scopeTreeForScript(script) : null;
+    if (!scopeTreeAndText) {
+      return null;
+    }
+    const offset = scopeTreeAndText.text.offsetFromPosition(lineNumber, columnNumber);
+    const results = [];
+    (function walk(nodes) {
+      for (const node of nodes) {
+        if (!(offset >= node.start && offset < node.end)) {
+          continue;
+        }
+        results.push(node);
+        walk(node.children);
+      }
+    })([scopeTreeAndText.scopeTree]);
+    const result = results.findLast(
+      (node) => node.kind === 2 || node.kind === 4
+      /* Formatter.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION */
+    );
+    if (!result) {
+      return null;
+    }
+    const startPosition = scopeTreeAndText.text.positionFromOffset(result.start);
+    const endPosition = scopeTreeAndText.text.positionFromOffset(result.end);
+    startPosition.lineNumber += script.lineOffset;
+    if (startPosition.lineNumber === script.lineOffset) {
+      startPosition.columnNumber += script.columnOffset;
+    }
+    endPosition.lineNumber += script.lineOffset;
+    if (endPosition.lineNumber === script.lineOffset) {
+      endPosition.columnNumber += script.columnOffset;
+    }
+    const name = "";
+    const range = new TextUtils9.TextRange.TextRange(startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
+    return new Workspace22.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
   resetForTest(target) {
     const resourceTreeModel = target.model(SDK13.ResourceTreeModel.ResourceTreeModel);

@@ -238,6 +238,7 @@ group("unittests") {
     "ui/components/icon_button:unittests",
     "ui/components/issue_counter:unittests",
     "ui/components/linkifier:unittests",
+    "ui/components/list:unittests",
     "ui/components/markdown_view:unittests",
     "ui/components/menus:unittests",
     "ui/components/node_text:unittests",

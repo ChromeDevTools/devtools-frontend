@@ -148,6 +148,7 @@ devtools_entrypoint("bundle") {
     "../components/issue_counter:unittests",
     "../components/legacy_wrapper:*",
     "../components/linear_memory_inspector:*",
+    "../components/list:*",
     "../components/markdown_view:*",
     "../components/menus:*",
     "../components/request_link_icon:unittests",

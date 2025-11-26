@@ -5,6 +5,7 @@
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
 import * as Platform from '../platform/platform.js';
 
@@ -86,6 +87,8 @@ describeWithMockConnection('SourceMapManager', () => {
 describe('SourceMapManager', () => {
   const sourceURL = urlString`http://localhost/foo.js`;
   const sourceMappingURL = `${sourceURL}.map`;
+
+  setupSettingsHooks();
 
   beforeEach(() => {
     SDK.TargetManager.TargetManager.instance({forceNew: true});
@@ -203,7 +206,7 @@ describe('SourceMapManager', () => {
       const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
       sourceMapManager.setEnabled(false);
       const client = new MockClient(target);
-      const loadResource = sinon.spy(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource');
+      const loadResource = sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource');
       sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
       assert.strictEqual(loadResource.callCount, 0, 'loadResource calls');
       assert.isUndefined(sourceMapManager.sourceMapForClient(client));

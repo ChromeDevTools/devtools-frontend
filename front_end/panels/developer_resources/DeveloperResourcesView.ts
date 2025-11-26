@@ -72,6 +72,7 @@ interface ViewInput {
   filters: TextUtils.TextUtils.ParsedFilter[];
   numResources: number;
   numLoading: number;
+  loadThroughTargetSetting: Common.Settings.Setting<boolean>;
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -91,7 +92,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           </devtools-toolbar-input>
           <devtools-checkbox
               title=${i18nString(UIStrings.loadHttpsDeveloperResources)}
-              ${bindToSetting(SDK.PageResourceLoader.getLoadThroughTargetSetting())}>
+              ${bindToSetting(input.loadThroughTargetSetting)}>
             ${i18nString(UIStrings.enableLoadingThroughTarget)}
           </devtools-checkbox>
         </devtools-toolbar>
@@ -146,6 +147,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
       filters: this.#filters,
       numResources: resources,
       numLoading: loading,
+      loadThroughTargetSetting: this.#loader.getLoadThroughTargetSetting(),
     };
     const output = {};
     this.#view(input, output, this.contentElement);

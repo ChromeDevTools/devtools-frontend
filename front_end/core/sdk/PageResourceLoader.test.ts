@@ -267,7 +267,7 @@ describe('PageResourceLoader', () => {
         const connection = new MockCDPConnection();
         const target = createTarget({connection});
         const initiator = {target, frameId: null, initiatorUrl};
-        const loader = new SDK.PageResourceLoader.PageResourceLoader(target.targetManager(), null);
+        const loader = new SDK.PageResourceLoader.PageResourceLoader(target.targetManager(), settings, null);
         const [{options}, {content}] = await Promise.all([
           setupLoadingSourceMapsAsNetworkResource(connection),
           loader.loadResource(url, initiator),
@@ -307,7 +307,8 @@ describe('PageResourceLoader', () => {
         errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
       };
     };
-    const loader = new SDK.PageResourceLoader.PageResourceLoader(target.targetManager(), load);
+    const loader = new SDK.PageResourceLoader.PageResourceLoader(
+        target.targetManager(), Common.Settings.Settings.instance(), load);
 
     void loader.loadResource(foo1Url, initiator);
     void loader.loadResource(foo2Url, initiator);
@@ -344,7 +345,8 @@ describe('PageResourceLoader', () => {
         errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
       };
     };
-    const loader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, load);
+    const loader =
+        new SDK.PageResourceLoader.PageResourceLoader(targetManager, Common.Settings.Settings.instance(), load);
 
     await Promise.all([
       loader.loadResource(foo1Url, initiator),

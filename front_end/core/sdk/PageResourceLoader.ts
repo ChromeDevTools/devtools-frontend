@@ -82,6 +82,7 @@ interface LoadQueueEntry {
  */
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #targetManager: TargetManager;
+  readonly #settings: Common.Settings.Settings;
   #currentlyLoading = 0;
   #currentlyLoadingPerTarget = new Map<Protocol.Target.TargetID|'main', number>();
   readonly #maxConcurrentLoads: number;
@@ -93,21 +94,23 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
                              errorDescription: Host.ResourceLoader.LoadErrorDescription,
                            }>)|null;
   constructor(
-      targetManager: TargetManager, loadOverride: ((arg0: string) => Promise<{
-                                                     success: boolean,
-                                                     content: string,
-                                                     errorDescription: Host.ResourceLoader.LoadErrorDescription,
-                                                   }>)|null,
+      targetManager: TargetManager, settings: Common.Settings.Settings,
+      loadOverride: ((arg0: string) => Promise<{
+                       success: boolean,
+                       content: string,
+                       errorDescription: Host.ResourceLoader.LoadErrorDescription,
+                     }>)|null,
       maxConcurrentLoads = 500) {
     super();
     this.#targetManager = targetManager;
+    this.#settings = settings;
     this.#maxConcurrentLoads = maxConcurrentLoads;
     this.#targetManager.addModelListener(
         ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.#loadOverride = loadOverride;
   }
 
-  static instance({forceNew, targetManager, loadOverride, maxConcurrentLoads}: {
+  static instance({forceNew, targetManager, settings, loadOverride, maxConcurrentLoads}: {
     forceNew: boolean,
     loadOverride: (null|((arg0: string) => Promise<{
                            success: boolean,
@@ -115,14 +118,16 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
                            errorDescription: Host.ResourceLoader.LoadErrorDescription,
                          }>)),
     targetManager?: TargetManager,
+    settings?: Common.Settings.Settings,
     maxConcurrentLoads?: number,
   } = {
     forceNew: false,
     loadOverride: null,
   }): PageResourceLoader {
     if (!pageResourceLoader || forceNew) {
-      pageResourceLoader =
-          new PageResourceLoader(targetManager ?? TargetManager.instance(), loadOverride, maxConcurrentLoads);
+      pageResourceLoader = new PageResourceLoader(
+          targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(), loadOverride,
+          maxConcurrentLoads);
     }
 
     return pageResourceLoader;
@@ -307,8 +312,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       return await this.#loadOverride(url);
     }
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
-    const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== 'file' &&
-        parsedURL.scheme !== 'data' && parsedURL.scheme !== 'devtools';
+    const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL &&
+        parsedURL.scheme !== 'file' && parsedURL.scheme !== 'data' && parsedURL.scheme !== 'devtools';
     Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
       try {
@@ -341,7 +346,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       }
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
     } else {
-      const code = getLoadThroughTargetSetting().get() ?
+      const code = this.getLoadThroughTargetSetting().get() ?
           Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL :
           Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
       Host.userMetrics.developerResourceLoaded(code);
@@ -397,7 +402,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }> {
     const networkManager = (target.model(NetworkManager) as NetworkManager);
     const ioModel = (target.model(IOModel) as IOModel);
-    const disableCache = Common.Settings.Settings.instance().moduleSetting('cache-disabled').get();
+    const disableCache = this.#settings.moduleSetting('cache-disabled').get();
     const resource = await networkManager.loadNetworkResource(frameId, url, {disableCache, includeCredentials: true});
     try {
       const content = resource.stream ?
@@ -422,10 +427,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       }
     }
   }
-}
 
-export function getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> {
-  return Common.Settings.Settings.instance().createSetting('load-through-target', true);
+  getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> {
+    return this.#settings.createSetting('load-through-target', true);
+  }
 }
 
 export const enum Events {

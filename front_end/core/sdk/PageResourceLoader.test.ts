@@ -11,7 +11,6 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {createSettingsForTest, setupSettingsHooks} from '../../testing/SettingsHelpers.js';
-import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -207,15 +206,14 @@ describe('PageResourceLoader', () => {
   });
 
   it('allows remote file paths with the setting enabled', async () => {
-    const {loader} = setup({maxConcurrentLoads: 1});
+    const {loader, settings} = setup({maxConcurrentLoads: 1});
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')
         .callsFake((_url, _headers, streamId, callback) => {
           Host.ResourceLoader.streamWrite(streamId, 'content of the source map');
           callback({statusCode: 200});
         });
 
-    // TODO(crbug.com/458180550): Use 'settings' once NetworkManager no longer uses global settings instance.
-    Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').set(true);
+    settings.moduleSetting('network.enable-remote-file-loading').set(true);
     const response = await loader.loadResource(urlString`file://host/source-map.js.map`, initiator);
 
     assert.strictEqual(response.content, 'content of the source map');
@@ -226,15 +224,14 @@ describe('PageResourceLoader', () => {
       return;
     }
 
-    const {loader} = setup({maxConcurrentLoads: 1});
+    const {loader, settings} = setup({maxConcurrentLoads: 1});
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')
         .callsFake((_url, _headers, streamId, callback) => {
           Host.ResourceLoader.streamWrite(streamId, 'content of the source map');
           callback({statusCode: 200});
         });
 
-    // TODO(crbug.com/458180550): Use 'settings' once NetworkManager no longer uses global settings instance.
-    Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').set(true);
+    settings.moduleSetting('network.enable-remote-file-loading').set(true);
     const response = await loader.loadResource(urlString`file:////127.0.0.1/share/source-map.js.map`, initiator);
 
     assert.strictEqual(response.content, 'content of the source map');

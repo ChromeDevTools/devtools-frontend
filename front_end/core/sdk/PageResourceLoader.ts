@@ -352,7 +352,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       Host.userMetrics.developerResourceLoaded(code);
     }
 
-    const result = await MultitargetNetworkManager.instance().loadResource(url);
+    const result = await this.loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
     }
@@ -426,6 +426,30 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
         void ioModel.close(resource.stream);
       }
     }
+  }
+
+  private async loadFromHostBindings(url: Platform.DevToolsPath.UrlString): Promise<{
+    success: boolean,
+    content: string,
+    errorDescription: Host.ResourceLoader.LoadErrorDescription,
+  }> {
+    const headers: Record<string, string> = {};
+
+    const currentUserAgent = MultitargetNetworkManager.instance().currentUserAgent();
+    if (currentUserAgent) {
+      headers['User-Agent'] = currentUserAgent;
+    }
+
+    if (this.#settings.moduleSetting('cache-disabled').get()) {
+      headers['Cache-Control'] = 'no-cache';
+    }
+
+    const allowRemoteFilePaths = this.#settings.moduleSetting('network.enable-remote-file-loading').get();
+
+    return await new Promise(
+        resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+          resolve({success, content, errorDescription});
+        }, allowRemoteFilePaths));
   }
 
   getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> {

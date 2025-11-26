@@ -445,6 +445,14 @@ export class MainImpl {
     targetManager.addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.#onSuspendStateChanged.bind(this));
 
+    SDK.PageResourceLoader.PageResourceLoader.instance({
+      forceNew: true,
+      targetManager,
+      settings: Common.Settings.Settings.instance(),
+      userAgentProvider: SDK.NetworkManager.MultitargetNetworkManager.instance(),
+      loadOverride: null,
+    });
+
     Workspace.FileManager.FileManager.instance({forceNew: true});
 
     Bindings.NetworkProject.NetworkProjectManager.instance();

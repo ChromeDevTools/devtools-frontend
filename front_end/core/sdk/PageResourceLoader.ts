@@ -7,6 +7,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager, NetworkManager} from './NetworkManager.js';
@@ -69,8 +70,6 @@ export class ResourceKey {
 
 export type UserAgentProvider = Pick<MultitargetNetworkManager, 'currentUserAgent'>;
 
-let pageResourceLoader: PageResourceLoader|null = null;
-
 interface LoadQueueEntry {
   resolve: () => void;
   reject: (arg0: Error) => void;
@@ -128,17 +127,19 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     forceNew: false,
     loadOverride: null,
   }): PageResourceLoader {
-    if (!pageResourceLoader || forceNew) {
-      pageResourceLoader = new PageResourceLoader(
-          targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(),
-          userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads);
+    if (forceNew) {
+      Root.DevToolsContext.globalInstance().set(
+          PageResourceLoader,
+          new PageResourceLoader(
+              targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(),
+              userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
     }
 
-    return pageResourceLoader;
+    return Root.DevToolsContext.globalInstance().get(PageResourceLoader);
   }
 
   static removeInstance(): void {
-    pageResourceLoader = null;
+    Root.DevToolsContext.globalInstance().delete(PageResourceLoader);
   }
 
   onPrimaryPageChanged(

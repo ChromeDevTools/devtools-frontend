@@ -166,7 +166,6 @@ ts_library("unittests") {
     "OverlayColorGenerator.test.ts",
     "OverlayModel.test.ts",
     "OverlayPersistentHighlighter.test.ts",
-    "PageResourceLoader.test.ts",
     "PreloadingModel.test.ts",
     "RehydratingConnection.test.ts",
     "RemoteObject.test.ts",
@@ -210,6 +209,7 @@ devtools_foundation_module("foundation_unittests") {
 
   sources = [
     "DebuggerModel.test.ts",
+    "PageResourceLoader.test.ts",
     "RuntimeModel.test.ts",
     "Target.test.ts",
     "TargetManager.test.ts",

@@ -8,7 +8,6 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {createSettingsForTest, setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as Host from '../host/host.js';
@@ -304,7 +303,6 @@ describe('PageResourceLoader', () => {
     };
     const {targetManager, loader} = setup({loadOverride: load});
     const connection = new MockCDPConnection();
-    mockResourceTree(connection);
     const target = createTarget({id: 'main' as Protocol.Target.TargetID, connection, targetManager});
     const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID, connection, targetManager});
     const initiator = {target, frameId: null, initiatorUrl};
@@ -339,7 +337,6 @@ describe('PageResourceLoader', () => {
     };
     const {targetManager, loader} = setup({loadOverride: load});
     const connection = new MockCDPConnection();
-    mockResourceTree(connection);
     const target = createTarget({id: 'main' as Protocol.Target.TargetID, connection, targetManager});
     const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID, connection, targetManager});
     const initiator = {target, frameId: null, initiatorUrl};

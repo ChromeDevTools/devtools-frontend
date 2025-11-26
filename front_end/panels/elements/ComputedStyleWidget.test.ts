@@ -37,7 +37,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
       node.id = 1 as Protocol.DOM.NodeId;
 
       const stubCSSStyle = {
-        styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+        styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
         cssProperties: [{
           name: 'color',
           value: 'red',

@@ -19,7 +19,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
-      styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+      styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
       cssProperties: [
         {
           name: 'margin',
@@ -105,7 +105,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
-      styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+      styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
       cssProperties: [
         {
           name: 'margin-top',
@@ -181,7 +181,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
-      styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+      styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
       cssProperties: [
         {
           name: '--a',
@@ -226,7 +226,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
-      styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+      styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
       cssProperties: [
         {
           name: '-webkit-background-clip',

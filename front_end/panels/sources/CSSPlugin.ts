@@ -61,7 +61,7 @@ function findPropertyAt(node: CodeMirror.SyntaxNode, pos: number): CodeMirror.Sy
 }
 
 function getCurrentStyleSheet(
-    url: Platform.DevToolsPath.UrlString, cssModel: SDK.CSSModel.CSSModel): Protocol.CSS.StyleSheetId {
+    url: Platform.DevToolsPath.UrlString, cssModel: SDK.CSSModel.CSSModel): Protocol.DOM.StyleSheetId {
   const currentStyleSheet = cssModel.getStyleSheetIdsForURL(url);
   if (currentStyleSheet.length === 0) {
     throw new Error('Can\'t find style sheet ID for current URL');

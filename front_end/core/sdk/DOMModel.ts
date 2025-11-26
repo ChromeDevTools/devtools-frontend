@@ -1800,6 +1800,9 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   constructor(domModel: DOMModel) {
     this.#domModel = domModel;
   }
+  adoptedStyleSheetsModified(_params: Protocol.DOM.AdoptedStyleSheetsModifiedEvent): void {
+    // TODO: implementation
+  }
 
   documentUpdated(): void {
     this.#domModel.documentUpdated();

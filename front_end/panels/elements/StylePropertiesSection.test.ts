@@ -55,7 +55,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
-    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, endLine: 1, startColumn: 0, endColumn: 0};
     const header =
         {sourceURL: 'constructed.css', isMutable: true, isConstructed: true, hasSourceURL: true, length: 1, ...range};
@@ -85,7 +85,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
-    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, endLine: 1, startColumn: 0, endColumn: 0};
     const header: Partial<Protocol.CSS.CSSStyleSheetHeader> = {
       sourceMapURL: 'http://example.com/constructed.css.map',
@@ -134,7 +134,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
-    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
     {
       const matchedPayload: Protocol.CSS.RuleMatch[] = [{
@@ -189,7 +189,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
-    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
     const propertyName: Protocol.CSS.Value = {text: '--prop', range};
     const propertyRuleStyle: Protocol.CSS.CSSStyle = {
@@ -249,7 +249,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
-    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
     const fontPaletteValuesRule = {
       styleSheetId,
@@ -279,7 +279,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
-    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
     const positionTryRules = [
       {

@@ -117,6 +117,10 @@ export namespace ProtocolMapping {
      */
     'DOM.attributeModified': [Protocol.DOM.AttributeModifiedEvent];
     /**
+     * Fired when `Element`'s adoptedStyleSheets are modified.
+     */
+    'DOM.adoptedStyleSheetsModified': [Protocol.DOM.AdoptedStyleSheetsModifiedEvent];
+    /**
      * Fired when `Element`'s attribute is removed.
      */
     'DOM.attributeRemoved': [Protocol.DOM.AttributeRemovedEvent];

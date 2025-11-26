@@ -9,7 +9,7 @@ import * as SDK from './sdk.js';
 describe('CSSStyleSheetHeader', () => {
   describe('createPageResourceLoadInitiator', () => {
     const frameId = 'Frame#123' as Protocol.Page.FrameId;
-    const styleSheetId = 'StyleSheet#123' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = 'StyleSheet#123' as Protocol.DOM.StyleSheetId;
     const sourceURL = 'http://localhost/style.css';
 
     it('yields the correct frame ID', () => {
@@ -108,7 +108,7 @@ describe('CSSStyleSheetHeader', () => {
 
   describe('resourceURL()', () => {
     const frameId = '123' as Protocol.Page.FrameId;
-    const styleSheetId = '456' as Protocol.CSS.StyleSheetId;
+    const styleSheetId = '456' as Protocol.DOM.StyleSheetId;
     const sourceURL = 'http://localhost/style.css';
 
     it('returns a unique resourceURL for inspector originated stylesheet', () => {

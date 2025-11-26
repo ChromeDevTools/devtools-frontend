@@ -22,7 +22,7 @@ describe('ChangeManager', () => {
       createInspectorStylesheet: sinon.stub().callsFake(frameId => {
         styleSheetId++;
         return new SDK.CSSStyleSheetHeader.CSSStyleSheetHeader(cssModel, {
-          styleSheetId: String(styleSheetId) as Protocol.CSS.StyleSheetId,
+          styleSheetId: String(styleSheetId) as Protocol.DOM.StyleSheetId,
           frameId,
           sourceURL: '',
           origin: 'inspector' as Protocol.CSS.StyleSheetOrigin,

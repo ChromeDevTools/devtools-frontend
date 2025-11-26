@@ -14,7 +14,7 @@ import {
 export function getMatchedStylesWithStylesheet(payload: {
   cssModel: SDK.CSSModel.CSSModel,
   origin: Protocol.CSS.StyleSheetOrigin,
-  styleSheetId: Protocol.CSS.StyleSheetId,
+  styleSheetId: Protocol.DOM.StyleSheetId,
   getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>,
 }&Partial<Protocol.CSS.CSSStyleSheetHeader>&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>):
     Promise<SDK.CSSMatchedStyles.CSSMatchedStyles> {
@@ -41,7 +41,7 @@ export function getMatchedStylesWithBlankRule(payload: {
   selector?: string,
   range?: Protocol.CSS.SourceRange,
   origin?: Protocol.CSS.StyleSheetOrigin,
-  styleSheetId?: Protocol.CSS.StyleSheetId,
+  styleSheetId?: Protocol.DOM.StyleSheetId,
   getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>,
 }&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
   return getMatchedStylesWithProperties({properties: {}, ...payload});
@@ -50,7 +50,7 @@ export function getMatchedStylesWithBlankRule(payload: {
 export function createCSSStyle(
     cssProperties: Protocol.CSS.CSSProperty[],
     range?: Protocol.CSS.SourceRange,
-    styleSheetId = '0' as Protocol.CSS.StyleSheetId,
+    styleSheetId = '0' as Protocol.DOM.StyleSheetId,
     ): Protocol.CSS.CSSStyle {
   return {
     cssProperties,
@@ -73,7 +73,7 @@ export function ruleMatch(
     options: {
       range?: Protocol.CSS.SourceRange,
       origin?: Protocol.CSS.StyleSheetOrigin,
-      styleSheetId?: Protocol.CSS.StyleSheetId,
+      styleSheetId?: Protocol.DOM.StyleSheetId,
       /** Matches all selectors if undefined */
       matchingSelectorsIndexes?: number[],
       nestingSelectors?: string[],
@@ -110,10 +110,10 @@ export function getMatchedStylesWithProperties(payload: {
   selector?: string,
   range?: Protocol.CSS.SourceRange,
   origin?: Protocol.CSS.StyleSheetOrigin,
-  styleSheetId?: Protocol.CSS.StyleSheetId,
+  styleSheetId?: Protocol.DOM.StyleSheetId,
   getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>,
 }&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
-  const styleSheetId = payload.styleSheetId ?? '0' as Protocol.CSS.StyleSheetId;
+  const styleSheetId = payload.styleSheetId ?? '0' as Protocol.DOM.StyleSheetId;
   const range = payload.range;
   const origin = payload.origin ?? Protocol.CSS.StyleSheetOrigin.Regular;
   const matchedPayload = [ruleMatch(payload.selector ?? 'div', payload.properties, {range, origin, styleSheetId})];

@@ -73,7 +73,7 @@ async function addStyleSheet(
   const styleSheetAddedSpy = sinon.stub(helper, 'styleSheetAddedForTest');
   const styleSheetAddedDonePromise = expectCall(styleSheetAddedSpy);
   const header: Protocol.CSS.CSSStyleSheetHeader = {
-    styleSheetId: 'styleSheet' as Protocol.CSS.StyleSheetId,
+    styleSheetId: 'styleSheet' as Protocol.DOM.StyleSheetId,
     frameId: 'frameId' as Protocol.Page.FrameId,
     sourceURL: url,
     origin: Protocol.CSS.StyleSheetOrigin.Regular,

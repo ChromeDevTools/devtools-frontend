@@ -17,7 +17,7 @@ import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 import {CSSSupports} from './CSSSupports.js';
 
 function styleSheetHeaderForRule(
-    cssModel: CSSModel, {styleSheetId}: {styleSheetId?: Protocol.CSS.StyleSheetId}): CSSStyleSheetHeader|null {
+    cssModel: CSSModel, {styleSheetId}: {styleSheetId?: Protocol.DOM.StyleSheetId}): CSSStyleSheetHeader|null {
   return styleSheetId && cssModel.styleSheetHeaderForId(styleSheetId) || null;
 }
 
@@ -143,7 +143,7 @@ export class CSSStyleRule extends CSSRule {
         selectors: [{text: selectorText, value: undefined}],
       },
       style: {
-        styleSheetId: '0' as Protocol.CSS.StyleSheetId,
+        styleSheetId: '0' as Protocol.DOM.StyleSheetId,
         range: new TextUtils.TextRange.TextRange(0, 0, 0, 0),
         shorthandEntries: [],
         cssProperties: [],

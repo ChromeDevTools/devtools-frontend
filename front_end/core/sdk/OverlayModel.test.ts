@@ -24,7 +24,7 @@ describeWithMockConnection('OverlayModel', () => {
   let overlayModel: SDK.OverlayModel.OverlayModel|null;
 
   const header: Protocol.CSS.CSSStyleSheetHeader = {
-    styleSheetId: 'stylesheet' as Protocol.CSS.StyleSheetId,
+    styleSheetId: 'stylesheet' as Protocol.DOM.StyleSheetId,
     frameId: 'frame' as Protocol.Page.FrameId,
     sourceURL: `${DOCUMENT_URL_FOR_TEST}styles.css`,
     origin: Protocol.CSS.StyleSheetOrigin.Regular,

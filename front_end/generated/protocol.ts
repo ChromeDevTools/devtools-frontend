@@ -2589,8 +2589,6 @@ export namespace Browser {
  */
 export namespace CSS {
 
-  export type StyleSheetId = OpaqueIdentifier<string, 'Protocol.CSS.StyleSheetId'>;
-
   /**
    * Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for user-agent
    * stylesheets, "inspector" for stylesheets created by the inspector (i.e. those holding the "via
@@ -2746,7 +2744,7 @@ export namespace CSS {
     /**
      * The stylesheet identifier.
      */
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     /**
      * Owner frame identifier.
      */
@@ -2832,7 +2830,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Rule selector data.
      */
@@ -2911,7 +2909,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     /**
      * Offset of the start of the rule (including selector) from the beginning of the stylesheet.
      */
@@ -2991,7 +2989,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * CSS properties in the style.
      */
@@ -3087,7 +3085,7 @@ export namespace CSS {
     /**
      * Identifier of the stylesheet containing this object (if exists).
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Array of media queries.
      */
@@ -3150,7 +3148,7 @@ export namespace CSS {
     /**
      * Identifier of the stylesheet containing this object (if exists).
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Optional name for the container.
      */
@@ -3193,7 +3191,7 @@ export namespace CSS {
     /**
      * Identifier of the stylesheet containing this object (if exists).
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
   }
 
   /**
@@ -3212,7 +3210,7 @@ export namespace CSS {
     /**
      * Identifier of the stylesheet containing this object (if exists).
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
   }
 
   /**
@@ -3231,7 +3229,7 @@ export namespace CSS {
     /**
      * Identifier of the stylesheet containing this object (if exists).
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
   }
 
   /**
@@ -3246,7 +3244,7 @@ export namespace CSS {
     /**
      * Identifier of the stylesheet containing this object (if exists).
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
   }
 
   /**
@@ -3371,7 +3369,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Parent stylesheet's origin.
      */
@@ -3394,7 +3392,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Parent stylesheet's origin.
      */
@@ -3466,7 +3464,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Parent stylesheet's origin.
      */
@@ -3485,7 +3483,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Parent stylesheet's origin.
      */
@@ -3566,7 +3564,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Parent stylesheet's origin.
      */
@@ -3589,7 +3587,7 @@ export namespace CSS {
      * The css style sheet identifier (absent for user agent stylesheet and user-specified
      * stylesheet rules) this rule came from.
      */
-    styleSheetId?: StyleSheetId;
+    styleSheetId?: DOM.StyleSheetId;
     /**
      * Parent stylesheet's origin.
      */
@@ -3611,7 +3609,7 @@ export namespace CSS {
     /**
      * The css style sheet identifier.
      */
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     /**
      * The range of the style text in the enclosing stylesheet.
      */
@@ -3626,7 +3624,7 @@ export namespace CSS {
     /**
      * The css style sheet identifier where a new rule should be inserted.
      */
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     /**
      * The text of a new rule.
      */
@@ -3651,7 +3649,7 @@ export namespace CSS {
   }
 
   export interface CollectClassNamesRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
   }
 
   export interface CollectClassNamesResponse extends ProtocolResponseWithError {
@@ -3679,7 +3677,7 @@ export namespace CSS {
     /**
      * Identifier of the created "via-inspector" stylesheet.
      */
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
   }
 
   export interface ForcePseudoStateRequest {
@@ -3903,7 +3901,7 @@ export namespace CSS {
   }
 
   export interface GetStyleSheetTextRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
   }
 
   export interface GetStyleSheetTextResponse extends ProtocolResponseWithError {
@@ -3922,7 +3920,7 @@ export namespace CSS {
   }
 
   export interface GetLocationForSelectorRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     selectorText: string;
   }
 
@@ -3955,7 +3953,7 @@ export namespace CSS {
   }
 
   export interface SetPropertyRulePropertyNameRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     propertyName: string;
   }
@@ -3968,7 +3966,7 @@ export namespace CSS {
   }
 
   export interface SetKeyframeKeyRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     keyText: string;
   }
@@ -3981,7 +3979,7 @@ export namespace CSS {
   }
 
   export interface SetMediaTextRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     text: string;
   }
@@ -3994,7 +3992,7 @@ export namespace CSS {
   }
 
   export interface SetContainerQueryTextRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     text: string;
   }
@@ -4007,7 +4005,7 @@ export namespace CSS {
   }
 
   export interface SetSupportsTextRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     text: string;
   }
@@ -4020,7 +4018,7 @@ export namespace CSS {
   }
 
   export interface SetScopeTextRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     text: string;
   }
@@ -4033,7 +4031,7 @@ export namespace CSS {
   }
 
   export interface SetRuleSelectorRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     range: SourceRange;
     selector: string;
   }
@@ -4046,7 +4044,7 @@ export namespace CSS {
   }
 
   export interface SetStyleSheetTextRequest {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
     text: string;
   }
 
@@ -4118,7 +4116,7 @@ export namespace CSS {
    * Fired whenever a stylesheet is changed as a result of the client operation.
    */
   export interface StyleSheetChangedEvent {
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
   }
 
   /**
@@ -4128,7 +4126,7 @@ export namespace CSS {
     /**
      * Identifier of the removed stylesheet.
      */
-    styleSheetId: StyleSheetId;
+    styleSheetId: DOM.StyleSheetId;
   }
 
   export interface ComputedStyleUpdatedEvent {
@@ -4408,6 +4406,11 @@ export namespace DOM {
   export type BackendNodeId = OpaqueIdentifier<integer, 'Protocol.DOM.BackendNodeId'>;
 
   /**
+   * Unique identifier for a CSS stylesheet.
+   */
+  export type StyleSheetId = OpaqueIdentifier<string, 'Protocol.DOM.StyleSheetId'>;
+
+  /**
    * Backend node with a friendly name.
    */
   export interface BackendNode {
@@ -4644,6 +4647,7 @@ export namespace DOM {
     assignedSlot?: BackendNode;
     isScrollable?: boolean;
     affectedByStartingStyles?: boolean;
+    adoptedStyleSheets?: StyleSheetId[];
   }
 
   /**
@@ -5559,6 +5563,20 @@ export namespace DOM {
      * Attribute value.
      */
     value: string;
+  }
+
+  /**
+   * Fired when `Element`'s adoptedStyleSheets are modified.
+   */
+  export interface AdoptedStyleSheetsModifiedEvent {
+    /**
+     * Id of the node that has changed.
+     */
+    nodeId: NodeId;
+    /**
+     * New adoptedStyleSheets array.
+     */
+    adoptedStyleSheets: StyleSheetId[];
   }
 
   /**

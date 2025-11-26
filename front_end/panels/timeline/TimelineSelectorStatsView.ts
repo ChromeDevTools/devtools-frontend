@@ -235,7 +235,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
         const slowPathNonMatches =
             (nonMatches ? 1.0 - timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 0) * 100;
-        const styleSheetId = timing[SelectorTimingsKey.StyleSheetId] as Protocol.CSS.StyleSheetId;
+        const styleSheetId = timing[SelectorTimingsKey.StyleSheetId] as Protocol.DOM.StyleSheetId;
         let linkData = '';
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         const cssModel = target?.model(SDK.CSSModel.CSSModel);
@@ -462,7 +462,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
 
   private async processSelectorTimings(timings: Trace.Types.Events.SelectorTiming[]): Promise<SelectorTiming[]> {
     async function toSourceFileLocation(
-        cssModel: SDK.CSSModel.CSSModel, styleSheetId: Protocol.CSS.StyleSheetId, selectorText: string,
+        cssModel: SDK.CSSModel.CSSModel, styleSheetId: Protocol.DOM.StyleSheetId, selectorText: string,
         selectorLocations: Map<string, Protocol.CSS.SourceRange[]>):
         Promise<Linkifier.Linkifier.LinkifierData[]|undefined> {
       if (!cssModel) {
@@ -505,7 +505,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
 
     return await Promise.all(
         timings.sort((a, b) => b[SelectorTimingsKey.Elapsed] - a[SelectorTimingsKey.Elapsed]).map(async x => {
-          const styleSheetId = x[SelectorTimingsKey.StyleSheetId] as Protocol.CSS.StyleSheetId;
+          const styleSheetId = x[SelectorTimingsKey.StyleSheetId] as Protocol.DOM.StyleSheetId;
           const selectorText = x[SelectorTimingsKey.Selector].trim();
           const locations = styleSheetId === 'n/a' ?
               null :

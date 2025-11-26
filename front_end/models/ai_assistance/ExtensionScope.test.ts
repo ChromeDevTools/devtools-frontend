@@ -382,7 +382,7 @@ describe('ExtensionScope', () => {
       assert.isNotNull(uiSourceCode);
       const cssModel = target.model(SDK.CSSModel.CSSModel)!;
       const cssStyleSheetHeader = new SDK.CSSStyleSheetHeader.CSSStyleSheetHeader(cssModel, {
-        styleSheetId: 'test' as Protocol.CSS.StyleSheetId,
+        styleSheetId: 'test' as Protocol.DOM.StyleSheetId,
         frameId: 'test' as Protocol.Page.FrameId,
         sourceURL,
         origin: Protocol.CSS.StyleSheetOrigin.Regular,

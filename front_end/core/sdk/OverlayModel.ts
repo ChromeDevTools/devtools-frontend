@@ -784,7 +784,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 export class WindowControls {
   readonly #cssModel: CSSModel;
   #originalStylesheetText: string|undefined;
-  #stylesheetId?: Protocol.CSS.StyleSheetId;
+  #stylesheetId?: Protocol.DOM.StyleSheetId;
   #currentUrl: Platform.DevToolsPath.UrlString|undefined;
 
   #config: Protocol.Overlay.WindowControlsOverlayConfig = {
@@ -874,7 +874,7 @@ export class WindowControls {
     return header?.sourceURL;
   }
 
-  #fetchCurrentStyleSheet(cssSourceUrl: Platform.DevToolsPath.UrlString): Protocol.CSS.StyleSheetId|undefined {
+  #fetchCurrentStyleSheet(cssSourceUrl: Platform.DevToolsPath.UrlString): Protocol.DOM.StyleSheetId|undefined {
     const stylesheetIds = this.#cssModel.getStyleSheetIdsForURL(cssSourceUrl);
     return stylesheetIds.length > 0 ? stylesheetIds[0] : undefined;
   }

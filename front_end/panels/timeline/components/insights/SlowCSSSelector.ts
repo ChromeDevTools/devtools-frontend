@@ -35,7 +35,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     if (!cssModel) {
       return undefined;
     }
-    const styleSheetHeader = cssModel.styleSheetHeaderForId(selector.style_sheet_id as Protocol.CSS.StyleSheetId);
+    const styleSheetHeader = cssModel.styleSheetHeaderForId(selector.style_sheet_id as Protocol.DOM.StyleSheetId);
     if (!styleSheetHeader?.resourceURL()) {
       return undefined;
     }
@@ -45,7 +45,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     let ranges = this.#selectorLocations.get(key);
     if (!ranges) {
       const result = await cssModel.agent.invoke_getLocationForSelector(
-          {selectorText: selector.selector, styleSheetId: selector.style_sheet_id as Protocol.CSS.StyleSheetId});
+          {selectorText: selector.selector, styleSheetId: selector.style_sheet_id as Protocol.DOM.StyleSheetId});
       if (result.getError() || !result.ranges) {
         return undefined;
       }

@@ -29,7 +29,7 @@ describeWithMockConnection('CSSModel', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const header: Protocol.CSS.CSSStyleSheetHeader = {
-      styleSheetId: 'stylesheet' as Protocol.CSS.StyleSheetId,
+      styleSheetId: 'stylesheet' as Protocol.DOM.StyleSheetId,
       frameId: 'frame' as Protocol.Page.FrameId,
       sourceURL: 'http://stylesheet.test/404.css',
       origin: Protocol.CSS.StyleSheetOrigin.Regular,
@@ -57,7 +57,7 @@ describeWithMockConnection('CSSModel', () => {
     let target: SDK.Target.Target;
     let cssModel: SDK.CSSModel.CSSModel|null;
     const header: Protocol.CSS.CSSStyleSheetHeader = {
-      styleSheetId: 'stylesheet' as Protocol.CSS.StyleSheetId,
+      styleSheetId: 'stylesheet' as Protocol.DOM.StyleSheetId,
       frameId: 'frame' as Protocol.Page.FrameId,
       sourceURL: 'http://example.com/styles.css',
       origin: Protocol.CSS.StyleSheetOrigin.Regular,
@@ -114,7 +114,7 @@ describeWithMockConnection('CSSModel', () => {
       const target = createTarget();
       const cssModel = target.model(SDK.CSSModel.CSSModel)!;
 
-      assert.isNull(await cssModel.getStyleSheetText('id' as Protocol.CSS.StyleSheetId));
+      assert.isNull(await cssModel.getStyleSheetText('id' as Protocol.DOM.StyleSheetId));
     });
   });
 });

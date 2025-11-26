@@ -72,7 +72,7 @@ describeWithMockConnection('CSSPlugin', () => {
     const FROM = 42;
     sinon.stub(CodeMirror.Tree.prototype, 'resolveInner')
         .returns({name: 'ClassName', from: FROM} as CodeMirror.SyntaxNode);
-    const STYLESHEET_ID = 'STYLESHEET_ID' as Protocol.CSS.StyleSheetId;
+    const STYLESHEET_ID = 'STYLESHEET_ID' as Protocol.DOM.StyleSheetId;
     sinon.stub(SDK.CSSModel.CSSModel.prototype, 'getStyleSheetIdsForURL').withArgs(URL).returns([STYLESHEET_ID]);
     const CLASS_NAMES = ['foo', 'bar', 'baz'];
     sinon.stub(SDK.CSSModel.CSSModel.prototype, 'getClassNames').withArgs(STYLESHEET_ID).resolves(CLASS_NAMES);

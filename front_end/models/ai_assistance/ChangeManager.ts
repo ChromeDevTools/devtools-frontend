@@ -31,9 +31,9 @@ function formatStyles(styles: Record<string, string>, indent = 2): string {
 export class ChangeManager {
   readonly #stylesheetMutex = new Common.Mutex.Mutex();
   readonly #cssModelToStylesheetId =
-      new Map<SDK.CSSModel.CSSModel, Map<Protocol.Page.FrameId, Protocol.CSS.StyleSheetId>>();
-  readonly #stylesheetChanges = new Map<Protocol.CSS.StyleSheetId, Change[]>();
-  readonly #backupStylesheetChanges = new Map<Protocol.CSS.StyleSheetId, Change[]>();
+      new Map<SDK.CSSModel.CSSModel, Map<Protocol.Page.FrameId, Protocol.DOM.StyleSheetId>>();
+  readonly #stylesheetChanges = new Map<Protocol.DOM.StyleSheetId, Change[]>();
+  readonly #backupStylesheetChanges = new Map<Protocol.DOM.StyleSheetId, Change[]>();
 
   constructor() {
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -147,7 +147,7 @@ ${formatStyles(change.styles)}
   }
 
   async #getStylesheet(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId):
-      Promise<Protocol.CSS.StyleSheetId> {
+      Promise<Protocol.DOM.StyleSheetId> {
     return await this.#stylesheetMutex.run(async () => {
       let frameToStylesheet = this.#cssModelToStylesheetId.get(cssModel);
       if (!frameToStylesheet) {

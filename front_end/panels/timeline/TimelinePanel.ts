@@ -2643,6 +2643,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
           initiatorUrl: script.url as Platform.DevToolsPath.UrlString
         };
         rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(
+            SDK.PageResourceLoader.PageResourceLoader.instance(),
             script.sourceMapUrl as Platform.DevToolsPath.UrlString, initiator);
       }
 
@@ -2745,7 +2746,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         frameId: frame,
         initiatorUrl: sourceUrl
       };
-      const payload = await SDK.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
+      const payload = await SDK.SourceMapManager.tryLoadSourceMap(
+          SDK.PageResourceLoader.PageResourceLoader.instance(), sourceMapUrl, initiator);
       return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };
   }

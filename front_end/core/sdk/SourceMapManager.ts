@@ -113,7 +113,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
           this.#attachingClient = null;
           const initiator = client.createPageResourceLoadInitiator();
           clientData.sourceMapPromise =
-              loadSourceMap(sourceMapURL, client.debugId(), initiator)
+              loadSourceMap(PageResourceLoader.instance(), sourceMapURL, client.debugId(), initiator)
                   .then(
                       payload => {
                         const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
@@ -180,8 +180,8 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 }
 
-export async function loadSourceMap(
-    url: Platform.DevToolsPath.UrlString, debugId: DebugId|null,
+async function loadSourceMap(
+    pageResourceLoader: PageResourceLoader, url: Platform.DevToolsPath.UrlString, debugId: DebugId|null,
     initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
   try {
     if (debugId) {
@@ -191,7 +191,7 @@ export async function loadSourceMap(
       }
     }
 
-    const {content} = await PageResourceLoader.instance().loadResource(url, initiator);
+    const {content} = await pageResourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
     if ('debugId' in sourceMap && sourceMap.debugId) {
       // In case something goes wrong with updating the cache, we still want to use the source map.
@@ -204,9 +204,10 @@ export async function loadSourceMap(
 }
 
 export async function tryLoadSourceMap(
-    url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3|null> {
+    pageResourceLoader: PageResourceLoader, url: Platform.DevToolsPath.UrlString,
+    initiator: PageResourceLoadInitiator): Promise<SourceMapV3|null> {
   try {
-    return await loadSourceMap(url, null, initiator);
+    return await loadSourceMap(pageResourceLoader, url, null, initiator);
   } catch (cause) {
     console.error(cause);
     return null;

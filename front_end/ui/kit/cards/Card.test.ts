@@ -3,12 +3,9 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-
-import * as Cards from './cards.js';
+import {Card} from '../kit.js';
 
 describe('Card', () => {
-  const {Card} = Cards.Card;
-
   describe('Card', () => {
     it('can be instantiated via `createElement`', () => {
       const card = document.createElement('devtools-card');

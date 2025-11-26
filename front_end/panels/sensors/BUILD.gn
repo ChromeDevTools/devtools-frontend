@@ -28,7 +28,7 @@ devtools_ui_module("sensors") {
     "../../models/geometry:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/kit/cards:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",
   ]

@@ -1,9 +1,5 @@
-// Copyright 2024 The Chromium Authors
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Card from './Card.js';
-
-export {
-  Card,
-};
+export * from './cards/Card.js';

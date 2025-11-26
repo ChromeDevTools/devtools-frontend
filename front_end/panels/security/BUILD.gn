@@ -46,7 +46,7 @@ devtools_ui_module("security") {
     "../../ui/components/input:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
-    "../../ui/kit/cards:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
   ]

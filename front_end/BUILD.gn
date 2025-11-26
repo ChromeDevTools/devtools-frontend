@@ -255,7 +255,7 @@ group("unittests") {
     "ui/components/tree_outline:unittests",
     "ui/helpers:unittests",
     "ui/i18n:unittests",
-    "ui/kit/cards:unittests",
+    "ui/kit:unittests",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:unittests",
     "ui/legacy/components/color_picker:unittests",

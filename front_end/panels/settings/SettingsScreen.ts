@@ -5,7 +5,7 @@
 
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -14,7 +14,7 @@ import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
-import type * as Cards from '../../ui/kit/cards/cards.js';
+import type {Card} from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -83,7 +83,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let settingsScreenInstance: SettingsScreen;
 
-function createSettingsCard(heading: Common.UIString.LocalizedString, ...content: HTMLElement[]): Cards.Card.Card {
+function createSettingsCard(heading: Common.UIString.LocalizedString, ...content: HTMLElement[]): Card {
   const card = document.createElement('devtools-card');
   card.heading = heading;
   card.append(...content);
@@ -382,8 +382,8 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
 }
 
 export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTab {
-  #experimentsSection: Cards.Card.Card|undefined;
-  #unstableExperimentsSection: Cards.Card.Card|undefined;
+  #experimentsSection: Card|undefined;
+  #unstableExperimentsSection: Card|undefined;
   private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
   private readonly containerElement: HTMLElement;
 

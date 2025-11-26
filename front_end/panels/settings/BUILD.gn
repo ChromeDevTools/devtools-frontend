@@ -49,7 +49,7 @@ devtools_ui_module("settings") {
     "../../ui/components/switch:bundle",
     "../../ui/helpers:bundle",
     "../../ui/i18n:bundle",
-    "../../ui/kit/cards:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/settings_ui:bundle",

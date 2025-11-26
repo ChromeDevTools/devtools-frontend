@@ -154,6 +154,7 @@ def runEsbuild(opts, tsconfig_output_location, tsconfig_output_directory):
         ESBUILD_LOCATION,
         '--tsconfig=' + tsconfig_output_location,
         '--outdir=' + tsconfig_output_directory,
+        '--outbase=' + opts.front_end_directory,
         '--log-level=warning',
         '--sourcemap',
     ]

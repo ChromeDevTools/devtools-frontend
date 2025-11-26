@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-import type * as Cards from '../../ui/kit/cards/cards.js';
+import type {Card} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -198,7 +198,7 @@ function createComputePressurePromise(): Promise<{state: string}> {
 }
 
 export class CPUThrottlingCard {
-  element: Cards.Card.Card;
+  element: Card;
 
   private readonly setting: Common.Settings.Setting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>;
   private computePressurePromise?: ReturnType<typeof createComputePressurePromise>;

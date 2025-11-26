@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../../ui/components/switch/switch.js';
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 import '../../ui/components/chrome_link/chrome_link.js';
 
 import * as Common from '../../core/common/common.js';

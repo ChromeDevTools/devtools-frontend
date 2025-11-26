@@ -6991,6 +6991,10 @@ export const NativeFunctions = [
     signatures: [["...initRanges"]]
   },
   {
+    name: "getElementTransform",
+    signatures: [["element","draw_transform"]]
+  },
+  {
     name: "configureHighDynamicRange",
     signatures: [["options"]]
   },
@@ -8905,11 +8909,11 @@ export const NativeFunctions = [
   },
   {
     name: "texElementImage2D",
-    signatures: [["target","level","internalformat","format","type","element"]]
+    signatures: [["target","level","internalformat","format","type","element"],["target","level","internalformat","width","height","format","type","element"]]
   },
   {
     name: "texElement2D",
-    signatures: [["target","level","internalformat","format","type","element"]]
+    signatures: [["target","level","internalformat","format","type","element"],["target","level","internalformat","width","height","format","type","element"]]
   },
   {
     name: "drawingBufferStorage",
@@ -9097,7 +9101,7 @@ export const NativeFunctions = [
   },
   {
     name: "copyElementImageToTexture",
-    signatures: [["source","destination"]]
+    signatures: [["source","destination"],["source","width","height","destination"]]
   },
   {
     name: "setIndexBuffer",

@@ -100,6 +100,7 @@ domain Page
       ambient-light-sensor
       aria-notify
       attribution-reporting
+      autofill
       autoplay
       bluetooth
       browsing-topics
@@ -165,6 +166,7 @@ domain Page
       local-fonts
       local-network-access
       magnetometer
+      manual-text
       media-playback-while-not-visible
       microphone
       midi
@@ -182,7 +184,6 @@ domain Page
       run-ad-auction
       screen-wake-lock
       serial
-      shared-autofill
       shared-storage
       shared-storage-select-url
       smart-card

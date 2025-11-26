@@ -41,8 +41,8 @@ function setup({loadOverride, maxConcurrentLoads}: {
 } = {}) {
   const targetManager = new SDK.TargetManager.TargetManager(new Root.DevToolsContext.DevToolsContext());
   const settings = createSettingsForTest();
-  const loader =
-      new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, loadOverride ?? null, maxConcurrentLoads);
+  const loader = new SDK.PageResourceLoader.PageResourceLoader(
+      targetManager, settings, {currentUserAgent: () => ''}, loadOverride ?? null, maxConcurrentLoads);
   return {loader, settings, targetManager};
 }
 

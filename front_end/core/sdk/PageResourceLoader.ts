@@ -67,6 +67,8 @@ export class ResourceKey {
   }
 }
 
+export type UserAgentProvider = Pick<MultitargetNetworkManager, 'currentUserAgent'>;
+
 let pageResourceLoader: PageResourceLoader|null = null;
 
 interface LoadQueueEntry {
@@ -82,6 +84,7 @@ interface LoadQueueEntry {
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #targetManager: TargetManager;
   readonly #settings: Common.Settings.Settings;
+  readonly #userAgentProvider: UserAgentProvider;
   #currentlyLoading = 0;
   #currentlyLoadingPerTarget = new Map<Protocol.Target.TargetID|'main', number>();
   readonly #maxConcurrentLoads: number;
@@ -93,7 +96,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
                              errorDescription: Host.ResourceLoader.LoadErrorDescription,
                            }>)|null;
   constructor(
-      targetManager: TargetManager, settings: Common.Settings.Settings,
+      targetManager: TargetManager, settings: Common.Settings.Settings, userAgentProvider: UserAgentProvider,
       loadOverride: ((arg0: string) => Promise<{
                        success: boolean,
                        content: string,
@@ -103,13 +106,14 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     super();
     this.#targetManager = targetManager;
     this.#settings = settings;
+    this.#userAgentProvider = userAgentProvider;
     this.#maxConcurrentLoads = maxConcurrentLoads;
     this.#targetManager.addModelListener(
         ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.#loadOverride = loadOverride;
   }
 
-  static instance({forceNew, targetManager, settings, loadOverride, maxConcurrentLoads}: {
+  static instance({forceNew, targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads}: {
     forceNew: boolean,
     loadOverride: (null|((arg0: string) => Promise<{
                            success: boolean,
@@ -118,6 +122,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
                          }>)),
     targetManager?: TargetManager,
     settings?: Common.Settings.Settings,
+    userAgentProvider?: UserAgentProvider,
     maxConcurrentLoads?: number,
   } = {
     forceNew: false,
@@ -125,8 +130,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }): PageResourceLoader {
     if (!pageResourceLoader || forceNew) {
       pageResourceLoader = new PageResourceLoader(
-          targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(), loadOverride,
-          maxConcurrentLoads);
+          targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(),
+          userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads);
     }
 
     return pageResourceLoader;
@@ -424,7 +429,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }> {
     const headers: Record<string, string> = {};
 
-    const currentUserAgent = MultitargetNetworkManager.instance().currentUserAgent();
+    const currentUserAgent = this.#userAgentProvider.currentUserAgent();
     if (currentUserAgent) {
       headers['User-Agent'] = currentUserAgent;
     }

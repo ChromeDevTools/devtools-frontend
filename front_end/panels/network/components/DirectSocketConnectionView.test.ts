@@ -250,4 +250,77 @@ describeWithEnvironment('view', () => {
     view(viewInput, undefined, target);
     await assertScreenshot('direct_socket_connection_view/all_categories_closed.png');
   });
+
+  it('renders UDP Bound options with multicast groups and address sharing', async () => {
+    const viewInput: NetworkComponents.DirectSocketConnectionView.ViewInput = {
+      socketInfo: {
+        type: SDK.NetworkRequest.DirectSocketType.UDP_BOUND,
+        status: SDK.NetworkRequest.DirectSocketStatus.OPEN,
+        createOptions: {
+          localAddr: '0.0.0.0',
+          localPort: 1234,
+          multicastAllowAddressSharing: true,
+        },
+        joinedMulticastGroups: new Set(['224.0.0.1', '224.0.0.2']),
+      },
+      openCategories: [
+        NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_GENERAL,
+        NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_OPTIONS,
+      ],
+      onSummaryKeyDown: () => {},
+      onToggleCategory: () => {},
+      onCopyRow: () => {},
+    };
+
+    view(viewInput, undefined, target);
+    await assertScreenshot('direct_socket_connection_view/udp_bound_multicast.png');
+  });
+
+  it('renders UDP Connected options with multicast TTL and loopback', async () => {
+    const viewInput: NetworkComponents.DirectSocketConnectionView.ViewInput = {
+      socketInfo: {
+        type: SDK.NetworkRequest.DirectSocketType.UDP_CONNECTED,
+        status: SDK.NetworkRequest.DirectSocketStatus.OPEN,
+        createOptions: {
+          remoteAddr: 'www.example.com',
+          remotePort: 5678,
+          multicastTimeToLive: 64,
+          multicastLoopback: false,
+        },
+      },
+      openCategories: [
+        NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_GENERAL,
+        NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_OPTIONS,
+      ],
+      onSummaryKeyDown: () => {},
+      onToggleCategory: () => {},
+      onCopyRow: () => {},
+    };
+
+    view(viewInput, undefined, target);
+    await assertScreenshot('direct_socket_connection_view/udp_connected_multicast.png');
+  });
+
+  it('hides UDP multicast options when not present', async () => {
+    const viewInput: NetworkComponents.DirectSocketConnectionView.ViewInput = {
+      socketInfo: {
+        type: SDK.NetworkRequest.DirectSocketType.UDP_BOUND,
+        status: SDK.NetworkRequest.DirectSocketStatus.OPEN,
+        createOptions: {
+          localAddr: '0.0.0.0',
+          localPort: 1234,
+        },
+      },
+      openCategories: [
+        NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_GENERAL,
+        NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_OPTIONS,
+      ],
+      onSummaryKeyDown: () => {},
+      onToggleCategory: () => {},
+      onCopyRow: () => {},
+    };
+
+    view(viewInput, undefined, target);
+    await assertScreenshot('direct_socket_connection_view/udp_no_multicast.png');
+  });
 });

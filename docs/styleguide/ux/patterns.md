@@ -4,6 +4,33 @@ There are some common UX patterns in DevTools, such as linking from one place to
 
 Please also note that while some patterns can be summarized into a [component](components.md), this guide focuses more on the end-user experience than the actual implementation.
 
+## Feature promotion
+
+### What can they do?
+
+Feature promotion helps users discover new or existing features that might be buried in the UI.
+
+### When should you use them?
+
+When you want to increase the discoverability of a feature, especially if it's new or underused.
+
+### Common patterns and their implementations
+
+#### New Badges
+
+A "new" badge, can be attached to UI elements to indicate a new or updated feature. This has been shown to significantly increase discoverability.
+
+#### Avoid nested interactions
+
+Discovery of features can be hard due to nested interactions. Try to (potentially temporarily) lift them to increase the chances for users to interact with them. For example, ..
+
+- ..by moving a feature from a nested menu (like "More tools") to the main menu.
+- ..by temporarily highlighting a feature by default at the top of the command menu, which would otherwise be buried in the long search list.
+
+### Things to consider
+
+While effective, feature promotion should be used judiciously. Overusing badges can lead to visual noise, and constantly changing the UI can be confusing for users.
+
 ## Overlays
 
 Overlays are visual aids that are superimposed on the webpage you're inspecting. These overlays provide extra information or highlight specific aspects of the page to help you with debugging and development.

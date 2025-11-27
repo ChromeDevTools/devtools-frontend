@@ -529,9 +529,10 @@ function renderSignInFooter(onGoToSignIn: () => void): Lit.LitTemplate {
         .variant=${Buttons.Button.Variant.PRIMARY}
         .jslogContext=${'update-settings'}
       >
-        ${UIStrings.signIn}
+        ${i18nString(UIStrings.signIn)}
       </devtools-button>
     </div>`;
+  // clang-format on
 }
 
 function renderConsentReminderFooter(onReminderSettingsLink: () => void, onConsentReminderConfirmed: () => void): Lit.LitTemplate {
@@ -541,9 +542,9 @@ function renderConsentReminderFooter(onReminderSettingsLink: () => void, onConse
     <div class="buttons">
       <devtools-button
         @click=${onReminderSettingsLink}
-          .variant=${Buttons.Button.Variant.TONAL}
-          jslogContext=${'settings'}
-          title=${'Settings'}
+        .variant=${Buttons.Button.Variant.TONAL}
+        .jslogContext=${'settings'}
+        .title=${'Settings'}
       >
         Settings
       </devtools-button>
@@ -557,6 +558,7 @@ function renderConsentReminderFooter(onReminderSettingsLink: () => void, onConse
         Continue
       </devtools-button>
     </div>`;
+  // clang-format on
 }
 
 function renderInsightFooter(noLogging: ViewInput['noLogging'], selectedRating: ViewInput['selectedRating'], callbacks: ViewInput['callbacks']): Lit.LitTemplate {

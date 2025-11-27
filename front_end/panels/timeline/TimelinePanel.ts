@@ -431,8 +431,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #hiddenTracksInfoBarByParsedTrace = new WeakMap<Trace.TraceModel.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
 
-  constructor(traceModel?: Trace.TraceModel.Model) {
+  readonly #resourceLoader: SDK.PageResourceLoader.ResourceLoader;
+
+  constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, traceModel?: Trace.TraceModel.Model) {
     super('timeline');
+    this.#resourceLoader = resourceLoader;
     this.registerRequiredCSS(timelinePanelStyles);
     const adornerContent = document.createElement('span');
     adornerContent.innerHTML = `<div style="
@@ -698,11 +701,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   static instance(opts: {
-    forceNew?: boolean,
+    forceNew: true,
+    resourceLoader: SDK.PageResourceLoader.ResourceLoader,
     traceModel?: Trace.TraceModel.Model,
-  }|undefined = {}): TimelinePanel {
-    if (opts.forceNew) {
-      timelinePanelInstance = new TimelinePanel(opts.traceModel);
+  }|undefined = undefined): TimelinePanel {
+    if (opts) {
+      timelinePanelInstance = new TimelinePanel(opts.resourceLoader, opts.traceModel);
     }
 
     if (!timelinePanelInstance) {
@@ -2645,8 +2649,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
           initiatorUrl: script.url as Platform.DevToolsPath.UrlString
         };
         rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(
-            SDK.PageResourceLoader.PageResourceLoader.instance(),
-            script.sourceMapUrl as Platform.DevToolsPath.UrlString, initiator);
+            this.#resourceLoader, script.sourceMapUrl as Platform.DevToolsPath.UrlString, initiator);
       }
 
       if (script.url && rawSourceMap) {
@@ -2749,7 +2752,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         initiatorUrl: sourceUrl
       };
       const payload = await SDK.SourceMapManager.tryLoadSourceMap(
-          SDK.PageResourceLoader.PageResourceLoader.instance(), sourceMapUrl, initiator);
+          TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
       return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };
   }

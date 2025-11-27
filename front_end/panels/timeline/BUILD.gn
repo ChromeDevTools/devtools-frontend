@@ -184,6 +184,7 @@ devtools_entrypoint("meta") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../panels/profiler:bundle",
     "../../ui/legacy:bundle",
     "./components:bundle",

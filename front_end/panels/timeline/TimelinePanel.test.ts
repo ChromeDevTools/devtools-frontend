@@ -53,7 +53,8 @@ describeWithEnvironment('TimelinePanel', function() {
     });
     Timeline.ModificationsManager.ModificationsManager.reset();
     traceModel = Trace.TraceModel.Model.createWithAllHandlers();
-    timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, traceModel});
+    const resourceLoader = {loadResource: sinon.stub()};
+    timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, resourceLoader, traceModel});
     renderElementIntoDOM(timeline);
   });
 
@@ -315,7 +316,8 @@ describeWithEnvironment('TimelinePanel', function() {
       const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
       const traceModel = Trace.TraceModel.Model.createWithAllHandlers();
       await traceModel.parse(events);
-      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, traceModel});
+      const resourceLoader = {loadResource: sinon.stub()};
+      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, resourceLoader, traceModel});
 
       const generator = await conversationHandler.handleExternalRequest({
         prompt: 'Please help me debug this problem',

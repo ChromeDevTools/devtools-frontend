@@ -1978,8 +1978,6 @@ export namespace RequestConditions {
   }
 }
 
-let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;
-
 export class AppliedNetworkConditions {
   constructor(
       readonly conditions: Conditions, readonly appliedNetworkConditionsId: string, readonly urlPattern?: string) {
@@ -2023,15 +2021,15 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     forceNew: boolean|null,
   } = {forceNew: null}): MultitargetNetworkManager {
     const {forceNew} = opts;
-    if (!multiTargetNetworkManagerInstance || forceNew) {
-      multiTargetNetworkManagerInstance = new MultitargetNetworkManager();
+    if (!Root.DevToolsContext.globalInstance().has(MultitargetNetworkManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(MultitargetNetworkManager, new MultitargetNetworkManager());
     }
 
-    return multiTargetNetworkManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(MultitargetNetworkManager);
   }
 
   static dispose(): void {
-    multiTargetNetworkManagerInstance = null;
+    Root.DevToolsContext.globalInstance().delete(MultitargetNetworkManager);
   }
 
   static patchUserAgentWithChromeVersion(uaString: string): string {

@@ -698,13 +698,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   static instance(opts: {
-    forceNew: boolean|null,
+    forceNew?: boolean,
     traceModel?: Trace.TraceModel.Model,
-  }|undefined = {forceNew: null}): TimelinePanel {
-    const {forceNew} = opts;
-
-    if (!timelinePanelInstance || forceNew) {
+  }|undefined = {}): TimelinePanel {
+    if (opts.forceNew) {
       timelinePanelInstance = new TimelinePanel(opts.traceModel);
+    }
+
+    if (!timelinePanelInstance) {
+      throw new Error('No TimelinePanel instance');
     }
 
     return timelinePanelInstance;

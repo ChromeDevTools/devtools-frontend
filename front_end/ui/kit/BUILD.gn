@@ -57,7 +57,10 @@ devtools_ui_module("unittests") {
 }
 
 component_doc("docs") {
-  sources = [ "icons/Icon.docs.ts" ]
+  sources = [
+    "cards/Card.docs.ts",
+    "icons/Icon.docs.ts",
+  ]
   deps = [
     ":bundle",
     "../lit:bundle",

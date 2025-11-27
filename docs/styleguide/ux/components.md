@@ -123,19 +123,10 @@ button.addEventListener('click', event => onClick(event));
 
 ### Resources
 
-#### For developers
-
-##### Implementation
-
   * [`devtools-button`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/components/buttons/Button.ts)
-
-#### For designers
-
-##### Figma
-
-  * [Buttons](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=481-2167&m=dev)
+  * [Buttons Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=481-2167&m=dev)
   * [Icon
-    buttons](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=571-616&m=dev)
+    buttons Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=571-616&m=dev)
 
 ## Combo Boxes and Single Select menus
 
@@ -568,3 +559,53 @@ UI.ContextMenu.registerItem({
 ```
 
 This will automatically add the "Open file" action to the context menu that appears when clicking the Elements panel's 3-dot button.
+
+
+## Cards
+
+![Card component](images/cards.png)
+
+### Usage
+
+#### Developer guidelines
+
+###### Basic card with heading
+
+Usage with lit-html:
+
+```ts
+html`<devtools-card heading="Simple card">
+  <div class="content">This is a simple card.</div>
+</devtools-card>`
+```
+
+###### Card without a heading
+
+Usage with lit-html:
+
+```ts
+html`<devtools-card>
+  <div class="content">This is a card without a heading.</div>
+</devtools-card>`
+```
+
+###### Card with rich heading
+
+Usage with lit-html:
+
+```ts
+html`<devtools-card heading="Card with rich heading">
+  <span slot="heading-prefix">Slotted heading prefix</span>
+  <span slot="heading-suffix">Slotted heading suffix</span>
+  <div class="content">This is a card with a rich heading.</div>
+</devtools-card>`
+```
+
+### Resources
+
+*   [`devtools-card`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/kit/cards/Card.ts)
+* [Component Documentation Example](https://chromedevtools.github.io/devtools-frontend/)
+
+* [Cards Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/Chrome-DevTools-Design-Kit?node-id=3456-939)
+
+* [Greenlines](go/chrome-devtools:cards-greenlines)

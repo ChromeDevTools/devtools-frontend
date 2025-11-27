@@ -112,8 +112,14 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
         if (this.#attachingClient === client) {
           this.#attachingClient = null;
           const initiator = client.createPageResourceLoadInitiator();
+          // TODO(crbug.com/458180550): Pass PageResourceLoader via constructor.
+          //     The reason we grab it here lazily from the context is that otherwise every
+          //     unit test using `createTarget` would need to set up a `PageResourceLoader`, as
+          //     CSSModel and DebuggerModel are autostarted by default, and they create a
+          //     SourceMapManager in their respective constructors.
+          const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
           clientData.sourceMapPromise =
-              loadSourceMap(PageResourceLoader.instance(), sourceMapURL, client.debugId(), initiator)
+              loadSourceMap(resourceLoader, sourceMapURL, client.debugId(), initiator)
                   .then(
                       payload => {
                         const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);

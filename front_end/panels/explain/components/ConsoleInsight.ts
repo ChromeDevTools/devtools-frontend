@@ -193,6 +193,8 @@ interface ViewInput {
   renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
   selectedRating?: boolean;
   noLogging: boolean;
+  areReferenceDetailsOpen: boolean;
+  highlightedCitationIndex: number;
   callbacks: {
     onClose: () => void,
     onAnimationEnd: () => void,
@@ -201,15 +203,15 @@ interface ViewInput {
     onReport: () => void,
     onGoToSignIn: () => void,
     onConsentReminderConfirmed: () => Promise<void>,
-    onToggleReferenceDetails: () => void,
+    onToggleReferenceDetails: (event: Event) => void,
     onDisclaimerSettingsLink: () => void,
     onReminderSettingsLink: () => void,
     onEnableInsightsInSettingsLink: () => void,
+    onReferencesOpen: () => void,
   };
 }
 
 interface ViewOutput {
-  referenceDetailsRef: Lit.Directives.Ref<HTMLDetailsElement>;
   headerRef: Lit.Directives.Ref<HTMLHeadingElement>;
   citationLinks: HTMLElement[];
 }
@@ -279,6 +281,8 @@ function isSearchRagResponse(metadata: Host.AidaClient.ResponseMetadata): boolea
   return Boolean(metadata.factualityMetadata?.facts.length);
 }
 
+const blockPropagation = (e: Event): void => e.stopPropagation();
+
 function renderSearchButton(onSearch: ViewInput['callbacks']['onSearch']): Lit.TemplateResult {
   // clang-format off
   return html`<devtools-button
@@ -300,7 +304,8 @@ function renderLearnMoreAboutInsights(): Lit.TemplateResult {
   // clang-format on
 }
 
-function maybeRenderSources(directCitationUrls: string[], output: ViewOutput): Lit.LitTemplate {
+function maybeRenderSources(
+    directCitationUrls: string[], highlightedCitationIndex: number, output: ViewOutput): Lit.LitTemplate {
   if (!directCitationUrls.length) {
     return Lit.nothing;
   }
@@ -312,7 +317,7 @@ function maybeRenderSources(directCitationUrls: string[], output: ViewOutput): L
         <li>
           <x-link
             href=${url}
-            class="link"
+            class=${Directives.classMap({link: true, highlighted: index === highlightedCitationIndex})}
             jslog=${VisualLogging.link('references.console-insights').track({click: true})}
             ${Directives.ref(e => { output.citationLinks[index] = e as HTMLElement; })}
           >
@@ -385,8 +390,8 @@ function renderInsightSourcesList(
 }
 
 function renderInsight(
-    insight: Extract<StateData, {type: State.INSIGHT}>, renderer: ViewInput['renderer'],
-    disableAnimations: ViewInput['disableAnimations'], callbacks: ViewInput['callbacks'],
+    insight: Extract<StateData, {type: State.INSIGHT}>,
+    {renderer, disableAnimations, areReferenceDetailsOpen, highlightedCitationIndex, callbacks}: ViewInput,
     output: ViewOutput): Lit.TemplateResult {
   // clang-format off
       return html`
@@ -397,9 +402,15 @@ function renderInsight(
         }
         ${insight.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}
         ${isSearchRagResponse(insight.metadata) ? html`
-          <details class="references" ${Directives.ref(output.referenceDetailsRef)} @toggle=${callbacks.onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
+          <details
+            class="references"
+            ?open=${areReferenceDetailsOpen}
+            jslog=${VisualLogging.expand('references').track({click: true})}
+            @toggle=${callbacks.onToggleReferenceDetails}
+            @transitionend=${callbacks.onReferencesOpen}
+          >
             <summary>${i18nString(UIStrings.references)}</summary>
-            ${maybeRenderSources(insight.directCitationUrls, output)}
+            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, output)}
             ${maybeRenderRelatedContent(insight.relatedUrls, insight.directCitationUrls)}
           </details>
         ` : Lit.nothing}
@@ -670,9 +681,9 @@ export class ConsoleInsight extends HTMLElement {
 
   // Main state.
   #state: StateData;
-  #referenceDetailsRef = Directives.createRef<HTMLDetailsElement>();
   #headerRef = Directives.createRef<HTMLHeadingElement>();
   #citationLinks: HTMLElement[] = [];
+  #highlightedCitationIndex = -1;  // -1 for no highlight, 0-based index otherwise
   #areReferenceDetailsOpen = false;
   #stateChanging = false;
   #closing = false;
@@ -699,43 +710,30 @@ export class ConsoleInsight extends HTMLElement {
     this.#state = this.#getStateFromAidaAvailability();
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#render();
-    // Stop keyboard event propagation to avoid Console acting on the events
-    // inside the insight component.
-    this.addEventListener('keydown', e => {
-      e.stopPropagation();
-    });
-    this.addEventListener('keyup', e => {
-      e.stopPropagation();
-    });
-    this.addEventListener('keypress', e => {
-      e.stopPropagation();
-    });
-    this.addEventListener('click', e => {
-      e.stopPropagation();
-    });
     this.focus();
   }
 
   #citationClickHandler(index: number): void {
-    if (this.#state.type !== State.INSIGHT || !this.#referenceDetailsRef.value) {
+    if (this.#state.type !== State.INSIGHT) {
       return;
     }
-    const areDetailsAlreadyExpanded = this.#referenceDetailsRef.value.open;
+    const areDetailsAlreadyExpanded = this.#areReferenceDetailsOpen;
     this.#areReferenceDetailsOpen = true;
+    // index is 1-based, #currentHighlightedCitationIndex is 0-based
+    this.#highlightedCitationIndex = index - 1;
     this.#render();
 
-    const highlightedElement = this.#citationLinks[index - 1];
+    // If details are open, focus and scroll to citation immediately. Otherwise wait for opening transition.
+    if (areDetailsAlreadyExpanded) {
+      this.#scrollToHighlightedCitation();
+    }
+  }
+
+  #scrollToHighlightedCitation(): void {
+    const highlightedElement = this.#citationLinks[this.#highlightedCitationIndex];
     if (highlightedElement) {
-      UI.UIUtils.runCSSAnimationOnce(highlightedElement, 'highlighted');
-      if (areDetailsAlreadyExpanded) {
-        highlightedElement.scrollIntoView({behavior: 'auto'});
-        highlightedElement.focus();
-      } else {  // Wait for the details element to open before scrolling.
-        this.#referenceDetailsRef.value.addEventListener('transitionend', () => {
-          highlightedElement.scrollIntoView({behavior: 'auto'});
-          highlightedElement.focus();
-        }, {once: true});
-      }
+      highlightedElement.scrollIntoView({behavior: 'auto'});
+      highlightedElement.focus();
     }
   }
 
@@ -887,6 +885,10 @@ export class ConsoleInsight extends HTMLElement {
     }
     if (this.#stateChanging) {
       this.#headerRef.value?.focus();
+    }
+    if (this.#highlightedCitationIndex !== -1) {
+      this.#highlightedCitationIndex = -1;
+      this.#render();
     }
   }
 
@@ -1103,9 +1105,15 @@ export class ConsoleInsight extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(SIGN_IN_URL);
   }
 
-  #onToggleReferenceDetails(): void {
-    if (this.#referenceDetailsRef.value) {
-      this.#areReferenceDetailsOpen = this.#referenceDetailsRef.value.open;
+  #onToggleReferenceDetails(event: Event): void {
+    const detailsElement = event.target as HTMLDetailsElement;
+
+    if (detailsElement) {
+      this.#areReferenceDetailsOpen = detailsElement.open;
+      if (!detailsElement.open) {
+        this.#highlightedCitationIndex = -1;
+      }
+      this.#render();
     }
   }
 
@@ -1132,6 +1140,8 @@ export class ConsoleInsight extends HTMLElement {
       selectedRating: this.#selectedRating,
       noLogging: Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
           Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
+      areReferenceDetailsOpen: this.#areReferenceDetailsOpen,
+      highlightedCitationIndex: this.#highlightedCitationIndex,
       callbacks: {
         onClose: this.#onClose.bind(this),
         onAnimationEnd: this.#onAnimationEnd.bind(this),
@@ -1144,10 +1154,10 @@ export class ConsoleInsight extends HTMLElement {
         onDisclaimerSettingsLink: this.#onDisclaimerSettingsLink.bind(this),
         onReminderSettingsLink: this.#onReminderSettingsLink.bind(this),
         onEnableInsightsInSettingsLink: this.#onEnableInsightsInSettingsLink.bind(this),
+        onReferencesOpen: this.#scrollToHighlightedCitation.bind(this),
       },
     };
     const output: ViewOutput = {
-      referenceDetailsRef: this.#referenceDetailsRef,
       headerRef: this.#headerRef,
       citationLinks: [],
     };
@@ -1170,7 +1180,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.INSIGHT:
         header = renderHeader(
             {headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed}, output.headerRef);
-        main = renderInsight(state, input.renderer, input.disableAnimations, callbacks, output);
+        main = renderInsight(state, input, output);
         footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
         break;
       case State.ERROR:
@@ -1210,6 +1220,10 @@ export class ConsoleInsight extends HTMLElement {
         class=${Directives.classMap({wrapper: true, closing: input.closing})}
         jslog=${VisualLogging.pane('console-insights').track({resize: true})}
         @animationend=${callbacks.onAnimationEnd}
+        @keydown=${blockPropagation}
+        @keyup=${blockPropagation}
+        @keypress=${blockPropagation}
+        @click=${blockPropagation}
       >
         <div class="animation-wrapper">
           ${header}
@@ -1227,10 +1241,6 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
 
     this.#citationLinks = output.citationLinks;
-
-    if (this.#referenceDetailsRef.value) {
-      this.#referenceDetailsRef.value.open = this.#areReferenceDetailsOpen;
-    }
   }
 }
 

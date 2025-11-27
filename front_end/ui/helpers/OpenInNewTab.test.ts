@@ -127,6 +127,14 @@ describe('openInNewTab', () => {
     assert.strictEqual(url.searchParams.get('utm_source'), 'devtools');
   });
 
+  it('does nothing for javascript: urls', () => {
+    const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+    openInNewTab('javascript:alert("Hey")');
+
+    sinon.assert.callCount(stub, 0);
+  });
+
   describeWithMockConnection('chrome:// link', () => {
     it('call the correct API for chrome:// links', async () => {
       const target = createTarget();

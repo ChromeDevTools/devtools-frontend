@@ -70,6 +70,13 @@ export class ResourceKey {
 
 export type UserAgentProvider = Pick<MultitargetNetworkManager, 'currentUserAgent'>;
 
+/**
+ * The PageResourceLoader has two responsibilities: loading resources and tracking statistics scoped to targets
+ * for the DeveloperResourcesPanel. Many places only require the former, so we expose that functionality via small
+ * sub-interface. This makes it easier to test classes that require resource loading.
+ */
+export type ResourceLoader = Pick<PageResourceLoader, 'loadResource'>;
+
 interface LoadQueueEntry {
   resolve: () => void;
   reject: (arg0: Error) => void;
@@ -80,7 +87,7 @@ interface LoadQueueEntry {
  * `PageResource` object around that holds meta information. This can be as the basis for reporting to the user which
  * resources were loaded, and whether there was a load error.
  */
-export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements ResourceLoader {
   readonly #targetManager: TargetManager;
   readonly #settings: Common.Settings.Settings;
   readonly #userAgentProvider: UserAgentProvider;

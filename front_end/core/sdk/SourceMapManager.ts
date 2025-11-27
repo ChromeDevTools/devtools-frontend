@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js';
-import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
+import {PageResourceLoader, type PageResourceLoadInitiator, type ResourceLoader} from './PageResourceLoader.js';
 import {type DebugId, parseSourceMap, SourceMap, type SourceMapV3} from './SourceMap.js';
 import {SourceMapCache} from './SourceMapCache.js';
 import {type Target, Type} from './Target.js';
@@ -187,7 +187,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 }
 
 async function loadSourceMap(
-    pageResourceLoader: PageResourceLoader, url: Platform.DevToolsPath.UrlString, debugId: DebugId|null,
+    resourceLoader: ResourceLoader, url: Platform.DevToolsPath.UrlString, debugId: DebugId|null,
     initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
   try {
     if (debugId) {
@@ -197,7 +197,7 @@ async function loadSourceMap(
       }
     }
 
-    const {content} = await pageResourceLoader.loadResource(url, initiator);
+    const {content} = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
     if ('debugId' in sourceMap && sourceMap.debugId) {
       // In case something goes wrong with updating the cache, we still want to use the source map.
@@ -210,10 +210,10 @@ async function loadSourceMap(
 }
 
 export async function tryLoadSourceMap(
-    pageResourceLoader: PageResourceLoader, url: Platform.DevToolsPath.UrlString,
+    resourceLoader: ResourceLoader, url: Platform.DevToolsPath.UrlString,
     initiator: PageResourceLoadInitiator): Promise<SourceMapV3|null> {
   try {
-    return await loadSourceMap(pageResourceLoader, url, null, initiator);
+    return await loadSourceMap(resourceLoader, url, null, initiator);
   } catch (cause) {
     console.error(cause);
     return null;

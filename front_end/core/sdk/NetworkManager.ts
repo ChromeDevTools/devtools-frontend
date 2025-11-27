@@ -1986,6 +1986,7 @@ export class AppliedNetworkConditions {
 
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes>
     implements SDKModelObserver<NetworkManager> {
+  readonly #targetManager: TargetManager;
   #userAgentOverride = '';
   #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null;
   #customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null = null;
@@ -2002,8 +2003,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   #customUserAgent?: string;
   #isBlocking = false;
 
-  constructor() {
+  constructor(targetManager: TargetManager) {
     super();
+    this.#targetManager = targetManager;
 
     // TODO(allada) Remove these and merge it with request interception.
     const blockedPatternChanged: () => void = () => {
@@ -2014,15 +2016,17 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         RequestConditions.Events.REQUEST_CONDITIONS_CHANGED, blockedPatternChanged);
     this.updateBlockedPatterns();
 
-    TargetManager.instance().observeModels(NetworkManager, this);
+    this.#targetManager.observeModels(NetworkManager, this);
   }
 
   static instance(opts: {
     forceNew: boolean|null,
+    targetManager?: TargetManager,
   } = {forceNew: null}): MultitargetNetworkManager {
-    const {forceNew} = opts;
+    const {forceNew, targetManager} = opts;
     if (!Root.DevToolsContext.globalInstance().has(MultitargetNetworkManager) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(MultitargetNetworkManager, new MultitargetNetworkManager());
+      Root.DevToolsContext.globalInstance().set(
+          MultitargetNetworkManager, new MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
     }
 
     return Root.DevToolsContext.globalInstance().get(MultitargetNetworkManager);
@@ -2317,7 +2321,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   async getCertificate(origin: string): Promise<string[]> {
-    const target = TargetManager.instance().primaryPageTarget();
+    const target = this.#targetManager.primaryPageTarget();
     if (!target) {
       return [];
     }

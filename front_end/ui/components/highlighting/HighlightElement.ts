@@ -6,11 +6,14 @@
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 
 import {HighlightManager} from './HighlightManager.js';
+import {type HighlightChange, highlightRangesWithStyleClass, revertDomChanges} from './MarkupHighlight.js';
 
 export class HighlightElement extends HTMLElement {
-  static readonly observedAttributes = ['ranges', 'current-range'];
+  static readonly observedAttributes = ['ranges', 'current-range', 'type'];
   #ranges: TextUtils.TextRange.SourceRange[] = [];
   #currentRange: TextUtils.TextRange.SourceRange|undefined;
+  #type = 'css';
+  #markupChanges: HighlightChange[] = [];
 
   attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
     if (oldValue === newValue) {
@@ -23,8 +26,18 @@ export class HighlightElement extends HTMLElement {
       case 'current-range':
         this.#currentRange = parseRanges(newValue)[0];
         break;
+      case 'type':
+        this.#type = newValue || 'css';
+        break;
     }
-    HighlightManager.instance().set(this, this.#ranges, this.#currentRange);
+    queueMicrotask(() => {
+      if (this.#type === 'css') {
+        HighlightManager.instance().set(this, this.#ranges, this.#currentRange);
+      } else {
+        revertDomChanges(this.#markupChanges);
+        highlightRangesWithStyleClass(this, this.#ranges, 'highlight', this.#markupChanges);
+      }
+    });
   }
 }
 

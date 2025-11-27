@@ -11,6 +11,7 @@ import {
   initializeGlobalVars
 } from '../../../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
+import {render} from '../../../../ui/lit/lit.js';
 
 import * as QuickOpen from './quick_open.js';
 
@@ -59,7 +60,7 @@ describe('CommandMenu', () => {
     const deprecation = {disabled: true, warning};
     const {provider} = createCommandMenuProvider(deprecation);
 
-    provider.renderItem(0, 'Test', elements.toplevel);
+    render(provider.renderItem(0, 'Test'), elements.toplevel);
 
     const tags = Array.from(elements.toplevel.querySelectorAll('.deprecated-tag')) as HTMLElement[];
     assert.deepEqual(tags.map(e => e.textContent), ['— deprecated']);

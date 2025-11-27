@@ -150,9 +150,6 @@ export async function typeIntoQuickOpen(
   if (expectEmptyResults) {
     await devtoolsPage.waitFor('.filtered-list-widget :not(.hidden).not-found-text');
   } else {
-    // Because each highlighted character is in its own div, we can count the highlighted
-    // characters in one item to see that the list reflects the full query.
-    const highlightSelector = new Array(query.length).fill('.highlight').join(' ~ ');
-    await devtoolsPage.waitFor('.filtered-list-widget-item ' + highlightSelector);
+    await devtoolsPage.waitFor('.filtered-list-widget devtools-highlight:not([ranges=""])');
   }
 }

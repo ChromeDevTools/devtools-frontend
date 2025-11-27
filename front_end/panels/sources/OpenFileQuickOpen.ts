@@ -1,16 +1,19 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../ui/components/icon_button/icon_button.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import {PanelUtils} from '../../panels/utils/utils.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {Directives, html, type TemplateResult} from '../../ui/lit/lit.js';
 
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
+
+const {styleMap} = Directives;
 
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
   constructor() {
@@ -40,19 +43,12 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     return !project.isServiceProject();
   }
 
-  override renderItem(itemIndex: number, query: string, wrapperElement: Element): void {
-    super.renderItem(itemIndex, query, wrapperElement);
-    const itemElement = wrapperElement.firstChild;
-    if (!itemElement) {
-      return;
-    }
-    const iconElement = new IconButton.Icon.Icon();
+  override renderItem(itemIndex: number, query: string): TemplateResult {
     const {iconName, color} = PanelUtils.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    iconElement.name = iconName;
-    if (color) {
-      iconElement.style.color = color;
-    }
-    iconElement.classList.add('large');
-    wrapperElement.insertBefore(iconElement, itemElement);
+    // clang-format off
+    return html`
+      <devtools-icon class="large" name=${iconName} style=${styleMap({color})}></devtools-icon>
+      ${super.renderItem(itemIndex, query)}`;
+    // clang-format on
   }
 }

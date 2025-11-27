@@ -263,7 +263,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       return;
     }
     this.#currentHighlightedNode = null;
-    this.requestUpdate();
+    this.performUpdate();
   }
 
   selectDOMNode(node: SDK.DOMModel.DOMNode|null, focus?: boolean): void {

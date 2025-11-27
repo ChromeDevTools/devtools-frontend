@@ -1781,7 +1781,7 @@ export class ConsoleViewFilter {
 
     this.levelMenuButton =
         new UI.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), undefined, undefined, 'log-level');
-    const levelMenuButtonInfoIcon = IconButton.Icon.create('info', 'console-sidebar-levels-info');
+    const levelMenuButtonInfoIcon = IconButton.Icon.createIcon('info', 'console-sidebar-levels-info');
     levelMenuButtonInfoIcon.title = i18nString(UIStrings.overriddenByFilterSidebar);
     this.levelMenuButtonInfo = new UI.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
     this.levelMenuButtonInfo.setVisible(false);

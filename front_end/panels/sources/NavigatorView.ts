@@ -1287,7 +1287,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
       iconType = 'folder-asterisk';
     }
 
-    const icon = IconButton.Icon.create(iconType);
+    const icon = IconButton.Icon.createIcon(iconType);
     this.setLeadingIcons([icon]);
   }
 

@@ -488,7 +488,7 @@ export function getSecurityStateIconForDetailedView(
       break;
   }
 
-  return IconButton.Icon.create(iconName, className);
+  return IconButton.Icon.createIcon(iconName, className);
 }
 
 export function getSecurityStateIconForOverview(
@@ -509,7 +509,7 @@ export function getSecurityStateIconForOverview(
     case Protocol.Security.SecurityState.Info:
       throw new Error(`Unexpected security state ${securityState}`);
   }
-  return IconButton.Icon.create(iconName, className);
+  return IconButton.Icon.createIcon(iconName, className);
 }
 
 export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): Element {

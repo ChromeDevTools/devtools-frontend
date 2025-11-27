@@ -28,7 +28,7 @@ export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeEl
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.bounceTrackingMitigations), false, 'bounce-tracking-mitigations');
-    const icon = IconButton.Icon.create('database');
+    const icon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

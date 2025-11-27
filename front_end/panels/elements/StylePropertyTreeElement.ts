@@ -1134,7 +1134,7 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
             return;
           }
 
-          const icon = IconButton.Icon.create('animation', 'open-in-animations-panel');
+          const icon = IconButton.Icon.createIcon('animation', 'open-in-animations-panel');
           icon.setAttribute('jslog', `${VisualLogging.link('open-in-animations-panel').track({click: true})}`);
           icon.setAttribute('role', 'button');
           icon.setAttribute('title', i18nString(UIStrings.jumpToAnimationsPanel));
@@ -1170,7 +1170,7 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
       return nodes;
     }
     const swatchPopoverHelper = this.#treeElement.parentPane().swatchPopoverHelper();
-    const icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    const icon = IconButton.Icon.createIcon('bezier-curve-filled', 'bezier-swatch-icon');
     icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
     icon.tabIndex = -1;
     icon.addEventListener('click', () => {
@@ -2338,7 +2338,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#tooltipKeyCounts.clear();
     this.updateState();
     if (this.isExpandable()) {
-      this.expandElement = IconButton.Icon.create('triangle-right', 'expand-icon');
+      this.expandElement = IconButton.Icon.createIcon('triangle-right', 'expand-icon');
       this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
     }
 

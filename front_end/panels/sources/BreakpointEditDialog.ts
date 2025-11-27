@@ -181,7 +181,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }));
     editorWrapper.appendChild(this.editor);
 
-    const closeIcon = IconButton.Icon.create('cross');
+    const closeIcon = IconButton.Icon.createIcon('cross');
     closeIcon.title = i18nString(UIStrings.closeDialog);
     closeIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     closeIcon.onclick = () => this.finishEditing(true, this.editor.state.doc.toString());
@@ -196,7 +196,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
                                           jslog="${VisualLogging.link('learn-more')}">${
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
-    const linkIcon = IconButton.Icon.create('open-externally', 'link-icon');
+    const linkIcon = IconButton.Icon.createIcon('open-externally', 'link-icon');
     link.prepend(linkIcon);
     linkWrapper.appendChild(link);
 

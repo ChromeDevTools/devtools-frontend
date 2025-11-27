@@ -30,7 +30,7 @@ export class InterestGroupTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.interestGroups), false, 'interest-groups');
-    const interestGroupIcon = IconButton.Icon.create('database');
+    const interestGroupIcon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([interestGroupIcon]);
     this.view = new InterestGroupStorageView(this);
   }

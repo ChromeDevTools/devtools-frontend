@@ -134,9 +134,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this.contrastValue = this.contrastValueBubble.createChild('span');
     this.contrastValueBubbleIcons = [];
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('checkmark')));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('check-double')));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('clear')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.createIcon('checkmark')));
+    this.contrastValueBubbleIcons.push(
+        this.contrastValueBubble.appendChild(IconButton.Icon.createIcon('check-double')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.createIcon('clear')));
     this.contrastValueBubbleIcons.forEach(button => button.addEventListener('click', (event: Event) => {
       ContrastDetails.showHelp();
       event.consume(false);

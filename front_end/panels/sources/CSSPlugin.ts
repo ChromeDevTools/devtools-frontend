@@ -211,7 +211,7 @@ class CurveSwatchWidget extends CodeMirror.WidgetType {
   toDOM(view: CodeMirror.EditorView): HTMLElement {
     const container = document.createElement('span');
     const bezierText = container.createChild('span');
-    const icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    const icon = IconButton.Icon.createIcon('bezier-curve-filled', 'bezier-swatch-icon');
     icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
     bezierText.append(this.text);
     UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.openCubicBezierEditor));

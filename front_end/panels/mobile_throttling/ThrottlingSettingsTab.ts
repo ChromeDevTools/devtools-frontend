@@ -352,7 +352,7 @@ export class CPUThrottlingCard {
   private createTextWithIcon(text: string, icon: string): HTMLElement {
     const el = document.createElement('div');
     el.classList.add('text-with-icon');
-    el.append(IconButton.Icon.create(icon));
+    el.append(IconButton.Icon.createIcon(icon));
     el.append(text);
     return el;
   }

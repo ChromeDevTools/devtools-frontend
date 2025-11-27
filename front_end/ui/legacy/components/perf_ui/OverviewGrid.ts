@@ -213,7 +213,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
   enableCreateBreadcrumbsButton(): HTMLElement {
     this.curtainsRange = this.createBreadcrumbButton.createChild('div');
-    this.breadcrumbZoomIcon = IconButton.Icon.create('zoom-in');
+    this.breadcrumbZoomIcon = IconButton.Icon.createIcon('zoom-in');
     this.createBreadcrumbButton.appendChild(this.breadcrumbZoomIcon);
     this.createBreadcrumbButton.addEventListener('click', () => {
       this.#createBreadcrumb();

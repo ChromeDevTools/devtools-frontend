@@ -111,7 +111,7 @@ describe('Icon', () => {
   });
 
   describe('create', () => {
-    const {create} = IconButton.Icon;
+    const {createIcon: create} = IconButton.Icon;
 
     it('constructs a new Icon with the given `name`', () => {
       const icon = create('bin');

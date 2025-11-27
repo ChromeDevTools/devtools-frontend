@@ -460,7 +460,7 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
   private createExperimentsWarningSubsection(warningMessage: string): HTMLElement {
     const subsection = document.createElement('div');
     subsection.classList.add('experiments-warning-subsection');
-    const warningIcon = IconButton.Icon.create('warning');
+    const warningIcon = IconButton.Icon.createIcon('warning');
     subsection.appendChild(warningIcon);
     const warning = subsection.createChild('span');
     warning.textContent = warningMessage;

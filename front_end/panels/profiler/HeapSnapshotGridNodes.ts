@@ -631,12 +631,12 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
     const div = fragment.$('container');
     this.prefixObjectCell(div);
     if (this.reachableFromWindow) {
-      const frameIcon = IconButton.Icon.create('frame', 'heap-object-tag');
+      const frameIcon = IconButton.Icon.createIcon('frame', 'heap-object-tag');
       UI.Tooltip.Tooltip.install(frameIcon, i18nString(UIStrings.userObjectReachableFromWindow));
       div.appendChild(frameIcon);
     }
     if (this.detachedDOMTreeNode) {
-      const frameIcon = IconButton.Icon.create('scissors', 'heap-object-tag');
+      const frameIcon = IconButton.Icon.createIcon('scissors', 'heap-object-tag');
       UI.Tooltip.Tooltip.install(frameIcon, i18nString(UIStrings.detachedFromDomTree));
       div.appendChild(frameIcon);
     }

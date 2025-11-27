@@ -1428,7 +1428,7 @@ export class NetworkRequestNode extends NetworkNode {
       case SDK.NetworkRequest.InitiatorType.PREFLIGHT: {
         cell.appendChild(document.createTextNode(i18nString(UIStrings.preflight)));
         if (initiator.initiatorRequest) {
-          const icon = IconButton.Icon.create('arrow-up-down-circle');
+          const icon = IconButton.Icon.createIcon('arrow-up-down-circle');
           const link = Components.Linkifier.Linkifier.linkifyRevealable(
               initiator.initiatorRequest, icon, undefined, i18nString(UIStrings.selectTheRequestThatTriggered),
               'trailing-link-icon', 'initator-request');
@@ -1513,7 +1513,7 @@ export class NetworkRequestNode extends NetworkNode {
       const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === 'string' ?
           throttlingConditions.conditions.title :
           throttlingConditions.conditions.title();
-      const icon = IconButton.Icon.create('watch');
+      const icon = IconButton.Icon.createIcon('watch');
       icon.title = i18nString(UIStrings.wasThrottled, {PH1: throttlingConditionsTitle});
       icon.addEventListener('click', () => void Common.Revealer.reveal(throttlingConditions));
       cell.append(icon);

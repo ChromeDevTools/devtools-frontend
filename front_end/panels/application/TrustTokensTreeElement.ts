@@ -26,7 +26,7 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.trustTokens), false, 'private-state-tokens');
-    const icon = IconButton.Icon.create('database');
+    const icon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

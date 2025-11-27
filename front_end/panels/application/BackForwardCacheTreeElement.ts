@@ -25,7 +25,7 @@ export class BackForwardCacheTreeElement extends ApplicationPanelTreeElement {
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.backForwardCache), false, 'bfcache');
-    const icon = IconButton.Icon.create('database');
+    const icon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

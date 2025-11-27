@@ -218,7 +218,7 @@ export class SoftContextMenu {
 
     // If the menu contains a checkbox, add checkbox space in front of the label to align the items
     if (menuContainsCheckbox) {
-      const checkMarkElement = IconButton.Icon.create('checkmark', 'checkmark');
+      const checkMarkElement = IconButton.Icon.createIcon('checkmark', 'checkmark');
       menuItemElement.appendChild(checkMarkElement);
     }
     if (item.tooltip) {
@@ -293,7 +293,7 @@ export class SoftContextMenu {
     ARIAUtils.setLabel(menuItemElement, accessibleName);
 
     if (item.isExperimentalFeature) {
-      const experimentIcon = IconButton.Icon.create('experiment');
+      const experimentIcon = IconButton.Icon.createIcon('experiment');
       menuItemElement.appendChild(experimentIcon);
     }
 
@@ -317,14 +317,15 @@ export class SoftContextMenu {
 
     // If the menu contains a checkbox, add checkbox space in front of the label to align the items
     if (menuContainsCheckbox) {
-      const checkMarkElement = IconButton.Icon.create('checkmark', 'checkmark soft-context-menu-item-checkmark');
+      const checkMarkElement = IconButton.Icon.createIcon('checkmark', 'checkmark soft-context-menu-item-checkmark');
       menuItemElement.appendChild(checkMarkElement);
     }
 
     createTextChild(menuItemElement, item.label || '');
     ARIAUtils.setExpanded(menuItemElement, false);
 
-    const subMenuArrowElement = IconButton.Icon.create('keyboard-arrow-right', 'soft-context-menu-item-submenu-arrow');
+    const subMenuArrowElement =
+        IconButton.Icon.createIcon('keyboard-arrow-right', 'soft-context-menu-item-submenu-arrow');
     menuItemElement.appendChild(subMenuArrowElement);
 
     menuItemElement.addEventListener('mousedown', this.menuItemMouseDown.bind(this), false);

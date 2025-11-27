@@ -322,7 +322,7 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     const itemElement = wrapperElement.createChild('div');
     const titleElement = itemElement.createChild('div');
 
-    const icon = IconButton.Icon.create('deployed');
+    const icon = IconButton.Icon.createIcon('deployed');
     wrapperElement.insertBefore(icon, itemElement);
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);

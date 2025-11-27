@@ -406,7 +406,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         i18nString(UIStrings.localStorageDescription), 'local-storage');
     this.localStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/localstorage/' as Platform.DevToolsPath.UrlString);
-    const localStorageIcon = IconButton.Icon.create('table');
+    const localStorageIcon = IconButton.Icon.createIcon('table');
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
 
     storageTreeElement.appendChild(this.localStorageListTreeElement);
@@ -415,7 +415,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         i18nString(UIStrings.sessionStorageDescription), 'session-storage');
     this.sessionStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/sessionstorage/' as Platform.DevToolsPath.UrlString);
-    const sessionStorageIcon = IconButton.Icon.create('table');
+    const sessionStorageIcon = IconButton.Icon.createIcon('table');
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
 
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
@@ -425,7 +425,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         i18nString(UIStrings.extensionStorageDescription), 'extension-storage');
     this.extensionStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/extensions/reference/api/storage/' as Platform.DevToolsPath.UrlString);
-    const extensionStorageIcon = IconButton.Icon.create('table');
+    const extensionStorageIcon = IconButton.Icon.createIcon('table');
     this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
 
     storageTreeElement.appendChild(this.extensionStorageListTreeElement);
@@ -440,7 +440,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         'cookies');
     this.cookieListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cookies/' as Platform.DevToolsPath.UrlString);
-    const cookieIcon = IconButton.Icon.create('cookie');
+    const cookieIcon = IconButton.Icon.createIcon('cookie');
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
 
@@ -1064,7 +1064,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
 
     this.model = null;
 
-    const backgroundServiceIcon = IconButton.Icon.create(this.getIconType());
+    const backgroundServiceIcon = IconButton.Icon.createIcon(this.getIconType());
     this.setLeadingIcons([backgroundServiceIcon]);
   }
 
@@ -1130,7 +1130,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18n.i18n.lockedString('Service workers'), false, 'service-workers');
-    const icon = IconButton.Icon.create('gears');
+    const icon = IconButton.Icon.createIcon('gears');
     this.setLeadingIcons([icon]);
   }
 
@@ -1153,7 +1153,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
   private view: AppManifestView;
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.manifest), true, 'manifest');
-    const icon = IconButton.Icon.create('document');
+    const icon = IconButton.Icon.createIcon('document');
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     const emptyView = new UI.EmptyWidget.EmptyWidget(
@@ -1207,7 +1207,7 @@ export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
       storagePanel: ResourcesPanel, element: Element, childTitle: string, fieldElement: HTMLElement,
       jslogContext: string) {
     super(storagePanel, childTitle, false, jslogContext);
-    const icon = IconButton.Icon.create('document');
+    const icon = IconButton.Icon.createIcon('document');
     this.setLeadingIcons([icon]);
     this.#sectionElement = element;
     this.#sectionFieldElement = fieldElement;
@@ -1252,7 +1252,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
   private view?: StorageView;
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.storage), false, 'storage');
-    const icon = IconButton.Icon.create('database');
+    const icon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([icon]);
   }
 
@@ -1278,7 +1278,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     super(
         storagePanel, i18nString(UIStrings.indexeddb), i18nString(UIStrings.noIndexeddb),
         i18nString(UIStrings.indexeddbDescription), 'indexed-db');
-    const icon = IconButton.Icon.create('database');
+    const icon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
     this.storageBucket = storageBucket;
@@ -1421,7 +1421,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     this.model = model;
     this.databaseId = databaseId;
     this.idbObjectStoreTreeElements = new Map();
-    const icon = IconButton.Icon.create('database');
+    const icon = IconButton.Icon.createIcon('database');
     this.setLeadingIcons([icon]);
     this.model.addEventListener(IndexedDBModelEvents.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
   }
@@ -1546,7 +1546,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
     this.idbIndexTreeElements = new Map();
     this.objectStore = objectStore;
     this.view = null;
-    const icon = IconButton.Icon.create('table');
+    const icon = IconButton.Icon.createIcon('table');
     this.setLeadingIcons([icon]);
   }
 
@@ -1758,7 +1758,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
                                 i18nString(UIStrings.localFiles),
         false, domStorage.isLocalStorage ? 'local-storage-for-domain' : 'session-storage-for-domain');
     this.domStorage = domStorage;
-    const icon = IconButton.Icon.create('table');
+    const icon = IconButton.Icon.createIcon('table');
     this.setLeadingIcons([icon]);
   }
 
@@ -1793,7 +1793,7 @@ export class ExtensionStorageTreeElement extends ApplicationPanelTreeElement {
     super(
         storagePanel, nameForExtensionStorageArea(extensionStorage.storageArea), false, 'extension-storage-for-domain');
     this.extensionStorage = extensionStorage;
-    const icon = IconButton.Icon.create('table');
+    const icon = IconButton.Icon.createIcon('table');
     this.setLeadingIcons([icon]);
   }
 
@@ -1831,7 +1831,7 @@ export class ExtensionStorageTreeParentElement extends ApplicationPanelTreeEleme
   constructor(storagePanel: ResourcesPanel, extensionId: string, extensionName: string) {
     super(storagePanel, extensionName || extensionId, true, 'extension-storage-for-domain');
     this.extensionId = extensionId;
-    const icon = IconButton.Icon.create('table');
+    const icon = IconButton.Icon.createIcon('table');
     this.setLeadingIcons([icon]);
   }
 
@@ -1851,7 +1851,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     this.target = frame.resourceTreeModel().target();
     this.#cookieDomain = cookieUrl.securityOrigin();
     this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: this.#cookieDomain});
-    const icon = IconButton.Icon.create('cookie');
+    const icon = IconButton.Icon.createIcon('cookie');
     // Note that we cannot use `cookieDomainInternal` here since it contains scheme.
     if (IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssueForDomain(cookieUrl.domain())) {
       icon.name = 'warning-filled';
@@ -2172,7 +2172,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   }
 
   async frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Promise<void> {
-    const icon = IconButton.Icon.create(this.getIconTypeForFrame(frame));
+    const icon = IconButton.Icon.createIcon(this.getIconTypeForFrame(frame));
     if (frame.unreachableUrl()) {
       icon.classList.add('red-icon');
     }
@@ -2374,7 +2374,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     this.tooltip = resource.url;
     resourceToFrameResourceTreeElement.set(this.resource, this);
 
-    const icon = IconButton.Icon.create('document', 'navigator-file-tree-item');
+    const icon = IconButton.Icon.createIcon('document', 'navigator-file-tree-item');
     icon.classList.add('navigator-' + resource.resourceType().name() + '-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -2465,7 +2465,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
 
   updateIcon(canAccessOpener: boolean): void {
     const iconType = canAccessOpener ? 'popup' : 'frame';
-    const icon = IconButton.Icon.create(iconType);
+    const icon = IconButton.Icon.createIcon(iconType);
     this.setLeadingIcons([icon]);
   }
 
@@ -2514,7 +2514,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
     super(storagePanel, targetInfo.title || targetInfo.url || i18nString(UIStrings.worker), false, 'worker');
     this.targetInfo = targetInfo;
     this.view = null;
-    const icon = IconButton.Icon.create('gears', 'navigator-file-tree-item');
+    const icon = IconButton.Icon.createIcon('gears', 'navigator-file-tree-item');
     this.setLeadingIcons([icon]);
   }
 

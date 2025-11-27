@@ -149,7 +149,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const workspaceElement = placeholder.createChild('div', 'tabbed-pane-placeholder-row');
     workspaceElement.classList.add('workspace');
 
-    const icon = IconButton.Icon.create('sync', 'sync-icon');
+    const icon = IconButton.Icon.createIcon('sync', 'sync-icon');
     workspaceElement.createChild('span', 'icon-container').appendChild(icon);
     const text = workspaceElement.createChild('span');
     text.textContent = UIStrings.workspaceDropInAFolderToSyncSources;

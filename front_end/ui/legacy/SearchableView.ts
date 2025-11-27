@@ -189,7 +189,7 @@ export class SearchableView extends VBox {
     // Elements within `searchInputElements` are added according to their expected tab order.
     const searchInputElements = this.footerElement.createChild('div', 'search-inputs');
     const iconAndInput = searchInputElements.createChild('div', 'icon-and-input');
-    const searchIcon = IconButton.Icon.create('search');
+    const searchIcon = IconButton.Icon.createIcon('search');
     iconAndInput.appendChild(searchIcon);
 
     this.searchInputElement = createHistoryInput('search', 'search-replace search');

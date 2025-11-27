@@ -80,7 +80,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   override renderItem(itemIndex: number, _query: string, wrapperElement: Element): void {
     const itemElement = wrapperElement.createChild('div');
     const titleElement = itemElement.createChild('div');
-    const icon = IconButton.Icon.create('colon');
+    const icon = IconButton.Icon.createIcon('colon');
     wrapperElement.insertBefore(icon, itemElement);
     UI.UIUtils.createTextChild(titleElement, this.#goToLineStrings[itemIndex]);
   }

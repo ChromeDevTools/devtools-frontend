@@ -347,7 +347,7 @@ export class CommandMenuProvider extends Provider {
     const titleElement = itemElement.createChild('div');
 
     titleElement.removeChildren();
-    const icon = IconButton.Icon.create(categoryIcons[command.category]);
+    const icon = IconButton.Icon.createIcon(categoryIcons[command.category]);
     wrapperElement.insertBefore(icon, itemElement);
     UI.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);

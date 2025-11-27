@@ -582,7 +582,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
 
     div.style.width = `${previewWidth}px`;
 
-    const icon = IconButton.Icon.create('arrow-back');
+    const icon = IconButton.Icon.createIcon('arrow-back');
     icon.title = i18nString(UIStrings.backButtonTooltip);
     icon.classList.add('back-arrow');
     div.appendChild(icon);

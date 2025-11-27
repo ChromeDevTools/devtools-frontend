@@ -1512,7 +1512,7 @@ export class SectionBlock {
 
     if (expandable && titleElement instanceof HTMLElement) {
       this.#icon =
-          IconButton.Icon.create(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
+          IconButton.Icon.createIcon(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
       titleElement.classList.toggle('empty-section', !this.#expanded);
       UI.ARIAUtils.setExpanded(titleElement, this.#expanded);
       titleElement.appendChild(this.#icon);

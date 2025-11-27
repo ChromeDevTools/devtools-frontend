@@ -2537,7 +2537,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   adornSlot({name}: {name: string}): Adorners.Adorner.Adorner {
-    const linkIcon = IconButton.Icon.create('select-element');
+    const linkIcon = IconButton.Icon.createIcon('select-element');
     const slotText = document.createElement('span');
     slotText.textContent = name;
     const adornerContent = document.createElement('span');
@@ -2562,7 +2562,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     adornerContent.textContent = name;
     adornerContent.classList.add('adorner-with-icon');
 
-    const linkIcon = IconButton.Icon.create('select-element');
+    const linkIcon = IconButton.Icon.createIcon('select-element');
     adornerContent.append(linkIcon);
 
     const adorner = new Adorners.Adorner.Adorner();

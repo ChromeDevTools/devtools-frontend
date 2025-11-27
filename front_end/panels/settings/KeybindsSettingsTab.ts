@@ -383,7 +383,7 @@ export class ShortcutListItem {
 
   private createEmptyInfo(): void {
     if (UI.ShortcutRegistry.ShortcutRegistry.instance().actionHasDefaultShortcut(this.item.id())) {
-      const icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
+      const icon = IconButton.Icon.createIcon('keyboard-pen', 'keybinds-modified');
       UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
     }
@@ -443,7 +443,7 @@ export class ShortcutListItem {
     }
     let icon: IconButton.Icon.Icon;
     if (shortcut.type !== UI.KeyboardShortcut.Type.UNSET_SHORTCUT && !shortcut.isDefault()) {
-      icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
+      icon = IconButton.Icon.createIcon('keyboard-pen', 'keybinds-modified');
       UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
     }

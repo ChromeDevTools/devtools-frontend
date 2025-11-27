@@ -97,7 +97,7 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
         ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER);
     const adornerContent = document.createElement('span');
     adornerContent.classList.add('adorner-with-icon');
-    const linkIcon = IconButton.Icon.create('select-element');
+    const linkIcon = IconButton.Icon.createIcon('select-element');
     const adornerText = document.createElement('span');
     adornerText.textContent = `top-layer (${topLayerElementIndex})`;
     adornerContent.append(linkIcon);

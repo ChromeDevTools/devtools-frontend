@@ -489,7 +489,7 @@ class ExpandableContainerWidget extends VBox {
                                      keydown: 'Enter|Space|ArrowLeft|ArrowRight',
                                    })}`);
     ARIAUtils.markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = IconButton.Icon.create('triangle-right', 'title-expand-icon');
+    this.titleExpandIcon = IconButton.Icon.createIcon('triangle-right', 'title-expand-icon');
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -809,7 +809,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
         view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
     const iconName = view.iconName();
     if (iconName) {
-      const icon = IconButton.Icon.create(iconName);
+      const icon = IconButton.Icon.createIcon(iconName);
       this.#tabbedPane.setTabIcon(view.viewId(), icon);
     }
   }

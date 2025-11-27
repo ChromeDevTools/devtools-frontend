@@ -120,7 +120,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   static createTriggerButton(
       pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {new(): Editor}, buttonTitle: string,
       triggerKey: string): HTMLElement {
-    const triggerButton = IconButton.Icon.create('flex-wrap', 'styles-pane-button');
+    const triggerButton = IconButton.Icon.createIcon('flex-wrap', 'styles-pane-button');
     triggerButton.title = buttonTitle;
     triggerButton.role = 'button';
 

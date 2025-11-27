@@ -64,7 +64,7 @@ export class CustomPreviewSection {
         this.header.classList.add('custom-expandable-section-header');
       }
       this.header.addEventListener('click', this.onClick.bind(this), false);
-      this.expandIcon = IconButton.Icon.create('triangle-right', 'custom-expand-icon');
+      this.expandIcon = IconButton.Icon.createIcon('triangle-right', 'custom-expand-icon');
       this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
 

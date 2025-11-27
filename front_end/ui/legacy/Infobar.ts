@@ -55,7 +55,7 @@ export class Infobar {
     this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles});
 
     this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type);
-    const icon = IconButton.Icon.create(TYPE_TO_ICON[type], type + '-icon');
+    const icon = IconButton.Icon.createIcon(TYPE_TO_ICON[type], type + '-icon');
     this.contentElement.createChild('div', 'icon-container').appendChild(icon);
 
     this.mainRow = this.contentElement.createChild('div', 'infobar-main-row');
@@ -180,7 +180,7 @@ export class Infobar {
     if (!this.detailsRows) {
       const details = document.createElement('details');
       const summary = details.createChild('summary');
-      const triangleIcon = IconButton.Icon.create('arrow-drop-down');
+      const triangleIcon = IconButton.Icon.createIcon('arrow-drop-down');
       summary.createChild('div', 'icon-container').appendChild(triangleIcon);
       this.contentElement.insertBefore(details, this.mainRow);
       summary.appendChild(this.mainRow);

@@ -824,7 +824,7 @@ export class ToolbarFilter extends ToolbarInput {
         filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions,
         jslogContext || 'filter', element);
 
-    const filterIcon = IconButton.Icon.create('filter');
+    const filterIcon = IconButton.Icon.createIcon('filter');
     this.element.prepend(filterIcon);
     this.element.classList.add('toolbar-filter');
   }
@@ -997,7 +997,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.title = '';
     if (!isIconDropdown) {
       this.element.classList.add('toolbar-has-dropdown');
-      const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
+      const dropdownArrowIcon = IconButton.Icon.createIcon('triangle-down', 'toolbar-dropdown-arrow');
       this.element.appendChild(dropdownArrowIcon);
     }
     if (jslogContext) {

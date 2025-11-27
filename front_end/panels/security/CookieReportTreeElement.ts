@@ -8,7 +8,7 @@ import {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement
 export class CookieReportTreeElement extends SecurityPanelSidebarTreeElement {
   constructor(title: string, jslogContext: string|number) {
     super(title, false, jslogContext);
-    this.setLeadingIcons([IconButton.Icon.create('cookie', 'cookie-icon')]);
+    this.setLeadingIcons([IconButton.Icon.createIcon('cookie', 'cookie-icon')]);
   }
 
   override get elemId(): string {

@@ -26,7 +26,7 @@ export function render(container: HTMLElement): void {
   iconDescription1.textContent = 'Programmatically created with default size and color';
   row1.appendChild(iconDescription1);
 
-  const icon = Icon.create('select-element');
+  const icon = Icon.createIcon('select-element');
   const icon1 = document.createElement('td');
   icon1.appendChild(icon);
   row1.appendChild(icon1);
@@ -38,7 +38,7 @@ export function render(container: HTMLElement): void {
   iconDescription2.textContent = 'Programmatically created with custom size and color';
   row2.appendChild(iconDescription2);
 
-  const otherIcon = Icon.create('issue-exclamation-filled');
+  const otherIcon = Icon.createIcon('issue-exclamation-filled');
   otherIcon.classList.toggle('custom-size-and-color');
   const icon2 = document.createElement('td');
   icon2.appendChild(otherIcon);

@@ -93,7 +93,7 @@ const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString =>
     b ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
 
 function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|Promise<void>)): Element {
-  const icon = IconButton.Icon.create(iconType, 'icon-link devtools-link');
+  const icon = IconButton.Icon.createIcon(iconType, 'icon-link devtools-link');
   const button = document.createElement('button');
   UI.Tooltip.Tooltip.install(button, title);
   button.classList.add('devtools-link', 'link-style', 'text-button');

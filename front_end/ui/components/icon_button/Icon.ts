@@ -34,9 +34,9 @@ export type IconData = IconWithName|{
  * Usage is simple:
  *
  * ```js
- * // Instantiate programmatically via the `create()` helper:
- * const icon = IconButton.Icon.create('bin');
- * const iconWithClassName = IconButton.Icon.create('bin', 'delete-icon');
+ * // Instantiate programmatically via the `createIcon()` helper:
+ * const icon = IconButton.Icon.createIcon('bin');
+ * const iconWithClassName = IconButton.Icon.createIcon('bin', 'delete-icon');
  *
  * // Use within a template:
  * Lit.html`
@@ -167,7 +167,7 @@ export class Icon extends HTMLElement {
  * @param className optional CSS class name(s) to put onto the element.
  * @returns the newly created `Icon` instance.
  */
-export const create = (name: string, className?: string): Icon => {
+export const createIcon = (name: string, className?: string): Icon => {
   const icon = new Icon();
   icon.name = name;
   if (className !== undefined) {

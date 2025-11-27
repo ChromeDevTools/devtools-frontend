@@ -1662,7 +1662,7 @@ export class Swatch {
     self.onInvokeElement(this.swatchOverlayElement, this.onCopyText.bind(this));
     this.swatchOverlayElement.addEventListener('mouseout', this.onCopyIconMouseout.bind(this));
     this.swatchOverlayElement.addEventListener('blur', this.onCopyIconMouseout.bind(this));
-    this.swatchCopyIcon = IconButton.Icon.create('copy', 'copy-color-icon');
+    this.swatchCopyIcon = IconButton.Icon.createIcon('copy', 'copy-color-icon');
     UI.Tooltip.Tooltip.install(this.swatchCopyIcon, i18nString(UIStrings.copyColorToClipboard));
     this.swatchOverlayElement.appendChild(this.swatchCopyIcon);
     UI.ARIAUtils.setLabel(this.swatchOverlayElement, this.swatchCopyIcon.title);

@@ -25,7 +25,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.reportingApi), false, 'reporting-api');
-    const icon = IconButton.Icon.create('document');
+    const icon = IconButton.Icon.createIcon('document');
     this.setLeadingIcons([icon]);
   }
 

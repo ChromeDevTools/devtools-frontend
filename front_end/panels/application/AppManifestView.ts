@@ -676,7 +676,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       UI.ARIAUtils.setLabel(appIdField, 'App Id');
       appIdField.textContent = appId;
 
-      const helpIcon = IconButton.Icon.create('help', 'inline-icon');
+      const helpIcon = IconButton.Icon.createIcon('help', 'inline-icon');
       helpIcon.title = i18nString(UIStrings.appIdExplainer);
       helpIcon.setAttribute('jslog', `${VisualLogging.action('help').track({hover: true})}`);
       appIdField.appendChild(helpIcon);
@@ -934,7 +934,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const wcoStatusMessage = this.windowControlsSection.appendRow();
 
     if (hasWco) {
-      const checkmarkIcon = IconButton.Icon.create('check-circle', 'inline-icon');
+      const checkmarkIcon = IconButton.Icon.createIcon('check-circle', 'inline-icon');
       wcoStatusMessage.appendChild(checkmarkIcon);
 
       const wco = document.createElement('code');
@@ -947,7 +947,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty('theme_color'));
       }
     } else {
-      const infoIcon = IconButton.Icon.create('info', 'inline-icon');
+      const infoIcon = IconButton.Icon.createIcon('info', 'inline-icon');
 
       wcoStatusMessage.appendChild(infoIcon);
 

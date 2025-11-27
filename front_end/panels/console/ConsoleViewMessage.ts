@@ -662,7 +662,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private buildMessageWithStackTrace(runtimeModel: SDK.RuntimeModel.RuntimeModel): HTMLElement {
-    const icon = IconButton.Icon.create('triangle-right', 'console-message-expand-icon');
+    const icon = IconButton.Icon.createIcon('triangle-right', 'console-message-expand-icon');
     const {stackTraceElement, contentElement, messageElement, clickableElement, toggleElement} =
         this.buildMessageHelper(runtimeModel.target(), this.message.stackTrace, icon);
     // We debounce the trace expansion metric in case this was accidental.
@@ -2113,7 +2113,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     if (!element) {
       element = super.toMessageElement();
       const iconType = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
-      this.expandGroupIcon = IconButton.Icon.create(iconType, 'expand-group-icon');
+      this.expandGroupIcon = IconButton.Icon.createIcon(iconType, 'expand-group-icon');
       // Intercept focus to avoid highlight on click.
       this.contentElement().tabIndex = -1;
       if (this.repeatCountElement) {

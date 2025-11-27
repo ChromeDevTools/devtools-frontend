@@ -14,6 +14,7 @@ import { devtoolsPlugin } from './devtools_plugin.js';
 export default commandLineArgs => ({
   treeshake: false,
   context: 'self',
+  maxParallelFileOps: 20,
   output: [{
     format: 'esm',
     sourcemap: Boolean(commandLineArgs.configSourcemaps),

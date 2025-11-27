@@ -5,7 +5,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
@@ -26,7 +26,7 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.trustTokens), false, 'private-state-tokens');
-    const icon = IconButton.Icon.createIcon('database');
+    const icon = createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

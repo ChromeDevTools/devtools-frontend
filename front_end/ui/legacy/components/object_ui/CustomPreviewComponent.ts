@@ -7,7 +7,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
+import {createIcon, type Icon} from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
 
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
@@ -33,7 +33,7 @@ export class CustomPreviewSection {
   private expanded: boolean;
   private cachedContent: Node|null;
   private readonly header: Node|undefined;
-  private readonly expandIcon: IconButton.Icon.Icon|undefined;
+  private readonly expandIcon: Icon|undefined;
   constructor(object: SDK.RemoteObject.RemoteObject) {
     this.sectionElement = document.createElement('span');
     this.sectionElement.classList.add('custom-expandable-section');
@@ -64,7 +64,7 @@ export class CustomPreviewSection {
         this.header.classList.add('custom-expandable-section-header');
       }
       this.header.addEventListener('click', this.onClick.bind(this), false);
-      this.expandIcon = IconButton.Icon.createIcon('triangle-right', 'custom-expand-icon');
+      this.expandIcon = createIcon('triangle-right', 'custom-expand-icon');
       this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
 

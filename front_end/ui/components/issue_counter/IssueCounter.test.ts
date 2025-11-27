@@ -9,6 +9,7 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {MockIssuesManager} from '../../../testing/MockIssuesManager.js';
+import {Icon} from '../../kit/kit.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 import * as IssueCounter from './issue_counter.js';
@@ -28,7 +29,7 @@ export const extractIconGroups = (shadowRoot: ShadowRoot) => {
   const iconButtonShadowRoot = iconButton.shadowRoot;
   assert.exists(iconButtonShadowRoot);
   const icons = iconButtonShadowRoot.querySelectorAll('.status-icon');
-  assertElements(icons, IconButton.Icon.Icon);
+  assertElements(icons, Icon);
   const labels = iconButtonShadowRoot.querySelectorAll('.icon-button-title');
   assertElements(labels, HTMLSpanElement);
   assert.strictEqual(icons.length, labels.length, 'Expected icons and labels to appear in pairs');

@@ -44,7 +44,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon, Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1504,15 +1504,14 @@ export class SectionBlock {
   readonly #titleElement: Element|null;
   sections: StylePropertiesSection[];
   #expanded = false;
-  #icon: IconButton.Icon.Icon|undefined;
+  #icon: Icon|undefined;
   constructor(titleElement: Element|null, expandable?: boolean, expandedByDefault?: boolean) {
     this.#titleElement = titleElement;
     this.sections = [];
     this.#expanded = expandedByDefault ?? false;
 
     if (expandable && titleElement instanceof HTMLElement) {
-      this.#icon =
-          IconButton.Icon.createIcon(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
+      this.#icon = createIcon(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
       titleElement.classList.toggle('empty-section', !this.#expanded);
       UI.ARIAUtils.setExpanded(titleElement, this.#expanded);
       titleElement.appendChild(this.#icon);
@@ -1964,7 +1963,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       if (!iconInfo) {
         continue;
       }
-      const icon = new IconButton.Icon.Icon();
+      const icon = new Icon();
       icon.name = iconInfo.iconName;
       icon.classList.add('extra-small');
       icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;

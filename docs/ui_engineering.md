@@ -730,7 +730,7 @@ class SomeWidget extends UI.Widget.Widget {
 }
 ```
 
-## Migrating `IconButton.Icon.Icon`
+## Migrating `Icon`
 
 Replace the imperative `Icon` creation with the declarative `<devtools-icon>` component.
 
@@ -740,7 +740,7 @@ Replace the imperative `Icon` creation with the declarative `<devtools-icon>` co
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
     this.contentElement.appendChild(icon);
   }

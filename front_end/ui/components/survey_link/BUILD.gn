@@ -21,7 +21,7 @@ devtools_ui_module("survey_link") {
     "../../../core/i18n:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/lit:bundle",
-    "../icon_button:bundle",
+    "../../kit:bundle",
   ]
 }
 

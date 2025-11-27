@@ -25,8 +25,8 @@ devtools_ui_module("request_link_icon") {
     "../../../panels/network/forward:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
+    "../../kit:bundle",
     "../helpers:bundle",
-    "../icon_button:bundle",
   ]
 }
 
@@ -53,7 +53,7 @@ devtools_ui_module("unittests") {
     "../../../core/sdk:bundle",
     "../../../models/logs:bundle",
     "../../../testing",
+    "../../kit:bundle",
     "../../legacy:bundle",
-    "../icon_button:bundle",
   ]
 }

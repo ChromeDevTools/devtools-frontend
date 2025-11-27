@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as ElementsComponents from './components/components.js';
@@ -120,7 +120,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   static createTriggerButton(
       pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {new(): Editor}, buttonTitle: string,
       triggerKey: string): HTMLElement {
-    const triggerButton = IconButton.Icon.createIcon('flex-wrap', 'styles-pane-button');
+    const triggerButton = createIcon('flex-wrap', 'styles-pane-button');
     triggerButton.title = buttonTitle;
     triggerButton.role = 'button';
 

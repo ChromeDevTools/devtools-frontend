@@ -38,7 +38,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -126,7 +126,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.notPausedMessageElement.tabIndex = -1;
 
     this.callFrameWarningsElement = this.contentElement.createChild('div', 'call-frame-warnings-message');
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = 'warning-filled';
     icon.classList.add('call-frame-warning-icon', 'small');
     this.callFrameWarningsElement.appendChild(icon);
@@ -330,14 +330,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this.showIgnoreListed && item.isIgnoreListed);
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = 'large-arrow-right-filled';
     icon.classList.add('selected-call-frame-icon', 'small');
     element.appendChild(icon);
     element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
 
     if (callframe?.missingDebugInfoDetails) {
-      const icon = new IconButton.Icon.Icon();
+      const icon = new Icon();
       icon.name = 'warning-filled';
       icon.classList.add('call-frame-warning-icon', 'small');
       const messages = callframe.missingDebugInfoDetails.resources.map(

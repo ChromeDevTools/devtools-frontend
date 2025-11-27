@@ -9,7 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import {createIcon, type Icon} from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import type {ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
@@ -429,10 +429,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     // Find the tabbed location where the panel lives
     const tabbedPane = this.getTabbedPaneForTabId(tabId);
     if (tabbedPane) {
-      let icon: IconButton.Icon.Icon|null = null;
+      let icon: Icon|null = null;
       if (warnings.length !== 0) {
         const warning = warnings.length === 1 ? warnings[0] : '· ' + warnings.join('\n· ');
-        icon = IconButton.Icon.createIcon('warning-filled', 'small');
+        icon = createIcon('warning-filled', 'small');
         icon.classList.add('warning');
         Tooltip.install(icon, warning);
       }

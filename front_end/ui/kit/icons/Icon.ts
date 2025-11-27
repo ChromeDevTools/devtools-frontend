@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api, @devtools/enforce-custom-element-definitions-location */
+/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../../Images/Images.js';
 
@@ -34,9 +34,9 @@ export type IconData = IconWithName|{
  * Usage is simple:
  *
  * ```js
- * // Instantiate programmatically via the `createIcon()` helper:
- * const icon = IconButton.Icon.createIcon('bin');
- * const iconWithClassName = IconButton.Icon.createIcon('bin', 'delete-icon');
+ * // Instantiate programmatically via the `create()` helper:
+ * const icon = createIcon('bin');
+ * const iconWithClassName = createIcon('bin', 'delete-icon');
  *
  * // Use within a template:
  * Lit.html`

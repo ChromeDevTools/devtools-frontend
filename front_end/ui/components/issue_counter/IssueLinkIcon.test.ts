@@ -9,7 +9,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
-import * as IconButton from '../icon_button/icon_button.js';
+import {Icon} from '../../kit/kit.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as IssueCounter from './issue_counter.js';
@@ -27,11 +27,11 @@ const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIcon
 };
 
 export const extractElements = (shadowRoot: ShadowRoot): {
-  icon: IconButton.Icon.Icon,
+  icon: Icon,
   button: HTMLButtonElement,
 } => {
   const icon = shadowRoot.querySelector('devtools-icon');
-  assert.instanceOf(icon, IconButton.Icon.Icon);
+  assert.instanceOf(icon, Icon);
   const button = shadowRoot.querySelector('button');
   assert.instanceOf(button, HTMLButtonElement);
   return {icon, button};

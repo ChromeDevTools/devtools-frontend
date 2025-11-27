@@ -5,10 +5,9 @@
 import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
+import {createIcon, Icon} from '../kit.js';
 
-import * as IconButton from './icon_button.js';
-
-function getSpanElement(icon: IconButton.Icon.Icon): HTMLSpanElement {
+function getSpanElement(icon: Icon): HTMLSpanElement {
   const {shadowRoot} = icon;
   assert.isNotNull(shadowRoot);
   const span = shadowRoot.querySelector('span');
@@ -18,8 +17,6 @@ function getSpanElement(icon: IconButton.Icon.Icon): HTMLSpanElement {
 
 describe('Icon', () => {
   describe('Icon', () => {
-    const {Icon} = IconButton.Icon;
-
     it('constructs a sub-aligned 20x20 icon by default', () => {
       const icon = new Icon();
       renderElementIntoDOM(icon);
@@ -111,15 +108,13 @@ describe('Icon', () => {
   });
 
   describe('create', () => {
-    const {createIcon: create} = IconButton.Icon;
-
     it('constructs a new Icon with the given `name`', () => {
-      const icon = create('bin');
+      const icon = createIcon('bin');
       assert.strictEqual(icon.name, 'bin');
     });
 
     it('constructs a new Icon with the given `className`', () => {
-      const icon = create('select-element', 'my-awesome-class');
+      const icon = createIcon('select-element', 'my-awesome-class');
       assert.isTrue(icon.classList.contains('my-awesome-class'));
     });
   });

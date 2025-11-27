@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
-import './Icon.js';
+import '../../kit/kit.js';
 
 import * as Lit from '../../lit/lit.js';
 

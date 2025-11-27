@@ -4,13 +4,13 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/report_view/report_view.js';
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import type {IconWithName} from '../../../ui/kit/kit.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -223,12 +223,12 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
   }
 }
 
-const SUCCESS_ICON_DATA: IconButton.Icon.IconWithName = {
+const SUCCESS_ICON_DATA: IconWithName = {
   color: 'var(--icon-checkmark-green)',
   iconName: 'check-circle',
 };
 
-const FAILURE_ICON_DATA: IconButton.Icon.IconWithName = {
+const FAILURE_ICON_DATA: IconWithName = {
   color: 'var(--icon-error)',
   iconName: 'cross-circle-filled',
 };
@@ -239,8 +239,7 @@ export function statusConsideredSuccess(status: Protocol.Network.TrustTokenOpera
       status === Protocol.Network.TrustTokenOperationDoneEventStatus.FulfilledLocally;
 }
 
-function getIconForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus):
-    IconButton.Icon.IconWithName {
+function getIconForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus): IconWithName {
   return statusConsideredSuccess(status) ? SUCCESS_ICON_DATA : FAILURE_ICON_DATA;
 }
 

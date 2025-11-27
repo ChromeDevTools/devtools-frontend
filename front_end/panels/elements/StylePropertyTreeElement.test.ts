@@ -18,8 +18,8 @@ import {
   getMatchedStylesWithBlankRule,
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
+import {Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
 
@@ -979,7 +979,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('renders the easing function swatch', () => {
       const stylePropertyTreeElement = getTreeElement('animation-timing-function', 'ease-out');
       stylePropertyTreeElement.updateTitle();
-      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild?.firstChild, IconButton.Icon.Icon);
+      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild?.firstChild, Icon);
     });
   });
 

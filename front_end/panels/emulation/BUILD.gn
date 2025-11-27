@@ -40,7 +40,7 @@ devtools_ui_module("emulation") {
     "../../models/geometry:bundle",
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
-    "../../ui/components/icon_button:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",

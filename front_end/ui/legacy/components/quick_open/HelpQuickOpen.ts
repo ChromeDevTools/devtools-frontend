@@ -1,7 +1,8 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../../components/icon_button/icon_button.js';
+
+import '../../../kit/kit.js';
 
 import {html, type TemplateResult} from '../../../lit/lit.js';
 

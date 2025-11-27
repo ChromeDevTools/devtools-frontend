@@ -10,8 +10,8 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -676,7 +676,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       UI.ARIAUtils.setLabel(appIdField, 'App Id');
       appIdField.textContent = appId;
 
-      const helpIcon = IconButton.Icon.createIcon('help', 'inline-icon');
+      const helpIcon = createIcon('help', 'inline-icon');
       helpIcon.title = i18nString(UIStrings.appIdExplainer);
       helpIcon.setAttribute('jslog', `${VisualLogging.action('help').track({hover: true})}`);
       appIdField.appendChild(helpIcon);
@@ -934,7 +934,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const wcoStatusMessage = this.windowControlsSection.appendRow();
 
     if (hasWco) {
-      const checkmarkIcon = IconButton.Icon.createIcon('check-circle', 'inline-icon');
+      const checkmarkIcon = createIcon('check-circle', 'inline-icon');
       wcoStatusMessage.appendChild(checkmarkIcon);
 
       const wco = document.createElement('code');
@@ -947,7 +947,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty('theme_color'));
       }
     } else {
-      const infoIcon = IconButton.Icon.createIcon('info', 'inline-icon');
+      const infoIcon = createIcon('info', 'inline-icon');
 
       wcoStatusMessage.appendChild(infoIcon);
 

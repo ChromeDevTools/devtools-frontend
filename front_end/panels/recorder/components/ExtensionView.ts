@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/legacy/legacy.js';
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as PublicExtensions from '../../../models/extensions/extensions.js';

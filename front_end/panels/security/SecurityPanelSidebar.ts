@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import type {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CookieControlsTreeElement} from './CookieControlsTreeElement.js';
@@ -73,7 +73,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SecurityPanelSidebar extends UI.Widget.VBox {
   readonly #securitySidebarLastItemSetting: Common.Settings.Setting<string>;
   readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
-  readonly #originGroupTitles: Map<OriginGroup, {title: string, icon?: IconButton.Icon.Icon}>;
+  readonly #originGroupTitles: Map<OriginGroup, {title: string, icon?: Icon}>;
   #originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
   securityOverviewElement: OriginTreeElement;
   readonly #cookieControlsTreeElement: CookieControlsTreeElement|undefined;
@@ -204,8 +204,7 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     return this.#originGroups.get(originGroup) as UI.TreeOutline.TreeElement;
   }
 
-  #createOriginGroupElement(originGroupTitle: string, originGroupIcon?: IconButton.Icon.Icon):
-      UI.TreeOutline.TreeElement {
+  #createOriginGroupElement(originGroupTitle: string, originGroupIcon?: Icon): UI.TreeOutline.TreeElement {
     const originGroup = new UI.TreeOutline.TreeElement(originGroupTitle, true);
     originGroup.selectable = false;
     originGroup.expand();

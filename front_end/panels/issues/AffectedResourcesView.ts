@@ -12,8 +12,8 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import type * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
+import {Icon} from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -180,7 +180,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const frameCell = document.createElement('td');
     frameCell.classList.add('affected-resource-cell');
     if (frame) {
-      const icon = new IconButton.Icon.Icon();
+      const icon = new Icon();
       icon.name = 'code-circle';
       icon.classList.add('link', 'elements-panel', 'medium');
       icon.onclick = async () => {

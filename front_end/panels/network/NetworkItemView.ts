@@ -10,8 +10,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import {Icon} from '../../ui/kit/kit.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -208,7 +208,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
           i18nString(UIStrings.responsePreview));
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
-        const icon = new IconButton.Icon.Icon();
+        const icon = new Icon();
         icon.name = 'cross-circle-filled';
         icon.classList.add('small');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.signedexchangeError));
@@ -292,7 +292,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
           i18nString(UIStrings.requestAndResponseCookies));
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
-      const icon = new IconButton.Icon.Icon();
+      const icon = new Icon();
       icon.name = 'warning-filled';
       icon.classList.add('small');
       icon.title = i18nString(UIStrings.thirdPartyPhaseout);
@@ -317,7 +317,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
     if (trustTokenResult &&
         !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
-      const icon = new IconButton.Icon.Icon();
+      const icon = new Icon();
       icon.name = 'cross-circle-filled';
       icon.classList.add('small');
       this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, icon);

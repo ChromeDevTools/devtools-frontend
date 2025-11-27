@@ -40,7 +40,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Buttons from '../components/buttons/buttons.js';
 import * as Highlighting from '../components/highlighting/highlighting.js';
-import type * as IconButton from '../components/icon_button/icon_button.js';
+import type {Icon} from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -810,7 +810,7 @@ export class TreeElement {
     }
   }
 
-  setLeadingIcons(icons: IconButton.Icon.Icon[]|Lit.TemplateResult[]): void {
+  setLeadingIcons(icons: Icon[]|Lit.TemplateResult[]): void {
     if (!this.leadingIconsElement && !icons.length) {
       return;
     }

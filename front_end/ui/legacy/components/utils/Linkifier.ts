@@ -16,8 +16,8 @@ import type * as StackTrace from '../../../../models/stack_trace/stack_trace.js'
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import type * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UIHelpers from '../../../helpers/helpers.js';
+import type {Icon} from '../../../kit/kit.js';
 import {html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
@@ -946,7 +946,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 }
 
 export interface LinkDecorator extends Common.EventTarget.EventTarget<LinkDecorator.EventTypes> {
-  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null;
+  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): Icon|null;
 }
 
 export namespace LinkDecorator {
@@ -1106,7 +1106,7 @@ export class ContentProviderContextMenuProvider implements
 }
 
 interface LinkInfo {
-  icon: IconButton.Icon.Icon|null;
+  icon: Icon|null;
   enableDecorator: boolean;
   uiLocation: Workspace.UISourceCode.UILocation|null;
   liveLocation: Bindings.LiveLocation.LiveLocation|null;

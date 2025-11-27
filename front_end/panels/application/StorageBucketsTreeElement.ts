@@ -7,8 +7,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {IndexedDBTreeElement} from './ApplicationPanelSidebar.js';
@@ -49,7 +49,7 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
     super(
         storagePanel, i18nString(UIStrings.storageBuckets), i18nString(UIStrings.noStorageBuckets),
         i18nString(UIStrings.storageBucketsDescription), 'storage-buckets');
-    const icon = IconButton.Icon.createIcon('bucket');
+    const icon = createIcon('bucket');
     this.setLeadingIcons([icon]);
     this.setLink(
         'https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md' as Platform.DevToolsPath.UrlString);
@@ -153,7 +153,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
     super(resourcesPanel, `${bucket.name} - ${origin}`, '', '', 'storage-bucket');
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
-    const icon = IconButton.Icon.createIcon('database');
+    const icon = createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

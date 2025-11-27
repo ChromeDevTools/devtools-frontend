@@ -9,8 +9,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
@@ -158,7 +158,7 @@ export class DebuggerPausedMessage {
     }
 
     const mainElement = messageWrapper.createChild('div', 'status-main');
-    const mainIcon = new IconButton.Icon.Icon();
+    const mainIcon = new Icon();
     mainIcon.name = 'info';
     mainIcon.style.color = 'var(--sys-color-on-yellow-container)';
     mainIcon.classList.add('medium');
@@ -290,7 +290,7 @@ export class DebuggerPausedMessage {
     function buildWrapper(mainText: string, subText?: string, title?: string): Element {
       const messageWrapper = document.createElement('span');
       const mainElement = messageWrapper.createChild('div', 'status-main');
-      const mainIcon = new IconButton.Icon.Icon();
+      const mainIcon = new Icon();
       mainIcon.name = errorLike ? 'cross-circle-filled' : 'info';
       mainIcon.style.color = errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)';
       mainIcon.classList.add('medium');

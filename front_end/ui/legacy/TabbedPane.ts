@@ -13,7 +13,7 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import {createIcon, Icon} from '../kit/kit.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
@@ -402,7 +402,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.tabsHistory.slice(0, tabsCount).map(tabToTabId);
   }
 
-  setTabIcon(id: string, icon: IconButton.Icon.Icon|null): void {
+  setTabIcon(id: string, icon: Icon|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;
@@ -411,7 +411,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.requestUpdate();
   }
 
-  setTrailingTabIcon(id: string, icon: IconButton.Icon.Icon|null): void {
+  setTrailingTabIcon(id: string, icon: Icon|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;
@@ -662,7 +662,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const dropDownContainer = document.createElement('div');
     dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
     dropDownContainer.setAttribute('jslog', `${VisualLogging.dropDown('more-tabs').track({click: true})}`);
-    const chevronIcon = IconButton.Icon.createIcon('chevron-double-right', 'chevron-icon');
+    const chevronIcon = createIcon('chevron-double-right', 'chevron-icon');
     const moreTabsString = i18nString(UIStrings.moreTabs);
     dropDownContainer.title = moreTabsString;
     ARIAUtils.markAsMenuButton(dropDownContainer);
@@ -1070,7 +1070,7 @@ export class TabbedPaneTab {
   shown: boolean;
   measuredWidth!: number|undefined;
   #tabElement!: HTMLElement|undefined;
-  private icon: IconButton.Icon.Icon|null = null;
+  private icon: Icon|null = null;
   private suffixElement: HTMLElement|null = null;
   #width?: number;
   private delegate?: TabbedPaneTabDelegate;
@@ -1147,7 +1147,7 @@ export class TabbedPaneTab {
     return this.closeable;
   }
 
-  setIcon(icon: IconButton.Icon.Icon|null): void {
+  setIcon(icon: Icon|null): void {
     this.icon = icon;
     if (this.#tabElement && this.titleElement) {
       this.createIconElement(this.#tabElement, this.titleElement, false);
@@ -1250,7 +1250,7 @@ export class TabbedPaneTab {
     tabSuffixElements.set(tabElement, suffixElementContainer);
   }
 
-  private createMeasureClone(original: IconButton.Icon.Icon): Element {
+  private createMeasureClone(original: Icon): Element {
     // Cloning doesn't work for the icon component because the shadow
     // root isn't copied, but it is sufficient to create a div styled
     // to be the same size.
@@ -1319,7 +1319,7 @@ export class TabbedPaneTab {
     // TODO(finnur): Replace the ai-icon with the squiggly svg once it becomes available.
     const iconContainer = document.createElement('div');
     iconContainer.classList.add('ai-icon');
-    const tabAnnotationIcon = new IconButton.Icon.Icon();
+    const tabAnnotationIcon = new Icon();
     tabAnnotationIcon.name = 'smart-assistant';
     tabAnnotationIcon.classList.add('small');
     iconContainer.appendChild(tabAnnotationIcon);
@@ -1346,7 +1346,7 @@ export class TabbedPaneTab {
   private createPreviewIcon(): HTMLDivElement {
     const iconContainer = document.createElement('div');
     iconContainer.classList.add('preview-icon');
-    const previewIcon = new IconButton.Icon.Icon();
+    const previewIcon = new Icon();
     previewIcon.name = 'experiment';
     previewIcon.classList.add('small');
     iconContainer.appendChild(previewIcon);

@@ -10,8 +10,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -181,7 +181,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }));
     editorWrapper.appendChild(this.editor);
 
-    const closeIcon = IconButton.Icon.createIcon('cross');
+    const closeIcon = createIcon('cross');
     closeIcon.title = i18nString(UIStrings.closeDialog);
     closeIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     closeIcon.onclick = () => this.finishEditing(true, this.editor.state.doc.toString());
@@ -196,7 +196,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
                                           jslog="${VisualLogging.link('learn-more')}">${
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
-    const linkIcon = IconButton.Icon.createIcon('open-externally', 'link-icon');
+    const linkIcon = createIcon('open-externally', 'link-icon');
     link.prepend(linkIcon);
     linkWrapper.appendChild(link);
 

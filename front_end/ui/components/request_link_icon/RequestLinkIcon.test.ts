@@ -10,8 +10,8 @@ import type * as Logs from '../../../models/logs/logs.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {Icon} from '../../kit/kit.js';
 import * as UI from '../../legacy/legacy.js';
-import * as IconButton from '../icon_button/icon_button.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as RequestLinkIcon from './request_link_icon.js';
@@ -29,12 +29,12 @@ const renderRequestLinkIcon = async(data: RequestLinkIcon.RequestLinkIcon.Reques
 };
 
 export const extractElements = (shadowRoot: ShadowRoot): {
-  icon: IconButton.Icon.Icon,
+  icon: Icon,
   button: HTMLButtonElement,
   label: HTMLSpanElement|null,
 } => {
   const icon = shadowRoot.querySelector('devtools-icon');
-  assert.instanceOf(icon, IconButton.Icon.Icon);
+  assert.instanceOf(icon, Icon);
   const button = shadowRoot.querySelector('button');
   assert.instanceOf(button, HTMLButtonElement);
   const label = shadowRoot.querySelector('button > span');

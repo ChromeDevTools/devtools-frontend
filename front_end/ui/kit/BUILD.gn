@@ -2,18 +2,28 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../scripts/build/ninja/component_doc.gni")
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
 
 generate_css("css_files") {
-  sources = [ "cards/card.css" ]
+  sources = [
+    "cards/card.css",
+    "icons/icon.css",
+  ]
 }
 
 devtools_ui_module("kit") {
-  sources = [ "cards/Card.ts" ]
+  sources = [
+    "cards/Card.ts",
+    "icons/Icon.ts",
+  ]
 
-  deps = [ "../lit:bundle" ]
+  deps = [
+    "../../Images:optimize_images",
+    "../lit:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -26,6 +36,8 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../*",
+    "../../entrypoints/main/*",
     "../../panels/*",
   ]
 }
@@ -33,10 +45,21 @@ devtools_entrypoint("bundle") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "cards/Card.test.ts" ]
+  sources = [
+    "cards/Card.test.ts",
+    "icons/Icon.test.ts",
+  ]
 
   deps = [
     ":bundle",
     "../../testing",
+  ]
+}
+
+component_doc("docs") {
+  sources = [ "icons/Icon.docs.ts" ]
+  deps = [
+    ":bundle",
+    "../lit:bundle",
   ]
 }

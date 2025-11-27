@@ -5,7 +5,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
@@ -25,7 +25,7 @@ export class BackForwardCacheTreeElement extends ApplicationPanelTreeElement {
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.backForwardCache), false, 'bfcache');
-    const icon = IconButton.Icon.createIcon('database');
+    const icon = createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

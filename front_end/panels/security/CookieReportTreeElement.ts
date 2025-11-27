@@ -1,14 +1,14 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 
 import {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 
 export class CookieReportTreeElement extends SecurityPanelSidebarTreeElement {
   constructor(title: string, jslogContext: string|number) {
     super(title, false, jslogContext);
-    this.setLeadingIcons([IconButton.Icon.createIcon('cookie', 'cookie-icon')]);
+    this.setLeadingIcons([createIcon('cookie', 'cookie-icon')]);
   }
 
   override get elemId(): string {

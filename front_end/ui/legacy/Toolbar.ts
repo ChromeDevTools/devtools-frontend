@@ -10,7 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import {createIcon} from '../kit/kit.js';
 
 import {type Action, Events as ActionEvents} from './ActionRegistration.js';
 import {ActionRegistry} from './ActionRegistry.js';
@@ -824,7 +824,7 @@ export class ToolbarFilter extends ToolbarInput {
         filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions,
         jslogContext || 'filter', element);
 
-    const filterIcon = IconButton.Icon.createIcon('filter');
+    const filterIcon = createIcon('filter');
     this.element.prepend(filterIcon);
     this.element.classList.add('toolbar-filter');
   }
@@ -997,7 +997,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.title = '';
     if (!isIconDropdown) {
       this.element.classList.add('toolbar-has-dropdown');
-      const dropdownArrowIcon = IconButton.Icon.createIcon('triangle-down', 'toolbar-dropdown-arrow');
+      const dropdownArrowIcon = createIcon('triangle-down', 'toolbar-dropdown-arrow');
       this.element.appendChild(dropdownArrowIcon);
     }
     if (jslogContext) {

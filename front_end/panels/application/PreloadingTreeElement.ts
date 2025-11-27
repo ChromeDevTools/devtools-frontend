@@ -5,7 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as PreloadingHelper from './preloading/helper/helper.js';
@@ -45,7 +45,7 @@ class PreloadingTreeElementBase<View extends PreloadingRuleSetView|PreloadingAtt
     this.#viewConstructor = viewConstructor;
     this.#path = path;
 
-    const icon = IconButton.Icon.createIcon('speculative-loads');
+    const icon = createIcon('speculative-loads');
     this.setLeadingIcons([icon]);
     this.#selected = false;
 
@@ -94,7 +94,7 @@ export class PreloadingSummaryTreeElement extends ExpandableApplicationPanelTree
   constructor(panel: ResourcesPanel) {
     super(panel, i18nString(UIStrings.speculativeLoads), '', '', 'preloading');
 
-    const icon = IconButton.Icon.createIcon('speculative-loads');
+    const icon = createIcon('speculative-loads');
     this.setLeadingIcons([icon]);
     this.#selected = false;
 

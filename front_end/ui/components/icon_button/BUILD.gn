@@ -12,7 +12,6 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "fileSourceIcon.css",
-    "icon.css",
     "iconButton.css",
   ]
 }
@@ -20,7 +19,6 @@ generate_css("css_files") {
 devtools_ui_module("icon_button") {
   sources = [
     "FileSourceIcon.ts",
-    "Icon.ts",
     "IconButton.ts",
   ]
 
@@ -28,6 +26,7 @@ devtools_ui_module("icon_button") {
     "../../../Images:optimize_images",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/kit:bundle",
     "../../../ui/lit:bundle",
   ]
 }
@@ -57,21 +56,12 @@ devtools_ui_module("unittests") {
 
   sources = [
     "FileSourceIcon.test.ts",
-    "Icon.test.ts",
     "IconButton.test.ts",
   ]
 
   deps = [
     ":bundle",
     "../../../testing",
-    "../../lit:bundle",
-  ]
-}
-
-component_doc("docs") {
-  sources = [ "Icon.docs.ts" ]
-  deps = [
-    ":bundle",
     "../../lit:bundle",
   ]
 }

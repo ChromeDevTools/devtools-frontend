@@ -3,16 +3,16 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
-import '../../../components/icon_button/icon_button.js';
+import '../../../kit/kit.js';
 
-import type * as IconButton from '../../../components/icon_button/icon_button.js';
+import type {Icon} from '../../../kit/kit.js';
 import {html, render} from '../../../lit/lit.js';
 
 import type {CSSShadowModel} from './CSSShadowEditor.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
 export class CSSShadowSwatch extends HTMLElement {
-  readonly #icon: IconButton.Icon.Icon;
+  readonly #icon: Icon;
   readonly #model: CSSShadowModel;
 
   constructor(model: CSSShadowModel) {
@@ -26,14 +26,14 @@ export class CSSShadowSwatch extends HTMLElement {
         this, {host: this});
     // clang-format on
 
-    this.#icon = this.querySelector('devtools-icon') as IconButton.Icon.Icon;
+    this.#icon = this.querySelector('devtools-icon') as Icon;
   }
 
   model(): CSSShadowModel {
     return this.#model;
   }
 
-  iconElement(): IconButton.Icon.Icon {
+  iconElement(): Icon {
     return this.#icon;
   }
 }

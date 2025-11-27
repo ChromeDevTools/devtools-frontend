@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import type {Icon} from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -33,14 +33,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 interface BezierPopoverIconParams {
   treeElement: StylePropertyTreeElement;
   swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
-  swatch: IconButton.Icon.Icon;
+  swatch: Icon;
   bezierText: HTMLElement;
 }
 
 export class BezierPopoverIcon {
   private treeElement: StylePropertyTreeElement;
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
-  private readonly swatch: IconButton.Icon.Icon;
+  private readonly swatch: Icon;
   private readonly bezierText: HTMLElement;
   private readonly boundBezierChanged: (event: Common.EventTarget.EventTargetEvent<string>) => void;
   private readonly boundOnScroll: (event: Event) => void;

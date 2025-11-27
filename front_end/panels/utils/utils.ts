@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/kit/kit.js';
 import '../../ui/components/icon_button/icon_button.js';
 
 import * as Common from '../../core/common/common.js';

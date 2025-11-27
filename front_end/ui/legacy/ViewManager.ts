@@ -11,7 +11,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import {createIcon, type Icon} from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -472,7 +472,7 @@ export class ContainerWidget extends VBox {
 
 class ExpandableContainerWidget extends VBox {
   private titleElement: HTMLDivElement;
-  private readonly titleExpandIcon: IconButton.Icon.Icon;
+  private readonly titleExpandIcon: Icon;
   private readonly view: View;
   private widget?: Widget;
   private materializePromise?: Promise<void>;
@@ -489,7 +489,7 @@ class ExpandableContainerWidget extends VBox {
                                      keydown: 'Enter|Space|ArrowLeft|ArrowRight',
                                    })}`);
     ARIAUtils.markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = IconButton.Icon.createIcon('triangle-right', 'title-expand-icon');
+    this.titleExpandIcon = createIcon('triangle-right', 'title-expand-icon');
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -809,7 +809,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
         view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
     const iconName = view.iconName();
     if (iconName) {
-      const icon = IconButton.Icon.createIcon(iconName);
+      const icon = createIcon(iconName);
       this.#tabbedPane.setTabIcon(view.viewId(), icon);
     }
   }

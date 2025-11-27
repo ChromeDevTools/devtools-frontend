@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -56,7 +56,7 @@ export class FrameGroupNode extends NetworkGroupNode {
     const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const name = this.displayName();
-      cell.appendChild(IconButton.Icon.createIcon('frame', 'network-frame-group-icon'));
+      cell.appendChild(createIcon('frame', 'network-frame-group-icon'));
       UI.UIUtils.createTextChild(cell, name);
       UI.Tooltip.Tooltip.install(cell, name);
       this.setCellAccessibleName(cell.textContent || '', cell, columnId);

@@ -6,6 +6,7 @@ import {
   assertElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
+import {Icon} from '../../kit/kit.js';
 
 import * as IconButton from './icon_button.js';
 
@@ -26,7 +27,7 @@ const defaultIcon: IconButton.IconButton.IconWithTextData = {
 
 export const extractIconGroups = (shadowRoot: ShadowRoot) => {
   const icons = shadowRoot.querySelectorAll('.status-icon');
-  assertElements(icons, IconButton.Icon.Icon);
+  assertElements(icons, Icon);
   const labels = shadowRoot.querySelectorAll('.icon-button-title');
   assertElements(labels, HTMLSpanElement);
   assert.strictEqual(icons.length, labels.length, 'Expected icons and labels to appear in pairs');
@@ -183,7 +184,7 @@ describe('IconButton', () => {
       });
       const {shadowRoot} = renderIconButton({clickHandler, groups: [defaultIcon]});
       const icon = shadowRoot.querySelector('.status-icon');
-      assert.instanceOf(icon, IconButton.Icon.Icon);
+      assert.instanceOf(icon, Icon);
       icon.click();
       await clicked;
     });

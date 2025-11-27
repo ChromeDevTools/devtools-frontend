@@ -7,7 +7,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -582,7 +582,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
 
     div.style.width = `${previewWidth}px`;
 
-    const icon = IconButton.Icon.createIcon('arrow-back');
+    const icon = createIcon('arrow-back');
     icon.title = i18nString(UIStrings.backButtonTooltip);
     icon.classList.add('back-arrow');
     div.appendChild(icon);

@@ -7,7 +7,7 @@
    do not define any host for Lit.render and the rule is not happy
    about it. */
 
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import './StepEditor.js';
 import './TimelineSection.js';
 

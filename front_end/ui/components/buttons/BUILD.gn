@@ -30,7 +30,7 @@ devtools_ui_module("button") {
   deps = [
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
-    "../icon_button:bundle",
+    "../../kit:bundle",
   ]
 }
 

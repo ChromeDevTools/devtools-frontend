@@ -42,7 +42,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../components/buttons/buttons.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import {Icon, type IconData} from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -1281,19 +1281,19 @@ export class CheckboxLabel extends HTMLElement {
 customElements.define('devtools-checkbox', CheckboxLabel);
 
 export class DevToolsIconLabel extends HTMLElement {
-  readonly #icon: IconButton.Icon.Icon;
+  readonly #icon: Icon;
 
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this);
-    this.#icon = new IconButton.Icon.Icon();
+    this.#icon = new Icon();
     this.#icon.style.setProperty('margin-right', '4px');
     this.#icon.style.setProperty('vertical-align', 'baseline');
     root.appendChild(this.#icon);
     root.createChild('slot');
   }
 
-  set data(data: IconButton.Icon.IconData) {
+  set data(data: IconData) {
     this.#icon.data = data;
     // TODO(crbug.com/1427397): Clean this up. This was necessary so `DevToolsIconLabel` can use Lit icon
     //    while being backwards-compatible with the legacy Icon while working for both small and large icons.

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import './ValueInterpreterDisplay.js';
 import './ValueInterpreterSettings.js';
 

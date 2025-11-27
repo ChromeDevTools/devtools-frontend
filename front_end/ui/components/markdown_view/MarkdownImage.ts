@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
-import '../../components/icon_button/icon_button.js';
+import '../../kit/kit.js';
 
-import type * as IconButton from '../../components/icon_button/icon_button.js';
+import type {IconData} from '../../kit/kit.js';
 import * as Lit from '../../lit/lit.js';
 
 import markdownImageStyles from './markdownImage.css.js';
@@ -42,7 +42,7 @@ export class MarkdownImage extends HTMLElement {
     }
     const {src, color, width = '100%', height = '100%'} = this.#imageData;
     return html`
-      <devtools-icon .data=${{iconPath: src, color, width, height} as IconButton.Icon.IconData}></devtools-icon>
+      <devtools-icon .data=${{iconPath: src, color, width, height} as IconData}></devtools-icon>
     `;
   }
 

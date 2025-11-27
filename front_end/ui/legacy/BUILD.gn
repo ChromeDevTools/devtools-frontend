@@ -116,8 +116,8 @@ devtools_ui_module("ui") {
     "../components/buttons:bundle",
     "../components/helpers:bundle",
     "../components/highlighting:bundle",
-    "../components/icon_button:bundle",
     "../helpers:bundle",
+    "../kit:bundle",
     "../lit:bundle",
     "../visual_logging:bundle",
   ]

@@ -6,7 +6,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -218,7 +218,7 @@ export class SoftContextMenu {
 
     // If the menu contains a checkbox, add checkbox space in front of the label to align the items
     if (menuContainsCheckbox) {
-      const checkMarkElement = IconButton.Icon.createIcon('checkmark', 'checkmark');
+      const checkMarkElement = createIcon('checkmark', 'checkmark');
       menuItemElement.appendChild(checkMarkElement);
     }
     if (item.tooltip) {
@@ -293,7 +293,7 @@ export class SoftContextMenu {
     ARIAUtils.setLabel(menuItemElement, accessibleName);
 
     if (item.isExperimentalFeature) {
-      const experimentIcon = IconButton.Icon.createIcon('experiment');
+      const experimentIcon = createIcon('experiment');
       menuItemElement.appendChild(experimentIcon);
     }
 
@@ -317,15 +317,14 @@ export class SoftContextMenu {
 
     // If the menu contains a checkbox, add checkbox space in front of the label to align the items
     if (menuContainsCheckbox) {
-      const checkMarkElement = IconButton.Icon.createIcon('checkmark', 'checkmark soft-context-menu-item-checkmark');
+      const checkMarkElement = createIcon('checkmark', 'checkmark soft-context-menu-item-checkmark');
       menuItemElement.appendChild(checkMarkElement);
     }
 
     createTextChild(menuItemElement, item.label || '');
     ARIAUtils.setExpanded(menuItemElement, false);
 
-    const subMenuArrowElement =
-        IconButton.Icon.createIcon('keyboard-arrow-right', 'soft-context-menu-item-submenu-arrow');
+    const subMenuArrowElement = createIcon('keyboard-arrow-right', 'soft-context-menu-item-submenu-arrow');
     menuItemElement.appendChild(subMenuArrowElement);
 
     menuItemElement.addEventListener('mousedown', this.menuItemMouseDown.bind(this), false);

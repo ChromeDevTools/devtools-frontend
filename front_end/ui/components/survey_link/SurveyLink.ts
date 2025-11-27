@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
-import '../icon_button/icon_button.js';
+import '../../kit/kit.js';
 
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';

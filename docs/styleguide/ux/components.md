@@ -316,7 +316,7 @@ html`<devtools-icon name=${'some-icon-name'}></devtools-icon>`;
 Usage with the imperative API:
 
 ```ts
-const someIcon = IconButton.Icon.create('some-icon-name', 'some-class');
+const someIcon = createIcon('some-icon-name', 'some-class');
 ```
 
 ## Context menus

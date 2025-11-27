@@ -5,8 +5,8 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
@@ -28,7 +28,7 @@ export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeEl
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.bounceTrackingMitigations), false, 'bounce-tracking-mitigations');
-    const icon = IconButton.Icon.createIcon('database');
+    const icon = createIcon('database');
     this.setLeadingIcons([icon]);
   }
 

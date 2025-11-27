@@ -18,6 +18,7 @@ devtools_entrypoint("bundle") {
     "../../models/workspace:bundle",
     "../../ui/components/diff_view:bundle",
     "../../ui/components/icon_button:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../common:bundle",
     "../snippets:bundle",

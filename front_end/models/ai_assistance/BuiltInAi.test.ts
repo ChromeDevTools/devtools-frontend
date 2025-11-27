@@ -55,11 +55,55 @@ describe('BuiltInAi', () => {
     // @ts-expect-error
     window.LanguageModel = {
       availability: () => 'available',
-      create: () => ({foo: 'bar'}),
+      create: () => {},
     };
 
     const builtInAi = new AiAssistanceModel.BuiltInAi.BuiltInAi();
     await builtInAi.initDoneForTesting;
+    assert.isFalse(builtInAi.isEventuallyAvailable());
+  });
+
+  it('can download the AI model', async () => {
+    updateHostConfig({
+      devToolsAiPromptApi: {
+        enabled: true,
+        allowWithoutGpu: true,
+      },
+    });
+
+    // @ts-expect-error
+    window.LanguageModel = {
+      availability: () => 'downloadable',
+      create: (params: {monitor: (et: EventTarget) => void}) => {
+        const eventTarget = new EventTarget();
+        params.monitor(eventTarget);
+        eventTarget.dispatchEvent(new ProgressEvent('downloadprogress', {loaded: 0.4}));
+        return {};
+      },
+    };
+
+    const builtInAi = new AiAssistanceModel.BuiltInAi.BuiltInAi();
+    assert.isDefined(builtInAi);
+    await builtInAi.initDoneForTesting;
     assert.isFalse(builtInAi.hasSession());
+    assert.isTrue(builtInAi.isEventuallyAvailable());
+
+    const downloadProgressPromise = new Promise<void>(resolve => {
+      builtInAi.addEventListener(AiAssistanceModel.BuiltInAi.Events.DOWNLOAD_PROGRESS_CHANGED, () => {
+        assert.strictEqual(builtInAi.getDownloadProgress(), 0.4);
+        resolve();
+      });
+    });
+
+    const sessionCreatedPromise = new Promise<void>(resolve => {
+      builtInAi.addEventListener(AiAssistanceModel.BuiltInAi.Events.DOWNLOADED_AND_SESSION_CREATED, () => {
+        resolve();
+      });
+    });
+
+    builtInAi.startDownloadingModel();
+    await downloadProgressPromise;
+    await sessionCreatedPromise;
+    assert.isTrue(builtInAi.hasSession());
   });
 });

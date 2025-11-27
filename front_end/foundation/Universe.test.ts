@@ -24,6 +24,7 @@ describe('Universe', () => {
           },
           {settingName: 'skip-anonymous-scripts', settingType: SettingType.BOOLEAN, defaultValue: false},
           {settingName: 'enable-ignore-listing', settingType: SettingType.BOOLEAN, defaultValue: true},
+          {settingName: 'request-blocking-enabled', settingType: SettingType.BOOLEAN, defaultValue: false},
         ],
       },
     });

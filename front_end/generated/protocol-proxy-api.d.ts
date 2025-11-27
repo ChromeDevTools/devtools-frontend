@@ -4210,6 +4210,12 @@ declare namespace ProtocolProxyApi {
     invoke_setRemoteLocations(params: Protocol.Target.SetRemoteLocationsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Gets the targetId of the DevTools page target opened for the given target
+     * (if any).
+     */
+    invoke_getDevToolsTarget(params: Protocol.Target.GetDevToolsTargetRequest): Promise<Protocol.Target.GetDevToolsTargetResponse>;
+
+    /**
      * Opens a DevTools window for the target.
      */
     invoke_openDevTools(params: Protocol.Target.OpenDevToolsRequest): Promise<Protocol.Target.OpenDevToolsResponse>;

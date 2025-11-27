@@ -2138,6 +2138,86 @@
                     ]
                 },
                 {
+                    "id": "PermissionElementIssueType",
+                    "type": "string",
+                    "enum": [
+                        "InvalidType",
+                        "FencedFrameDisallowed",
+                        "CspFrameAncestorsMissing",
+                        "PermissionsPolicyBlocked",
+                        "PaddingRightUnsupported",
+                        "PaddingBottomUnsupported",
+                        "InsetBoxShadowUnsupported",
+                        "RequestInProgress",
+                        "UntrustedEvent",
+                        "RegistrationFailed",
+                        "TypeNotSupported",
+                        "InvalidTypeActivation",
+                        "SecurityChecksFailed",
+                        "ActivationDisabled",
+                        "GeolocationDeprecated",
+                        "InvalidDisplayStyle",
+                        "NonOpaqueColor",
+                        "LowContrast",
+                        "FontSizeTooSmall",
+                        "FontSizeTooLarge",
+                        "InvalidSizeValue"
+                    ]
+                },
+                {
+                    "id": "PermissionElementIssueDetails",
+                    "description": "This issue warns about improper usage of the <permission> element.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "issueType",
+                            "$ref": "PermissionElementIssueType"
+                        },
+                        {
+                            "name": "type",
+                            "description": "The value of the type attribute.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "nodeId",
+                            "description": "The node ID of the <permission> element.",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "isWarning",
+                            "description": "True if the issue is a warning, false if it is an error.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "permissionName",
+                            "description": "Fields for message construction:\nUsed for messages that reference a specific permission name",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "occluderNodeInfo",
+                            "description": "Used for messages about occlusion",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "occluderParentNodeInfo",
+                            "description": "Used for messages about occluder's parent",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "disableReason",
+                            "description": "Used for messages about activation disabled reason",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -2167,7 +2247,8 @@
                         "ElementAccessibilityIssue",
                         "SRIMessageSignatureIssue",
                         "UnencodedDigestIssue",
-                        "UserReidentificationIssue"
+                        "UserReidentificationIssue",
+                        "PermissionElementIssue"
                     ]
                 },
                 {
@@ -2305,6 +2386,11 @@
                             "name": "userReidentificationIssueDetails",
                             "optional": true,
                             "$ref": "UserReidentificationIssueDetails"
+                        },
+                        {
+                            "name": "permissionElementIssueDetails",
+                            "optional": true,
+                            "$ref": "PermissionElementIssueDetails"
                         }
                     ]
                 },
@@ -28222,6 +28308,26 @@
                             "items": {
                                 "$ref": "RemoteLocation"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "getDevToolsTarget",
+                    "description": "Gets the targetId of the DevTools page target opened for the given target\n(if any).",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "targetId",
+                            "description": "Page or tab target ID.",
+                            "$ref": "TargetID"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "targetId",
+                            "description": "The targetId of DevTools page target if exists.",
+                            "optional": true,
+                            "$ref": "TargetID"
                         }
                     ]
                 },

@@ -4838,6 +4838,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Gets the targetId of the DevTools page target opened for the given target
+     * (if any).
+     */
+    'Target.getDevToolsTarget': {
+      paramsType: [Protocol.Target.GetDevToolsTargetRequest];
+      returnType: Protocol.Target.GetDevToolsTargetResponse;
+    };
+    /**
      * Opens a DevTools window for the target.
      */
     'Target.openDevTools': {

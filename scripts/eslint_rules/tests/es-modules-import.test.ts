@@ -158,6 +158,11 @@ new RuleTester().run('es-modules-import', rule, {
       code: 'import { type Exporting } from \'../namespace/Exporting.js\';',
       filename: 'front_end/common/Importing.js',
     },
+    // Allow ui kit module named imports
+    {
+      code: 'import { Icon } from \'../ui/kit/kit.js\';',
+      filename: 'front_end/common/Importing.js',
+    },
   ],
 
   invalid: [

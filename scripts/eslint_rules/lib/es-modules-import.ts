@@ -343,6 +343,13 @@ export default createRule<[], MessageIds>({
           return;
         }
 
+        const currentFileDirectory = path.dirname(filename);
+        const resolvedAbsoluteImportPath = path.resolve(currentFileDirectory, importPath);
+        // We explicitly allow destructuring imports from 'front_end/ui/kit/kit.js'.
+        if (resolvedAbsoluteImportPath.endsWith(path.join('front_end', 'ui', 'kit', 'kit.js'))) {
+          return;
+        }
+
         if (importPathForErrorMessage.endsWith('platform/platform.js') &&
             nodeSpecifiersSpecialImportsOnly(node.specifiers)) {
           /* We allow direct importing of the ls and assertNotNull utility as it's so frequently used. */

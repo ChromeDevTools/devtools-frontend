@@ -16,7 +16,12 @@ export interface AdornerData {
   jslogContext?: string;
 }
 
+/**
+ * @deprecated Do not add new usages. The custom component will be removed an
+ * embedded into the corresponding views.
+ */
 export class Adorner extends HTMLElement {
+  static readonly observedAttributes = ['active', 'toggleable'];
   name = '';
 
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -51,6 +56,21 @@ export class Adorner extends HTMLElement {
       this.setAttribute('jslog', `${VisualElements.adorner(this.#jslogContext)}`);
     }
     this.#render();
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    switch (name) {
+      case 'active':
+        this.toggle(newValue === 'true');
+        break;
+      case 'toggleable':
+        this.#isToggle = newValue === 'true';
+        break;
+    }
   }
 
   isActive(): boolean {

@@ -362,7 +362,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
    * FIXME: adorners should be part of the view input.
    */
   updateNodeAdorners(node: SDK.DOMModel.DOMNode): void {
-    void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.updateStyleAdorners();
+    const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    void element?.updateStyleAdorners();
+    void element?.updateAdorners();
   }
 
   highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void {
@@ -2011,6 +2013,7 @@ export class ElementsTreeOutline extends
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
       void treeElement.updateStyleAdorners();
+      void treeElement.updateAdorners();
     }
   }
 }

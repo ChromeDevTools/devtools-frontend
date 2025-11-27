@@ -83,6 +83,9 @@
       "path": "../../../../third_party/diff/bundle-tsconfig.json"
     },
     {
+      "path": "../../../components/highlighting/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../components/text_editor/bundle-tsconfig.json"
     },
     {

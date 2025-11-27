@@ -1968,9 +1968,10 @@ var PlayerListView_exports = {};
 __export(PlayerListView_exports, {
   PlayerListView: () => PlayerListView
 });
+import "./../../ui/components/icon_button/icon_button.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
+import { Directives, html, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerListView.css.js
@@ -2019,6 +2020,11 @@ li.storage-group-list-item::before {
 .player-entry-status-icon-centering {
   margin: auto;
   display: inherit;
+
+  & > devtools-icon {
+    height: 16px;
+    width: 16px;
+  }
 }
 
 .player-entry-status-icon {
@@ -2056,6 +2062,7 @@ li.storage-group-list-item::before {
 /*# sourceURL=${import.meta.resolve("./playerListView.css")} */`;
 
 // gen/front_end/panels/media/PlayerListView.js
+var { classMap } = Directives;
 var UIStrings6 = {
   /**
    * @description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
@@ -2076,52 +2083,67 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/media/PlayerListView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
+      <style>${playerListView_css_default}</style>
+      <div class="player-entry-header">${i18nString6(UIStrings6.players)}</div>
+      ${input.players.map((player) => {
+    const isSelected = player.playerID === input.selectedPlayerID;
+    return html`
+          <div class=${classMap({
+      "player-entry-row": true,
+      hbox: true,
+      selected: isSelected,
+      "force-white-icons": isSelected
+    })}
+               @click=${() => input.onPlayerClick(player.playerID)}
+               @contextmenu=${(e) => input.onPlayerContextMenu(player.playerID, e)}
+               jslog=${VisualLogging5.item("player").track({ click: true })}>
+            <div class="player-entry-status-icon vbox">
+              <div class="player-entry-status-icon-centering">
+                <devtools-icon name=${player.iconName}></devtools-icon>
+              </div>
+            </div>
+            <div class="player-entry-frame-title">${player.frameTitle}</div>
+            <div class="player-entry-player-title">${player.playerTitle}</div>
+          </div>
+        `;
+  })}
+    `, target);
+};
 var PlayerListView = class extends UI6.Widget.VBox {
-  playerEntryFragments;
+  #view;
+  playerStatuses;
   playerEntriesWithHostnameFrameTitle;
   mainContainer;
-  currentlySelectedEntry;
-  constructor(mainContainer) {
+  currentlySelectedPlayerID;
+  constructor(mainContainer, view = DEFAULT_VIEW) {
     super({ useShadowDom: true });
-    this.registerRequiredCSS(playerListView_css_default);
-    this.playerEntryFragments = /* @__PURE__ */ new Map();
+    this.#view = view;
+    this.playerStatuses = /* @__PURE__ */ new Map();
     this.playerEntriesWithHostnameFrameTitle = /* @__PURE__ */ new Set();
     this.mainContainer = mainContainer;
-    this.currentlySelectedEntry = null;
-    this.contentElement.createChild("div", "player-entry-header").textContent = i18nString6(UIStrings6.players);
+    this.currentlySelectedPlayerID = null;
+    this.requestUpdate();
   }
-  createPlayerListEntry(playerID) {
-    const entry = UI6.Fragment.Fragment.build`
-    <div class="player-entry-row hbox">
-    <div class="player-entry-status-icon vbox">
-    <div $="icon" class="player-entry-status-icon-centering"></div>
-    </div>
-    <div $="frame-title" class="player-entry-frame-title">FrameTitle</div>
-    <div $="player-title" class="player-entry-player-title">PlayerTitle</div>
-    </div>
-    `;
-    const element = entry.element();
-    element.setAttribute("jslog", `${VisualLogging5.item("player").track({ click: true })}`);
-    element.addEventListener("click", this.selectPlayer.bind(this, playerID, element));
-    element.addEventListener("contextmenu", this.rightClickPlayer.bind(this, playerID));
-    entry.$("icon").appendChild(IconButton.Icon.create("pause", "media-player"));
-    return entry;
+  performUpdate() {
+    const input = {
+      players: Array.from(this.playerStatuses.values()),
+      selectedPlayerID: this.currentlySelectedPlayerID,
+      onPlayerClick: this.selectPlayer.bind(this),
+      onPlayerContextMenu: this.rightClickPlayer.bind(this)
+    };
+    this.#view(input, {}, this.contentElement);
   }
   selectPlayerById(playerID) {
-    const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment) {
-      this.selectPlayer(playerID, fragment.element());
+    if (this.playerStatuses.has(playerID)) {
+      this.selectPlayer(playerID);
     }
   }
-  selectPlayer(playerID, element) {
+  selectPlayer(playerID) {
     this.mainContainer.renderMainPanel(playerID);
-    if (this.currentlySelectedEntry !== null) {
-      this.currentlySelectedEntry.classList.remove("selected");
-      this.currentlySelectedEntry.classList.remove("force-white-icons");
-    }
-    element.classList.add("selected");
-    element.classList.add("force-white-icons");
-    this.currentlySelectedEntry = element;
+    this.currentlySelectedPlayerID = playerID;
+    this.requestUpdate();
   }
   rightClickPlayer(playerID, event) {
     const contextMenu = new UI6.ContextMenu.ContextMenu(event);
@@ -2129,7 +2151,6 @@ var PlayerListView = class extends UI6.Widget.VBox {
     contextMenu.headerSection().appendItem(i18nString6(UIStrings6.hideAllOthers), this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID), { jslogContext: "hide-all-others" });
     contextMenu.headerSection().appendItem(i18nString6(UIStrings6.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID), { jslogContext: "save-player-info" });
     void contextMenu.show();
-    return true;
   }
   setMediaElementFrameTitle(playerID, frameTitle, isHostname) {
     if (this.playerEntriesWithHostnameFrameTitle.has(playerID)) {
@@ -2139,39 +2160,34 @@ var PlayerListView = class extends UI6.Widget.VBox {
     } else if (isHostname) {
       return;
     }
-    if (!this.playerEntryFragments.has(playerID)) {
+    if (!this.playerStatuses.has(playerID)) {
       return;
     }
-    const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment?.element() === void 0) {
-      return;
+    const playerStatus = this.playerStatuses.get(playerID);
+    if (playerStatus) {
+      playerStatus.frameTitle = frameTitle;
+      this.requestUpdate();
     }
-    fragment.$("frame-title").textContent = frameTitle;
   }
   setMediaElementPlayerTitle(playerID, playerTitle) {
-    if (!this.playerEntryFragments.has(playerID)) {
+    if (!this.playerStatuses.has(playerID)) {
       return;
     }
-    const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment === void 0) {
-      return;
+    const playerStatus = this.playerStatuses.get(playerID);
+    if (playerStatus) {
+      playerStatus.playerTitle = playerTitle;
+      this.requestUpdate();
     }
-    fragment.$("player-title").textContent = playerTitle;
   }
   setMediaElementPlayerIcon(playerID, iconName) {
-    if (!this.playerEntryFragments.has(playerID)) {
+    if (!this.playerStatuses.has(playerID)) {
       return;
     }
-    const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment === void 0) {
-      return;
+    const playerStatus = this.playerStatuses.get(playerID);
+    if (playerStatus) {
+      playerStatus.iconName = iconName;
+      this.requestUpdate();
     }
-    const icon = fragment.$("icon");
-    if (icon === void 0) {
-      return;
-    }
-    icon.textContent = "";
-    icon.appendChild(IconButton.Icon.create(iconName, "media-player"));
   }
   formatAndEvaluate(playerID, func, candidate, min, max) {
     if (candidate.length <= min) {
@@ -2183,21 +2199,24 @@ var PlayerListView = class extends UI6.Widget.VBox {
     func.bind(this)(playerID, candidate);
   }
   addMediaElementItem(playerID) {
-    const sidebarEntry = this.createPlayerListEntry(playerID);
-    this.contentElement.appendChild(sidebarEntry.element());
-    this.playerEntryFragments.set(playerID, sidebarEntry);
+    this.playerStatuses.set(playerID, {
+      playerTitle: "PlayerTitle",
+      frameTitle: "FrameTitle",
+      playerID,
+      exists: true,
+      playing: false,
+      titleEdited: false,
+      iconName: "pause"
+    });
     this.playerEntriesWithHostnameFrameTitle.add(playerID);
+    this.requestUpdate();
   }
   deletePlayer(playerID) {
-    if (!this.playerEntryFragments.has(playerID)) {
+    if (!this.playerStatuses.has(playerID)) {
       return;
     }
-    const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment?.element() === void 0) {
-      return;
-    }
-    this.contentElement.removeChild(fragment.element());
-    this.playerEntryFragments.delete(playerID);
+    this.playerStatuses.delete(playerID);
+    this.requestUpdate();
   }
   onEvent(playerID, event) {
     const parsed = JSON.parse(event.value);

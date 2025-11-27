@@ -24,28 +24,25 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": ".",
+    "rootDir": "../../../../../../front_end/ui/kit",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2023",
-    "tsBuildInfoFile": "devtools_entrypoint-bundle-tsconfig-tsconfig.json.tsbuildinfo",
+    "target": "esnext",
+    "tsBuildInfoFile": "kit-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
     "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "cards.prebundle.ts",
-    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
-    "../../../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../front_end/ui/kit/cards/Card.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "./card-tsconfig.json"
-    },
-    {
-      "path": "./css_files-tsconfig.json"
+      "path": "../lit/bundle-tsconfig.json"
     }
   ]
 }

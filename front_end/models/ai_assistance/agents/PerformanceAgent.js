@@ -8,6 +8,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
+import * as Annotations from '../../../ui/components/annotations/annotations.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
@@ -31,11 +32,20 @@ const UIStringsNotTranslated = {
     mainThreadActivity: 'Investigating main thread activity…',
 };
 const lockedString = i18n.i18n.lockedString;
+const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
 /**
  * WARNING: preamble defined in code is only used when userTier is
  * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
+const greenDevAdditionalFunction = `
+- CRITICAL:You also have access to a function called addElementAnnotation, which should be used to highlight elements.`;
+const greenDevAdditionalGuidelines = `
+- CRITICAL: Each time an element with a nodeId is mentioned, you MUST ALSO call the function addElementAnnotation for that element.
+- The addElementAnnotation function should be called as soon as you identify an element that needs to be highlighted.
+- The addElementAnnotation function should always be called for the LCP element, if known.
+- The annotationMessage should be descriptive and relevant to why the element is being highlighted.
+`;
 /**
  * Preamble clocks in at ~1341 tokens.
  *   The prose is around 4.5 chars per token.
@@ -52,6 +62,8 @@ You will be provided a summary of a trace: some performance metrics; the most cr
 Don't mention anything about an insight without first getting more data about it by calling \`getInsightDetails\`.
 
 You have many functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
+
+${annotationsEnabled ? greenDevAdditionalFunction : ''}
 
 You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
 
@@ -93,6 +105,8 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Structure your response using markdown headings and bullet points for improved readability.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
+${annotationsEnabled ? greenDevAdditionalGuidelines : ''}
+
 ## Strict Constraints
 
 Adhere to the following critical requirements:
@@ -118,6 +132,10 @@ When referring to a trace event that has a corresponding \`eventKey\`, annotate 
 
 When asking the user to make a choice between multiple options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
+const greenDevAdditionalGuidelineFreshTrace = `
+When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying the id and an annotation reason.
+- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
+`;
 const extraPreambleWhenFreshTrace = `Additional notes:
 
 When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
@@ -125,7 +143,8 @@ When referring to an element for which you know the nodeId, annotate your output
 - This link will reveal the element in the Elements panel
 - Never mention node or nodeId when referring to the element, and especially not in the link text.
 - When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
-`;
+
+${annotationsEnabled ? greenDevAdditionalGuidelineFreshTrace : ''}`;
 var ScorePriority;
 (function (ScorePriority) {
     ScorePriority[ScorePriority["REQUIRED"] = 3] = "REQUIRED";
@@ -265,7 +284,7 @@ export class PerformanceAgent extends AiAgent {
         return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
     }
     get userTier() {
-        return Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+        return annotationsEnabled ? 'TESTERS' : Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
     }
     get options() {
         const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
@@ -734,6 +753,31 @@ export class PerformanceAgent extends AiAgent {
                 return { result: { callTree } };
             },
         });
+        if (annotationsEnabled) {
+            this.declareFunction('addElementAnnotation', {
+                description: 'Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.',
+                parameters: {
+                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                    description: '',
+                    nullable: false,
+                    properties: {
+                        elementId: {
+                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                            description: 'The UID of the element to annotate.',
+                            nullable: false,
+                        },
+                        annotationMessage: {
+                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                            description: 'The message the annotation should show to the user.',
+                            nullable: false,
+                        },
+                    },
+                },
+                handler: async (params) => {
+                    return await this.addElementAnnotation(params.elementId, params.annotationMessage);
+                },
+            });
+        }
         this.declareFunction('getFunctionCode', {
             description: 'Returns the code for a function defined at the given location.',
             parameters: {
@@ -870,6 +914,16 @@ export class PerformanceAgent extends AiAgent {
                 },
             });
         }
+    }
+    async addElementAnnotation(elementId, annotationMessage) {
+        if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+            console.warn('Received agent request to add annotation with annotations disabled');
+            return { error: 'Annotations are not currently enabled' };
+        }
+        // eslint-disable-next-line no-console
+        console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
+        Annotations.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
+        return { result: { success: true } };
     }
 }
 //# sourceMappingURL=PerformanceAgent.js.map

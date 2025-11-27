@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import { PreRegisteredView } from './ViewManager.js';
 const UIStrings = {
     /**
      * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
@@ -36,26 +35,21 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const registeredViewExtensions = [];
-const viewIdSet = new Set();
+const registeredViewExtensions = new Map();
 export function registerViewExtension(registration) {
     const viewId = registration.id;
-    if (viewIdSet.has(viewId)) {
+    if (registeredViewExtensions.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
     }
-    viewIdSet.add(viewId);
-    registeredViewExtensions.push(new PreRegisteredView(registration));
+    registeredViewExtensions.set(viewId, registration);
 }
 export function getRegisteredViewExtensions() {
-    return registeredViewExtensions.filter(view => Root.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment(), condition: view.condition() }));
+    return registeredViewExtensions.values()
+        .filter(view => Root.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition }))
+        .toArray();
 }
 export function maybeRemoveViewExtension(viewId) {
-    const viewIndex = registeredViewExtensions.findIndex(view => view.viewId() === viewId);
-    if (viewIndex < 0 || !viewIdSet.delete(viewId)) {
-        return false;
-    }
-    registeredViewExtensions.splice(viewIndex, 1);
-    return true;
+    return registeredViewExtensions.delete(viewId);
 }
 const registeredLocationResolvers = [];
 const viewLocationNameSet = new Set();
@@ -71,10 +65,9 @@ export function getRegisteredLocationResolvers() {
     return registeredLocationResolvers;
 }
 export function resetViewRegistration() {
-    registeredViewExtensions.length = 0;
+    registeredViewExtensions.clear();
     registeredLocationResolvers.length = 0;
     viewLocationNameSet.clear();
-    viewIdSet.clear();
 }
 export function getLocalizedViewLocationCategory(category) {
     switch (category) {

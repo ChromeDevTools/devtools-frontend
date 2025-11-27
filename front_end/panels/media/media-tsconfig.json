@@ -66,6 +66,9 @@
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
+      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.json"
     },
     {
@@ -76,6 +79,9 @@
     },
     {
       "path": "../../ui/legacy/theme_support/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.json"

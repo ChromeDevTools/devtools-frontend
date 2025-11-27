@@ -1,15 +1,5 @@
-var __defProp = Object.defineProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-
 // gen/front_end/ui/kit/cards/Card.js
-var Card_exports = {};
-__export(Card_exports, {
-  Card: () => Card
-});
-import { html, nothing, render } from "./../../lit/lit.js";
+import { html, nothing, render } from "./../lit/lit.js";
 
 // gen/front_end/ui/kit/cards/card.css.js
 var card_css_default = `/*
@@ -70,7 +60,7 @@ var card_css_default = `/*
   }
 }
 
-/*# sourceURL=${import.meta.resolve("./card.css")} */`;
+/*# sourceURL=${import.meta.resolve("./cards/card.css")} */`;
 
 // gen/front_end/ui/kit/cards/Card.js
 var Card = class extends HTMLElement {
@@ -122,6 +112,6 @@ var Card = class extends HTMLElement {
 };
 customElements.define("devtools-card", Card);
 export {
-  Card_exports as Card
+  Card
 };
-//# sourceMappingURL=cards.js.map
+//# sourceMappingURL=kit.js.map

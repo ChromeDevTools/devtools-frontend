@@ -1,9 +1,9 @@
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Cards from '../../ui/kit/cards/cards.js';
+import type { Card } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class CPUThrottlingCard {
-    element: Cards.Card.Card;
+    element: Card;
     private readonly setting;
     private computePressurePromise?;
     private controller?;

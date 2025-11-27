@@ -1,6 +1,6 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/buttons/buttons.js';
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as UI from '../../ui/legacy/legacy.js';

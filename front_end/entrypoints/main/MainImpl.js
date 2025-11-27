@@ -128,6 +128,7 @@ let loadedPanelCommonModule;
 export class MainImpl {
     #readyForTestPromise = Promise.withResolvers();
     #veStartPromise;
+    #universe;
     constructor() {
         _a.instanceForTest = this;
         void this.#loaded();
@@ -164,8 +165,8 @@ export class MainImpl {
                 runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
             },
         };
-        const universe = new Foundation.Universe.Universe(creationOptions);
-        Root.DevToolsContext.setGlobalInstance(universe.context);
+        this.#universe = new Foundation.Universe.Universe(creationOptions);
+        Root.DevToolsContext.setGlobalInstance(this.#universe.context);
         await this.requestAndRegisterLocaleData();
         Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting('sync-preferences').get());
         const veLogging = config.devToolsVeLogging;
@@ -350,6 +351,7 @@ export class MainImpl {
         UI.ZoomManager.ZoomManager.instance({ forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance });
         UI.ContextMenu.ContextMenu.initialize();
         UI.ContextMenu.ContextMenu.installHandler(document);
+        UI.ViewManager.ViewManager.instance({ forceNew: true, universe: this.#universe });
         // These instances need to be created early so they don't miss any events about requests/issues/etc.
         Logs.NetworkLog.NetworkLog.instance();
         SDK.FrameManager.FrameManager.instance();
@@ -366,6 +368,13 @@ export class MainImpl {
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance({ forceNew: true });
         const targetManager = SDK.TargetManager.TargetManager.instance();
         targetManager.addEventListener("SuspendStateChanged" /* SDK.TargetManager.Events.SUSPEND_STATE_CHANGED */, this.#onSuspendStateChanged.bind(this));
+        SDK.PageResourceLoader.PageResourceLoader.instance({
+            forceNew: true,
+            targetManager,
+            settings: Common.Settings.Settings.instance(),
+            userAgentProvider: SDK.NetworkManager.MultitargetNetworkManager.instance(),
+            loadOverride: null,
+        });
         Workspace.FileManager.FileManager.instance({ forceNew: true });
         Bindings.NetworkProject.NetworkProjectManager.instance();
         new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
@@ -782,7 +791,7 @@ export class MainMenuItem {
             i18nString(UIStrings.showConsoleDrawer));
         contextMenu.appendItemsAtLocation('mainMenu');
         const moreTools = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools), false, 'more-tools');
-        const viewExtensions = UI.ViewManager.getRegisteredViewExtensions();
+        const viewExtensions = UI.ViewManager.ViewManager.instance().getRegisteredViewExtensions();
         viewExtensions.sort((extension1, extension2) => {
             const title1 = extension1.title();
             const title2 = extension2.title();

@@ -12344,6 +12344,7 @@ import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
+import * as Highlighting from "./../../ui/components/highlighting/highlighting.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 
@@ -12528,9 +12529,9 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       for (let i = 0; i < ranges.length; ++i) {
         ranges[i].offset -= fileNameIndex + 1;
       }
-      UI20.UIUtils.highlightRangesWithStyleClass(titleElement, ranges, "highlight");
+      Highlighting.highlightRangesWithStyleClass(titleElement, ranges, "highlight");
     } else {
-      UI20.UIUtils.highlightRangesWithStyleClass(subtitleElement, ranges, "highlight");
+      Highlighting.highlightRangesWithStyleClass(subtitleElement, ranges, "highlight");
     }
   }
   renderSubtitleElement(element, text) {

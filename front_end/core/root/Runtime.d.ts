@@ -239,6 +239,9 @@ interface DevToolsIndividualRequestThrottling {
 export interface DevToolsEnableDurableMessages {
     enabled: boolean;
 }
+interface HostConfigAiAssistanceContextSelectionAgent {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -288,6 +291,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsStartingStyleDebugging: DevToolsStartingStyleDebugging;
     devToolsAiPromptApi: AiPromptApi;
     devToolsEnableDurableMessages: DevToolsEnableDurableMessages;
+    devToolsAiAssistanceContextSelectionAgent: HostConfigAiAssistanceContextSelectionAgent;
 }>;
 /**
  * The host configuration for this DevTools instance.

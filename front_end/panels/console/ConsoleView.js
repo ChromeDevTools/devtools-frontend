@@ -42,6 +42,7 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 // eslint-disable-next-line @devtools/es-modules-import
@@ -1350,7 +1351,7 @@ export class ConsoleView extends UI.Widget.VBox {
             matchRange = this.regexMatchRanges[this.currentMatchRangeIndex];
             const message = this.visibleViewMessages[matchRange.messageIndex];
             message.searchHighlightNode(matchRange.matchIndex)
-                .classList.remove(UI.UIUtils.highlightedCurrentSearchResultClassName);
+                .classList.remove(Highlighting.highlightedCurrentSearchResultClassName);
         }
         index = Platform.NumberUtilities.mod(index, this.regexMatchRanges.length);
         this.currentMatchRangeIndex = index;
@@ -1358,7 +1359,7 @@ export class ConsoleView extends UI.Widget.VBox {
         matchRange = this.regexMatchRanges[index];
         const message = this.visibleViewMessages[matchRange.messageIndex];
         const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
-        highlightNode.classList.add(UI.UIUtils.highlightedCurrentSearchResultClassName);
+        highlightNode.classList.add(Highlighting.highlightedCurrentSearchResultClassName);
         if (scrollIntoView) {
             this.viewport.scrollItemIntoView(matchRange.messageIndex);
             highlightNode.scrollIntoViewIfNeeded();

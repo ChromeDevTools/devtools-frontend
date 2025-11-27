@@ -476,6 +476,12 @@ export const generatedPropertyValues: {
     "grid-column-start": {
         values: string[];
     };
+    "grid-lanes-direction": {
+        values: string[];
+    };
+    "grid-lanes-fill": {
+        values: string[];
+    };
     "grid-row-end": {
         values: string[];
     };
@@ -585,12 +591,6 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "mask-type": {
-        values: string[];
-    };
-    "masonry-direction": {
-        values: string[];
-    };
-    "masonry-fill": {
         values: string[];
     };
     "math-shift": {

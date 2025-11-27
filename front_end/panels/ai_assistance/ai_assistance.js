@@ -35,6 +35,7 @@ var aiAssistancePanel_css_default = `/*
 
 .toolbar-container {
   display: flex;
+  flex-wrap: wrap;
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: 1px solid var(--sys-color-divider);
   flex: 0 0 auto;
@@ -5308,6 +5309,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
                 systemMessage.parts.pop();
               }
             }
+            break;
           }
         }
         if (!this.#conversation?.isReadOnly) {

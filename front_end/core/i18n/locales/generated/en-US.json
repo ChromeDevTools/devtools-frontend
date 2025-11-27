@@ -1310,6 +1310,9 @@
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future."
   },
+  "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
+    "message": "This is an example for showing the code required for a browser process reported deprecation."
+  },
   "generated/Deprecation.ts | Fledge": {
     "message": "The Protected Audience API is deprecated and will be removed in a future release."
   },
@@ -1397,9 +1400,6 @@
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen is deprecated. Please use Document.fullscreenEnabled instead."
   },
-  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
-    "message": "We're deprecating the API chrome.privacy.websites.privacySandboxEnabled, though it will remain active for backward compatibility until release M113. Instead, please use chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled and chrome.privacy.websites.adMeasurementEnabled. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Range.expand() is deprecated. Please use Selection.modify() instead."
   },
@@ -1423,6 +1423,12 @@
   },
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+  },
+  "generated/Deprecation.ts | SharedStorage": {
+    "message": "The Shared Storage API is deprecated and will be removed in a future release."
+  },
+  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
+    "message": "document.requestStorageAccessFor is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details."
   },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
@@ -9371,6 +9377,9 @@
   "panels/network/components/DirectSocketConnectionView.ts | general": {
     "message": "General"
   },
+  "panels/network/components/DirectSocketConnectionView.ts | joinedMulticastGroups": {
+    "message": "joinedMulticastGroups"
+  },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
     "message": "Open Info"
   },
@@ -16550,6 +16559,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Issue unavailable at this time"
   },
+  "ui/components/list/List.ts | edit": {
+    "message": "Edit"
+  },
+  "ui/components/list/List.ts | remove": {
+    "message": "Remove"
+  },
   "ui/components/markdown_view/CodeBlock.ts | code": {
     "message": "Code"
   },
@@ -17554,6 +17569,9 @@
   },
   "ui/legacy/TabbedPane.ts | moveTabRight": {
     "message": "Move right"
+  },
+  "ui/legacy/TabbedPane.ts | panelContainsAnnotation": {
+    "message": "This panel has one or more annotations"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Preview feature"

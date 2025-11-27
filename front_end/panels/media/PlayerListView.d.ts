@@ -1,25 +1,32 @@
+import '../../ui/components/icon_button/icon_button.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { MainView, TriggerDispatcher } from './MainView.js';
 import type { PlayerEvent } from './MediaModel.js';
-export interface PlayerStatus {
+interface PlayerStatus {
     playerTitle: string;
+    frameTitle: string;
     playerID: string;
     exists: boolean;
     playing: boolean;
     titleEdited: boolean;
+    iconName: string;
 }
-export interface PlayerStatusMapElement {
-    playerStatus: PlayerStatus;
-    playerTitleElement: HTMLElement | null;
+export interface ViewInput {
+    players: PlayerStatus[];
+    selectedPlayerID: string | null;
+    onPlayerClick: (playerID: string) => void;
+    onPlayerContextMenu: (playerID: string, event: Event) => void;
 }
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher {
-    private readonly playerEntryFragments;
+    #private;
+    private readonly playerStatuses;
     private readonly playerEntriesWithHostnameFrameTitle;
     private readonly mainContainer;
-    private currentlySelectedEntry;
-    constructor(mainContainer: MainView);
-    private createPlayerListEntry;
+    private currentlySelectedPlayerID;
+    constructor(mainContainer: MainView, view?: View);
+    performUpdate(): void;
     selectPlayerById(playerID: string): void;
     private selectPlayer;
     private rightClickPlayer;
@@ -34,3 +41,4 @@ export declare class PlayerListView extends UI.Widget.VBox implements TriggerDis
     onError(_playerID: string, _error: Protocol.Media.PlayerError): void;
     onMessage(_playerID: string, _message: Protocol.Media.PlayerMessage): void;
 }
+export {};

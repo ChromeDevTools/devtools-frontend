@@ -2,6 +2,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import type * as Platform from '../platform/platform.js';
+import { MultitargetNetworkManager } from './NetworkManager.js';
 import { PrimaryPageChangeType, type ResourceTreeFrame } from './ResourceTreeModel.js';
 import type { Target } from './Target.js';
 import { TargetManager } from './TargetManager.js';
@@ -33,6 +34,7 @@ export declare class ResourceKey {
     readonly key: string;
     constructor(key: string);
 }
+export type UserAgentProvider = Pick<MultitargetNetworkManager, 'currentUserAgent'>;
 /**
  * The page resource loader is a bottleneck for all DevTools-initiated resource loads. For each such load, it keeps a
  * `PageResource` object around that holds meta information. This can be as the basis for reporting to the user which
@@ -40,12 +42,12 @@ export declare class ResourceKey {
  */
 export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(targetManager: TargetManager, loadOverride: ((arg0: string) => Promise<{
+    constructor(targetManager: TargetManager, settings: Common.Settings.Settings, userAgentProvider: UserAgentProvider, loadOverride: ((arg0: string) => Promise<{
         success: boolean;
         content: string;
         errorDescription: Host.ResourceLoader.LoadErrorDescription;
     }>) | null, maxConcurrentLoads?: number);
-    static instance({ forceNew, targetManager, loadOverride, maxConcurrentLoads }?: {
+    static instance({ forceNew, targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads }?: {
         forceNew: boolean;
         loadOverride: (null | ((arg0: string) => Promise<{
             success: boolean;
@@ -53,6 +55,8 @@ export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapp
             errorDescription: Host.ResourceLoader.LoadErrorDescription;
         }>));
         targetManager?: TargetManager;
+        settings?: Common.Settings.Settings;
+        userAgentProvider?: UserAgentProvider;
         maxConcurrentLoads?: number;
     }): PageResourceLoader;
     static removeInstance(): void;
@@ -90,8 +94,9 @@ export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapp
     private dispatchLoad;
     private getDeveloperResourceScheme;
     private loadFromTarget;
+    private loadFromHostBindings;
+    getLoadThroughTargetSetting(): Common.Settings.Setting<boolean>;
 }
-export declare function getLoadThroughTargetSetting(): Common.Settings.Setting<boolean>;
 export declare const enum Events {
     UPDATE = "Update"
 }

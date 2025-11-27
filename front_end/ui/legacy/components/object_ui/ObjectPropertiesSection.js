@@ -34,6 +34,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
+import * as Highlighting from '../../../components/highlighting/highlighting.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import { Directives, html, nothing, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -901,7 +902,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         return this.#nameElement;
     }
     setSearchRegex(regex, additionalCssClassName) {
-        let cssClasses = UI.UIUtils.highlightedSearchResultClassName;
+        let cssClasses = Highlighting.highlightedSearchResultClassName;
         if (additionalCssClassName) {
             cssClasses += ' ' + additionalCssClassName;
         }
@@ -927,7 +928,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             match = regex.exec(content);
         }
         if (ranges.length) {
-            UI.UIUtils.highlightRangesWithStyleClass(element, ranges, cssClassName, this.highlightChanges);
+            Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.highlightChanges);
         }
     }
     showAllPropertiesElementSelected(element) {
@@ -951,7 +952,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.appendChild(showAllPropertiesButton);
     }
     revertHighlightChanges() {
-        UI.UIUtils.revertDomChanges(this.highlightChanges);
+        Highlighting.revertDomChanges(this.highlightChanges);
         this.highlightChanges = [];
     }
     async onpopulate() {

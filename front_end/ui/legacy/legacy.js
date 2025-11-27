@@ -634,7 +634,6 @@ __export(UIUtils_exports, {
   addPlatformClass: () => addPlatformClass,
   animateFunction: () => animateFunction,
   anotherProfilerActiveLabel: () => anotherProfilerActiveLabel,
-  applyDomChanges: () => applyDomChanges,
   asyncStackTraceLabel: () => asyncStackTraceLabel,
   beautifyFunctionName: () => beautifyFunctionName,
   bindCheckbox: () => bindCheckbox,
@@ -672,11 +671,6 @@ __export(UIUtils_exports, {
   getDevToolsBoundingElement: () => getDevToolsBoundingElement,
   getValueModificationDirection: () => getValueModificationDirection,
   handleElementValueModifications: () => handleElementValueModifications,
-  highlightRangesWithStyleClass: () => highlightRangesWithStyleClass,
-  highlightSearchResult: () => highlightSearchResult,
-  highlightSearchResults: () => highlightSearchResults,
-  highlightedCurrentSearchResultClassName: () => highlightedCurrentSearchResultClassName,
-  highlightedSearchResultClassName: () => highlightedSearchResultClassName,
   initializeUIUtils: () => initializeUIUtils,
   installComponentRootStyles: () => installComponentRootStyles,
   installDragHandle: () => installDragHandle,
@@ -694,7 +688,6 @@ __export(UIUtils_exports, {
   openLinkExternallyLabel: () => openLinkExternallyLabel,
   registerRenderer: () => registerRenderer,
   resetMeasuredScrollbarWidthForTest: () => resetMeasuredScrollbarWidthForTest,
-  revertDomChanges: () => revertDomChanges,
   runCSSAnimationOnce: () => runCSSAnimationOnce,
   setTitle: () => setTitle,
   startBatchUpdate: () => startBatchUpdate,
@@ -4116,6 +4109,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Geometry3 from "./../../models/geometry/geometry.js";
+import * as Annotations from "./../components/annotations/annotations.js";
 import * as Buttons2 from "./../components/buttons/buttons.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
 import * as IconButton2 from "./../components/icon_button/icon_button.js";
@@ -4644,6 +4638,16 @@ var tabbedPane_css_default = `/*
   }
 }
 
+.tabbed-pane-header-tab.ai .ai-icon {
+  background-color: var(--sys-color-primary);
+  border-radius: 50%;
+  margin-left: 4px;
+}
+
+.tabbed-pane-header-tab.ai .ai-icon devtools-icon {
+  color: var(--sys-color-on-primary);
+}
+
 /*# sourceURL=${import.meta.resolve("./tabbedPane.css")} */`;
 
 // gen/front_end/ui/legacy/Tooltip.js
@@ -4696,6 +4700,10 @@ var UIStrings4 = {
    * @description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
    */
   previewFeature: "Preview feature",
+  /**
+   * @description Indicates that a tab contains annotation(s).
+   */
+  panelContainsAnnotation: "This panel has one or more annotations",
   /**
    * @description Text to move a tab forwar.
    */
@@ -4762,6 +4770,9 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     this.currentDevicePixelRatio = window.devicePixelRatio;
     ZoomManager.instance().addEventListener("ZoomChanged", this.zoomChanged, this);
     this.makeTabSlider();
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      Annotations.AnnotationRepository.instance().addEventListener("AnnotationAdded", this.#onAnnotationAdded, this);
+    }
   }
   setAccessibleName(name) {
     setLabel(this.tabsElement, name);
@@ -5126,6 +5137,31 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
   async waitForTabElementUpdate() {
     this.performUpdate();
   }
+  updateTabAnnotationIcons() {
+    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+      return;
+    }
+    const annotations = Annotations.AnnotationRepository.instance();
+    if (!annotations) {
+      return;
+    }
+    for (const tab of this.tabs) {
+      let primaryType = -1;
+      let secondaryType = -1;
+      switch (tab.id) {
+        case "elements":
+          primaryType = Annotations.AnnotationType.ELEMENT_NODE;
+          secondaryType = Annotations.AnnotationType.STYLE_RULE;
+          break;
+        case "network":
+          primaryType = Annotations.AnnotationType.NETWORK_REQUEST;
+          secondaryType = Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS;
+          break;
+      }
+      const showTabAnnotationIcon = annotations.getAnnotationsByType(primaryType).length > 0 || annotations.getAnnotationsByType(secondaryType).length > 0;
+      this.setTabAnnotationIcon(tab.id, showTabAnnotationIcon);
+    }
+  }
   performUpdate() {
     if (!this.isShowing()) {
       return;
@@ -5152,6 +5188,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     this.updateWidths();
     this.updateTabsDropDown();
     this.updateTabSlider();
+    this.updateTabAnnotationIcons();
   }
   adjustToolbarWidth() {
     if (!this.#rightToolbar || !this.measuredDropDownButtonWidth) {
@@ -5452,6 +5489,15 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     this.allowTabReorder = allow;
     this.automaticReorder = automatic;
   }
+  setTabAnnotationIcon(id2, iconVisible) {
+    const tab = this.tabsById.get(id2);
+    if (tab) {
+      tab.tabAnnotationIcon = iconVisible;
+    }
+  }
+  #onAnnotationAdded() {
+    this.updateTabAnnotationIcons();
+  }
   keyDown(event) {
     if (!this.currentTab) {
       return;
@@ -5501,6 +5547,7 @@ var Events;
 var TabbedPaneTab = class {
   closeable;
   previewFeature = false;
+  #tabAnnotationIcon = false;
   tabbedPane;
   #id;
   #title;
@@ -5548,6 +5595,30 @@ var TabbedPaneTab = class {
   }
   get jslogContext() {
     return this.#jslogContext ?? (this.#id === "console-view" ? "console" : this.#id);
+  }
+  get tabAnnotationIcon() {
+    return this.#tabAnnotationIcon;
+  }
+  set tabAnnotationIcon(iconVisible) {
+    if (this.#tabAnnotationIcon === iconVisible) {
+      return;
+    }
+    this.#tabAnnotationIcon = iconVisible;
+    if (!this.#tabElement) {
+      return;
+    }
+    const iconElement = this.#tabElement.querySelector(".ai-icon");
+    if (iconVisible) {
+      if (!iconElement) {
+        const closeButton = this.#tabElement.querySelector(".close-button");
+        this.#tabElement.insertBefore(this.createTabAnnotationIcon(), closeButton);
+      }
+    } else {
+      iconElement?.remove();
+    }
+    this.#tabElement.classList.toggle("ai", iconVisible);
+    delete this.measuredWidth;
+    this.tabbedPane.requestUpdate();
   }
   isCloseable() {
     return this.closeable;
@@ -5665,6 +5736,11 @@ var TabbedPaneTab = class {
       tabElement.appendChild(previewIcon);
       tabElement.classList.add("preview");
     }
+    if (this.tabAnnotationIcon) {
+      const tabAnnotationIcon = this.createTabAnnotationIcon();
+      tabElement.appendChild(tabAnnotationIcon);
+      tabElement.classList.add("ai");
+    }
     if (this.closeable) {
       const closeIcon = this.createCloseIconButton();
       tabElement.appendChild(closeIcon);
@@ -5684,6 +5760,17 @@ var TabbedPaneTab = class {
       }
     }
     return tabElement;
+  }
+  createTabAnnotationIcon() {
+    const iconContainer = document.createElement("div");
+    iconContainer.classList.add("ai-icon");
+    const tabAnnotationIcon = new IconButton2.Icon.Icon();
+    tabAnnotationIcon.name = "smart-assistant";
+    tabAnnotationIcon.classList.add("small");
+    iconContainer.appendChild(tabAnnotationIcon);
+    iconContainer.setAttribute("title", i18nString4(UIStrings4.panelContainsAnnotation));
+    iconContainer.setAttribute("aria-label", i18nString4(UIStrings4.panelContainsAnnotation));
+    return iconContainer;
   }
   createCloseIconButton() {
     const closeButton = new Buttons2.Button.Button();
@@ -5857,7 +5944,6 @@ __export(ViewManager_exports, {
   defaultOptionsForTabs: () => defaultOptionsForTabs,
   getLocalizedViewLocationCategory: () => getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers: () => getRegisteredLocationResolvers,
-  getRegisteredViewExtensions: () => getRegisteredViewExtensions,
   maybeRemoveViewExtension: () => maybeRemoveViewExtension,
   registerLocationResolver: () => registerLocationResolver,
   registerViewExtension: () => registerViewExtension,
@@ -5999,26 +6085,19 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var registeredViewExtensions = [];
-var viewIdSet = /* @__PURE__ */ new Set();
+var registeredViewExtensions = /* @__PURE__ */ new Map();
 function registerViewExtension(registration) {
   const viewId = registration.id;
-  if (viewIdSet.has(viewId)) {
+  if (registeredViewExtensions.has(viewId)) {
     throw new Error(`Duplicate view id '${viewId}'`);
   }
-  viewIdSet.add(viewId);
-  registeredViewExtensions.push(new PreRegisteredView(registration));
+  registeredViewExtensions.set(viewId, registration);
 }
 function getRegisteredViewExtensions() {
-  return registeredViewExtensions.filter((view) => Root2.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment(), condition: view.condition() }));
+  return registeredViewExtensions.values().filter((view) => Root2.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })).toArray();
 }
 function maybeRemoveViewExtension(viewId) {
-  const viewIndex = registeredViewExtensions.findIndex((view) => view.viewId() === viewId);
-  if (viewIndex < 0 || !viewIdSet.delete(viewId)) {
-    return false;
-  }
-  registeredViewExtensions.splice(viewIndex, 1);
-  return true;
+  return registeredViewExtensions.delete(viewId);
 }
 var registeredLocationResolvers = [];
 var viewLocationNameSet = /* @__PURE__ */ new Set();
@@ -6034,10 +6113,9 @@ function getRegisteredLocationResolvers() {
   return registeredLocationResolvers;
 }
 function resetViewRegistration() {
-  registeredViewExtensions.length = 0;
+  registeredViewExtensions.clear();
   registeredLocationResolvers.length = 0;
   viewLocationNameSet.clear();
-  viewIdSet.clear();
 }
 function getLocalizedViewLocationCategory(category) {
   switch (category) {
@@ -6076,9 +6154,11 @@ var defaultOptionsForTabs = {
 };
 var PreRegisteredView = class {
   viewRegistration;
+  universe;
   widgetPromise;
-  constructor(viewRegistration) {
+  constructor(viewRegistration, universe) {
     this.viewRegistration = viewRegistration;
+    this.universe = universe;
     this.widgetPromise = null;
   }
   title() {
@@ -6132,7 +6212,10 @@ var PreRegisteredView = class {
   }
   widget() {
     if (this.widgetPromise === null) {
-      this.widgetPromise = this.viewRegistration.loadView();
+      if (!this.universe) {
+        throw new Error("Creating views via ViewManager requires a Foundation.Universe");
+      }
+      this.widgetPromise = this.viewRegistration.loadView(this.universe);
     }
     return this.widgetPromise;
   }
@@ -6155,15 +6238,18 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
   views = /* @__PURE__ */ new Map();
   locationNameByViewId = /* @__PURE__ */ new Map();
   locationOverrideSetting;
-  constructor() {
+  preRegisteredViews = [];
+  // TODO(crbug.com/458180550): Pass the universe unconditionally once tests no longer rely
+  //   on `instance()` to create ViewManagers lazily in after/afterEach blocks.
+  constructor(universe) {
     super();
     this.locationOverrideSetting = Common9.Settings.Settings.instance().createSetting("views-location-override", {});
     const preferredExtensionLocations = this.locationOverrideSetting.get();
     const viewsByLocation = /* @__PURE__ */ new Map();
     for (const view of getRegisteredViewExtensions()) {
-      const location = view.location() || "none";
+      const location = view.location || "none";
       const views = viewsByLocation.get(location) || [];
-      views.push(view);
+      views.push(new PreRegisteredView(view, universe));
       viewsByLocation.set(location, views);
     }
     let sortedViewExtensions = [];
@@ -6188,14 +6274,15 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
         throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
+      this.preRegisteredViews.push(view);
       const locationName = preferredExtensionLocations[viewId] || location;
       this.locationNameByViewId.set(viewId, locationName);
     }
   }
   static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
+    const { forceNew, universe } = opts;
     if (!viewManagerInstance || forceNew) {
-      viewManagerInstance = new _ViewManager();
+      viewManagerInstance = new _ViewManager(universe);
     }
     return viewManagerInstance;
   }
@@ -6211,6 +6298,9 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
       toolbar4.appendToolbarItem(item8);
     }
     return toolbar4;
+  }
+  getRegisteredViewExtensions() {
+    return this.preRegisteredViews;
   }
   locationNameForViewId(viewId) {
     const locationName = this.locationNameByViewId.get(viewId);
@@ -12158,7 +12248,6 @@ import * as Host7 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
-import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
 import * as IconButton7 from "./../components/icon_button/icon_button.js";
 import * as Lit2 from "./../lit/lit.js";
@@ -13725,8 +13814,6 @@ var UIStrings11 = {
 };
 var str_11 = i18n21.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings11);
 var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
-var highlightedSearchResultClassName = "highlighted-search-result";
-var highlightedCurrentSearchResultClassName = "current-search-result";
 function installDragHandle(element, elementDragStart2, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, mouseDownPreventDefault = true) {
   function onMouseDown(event) {
     const dragHandler = new DragHandler();
@@ -14183,13 +14270,6 @@ var ElementFocusRestorer = class {
     this.element = null;
   }
 };
-function highlightSearchResult(element, offset, length, domChanges) {
-  const result = highlightSearchResults(element, [new TextUtils2.TextRange.SourceRange(offset, length)], domChanges);
-  return result.length ? result[0] : null;
-}
-function highlightSearchResults(element, resultRanges, changes) {
-  return highlightRangesWithStyleClass(element, resultRanges, highlightedSearchResultClassName, changes);
-}
 function runCSSAnimationOnce(element, className) {
   function animationEndCallback() {
     element.classList.remove(className);
@@ -14202,144 +14282,6 @@ function runCSSAnimationOnce(element, className) {
   element.addEventListener("webkitAnimationEnd", animationEndCallback, false);
   element.addEventListener("animationcancel", animationEndCallback, false);
   element.classList.add(className);
-}
-function highlightRangesWithStyleClass(element, resultRanges, styleClass, changes) {
-  changes = changes || [];
-  const highlightNodes = [];
-  const textNodes = element.childTextNodes();
-  const lineText = textNodes.map(function(node) {
-    return node.textContent;
-  }).join("");
-  const ownerDocument = element.ownerDocument;
-  if (textNodes.length === 0) {
-    return highlightNodes;
-  }
-  const nodeRanges = [];
-  let rangeEndOffset = 0;
-  for (const textNode of textNodes) {
-    const range = new TextUtils2.TextRange.SourceRange(rangeEndOffset, textNode.textContent ? textNode.textContent.length : 0);
-    rangeEndOffset = range.offset + range.length;
-    nodeRanges.push(range);
-  }
-  let startIndex = 0;
-  for (let i = 0; i < resultRanges.length; ++i) {
-    const startOffset = resultRanges[i].offset;
-    const endOffset = startOffset + resultRanges[i].length;
-    while (startIndex < textNodes.length && nodeRanges[startIndex].offset + nodeRanges[startIndex].length <= startOffset) {
-      startIndex++;
-    }
-    let endIndex = startIndex;
-    while (endIndex < textNodes.length && nodeRanges[endIndex].offset + nodeRanges[endIndex].length < endOffset) {
-      endIndex++;
-    }
-    if (endIndex === textNodes.length) {
-      break;
-    }
-    const highlightNode = ownerDocument.createElement("span");
-    highlightNode.className = styleClass;
-    highlightNode.textContent = lineText.substring(startOffset, endOffset);
-    const lastTextNode = textNodes[endIndex];
-    const lastText = lastTextNode.textContent || "";
-    lastTextNode.textContent = lastText.substring(endOffset - nodeRanges[endIndex].offset);
-    changes.push({
-      node: lastTextNode,
-      type: "changed",
-      oldText: lastText,
-      newText: lastTextNode.textContent,
-      nextSibling: void 0,
-      parent: void 0
-    });
-    if (startIndex === endIndex && lastTextNode.parentElement) {
-      lastTextNode.parentElement.insertBefore(highlightNode, lastTextNode);
-      changes.push({
-        node: highlightNode,
-        type: "added",
-        nextSibling: lastTextNode,
-        parent: lastTextNode.parentElement,
-        oldText: void 0,
-        newText: void 0
-      });
-      highlightNodes.push(highlightNode);
-      const prefixNode = ownerDocument.createTextNode(lastText.substring(0, startOffset - nodeRanges[startIndex].offset));
-      lastTextNode.parentElement.insertBefore(prefixNode, highlightNode);
-      changes.push({
-        node: prefixNode,
-        type: "added",
-        nextSibling: highlightNode,
-        parent: lastTextNode.parentElement,
-        oldText: void 0,
-        newText: void 0
-      });
-    } else {
-      const firstTextNode = textNodes[startIndex];
-      const firstText = firstTextNode.textContent || "";
-      const anchorElement = firstTextNode.nextSibling;
-      if (firstTextNode.parentElement) {
-        firstTextNode.parentElement.insertBefore(highlightNode, anchorElement);
-        changes.push({
-          node: highlightNode,
-          type: "added",
-          nextSibling: anchorElement || void 0,
-          parent: firstTextNode.parentElement,
-          oldText: void 0,
-          newText: void 0
-        });
-        highlightNodes.push(highlightNode);
-      }
-      firstTextNode.textContent = firstText.substring(0, startOffset - nodeRanges[startIndex].offset);
-      changes.push({
-        node: firstTextNode,
-        type: "changed",
-        oldText: firstText,
-        newText: firstTextNode.textContent,
-        nextSibling: void 0,
-        parent: void 0
-      });
-      for (let j = startIndex + 1; j < endIndex; j++) {
-        const textNode = textNodes[j];
-        const text = textNode.textContent;
-        textNode.textContent = "";
-        changes.push({
-          node: textNode,
-          type: "changed",
-          oldText: text || void 0,
-          newText: textNode.textContent,
-          nextSibling: void 0,
-          parent: void 0
-        });
-      }
-    }
-    startIndex = endIndex;
-    nodeRanges[startIndex].offset = endOffset;
-    nodeRanges[startIndex].length = lastTextNode.textContent.length;
-  }
-  return highlightNodes;
-}
-function applyDomChanges(domChanges) {
-  for (let i = 0, size = domChanges.length; i < size; ++i) {
-    const entry = domChanges[i];
-    switch (entry.type) {
-      case "added":
-        entry.parent?.insertBefore(entry.node, entry.nextSibling ?? null);
-        break;
-      case "changed":
-        entry.node.textContent = entry.newText ?? null;
-        break;
-    }
-  }
-}
-function revertDomChanges(domChanges) {
-  for (let i = domChanges.length - 1; i >= 0; --i) {
-    const entry = domChanges[i];
-    switch (entry.type) {
-      case "added":
-        entry.node.remove();
-        break;
-      case "changed":
-        entry.node.textContent = entry.oldText ?? null;
-        break;
-    }
-  }
 }
 function measurePreferredSize(element, containerElement) {
   const oldParent = element.parentElement;

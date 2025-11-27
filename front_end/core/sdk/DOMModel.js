@@ -1506,6 +1506,9 @@ class DOMDispatcher {
     constructor(domModel) {
         this.#domModel = domModel;
     }
+    adoptedStyleSheetsModified(_params) {
+        // TODO: implementation
+    }
     documentUpdated() {
         this.#domModel.documentUpdated();
     }

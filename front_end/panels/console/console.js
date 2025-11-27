@@ -776,6 +776,7 @@ import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
+import * as Highlighting from "./../../ui/components/highlighting/highlighting.js";
 import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as RequestLinkIcon from "./../../ui/components/request_link_icon/request_link_icon.js";
@@ -3144,7 +3145,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   setSearchRegex(regex) {
     if (this.searchHighlightNodeChanges?.length) {
-      UI2.UIUtils.revertDomChanges(this.searchHighlightNodeChanges);
+      Highlighting.revertDomChanges(this.searchHighlightNodeChanges);
     }
     this.searchRegexInternal = regex;
     this.searchHighlightNodes = [];
@@ -3160,7 +3161,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       sourceRanges.push(new TextUtils3.TextRange.SourceRange(match.index, match[0].length));
     }
     if (sourceRanges.length) {
-      this.searchHighlightNodes = UI2.UIUtils.highlightSearchResults(this.contentElement(), sourceRanges, this.searchHighlightNodeChanges);
+      this.searchHighlightNodes = Highlighting.highlightRangesWithStyleClass(this.contentElement(), sourceRanges, Highlighting.highlightedSearchResultClassName, this.searchHighlightNodeChanges);
     }
   }
   searchRegex() {
@@ -5724,6 +5725,7 @@ import * as IssuesManager from "./../../models/issues_manager/issues_manager.js"
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
+import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
 import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter2 from "./../../ui/components/issue_counter/issue_counter.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
@@ -6985,7 +6987,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     if (this.currentMatchRangeIndex >= 0) {
       matchRange = this.regexMatchRanges[this.currentMatchRangeIndex];
       const message2 = this.visibleViewMessages[matchRange.messageIndex];
-      message2.searchHighlightNode(matchRange.matchIndex).classList.remove(UI7.UIUtils.highlightedCurrentSearchResultClassName);
+      message2.searchHighlightNode(matchRange.matchIndex).classList.remove(Highlighting2.highlightedCurrentSearchResultClassName);
     }
     index = Platform4.NumberUtilities.mod(index, this.regexMatchRanges.length);
     this.currentMatchRangeIndex = index;
@@ -6993,7 +6995,7 @@ var ConsoleView = class _ConsoleView extends UI7.Widget.VBox {
     matchRange = this.regexMatchRanges[index];
     const message = this.visibleViewMessages[matchRange.messageIndex];
     const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
-    highlightNode.classList.add(UI7.UIUtils.highlightedCurrentSearchResultClassName);
+    highlightNode.classList.add(Highlighting2.highlightedCurrentSearchResultClassName);
     if (scrollIntoView) {
       this.viewport.scrollItemIntoView(matchRange.messageIndex);
       highlightNode.scrollIntoViewIfNeeded();

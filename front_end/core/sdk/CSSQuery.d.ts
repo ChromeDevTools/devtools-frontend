@@ -6,7 +6,7 @@ type CSSQueryPayload = Protocol.CSS.CSSMedia | Protocol.CSS.CSSContainerQuery | 
 export declare abstract class CSSQuery {
     text: string;
     range?: TextUtils.TextRange.TextRange | null;
-    styleSheetId?: Protocol.CSS.StyleSheetId;
+    styleSheetId?: Protocol.DOM.StyleSheetId;
     protected cssModel: CSSModel;
     constructor(cssModel: CSSModel);
     protected abstract reinitialize(payload: CSSQueryPayload): void;

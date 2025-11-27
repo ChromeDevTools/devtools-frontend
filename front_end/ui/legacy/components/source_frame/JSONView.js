@@ -5,6 +5,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
+import * as Highlighting from '../../../components/highlighting/highlighting.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -148,7 +149,7 @@ export class JSONView extends UI.Widget.VBox {
         const newFocusElement = this.currentSearchTreeElements[index];
         if (newFocusElement) {
             this.updateSearchIndex(index);
-            newFocusElement.setSearchRegex(this.searchRegex, UI.UIUtils.highlightedCurrentSearchResultClassName);
+            newFocusElement.setSearchRegex(this.searchRegex, Highlighting.highlightedCurrentSearchResultClassName);
             newFocusElement.reveal();
         }
         else {

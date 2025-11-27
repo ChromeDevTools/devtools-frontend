@@ -565,6 +565,8 @@ var generatedProperties = [
       "grid-auto-rows",
       "grid-column-end",
       "grid-column-start",
+      "grid-lanes-direction",
+      "grid-lanes-fill",
       "grid-row-end",
       "grid-row-start",
       "grid-template-areas",
@@ -621,8 +623,6 @@ var generatedProperties = [
       "mask-repeat",
       "mask-size",
       "mask-type",
-      "masonry-direction",
-      "masonry-fill",
       "math-depth",
       "math-shift",
       "math-style",
@@ -2709,15 +2709,31 @@ var generatedProperties = [
     "longhands": [
       "grid-template-areas",
       "grid-template-columns",
-      "masonry-direction",
-      "masonry-fill"
+      "grid-lanes-direction",
+      "grid-lanes-fill"
     ],
     "name": "grid-lanes"
   },
   {
+    "keywords": [
+      "row",
+      "row-reverse",
+      "column",
+      "column-reverse"
+    ],
+    "name": "grid-lanes-direction"
+  },
+  {
+    "keywords": [
+      "normal",
+      "reverse"
+    ],
+    "name": "grid-lanes-fill"
+  },
+  {
     "longhands": [
-      "masonry-direction",
-      "masonry-fill"
+      "grid-lanes-direction",
+      "grid-lanes-fill"
     ],
     "name": "grid-lanes-flow"
   },
@@ -3164,22 +3180,6 @@ var generatedProperties = [
       "alpha"
     ],
     "name": "mask-type"
-  },
-  {
-    "keywords": [
-      "row",
-      "row-reverse",
-      "column",
-      "column-reverse"
-    ],
-    "name": "masonry-direction"
-  },
-  {
-    "keywords": [
-      "normal",
-      "reverse"
-    ],
-    "name": "masonry-fill"
   },
   {
     "inherited": true,
@@ -6028,6 +6028,20 @@ var generatedPropertyValues = {
       "auto"
     ]
   },
+  "grid-lanes-direction": {
+    "values": [
+      "row",
+      "row-reverse",
+      "column",
+      "column-reverse"
+    ]
+  },
+  "grid-lanes-fill": {
+    "values": [
+      "normal",
+      "reverse"
+    ]
+  },
   "grid-row-end": {
     "values": [
       "auto"
@@ -6244,20 +6258,6 @@ var generatedPropertyValues = {
     "values": [
       "luminance",
       "alpha"
-    ]
-  },
-  "masonry-direction": {
-    "values": [
-      "row",
-      "row-reverse",
-      "column",
-      "column-reverse"
-    ]
-  },
-  "masonry-fill": {
-    "values": [
-      "normal",
-      "reverse"
     ]
   },
   "math-shift": {
@@ -9219,7 +9219,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root9 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -9513,7 +9513,6 @@ __export(NetworkManager_exports, {
 });
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Common5 from "./../common/common.js";
-import * as Host2 from "./../host/host.js";
 import * as i18n from "./../i18n/i18n.js";
 import * as Platform3 from "./../platform/platform.js";
 import * as Root2 from "./../root/root.js";
@@ -12012,20 +12011,6 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
     }
     return certificate.tableNames;
   }
-  async loadResource(url) {
-    const headers = {};
-    const currentUserAgent = this.currentUserAgent();
-    if (currentUserAgent) {
-      headers["User-Agent"] = currentUserAgent;
-    }
-    if (Common5.Settings.Settings.instance().moduleSetting("cache-disabled").get()) {
-      headers["Cache-Control"] = "no-cache";
-    }
-    const allowRemoteFilePaths = Common5.Settings.Settings.instance().moduleSetting("network.enable-remote-file-loading").get();
-    return await new Promise((resolve) => Host2.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
-      resolve({ success, content, errorDescription });
-    }, allowRemoteFilePaths));
-  }
   appliedRequestConditions(requestInternal) {
     if (!requestInternal.appliedNetworkConditionsId) {
       return void 0;
@@ -12320,7 +12305,7 @@ __export(DOMModel_exports, {
 });
 import * as Common21 from "./../common/common.js";
 import * as Platform13 from "./../platform/platform.js";
-import * as Root8 from "./../root/root.js";
+import * as Root9 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -12333,10 +12318,10 @@ __export(CSSModel_exports, {
   InlineStyleResult: () => InlineStyleResult
 });
 import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
-import * as Common14 from "./../common/common.js";
-import * as Host4 from "./../host/host.js";
+import * as Common13 from "./../common/common.js";
+import * as Host3 from "./../host/host.js";
 import * as Platform10 from "./../platform/platform.js";
-import * as Root5 from "./../root/root.js";
+import * as Root6 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSFontFace.js
 var CSSFontFace_exports = {};
@@ -17051,206 +17036,28 @@ var SourceMapManager_exports = {};
 __export(SourceMapManager_exports, {
   Events: () => Events4,
   SourceMapManager: () => SourceMapManager,
-  loadSourceMap: () => loadSourceMap,
   tryLoadSourceMap: () => tryLoadSourceMap
 });
-import * as Common13 from "./../common/common.js";
+import * as Common12 from "./../common/common.js";
 import * as Platform9 from "./../platform/platform.js";
 
 // gen/front_end/core/sdk/PageResourceLoader.js
 var PageResourceLoader_exports = {};
 __export(PageResourceLoader_exports, {
   PageResourceLoader: () => PageResourceLoader,
-  ResourceKey: () => ResourceKey,
-  getLoadThroughTargetSetting: () => getLoadThroughTargetSetting
+  ResourceKey: () => ResourceKey
 });
-import * as Common11 from "./../common/common.js";
-import * as Host3 from "./../host/host.js";
+import * as Common10 from "./../common/common.js";
+import * as Host2 from "./../host/host.js";
 import * as i18n5 from "./../i18n/i18n.js";
-
-// gen/front_end/core/sdk/FrameManager.js
-var FrameManager_exports = {};
-__export(FrameManager_exports, {
-  FrameManager: () => FrameManager
-});
-import * as Common9 from "./../common/common.js";
-var frameManagerInstance = null;
-var FrameManager = class _FrameManager extends Common9.ObjectWrapper.ObjectWrapper {
-  #eventListeners = /* @__PURE__ */ new WeakMap();
-  // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
-  // (OOPIFs are usually first attached to a new target and then detached from their old target,
-  // therefore being contained in 2 models for a short period of time.)
-  #frames = /* @__PURE__ */ new Map();
-  #framesForTarget = /* @__PURE__ */ new Map();
-  #outermostFrame = null;
-  #transferringFramesDataCache = /* @__PURE__ */ new Map();
-  #awaitedFrames = /* @__PURE__ */ new Map();
-  constructor() {
-    super();
-    TargetManager.instance().observeModels(ResourceTreeModel, this);
-  }
-  static instance({ forceNew } = { forceNew: false }) {
-    if (!frameManagerInstance || forceNew) {
-      frameManagerInstance = new _FrameManager();
-    }
-    return frameManagerInstance;
-  }
-  static removeInstance() {
-    frameManagerInstance = null;
-  }
-  modelAdded(resourceTreeModel) {
-    const addListener = resourceTreeModel.addEventListener(Events3.FrameAdded, this.frameAdded, this);
-    const detachListener = resourceTreeModel.addEventListener(Events3.FrameDetached, this.frameDetached, this);
-    const navigatedListener = resourceTreeModel.addEventListener(Events3.FrameNavigated, this.frameNavigated, this);
-    const resourceAddedListener = resourceTreeModel.addEventListener(Events3.ResourceAdded, this.resourceAdded, this);
-    this.#eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
-    this.#framesForTarget.set(resourceTreeModel.target().id(), /* @__PURE__ */ new Set());
-  }
-  modelRemoved(resourceTreeModel) {
-    const listeners = this.#eventListeners.get(resourceTreeModel);
-    if (listeners) {
-      Common9.EventTarget.removeEventListeners(listeners);
-    }
-    const frameSet = this.#framesForTarget.get(resourceTreeModel.target().id());
-    if (frameSet) {
-      for (const frameId of frameSet) {
-        this.decreaseOrRemoveFrame(frameId);
-      }
-    }
-    this.#framesForTarget.delete(resourceTreeModel.target().id());
-  }
-  frameAdded(event) {
-    const frame = event.data;
-    const frameData = this.#frames.get(frame.id);
-    if (frameData) {
-      frame.setCreationStackTrace(frameData.frame.getCreationStackTraceData());
-      this.#frames.set(frame.id, { frame, count: frameData.count + 1 });
-    } else {
-      const cachedFrameAttributes = this.#transferringFramesDataCache.get(frame.id);
-      if (cachedFrameAttributes?.creationStackTrace && cachedFrameAttributes?.creationStackTraceTarget) {
-        frame.setCreationStackTrace({
-          creationStackTrace: cachedFrameAttributes.creationStackTrace,
-          creationStackTraceTarget: cachedFrameAttributes.creationStackTraceTarget
-        });
-      }
-      this.#frames.set(frame.id, { frame, count: 1 });
-      this.#transferringFramesDataCache.delete(frame.id);
-    }
-    this.resetOutermostFrame();
-    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
-    if (frameSet) {
-      frameSet.add(frame.id);
-    }
-    this.dispatchEventToListeners("FrameAddedToTarget", { frame });
-    this.resolveAwaitedFrame(frame);
-  }
-  frameDetached(event) {
-    const { frame, isSwap } = event.data;
-    this.decreaseOrRemoveFrame(frame.id);
-    if (isSwap && !this.#frames.get(frame.id)) {
-      const traceData = frame.getCreationStackTraceData();
-      const cachedFrameAttributes = {
-        ...traceData.creationStackTrace && { creationStackTrace: traceData.creationStackTrace },
-        ...traceData.creationStackTrace && { creationStackTraceTarget: traceData.creationStackTraceTarget }
-      };
-      this.#transferringFramesDataCache.set(frame.id, cachedFrameAttributes);
-    }
-    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
-    if (frameSet) {
-      frameSet.delete(frame.id);
-    }
-  }
-  frameNavigated(event) {
-    const frame = event.data;
-    this.dispatchEventToListeners("FrameNavigated", { frame });
-    if (frame.isOutermostFrame()) {
-      this.dispatchEventToListeners("OutermostFrameNavigated", { frame });
-    }
-  }
-  resourceAdded(event) {
-    this.dispatchEventToListeners("ResourceAdded", { resource: event.data });
-  }
-  decreaseOrRemoveFrame(frameId) {
-    const frameData = this.#frames.get(frameId);
-    if (frameData) {
-      if (frameData.count === 1) {
-        this.#frames.delete(frameId);
-        this.resetOutermostFrame();
-        this.dispatchEventToListeners("FrameRemoved", { frameId });
-      } else {
-        frameData.count--;
-      }
-    }
-  }
-  /**
-   * Looks for the outermost frame in `#frames` and sets `#outermostFrame` accordingly.
-   *
-   * Important: This method needs to be called everytime `#frames` is updated.
-   */
-  resetOutermostFrame() {
-    const outermostFrames = this.getAllFrames().filter((frame) => frame.isOutermostFrame());
-    this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
-  }
-  /**
-   * Returns the ResourceTreeFrame with a given frameId.
-   * When a frame is being detached a new ResourceTreeFrame but with the same
-   * frameId is created. Consequently getFrame() will return a different
-   * ResourceTreeFrame after detachment. Callers of getFrame() should therefore
-   * immediately use the function return value and not store it for later use.
-   */
-  getFrame(frameId) {
-    const frameData = this.#frames.get(frameId);
-    if (frameData) {
-      return frameData.frame;
-    }
-    return null;
-  }
-  getAllFrames() {
-    return Array.from(this.#frames.values(), (frameData) => frameData.frame);
-  }
-  getOutermostFrame() {
-    return this.#outermostFrame;
-  }
-  async getOrWaitForFrame(frameId, notInTarget) {
-    const frame = this.getFrame(frameId);
-    if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
-      return frame;
-    }
-    return await new Promise((resolve) => {
-      const waiting = this.#awaitedFrames.get(frameId);
-      if (waiting) {
-        waiting.push({ notInTarget, resolve });
-      } else {
-        this.#awaitedFrames.set(frameId, [{ notInTarget, resolve }]);
-      }
-    });
-  }
-  resolveAwaitedFrame(frame) {
-    const waiting = this.#awaitedFrames.get(frame.id);
-    if (!waiting) {
-      return;
-    }
-    const newWaiting = waiting.filter(({ notInTarget, resolve }) => {
-      if (!notInTarget || notInTarget !== frame.resourceTreeModel().target()) {
-        resolve(frame);
-        return false;
-      }
-      return true;
-    });
-    if (newWaiting.length > 0) {
-      this.#awaitedFrames.set(frame.id, newWaiting);
-    } else {
-      this.#awaitedFrames.delete(frame.id);
-    }
-  }
-};
+import * as Root4 from "./../root/root.js";
 
 // gen/front_end/core/sdk/IOModel.js
 var IOModel_exports = {};
 __export(IOModel_exports, {
   IOModel: () => IOModel
 });
-import * as Common10 from "./../common/common.js";
+import * as Common9 from "./../common/common.js";
 
 // gen/front_end/core/sdk/RemoteObject.js
 var RemoteObject_exports = {};
@@ -18152,7 +17959,7 @@ var IOModel = class extends SDKModel {
       return null;
     }
     if (result.base64Encoded) {
-      return Common10.Base64.decode(result.data);
+      return Common9.Base64.decode(result.data);
     }
     return result.data;
   }
@@ -18233,33 +18040,36 @@ var ResourceKey = class {
     this.key = key;
   }
 };
-var pageResourceLoader = null;
-var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrapper.ObjectWrapper {
+var PageResourceLoader = class _PageResourceLoader extends Common10.ObjectWrapper.ObjectWrapper {
   #targetManager;
+  #settings;
+  #userAgentProvider;
   #currentlyLoading = 0;
   #currentlyLoadingPerTarget = /* @__PURE__ */ new Map();
   #maxConcurrentLoads;
   #pageResources = /* @__PURE__ */ new Map();
   #queuedLoads = [];
   #loadOverride;
-  constructor(targetManager, loadOverride, maxConcurrentLoads = 500) {
+  constructor(targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads = 500) {
     super();
     this.#targetManager = targetManager;
+    this.#settings = settings;
+    this.#userAgentProvider = userAgentProvider;
     this.#maxConcurrentLoads = maxConcurrentLoads;
     this.#targetManager.addModelListener(ResourceTreeModel, Events3.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.#loadOverride = loadOverride;
   }
-  static instance({ forceNew, targetManager, loadOverride, maxConcurrentLoads } = {
+  static instance({ forceNew, targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads } = {
     forceNew: false,
     loadOverride: null
   }) {
-    if (!pageResourceLoader || forceNew) {
-      pageResourceLoader = new _PageResourceLoader(targetManager ?? TargetManager.instance(), loadOverride, maxConcurrentLoads);
+    if (forceNew) {
+      Root4.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common10.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
     }
-    return pageResourceLoader;
+    return Root4.DevToolsContext.globalInstance().get(_PageResourceLoader);
   }
   static removeInstance() {
-    pageResourceLoader = null;
+    Root4.DevToolsContext.globalInstance().delete(_PageResourceLoader);
   }
   onPrimaryPageChanged(event) {
     const { frame: mainFrame, type } = event.data;
@@ -18403,31 +18213,20 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
     if (this.#loadOverride) {
       return await this.#loadOverride(url);
     }
-    const parsedURL = new Common11.ParsedURL.ParsedURL(url);
-    const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools";
-    Host3.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
+    const parsedURL = new Common10.ParsedURL.ParsedURL(url);
+    const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target;
+    Host2.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
       try {
-        if (initiator.target) {
-          Host3.userMetrics.developerResourceLoaded(
-            0
-            /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */
-          );
-          const result2 = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
-          return result2;
-        }
-        const frame = FrameManager.instance().getFrame(initiator.frameId);
-        if (frame) {
-          Host3.userMetrics.developerResourceLoaded(
-            1
-            /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_FRAME */
-          );
-          const result2 = await this.loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url, isBinary);
-          return result2;
-        }
+        Host2.userMetrics.developerResourceLoaded(
+          0
+          /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */
+        );
+        const result2 = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
+        return result2;
       } catch (e) {
         if (e instanceof Error) {
-          Host3.userMetrics.developerResourceLoaded(
+          Host2.userMetrics.developerResourceLoaded(
             2
             /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE */
           );
@@ -18440,17 +18239,17 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
           }
         }
       }
-      Host3.userMetrics.developerResourceLoaded(
+      Host2.userMetrics.developerResourceLoaded(
         3
         /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK */
       );
     } else {
-      const code = getLoadThroughTargetSetting().get() ? 6 : 5;
-      Host3.userMetrics.developerResourceLoaded(code);
+      const code = this.getLoadThroughTargetSetting().get() ? 6 : 5;
+      Host2.userMetrics.developerResourceLoaded(code);
     }
-    const result = await MultitargetNetworkManager.instance().loadResource(url);
+    const result = await this.loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
-      Host3.userMetrics.developerResourceLoaded(
+      Host2.userMetrics.developerResourceLoaded(
         7
         /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE */
       );
@@ -18482,7 +18281,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
   async loadFromTarget(target, frameId, url, isBinary) {
     const networkManager = target.model(NetworkManager);
     const ioModel = target.model(IOModel);
-    const disableCache = Common11.Settings.Settings.instance().moduleSetting("cache-disabled").get();
+    const disableCache = this.#settings.moduleSetting("cache-disabled").get();
     const resource = await networkManager.loadNetworkResource(frameId, url, { disableCache, includeCredentials: true });
     try {
       const content = resource.stream ? isBinary ? await ioModel.readToBuffer(resource.stream) : await ioModel.readToString(resource.stream) : "";
@@ -18493,7 +18292,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
           statusCode: resource.httpStatusCode || 0,
           netError: resource.netError,
           netErrorName: resource.netErrorName,
-          message: Host3.ResourceLoader.netErrorToMessage(resource.netError, resource.httpStatusCode, resource.netErrorName) || "",
+          message: Host2.ResourceLoader.netErrorToMessage(resource.netError, resource.httpStatusCode, resource.netErrorName) || "",
           urlValid: void 0
         }
       };
@@ -18503,10 +18302,24 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
       }
     }
   }
+  async loadFromHostBindings(url) {
+    const headers = {};
+    const currentUserAgent = this.#userAgentProvider.currentUserAgent();
+    if (currentUserAgent) {
+      headers["User-Agent"] = currentUserAgent;
+    }
+    if (this.#settings.moduleSetting("cache-disabled").get()) {
+      headers["Cache-Control"] = "no-cache";
+    }
+    const allowRemoteFilePaths = this.#settings.moduleSetting("network.enable-remote-file-loading").get();
+    return await new Promise((resolve) => Host2.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+      resolve({ success, content, errorDescription });
+    }, allowRemoteFilePaths));
+  }
+  getLoadThroughTargetSetting() {
+    return this.#settings.createSetting("load-through-target", true);
+  }
 };
-function getLoadThroughTargetSetting() {
-  return Common11.Settings.Settings.instance().createSetting("load-through-target", true);
-}
 
 // gen/front_end/core/sdk/SourceMap.js
 var SourceMap_exports = {};
@@ -18518,9 +18331,9 @@ __export(SourceMap_exports, {
 });
 import * as TextUtils16 from "./../../models/text_utils/text_utils.js";
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
-import * as Common12 from "./../common/common.js";
+import * as Common11 from "./../common/common.js";
 import * as Platform8 from "./../platform/platform.js";
-import * as Root4 from "./../root/root.js";
+import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/sdk/ScopeTreeCache.js
 var ScopeTreeCache_exports = {};
@@ -19340,11 +19153,11 @@ var SourceMap = class {
     this.#script = script;
     this.#compiledURL = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
-    this.#baseURL = Common12.ParsedURL.schemeIs(sourceMappingURL, "data:") ? compiledURL : sourceMappingURL;
+    this.#baseURL = Common11.ParsedURL.schemeIs(sourceMappingURL, "data:") ? compiledURL : sourceMappingURL;
     this.#debugId = "debugId" in payload ? payload.debugId : void 0;
     if ("sections" in this.#json) {
       if (this.#json.sections.find((section) => "url" in section)) {
-        Common12.Console.Console.instance().warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
+        Common11.Console.Console.instance().warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
       }
     }
     this.eachSection(this.parseSources.bind(this));
@@ -19590,14 +19403,14 @@ var SourceMap = class {
     const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
-      if (Common12.ParsedURL.ParsedURL.isRelativeURL(href)) {
+      if (Common11.ParsedURL.ParsedURL.isRelativeURL(href)) {
         if (sourceRoot && !sourceRoot.endsWith("/") && href && !href.startsWith("/")) {
           href = sourceRoot.concat("/", href);
         } else {
           href = sourceRoot.concat(href);
         }
       }
-      const url = Common12.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
+      const url = Common11.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
       const source = sourceMap.sourcesContent?.[i];
       const sourceInfo = {
         sourceURL: url,
@@ -19653,7 +19466,7 @@ var SourceMap = class {
       nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
-    if (Root4.Runtime.experiments.isEnabled(
+    if (Root5.Runtime.experiments.isEnabled(
       "use-source-map-scopes"
       /* Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES */
     )) {
@@ -19871,7 +19684,7 @@ var TokenIterator = class {
         throw new Error("Unexpected end of input while decodling VLQ number!");
       }
       const charCode = this.nextCharCode();
-      digit = Common12.Base64.BASE64_CODES[charCode];
+      digit = Common11.Base64.BASE64_CODES[charCode];
       if (charCode !== 65 && digit === 0) {
         throw new Error(`Unexpected char '${String.fromCharCode(charCode)}' encountered while decoding`);
       }
@@ -19956,7 +19769,7 @@ var IN_MEMORY_INSTANCE = new class {
 }();
 
 // gen/front_end/core/sdk/SourceMapManager.js
-var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.ObjectWrapper {
+var SourceMapManager = class _SourceMapManager extends Common12.ObjectWrapper.ObjectWrapper {
   #target;
   #factory;
   #isEnabled = true;
@@ -19988,7 +19801,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     return target?.inspectedURL() ?? Platform9.DevToolsPath.EmptyUrlString;
   }
   static resolveRelativeSourceURL(target, url) {
-    url = Common13.ParsedURL.ParsedURL.completeURL(_SourceMapManager.getBaseUrl(target), url) ?? url;
+    url = Common12.ParsedURL.ParsedURL.completeURL(_SourceMapManager.getBaseUrl(target), url) ?? url;
     return url;
   }
   sourceMapForClient(client) {
@@ -20021,7 +19834,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     };
     if (this.#isEnabled) {
       const sourceURL = _SourceMapManager.resolveRelativeSourceURL(this.#target, relativeSourceURL);
-      const sourceMapURL = Common13.ParsedURL.ParsedURL.completeURL(sourceURL, relativeSourceMapURL);
+      const sourceMapURL = Common12.ParsedURL.ParsedURL.completeURL(sourceURL, relativeSourceMapURL);
       if (sourceMapURL) {
         if (this.#attachingClient) {
           console.error("Attaching source map may cancel previously attaching source map");
@@ -20031,7 +19844,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
         if (this.#attachingClient === client) {
           this.#attachingClient = null;
           const initiator = client.createPageResourceLoadInitiator();
-          clientData.sourceMapPromise = loadSourceMap(sourceMapURL, client.debugId(), initiator).then((payload) => {
+          clientData.sourceMapPromise = loadSourceMap(PageResourceLoader.instance(), sourceMapURL, client.debugId(), initiator).then((payload) => {
             const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
             if (this.#clientData.get(client) === clientData) {
               clientData.sourceMap = sourceMap;
@@ -20088,7 +19901,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     return Promise.all(this.#sourceMaps.keys().map((sourceMap) => sourceMap.scopesFallbackPromiseForTest));
   }
 };
-async function loadSourceMap(url, debugId, initiator) {
+async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
   try {
     if (debugId) {
       const cachedSourceMap = await SourceMapCache.instance().get(debugId);
@@ -20096,7 +19909,7 @@ async function loadSourceMap(url, debugId, initiator) {
         return cachedSourceMap;
       }
     }
-    const { content } = await PageResourceLoader.instance().loadResource(url, initiator);
+    const { content } = await pageResourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
     if ("debugId" in sourceMap && sourceMap.debugId) {
       await SourceMapCache.instance().set(sourceMap.debugId, sourceMap).catch();
@@ -20106,9 +19919,9 @@ async function loadSourceMap(url, debugId, initiator) {
     throw new Error(`Could not load content for ${url}: ${cause.message}`, { cause });
   }
 }
-async function tryLoadSourceMap(url, initiator) {
+async function tryLoadSourceMap(pageResourceLoader, url, initiator) {
   try {
-    return await loadSourceMap(url, null, initiator);
+    return await loadSourceMap(pageResourceLoader, url, null, initiator);
   } catch (cause) {
     console.error(cause);
     return null;
@@ -20131,7 +19944,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   #resourceTreeModel;
   #sourceMapManager;
   #styleLoader;
-  #stylePollingThrottler = new Common14.Throttler.Throttler(StylePollingInterval);
+  #stylePollingThrottler = new Common13.Throttler.Throttler(StylePollingInterval);
   #styleSheetIdsForURL = /* @__PURE__ */ new Map();
   #styleSheetIdToHeader = /* @__PURE__ */ new Map();
   #cachedMatchedCascadeNode = null;
@@ -20156,8 +19969,8 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!target.suspended()) {
       void this.enable();
     }
-    this.#sourceMapManager.setEnabled(Common14.Settings.Settings.instance().moduleSetting("css-source-maps-enabled").get());
-    Common14.Settings.Settings.instance().moduleSetting("css-source-maps-enabled").addChangeListener((event) => this.#sourceMapManager.setEnabled(event.data));
+    this.#sourceMapManager.setEnabled(Common13.Settings.Settings.instance().moduleSetting("css-source-maps-enabled").get());
+    Common13.Settings.Settings.instance().moduleSetting("css-source-maps-enabled").addChangeListener((event) => this.#sourceMapManager.setEnabled(event.data));
   }
   async colorScheme() {
     if (!this.#colorScheme) {
@@ -20255,7 +20068,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setSelectorText(styleSheetId, range, text) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { selectorList } = await this.agent.invoke_setRuleSelector({ styleSheetId, range, selector: text });
@@ -20272,7 +20085,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setPropertyRulePropertyName(styleSheetId, range, text) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { propertyName } = await this.agent.invoke_setPropertyRulePropertyName({ styleSheetId, range, propertyName: text });
@@ -20289,7 +20102,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setKeyframeKey(styleSheetId, range, text) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { keyText } = await this.agent.invoke_setKeyframeKey({ styleSheetId, range, keyText: text });
@@ -20355,7 +20168,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!node) {
       return null;
     }
-    const shouldGetAnimatedStyles = Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldGetAnimatedStyles = Root6.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     const [matchedStylesResponse, animatedStylesResponse] = await Promise.all([
       this.agent.invoke_getMatchedStylesForNode({ nodeId }),
       shouldGetAnimatedStyles ? this.agent.invoke_getAnimatedStylesForNode({ nodeId }) : void 0
@@ -20499,7 +20312,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     return node.marker(PseudoStateMarker) || [];
   }
   async setMediaText(styleSheetId, range, newMediaText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { media } = await this.agent.invoke_setMediaText({ styleSheetId, range, text: newMediaText });
@@ -20516,7 +20329,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setContainerQueryText(styleSheetId, range, newContainerQueryText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryText({ styleSheetId, range, text: newContainerQueryText });
@@ -20533,7 +20346,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setSupportsText(styleSheetId, range, newSupportsText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { supports } = await this.agent.invoke_setSupportsText({ styleSheetId, range, text: newSupportsText });
@@ -20550,7 +20363,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setScopeText(styleSheetId, range, newScopeText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { scope } = await this.agent.invoke_setScopeText({ styleSheetId, range, text: newScopeText });
@@ -20957,7 +20770,7 @@ var InlineStyleResult = class {
     this.attributesStyle = attributesStyle;
   }
 };
-var CSSPropertyTracker = class extends Common14.ObjectWrapper.ObjectWrapper {
+var CSSPropertyTracker = class extends Common13.ObjectWrapper.ObjectWrapper {
   #cssModel;
   #properties;
   constructor(cssModel, propertiesToTrack) {
@@ -20978,6 +20791,183 @@ var CSSPropertyTracker = class extends Common14.ObjectWrapper.ObjectWrapper {
 var StylePollingInterval = 1e3;
 SDKModel.register(CSSModel, { capabilities: 2, autostart: true });
 
+// gen/front_end/core/sdk/FrameManager.js
+var FrameManager_exports = {};
+__export(FrameManager_exports, {
+  FrameManager: () => FrameManager
+});
+import * as Common14 from "./../common/common.js";
+var frameManagerInstance = null;
+var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrapper {
+  #eventListeners = /* @__PURE__ */ new WeakMap();
+  // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
+  // (OOPIFs are usually first attached to a new target and then detached from their old target,
+  // therefore being contained in 2 models for a short period of time.)
+  #frames = /* @__PURE__ */ new Map();
+  #framesForTarget = /* @__PURE__ */ new Map();
+  #outermostFrame = null;
+  #transferringFramesDataCache = /* @__PURE__ */ new Map();
+  #awaitedFrames = /* @__PURE__ */ new Map();
+  constructor() {
+    super();
+    TargetManager.instance().observeModels(ResourceTreeModel, this);
+  }
+  static instance({ forceNew } = { forceNew: false }) {
+    if (!frameManagerInstance || forceNew) {
+      frameManagerInstance = new _FrameManager();
+    }
+    return frameManagerInstance;
+  }
+  static removeInstance() {
+    frameManagerInstance = null;
+  }
+  modelAdded(resourceTreeModel) {
+    const addListener = resourceTreeModel.addEventListener(Events3.FrameAdded, this.frameAdded, this);
+    const detachListener = resourceTreeModel.addEventListener(Events3.FrameDetached, this.frameDetached, this);
+    const navigatedListener = resourceTreeModel.addEventListener(Events3.FrameNavigated, this.frameNavigated, this);
+    const resourceAddedListener = resourceTreeModel.addEventListener(Events3.ResourceAdded, this.resourceAdded, this);
+    this.#eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
+    this.#framesForTarget.set(resourceTreeModel.target().id(), /* @__PURE__ */ new Set());
+  }
+  modelRemoved(resourceTreeModel) {
+    const listeners = this.#eventListeners.get(resourceTreeModel);
+    if (listeners) {
+      Common14.EventTarget.removeEventListeners(listeners);
+    }
+    const frameSet = this.#framesForTarget.get(resourceTreeModel.target().id());
+    if (frameSet) {
+      for (const frameId of frameSet) {
+        this.decreaseOrRemoveFrame(frameId);
+      }
+    }
+    this.#framesForTarget.delete(resourceTreeModel.target().id());
+  }
+  frameAdded(event) {
+    const frame = event.data;
+    const frameData = this.#frames.get(frame.id);
+    if (frameData) {
+      frame.setCreationStackTrace(frameData.frame.getCreationStackTraceData());
+      this.#frames.set(frame.id, { frame, count: frameData.count + 1 });
+    } else {
+      const cachedFrameAttributes = this.#transferringFramesDataCache.get(frame.id);
+      if (cachedFrameAttributes?.creationStackTrace && cachedFrameAttributes?.creationStackTraceTarget) {
+        frame.setCreationStackTrace({
+          creationStackTrace: cachedFrameAttributes.creationStackTrace,
+          creationStackTraceTarget: cachedFrameAttributes.creationStackTraceTarget
+        });
+      }
+      this.#frames.set(frame.id, { frame, count: 1 });
+      this.#transferringFramesDataCache.delete(frame.id);
+    }
+    this.resetOutermostFrame();
+    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
+    if (frameSet) {
+      frameSet.add(frame.id);
+    }
+    this.dispatchEventToListeners("FrameAddedToTarget", { frame });
+    this.resolveAwaitedFrame(frame);
+  }
+  frameDetached(event) {
+    const { frame, isSwap } = event.data;
+    this.decreaseOrRemoveFrame(frame.id);
+    if (isSwap && !this.#frames.get(frame.id)) {
+      const traceData = frame.getCreationStackTraceData();
+      const cachedFrameAttributes = {
+        ...traceData.creationStackTrace && { creationStackTrace: traceData.creationStackTrace },
+        ...traceData.creationStackTrace && { creationStackTraceTarget: traceData.creationStackTraceTarget }
+      };
+      this.#transferringFramesDataCache.set(frame.id, cachedFrameAttributes);
+    }
+    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
+    if (frameSet) {
+      frameSet.delete(frame.id);
+    }
+  }
+  frameNavigated(event) {
+    const frame = event.data;
+    this.dispatchEventToListeners("FrameNavigated", { frame });
+    if (frame.isOutermostFrame()) {
+      this.dispatchEventToListeners("OutermostFrameNavigated", { frame });
+    }
+  }
+  resourceAdded(event) {
+    this.dispatchEventToListeners("ResourceAdded", { resource: event.data });
+  }
+  decreaseOrRemoveFrame(frameId) {
+    const frameData = this.#frames.get(frameId);
+    if (frameData) {
+      if (frameData.count === 1) {
+        this.#frames.delete(frameId);
+        this.resetOutermostFrame();
+        this.dispatchEventToListeners("FrameRemoved", { frameId });
+      } else {
+        frameData.count--;
+      }
+    }
+  }
+  /**
+   * Looks for the outermost frame in `#frames` and sets `#outermostFrame` accordingly.
+   *
+   * Important: This method needs to be called everytime `#frames` is updated.
+   */
+  resetOutermostFrame() {
+    const outermostFrames = this.getAllFrames().filter((frame) => frame.isOutermostFrame());
+    this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
+  }
+  /**
+   * Returns the ResourceTreeFrame with a given frameId.
+   * When a frame is being detached a new ResourceTreeFrame but with the same
+   * frameId is created. Consequently getFrame() will return a different
+   * ResourceTreeFrame after detachment. Callers of getFrame() should therefore
+   * immediately use the function return value and not store it for later use.
+   */
+  getFrame(frameId) {
+    const frameData = this.#frames.get(frameId);
+    if (frameData) {
+      return frameData.frame;
+    }
+    return null;
+  }
+  getAllFrames() {
+    return Array.from(this.#frames.values(), (frameData) => frameData.frame);
+  }
+  getOutermostFrame() {
+    return this.#outermostFrame;
+  }
+  async getOrWaitForFrame(frameId, notInTarget) {
+    const frame = this.getFrame(frameId);
+    if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
+      return frame;
+    }
+    return await new Promise((resolve) => {
+      const waiting = this.#awaitedFrames.get(frameId);
+      if (waiting) {
+        waiting.push({ notInTarget, resolve });
+      } else {
+        this.#awaitedFrames.set(frameId, [{ notInTarget, resolve }]);
+      }
+    });
+  }
+  resolveAwaitedFrame(frame) {
+    const waiting = this.#awaitedFrames.get(frame.id);
+    if (!waiting) {
+      return;
+    }
+    const newWaiting = waiting.filter(({ notInTarget, resolve }) => {
+      if (!notInTarget || notInTarget !== frame.resourceTreeModel().target()) {
+        resolve(frame);
+        return false;
+      }
+      return true;
+    });
+    if (newWaiting.length > 0) {
+      this.#awaitedFrames.set(frame.id, newWaiting);
+    } else {
+      this.#awaitedFrames.delete(frame.id);
+    }
+  }
+};
+
 // gen/front_end/core/sdk/OverlayModel.js
 var OverlayModel_exports = {};
 __export(OverlayModel_exports, {
@@ -20987,7 +20977,7 @@ __export(OverlayModel_exports, {
 });
 import * as Common20 from "./../common/common.js";
 import * as i18n13 from "./../i18n/i18n.js";
-import * as Root7 from "./../root/root.js";
+import * as Root8 from "./../root/root.js";
 
 // gen/front_end/core/sdk/DebuggerModel.js
 var DebuggerModel_exports = {};
@@ -21007,7 +20997,7 @@ __export(DebuggerModel_exports, {
 });
 import * as Common17 from "./../common/common.js";
 import * as i18n11 from "./../i18n/i18n.js";
-import * as Root6 from "./../root/root.js";
+import * as Root7 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RuntimeModel.js
 var RuntimeModel_exports = {};
@@ -21017,7 +21007,7 @@ __export(RuntimeModel_exports, {
   RuntimeModel: () => RuntimeModel
 });
 import * as Common15 from "./../common/common.js";
-import * as Host5 from "./../host/host.js";
+import * as Host4 from "./../host/host.js";
 
 // gen/front_end/core/sdk/HeapProfilerModel.js
 var HeapProfilerModel_exports = {};
@@ -21362,7 +21352,7 @@ var RuntimeModel = class extends SDKModel {
   }
   copyRequested(object) {
     if (!object.objectId) {
-      Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
+      Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
       return;
     }
     const indent = Common15.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
@@ -21371,7 +21361,7 @@ var RuntimeModel = class extends SDKModel {
         subtype: object.subtype,
         indent
       }
-    }]).then(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance));
+    }]).then(Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host4.InspectorFrontendHost.InspectorFrontendHostInstance));
     function toStringForClipboard(data) {
       const subtype = data.subtype;
       const indent2 = data.indent;
@@ -22246,11 +22236,11 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     this.#debuggerEnabled = true;
-    const isRemoteFrontend = Root6.Runtime.Runtime.queryParam("remoteFrontend") || Root6.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     let instrumentationPromise;
-    if (Root6.Runtime.experiments.isEnabled(
+    if (Root7.Runtime.experiments.isEnabled(
       "instrumentation-breakpoints"
       /* Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS */
     )) {
@@ -22268,7 +22258,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.registerDebugger(enableResult);
   }
   async syncDebuggerId() {
-    const isRemoteFrontend = Root6.Runtime.Runtime.queryParam("remoteFrontend") || Root6.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     void enablePromise.then(this.registerDebugger.bind(this));
@@ -22582,7 +22572,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     if (this.#expandCallFramesCallback) {
       pausedDetails.callFrames = await this.#expandCallFramesCallback.call(null, pausedDetails.callFrames);
     }
-    if (!Root6.Runtime.experiments.isEnabled(
+    if (!Root7.Runtime.experiments.isEnabled(
       "use-source-map-scopes"
       /* Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES */
     )) {
@@ -24067,7 +24057,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root7.Runtime.experiments.isEnabled("apca") ? "apca" : "aa"
+      contrastAlgorithm: Root8.Runtime.experiments.isEnabled("apca") ? "apca" : "aa"
     };
     if (mode === "all" || mode === "content") {
       highlightConfig.contentColor = Common20.Color.PageHighlight.Content.toProtocolRGBA();
@@ -25474,7 +25464,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
-    if (Root8.Runtime.experiments.isEnabled("capture-node-creation-stacks")) {
+    if (Root9.Runtime.experiments.isEnabled("capture-node-creation-stacks")) {
       void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
     }
   }
@@ -25934,6 +25924,8 @@ var DOMDispatcher = class {
   #domModel;
   constructor(domModel) {
     this.#domModel = domModel;
+  }
+  adoptedStyleSheetsModified(_params) {
   }
   documentUpdated() {
     this.#domModel.documentUpdated();
@@ -27292,7 +27284,7 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const enabled = Root9.Runtime.experiments.isEnabled("experimental-cookie-features");
+    const enabled = Root10.Runtime.experiments.isEnabled("experimental-cookie-features");
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -30655,7 +30647,7 @@ __export(AutofillModel_exports, {
   AutofillModel: () => AutofillModel
 });
 import * as Common29 from "./../common/common.js";
-import * as Host6 from "./../host/host.js";
+import * as Host5 from "./../host/host.js";
 var AutofillModel = class extends SDKModel {
   agent;
   #enabled;
@@ -30783,7 +30775,7 @@ var AutofillModel = class extends SDKModel {
     });
   }
   enable() {
-    if (this.#enabled || Host6.InspectorFrontendHost.isUnderTest()) {
+    if (this.#enabled || Host5.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     void this.agent.invoke_enable();
@@ -30791,7 +30783,7 @@ var AutofillModel = class extends SDKModel {
     this.#enabled = true;
   }
   disable() {
-    if (!this.#enabled || Host6.InspectorFrontendHost.isUnderTest()) {
+    if (!this.#enabled || Host5.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     this.#enabled = false;
@@ -30842,7 +30834,7 @@ __export(ChildTargetManager_exports, {
 });
 import * as i18n23 from "./../i18n/i18n.js";
 import * as Common30 from "./../common/common.js";
-import * as Host7 from "./../host/host.js";
+import * as Host6 from "./../host/host.js";
 var UIStrings10 = {
   /**
    * @description Text that refers to the main target. The main target is the primary webpage that
@@ -30878,7 +30870,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     } else {
       void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
     }
-    if (parentTarget.parentTarget()?.type() !== Type.FRAME && !Host7.InspectorFrontendHost.isUnderTest()) {
+    if (parentTarget.parentTarget()?.type() !== Type.FRAME && !Host6.InspectorFrontendHost.isUnderTest()) {
       void this.#targetAgent.invoke_setDiscoverTargets({ discover: true });
       void this.#targetAgent.invoke_setRemoteLocations({ locations: [{ host: "localhost", port: 9229 }] });
     }
@@ -31115,9 +31107,9 @@ __export(Connections_exports, {
 });
 import * as i18n29 from "./../i18n/i18n.js";
 import * as Common34 from "./../common/common.js";
-import * as Host8 from "./../host/host.js";
+import * as Host7 from "./../host/host.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root11 from "./../root/root.js";
+import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -31127,7 +31119,7 @@ __export(RehydratingConnection_exports, {
 });
 import * as Common33 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
-import * as Root10 from "./../root/root.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -31527,9 +31519,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root10.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root11.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root10.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root11.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -31897,8 +31889,8 @@ var MainConnection = class {
   #eventListeners;
   constructor() {
     this.#eventListeners = [
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
     ];
   }
   setOnMessage(onMessage) {
@@ -31909,7 +31901,7 @@ var MainConnection = class {
   }
   sendRawMessage(message) {
     if (this.onMessage) {
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
     }
   }
   dispatchMessage(event) {
@@ -32056,19 +32048,19 @@ var StubTransport = class {
 async function initMainConnection(createRootTarget, onConnectionLost) {
   ProtocolClient2.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
   await createRootTarget();
-  Host8.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
+  Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root11.Runtime.Runtime.isTraceApp()) {
+  if (Root12.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root11.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root11.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root12.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root12.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
   }
-  const notEmbeddedOrWs = Host8.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+  const notEmbeddedOrWs = Host7.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
   if (notEmbeddedOrWs) {
     return new StubTransport();
   }
@@ -32085,7 +32077,7 @@ __export(ConsoleModel_exports, {
   MessageSourceDisplayName: () => MessageSourceDisplayName
 });
 import * as Common35 from "./../common/common.js";
-import * as Host10 from "./../host/host.js";
+import * as Host9 from "./../host/host.js";
 import * as i18n33 from "./../i18n/i18n.js";
 import * as Platform18 from "./../platform/platform.js";
 
@@ -32203,7 +32195,7 @@ var LogModel_exports = {};
 __export(LogModel_exports, {
   LogModel: () => LogModel
 });
-import * as Host9 from "./../host/host.js";
+import * as Host8 from "./../host/host.js";
 var LogModel = class extends SDKModel {
   #logAgent;
   constructor(target) {
@@ -32211,7 +32203,7 @@ var LogModel = class extends SDKModel {
     target.registerLogDispatcher(this);
     this.#logAgent = target.logAgent();
     void this.#logAgent.invoke_enable();
-    if (!Host9.InspectorFrontendHost.isUnderTest()) {
+    if (!Host8.InspectorFrontendHost.isUnderTest()) {
       void this.#logAgent.invoke_startViolationsReport({
         config: [
           { name: "longTask", threshold: 200 },
@@ -32331,7 +32323,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       /* awaitPromise */
       false
     );
-    Host10.userMetrics.actionTaken(Host10.UserMetrics.Action.ConsoleEvaluated);
+    Host9.userMetrics.actionTaken(Host9.UserMetrics.Action.ConsoleEvaluated);
     if ("error" in result) {
       return;
     }

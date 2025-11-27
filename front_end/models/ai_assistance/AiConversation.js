@@ -39,8 +39,8 @@ export class AiConversation {
     constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false) {
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
-        this.#agent = this.#createAgent(type);
         this.type = type;
+        this.#agent = this.#createAgent();
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
@@ -166,14 +166,14 @@ export class AiConversation {
             isExternal: this.#isExternal,
         };
     }
-    #createAgent(conversationType) {
+    #createAgent() {
         const options = {
             aidaClient: this.#aidaClient,
             serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
             changeManager: this.#changeManager,
         };
         let agent;
-        switch (conversationType) {
+        switch (this.type) {
             case "freestyler" /* ConversationType.STYLING */: {
                 agent = new StylingAgent(options);
                 break;

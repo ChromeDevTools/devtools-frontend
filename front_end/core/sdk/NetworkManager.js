@@ -4,7 +4,6 @@
 var _a;
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -1908,20 +1907,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
             return [];
         }
         return certificate.tableNames;
-    }
-    async loadResource(url) {
-        const headers = {};
-        const currentUserAgent = this.currentUserAgent();
-        if (currentUserAgent) {
-            headers['User-Agent'] = currentUserAgent;
-        }
-        if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
-            headers['Cache-Control'] = 'no-cache';
-        }
-        const allowRemoteFilePaths = Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').get();
-        return await new Promise(resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
-            resolve({ success, content, errorDescription });
-        }, allowRemoteFilePaths));
     }
     appliedRequestConditions(requestInternal) {
         if (!requestInternal.appliedNetworkConditionsId) {

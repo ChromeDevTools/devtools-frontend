@@ -1699,6 +1699,7 @@ __export(JSONView_exports, {
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../../core/platform/platform.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
+import * as Highlighting from "./../../../components/highlighting/highlighting.js";
 import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
 import * as UI6 from "./../../legacy.js";
 import * as ObjectUI from "./../object_ui/object_ui.js";
@@ -1861,7 +1862,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     const newFocusElement = this.currentSearchTreeElements[index];
     if (newFocusElement) {
       this.updateSearchIndex(index);
-      newFocusElement.setSearchRegex(this.searchRegex, UI6.UIUtils.highlightedCurrentSearchResultClassName);
+      newFocusElement.setSearchRegex(this.searchRegex, Highlighting.highlightedCurrentSearchResultClassName);
       newFocusElement.reveal();
     } else {
       this.updateSearchIndex(0);

@@ -1,7 +1,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import type * as Foundation from '../../foundation/foundation.js';
 import type { ViewLocationResolver } from './View.js';
-import { PreRegisteredView } from './ViewManager.js';
 import type { Widget } from './Widget.js';
 export declare const enum ViewPersistence {
     CLOSEABLE = "closeable",
@@ -68,7 +68,11 @@ export interface ViewRegistration {
     /**
      * Returns an instance of the class that wraps the view.
      * The common pattern for implementing this function is loading the module with the wrapping 'Widget'
-     * lazily loaded. As an example:
+     * lazily loaded.
+     * The DevTools universe is passed along, allowing `loadView` to retrieve necessary dependencies.
+     * Prefer passing individual dependencies one by one instead of forwarding the full universe. This
+     * makes testing easier.
+     * As an example:
      *
      * ```js
      * let loadedElementsModule;
@@ -82,15 +86,16 @@ export interface ViewRegistration {
      * }
      * UI.ViewManager.registerViewExtension({
      *   <...>
-     *   async loadView() {
+     *   async loadView(universe) {
      *      const Elements = await loadElementsModule();
-     *      return Elements.ElementsPanel.ElementsPanel.instance();
+     *      const pageResourceLoader = universe.context.get(SDK.PageResourceLoader.PageResourceLoader);
+     *      return new Elements.ElementsPanel.ElementsPanel(pageResourceLoader);
      *   },
      *   <...>
      * });
      * ```
      */
-    loadView: () => Promise<Widget>;
+    loadView: (universe: Foundation.Universe.Universe) => Promise<Widget>;
     /**
      * Used to sort the views that appear in a shared location.
      */
@@ -113,7 +118,7 @@ export interface ViewRegistration {
     featurePromotionId?: string;
 }
 export declare function registerViewExtension(registration: ViewRegistration): void;
-export declare function getRegisteredViewExtensions(): PreRegisteredView[];
+export declare function getRegisteredViewExtensions(): ViewRegistration[];
 export declare function maybeRemoveViewExtension(viewId: string): boolean;
 export declare function registerLocationResolver(registration: LocationResolverRegistration): void;
 export declare function getRegisteredLocationResolvers(): LocationResolverRegistration[];

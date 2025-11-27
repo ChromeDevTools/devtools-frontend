@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 /* eslint-disable @devtools/no-imperative-dom-api */
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -491,7 +491,7 @@ export class Revealer {
             }
         }
         // Reveal settings views
-        for (const view of UI.ViewManager.getRegisteredViewExtensions()) {
+        for (const view of UI.ViewManager.ViewManager.instance().getRegisteredViewExtensions()) {
             const id = view.viewId();
             const location = view.location();
             if (location !== "settings-view" /* UI.ViewManager.ViewLocationValues.SETTINGS_VIEW */) {

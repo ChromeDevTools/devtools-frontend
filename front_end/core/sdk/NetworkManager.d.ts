@@ -2,7 +2,6 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import { NetworkRequest } from './NetworkRequest.js';
 import { SDKModel } from './SDKModel.js';
@@ -298,11 +297,6 @@ export declare class MultitargetNetworkManager extends Common.ObjectWrapper.Obje
     clearBrowserCache(): void;
     clearBrowserCookies(): void;
     getCertificate(origin: string): Promise<string[]>;
-    loadResource(url: Platform.DevToolsPath.UrlString): Promise<{
-        success: boolean;
-        content: string;
-        errorDescription: Host.ResourceLoader.LoadErrorDescription;
-    }>;
     appliedRequestConditions(requestInternal: NetworkRequest): AppliedNetworkConditions | undefined;
 }
 export declare namespace MultitargetNetworkManager {

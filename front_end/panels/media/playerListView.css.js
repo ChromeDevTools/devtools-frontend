@@ -48,6 +48,11 @@ li.storage-group-list-item::before {
 .player-entry-status-icon-centering {
   margin: auto;
   display: inherit;
+
+  & > devtools-icon {
+    height: 16px;
+    width: 16px;
+  }
 }
 
 .player-entry-status-icon {

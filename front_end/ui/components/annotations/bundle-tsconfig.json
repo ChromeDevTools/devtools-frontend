@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/ui/components/annotations"},"files":["../../../../../../../front_end/ui/components/annotations/annotations.ts"],"references":[{"path":"./annotations-tsconfig.json"}]}

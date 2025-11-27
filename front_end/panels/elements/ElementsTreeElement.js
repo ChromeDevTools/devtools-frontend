@@ -1682,7 +1682,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 ++highlightIndex;
             }
             element.setTextContentTruncatedIfNeeded(value);
-            UI.UIUtils.highlightRangesWithStyleClass(element, result.entityRanges, 'webkit-html-entity-value');
+            Highlighting.highlightRangesWithStyleClass(element, result.entityRanges, 'webkit-html-entity-value');
         }
         const hasText = (forceValue || value.length > 0);
         const attrSpanElement = parentElement.createChild('span', 'webkit-html-attribute');
@@ -1919,7 +1919,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                     }
                     const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
                     textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
-                    UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
+                    Highlighting.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
                     UI.UIUtils.createTextChild(titleDOM, '\u200B');
                     this.buildTagDOM(titleDOM, tagName, true, false, updateRecord);
                     if (updateRecord?.hasChangedChildren()) {
@@ -1956,7 +1956,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                     textNodeElement.setAttribute('jslog', `${VisualLogging.value('text-node').track({ change: true, dblclick: true })}`);
                     const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
                     textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
-                    UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
+                    Highlighting.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
                     UI.UIUtils.createTextChild(titleDOM, '"');
                     if (updateRecord?.isCharDataModified()) {
                         UI.UIUtils.runCSSAnimationOnce(textNodeElement, 'dom-update-highlight');

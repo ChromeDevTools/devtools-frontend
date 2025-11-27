@@ -15,6 +15,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
@@ -1535,7 +1536,7 @@ export class ConsoleViewMessage {
     }
     setSearchRegex(regex) {
         if (this.searchHighlightNodeChanges?.length) {
-            UI.UIUtils.revertDomChanges(this.searchHighlightNodeChanges);
+            Highlighting.revertDomChanges(this.searchHighlightNodeChanges);
         }
         this.searchRegexInternal = regex;
         this.searchHighlightNodes = [];
@@ -1551,8 +1552,7 @@ export class ConsoleViewMessage {
             sourceRanges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
         }
         if (sourceRanges.length) {
-            this.searchHighlightNodes =
-                UI.UIUtils.highlightSearchResults(this.contentElement(), sourceRanges, this.searchHighlightNodeChanges);
+            this.searchHighlightNodes = Highlighting.highlightRangesWithStyleClass(this.contentElement(), sourceRanges, Highlighting.highlightedSearchResultClassName, this.searchHighlightNodeChanges);
         }
     }
     searchRegex() {

@@ -89,7 +89,7 @@
       "path": "../../ui/i18n/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/kit/cards/bundle-tsconfig.json"
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

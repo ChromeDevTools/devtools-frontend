@@ -37,6 +37,7 @@
   "files": [
     "../../../../../../../front_end/ui/components/highlighting/HighlightElement.ts",
     "../../../../../../../front_end/ui/components/highlighting/HighlightManager.ts",
+    "../../../../../../../front_end/ui/components/highlighting/MarkupHighlight.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../../node_modules/@types/filesystem/index.d.ts"

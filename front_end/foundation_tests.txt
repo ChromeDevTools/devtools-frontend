@@ -39,6 +39,7 @@ core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
 core/sdk/DebuggerModel.test.js
+core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js

@@ -38,7 +38,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as Lit from '../lit/lit.js';
@@ -109,8 +108,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/UIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export const highlightedSearchResultClassName = 'highlighted-search-result';
-export const highlightedCurrentSearchResultClassName = 'current-search-result';
 export function installDragHandle(element, elementDragStart, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, mouseDownPreventDefault = true) {
     function onMouseDown(event) {
         const dragHandler = new DragHandler();
@@ -597,13 +594,6 @@ export class ElementFocusRestorer {
         this.element = null;
     }
 }
-export function highlightSearchResult(element, offset, length, domChanges) {
-    const result = highlightSearchResults(element, [new TextUtils.TextRange.SourceRange(offset, length)], domChanges);
-    return result.length ? result[0] : null;
-}
-export function highlightSearchResults(element, resultRanges, changes) {
-    return highlightRangesWithStyleClass(element, resultRanges, highlightedSearchResultClassName, changes);
-}
 export function runCSSAnimationOnce(element, className) {
     function animationEndCallback() {
         element.classList.remove(className);
@@ -616,149 +606,6 @@ export function runCSSAnimationOnce(element, className) {
     element.addEventListener('webkitAnimationEnd', animationEndCallback, false);
     element.addEventListener('animationcancel', animationEndCallback, false);
     element.classList.add(className);
-}
-export function highlightRangesWithStyleClass(element, resultRanges, styleClass, changes) {
-    changes = changes || [];
-    const highlightNodes = [];
-    const textNodes = element.childTextNodes();
-    const lineText = textNodes
-        .map(function (node) {
-        return node.textContent;
-    })
-        .join('');
-    const ownerDocument = element.ownerDocument;
-    if (textNodes.length === 0) {
-        return highlightNodes;
-    }
-    const nodeRanges = [];
-    let rangeEndOffset = 0;
-    for (const textNode of textNodes) {
-        const range = new TextUtils.TextRange.SourceRange(rangeEndOffset, textNode.textContent ? textNode.textContent.length : 0);
-        rangeEndOffset = range.offset + range.length;
-        nodeRanges.push(range);
-    }
-    let startIndex = 0;
-    for (let i = 0; i < resultRanges.length; ++i) {
-        const startOffset = resultRanges[i].offset;
-        const endOffset = startOffset + resultRanges[i].length;
-        while (startIndex < textNodes.length &&
-            nodeRanges[startIndex].offset + nodeRanges[startIndex].length <= startOffset) {
-            startIndex++;
-        }
-        let endIndex = startIndex;
-        while (endIndex < textNodes.length && nodeRanges[endIndex].offset + nodeRanges[endIndex].length < endOffset) {
-            endIndex++;
-        }
-        if (endIndex === textNodes.length) {
-            break;
-        }
-        const highlightNode = ownerDocument.createElement('span');
-        highlightNode.className = styleClass;
-        highlightNode.textContent = lineText.substring(startOffset, endOffset);
-        const lastTextNode = textNodes[endIndex];
-        const lastText = lastTextNode.textContent || '';
-        lastTextNode.textContent = lastText.substring(endOffset - nodeRanges[endIndex].offset);
-        changes.push({
-            node: lastTextNode,
-            type: 'changed',
-            oldText: lastText,
-            newText: lastTextNode.textContent,
-            nextSibling: undefined,
-            parent: undefined,
-        });
-        if (startIndex === endIndex && lastTextNode.parentElement) {
-            lastTextNode.parentElement.insertBefore(highlightNode, lastTextNode);
-            changes.push({
-                node: highlightNode,
-                type: 'added',
-                nextSibling: lastTextNode,
-                parent: lastTextNode.parentElement,
-                oldText: undefined,
-                newText: undefined,
-            });
-            highlightNodes.push(highlightNode);
-            const prefixNode = ownerDocument.createTextNode(lastText.substring(0, startOffset - nodeRanges[startIndex].offset));
-            lastTextNode.parentElement.insertBefore(prefixNode, highlightNode);
-            changes.push({
-                node: prefixNode,
-                type: 'added',
-                nextSibling: highlightNode,
-                parent: lastTextNode.parentElement,
-                oldText: undefined,
-                newText: undefined,
-            });
-        }
-        else {
-            const firstTextNode = textNodes[startIndex];
-            const firstText = firstTextNode.textContent || '';
-            const anchorElement = firstTextNode.nextSibling;
-            if (firstTextNode.parentElement) {
-                firstTextNode.parentElement.insertBefore(highlightNode, anchorElement);
-                changes.push({
-                    node: highlightNode,
-                    type: 'added',
-                    nextSibling: anchorElement || undefined,
-                    parent: firstTextNode.parentElement,
-                    oldText: undefined,
-                    newText: undefined,
-                });
-                highlightNodes.push(highlightNode);
-            }
-            firstTextNode.textContent = firstText.substring(0, startOffset - nodeRanges[startIndex].offset);
-            changes.push({
-                node: firstTextNode,
-                type: 'changed',
-                oldText: firstText,
-                newText: firstTextNode.textContent,
-                nextSibling: undefined,
-                parent: undefined,
-            });
-            for (let j = startIndex + 1; j < endIndex; j++) {
-                const textNode = textNodes[j];
-                const text = textNode.textContent;
-                textNode.textContent = '';
-                changes.push({
-                    node: textNode,
-                    type: 'changed',
-                    oldText: text || undefined,
-                    newText: textNode.textContent,
-                    nextSibling: undefined,
-                    parent: undefined,
-                });
-            }
-        }
-        startIndex = endIndex;
-        nodeRanges[startIndex].offset = endOffset;
-        nodeRanges[startIndex].length = lastTextNode.textContent.length;
-    }
-    return highlightNodes;
-}
-/** Used in chromium/src/third_party/blink/web_tests/http/tests/devtools/components/utilities-highlight-results.js **/
-export function applyDomChanges(domChanges) {
-    for (let i = 0, size = domChanges.length; i < size; ++i) {
-        const entry = domChanges[i];
-        switch (entry.type) {
-            case 'added':
-                entry.parent?.insertBefore(entry.node, entry.nextSibling ?? null);
-                break;
-            case 'changed':
-                entry.node.textContent = entry.newText ?? null;
-                break;
-        }
-    }
-}
-export function revertDomChanges(domChanges) {
-    for (let i = domChanges.length - 1; i >= 0; --i) {
-        const entry = domChanges[i];
-        switch (entry.type) {
-            case 'added':
-                entry.node.remove();
-                break;
-            case 'changed':
-                entry.node.textContent = entry.oldText ?? null;
-                break;
-        }
-    }
 }
 export function measurePreferredSize(element, containerElement) {
     const oldParent = element.parentElement;

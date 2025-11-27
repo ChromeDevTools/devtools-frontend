@@ -1,9 +1,10 @@
 import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
+import type * as Foundation from '../../foundation/foundation.js';
 import { type ToolbarItem } from './Toolbar.js';
 import type { TabbedViewLocation, View, ViewLocation } from './View.js';
-import { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, type ViewRegistration } from './ViewRegistration.js';
+import { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, type ViewRegistration } from './ViewRegistration.js';
 import { VBox, type Widget } from './Widget.js';
 export declare const defaultOptionsForTabs: {
     security: boolean;
@@ -11,8 +12,9 @@ export declare const defaultOptionsForTabs: {
 };
 export declare class PreRegisteredView implements View {
     private readonly viewRegistration;
+    private readonly universe?;
     private widgetPromise;
-    constructor(viewRegistration: ViewRegistration);
+    constructor(viewRegistration: ViewRegistration, universe?: Foundation.Universe.Universe);
     title(): Common.UIString.LocalizedString;
     commandPrompt(): Common.UIString.LocalizedString;
     isCloseable(): boolean;
@@ -47,12 +49,15 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
     readonly views: Map<string, View>;
     private readonly locationNameByViewId;
     private readonly locationOverrideSetting;
+    private readonly preRegisteredViews;
     private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
+        universe?: Foundation.Universe.Universe;
     }): ViewManager;
     static removeInstance(): void;
     static createToolbar(toolbarItems: ToolbarItem[]): Element | null;
+    getRegisteredViewExtensions(): PreRegisteredView[];
     locationNameForViewId(viewId: string): string;
     /**
      * Moves a view to a new location
@@ -96,4 +101,4 @@ declare class Location {
     removeView(_view: View): void;
     isViewVisible(_view: View): boolean;
 }
-export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, ViewRegistration, };
+export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, ViewRegistration, };

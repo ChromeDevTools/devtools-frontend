@@ -1729,6 +1729,7 @@ import * as Platform from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
+import * as Annotations from "./../../ui/components/annotations/annotations.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as Trace6 from "./../trace/trace.js";
 
@@ -3976,6 +3977,15 @@ var UIStringsNotTranslated = {
   mainThreadActivity: "Investigating main thread activity\u2026"
 };
 var lockedString3 = i18n5.i18n.lockedString;
+var annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
+var greenDevAdditionalFunction = `
+- CRITICAL:You also have access to a function called addElementAnnotation, which should be used to highlight elements.`;
+var greenDevAdditionalGuidelines = `
+- CRITICAL: Each time an element with a nodeId is mentioned, you MUST ALSO call the function addElementAnnotation for that element.
+- The addElementAnnotation function should be called as soon as you identify an element that needs to be highlighted.
+- The addElementAnnotation function should always be called for the LCP element, if known.
+- The annotationMessage should be descriptive and relevant to why the element is being highlighted.
+`;
 var preamble4 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
@@ -3985,6 +3995,8 @@ You will be provided a summary of a trace: some performance metrics; the most cr
 Don't mention anything about an insight without first getting more data about it by calling \`getInsightDetails\`.
 
 You have many functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
+
+${annotationsEnabled ? greenDevAdditionalFunction : ""}
 
 You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
 
@@ -4026,6 +4038,8 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Structure your response using markdown headings and bullet points for improved readability.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
+${annotationsEnabled ? greenDevAdditionalGuidelines : ""}
+
 ## Strict Constraints
 
 Adhere to the following critical requirements:
@@ -4051,6 +4065,10 @@ When referring to a trace event that has a corresponding \`eventKey\`, annotate 
 
 When asking the user to make a choice between multiple options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
+var greenDevAdditionalGuidelineFreshTrace = `
+When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying the id and an annotation reason.
+- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
+`;
 var extraPreambleWhenFreshTrace = `Additional notes:
 
 When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
@@ -4058,7 +4076,8 @@ When referring to an element for which you know the nodeId, annotate your output
 - This link will reveal the element in the Elements panel
 - Never mention node or nodeId when referring to the element, and especially not in the link text.
 - When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
-`;
+
+${annotationsEnabled ? greenDevAdditionalGuidelineFreshTrace : ""}`;
 var ScorePriority;
 (function(ScorePriority2) {
   ScorePriority2[ScorePriority2["REQUIRED"] = 3] = "REQUIRED";
@@ -4188,7 +4207,7 @@ var PerformanceAgent = class extends AiAgent {
     return Host5.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
-    return Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return annotationsEnabled ? "TESTERS" : Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
     const temperature = Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
@@ -4646,6 +4665,31 @@ ${result}`,
         return { result: { callTree } };
       }
     });
+    if (annotationsEnabled) {
+      this.declareFunction("addElementAnnotation", {
+        description: "Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            elementId: {
+              type: 1,
+              description: "The UID of the element to annotate.",
+              nullable: false
+            },
+            annotationMessage: {
+              type: 1,
+              description: "The message the annotation should show to the user.",
+              nullable: false
+            }
+          }
+        },
+        handler: async (params) => {
+          return await this.addElementAnnotation(params.elementId, params.annotationMessage);
+        }
+      });
+    }
     this.declareFunction("getFunctionCode", {
       description: "Returns the code for a function defined at the given location.",
       parameters: {
@@ -4776,6 +4820,15 @@ ${result}`,
         }
       });
     }
+  }
+  async addElementAnnotation(elementId, annotationMessage) {
+    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+      console.warn("Received agent request to add annotation with annotations disabled");
+      return { error: "Annotations are not currently enabled" };
+    }
+    console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
+    Annotations.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
+    return { result: { success: true } };
   }
 };
 
@@ -6379,8 +6432,8 @@ var AiConversation = class _AiConversation {
   constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host8.AidaClient.AidaClient(), changeManager, isExternal = false) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
-    this.#agent = this.#createAgent(type);
     this.type = type;
+    this.#agent = this.#createAgent();
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
@@ -6517,14 +6570,14 @@ ${item.text.trim()}`);
       isExternal: this.#isExternal
     };
   }
-  #createAgent(conversationType) {
+  #createAgent() {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
       changeManager: this.#changeManager
     };
     let agent;
-    switch (conversationType) {
+    switch (this.type) {
       case "freestyler": {
         agent = new StylingAgent(options);
         break;

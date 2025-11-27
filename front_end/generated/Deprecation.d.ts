@@ -52,6 +52,10 @@ export declare const UIStrings: {
      */
     readonly DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.";
     /**
+     * @description Translation is not needed, this will never be exposed in production code.
+     */
+    readonly ExampleBrowserProcessDeprecation: "This is an example for showing the code required for a browser process reported deprecation.";
+    /**
      * @description A deprecation warning shown in the DevTools Issues tab. It's shown when one of the Protected Audience APIs like `navigator.joinAdInterestGroup`, `navigator.getInterestGroupAdAuctionData` or `navigator.runAdAuction` are called.
      */
     readonly Fledge: "The Protected Audience API is deprecated and will be removed in a future release.";
@@ -168,10 +172,6 @@ export declare const UIStrings: {
      */
     readonly PrefixedVideoSupportsFullscreen: "HTMLVideoElement.webkitSupportsFullscreen is deprecated. Please use Document.fullscreenEnabled instead.";
     /**
-     * @description Warning displayed to developers that the API `chrome.privacy.websites.privacySandboxEnabled` is being deprecated in favour of three new more granular APIs: topicsEnabled, FledgeEnabled and adMeasurementEnabled. The `privacySandboxEnabled` API allowed extensions to control the homologous Chrome Setting. The existing Chrome Setting for Privacy Sandbox is also going away in favor of more granular settings that are matched by the new extensions APIs- topicsEnabled, FledgeEnabled and adMeasurementEnabled.
-     */
-    readonly PrivacySandboxExtensionsAPI: "We're deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled.";
-    /**
      * @description Standard message when one web API is deprecated in favor of another.
      */
     readonly RangeExpand: "Range.expand() is deprecated. Please use Selection.modify() instead.";
@@ -203,6 +203,14 @@ export declare const UIStrings: {
      * @description A deprecation warning shown in the DevTools Issues tab. The placeholder is always the noun 'SharedArrayBuffer' which refers to a JavaScript construct.
      */
     readonly SharedArrayBufferConstructedWithoutIsolation: "`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.";
+    /**
+     * @description A deprecation warning shown in the DevTools Issues tab. It's shown when one of the Shared Storage APIs like `sharedStorage.set()`, `sharedStorage.worklet.addModule()`, `sharedStorage.selectURL()`, etc., along with `<img sharedstoragewritable>`, `<iframe sharedstoragewritable>`, or `fetch(url, {sharedStorageWritable: true})` are used.
+     */
+    readonly SharedStorage: "The Shared Storage API is deprecated and will be removed in a future release.";
+    /**
+     * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the `document.requestStorageAccessFor` API is called. The placeholder will always be the string `document.requestStorageAccessFor`.
+     */
+    readonly StorageAccessAPI_requestStorageAccessFor_Method: "`document.requestStorageAccessFor` is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details.";
     /**
      * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the speech synthesis API is called before the page receives a user activation.
      */

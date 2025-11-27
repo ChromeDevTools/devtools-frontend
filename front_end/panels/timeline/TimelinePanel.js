@@ -2243,7 +2243,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                     frameId: script.frame,
                     initiatorUrl: script.url
                 };
-                rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(script.sourceMapUrl, initiator);
+                rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(SDK.PageResourceLoader.PageResourceLoader.instance(), script.sourceMapUrl, initiator);
             }
             if (script.url && rawSourceMap) {
                 metadata.sourceMaps?.push({ url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap });
@@ -2320,8 +2320,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             // For example, since the debugger model is disable during recording, any
             // non-final navigations during the trace will never have their source maps
             // fetched by the debugger model. That's only ever done here.
-            const initiator = { target: null, frameId: frame, initiatorUrl: sourceUrl };
-            const payload = await SDK.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
+            const initiator = {
+                target: debuggerModelForFrameId.get(frame)?.target() ?? null,
+                frameId: frame,
+                initiatorUrl: sourceUrl
+            };
+            const payload = await SDK.SourceMapManager.tryLoadSourceMap(SDK.PageResourceLoader.PageResourceLoader.instance(), sourceMapUrl, initiator);
             return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
         };
     }

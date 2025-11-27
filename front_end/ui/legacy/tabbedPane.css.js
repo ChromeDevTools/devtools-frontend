@@ -526,4 +526,14 @@ export default `/*
   }
 }
 
+.tabbed-pane-header-tab.ai .ai-icon {
+  background-color: var(--sys-color-primary);
+  border-radius: 50%;
+  margin-left: 4px;
+}
+
+.tabbed-pane-header-tab.ai .ai-icon devtools-icon {
+  color: var(--sys-color-on-primary);
+}
+
 /*# sourceURL=${import.meta.resolve('./tabbedPane.css')} */`;

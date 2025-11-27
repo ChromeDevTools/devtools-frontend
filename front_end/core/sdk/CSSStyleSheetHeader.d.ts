@@ -9,7 +9,7 @@ import type { PageResourceLoadInitiator } from './PageResourceLoader.js';
 import type { DebugId } from './SourceMap.js';
 export declare class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
     #private;
-    id: Protocol.CSS.StyleSheetId;
+    id: Protocol.DOM.StyleSheetId;
     frameId: Protocol.Page.FrameId;
     sourceURL: Platform.DevToolsPath.UrlString;
     hasSourceURL: boolean;

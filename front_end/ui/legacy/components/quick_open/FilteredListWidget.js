@@ -8,6 +8,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Geometry from '../../../../models/geometry/geometry.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Diff from '../../../../third_party/diff/diff.js';
+import * as Highlighting from '../../../../ui/components/highlighting/highlighting.js';
 import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
@@ -128,7 +129,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
             ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
         }
         if (ranges) {
-            UI.UIUtils.highlightRangesWithStyleClass(element, ranges, 'highlight');
+            Highlighting.highlightRangesWithStyleClass(element, ranges, 'highlight');
             return true;
         }
         return false;

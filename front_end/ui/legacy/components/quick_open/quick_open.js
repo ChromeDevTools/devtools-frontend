@@ -34,6 +34,7 @@ import * as Platform from "./../../../../core/platform/platform.js";
 import * as Geometry from "./../../../../models/geometry/geometry.js";
 import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
 import * as Diff from "./../../../../third_party/diff/diff.js";
+import * as Highlighting from "./../../../components/highlighting/highlighting.js";
 import * as TextPrompt from "./../../../components/text_prompt/text_prompt.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI from "./../../legacy.js";
@@ -315,7 +316,7 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
       ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
     }
     if (ranges) {
-      UI.UIUtils.highlightRangesWithStyleClass(element, ranges, "highlight");
+      Highlighting.highlightRangesWithStyleClass(element, ranges, "highlight");
       return true;
     }
     return false;
@@ -990,7 +991,7 @@ var CommandMenu = class _CommandMenu {
         locations.set(name, category);
       }
     }
-    const views = UI2.ViewManager.getRegisteredViewExtensions();
+    const views = UI2.ViewManager.ViewManager.instance().getRegisteredViewExtensions();
     for (const view of views) {
       const viewLocation = view.location();
       const category = viewLocation && locations.get(viewLocation);

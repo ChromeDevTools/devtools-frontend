@@ -1304,6 +1304,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                                 systemMessage.parts.pop();
                             }
                         }
+                        break;
                     }
                 }
                 // Commit update intermediate step when not

@@ -163,7 +163,7 @@ export class CommandMenu {
                 locations.set(name, category);
             }
         }
-        const views = UI.ViewManager.getRegisteredViewExtensions();
+        const views = UI.ViewManager.ViewManager.instance().getRegisteredViewExtensions();
         for (const view of views) {
             const viewLocation = view.location();
             const category = viewLocation && locations.get(viewLocation);

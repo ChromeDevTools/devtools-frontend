@@ -2,7 +2,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Trace from '../../trace/trace.js';
 import { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
-import { AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
+import { AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type FunctionCallHandlerResult, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
 export declare class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     #private;
     static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext;
@@ -36,4 +36,5 @@ export declare class PerformanceAgent extends AiAgent<AgentFocus> {
         selected: PerformanceTraceContext | null;
         signal?: AbortSignal;
     }): AsyncGenerator<ResponseData, void, void>;
+    addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
 }

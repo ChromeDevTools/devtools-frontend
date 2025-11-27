@@ -4,7 +4,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
-import { FrameManager } from './FrameManager.js';
+import * as Root from '../root/root.js';
 import { IOModel } from './IOModel.js';
 import { MultitargetNetworkManager, NetworkManager } from './NetworkManager.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
@@ -27,7 +27,6 @@ export class ResourceKey {
         this.key = key;
     }
 }
-let pageResourceLoader = null;
 /**
  * The page resource loader is a bottleneck for all DevTools-initiated resource loads. For each such load, it keeps a
  * `PageResource` object around that holds meta information. This can be as the basis for reporting to the user which
@@ -35,31 +34,34 @@ let pageResourceLoader = null;
  */
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     #targetManager;
+    #settings;
+    #userAgentProvider;
     #currentlyLoading = 0;
     #currentlyLoadingPerTarget = new Map();
     #maxConcurrentLoads;
     #pageResources = new Map();
     #queuedLoads = [];
     #loadOverride;
-    constructor(targetManager, loadOverride, maxConcurrentLoads = 500) {
+    constructor(targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads = 500) {
         super();
         this.#targetManager = targetManager;
+        this.#settings = settings;
+        this.#userAgentProvider = userAgentProvider;
         this.#maxConcurrentLoads = maxConcurrentLoads;
         this.#targetManager.addModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
         this.#loadOverride = loadOverride;
     }
-    static instance({ forceNew, targetManager, loadOverride, maxConcurrentLoads } = {
+    static instance({ forceNew, targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads } = {
         forceNew: false,
         loadOverride: null,
     }) {
-        if (!pageResourceLoader || forceNew) {
-            pageResourceLoader =
-                new PageResourceLoader(targetManager ?? TargetManager.instance(), loadOverride, maxConcurrentLoads);
+        if (forceNew) {
+            Root.DevToolsContext.globalInstance().set(PageResourceLoader, new PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
         }
-        return pageResourceLoader;
+        return Root.DevToolsContext.globalInstance().get(PageResourceLoader);
     }
     static removeInstance() {
-        pageResourceLoader = null;
+        Root.DevToolsContext.globalInstance().delete(PageResourceLoader);
     }
     onPrimaryPageChanged(event) {
         const { frame: mainFrame, type } = event.data;
@@ -198,22 +200,15 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             return await this.#loadOverride(url);
         }
         const parsedURL = new Common.ParsedURL.ParsedURL(url);
-        const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== 'file' &&
-            parsedURL.scheme !== 'data' && parsedURL.scheme !== 'devtools';
+        const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL &&
+            parsedURL.scheme !== 'file' && parsedURL.scheme !== 'data' && parsedURL.scheme !== 'devtools' &&
+            initiator.target;
         Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
         if (eligibleForLoadFromTarget) {
             try {
-                if (initiator.target) {
-                    Host.userMetrics.developerResourceLoaded(0 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */);
-                    const result = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
-                    return result;
-                }
-                const frame = FrameManager.instance().getFrame(initiator.frameId);
-                if (frame) {
-                    Host.userMetrics.developerResourceLoaded(1 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_FRAME */);
-                    const result = await this.loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url, isBinary);
-                    return result;
-                }
+                Host.userMetrics.developerResourceLoaded(0 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */);
+                const result = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
+                return result;
             }
             catch (e) {
                 if (e instanceof Error) {
@@ -230,12 +225,12 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             Host.userMetrics.developerResourceLoaded(3 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK */);
         }
         else {
-            const code = getLoadThroughTargetSetting().get() ?
+            const code = this.getLoadThroughTargetSetting().get() ?
                 6 /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL */ :
                 5 /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE */;
             Host.userMetrics.developerResourceLoaded(code);
         }
-        const result = await MultitargetNetworkManager.instance().loadResource(url);
+        const result = await this.loadFromHostBindings(url);
         if (eligibleForLoadFromTarget && !result.success) {
             Host.userMetrics.developerResourceLoaded(7 /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE */);
         }
@@ -270,7 +265,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     async loadFromTarget(target, frameId, url, isBinary) {
         const networkManager = target.model(NetworkManager);
         const ioModel = target.model(IOModel);
-        const disableCache = Common.Settings.Settings.instance().moduleSetting('cache-disabled').get();
+        const disableCache = this.#settings.moduleSetting('cache-disabled').get();
         const resource = await networkManager.loadNetworkResource(frameId, url, { disableCache, includeCredentials: true });
         try {
             const content = resource.stream ?
@@ -295,8 +290,22 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             }
         }
     }
-}
-export function getLoadThroughTargetSetting() {
-    return Common.Settings.Settings.instance().createSetting('load-through-target', true);
+    async loadFromHostBindings(url) {
+        const headers = {};
+        const currentUserAgent = this.#userAgentProvider.currentUserAgent();
+        if (currentUserAgent) {
+            headers['User-Agent'] = currentUserAgent;
+        }
+        if (this.#settings.moduleSetting('cache-disabled').get()) {
+            headers['Cache-Control'] = 'no-cache';
+        }
+        const allowRemoteFilePaths = this.#settings.moduleSetting('network.enable-remote-file-loading').get();
+        return await new Promise(resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+            resolve({ success, content, errorDescription });
+        }, allowRemoteFilePaths));
+    }
+    getLoadThroughTargetSetting() {
+        return this.#settings.createSetting('load-through-target', true);
+    }
 }
 //# sourceMappingURL=PageResourceLoader.js.map

@@ -521,6 +521,7 @@ var loadedPanelCommonModule;
 var MainImpl = class {
   #readyForTestPromise = Promise.withResolvers();
   #veStartPromise;
+  #universe;
   constructor() {
     _a.instanceForTest = this;
     void this.#loaded();
@@ -557,8 +558,8 @@ var MainImpl = class {
         runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest()
       }
     };
-    const universe = new Foundation.Universe.Universe(creationOptions);
-    Root2.DevToolsContext.setGlobalInstance(universe.context);
+    this.#universe = new Foundation.Universe.Universe(creationOptions);
+    Root2.DevToolsContext.setGlobalInstance(this.#universe.context);
     await this.requestAndRegisterLocaleData();
     Host.userMetrics.syncSetting(Common2.Settings.Settings.instance().moduleSetting("sync-preferences").get());
     const veLogging = config.devToolsVeLogging;
@@ -712,6 +713,7 @@ var MainImpl = class {
     UI2.ZoomManager.ZoomManager.instance({ forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance });
     UI2.ContextMenu.ContextMenu.initialize();
     UI2.ContextMenu.ContextMenu.installHandler(document);
+    UI2.ViewManager.ViewManager.instance({ forceNew: true, universe: this.#universe });
     Logs.NetworkLog.NetworkLog.instance();
     SDK2.FrameManager.FrameManager.instance();
     Logs.LogManager.LogManager.instance();
@@ -727,6 +729,13 @@ var MainImpl = class {
     SDK2.DOMDebuggerModel.DOMDebuggerManager.instance({ forceNew: true });
     const targetManager = SDK2.TargetManager.TargetManager.instance();
     targetManager.addEventListener("SuspendStateChanged", this.#onSuspendStateChanged.bind(this));
+    SDK2.PageResourceLoader.PageResourceLoader.instance({
+      forceNew: true,
+      targetManager,
+      settings: Common2.Settings.Settings.instance(),
+      userAgentProvider: SDK2.NetworkManager.MultitargetNetworkManager.instance(),
+      loadOverride: null
+    });
     Workspace.FileManager.FileManager.instance({ forceNew: true });
     Bindings.NetworkProject.NetworkProjectManager.instance();
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
@@ -1154,7 +1163,7 @@ var MainMenuItem = class _MainMenuItem {
     contextMenu.defaultSection().appendAction("main.toggle-drawer", UI2.InspectorView.InspectorView.instance().drawerVisible() ? i18nString2(UIStrings2.hideConsoleDrawer) : i18nString2(UIStrings2.showConsoleDrawer));
     contextMenu.appendItemsAtLocation("mainMenu");
     const moreTools = contextMenu.defaultSection().appendSubMenuItem(i18nString2(UIStrings2.moreTools), false, "more-tools");
-    const viewExtensions = UI2.ViewManager.getRegisteredViewExtensions();
+    const viewExtensions = UI2.ViewManager.ViewManager.instance().getRegisteredViewExtensions();
     viewExtensions.sort((extension1, extension2) => {
       const title1 = extension1.title();
       const title2 = extension2.title();

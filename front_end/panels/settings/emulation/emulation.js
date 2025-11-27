@@ -9,7 +9,7 @@ var DevicesSettingsTab_exports = {};
 __export(DevicesSettingsTab_exports, {
   DevicesSettingsTab: () => DevicesSettingsTab
 });
-import "./../../../ui/kit/cards/cards.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as EmulationModel from "./../../../models/emulation/emulation.js";
 import * as UI from "./../../../ui/legacy/legacy.js";

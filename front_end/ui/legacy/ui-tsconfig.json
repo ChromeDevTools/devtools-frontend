@@ -112,6 +112,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../foundation/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
@@ -119,6 +122,9 @@
     },
     {
       "path": "theme_support/bundle-tsconfig.json"
+    },
+    {
+      "path": "../components/annotations/bundle-tsconfig.json"
     },
     {
       "path": "../components/buttons/bundle-tsconfig.json"

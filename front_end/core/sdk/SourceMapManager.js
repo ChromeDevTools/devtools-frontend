@@ -90,7 +90,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
                     this.#attachingClient = null;
                     const initiator = client.createPageResourceLoadInitiator();
                     clientData.sourceMapPromise =
-                        loadSourceMap(sourceMapURL, client.debugId(), initiator)
+                        loadSourceMap(PageResourceLoader.instance(), sourceMapURL, client.debugId(), initiator)
                             .then(payload => {
                             const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
                             if (this.#clientData.get(client) === clientData) {
@@ -155,7 +155,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.scopesFallbackPromiseForTest));
     }
 }
-export async function loadSourceMap(url, debugId, initiator) {
+async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
     try {
         if (debugId) {
             const cachedSourceMap = await SourceMapCache.instance().get(debugId);
@@ -163,7 +163,7 @@ export async function loadSourceMap(url, debugId, initiator) {
                 return cachedSourceMap;
             }
         }
-        const { content } = await PageResourceLoader.instance().loadResource(url, initiator);
+        const { content } = await pageResourceLoader.loadResource(url, initiator);
         const sourceMap = parseSourceMap(content);
         if ('debugId' in sourceMap && sourceMap.debugId) {
             // In case something goes wrong with updating the cache, we still want to use the source map.
@@ -175,9 +175,9 @@ export async function loadSourceMap(url, debugId, initiator) {
         throw new Error(`Could not load content for ${url}: ${cause.message}`, { cause });
     }
 }
-export async function tryLoadSourceMap(url, initiator) {
+export async function tryLoadSourceMap(pageResourceLoader, url, initiator) {
     try {
-        return await loadSourceMap(url, null, initiator);
+        return await loadSourceMap(pageResourceLoader, url, null, initiator);
     }
     catch (cause) {
         console.error(cause);

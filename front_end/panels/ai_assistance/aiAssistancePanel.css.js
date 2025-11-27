@@ -11,6 +11,7 @@ export default `/*
 
 .toolbar-container {
   display: flex;
+  flex-wrap: wrap;
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: 1px solid var(--sys-color-divider);
   flex: 0 0 auto;

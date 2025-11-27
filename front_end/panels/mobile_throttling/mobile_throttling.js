@@ -942,7 +942,7 @@ __export(ThrottlingSettingsTab_exports, {
   CPUThrottlingCard: () => CPUThrottlingCard,
   ThrottlingSettingsTab: () => ThrottlingSettingsTab
 });
-import "./../../ui/kit/cards/cards.js";
+import "./../../ui/kit/kit.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";

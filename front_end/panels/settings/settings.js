@@ -13,7 +13,7 @@ __export(SettingsScreen_exports, {
   Revealer: () => Revealer,
   SettingsScreen: () => SettingsScreen
 });
-import "./../../ui/kit/cards/cards.js";
+import "./../../ui/kit/kit.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -705,7 +705,7 @@ var Revealer = class {
         return;
       }
     }
-    for (const view of UI.ViewManager.getRegisteredViewExtensions()) {
+    for (const view of UI.ViewManager.ViewManager.instance().getRegisteredViewExtensions()) {
       const id = view.viewId();
       const location = view.location();
       if (location !== "settings-view") {
@@ -1696,7 +1696,7 @@ var FrameworkIgnoreListSettingsTab_exports = {};
 __export(FrameworkIgnoreListSettingsTab_exports, {
   FrameworkIgnoreListSettingsTab: () => FrameworkIgnoreListSettingsTab
 });
-import "./../../ui/kit/cards/cards.js";
+import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
@@ -2054,7 +2054,7 @@ __export(KeybindsSettingsTab_exports, {
   KeybindsSettingsTab: () => KeybindsSettingsTab,
   ShortcutListItem: () => ShortcutListItem
 });
-import "./../../ui/kit/cards/cards.js";
+import "./../../ui/kit/kit.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
@@ -2801,7 +2801,7 @@ __export(WorkspaceSettingsTab_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/buttons/buttons.js";
-import "./../../ui/kit/cards/cards.js";
+import "./../../ui/kit/kit.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Persistence from "./../../models/persistence/persistence.js";

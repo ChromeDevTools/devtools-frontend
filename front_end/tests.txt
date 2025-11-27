@@ -39,6 +39,7 @@ core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
 core/sdk/DebuggerModel.test.js
+core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
@@ -104,7 +105,6 @@ core/sdk/NetworkRequest.test.js
 core/sdk/OverlayColorGenerator.test.js
 core/sdk/OverlayModel.test.js
 core/sdk/OverlayPersistentHighlighter.test.js
-core/sdk/PageResourceLoader.test.js
 core/sdk/PreloadingModel.test.js
 core/sdk/RehydratingConnection.test.js
 core/sdk/RemoteObject.test.js
@@ -443,6 +443,7 @@ panels/linear_memory_inspector/components/LinearMemoryViewer.test.js
 panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.js
 panels/linear_memory_inspector/components/ValueInterpreterSettings.test.js
 panels/media/MainView.test.js
+panels/media/PlayerListView.test.js
 panels/media/TickingFlameChartHelpers.test.js
 panels/mobile_throttling/NetworkThrottlingSelector.test.js
 panels/mobile_throttling/ThrottlingManager.test.js
@@ -626,12 +627,14 @@ ui/components/expandable_list/ExpandableList.test.js
 ui/components/helpers/helpers.test.js
 ui/components/highlighting/HighlightElement.test.js
 ui/components/highlighting/HighlightManager.test.js
+ui/components/highlighting/MarkupHighlight.test.js
 ui/components/icon_button/FileSourceIcon.test.js
 ui/components/icon_button/Icon.test.js
 ui/components/icon_button/IconButton.test.js
 ui/components/issue_counter/IssueCounter.test.js
 ui/components/issue_counter/IssueLinkIcon.test.js
 ui/components/linkifier/LinkifierImpl.test.js
+ui/components/list/List.test.js
 ui/components/markdown_view/CodeBlock.test.js
 ui/components/markdown_view/MarkdownImage.test.js
 ui/components/markdown_view/MarkdownLink.test.js

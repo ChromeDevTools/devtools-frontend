@@ -1,4 +1,4 @@
-import '../../ui/kit/cards/cards.js';
+import '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<LocationDescription> {
     private readonly list;

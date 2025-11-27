@@ -9974,7 +9974,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
           frameId: script.frame,
           initiatorUrl: script.url
         };
-        rawSourceMap = await SDK7.SourceMapManager.tryLoadSourceMap(script.sourceMapUrl, initiator);
+        rawSourceMap = await SDK7.SourceMapManager.tryLoadSourceMap(SDK7.PageResourceLoader.PageResourceLoader.instance(), script.sourceMapUrl, initiator);
       }
       if (script.url && rawSourceMap) {
         metadata.sourceMaps?.push({ url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap });
@@ -10038,8 +10038,12 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       if (!sourceUrl) {
         return null;
       }
-      const initiator = { target: null, frameId: frame, initiatorUrl: sourceUrl };
-      const payload = await SDK7.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
+      const initiator = {
+        target: debuggerModelForFrameId.get(frame)?.target() ?? null,
+        frameId: frame,
+        initiatorUrl: sourceUrl
+      };
+      const payload = await SDK7.SourceMapManager.tryLoadSourceMap(SDK7.PageResourceLoader.PageResourceLoader.instance(), sourceMapUrl, initiator);
       return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };
   }

@@ -1340,6 +1340,11 @@ declare namespace ProtocolProxyApi {
     attributeModified(params: Protocol.DOM.AttributeModifiedEvent): void;
 
     /**
+     * Fired when `Element`'s adoptedStyleSheets are modified.
+     */
+    adoptedStyleSheetsModified(params: Protocol.DOM.AdoptedStyleSheetsModifiedEvent): void;
+
+    /**
      * Fired when `Element`'s attribute is removed.
      */
     attributeRemoved(params: Protocol.DOM.AttributeRemovedEvent): void;

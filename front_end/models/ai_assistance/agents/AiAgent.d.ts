@@ -181,7 +181,7 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
     /**
      * Function implementation that the LLM will try to execute,
      */
-    handler: (args: Args, options?: FunctionHandlerOptions) => Promise<FunctionCallHandlerResult<ReturnType>>;
+    handler(args: Args, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<ReturnType>>;
 }
 /**
  * AiAgent is a base class for implementing an interaction with AIDA

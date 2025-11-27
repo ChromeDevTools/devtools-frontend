@@ -10582,6 +10582,7 @@ import * as Badges4 from "./../../models/badges/badges.js";
 import * as Elements from "./../../models/elements/elements.js";
 import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
+import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import { html as html9, nothing as nothing3, render as render6 } from "./../../ui/lit/lit.js";
@@ -12650,7 +12651,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
         ++highlightIndex;
       }
       element.setTextContentTruncatedIfNeeded(value5);
-      UI15.UIUtils.highlightRangesWithStyleClass(element, result.entityRanges, "webkit-html-entity-value");
+      Highlighting2.highlightRangesWithStyleClass(element, result.entityRanges, "webkit-html-entity-value");
     }
     const hasText = forceValue || value4.length > 0;
     const attrSpanElement = parentElement.createChild("span", "webkit-html-attribute");
@@ -12864,7 +12865,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
           }
           const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
           textNodeElement.textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-          UI15.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
+          Highlighting2.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
           UI15.UIUtils.createTextChild(titleDOM, "\u200B");
           this.buildTagDOM(titleDOM, tagName, true, false, updateRecord);
           if (updateRecord?.hasChangedChildren()) {
@@ -12899,7 +12900,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
           textNodeElement.setAttribute("jslog", `${VisualLogging7.value("text-node").track({ change: true, dblclick: true })}`);
           const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
           textNodeElement.textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-          UI15.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
+          Highlighting2.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
           UI15.UIUtils.createTextChild(titleDOM, '"');
           if (updateRecord?.isCharDataModified()) {
             UI15.UIUtils.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
@@ -14350,7 +14351,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       treeElement.highlightSearchResults(query);
     }
     treeElement.reveal();
-    const matches = treeElement.listItemElement.getElementsByClassName(UI18.UIUtils.highlightedSearchResultClassName);
+    const matches = treeElement.listItemElement.getElementsByClassName(Highlighting3.highlightedSearchResultClassName);
     if (matches.length) {
       matches[0].scrollIntoViewIfNeeded(false);
     }

@@ -7,7 +7,7 @@ import type { Target } from './Target.js';
 export declare class CSSStyleDeclaration {
     #private;
     parentRule: CSSRule | null;
-    styleSheetId?: Protocol.CSS.StyleSheetId;
+    styleSheetId?: Protocol.DOM.StyleSheetId;
     range: TextUtils.TextRange.TextRange | null;
     cssText?: string;
     type: Type;

@@ -2384,7 +2384,6 @@ export declare namespace Browser {
  * subsequently load the required stylesheet contents using the `getStyleSheet[Text]()` methods.
  */
 export declare namespace CSS {
-    type StyleSheetId = OpaqueIdentifier<string, 'Protocol.CSS.StyleSheetId'>;
     /**
      * Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for user-agent
      * stylesheets, "inspector" for stylesheets created by the inspector (i.e. those holding the "via
@@ -2530,7 +2529,7 @@ export declare namespace CSS {
         /**
          * The stylesheet identifier.
          */
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         /**
          * Owner frame identifier.
          */
@@ -2615,7 +2614,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Rule selector data.
          */
@@ -2692,7 +2691,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         /**
          * Offset of the start of the rule (including selector) from the beginning of the stylesheet.
          */
@@ -2767,7 +2766,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * CSS properties in the style.
          */
@@ -2860,7 +2859,7 @@ export declare namespace CSS {
         /**
          * Identifier of the stylesheet containing this object (if exists).
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Array of media queries.
          */
@@ -2920,7 +2919,7 @@ export declare namespace CSS {
         /**
          * Identifier of the stylesheet containing this object (if exists).
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Optional name for the container.
          */
@@ -2962,7 +2961,7 @@ export declare namespace CSS {
         /**
          * Identifier of the stylesheet containing this object (if exists).
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
     }
     /**
      * CSS Scope at-rule descriptor.
@@ -2980,7 +2979,7 @@ export declare namespace CSS {
         /**
          * Identifier of the stylesheet containing this object (if exists).
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
     }
     /**
      * CSS Layer at-rule descriptor.
@@ -2998,7 +2997,7 @@ export declare namespace CSS {
         /**
          * Identifier of the stylesheet containing this object (if exists).
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
     }
     /**
      * CSS Starting Style at-rule descriptor.
@@ -3012,7 +3011,7 @@ export declare namespace CSS {
         /**
          * Identifier of the stylesheet containing this object (if exists).
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
     }
     /**
      * CSS Layer data.
@@ -3132,7 +3131,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Parent stylesheet's origin.
          */
@@ -3154,7 +3153,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Parent stylesheet's origin.
          */
@@ -3221,7 +3220,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Parent stylesheet's origin.
          */
@@ -3239,7 +3238,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Parent stylesheet's origin.
          */
@@ -3316,7 +3315,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Parent stylesheet's origin.
          */
@@ -3338,7 +3337,7 @@ export declare namespace CSS {
          * The css style sheet identifier (absent for user agent stylesheet and user-specified
          * stylesheet rules) this rule came from.
          */
-        styleSheetId?: StyleSheetId;
+        styleSheetId?: DOM.StyleSheetId;
         /**
          * Parent stylesheet's origin.
          */
@@ -3359,7 +3358,7 @@ export declare namespace CSS {
         /**
          * The css style sheet identifier.
          */
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         /**
          * The range of the style text in the enclosing stylesheet.
          */
@@ -3373,7 +3372,7 @@ export declare namespace CSS {
         /**
          * The css style sheet identifier where a new rule should be inserted.
          */
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         /**
          * The text of a new rule.
          */
@@ -3396,7 +3395,7 @@ export declare namespace CSS {
         rule: CSSRule;
     }
     interface CollectClassNamesRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
     }
     interface CollectClassNamesResponse extends ProtocolResponseWithError {
         /**
@@ -3421,7 +3420,7 @@ export declare namespace CSS {
         /**
          * Identifier of the created "via-inspector" stylesheet.
          */
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
     }
     interface ForcePseudoStateRequest {
         /**
@@ -3624,7 +3623,7 @@ export declare namespace CSS {
         fonts: PlatformFontUsage[];
     }
     interface GetStyleSheetTextRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
     }
     interface GetStyleSheetTextResponse extends ProtocolResponseWithError {
         /**
@@ -3639,7 +3638,7 @@ export declare namespace CSS {
         rootLayer: CSSLayerData;
     }
     interface GetLocationForSelectorRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         selectorText: string;
     }
     interface GetLocationForSelectorResponse extends ProtocolResponseWithError {
@@ -3666,7 +3665,7 @@ export declare namespace CSS {
         value: string;
     }
     interface SetPropertyRulePropertyNameRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         propertyName: string;
     }
@@ -3677,7 +3676,7 @@ export declare namespace CSS {
         propertyName: Value;
     }
     interface SetKeyframeKeyRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         keyText: string;
     }
@@ -3688,7 +3687,7 @@ export declare namespace CSS {
         keyText: Value;
     }
     interface SetMediaTextRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         text: string;
     }
@@ -3699,7 +3698,7 @@ export declare namespace CSS {
         media: CSSMedia;
     }
     interface SetContainerQueryTextRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         text: string;
     }
@@ -3710,7 +3709,7 @@ export declare namespace CSS {
         containerQuery: CSSContainerQuery;
     }
     interface SetSupportsTextRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         text: string;
     }
@@ -3721,7 +3720,7 @@ export declare namespace CSS {
         supports: CSSSupports;
     }
     interface SetScopeTextRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         text: string;
     }
@@ -3732,7 +3731,7 @@ export declare namespace CSS {
         scope: CSSScope;
     }
     interface SetRuleSelectorRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         range: SourceRange;
         selector: string;
     }
@@ -3743,7 +3742,7 @@ export declare namespace CSS {
         selectorList: SelectorList;
     }
     interface SetStyleSheetTextRequest {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
         text: string;
     }
     interface SetStyleSheetTextResponse extends ProtocolResponseWithError {
@@ -3806,7 +3805,7 @@ export declare namespace CSS {
      * Fired whenever a stylesheet is changed as a result of the client operation.
      */
     interface StyleSheetChangedEvent {
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
     }
     /**
      * Fired whenever an active document stylesheet is removed.
@@ -3815,7 +3814,7 @@ export declare namespace CSS {
         /**
          * Identifier of the removed stylesheet.
          */
-        styleSheetId: StyleSheetId;
+        styleSheetId: DOM.StyleSheetId;
     }
     interface ComputedStyleUpdatedEvent {
         /**
@@ -4066,6 +4065,10 @@ export declare namespace DOM {
      */
     type BackendNodeId = OpaqueIdentifier<integer, 'Protocol.DOM.BackendNodeId'>;
     /**
+     * Unique identifier for a CSS stylesheet.
+     */
+    type StyleSheetId = OpaqueIdentifier<string, 'Protocol.DOM.StyleSheetId'>;
+    /**
      * Backend node with a friendly name.
      */
     interface BackendNode {
@@ -4295,6 +4298,7 @@ export declare namespace DOM {
         assignedSlot?: BackendNode;
         isScrollable?: boolean;
         affectedByStartingStyles?: boolean;
+        adoptedStyleSheets?: StyleSheetId[];
     }
     /**
      * A structure to hold the top-level node of a detached tree and an array of its retained descendants.
@@ -5124,6 +5128,19 @@ export declare namespace DOM {
          * Attribute value.
          */
         value: string;
+    }
+    /**
+     * Fired when `Element`'s adoptedStyleSheets are modified.
+     */
+    interface AdoptedStyleSheetsModifiedEvent {
+        /**
+         * Id of the node that has changed.
+         */
+        nodeId: NodeId;
+        /**
+         * New adoptedStyleSheets array.
+         */
+        adoptedStyleSheets: StyleSheetId[];
     }
     /**
      * Fired when `Element`'s attribute is removed.
@@ -12590,6 +12607,7 @@ export declare namespace Page {
         AmbientLightSensor = "ambient-light-sensor",
         AriaNotify = "aria-notify",
         AttributionReporting = "attribution-reporting",
+        Autofill = "autofill",
         Autoplay = "autoplay",
         Bluetooth = "bluetooth",
         BrowsingTopics = "browsing-topics",
@@ -12655,6 +12673,7 @@ export declare namespace Page {
         LocalFonts = "local-fonts",
         LocalNetworkAccess = "local-network-access",
         Magnetometer = "magnetometer",
+        ManualText = "manual-text",
         MediaPlaybackWhileNotVisible = "media-playback-while-not-visible",
         Microphone = "microphone",
         Midi = "midi",
@@ -12672,7 +12691,6 @@ export declare namespace Page {
         RunAdAuction = "run-ad-auction",
         ScreenWakeLock = "screen-wake-lock",
         Serial = "serial",
-        SharedAutofill = "shared-autofill",
         SharedStorage = "shared-storage",
         SharedStorageSelectUrl = "shared-storage-select-url",
         SmartCard = "smart-card",

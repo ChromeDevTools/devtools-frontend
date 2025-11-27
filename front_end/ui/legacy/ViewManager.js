@@ -32,9 +32,11 @@ export const defaultOptionsForTabs = {
 };
 export class PreRegisteredView {
     viewRegistration;
+    universe;
     widgetPromise;
-    constructor(viewRegistration) {
+    constructor(viewRegistration, universe) {
         this.viewRegistration = viewRegistration;
+        this.universe = universe;
         this.widgetPromise = null;
     }
     title() {
@@ -89,7 +91,10 @@ export class PreRegisteredView {
     }
     widget() {
         if (this.widgetPromise === null) {
-            this.widgetPromise = this.viewRegistration.loadView();
+            if (!this.universe) {
+                throw new Error('Creating views via ViewManager requires a Foundation.Universe');
+            }
+            this.widgetPromise = this.viewRegistration.loadView(this.universe);
         }
         return this.widgetPromise;
     }
@@ -112,7 +117,10 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
     views = new Map();
     locationNameByViewId = new Map();
     locationOverrideSetting;
-    constructor() {
+    preRegisteredViews = [];
+    // TODO(crbug.com/458180550): Pass the universe unconditionally once tests no longer rely
+    //   on `instance()` to create ViewManagers lazily in after/afterEach blocks.
+    constructor(universe) {
         super();
         // Read override setting for location
         this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('views-location-override', {});
@@ -121,9 +129,9 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
         // default ordering as defined by the views themselves.
         const viewsByLocation = new Map();
         for (const view of getRegisteredViewExtensions()) {
-            const location = view.location() || 'none';
+            const location = view.location || 'none';
             const views = viewsByLocation.get(location) || [];
-            views.push(view);
+            views.push(new PreRegisteredView(view, universe));
             viewsByLocation.set(location, views);
         }
         let sortedViewExtensions = [];
@@ -148,15 +156,16 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
                 throw new Error(`Invalid view ID '${viewId}'`);
             }
             this.views.set(viewId, view);
+            this.preRegisteredViews.push(view);
             // Use the preferred user location if available
             const locationName = preferredExtensionLocations[viewId] || location;
             this.locationNameByViewId.set(viewId, locationName);
         }
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, universe } = opts;
         if (!viewManagerInstance || forceNew) {
-            viewManagerInstance = new ViewManager();
+            viewManagerInstance = new ViewManager(universe);
         }
         return viewManagerInstance;
     }
@@ -172,6 +181,9 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
             toolbar.appendToolbarItem(item);
         }
         return toolbar;
+    }
+    getRegisteredViewExtensions() {
+        return this.preRegisteredViews;
     }
     locationNameForViewId(viewId) {
         const locationName = this.locationNameByViewId.get(viewId);
@@ -829,5 +841,5 @@ class StackLocation extends Location {
         }
     }
 }
-export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, };
+export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, };
 //# sourceMappingURL=ViewManager.js.map

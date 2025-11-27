@@ -102,6 +102,9 @@
       "path": "../../ui/components/code_highlighter/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/highlighting/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/icon_button/bundle-tsconfig.json"
     },
     {

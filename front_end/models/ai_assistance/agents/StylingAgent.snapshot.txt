@@ -399,6 +399,11 @@ Content:
     "type": "querying"
   },
   {
+    "type": "answer",
+    "text": "this is my text before the actual answer",
+    "complete": true
+  },
+  {
     "type": "thought",
     "thought": "I am thinking."
   },

@@ -530,7 +530,7 @@ describeWithEnvironment('StylingAgent', function() {
               name: 'executeJavaScript',
               args: {thought: 'I am thinking.', code: 'console.log(\'hello\');'},
             }],
-            explanation: 'this is the answer',
+            explanation: 'this is my text before the actual answer',
           }],
           [{
             explanation: 'this is the actual answer',

@@ -473,5 +473,46 @@ describeWithEnvironment('AiAgent', () => {
           }],
       );
     });
+
+    it('should add explanation to history when function call is present', async () => {
+      const agent = new AgentWithFunction({
+        aidaClient: mockAidaClient([
+          [
+            {
+              explanation: 'This is the explanation',
+              functionCalls: [{
+                name: 'testFn',
+                args: {arg: 'test'},
+              }],
+            },
+          ],
+          [{
+            explanation: 'Final answer',
+          }]
+        ]),
+      });
+
+      await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+      const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
+      // History should contain:
+      // 1. User query
+      // 2. Model explanation + function call
+      // 3. Function result (user role)
+      // 4. Model final answer
+      assert.lengthOf(request.historical_contexts ?? [], 4);
+      assert.deepEqual(request.historical_contexts?.[1], {
+        role: Host.AidaClient.Role.MODEL,
+        parts: [
+          {text: 'This is the explanation'},
+          {
+            functionCall: {
+              name: 'testFn',
+              args: {arg: 'test'},
+            },
+          },
+        ],
+      });
+    });
   });
 });

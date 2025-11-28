@@ -369,10 +369,13 @@ export function isOpeningTag(context: TagTypeContext): context is OpeningTagCont
 export interface ViewInput {
   containerAdornerActive: boolean;
   flexAdornerActive: boolean;
+  gridAdornerActive: boolean;
 
   showAdAdorner: boolean;
   showContainerAdorner: boolean;
   showFlexAdorner: boolean;
+  showGridAdorner: boolean;
+  isSubgrid: boolean;
 
   adorners?: Set<Adorners.Adorner.Adorner>;
   nodeInfo?: DocumentFragment;
@@ -382,6 +385,7 @@ export interface ViewInput {
   onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
   onContainerAdornerClick: (e: Event) => void;
   onFlexAdornerClick: (e: Event) => void;
+  onGridAdornerClick: (e: Event) => void;
 }
 
 export interface ViewOutput {
@@ -410,8 +414,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER);
   const flexAdornerConfig =
       ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
-  const hasAdorners =
-      input.adorners?.size || input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner;
+  const gridAdornerConfig =
+      ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
+  const subgridAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
+      ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID);
+  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
+      input.showFlexAdorner || input.showGridAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -454,7 +462,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           .data=${{name: flexAdornerConfig.name, jslogContext: flexAdornerConfig.name}}
           jslog=${VisualLogging.adorner(flexAdornerConfig.name).track({click: true})}
           active=${input.flexAdornerActive}
-          aria-label=${input.flexAdornerActive ? i18nString(UIStrings.enableFlexMode) : i18nString(UIStrings.disableFlexMode)}
+          aria-label=${input.flexAdornerActive ? i18nString(UIStrings.disableFlexMode) : i18nString(UIStrings.enableFlexMode)}
           @click=${input.onFlexAdornerClick}
           @keydown=${(event: KeyboardEvent) => {
             if (event.code === 'Enter' || event.code === 'Space') {
@@ -464,6 +472,28 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           }}
           ${adornerRef(input)}>
           <span>${flexAdornerConfig.name}</span>
+        </devtools-adorner>`: nothing}
+        ${input.showGridAdorner ? html`<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .data=${{
+            name: input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name,
+            jslogContext: input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name,
+          }}
+          jslog=${VisualLogging.adorner(input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name).track({click: true})}
+          active=${input.gridAdornerActive}
+          aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridMode) : i18nString(UIStrings.enableGridMode)}
+          @click=${input.onGridAdornerClick}
+          @keydown=${(event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'Space') {
+              input.onGridAdornerClick(event);
+              event.stopPropagation();
+            }
+          }}
+          ${adornerRef(input)}>
+          <span>${input.isSubgrid ? subgridAdornerConfig.name : gridAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
           return adorner;
@@ -505,6 +535,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   #nodeInfo?: DocumentFragment;
   #containerAdornerActive = false;
   #flexAdornerActive = false;
+  #gridAdornerActive = false;
   #layout: SDK.CSSModel.LayoutProperties|null = null;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
@@ -576,6 +607,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             return;
           }
           this.#flexAdornerActive = enabled;
+          this.performUpdate();
+        });
+    node.domModel().overlayModel().addEventListener(
+        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, event => {
+          const {nodeId: eventNodeId, enabled} = event.data;
+          if (eventNodeId !== node.id) {
+            return;
+          }
+          this.#gridAdornerActive = enabled;
           this.performUpdate();
         });
   }
@@ -652,6 +692,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
               ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX) &&
               Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
           flexAdornerActive: this.#flexAdornerActive,
+          showGridAdorner:
+              ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.GRID) &&
+              Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
+          gridAdornerActive: this.#gridAdornerActive,
+          isSubgrid: Boolean(this.#layout?.isSubgrid),
           nodeInfo: this.#nodeInfo,
           onGutterClick: this.showContextMenu.bind(this),
           onAdornerAdded: adorner => {
@@ -662,6 +707,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           },
           onContainerAdornerClick: (event: Event) => this.#onContainerAdornerClick(event),
           onFlexAdornerClick: (event: Event) => this.#onFlexAdornerClick(event),
+          onGridAdornerClick: (event: Event) => this.#onGridAdornerClick(event),
         },
         this, this.listItemElement);
   }
@@ -700,6 +746,27 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       model.highlightFlexContainerInPersistentOverlay(nodeId);
       this.#flexAdornerActive = true;
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    }
+    void this.updateAdorners();
+  }
+
+  #onGridAdornerClick(event: Event): void {
+    event.stopPropagation();
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return;
+    }
+    const model = node.domModel().overlayModel();
+    if (model.isHighlightedGridInPersistentOverlay(nodeId)) {
+      model.hideGridInPersistentOverlay(nodeId);
+      this.#gridAdornerActive = false;
+    } else {
+      model.highlightGridInPersistentOverlay(nodeId);
+      this.#gridAdornerActive = true;
+      if (this.#layout?.isSubgrid) {
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+      }
     }
     void this.updateAdorners();
   }
@@ -2777,9 +2844,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE);
     this.removeAdornersByType(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
     if (layout) {
-      if (layout.isGrid) {
-        this.pushGridAdorner(layout.isSubgrid);
-      }
       if (layout.isGridLanes) {
         this.pushGridLanesAdorner();
       }
@@ -2837,51 +2901,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     this.#adorners.add(adorner);
-  }
-
-  pushGridAdorner(isSubgrid: boolean): void {
-    const node = this.node();
-    const nodeId = node.id;
-    if (!nodeId) {
-      return;
-    }
-
-    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID :
-                    ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
-    const adorner = this.adorn(config);
-    adorner.classList.add('grid');
-
-    const onClick = ((() => {
-                       if (adorner.isActive()) {
-                         node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
-                         if (isSubgrid) {
-                           Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-                         }
-                       } else {
-                         node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
-                       }
-                     }) as EventListener);
-    adorner.addInteraction(onClick, {
-      isToggle: true,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString(UIStrings.enableGridMode),
-      ariaLabelActive: i18nString(UIStrings.disableGridMode),
-    });
-
-    node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, event => {
-          const {nodeId: eventNodeId, enabled} = event.data;
-          if (eventNodeId !== nodeId) {
-            return;
-          }
-          adorner.toggle(enabled);
-        });
-
-    this.#adorners.add(adorner);
-    if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
-    }
   }
 
   pushGridLanesAdorner(): void {

@@ -9,8 +9,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -386,7 +386,7 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox {
     createExperimentsWarningSubsection(warningMessage) {
         const subsection = document.createElement('div');
         subsection.classList.add('experiments-warning-subsection');
-        const warningIcon = IconButton.Icon.create('warning');
+        const warningIcon = createIcon('warning');
         subsection.appendChild(warningIcon);
         const warning = subsection.createChild('span');
         warning.textContent = warningMessage;

@@ -49,7 +49,7 @@
       "path": "../../visual_logging/bundle-tsconfig.json"
     },
     {
-      "path": "../icon_button/bundle-tsconfig.json"
+      "path": "../../kit/bundle-tsconfig.json"
     }
   ]
 }

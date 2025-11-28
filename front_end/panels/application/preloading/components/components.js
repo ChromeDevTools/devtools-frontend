@@ -1494,7 +1494,7 @@ __export(PreloadingGrid_exports, {
   i18nString: () => i18nString5
 });
 import "./../../../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as Common2 from "./../../../../core/common/common.js";
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
@@ -1865,7 +1865,7 @@ __export(RuleSetGrid_exports, {
   i18nString: () => i18nString8
 });
 import "./../../../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as Common3 from "./../../../../core/common/common.js";
 import * as i18n15 from "./../../../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "./../../../../core/platform/platform.js";
@@ -2057,7 +2057,7 @@ var UsedPreloadingView_exports = {};
 __export(UsedPreloadingView_exports, {
   UsedPreloadingView: () => UsedPreloadingView
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import "./../../../../ui/components/report_view/report_view.js";
 import * as Common4 from "./../../../../core/common/common.js";
 import * as i18n17 from "./../../../../core/i18n/i18n.js";

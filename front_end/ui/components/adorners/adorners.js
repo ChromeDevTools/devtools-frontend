@@ -89,6 +89,7 @@ slot {
 
 // gen/front_end/ui/components/adorners/Adorner.js
 var Adorner = class extends HTMLElement {
+  static observedAttributes = ["active", "toggleable"];
   name = "";
   #shadow = this.attachShadow({ mode: "open" });
   #isToggle = false;
@@ -119,6 +120,19 @@ var Adorner = class extends HTMLElement {
       this.setAttribute("jslog", `${VisualElements.adorner(this.#jslogContext)}`);
     }
     this.#render();
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+    switch (name) {
+      case "active":
+        this.toggle(newValue === "true");
+        break;
+      case "toggleable":
+        this.#isToggle = newValue === "true";
+        break;
+    }
   }
   isActive() {
     return this.getAttribute("aria-pressed") === "true";

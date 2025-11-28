@@ -82,13 +82,13 @@
       "path": "../../../../third_party/acorn/bundle-tsconfig.json"
     },
     {
-      "path": "../../../components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../components/text_editor/bundle-tsconfig.json"
     },
     {
       "path": "../../../i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../kit/bundle-tsconfig.json"
     },
     {
       "path": "../../bundle-tsconfig.json"

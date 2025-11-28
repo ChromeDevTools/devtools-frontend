@@ -9,7 +9,7 @@ var LinearMemoryHighlightChipList_exports = {};
 __export(LinearMemoryHighlightChipList_exports, {
   LinearMemoryHighlightChipList: () => LinearMemoryHighlightChipList
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import { Directives, html, render } from "./../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
@@ -233,7 +233,7 @@ __export(LinearMemoryValueInterpreter_exports, {
   LinearMemoryValueInterpreter: () => LinearMemoryValueInterpreter,
   ValueTypeToggledEvent: () => ValueTypeToggledEvent
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.js
 var ValueInterpreterDisplay_exports = {};
@@ -242,7 +242,7 @@ __export(ValueInterpreterDisplay_exports, {
   ValueInterpreterDisplay: () => ValueInterpreterDisplay,
   ValueTypeModeChangedEvent: () => ValueTypeModeChangedEvent
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as UI from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
@@ -1734,7 +1734,7 @@ __export(LinearMemoryNavigator_exports, {
   PageNavigationEvent: () => PageNavigationEvent,
   RefreshRequestedEvent: () => RefreshRequestedEvent
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n13 from "./../../../core/i18n/i18n.js";
 import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";

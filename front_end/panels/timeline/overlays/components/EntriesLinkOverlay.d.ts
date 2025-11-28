@@ -1,4 +1,4 @@
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import * as Trace from '../../../../models/trace/trace.js';
 export declare class EntryLinkStartCreating extends Event {
     static readonly eventName = "entrylinkstartcreating";

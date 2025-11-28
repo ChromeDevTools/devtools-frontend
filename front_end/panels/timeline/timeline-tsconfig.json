@@ -150,9 +150,6 @@
       "path": "../../ui/components/code_highlighter/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/linkifier/bundle-tsconfig.json"
     },
     {
@@ -163,6 +160,9 @@
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.json"

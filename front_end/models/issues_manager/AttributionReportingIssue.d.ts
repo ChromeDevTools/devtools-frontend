@@ -26,8 +26,7 @@ export declare const enum IssueCode {
     NAVIGATION_REGISTRATION_UNIQUE_SCOPE_ALREADY_SET = "AttributionReportingIssue::NavigationRegistrationUniqueScopeAlreadySet",
     UNKNOWN = "AttributionReportingIssue::Unknown"
 }
-export declare class AttributionReportingIssue extends Issue<IssueCode> {
-    issueDetails: Readonly<Protocol.Audits.AttributionReportingIssueDetails>;
+export declare class AttributionReportingIssue extends Issue<Protocol.Audits.AttributionReportingIssueDetails, IssueCode> {
     constructor(issueDetails: Protocol.Audits.AttributionReportingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null);
     getCategory(): IssueCategory;
     getHeaderValidatorLink(name: string): {

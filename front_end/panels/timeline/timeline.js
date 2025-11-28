@@ -5471,7 +5471,7 @@ import * as Common7 from "./../../core/common/common.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as Trace18 from "./../../models/trace/trace.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -6559,7 +6559,7 @@ var DropDown = class _DropDown {
     div.classList.add("preview-item");
     div.classList.add("landing-page-item");
     div.style.width = `${previewWidth}px`;
-    const icon = IconButton.Icon.create("arrow-back");
+    const icon = createIcon("arrow-back");
     icon.title = i18nString16(UIStrings16.backButtonTooltip);
     icon.classList.add("back-arrow");
     div.appendChild(icon);
@@ -8159,8 +8159,10 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   #classicNavRadioButton = UI10.UIUtils.createRadioButton("flamechart-selected-navigation", "Classic - scroll to zoom", "timeline.select-classic-navigation");
   #onMainEntryHovered;
   #hiddenTracksInfoBarByParsedTrace = /* @__PURE__ */ new WeakMap();
-  constructor(traceModel) {
+  #resourceLoader;
+  constructor(resourceLoader, traceModel) {
     super("timeline");
+    this.#resourceLoader = resourceLoader;
     this.registerRequiredCSS(timelinePanel_css_default);
     const adornerContent = document.createElement("span");
     adornerContent.innerHTML = `<div style="
@@ -8398,10 +8400,12 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.#thirdPartyCheckbox?.setIndeterminate(disabled);
     }
   }
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!timelinePanelInstance || forceNew) {
-      timelinePanelInstance = new _TimelinePanel(opts.traceModel);
+  static instance(opts = void 0) {
+    if (opts) {
+      timelinePanelInstance = new _TimelinePanel(opts.resourceLoader, opts.traceModel);
+    }
+    if (!timelinePanelInstance) {
+      throw new Error("No TimelinePanel instance");
     }
     return timelinePanelInstance;
   }
@@ -9974,7 +9978,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
           frameId: script.frame,
           initiatorUrl: script.url
         };
-        rawSourceMap = await SDK7.SourceMapManager.tryLoadSourceMap(SDK7.PageResourceLoader.PageResourceLoader.instance(), script.sourceMapUrl, initiator);
+        rawSourceMap = await SDK7.SourceMapManager.tryLoadSourceMap(this.#resourceLoader, script.sourceMapUrl, initiator);
       }
       if (script.url && rawSourceMap) {
         metadata.sourceMaps?.push({ url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap });
@@ -10043,7 +10047,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         frameId: frame,
         initiatorUrl: sourceUrl
       };
-      const payload = await SDK7.SourceMapManager.tryLoadSourceMap(SDK7.PageResourceLoader.PageResourceLoader.instance(), sourceMapUrl, initiator);
+      const payload = await SDK7.SourceMapManager.tryLoadSourceMap(_TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
       return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };
   }

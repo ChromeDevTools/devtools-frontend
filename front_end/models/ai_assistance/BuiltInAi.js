@@ -1,14 +1,17 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 let builtInAiInstance;
-export class BuiltInAi {
+export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper {
     #availability = null;
     #hasGpu;
     #consoleInsightsSession;
     initDoneForTesting;
+    #downloadProgress = null;
+    #currentlyCreatingSession = false;
     static instance() {
         if (builtInAiInstance === undefined) {
             builtInAiInstance = new BuiltInAi();
@@ -16,9 +19,10 @@ export class BuiltInAi {
         return builtInAiInstance;
     }
     constructor() {
+        super();
         this.#hasGpu = this.#isGpuAvailable();
         this.initDoneForTesting =
-            this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+            this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
     }
     async getLanguageModelAvailability() {
         if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
@@ -27,12 +31,52 @@ export class BuiltInAi {
         }
         try {
             // @ts-expect-error
-            this.#availability = await window.LanguageModel.availability({ expectedOutputs: [{ type: 'text', languages: ['en'] }] });
+            this.#availability = await window.LanguageModel.availability({
+                expectedInputs: [{
+                        type: 'text',
+                        languages: ['en'],
+                    }],
+                expectedOutputs: [{
+                        type: 'text',
+                        languages: ['en'],
+                    }],
+            });
         }
         catch {
             this.#availability = "unavailable" /* LanguageModelAvailability.UNAVAILABLE */;
         }
         return this.#availability;
+    }
+    isDownloading() {
+        return this.#availability === "downloading" /* LanguageModelAvailability.DOWNLOADING */;
+    }
+    isEventuallyAvailable() {
+        if (!this.#hasGpu && !Boolean(Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu)) {
+            return false;
+        }
+        return this.#availability === "available" /* LanguageModelAvailability.AVAILABLE */ ||
+            this.#availability === "downloading" /* LanguageModelAvailability.DOWNLOADING */ ||
+            this.#availability === "downloadable" /* LanguageModelAvailability.DOWNLOADABLE */;
+    }
+    #setDownloadProgress(newValue) {
+        this.#downloadProgress = newValue;
+        this.dispatchEventToListeners("downloadProgressChanged" /* Events.DOWNLOAD_PROGRESS_CHANGED */, this.#downloadProgress);
+    }
+    getDownloadProgress() {
+        return this.#downloadProgress;
+    }
+    startDownloadingModel() {
+        if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+            return;
+        }
+        if (this.#availability !== "downloadable" /* LanguageModelAvailability.DOWNLOADABLE */) {
+            return;
+        }
+        void this.#createSession();
+        // Without the timeout, the returned availability would still be `downloadable`
+        setTimeout(() => {
+            void this.getLanguageModelAvailability();
+        }, 1000);
     }
     #isGpuAvailable() {
         const canvas = document.createElement('canvas');
@@ -62,15 +106,26 @@ export class BuiltInAi {
         if (!Root.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
             return;
         }
-        if (this.#availability !== "available" /* LanguageModelAvailability.AVAILABLE */) {
+        if (this.#availability !== "available" /* LanguageModelAvailability.AVAILABLE */ &&
+            this.#availability !== "downloading" /* LanguageModelAvailability.DOWNLOADING */) {
             return;
         }
         await this.#createSession();
     }
     async #createSession() {
+        if (this.#currentlyCreatingSession) {
+            return;
+        }
+        this.#currentlyCreatingSession = true;
+        const monitor = (m) => {
+            m.addEventListener('downloadprogress', ((e) => {
+                this.#setDownloadProgress(e.loaded);
+            }));
+        };
         try {
             // @ts-expect-error
             this.#consoleInsightsSession = await window.LanguageModel.create({
+                monitor,
                 initialPrompts: [{
                         role: 'system',
                         content: `
@@ -100,12 +155,14 @@ Your instructions are as follows:
                     }],
             });
             if (this.#availability !== "available" /* LanguageModelAvailability.AVAILABLE */) {
+                this.dispatchEventToListeners("downloadedAndSessionCreated" /* Events.DOWNLOADED_AND_SESSION_CREATED */);
                 void this.getLanguageModelAvailability();
             }
         }
         catch (e) {
             console.error('Error when creating LanguageModel session', e.message);
         }
+        this.#currentlyCreatingSession = false;
     }
     static removeInstance() {
         builtInAiInstance = undefined;

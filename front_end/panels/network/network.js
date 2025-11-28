@@ -2026,7 +2026,7 @@ import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Logs2 from "./../../models/logs/logs.js";
 import * as NetworkForward from "./forward/forward.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
@@ -3183,7 +3183,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       case "preflight": {
         cell.appendChild(document.createTextNode(i18nString5(UIStrings5.preflight)));
         if (initiator.initiatorRequest) {
-          const icon = IconButton.Icon.create("arrow-up-down-circle");
+          const icon = createIcon("arrow-up-down-circle");
           const link3 = Components.Linkifier.Linkifier.linkifyRevealable(initiator.initiatorRequest, icon, void 0, i18nString5(UIStrings5.selectTheRequestThatTriggered), "trailing-link-icon", "initator-request");
           UI5.ARIAUtils.setLabel(link3, i18nString5(UIStrings5.selectTheRequestThatTriggered));
           cell.appendChild(link3);
@@ -3252,7 +3252,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const throttlingConditions = this.throttlingConditions();
     if (throttlingConditions?.urlPattern) {
       const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === "string" ? throttlingConditions.conditions.title : throttlingConditions.conditions.title();
-      const icon = IconButton.Icon.create("watch");
+      const icon = createIcon("watch");
       icon.title = i18nString5(UIStrings5.wasThrottled, { PH1: throttlingConditionsTitle });
       icon.addEventListener("click", () => void Common4.Revealer.reveal(throttlingConditions));
       cell.append(icon);
@@ -3336,8 +3336,8 @@ import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as NetworkForward2 from "./forward/forward.js";
-import * as IconButton4 from "./../../ui/components/icon_button/icon_button.js";
 import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents from "./components/components.js";
@@ -3350,8 +3350,8 @@ __export(RequestCookiesView_exports, {
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
 import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
@@ -3612,7 +3612,7 @@ var RequestCookiesView = class extends UI6.Widget.Widget {
       this.malformedResponseCookiesList.removeChildren();
       for (const malformedCookie of malformedResponseCookies) {
         const listItem = this.malformedResponseCookiesList.createChild("span", "cookie-line source-code");
-        const icon = new IconButton2.Icon.Icon();
+        const icon = new Icon();
         icon.name = "cross-circle-filled";
         icon.classList.add("cookie-warning-icon", "small");
         listItem.appendChild(icon);
@@ -4721,7 +4721,7 @@ __export(SignedExchangeInfoView_exports, {
 });
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
+import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 
@@ -4953,7 +4953,7 @@ var SignedExchangeInfoView = class extends UI10.Widget.VBox {
       const errorMessagesCategory = new Category2(root, i18nString9(UIStrings9.errors));
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();
-        const icon = new IconButton3.Icon.Icon();
+        const icon = new Icon2();
         icon.name = "cross-circle-filled";
         icon.classList.add("prompt-icon", "small");
         fragment.appendChild(icon);
@@ -7020,7 +7020,7 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
       this.appendTab("preview", i18nString16(UIStrings16.preview), previewView, i18nString16(UIStrings16.responsePreview));
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
-        const icon = new IconButton4.Icon.Icon();
+        const icon = new Icon3();
         icon.name = "cross-circle-filled";
         icon.classList.add("small");
         UI17.Tooltip.Tooltip.install(icon, i18nString16(UIStrings16.signedexchangeError));
@@ -7072,7 +7072,7 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
       this.appendTab("cookies", i18nString16(UIStrings16.cookies), this.#cookiesView, i18nString16(UIStrings16.requestAndResponseCookies));
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
-      const icon = new IconButton4.Icon.Icon();
+      const icon = new Icon3();
       icon.name = "warning-filled";
       icon.classList.add("small");
       icon.title = i18nString16(UIStrings16.thirdPartyPhaseout);
@@ -7104,7 +7104,7 @@ var NetworkItemView = class extends UI17.TabbedPane.TabbedPane {
   maybeShowErrorIconInTrustTokenTabHeader() {
     const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
     if (trustTokenResult && !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
-      const icon = new IconButton4.Icon.Icon();
+      const icon = new Icon3();
       icon.name = "cross-circle-filled";
       icon.classList.add("small");
       this.setTabIcon("trust-tokens", icon);
@@ -7192,7 +7192,7 @@ __export(NetworkFrameGrouper_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as IconButton5 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 var NetworkFrameGrouper = class {
   parentView;
@@ -7232,7 +7232,7 @@ var FrameGroupNode = class extends NetworkGroupNode {
     const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const name = this.displayName();
-      cell.appendChild(IconButton5.Icon.create("frame", "network-frame-group-icon"));
+      cell.appendChild(createIcon2("frame", "network-frame-group-icon"));
       UI18.UIUtils.createTextChild(cell, name);
       UI18.Tooltip.Tooltip.install(cell, name);
       this.setCellAccessibleName(cell.textContent || "", cell, columnId);
@@ -7732,7 +7732,7 @@ __export(NetworkLogViewColumns_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as IconButton6 from "./../../ui/components/icon_button/icon_button.js";
+import { Icon as Icon4 } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -9212,7 +9212,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.waterfallHeaderElement.createChild("div", "hover-layer");
     const innerElement = this.waterfallHeaderElement.createChild("div");
     innerElement.textContent = i18nString18(UIStrings18.waterfall);
-    this.waterfallColumnSortIcon = new IconButton6.Icon.Icon();
+    this.waterfallColumnSortIcon = new Icon4();
     this.waterfallColumnSortIcon.className = "sort-order-icon";
     this.waterfallHeaderElement.createChild("div", "sort-order-icon-container").appendChild(this.waterfallColumnSortIcon);
     function waterfallHeaderClicked() {

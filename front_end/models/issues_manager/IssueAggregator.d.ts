@@ -71,6 +71,7 @@ export declare class AggregatedIssue extends Issue {
     getPartitioningBlobURLIssues(): Iterable<PartitioningBlobURLIssue>;
     addInstance(issue: Issue): void;
     getKind(): IssueKind;
+    getAllIssues(): Issue[];
     isHidden(): boolean;
     setHidden(_value: boolean): void;
 }
@@ -84,7 +85,7 @@ export declare class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<
     aggregatedIssueKinds(): Set<IssueKind>;
     numberOfAggregatedIssues(): number;
     numberOfHiddenAggregatedIssues(): number;
-    keyForIssue(issue: Issue<string>): AggregationKey;
+    keyForIssue(issue: Issue): AggregationKey;
 }
 export declare const enum Events {
     AGGREGATED_ISSUE_UPDATED = "AggregatedIssueUpdated",

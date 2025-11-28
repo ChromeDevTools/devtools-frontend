@@ -36,11 +36,17 @@ export declare class ResourceKey {
 }
 export type UserAgentProvider = Pick<MultitargetNetworkManager, 'currentUserAgent'>;
 /**
+ * The PageResourceLoader has two responsibilities: loading resources and tracking statistics scoped to targets
+ * for the DeveloperResourcesPanel. Many places only require the former, so we expose that functionality via small
+ * sub-interface. This makes it easier to test classes that require resource loading.
+ */
+export type ResourceLoader = Pick<PageResourceLoader, 'loadResource'>;
+/**
  * The page resource loader is a bottleneck for all DevTools-initiated resource loads. For each such load, it keeps a
  * `PageResource` object around that holds meta information. This can be as the basis for reporting to the user which
  * resources were loaded, and whether there was a load error.
  */
-export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements ResourceLoader {
     #private;
     constructor(targetManager: TargetManager, settings: Common.Settings.Settings, userAgentProvider: UserAgentProvider, loadOverride: ((arg0: string) => Promise<{
         success: boolean;

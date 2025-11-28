@@ -30,24 +30,20 @@ function generateGroupingIssueCode(details) {
     return issueCode;
 }
 export class SRIMessageSignatureIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         super({
             code: generateGroupingIssueCode(issueDetails),
             umaCode: `${"SRIMessageSignatureIssue" /* Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue */}::${issueDetails.error}`,
-        }, issuesModel);
-        this.#issueDetails = issueDetails;
-    }
-    details() {
-        return this.#issueDetails;
+        }, issueDetails, issuesModel);
     }
     // Overriding `Issue<String>`:
     primaryKey() {
         return JSON.stringify(this.details());
     }
     getDescription() {
+        const details = this.details();
         const description = {
-            file: `sri${this.details().error}.md`,
+            file: `sri${details.error}.md`,
             links: [
                 {
                     link: 'https://www.rfc-editor.org/rfc/rfc9421.html',
@@ -60,10 +56,10 @@ export class SRIMessageSignatureIssue extends Issue {
             ],
             substitutions: new Map()
         };
-        if (this.#issueDetails.error === "ValidationFailedSignatureMismatch" /* Protocol.Audits.SRIMessageSignatureError.ValidationFailedSignatureMismatch */) {
-            description.substitutions?.set('PLACEHOLDER_signatureBase', () => this.#issueDetails.signatureBase);
+        if (details.error === "ValidationFailedSignatureMismatch" /* Protocol.Audits.SRIMessageSignatureError.ValidationFailedSignatureMismatch */) {
+            description.substitutions?.set('PLACEHOLDER_signatureBase', () => details.signatureBase);
         }
-        if (this.#issueDetails.error === "ValidationFailedIntegrityMismatch" /* Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch */) {
+        if (details.error === "ValidationFailedIntegrityMismatch" /* Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch */) {
             description.substitutions?.set('PLACEHOLDER_integrityAssertions', () => {
                 const prefix = '\n* ';
                 return prefix + this.details().integrityAssertions.join(prefix);

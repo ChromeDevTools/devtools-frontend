@@ -8,7 +8,7 @@ import type * as StackTrace from '../../../../models/stack_trace/stack_trace.js'
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import type * as IconButton from '../../../components/icon_button/icon_button.js';
+import type { Icon } from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
 export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
     #private;
@@ -70,7 +70,7 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
     }>;
 }
 export interface LinkDecorator extends Common.EventTarget.EventTarget<LinkDecorator.EventTypes> {
-    linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon | null;
+    linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): Icon | null;
 }
 export declare namespace LinkDecorator {
     const enum Events {
@@ -98,7 +98,7 @@ export declare class ContentProviderContextMenuProvider implements UI.ContextMen
     appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, contentProvider: Workspace.UISourceCode.UISourceCode | SDK.Resource.Resource | SDK.NetworkRequest.NetworkRequest): void;
 }
 interface LinkInfo {
-    icon: IconButton.Icon.Icon | null;
+    icon: Icon | null;
     enableDecorator: boolean;
     uiLocation: Workspace.UISourceCode.UILocation | null;
     liveLocation: Bindings.LiveLocation.LiveLocation | null;

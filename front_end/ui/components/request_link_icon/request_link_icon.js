@@ -10,7 +10,7 @@ __export(RequestLinkIcon_exports, {
   RequestLinkIcon: () => RequestLinkIcon,
   extractShortPath: () => extractShortPath
 });
-import "./../icon_button/icon_button.js";
+import "./../../kit/kit.js";
 import * as Common from "./../../../core/common/common.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as NetworkForward from "./../../../panels/network/forward/forward.js";

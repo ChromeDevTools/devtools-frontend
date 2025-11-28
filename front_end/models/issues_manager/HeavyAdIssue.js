@@ -12,17 +12,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/HeavyAdIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeavyAdIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         const umaCode = ["HeavyAdIssue" /* Protocol.Audits.InspectorIssueCode.HeavyAdIssue */, issueDetails.reason].join('::');
-        super({ code: "HeavyAdIssue" /* Protocol.Audits.InspectorIssueCode.HeavyAdIssue */, umaCode }, issuesModel);
-        this.#issueDetails = issueDetails;
-    }
-    details() {
-        return this.#issueDetails;
+        super({ code: "HeavyAdIssue" /* Protocol.Audits.InspectorIssueCode.HeavyAdIssue */, umaCode }, issueDetails, issuesModel);
     }
     primaryKey() {
-        return `${"HeavyAdIssue" /* Protocol.Audits.InspectorIssueCode.HeavyAdIssue */}-${JSON.stringify(this.#issueDetails)}`;
+        return `${"HeavyAdIssue" /* Protocol.Audits.InspectorIssueCode.HeavyAdIssue */}-${JSON.stringify(this.details())}`;
     }
     getDescription() {
         return {
@@ -39,7 +34,7 @@ export class HeavyAdIssue extends Issue {
         return "HeavyAd" /* IssueCategory.HEAVY_AD */;
     }
     getKind() {
-        switch (this.#issueDetails.resolution) {
+        switch (this.details().resolution) {
             case "HeavyAdBlocked" /* Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked */:
                 return "PageError" /* IssueKind.PAGE_ERROR */;
             case "HeavyAdWarning" /* Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning */:

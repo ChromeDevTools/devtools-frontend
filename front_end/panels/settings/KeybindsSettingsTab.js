@@ -8,7 +8,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -339,7 +339,7 @@ export class ShortcutListItem {
     }
     createEmptyInfo() {
         if (UI.ShortcutRegistry.ShortcutRegistry.instance().actionHasDefaultShortcut(this.item.id())) {
-            const icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
+            const icon = createIcon('keyboard-pen', 'keybinds-modified');
             UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
             this.element.appendChild(icon);
         }
@@ -390,7 +390,7 @@ export class ShortcutListItem {
         }
         let icon;
         if (shortcut.type !== "UnsetShortcut" /* UI.KeyboardShortcut.Type.UNSET_SHORTCUT */ && !shortcut.isDefault()) {
-            icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
+            icon = createIcon('keyboard-pen', 'keybinds-modified');
             UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
             this.element.appendChild(icon);
         }

@@ -148,6 +148,9 @@
       "path": "../../ui/components/adorners/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/annotations/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
@@ -155,9 +158,6 @@
     },
     {
       "path": "../../ui/components/highlighting/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/text_editor/bundle-tsconfig.json"
@@ -170,6 +170,9 @@
     },
     {
       "path": "../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

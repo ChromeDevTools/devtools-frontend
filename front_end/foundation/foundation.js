@@ -23,6 +23,10 @@ var Universe = class {
     });
     const targetManager = new SDK.TargetManager.TargetManager(this.context, options.overrideAutoStartModels);
     this.context.set(SDK.TargetManager.TargetManager, targetManager);
+    const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
+    this.context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
+    const pageResourceLoader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
+    this.context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
     const workspace = new Workspace.Workspace.WorkspaceImpl();
     this.context.set(Workspace.Workspace.WorkspaceImpl, workspace);
     const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);

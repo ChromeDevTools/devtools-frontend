@@ -121,4 +121,4 @@ span {
   }
 }
 
-/*# sourceURL=${import.meta.resolve('./icon.css')} */`;
+/*# sourceURL=${import.meta.resolve('./icons/icon.css')} */`;

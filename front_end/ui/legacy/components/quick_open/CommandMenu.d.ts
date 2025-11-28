@@ -1,5 +1,8 @@
+import '../../../kit/kit.js';
+import '../../../components/highlighting/highlighting.js';
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import { type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { Provider } from './FilteredListWidget.js';
 export declare class CommandMenu {
@@ -52,7 +55,7 @@ export declare class CommandMenuProvider extends Provider {
     itemCount(): number;
     itemKeyAt(itemIndex: number): string;
     itemScoreAt(itemIndex: number, query: string): number;
-    renderItem(itemIndex: number, query: string, wrapperElement: Element): void;
+    renderItem(itemIndex: number, query: string): TemplateResult;
     jslogContextAt(itemIndex: number): string;
     selectItem(itemIndex: number | null, _promptValue: string): void;
     notFoundText(): string;

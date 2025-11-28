@@ -8,9 +8,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AffectedBlockedByResponseView } from './AffectedBlockedByResponseView.js';
@@ -142,7 +142,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
         this.affectedResources.appendChild(header);
         let count = 0;
         for (const issue of mixedContentIssues) {
-            const details = issue.getDetails();
+            const details = issue.details();
             this.appendAffectedMixedContent(details);
             count++;
         }
@@ -297,7 +297,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     #appendHeader() {
         const header = document.createElement('div');
         header.classList.add('header');
-        this.#issueKindIcon = new IconButton.Icon.Icon();
+        this.#issueKindIcon = new Icon();
         this.#issueKindIcon.classList.add('leading-issue-icon', 'extra-large');
         this.#aggregatedIssuesCount = document.createElement('span');
         const countAdorner = new Adorners.Adorner.Adorner();

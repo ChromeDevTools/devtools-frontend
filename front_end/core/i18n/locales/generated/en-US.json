@@ -7253,6 +7253,9 @@
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Delete element"
   },
+  "panels/elements/ElementsTreeElement.ts | disableContainer": {
+    "message": "Disable container overlay"
+  },
   "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "Disable flex mode"
   },
@@ -7285,6 +7288,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "This element has a scrollable overflow"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableContainer": {
+    "message": "Enable container overlay"
   },
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Enable flex mode"

@@ -1,13 +1,12 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 const UIStrings = {
@@ -44,7 +43,7 @@ export class PersistenceUtils {
             if (!Common.ParsedURL.schemeIs(binding.fileSystem.url(), 'file:')) {
                 return null;
             }
-            const icon = new IconButton.Icon.Icon();
+            const icon = new Icon();
             icon.name = 'document';
             icon.classList.add('small');
             UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
@@ -62,13 +61,13 @@ export class PersistenceUtils {
             return null;
         }
         if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
-            const icon = new IconButton.Icon.Icon();
+            const icon = new Icon();
             icon.name = 'document';
             icon.classList.add('small');
             icon.classList.add('dot', 'purple');
             return icon;
         }
-        const icon = new IconButton.Icon.Icon();
+        const icon = new Icon();
         icon.name = 'document';
         icon.classList.add('small');
         UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(uiSourceCode));

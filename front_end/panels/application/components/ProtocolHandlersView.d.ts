@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 interface HTMLSelectElementEvent extends Event {

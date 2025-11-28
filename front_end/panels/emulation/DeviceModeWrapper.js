@@ -104,11 +104,47 @@ export class ActionDelegate {
                         return;
                     }
                     const result = await object.callFunction(function () {
+                        function getFrameOffset(frame) {
+                            if (!frame) {
+                                return { x: 0, y: 0 };
+                            }
+                            // The offset of the frame's content relative to the frame element
+                            // contains the border width and the padding.
+                            // The border width.
+                            const borderTop = frame.clientTop;
+                            const borderLeft = frame.clientLeft;
+                            // The padding can be retrieved via computed styles.
+                            const styles = window.getComputedStyle(frame);
+                            const paddingTop = parseFloat(styles.paddingTop);
+                            const paddingLeft = parseFloat(styles.paddingLeft);
+                            // The position of the frame in it's parent.
+                            const rect = frame.getBoundingClientRect();
+                            // The offset of the parent frame's content relative to the
+                            // document. If there is no parent frame, the offset is 0.
+                            // In case of OOPiF, there is no access to the parent frame's
+                            // offset.
+                            const parentFrameOffset = getFrameOffset(frame.ownerDocument.defaultView?.frameElement ?? null);
+                            // The scroll position of the frame.
+                            const scrollX = frame.ownerDocument.defaultView?.scrollX ?? 0;
+                            const scrollY = frame.ownerDocument.defaultView?.scrollY ?? 0;
+                            return {
+                                x: parentFrameOffset.x + rect.left + borderLeft + paddingLeft + scrollX,
+                                y: parentFrameOffset.y + rect.top + borderTop + paddingTop + scrollY,
+                            };
+                        }
+                        // The bounding client rect of the node relative to the viewport.
                         const rect = this.getBoundingClientRect();
-                        const docRect = this.ownerDocument.documentElement.getBoundingClientRect();
+                        const frameOffset = getFrameOffset(this.ownerDocument.defaultView?.frameElement ?? null);
+                        // The scroll position of the frame.
+                        const scrollX = this.ownerDocument.defaultView?.scrollX ?? 0;
+                        const scrollY = this.ownerDocument.defaultView?.scrollY ?? 0;
+                        // The offset of the node's content relative to the top-level
+                        // document is the sum of the element offset relative to the
+                        // document's viewport, the document's scroll position, and the
+                        // parent's offset relative to the top-level document.
                         return JSON.stringify({
-                            x: rect.left - docRect.left,
-                            y: rect.top - docRect.top,
+                            x: rect.left + frameOffset.x + scrollX,
+                            y: rect.top + frameOffset.y + scrollY,
                             width: rect.width,
                             height: rect.height,
                             scale: 1,

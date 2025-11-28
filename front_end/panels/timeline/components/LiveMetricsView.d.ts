@@ -1,5 +1,5 @@
 import '../../../ui/components/settings/settings.js';
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
 import './NetworkThrottlingSelector.js';
 import '../../../ui/components/menus/menus.js';

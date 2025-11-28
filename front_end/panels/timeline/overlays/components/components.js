@@ -10,7 +10,7 @@ __export(EntriesLinkOverlay_exports, {
   EntriesLinkOverlay: () => EntriesLinkOverlay,
   EntryLinkStartCreating: () => EntryLinkStartCreating
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Trace from "./../../../../models/trace/trace.js";
 import * as ThemeSupport from "./../../../../ui/legacy/theme_support/theme_support.js";
@@ -396,7 +396,7 @@ __export(EntryLabelOverlay_exports, {
   EntryLabelRemoveEvent: () => EntryLabelRemoveEvent,
   LabelAnnotationsConsentDialogVisibilityChange: () => LabelAnnotationsConsentDialogVisibilityChange
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import "./../../../../ui/components/tooltips/tooltips.js";
 import "./../../../../ui/components/spinners/spinners.js";
 import * as Common from "./../../../../core/common/common.js";

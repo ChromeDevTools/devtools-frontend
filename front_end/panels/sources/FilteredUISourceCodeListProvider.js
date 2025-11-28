@@ -1,13 +1,13 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/components/highlighting/highlighting.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html } from '../../ui/lit/lit.js';
 import { FilePathScoreFunction } from './FilePathScoreFunction.js';
 import filteredUISourceCodeListProviderStyles from './filteredUISourceCodeListProvider.css.js';
 const UIStrings = {
@@ -23,6 +23,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/FilteredUISourceCodeListProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { classMap } = Directives;
 export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidget.Provider {
     queryLineNumberAndColumnNumber;
     defaultScores;
@@ -119,11 +120,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
         const fullDisplayName = uiSourceCode.fullDisplayName();
         return score + multiplier * (contentTypeBonus + this.scorer.calculateScore(fullDisplayName, null));
     }
-    renderItem(itemIndex, query, wrapperElement) {
-        wrapperElement.createChild('style').textContent = filteredUISourceCodeListProviderStyles;
-        const itemElement = wrapperElement.createChild('div', 'filtered-ui-source-code-list-item');
-        const titleElement = itemElement.createChild('div', 'filtered-ui-source-code-title');
-        titleElement.classList.toggle('search-mode', Boolean(query));
+    renderItem(itemIndex, query) {
         query = this.rewriteQuery(query);
         const uiSourceCode = this.uiSourceCodes[itemIndex];
         const fullDisplayName = uiSourceCode.fullDisplayName();
@@ -133,39 +130,51 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
         const isIgnoreListed = Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode);
         let tooltipText = fullDisplayName;
         if (isIgnoreListed) {
-            itemElement.classList.add('is-ignore-listed');
             tooltipText = i18nString(UIStrings.sIgnoreListed, { PH1: tooltipText });
         }
-        titleElement.textContent = uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '');
-        const subtitleElement = itemElement.createChild('div', 'filtered-ui-source-code-subtitle');
-        this.renderSubtitleElement(subtitleElement, fullDisplayName.substring(0, fileNameIndex + 1));
-        UI.Tooltip.Tooltip.install(subtitleElement, tooltipText);
-        const ranges = [];
-        for (let i = 0; i < indexes.length; ++i) {
-            ranges.push({ offset: indexes[i], length: 1 });
-        }
+        const titleRanges = [];
+        const subtitleRanges = [];
         if (indexes[0] > fileNameIndex) {
-            for (let i = 0; i < ranges.length; ++i) {
-                ranges[i].offset -= fileNameIndex + 1;
+            for (let i = 0; i < indexes.length; ++i) {
+                titleRanges.push({ offset: indexes[i] - (fileNameIndex + 1), length: 1 });
             }
-            Highlighting.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
         }
         else {
-            Highlighting.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
+            for (let i = 0; i < indexes.length; ++i) {
+                subtitleRanges.push({ offset: indexes[i], length: 1 });
+            }
         }
+        // clang-format off
+        return html `
+      <style>${filteredUISourceCodeListProviderStyles}</style>
+      <div class="filtered-ui-source-code-list-item
+                  ${classMap({ 'is-ignore-listed': isIgnoreListed })}">
+        <devtools-highlight
+            type="markup"
+            ranges=${titleRanges.map(r => `${r.offset},${r.length}`).join(' ')}
+            class="filtered-ui-source-code-title ${classMap({ 'search-mode': Boolean(query) })}">
+          ${uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '')}
+        </devtools-highlight>
+        <devtools-highlight
+            type="markup"
+            ranges=${subtitleRanges.map(r => `${r.offset},${r.length}`).join(' ')}
+            class="filtered-ui-source-code-subtitle" title=${tooltipText}>
+          ${this.renderSubtitleElement(fullDisplayName.substring(0, fileNameIndex + 1))}
+        </devtools-highlight>
+      </div>`;
+        // clang-format on
     }
-    renderSubtitleElement(element, text) {
-        element.removeChildren();
+    renderSubtitleElement(text) {
         let splitPosition = text.lastIndexOf('/');
         const maxTextLength = 43;
         if (text.length > maxTextLength) {
             splitPosition = text.length - maxTextLength;
         }
-        const first = element.createChild('div', 'first-part');
-        first.textContent = text.substring(0, splitPosition);
-        const second = element.createChild('div', 'second-part');
-        second.textContent = text.substring(splitPosition);
-        UI.Tooltip.Tooltip.install(element, text);
+        // clang-format off
+        return html `
+      <div class="first-part">${text.substring(0, splitPosition)}</div>
+      <div class="second-part">${text.substring(splitPosition)}</div>`;
+        // clang-format on
     }
     selectItem(itemIndex, promptValue) {
         const parsedExpression = promptValue.trim().match(/^([^:]*)(:\d+)?(:\d+)?$/);

@@ -1968,7 +1968,7 @@ var PlayerListView_exports = {};
 __export(PlayerListView_exports, {
   PlayerListView: () => PlayerListView
 });
-import "./../../ui/components/icon_button/icon_button.js";
+import "./../../ui/kit/kit.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import { Directives, html, render } from "./../../ui/lit/lit.js";

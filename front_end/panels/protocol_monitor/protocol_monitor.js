@@ -11,7 +11,7 @@ __export(JSONEditor_exports, {
   JSONEditor: () => JSONEditor,
   suggestionFilter: () => suggestionFilter
 });
-import "./../../ui/components/icon_button/icon_button.js";
+import "./../../ui/kit/kit.js";
 import "./../../ui/components/menus/menus.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";

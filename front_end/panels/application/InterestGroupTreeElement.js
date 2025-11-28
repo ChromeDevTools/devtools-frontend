@@ -4,7 +4,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { InterestGroupStorageView } from './InterestGroupStorageView.js';
 const UIStrings = {
@@ -22,7 +22,7 @@ export class InterestGroupTreeElement extends ApplicationPanelTreeElement {
     view;
     constructor(storagePanel) {
         super(storagePanel, i18nString(UIStrings.interestGroups), false, 'interest-groups');
-        const interestGroupIcon = IconButton.Icon.create('database');
+        const interestGroupIcon = createIcon('database');
         this.setLeadingIcons([interestGroupIcon]);
         this.view = new InterestGroupStorageView(this);
     }

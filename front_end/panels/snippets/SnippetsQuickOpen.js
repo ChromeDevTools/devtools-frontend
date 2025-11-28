@@ -1,9 +1,11 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
+import '../../ui/components/highlighting/highlighting.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
+import { html } from '../../ui/lit/lit.js';
 import { evaluateScriptSnippet, findSnippetsProject } from './ScriptSnippetFileSystem.js';
 const UIStrings = {
     /**
@@ -65,13 +67,18 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     itemKeyAt(itemIndex) {
         return this.snippets[itemIndex].name();
     }
-    renderItem(itemIndex, query, wrapperElement) {
-        const itemElement = wrapperElement.createChild('div');
-        const titleElement = itemElement.createChild('div');
-        const icon = IconButton.Icon.create('snippet', 'snippet');
-        wrapperElement.insertBefore(icon, itemElement);
-        titleElement.textContent = this.snippets[itemIndex].name();
-        QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);
+    renderItem(itemIndex, query) {
+        // clang-format off
+        const snippet = this.snippets[itemIndex].name();
+        const highlightRanges = QuickOpen.FilteredListWidget.FilteredListWidget.getHighlightRanges(snippet, query, true);
+        return html `
+      <devtools-icon class="snippet" name="snippet"></devtools-icon>
+      <div>
+        <devtools-highlight type="markup" ranges=${highlightRanges}>
+          ${snippet}
+        </devtools-highlight>
+      </div>`;
+        // clang-format on
     }
 }
 QuickOpen.FilteredListWidget.registerProvider({

@@ -19,8 +19,8 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI from "./../../ui/legacy/legacy.js";
@@ -601,7 +601,7 @@ var ExperimentsSettingsTab = class _ExperimentsSettingsTab extends UI.Widget.VBo
   createExperimentsWarningSubsection(warningMessage) {
     const subsection = document.createElement("div");
     subsection.classList.add("experiments-warning-subsection");
-    const warningIcon = IconButton.Icon.create("warning");
+    const warningIcon = createIcon("warning");
     subsection.appendChild(warningIcon);
     const warning = subsection.createChild("span");
     warning.textContent = warningMessage;
@@ -2060,7 +2060,7 @@ import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as SettingsUI5 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
@@ -2556,7 +2556,7 @@ var ShortcutListItem = class {
   }
   createEmptyInfo() {
     if (UI5.ShortcutRegistry.ShortcutRegistry.instance().actionHasDefaultShortcut(this.item.id())) {
-      const icon = IconButton2.Icon.create("keyboard-pen", "keybinds-modified");
+      const icon = createIcon2("keyboard-pen", "keybinds-modified");
       UI5.ARIAUtils.setLabel(icon, i18nString5(UIStrings5.shortcutModified));
       this.element.appendChild(icon);
     }
@@ -2612,7 +2612,7 @@ var ShortcutListItem = class {
     }
     let icon;
     if (shortcut.type !== "UnsetShortcut" && !shortcut.isDefault()) {
-      icon = IconButton2.Icon.create("keyboard-pen", "keybinds-modified");
+      icon = createIcon2("keyboard-pen", "keybinds-modified");
       UI5.ARIAUtils.setLabel(icon, i18nString5(UIStrings5.shortcutModified));
       this.element.appendChild(icon);
     }

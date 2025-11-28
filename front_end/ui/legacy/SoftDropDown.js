@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Geometry from '../../models/geometry/geometry.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import { createIcon } from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { appendStyle } from './DOMUtilities.js';
@@ -44,7 +44,7 @@ export class SoftDropDown {
         this.element.classList.add('soft-dropdown');
         appendStyle(this.element, softDropDownButtonStyles);
         this.titleElement = this.element.createChild('span', 'title');
-        const dropdownArrowIcon = IconButton.Icon.create('triangle-down');
+        const dropdownArrowIcon = createIcon('triangle-down');
         this.element.appendChild(dropdownArrowIcon);
         ARIAUtils.setExpanded(this.element, false);
         this.glassPane = new GlassPane();

@@ -4,8 +4,8 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
@@ -140,7 +140,7 @@ export class DebuggerPausedMessage {
             return messageWrapper;
         }
         const mainElement = messageWrapper.createChild('div', 'status-main');
-        const mainIcon = new IconButton.Icon.Icon();
+        const mainIcon = new Icon();
         mainIcon.name = 'info';
         mainIcon.style.color = 'var(--sys-color-on-yellow-container)';
         mainIcon.classList.add('medium');
@@ -266,7 +266,7 @@ export class DebuggerPausedMessage {
         function buildWrapper(mainText, subText, title) {
             const messageWrapper = document.createElement('span');
             const mainElement = messageWrapper.createChild('div', 'status-main');
-            const mainIcon = new IconButton.Icon.Icon();
+            const mainIcon = new Icon();
             mainIcon.name = errorLike ? 'cross-circle-filled' : 'info';
             mainIcon.style.color = errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)';
             mainIcon.classList.add('medium');

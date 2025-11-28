@@ -7,8 +7,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -592,7 +592,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
             UI.ARIAUtils.setLabel(appIdField, 'App Id');
             appIdField.textContent = appId;
-            const helpIcon = IconButton.Icon.create('help', 'inline-icon');
+            const helpIcon = createIcon('help', 'inline-icon');
             helpIcon.title = i18nString(UIStrings.appIdExplainer);
             helpIcon.setAttribute('jslog', `${VisualLogging.action('help').track({ hover: true })}`);
             appIdField.appendChild(helpIcon);
@@ -802,7 +802,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         displayOverrideText.appendChild(displayOverrideLink);
         const wcoStatusMessage = this.windowControlsSection.appendRow();
         if (hasWco) {
-            const checkmarkIcon = IconButton.Icon.create('check-circle', 'inline-icon');
+            const checkmarkIcon = createIcon('check-circle', 'inline-icon');
             wcoStatusMessage.appendChild(checkmarkIcon);
             const wco = document.createElement('code');
             wco.classList.add('wco');
@@ -813,7 +813,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
             }
         }
         else {
-            const infoIcon = IconButton.Icon.create('info', 'inline-icon');
+            const infoIcon = createIcon('info', 'inline-icon');
             wcoStatusMessage.appendChild(infoIcon);
             wcoStatusMessage.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNotFound, { PH1: displayOverrideText }));
         }

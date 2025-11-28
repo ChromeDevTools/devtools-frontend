@@ -12,10 +12,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/BounceTrackingIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BounceTrackingIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
-        super("BounceTrackingIssue" /* Protocol.Audits.InspectorIssueCode.BounceTrackingIssue */, issuesModel);
-        this.#issueDetails = issueDetails;
+        super("BounceTrackingIssue" /* Protocol.Audits.InspectorIssueCode.BounceTrackingIssue */, issueDetails, issuesModel);
     }
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
@@ -31,20 +29,14 @@ export class BounceTrackingIssue extends Issue {
             ],
         };
     }
-    details() {
-        return this.#issueDetails;
-    }
     getKind() {
         return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     trackingSites() {
-        if (this.#issueDetails.trackingSites) {
-            return this.#issueDetails.trackingSites;
-        }
-        return [];
+        return this.details().trackingSites;
     }
     static fromInspectorIssue(issuesModel, inspectorIssue) {
         const details = inspectorIssue.details.bounceTrackingIssueDetails;

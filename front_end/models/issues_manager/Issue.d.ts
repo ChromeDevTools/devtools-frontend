@@ -48,18 +48,20 @@ export interface AffectedElement {
     nodeName: string;
     target: SDK.Target.Target | null;
 }
-export declare abstract class Issue<IssueCode extends string = string> {
+export type ValidIssueDetails = NonNullable<Protocol.Audits.InspectorIssueDetails[keyof Protocol.Audits.InspectorIssueDetails]>;
+export declare abstract class Issue<IssueDetails extends ValidIssueDetails | null = ValidIssueDetails | null, IssueCode extends string = string> {
     #private;
     protected issueId: Protocol.Audits.IssueId | undefined;
     constructor(code: IssueCode | {
         code: IssueCode;
         umaCode: string;
-    }, issuesModel?: SDK.IssuesModel.IssuesModel | null, issueId?: Protocol.Audits.IssueId);
+    }, issueDetails: IssueDetails, issuesModel?: SDK.IssuesModel.IssuesModel | null, issueId?: Protocol.Audits.IssueId);
     code(): IssueCode;
     abstract primaryKey(): string;
     abstract getDescription(): MarkdownIssueDescription | null;
     abstract getCategory(): IssueCategory;
     abstract getKind(): IssueKind;
+    details(): IssueDetails;
     getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails>;
     cookies(): Iterable<Protocol.Audits.AffectedCookie>;
     rawCookieLines(): Iterable<string>;

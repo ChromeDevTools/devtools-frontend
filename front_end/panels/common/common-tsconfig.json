@@ -39,6 +39,7 @@
     "../../../../../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts",
     "../../../../../../front_end/panels/common/AiCodeCompletionTeaser.ts",
     "../../../../../../front_end/panels/common/AiCodeGenerationTeaser.ts",
+    "../../../../../../front_end/panels/common/AnnotationManager.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.ts",
     "../../../../../../front_end/panels/common/DOMLinkifier.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.ts",
@@ -80,9 +81,6 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/snackbars/bundle-tsconfig.json"
     },
     {
@@ -99,6 +97,9 @@
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

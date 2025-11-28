@@ -87,9 +87,11 @@ var Issue = class {
   #issueCode;
   #issuesModel;
   issueId = void 0;
+  #issueDetails;
   #hidden;
-  constructor(code, issuesModel = null, issueId) {
+  constructor(code, issueDetails, issuesModel = null, issueId) {
     this.#issueCode = typeof code === "object" ? code.code : code;
+    this.#issueDetails = issueDetails;
     this.#issuesModel = issuesModel;
     this.issueId = issueId;
     Host.userMetrics.issueCreated(typeof code === "string" ? code : code.umaCode);
@@ -97,6 +99,9 @@ var Issue = class {
   }
   code() {
     return this.#issueCode;
+  }
+  details() {
+    return this.#issueDetails;
   }
   getBlockedByResponseDetails() {
     return [];
@@ -215,10 +220,8 @@ var structuredHeaderLink = {
   linkTitle: "Structured Headers RFC"
 };
 var AttributionReportingIssue = class _AttributionReportingIssue extends Issue {
-  issueDetails;
   constructor(issueDetails, issuesModel) {
-    super(getIssueCode(issueDetails), issuesModel);
-    this.issueDetails = issueDetails;
+    super(getIssueCode(issueDetails), issueDetails, issuesModel);
   }
   getCategory() {
     return "AttributionReporting";
@@ -226,8 +229,9 @@ var AttributionReportingIssue = class _AttributionReportingIssue extends Issue {
   getHeaderValidatorLink(name) {
     const url = new URL("https://wicg.github.io/attribution-reporting-api/validate-headers");
     url.searchParams.set("header", name);
-    if (this.issueDetails.invalidParameter) {
-      url.searchParams.set("json", this.issueDetails.invalidParameter);
+    const details = this.details();
+    if (details.invalidParameter) {
+      url.searchParams.set("json", details.invalidParameter);
     }
     return {
       link: url.toString(),
@@ -346,7 +350,7 @@ var AttributionReportingIssue = class _AttributionReportingIssue extends Issue {
     }
   }
   primaryKey() {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
     return "PageError";
@@ -503,32 +507,27 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("models/issues_manager/ClientHintIssue.ts", UIStrings2);
 var i18nLazyString = i18n3.i18n.getLazilyComputedLocalizedString.bind(void 0, str_2);
 var ClientHintIssue = class _ClientHintIssue extends Issue {
-  issueDetails;
   constructor(issueDetails, issuesModel) {
     super({
       code: "ClientHintIssue",
       umaCode: ["ClientHintIssue", issueDetails.clientHintIssueReason].join("::")
-    }, issuesModel);
-    this.issueDetails = issueDetails;
+    }, issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
   }
-  details() {
-    return this.issueDetails;
-  }
   getDescription() {
-    const description = issueDescriptions.get(this.issueDetails.clientHintIssueReason);
+    const description = issueDescriptions.get(this.details().clientHintIssueReason);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
   sources() {
-    return [this.issueDetails.sourceCodeLocation];
+    return [this.details().sourceCodeLocation];
   }
   primaryKey() {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
     return "BreakingChange";
@@ -601,20 +600,18 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("models/issues_manager/ContentSecurityPolicyIssue.ts", UIStrings3);
 var i18nLazyString2 = i18n5.i18n.getLazilyComputedLocalizedString.bind(void 0, str_3);
 var ContentSecurityPolicyIssue = class _ContentSecurityPolicyIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel, issueId) {
     const issueCode = [
       "ContentSecurityPolicyIssue",
       issueDetails.contentSecurityPolicyViolationType
     ].join("::");
-    super(issueCode, issuesModel, issueId);
-    this.#issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel, issueId);
   }
   getCategory() {
     return "ContentSecurityPolicy";
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails, [
+    return JSON.stringify(this.details(), [
       "blockedURL",
       "contentSecurityPolicyViolationType",
       "violatedDirective",
@@ -627,17 +624,14 @@ var ContentSecurityPolicyIssue = class _ContentSecurityPolicyIssue extends Issue
     ]);
   }
   getDescription() {
-    const description = issueDescriptions2.get(this.#issueDetails.contentSecurityPolicyViolationType);
+    const description = issueDescriptions2.get(this.details().contentSecurityPolicyViolationType);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
-  details() {
-    return this.#issueDetails;
-  }
   getKind() {
-    if (this.#issueDetails.isReportOnly) {
+    if (this.details().isReportOnly) {
       return "Improvement";
     }
     return "PageError";
@@ -786,20 +780,18 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("models/issues_manager/CookieDeprecationMetadataIssue.ts", UIStrings4);
 var i18nString2 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var CookieDeprecationMetadataIssue = class _CookieDeprecationMetadataIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     const issueCode = "CookieDeprecationMetadataIssue_" + issueDetails.operation;
-    super(issueCode, issuesModel);
-    this.#issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
   }
   getDescription() {
-    const fileName = this.#issueDetails.operation === "SetCookie" ? "cookieWarnMetadataGrantSet.md" : "cookieWarnMetadataGrantRead.md";
+    const fileName = this.details().operation === "SetCookie" ? "cookieWarnMetadataGrantSet.md" : "cookieWarnMetadataGrantRead.md";
     let optOutText = "";
-    if (this.#issueDetails.isOptOutTopLevel) {
-      optOutText = "\n\n (Top level site opt-out: " + this.#issueDetails.optOutPercentage + "% - [learn more](gracePeriodStagedControlExplainer))";
+    if (this.details().isOptOutTopLevel) {
+      optOutText = "\n\n (Top level site opt-out: " + this.details().optOutPercentage + "% - [learn more](gracePeriodStagedControlExplainer))";
     }
     return {
       file: fileName,
@@ -814,14 +806,11 @@ var CookieDeprecationMetadataIssue = class _CookieDeprecationMetadataIssue exten
       ]
     };
   }
-  details() {
-    return this.#issueDetails;
-  }
   getKind() {
     return "BreakingChange";
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   static fromInspectorIssue(issuesModel, inspectorIssue) {
     const details = inspectorIssue.details.cookieDeprecationMetadataIssueDetails;
@@ -868,21 +857,18 @@ var UIStrings5 = {
 var str_5 = i18n9.i18n.registerUIStrings("models/issues_manager/CookieIssue.ts", UIStrings5);
 var i18nLazyString3 = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_5);
 var CookieIssue = class _CookieIssue extends Issue {
-  #issueDetails;
-  constructor(code, issueDetails, issuesModel, issueId) {
-    super(code, issuesModel, issueId);
-    this.#issueDetails = issueDetails;
-  }
   cookieId() {
-    if (this.#issueDetails.cookie) {
-      const { domain, path, name } = this.#issueDetails.cookie;
+    const details = this.details();
+    if (details.cookie) {
+      const { domain, path, name } = details.cookie;
       const cookieId = `${domain};${path};${name}`;
       return cookieId;
     }
-    return this.#issueDetails.rawCookieLine ?? "no-cookie-info";
+    return this.details().rawCookieLine ?? "no-cookie-info";
   }
   primaryKey() {
-    const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : "no-request";
+    const details = this.details();
+    const requestId = details.request ? details.request.requestId : "no-request";
     return `${this.code()}-(${this.cookieId()})-(${requestId})`;
   }
   /**
@@ -982,20 +968,23 @@ var CookieIssue = class _CookieIssue extends Issue {
     return ["CookieIssue", reason, operation].join("::");
   }
   cookies() {
-    if (this.#issueDetails.cookie) {
-      return [this.#issueDetails.cookie];
+    const details = this.details();
+    if (details.cookie) {
+      return [details.cookie];
     }
     return [];
   }
   rawCookieLines() {
-    if (this.#issueDetails.rawCookieLine) {
-      return [this.#issueDetails.rawCookieLine];
+    const details = this.details();
+    if (details.rawCookieLine) {
+      return [details.rawCookieLine];
     }
     return [];
   }
   requests() {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    const details = this.details();
+    if (details.request) {
+      return [details.request];
     }
     return [];
   }
@@ -1011,25 +1000,26 @@ var CookieIssue = class _CookieIssue extends Issue {
   }
   isCausedByThirdParty() {
     const outermostFrame = SDK3.FrameManager.FrameManager.instance().getOutermostFrame();
-    return isCausedByThirdParty(outermostFrame, this.#issueDetails.cookieUrl, this.#issueDetails.siteForCookies);
+    return isCausedByThirdParty(outermostFrame, this.details().cookieUrl, this.details().siteForCookies);
   }
   getKind() {
-    if (this.#issueDetails.cookieExclusionReasons?.length > 0) {
+    if (this.details().cookieExclusionReasons?.length > 0) {
       return "PageError";
     }
     return "BreakingChange";
   }
   makeCookieReportEntry() {
-    const status = _CookieIssue.getCookieStatus(this.#issueDetails);
-    if (this.#issueDetails.cookie && this.#issueDetails.cookieUrl && status !== void 0) {
-      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(this.#issueDetails.cookieUrl);
+    const status = _CookieIssue.getCookieStatus(this.details());
+    const details = this.details();
+    if (details.cookie && details.cookieUrl && status !== void 0) {
+      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(details.cookieUrl);
       return {
-        name: this.#issueDetails.cookie.name,
-        domain: this.#issueDetails.cookie.domain,
+        name: details.cookie.name,
+        domain: details.cookie.domain,
         type: entity?.category,
         platform: entity?.name,
         status,
-        insight: this.#issueDetails.insight
+        insight: this.details().insight
       };
     }
     return;
@@ -1094,8 +1084,8 @@ var CookieIssue = class _CookieIssue extends Issue {
       /* Protocol.Audits.CookieExclusionReason.ExcludeThirdPartyPhaseout */
     )) {
       return new SDK3.ConsoleModel.ConsoleMessage(issuesModel.target().model(SDK3.RuntimeModel.RuntimeModel), Common3.Console.FrontendMessageSource.ISSUE_PANEL, "warning", UIStrings5.consoleTpcdErrorMessage, {
-        url: this.#issueDetails.request?.url,
-        affectedResources: { requestId: this.#issueDetails.request?.requestId, issueId: this.issueId },
+        url: this.details().request?.url,
+        affectedResources: { requestId: this.details().request?.requestId, issueId: this.issueId },
         isCookieReportIssue: true
       });
     }
@@ -1419,19 +1409,14 @@ function getIssueCode2(details) {
   }
 }
 var CorsIssue = class _CorsIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel, issueId) {
-    super(getIssueCode2(issueDetails), issuesModel, issueId);
-    this.#issueDetails = issueDetails;
+    super(getIssueCode2(issueDetails), issueDetails, issuesModel, issueId);
   }
   getCategory() {
     return "Cors";
   }
-  details() {
-    return this.#issueDetails;
-  }
   getDescription() {
-    switch (getIssueCode2(this.#issueDetails)) {
+    switch (getIssueCode2(this.details())) {
       case "CorsIssue::InsecurePrivateNetwork":
         return {
           file: "corsInsecurePrivateNetwork.md",
@@ -1565,10 +1550,10 @@ var CorsIssue = class _CorsIssue extends Issue {
     }
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
-    if (this.#issueDetails.isWarning && (this.#issueDetails.corsErrorStatus.corsError === "InsecurePrivateNetwork" || this.#issueDetails.corsErrorStatus.corsError === "PreflightMissingAllowPrivateNetwork" || this.#issueDetails.corsErrorStatus.corsError === "PreflightInvalidAllowPrivateNetwork")) {
+    if (this.details().isWarning && (this.details().corsErrorStatus.corsError === "InsecurePrivateNetwork" || this.details().corsErrorStatus.corsError === "PreflightMissingAllowPrivateNetwork" || this.details().corsErrorStatus.corsError === "PreflightInvalidAllowPrivateNetwork")) {
       return "BreakingChange";
     }
     return "PageError";
@@ -1618,19 +1603,17 @@ function isCrossOriginEmbedderPolicyIssue(reason) {
   return false;
 }
 var CrossOriginEmbedderPolicyIssue = class extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
-    super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
-    this.#issueDetails = issueDetails;
+    super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issueDetails, issuesModel);
   }
   primaryKey() {
-    return `${this.code()}-(${this.#issueDetails.request.requestId})`;
+    return `${this.code()}-(${this.details().request.requestId})`;
   }
   getBlockedByResponseDetails() {
-    return [this.#issueDetails];
+    return [this.details()];
   }
   requests() {
-    return [this.#issueDetails.request];
+    return [this.details().request];
   }
   getCategory() {
     return "CrossOriginEmbedderPolicy";
@@ -2106,29 +2089,24 @@ var i18nLazyString5 = i18n15.i18n.getLazilyComputedLocalizedString.bind(void 0, 
 var strDeprecation = i18n15.i18n.registerUIStrings("generated/Deprecation.ts", UIStrings8);
 var i18nLazyDeprecationString = i18n15.i18n.getLazilyComputedLocalizedString.bind(void 0, strDeprecation);
 var DeprecationIssue = class _DeprecationIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     const issueCode = [
       "DeprecationIssue",
       issueDetails.type
     ].join("::");
-    super({ code: issueCode, umaCode: "DeprecationIssue" }, issuesModel);
-    this.#issueDetails = issueDetails;
+    super({ code: issueCode, umaCode: "DeprecationIssue" }, issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
   }
-  details() {
-    return this.#issueDetails;
-  }
   getDescription() {
     let messageFunction = () => "";
-    const maybeEnglishMessage = UIStrings8[this.#issueDetails.type];
+    const maybeEnglishMessage = UIStrings8[this.details().type];
     if (maybeEnglishMessage) {
       messageFunction = i18nLazyDeprecationString(maybeEnglishMessage);
     }
     const links = [];
-    const deprecationMeta = DEPRECATIONS_METADATA[this.#issueDetails.type];
+    const deprecationMeta = DEPRECATIONS_METADATA[this.details().type];
     const feature = deprecationMeta?.chromeStatusFeature ?? 0;
     if (feature !== 0) {
       links.push({
@@ -2153,13 +2131,13 @@ var DeprecationIssue = class _DeprecationIssue extends Issue {
     });
   }
   sources() {
-    if (this.#issueDetails.sourceCodeLocation) {
-      return [this.#issueDetails.sourceCodeLocation];
+    if (this.details().sourceCodeLocation) {
+      return [this.details().sourceCodeLocation];
     }
     return [];
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
     return "BreakingChange";
@@ -2180,17 +2158,15 @@ __export(ElementAccessibilityIssue_exports, {
   ElementAccessibilityIssue: () => ElementAccessibilityIssue
 });
 var ElementAccessibilityIssue = class _ElementAccessibilityIssue extends Issue {
-  issueDetails;
   constructor(issueDetails, issuesModel, issueId) {
     const issueCode = [
       "ElementAccessibilityIssue",
       issueDetails.elementAccessibilityIssueReason
     ].join("::");
-    super(issueCode, issuesModel, issueId);
-    this.issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel, issueId);
   }
   primaryKey() {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.details());
   }
   getDescription() {
     if (this.isInteractiveContentAttributesSelectDescendantIssue()) {
@@ -2199,7 +2175,7 @@ var ElementAccessibilityIssue = class _ElementAccessibilityIssue extends Issue {
         links: []
       };
     }
-    const description = issueDescriptions5.get(this.issueDetails.elementAccessibilityIssueReason);
+    const description = issueDescriptions5.get(this.details().elementAccessibilityIssueReason);
     if (!description) {
       return null;
     }
@@ -2211,11 +2187,8 @@ var ElementAccessibilityIssue = class _ElementAccessibilityIssue extends Issue {
   getCategory() {
     return "Other";
   }
-  details() {
-    return this.issueDetails;
-  }
   isInteractiveContentAttributesSelectDescendantIssue() {
-    return this.issueDetails.hasDisallowedAttributes && (this.issueDetails.elementAccessibilityIssueReason !== "InteractiveContentOptionChild" && this.issueDetails.elementAccessibilityIssueReason !== "InteractiveContentSummaryDescendant");
+    return this.details().hasDisallowedAttributes && (this.details().elementAccessibilityIssueReason !== "InteractiveContentOptionChild" && this.details().elementAccessibilityIssueReason !== "InteractiveContentSummaryDescendant");
   }
   static fromInspectorIssue(issuesModel, inspectorIssue) {
     const elementAccessibilityIssueDetails = inspectorIssue.details.elementAccessibilityIssueDetails;
@@ -2286,7 +2259,6 @@ var UIStrings10 = {
 var str_9 = i18n17.i18n.registerUIStrings("models/issues_manager/FederatedAuthUserInfoRequestIssue.ts", UIStrings10);
 var i18nLazyString6 = i18n17.i18n.getLazilyComputedLocalizedString.bind(void 0, str_9);
 var FederatedAuthUserInfoRequestIssue = class _FederatedAuthUserInfoRequestIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     super({
       code: "FederatedAuthUserInfoRequestIssue",
@@ -2294,24 +2266,20 @@ var FederatedAuthUserInfoRequestIssue = class _FederatedAuthUserInfoRequestIssue
         "FederatedAuthUserInfoRequestIssue",
         issueDetails.federatedAuthUserInfoRequestIssueReason
       ].join("::")
-    }, issuesModel);
-    this.#issueDetails = issueDetails;
+    }, issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
   }
-  details() {
-    return this.#issueDetails;
-  }
   getDescription() {
-    const description = issueDescriptions6.get(this.#issueDetails.federatedAuthUserInfoRequestIssueReason);
+    const description = issueDescriptions6.get(this.details().federatedAuthUserInfoRequestIssueReason);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
     return "PageError";
@@ -2465,18 +2433,17 @@ var UIStrings11 = {
 var str_10 = i18n19.i18n.registerUIStrings("models/issues_manager/GenericIssue.ts", UIStrings11);
 var i18nLazyString7 = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
 var GenericIssue = class _GenericIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel, issueId) {
     const issueCode = [
       "GenericIssue",
       issueDetails.errorType
     ].join("::");
-    super(issueCode, issuesModel, issueId);
-    this.#issueDetails = issueDetails;
+    super(issueCode, issueDetails, issuesModel, issueId);
   }
   requests() {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    const details = this.details();
+    if (details.request) {
+      return [details.request];
     }
     return [];
   }
@@ -2484,21 +2451,19 @@ var GenericIssue = class _GenericIssue extends Issue {
     return "Generic";
   }
   primaryKey() {
-    const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : "no-request";
-    return `${this.code()}-(${this.#issueDetails.frameId})-(${this.#issueDetails.violatingNodeId})-(${this.#issueDetails.violatingNodeAttribute})-(${requestId})`;
+    const details = this.details();
+    const requestId = details.request ? details.request.requestId : "no-request";
+    return `${this.code()}-(${details.frameId})-(${details.violatingNodeId})-(${details.violatingNodeAttribute})-(${requestId})`;
   }
   getDescription() {
-    const description = issueDescriptions7.get(this.#issueDetails.errorType);
+    const description = issueDescriptions7.get(this.details().errorType);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
-  details() {
-    return this.#issueDetails;
-  }
   getKind() {
-    return issueTypes.get(this.#issueDetails.errorType) || "Improvement";
+    return issueTypes.get(this.details().errorType) || "Improvement";
   }
   static fromInspectorIssue(issuesModel, inspectorIssue) {
     const genericDetails = inspectorIssue.details.genericIssueDetails;
@@ -2697,17 +2662,12 @@ var UIStrings12 = {
 var str_11 = i18n21.i18n.registerUIStrings("models/issues_manager/HeavyAdIssue.ts", UIStrings12);
 var i18nString4 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var HeavyAdIssue = class _HeavyAdIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     const umaCode = ["HeavyAdIssue", issueDetails.reason].join("::");
-    super({ code: "HeavyAdIssue", umaCode }, issuesModel);
-    this.#issueDetails = issueDetails;
-  }
-  details() {
-    return this.#issueDetails;
+    super({ code: "HeavyAdIssue", umaCode }, issueDetails, issuesModel);
   }
   primaryKey() {
-    return `${"HeavyAdIssue"}-${JSON.stringify(this.#issueDetails)}`;
+    return `${"HeavyAdIssue"}-${JSON.stringify(this.details())}`;
   }
   getDescription() {
     return {
@@ -2724,7 +2684,7 @@ var HeavyAdIssue = class _HeavyAdIssue extends Issue {
     return "HeavyAd";
   }
   getKind() {
-    switch (this.#issueDetails.resolution) {
+    switch (this.details().resolution) {
       case "HeavyAdBlocked":
         return "PageError";
       case "HeavyAdWarning":
@@ -2764,19 +2724,14 @@ var UIStrings13 = {
 var str_12 = i18n23.i18n.registerUIStrings("models/issues_manager/LowTextContrastIssue.ts", UIStrings13);
 var i18nString5 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var LowTextContrastIssue = class _LowTextContrastIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
-    super("LowTextContrastIssue", issuesModel);
-    this.#issueDetails = issueDetails;
+    super("LowTextContrastIssue", issueDetails, issuesModel);
   }
   primaryKey() {
-    return `${this.code()}-(${this.#issueDetails.violatingNodeId})`;
+    return `${this.code()}-(${this.details().violatingNodeId})`;
   }
   getCategory() {
     return "LowTextContrast";
-  }
-  details() {
-    return this.#issueDetails;
   }
   getDescription() {
     return {
@@ -2817,19 +2772,15 @@ var UIStrings14 = {
 var str_13 = i18n25.i18n.registerUIStrings("models/issues_manager/MixedContentIssue.ts", UIStrings14);
 var i18nString6 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var MixedContentIssue = class _MixedContentIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
-    super("MixedContentIssue", issuesModel);
-    this.#issueDetails = issueDetails;
+    super("MixedContentIssue", issueDetails, issuesModel);
   }
   requests() {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    const details = this.details();
+    if (details.request) {
+      return [details.request];
     }
     return [];
-  }
-  getDetails() {
-    return this.#issueDetails;
   }
   getCategory() {
     return "MixedContent";
@@ -2841,10 +2792,10 @@ var MixedContentIssue = class _MixedContentIssue extends Issue {
     };
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
-    switch (this.#issueDetails.resolutionStatus) {
+    switch (this.details().resolutionStatus) {
       case "MixedContentAutomaticallyUpgraded":
         return "Improvement";
       case "MixedContentBlocked":
@@ -2882,16 +2833,14 @@ var UIStrings15 = {
 var str_14 = i18n27.i18n.registerUIStrings("models/issues_manager/PartitioningBlobURLIssue.ts", UIStrings15);
 var i18nString7 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
-    super("PartitioningBlobURLIssue", issuesModel);
-    this.#issueDetails = issueDetails;
+    super("PartitioningBlobURLIssue", issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
   }
   getDescription() {
-    const fileName = this.#issueDetails.partitioningBlobURLInfo === "BlockedCrossPartitionFetching" ? "fetchingPartitionedBlobURL.md" : "navigatingPartitionedBlobURL.md";
+    const fileName = this.details().partitioningBlobURLInfo === "BlockedCrossPartitionFetching" ? "fetchingPartitionedBlobURL.md" : "navigatingPartitionedBlobURL.md";
     return {
       file: fileName,
       links: [
@@ -2906,14 +2855,11 @@ var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
       ]
     };
   }
-  details() {
-    return this.#issueDetails;
-  }
   getKind() {
     return "BreakingChange";
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   static fromInspectorIssue(issuesModel, inspectorIssue) {
     const details = inspectorIssue.details.partitioningBlobURLIssueDetails;
@@ -2940,21 +2886,16 @@ var UIStrings16 = {
 var str_15 = i18n29.i18n.registerUIStrings("models/issues_manager/QuirksModeIssue.ts", UIStrings16);
 var i18nString8 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var QuirksModeIssue = class _QuirksModeIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     const mode = issueDetails.isLimitedQuirksMode ? "LimitedQuirksMode" : "QuirksMode";
     const umaCode = ["QuirksModeIssue", mode].join("::");
-    super({ code: "QuirksModeIssue", umaCode }, issuesModel);
-    this.#issueDetails = issueDetails;
+    super({ code: "QuirksModeIssue", umaCode }, issueDetails, issuesModel);
   }
   primaryKey() {
-    return `${this.code()}-(${this.#issueDetails.documentNodeId})-(${this.#issueDetails.url})`;
+    return `${this.code()}-(${this.details().documentNodeId})-(${this.details().url})`;
   }
   getCategory() {
     return "QuirksMode";
-  }
-  details() {
-    return this.#issueDetails;
   }
   getDescription() {
     return {
@@ -2996,17 +2937,12 @@ var UIStrings17 = {
 var str_16 = i18n31.i18n.registerUIStrings("models/issues_manager/SharedArrayBufferIssue.ts", UIStrings17);
 var i18nString9 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     const umaCode = ["SharedArrayBufferIssue", issueDetails.type].join("::");
-    super({ code: "SharedArrayBufferIssue", umaCode }, issuesModel);
-    this.#issueDetails = issueDetails;
+    super({ code: "SharedArrayBufferIssue", umaCode }, issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
-  }
-  details() {
-    return this.#issueDetails;
   }
   getDescription() {
     return {
@@ -3018,10 +2954,10 @@ var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
     };
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
-    if (this.#issueDetails.isWarning) {
+    if (this.details().isWarning) {
       return "BreakingChange";
     }
     return "PageError";
@@ -3038,6 +2974,7 @@ var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
 
 // gen/front_end/models/issues_manager/IssueAggregator.js
 var AggregatedIssue = class extends Issue {
+  #allIssues = /* @__PURE__ */ new Set();
   #affectedCookies = /* @__PURE__ */ new Map();
   #affectedRawCookieLines = /* @__PURE__ */ new Map();
   #affectedRequests = [];
@@ -3063,7 +3000,7 @@ var AggregatedIssue = class extends Issue {
   #aggregatedIssuesCount = 0;
   #key;
   constructor(code, aggregationKey) {
-    super(code);
+    super(code, null);
     this.#key = aggregationKey;
   }
   primaryKey() {
@@ -3160,6 +3097,7 @@ var AggregatedIssue = class extends Issue {
     if (!this.#representative) {
       this.#representative = issue;
     }
+    this.#allIssues.add(issue);
     this.#issueKind = unionIssueKind(this.#issueKind, issue.getKind());
     let hasRequest = false;
     for (const request of issue.requests()) {
@@ -3240,6 +3178,9 @@ var AggregatedIssue = class extends Issue {
   }
   getKind() {
     return this.#issueKind;
+  }
+  getAllIssues() {
+    return Array.from(this.#allIssues);
   }
   isHidden() {
     return this.#representative?.isHidden() || false;
@@ -3355,10 +3296,8 @@ var UIStrings18 = {
 var str_17 = i18n33.i18n.registerUIStrings("models/issues_manager/BounceTrackingIssue.ts", UIStrings18);
 var i18nString10 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
-    super("BounceTrackingIssue", issuesModel);
-    this.#issueDetails = issueDetails;
+    super("BounceTrackingIssue", issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
@@ -3374,20 +3313,14 @@ var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
       ]
     };
   }
-  details() {
-    return this.#issueDetails;
-  }
   getKind() {
     return "BreakingChange";
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   trackingSites() {
-    if (this.#issueDetails.trackingSites) {
-      return this.#issueDetails.trackingSites;
-    }
-    return [];
+    return this.details().trackingSites;
   }
   static fromInspectorIssue(issuesModel, inspectorIssue) {
     const details = inspectorIssue.details.bounceTrackingIssueDetails;
@@ -3410,7 +3343,6 @@ var UIStrings19 = {
 var str_18 = i18n35.i18n.registerUIStrings("models/issues_manager/FederatedAuthRequestIssue.ts", UIStrings19);
 var i18nLazyString8 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
 var FederatedAuthRequestIssue = class _FederatedAuthRequestIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     super({
       code: "FederatedAuthRequestIssue",
@@ -3418,24 +3350,20 @@ var FederatedAuthRequestIssue = class _FederatedAuthRequestIssue extends Issue {
         "FederatedAuthRequestIssue",
         issueDetails.federatedAuthRequestIssueReason
       ].join("::")
-    }, issuesModel);
-    this.#issueDetails = issueDetails;
+    }, issueDetails, issuesModel);
   }
   getCategory() {
     return "Other";
   }
-  details() {
-    return this.#issueDetails;
-  }
   getDescription() {
-    const description = issueDescriptions8.get(this.#issueDetails.federatedAuthRequestIssueReason);
+    const description = issueDescriptions8.get(this.details().federatedAuthRequestIssueReason);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
     return "PageError";
@@ -3638,25 +3566,20 @@ __export(PropertyRuleIssue_exports, {
   PropertyRuleIssue: () => PropertyRuleIssue
 });
 var PropertyRuleIssue = class _PropertyRuleIssue extends Issue {
-  #issueDetails;
   #primaryKey;
   constructor(issueDetails, issuesModel) {
     const code = JSON.stringify(issueDetails);
-    super(code, issuesModel);
+    super(code, issueDetails, issuesModel);
     this.#primaryKey = code;
-    this.#issueDetails = issueDetails;
   }
   sources() {
-    return [this.#issueDetails.sourceCodeLocation];
-  }
-  details() {
-    return this.#issueDetails;
+    return [this.details().sourceCodeLocation];
   }
   primaryKey() {
     return this.#primaryKey;
   }
   getPropertyName() {
-    switch (this.#issueDetails.propertyRuleIssueReason) {
+    switch (this.details().propertyRuleIssueReason) {
       case "InvalidInherits":
         return "inherits";
       case "InvalidInitialValue":
@@ -3667,13 +3590,13 @@ var PropertyRuleIssue = class _PropertyRuleIssue extends Issue {
     return "";
   }
   getDescription() {
-    if (this.#issueDetails.propertyRuleIssueReason === "InvalidName") {
+    if (this.details().propertyRuleIssueReason === "InvalidName") {
       return {
         file: "propertyRuleInvalidNameIssue.md",
         links: []
       };
     }
-    const value = this.#issueDetails.propertyValue ? `: ${this.#issueDetails.propertyValue}` : "";
+    const value = this.details().propertyValue ? `: ${this.details().propertyValue}` : "";
     const property = `${this.getPropertyName()}${value}`;
     return {
       file: "propertyRuleIssue.md",
@@ -3768,7 +3691,6 @@ function getIssueCode3(details) {
   }
 }
 var SharedDictionaryIssue = class _SharedDictionaryIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     super({
       code: getIssueCode3(issueDetails),
@@ -3776,30 +3698,26 @@ var SharedDictionaryIssue = class _SharedDictionaryIssue extends Issue {
         "SharedDictionaryIssue",
         issueDetails.sharedDictionaryError
       ].join("::")
-    }, issuesModel);
-    this.#issueDetails = issueDetails;
+    }, issueDetails, issuesModel);
   }
   requests() {
-    if (this.#issueDetails.request) {
-      return [this.#issueDetails.request];
+    if (this.details().request) {
+      return [this.details().request];
     }
     return [];
   }
   getCategory() {
     return "Other";
   }
-  details() {
-    return this.#issueDetails;
-  }
   getDescription() {
-    const description = issueDescriptions9.get(this.#issueDetails.sharedDictionaryError);
+    const description = issueDescriptions9.get(this.details().sharedDictionaryError);
     if (!description) {
       return null;
     }
     return resolveLazyDescription(description);
   }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getKind() {
     return "PageError";
@@ -4016,33 +3934,29 @@ var lateImportStylesheetLoadingCode = [
   "LateImportRule"
 ].join("::");
 var StylesheetLoadingIssue = class _StylesheetLoadingIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     const code = `${"StylesheetLoadingIssue"}::${issueDetails.styleSheetLoadingIssueReason}`;
-    super(code, issuesModel);
-    this.#issueDetails = issueDetails;
+    super(code, issueDetails, issuesModel);
   }
   sources() {
-    return [this.#issueDetails.sourceCodeLocation];
+    return [this.details().sourceCodeLocation];
   }
   requests() {
-    if (!this.#issueDetails.failedRequestInfo) {
+    const details = this.details();
+    if (!details.failedRequestInfo) {
       return [];
     }
-    const { url, requestId } = this.#issueDetails.failedRequestInfo;
+    const { url, requestId } = details.failedRequestInfo;
     if (!requestId) {
       return [];
     }
     return [{ url, requestId }];
   }
-  details() {
-    return this.#issueDetails;
-  }
   primaryKey() {
-    return JSON.stringify(this.#issueDetails);
+    return JSON.stringify(this.details());
   }
   getDescription() {
-    switch (this.#issueDetails.styleSheetLoadingIssueReason) {
+    switch (this.details().styleSheetLoadingIssueReason) {
       case "LateImportRule":
         return {
           file: "stylesheetLateImport.md",
@@ -4171,24 +4085,20 @@ function generateGroupingIssueCode(details) {
   return issueCode;
 }
 var SRIMessageSignatureIssue = class _SRIMessageSignatureIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     super({
       code: generateGroupingIssueCode(issueDetails),
       umaCode: `${"SRIMessageSignatureIssue"}::${issueDetails.error}`
-    }, issuesModel);
-    this.#issueDetails = issueDetails;
-  }
-  details() {
-    return this.#issueDetails;
+    }, issueDetails, issuesModel);
   }
   // Overriding `Issue<String>`:
   primaryKey() {
     return JSON.stringify(this.details());
   }
   getDescription() {
+    const details = this.details();
     const description = {
-      file: `sri${this.details().error}.md`,
+      file: `sri${details.error}.md`,
       links: [
         {
           link: "https://www.rfc-editor.org/rfc/rfc9421.html",
@@ -4201,10 +4111,10 @@ var SRIMessageSignatureIssue = class _SRIMessageSignatureIssue extends Issue {
       ],
       substitutions: /* @__PURE__ */ new Map()
     };
-    if (this.#issueDetails.error === "ValidationFailedSignatureMismatch") {
-      description.substitutions?.set("PLACEHOLDER_signatureBase", () => this.#issueDetails.signatureBase);
+    if (details.error === "ValidationFailedSignatureMismatch") {
+      description.substitutions?.set("PLACEHOLDER_signatureBase", () => details.signatureBase);
     }
-    if (this.#issueDetails.error === "ValidationFailedIntegrityMismatch") {
+    if (details.error === "ValidationFailedIntegrityMismatch") {
       description.substitutions?.set("PLACEHOLDER_integrityAssertions", () => {
         const prefix = "\n* ";
         return prefix + this.details().integrityAssertions.join(prefix);
@@ -4250,16 +4160,11 @@ var UIStrings22 = {
 var str_21 = i18n41.i18n.registerUIStrings("models/issues_manager/UnencodedDigestIssue.ts", UIStrings22);
 var i18nLazyString11 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
 var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
-  #issueDetails;
   constructor(issueDetails, issuesModel) {
     super({
       code: `${"UnencodedDigestIssue"}::${issueDetails.error}`,
       umaCode: `${"UnencodedDigestIssue"}::${issueDetails.error}`
-    }, issuesModel);
-    this.#issueDetails = issueDetails;
-  }
-  details() {
-    return this.#issueDetails;
+    }, issueDetails, issuesModel);
   }
   primaryKey() {
     return JSON.stringify(this.details());

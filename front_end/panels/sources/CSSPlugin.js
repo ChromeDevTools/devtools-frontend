@@ -10,7 +10,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -183,7 +183,7 @@ class CurveSwatchWidget extends CodeMirror.WidgetType {
     toDOM(view) {
         const container = document.createElement('span');
         const bezierText = container.createChild('span');
-        const icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+        const icon = createIcon('bezier-curve-filled', 'bezier-swatch-icon');
         icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
         bezierText.append(this.text);
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.openCubicBezierEditor));

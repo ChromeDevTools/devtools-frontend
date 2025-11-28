@@ -20,7 +20,7 @@ __export(ProfileDataGrid_exports, {
 });
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 var UIStrings = {
@@ -156,7 +156,7 @@ var ProfileDataGridNode = class _ProfileDataGridNode extends DataGrid.DataGrid.D
         cell.classList.toggle("highlight", this.searchMatchedFunctionColumn);
         if (this.deoptReason) {
           cell.classList.add("not-optimized");
-          const warningIcon = new IconButton.Icon.Icon();
+          const warningIcon = new Icon();
           warningIcon.name = "warning-filled";
           warningIcon.classList.add("profile-warn-marker", "small");
           UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, { PH1: this.deoptReason }));
@@ -736,7 +736,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
 var objectValue_css_default = `/*
@@ -2937,7 +2937,7 @@ var ProfilesSidebarTreeElement = class extends UI5.TreeOutline.TreeElement {
   onattach() {
     this.listItemElement.classList.add("profile-launcher-view-tree-item");
     this.listItemElement.createChild("div", "titles no-subtitle").createChild("span", "title-container").createChild("span", "title").textContent = i18nString5(UIStrings5.profiles);
-    this.setLeadingIcons([IconButton2.Icon.create("tune")]);
+    this.setLeadingIcons([createIcon("tune")]);
   }
 };
 var ActionDelegate = class {
@@ -5175,7 +5175,7 @@ import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as HeapSnapshotModel from "./../../models/heap_snapshot_model/heap_snapshot_model.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
@@ -5668,12 +5668,12 @@ var HeapSnapshotGenericObjectNode = class extends HeapSnapshotGridNode {
     const div = fragment.$("container");
     this.prefixObjectCell(div);
     if (this.reachableFromWindow) {
-      const frameIcon = IconButton3.Icon.create("frame", "heap-object-tag");
+      const frameIcon = createIcon2("frame", "heap-object-tag");
       UI12.Tooltip.Tooltip.install(frameIcon, i18nString10(UIStrings10.userObjectReachableFromWindow));
       div.appendChild(frameIcon);
     }
     if (this.detachedDOMTreeNode) {
-      const frameIcon = IconButton3.Icon.create("scissors", "heap-object-tag");
+      const frameIcon = createIcon2("scissors", "heap-object-tag");
       UI12.Tooltip.Tooltip.install(frameIcon, i18nString10(UIStrings10.detachedFromDomTree));
       div.appendChild(frameIcon);
     }

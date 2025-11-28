@@ -3,25 +3,20 @@
 // found in the LICENSE file.
 import { Issue } from './Issue.js';
 export class PropertyRuleIssue extends Issue {
-    #issueDetails;
     #primaryKey;
     constructor(issueDetails, issuesModel) {
         const code = JSON.stringify(issueDetails);
-        super(code, issuesModel);
+        super(code, issueDetails, issuesModel);
         this.#primaryKey = code;
-        this.#issueDetails = issueDetails;
     }
     sources() {
-        return [this.#issueDetails.sourceCodeLocation];
-    }
-    details() {
-        return this.#issueDetails;
+        return [this.details().sourceCodeLocation];
     }
     primaryKey() {
         return this.#primaryKey;
     }
     getPropertyName() {
-        switch (this.#issueDetails.propertyRuleIssueReason) {
+        switch (this.details().propertyRuleIssueReason) {
             case "InvalidInherits" /* Protocol.Audits.PropertyRuleIssueReason.InvalidInherits */:
                 return 'inherits';
             case "InvalidInitialValue" /* Protocol.Audits.PropertyRuleIssueReason.InvalidInitialValue */:
@@ -32,13 +27,13 @@ export class PropertyRuleIssue extends Issue {
         return '';
     }
     getDescription() {
-        if (this.#issueDetails.propertyRuleIssueReason === "InvalidName" /* Protocol.Audits.PropertyRuleIssueReason.InvalidName */) {
+        if (this.details().propertyRuleIssueReason === "InvalidName" /* Protocol.Audits.PropertyRuleIssueReason.InvalidName */) {
             return {
                 file: 'propertyRuleInvalidNameIssue.md',
                 links: [],
             };
         }
-        const value = this.#issueDetails.propertyValue ? `: ${this.#issueDetails.propertyValue}` : '';
+        const value = this.details().propertyValue ? `: ${this.details().propertyValue}` : '';
         const property = `${this.getPropertyName()}${value}`;
         return {
             file: 'propertyRuleIssue.md',

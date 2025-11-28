@@ -13,8 +13,8 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Spinners from '../../ui/components/spinners/spinners.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -1076,7 +1076,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
         else if (type === Types.AutomaticFileSystem) {
             iconType = 'folder-asterisk';
         }
-        const icon = IconButton.Icon.create(iconType);
+        const icon = createIcon(iconType);
         this.setLeadingIcons([icon]);
     }
     async onpopulate() {

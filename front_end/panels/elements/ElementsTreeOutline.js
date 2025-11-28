@@ -205,7 +205,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             return;
         }
         this.#currentHighlightedNode = null;
-        this.requestUpdate();
+        this.performUpdate();
     }
     selectDOMNode(node, focus) {
         this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
@@ -233,6 +233,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
      */
     getTreeOutlineForTesting() {
         return this.#viewOutput.elementsTreeOutline;
+    }
+    treeElementForNode(node) {
+        return this.#viewOutput.elementsTreeOutline?.findTreeElement(node) || null;
     }
     performUpdate() {
         this.#view({
@@ -285,7 +288,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
      * FIXME: adorners should be part of the view input.
      */
     updateNodeAdorners(node) {
-        void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.updateStyleAdorners();
+        const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+        void element?.updateStyleAdorners();
+        void element?.updateAdorners();
     }
     highlightMatch(node, query) {
         const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
@@ -1676,6 +1681,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         const treeElement = this.treeElementByNode.get(node);
         if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
             void treeElement.updateStyleAdorners();
+            void treeElement.updateAdorners();
         }
     }
 }

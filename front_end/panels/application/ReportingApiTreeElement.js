@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { ReportingApiView } from './ReportingApiView.js';
 const UIStrings = {
@@ -18,7 +18,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
     view;
     constructor(storagePanel) {
         super(storagePanel, i18nString(UIStrings.reportingApi), false, 'reporting-api');
-        const icon = IconButton.Icon.create('document');
+        const icon = createIcon('document');
         this.setLeadingIcons([icon]);
     }
     get itemURL() {

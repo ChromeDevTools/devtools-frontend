@@ -1725,7 +1725,7 @@ __export(PermissionsPolicySection_exports, {
   PermissionsPolicySection: () => PermissionsPolicySection,
   renderIconLink: () => renderIconLink
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/report_view/report_view.js";
 import * as Common2 from "./../../../core/common/common.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
@@ -1998,7 +1998,7 @@ var ProtocolHandlersView_exports = {};
 __export(ProtocolHandlersView_exports, {
   ProtocolHandlersView: () => ProtocolHandlersView
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n13 from "./../../../core/i18n/i18n.js";
 import * as Platform from "./../../../core/platform/platform.js";
@@ -2701,7 +2701,7 @@ var SharedStorageMetadataView_exports = {};
 __export(SharedStorageMetadataView_exports, {
   SharedStorageMetadataView: () => SharedStorageMetadataView
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as Lit6 from "./../../../ui/lit/lit.js";
@@ -3107,7 +3107,7 @@ __export(TrustTokensView_exports, {
   TrustTokensView: () => TrustTokensView,
   i18nString: () => i18nString11
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as SDK5 from "./../../../core/sdk/sdk.js";

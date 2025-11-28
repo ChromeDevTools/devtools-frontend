@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { NetworkGroupNode } from './NetworkDataGridNode.js';
 export class NetworkFrameGrouper {
@@ -44,7 +44,7 @@ export class FrameGroupNode extends NetworkGroupNode {
         const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
         if (columnIndex === 0) {
             const name = this.displayName();
-            cell.appendChild(IconButton.Icon.create('frame', 'network-frame-group-icon'));
+            cell.appendChild(createIcon('frame', 'network-frame-group-icon'));
             UI.UIUtils.createTextChild(cell, name);
             UI.Tooltip.Tooltip.install(cell, name);
             this.setCellAccessibleName(cell.textContent || '', cell, columnId);

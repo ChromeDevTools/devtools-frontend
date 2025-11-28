@@ -68,13 +68,13 @@
       "path": "../helpers/bundle-tsconfig.json"
     },
     {
-      "path": "../icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../render_coordinator/bundle-tsconfig.json"
     },
     {
       "path": "../text_editor/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../kit/bundle-tsconfig.json"
     },
     {
       "path": "../../legacy/bundle-tsconfig.json"

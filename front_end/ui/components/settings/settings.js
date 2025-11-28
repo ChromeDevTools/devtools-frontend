@@ -16,7 +16,7 @@ var SettingDeprecationWarning_exports = {};
 __export(SettingDeprecationWarning_exports, {
   SettingDeprecationWarning: () => SettingDeprecationWarning
 });
-import "./../icon_button/icon_button.js";
+import "./../../kit/kit.js";
 import * as Common from "./../../../core/common/common.js";
 import * as Lit from "./../../lit/lit.js";
 

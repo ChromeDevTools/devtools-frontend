@@ -2,10 +2,8 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
 import { type MarkdownIssueDescription } from './MarkdownIssueDescription.js';
-export declare class UnencodedDigestIssue extends Issue<string> {
-    #private;
+export declare class UnencodedDigestIssue extends Issue<Protocol.Audits.UnencodedDigestIssueDetails> {
     constructor(issueDetails: Protocol.Audits.UnencodedDigestIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null);
-    details(): Protocol.Audits.UnencodedDigestIssueDetails;
     primaryKey(): string;
     getDescription(): MarkdownIssueDescription | null;
     getCategory(): IssueCategory;

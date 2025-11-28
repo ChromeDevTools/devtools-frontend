@@ -364,17 +364,9 @@ export class MainImpl {
         });
         IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
         UI.DockController.DockController.instance({ forceNew: true, canDock });
-        SDK.NetworkManager.MultitargetNetworkManager.instance({ forceNew: true });
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance({ forceNew: true });
         const targetManager = SDK.TargetManager.TargetManager.instance();
         targetManager.addEventListener("SuspendStateChanged" /* SDK.TargetManager.Events.SUSPEND_STATE_CHANGED */, this.#onSuspendStateChanged.bind(this));
-        SDK.PageResourceLoader.PageResourceLoader.instance({
-            forceNew: true,
-            targetManager,
-            settings: Common.Settings.Settings.instance(),
-            userAgentProvider: SDK.NetworkManager.MultitargetNetworkManager.instance(),
-            loadOverride: null,
-        });
         Workspace.FileManager.FileManager.instance({ forceNew: true });
         Bindings.NetworkProject.NetworkProjectManager.instance();
         new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();

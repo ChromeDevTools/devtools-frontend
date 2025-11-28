@@ -23,6 +23,7 @@ __export(ChangesSidebar_exports, {
   ChangesSidebar: () => ChangesSidebar,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
+import "./../../ui/kit/kit.js";
 import * as Common from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
@@ -255,6 +256,7 @@ var CombinedDiffView_exports = {};
 __export(CombinedDiffView_exports, {
   CombinedDiffView: () => CombinedDiffView
 });
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Persistence from "./../../models/persistence/persistence.js";

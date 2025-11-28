@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import '../../../ui/components/node_text/node_text.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type { DOMNode } from './Helper.js';

@@ -92,8 +92,8 @@ import * as Common from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as IssuesManager3 from "./../../models/issues_manager/issues_manager.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import * as Components from "./components/components.js";
 var UIStrings2 = {
@@ -165,7 +165,7 @@ var IssueKindView = class extends UI2.TreeOutline.TreeElement {
   #appendHeader() {
     const header = document.createElement("div");
     header.classList.add("header");
-    const issueKindIcon = new IconButton.Icon.Icon();
+    const issueKindIcon = new Icon();
     issueKindIcon.name = IssueCounter.IssueCounter.getIssueKindIconName(this.#kind);
     issueKindIcon.classList.add("leading-issue-icon", "extra-large");
     const countAdorner = new Adorners.Adorner.Adorner();
@@ -729,9 +729,9 @@ import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as IssuesManager10 from "./../../models/issues_manager/issues_manager.js";
 import * as NetworkForward3 from "./../network/forward/forward.js";
 import * as Adorners2 from "./../../ui/components/adorners/adorners.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter3 from "./../../ui/components/issue_counter/issue_counter.js";
 import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
+import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -746,8 +746,8 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Logs from "./../../models/logs/logs.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
 import * as RequestLinkIcon from "./../../ui/components/request_link_icon/request_link_icon.js";
+import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
@@ -874,7 +874,7 @@ var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
     const frameCell = document.createElement("td");
     frameCell.classList.add("affected-resource-cell");
     if (frame) {
-      const icon = new IconButton2.Icon.Icon();
+      const icon = new Icon2();
       icon.name = "code-circle";
       icon.classList.add("link", "elements-panel", "medium");
       icon.onclick = async () => {
@@ -2065,7 +2065,7 @@ var AttributionReportingIssueDetailsView = class extends AffectedResourcesView {
   async #appendDetail(issueCode, issue) {
     const element = document.createElement("tr");
     element.classList.add("affected-resource-directive");
-    const details = issue.issueDetails;
+    const details = issue.details();
     switch (issueCode) {
       case "AttributionReportingIssue::InvalidRegisterSourceHeader":
       case "AttributionReportingIssue::InvalidRegisterTriggerHeader":
@@ -2106,7 +2106,7 @@ var AttributionReportingIssueDetailsView = class extends AffectedResourcesView {
     this.affectedResources.appendChild(element);
   }
   async #appendElementOrEmptyCell(parent, issue) {
-    const details = issue.issueDetails;
+    const details = issue.details();
     if (details.violatingNodeId !== void 0) {
       const target = issue.model()?.target() || null;
       parent.appendChild(await this.createElementCell({ backendNodeId: details.violatingNodeId, target, nodeName: "Attribution source element" }, issue.getCategory()));
@@ -2777,7 +2777,7 @@ var AffectedMixedContentView = class _AffectedMixedContentView extends AffectedR
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const issue of mixedContentIssues) {
-      const details = issue.getDetails();
+      const details = issue.details();
       this.appendAffectedMixedContent(details);
       count++;
     }
@@ -2934,7 +2934,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
   #appendHeader() {
     const header = document.createElement("div");
     header.classList.add("header");
-    this.#issueKindIcon = new IconButton3.Icon.Icon();
+    this.#issueKindIcon = new Icon3();
     this.#issueKindIcon.classList.add("leading-issue-icon", "extra-large");
     this.#aggregatedIssuesCount = document.createElement("span");
     const countAdorner = new Adorners2.Adorner.Adorner();

@@ -6,8 +6,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -442,7 +442,7 @@ export class StorageView extends UI.Widget.VBox {
         this.quotaRow.appendChild(element);
         UI.Tooltip.Tooltip.install(this.quotaRow, i18nString(UIStrings.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
         if (!response.overrideActive && response.quota < 125829120) { // 120 MB
-            const icon = new IconButton.Icon.Icon();
+            const icon = new Icon();
             icon.name = 'info';
             icon.style.color = 'var(--icon-info)';
             icon.classList.add('small');

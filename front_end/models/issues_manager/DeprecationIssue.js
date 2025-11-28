@@ -26,29 +26,24 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 const strDeprecation = i18n.i18n.registerUIStrings('generated/Deprecation.ts', Deprecation.UIStrings);
 const i18nLazyDeprecationString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, strDeprecation);
 export class DeprecationIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         const issueCode = [
             "DeprecationIssue" /* Protocol.Audits.InspectorIssueCode.DeprecationIssue */,
             issueDetails.type,
         ].join('::');
-        super({ code: issueCode, umaCode: 'DeprecationIssue' }, issuesModel);
-        this.#issueDetails = issueDetails;
+        super({ code: issueCode, umaCode: 'DeprecationIssue' }, issueDetails, issuesModel);
     }
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
     }
-    details() {
-        return this.#issueDetails;
-    }
     getDescription() {
         let messageFunction = () => '';
-        const maybeEnglishMessage = Deprecation.UIStrings[this.#issueDetails.type];
+        const maybeEnglishMessage = Deprecation.UIStrings[this.details().type];
         if (maybeEnglishMessage) {
             messageFunction = i18nLazyDeprecationString(maybeEnglishMessage);
         }
         const links = [];
-        const deprecationMeta = Deprecation.DEPRECATIONS_METADATA[this.#issueDetails.type];
+        const deprecationMeta = Deprecation.DEPRECATIONS_METADATA[this.details().type];
         const feature = deprecationMeta?.chromeStatusFeature ?? 0;
         if (feature !== 0) {
             links.push({
@@ -73,13 +68,13 @@ export class DeprecationIssue extends Issue {
         });
     }
     sources() {
-        if (this.#issueDetails.sourceCodeLocation) {
-            return [this.#issueDetails.sourceCodeLocation];
+        if (this.details().sourceCodeLocation) {
+            return [this.details().sourceCodeLocation];
         }
         return [];
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
         return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;

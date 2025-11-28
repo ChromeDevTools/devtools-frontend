@@ -71,6 +71,7 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
      * Used by layout tests.
      */
     getTreeOutlineForTesting(): ElementsTreeOutline | undefined;
+    treeElementForNode(node: SDK.DOMModel.DOMNode): ElementsTreeElement | null;
     performUpdate(): void;
     modelAdded(domModel: SDK.DOMModel.DOMModel): void;
     modelRemoved(domModel: SDK.DOMModel.DOMModel): void;

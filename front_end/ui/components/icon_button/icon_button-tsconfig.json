@@ -36,7 +36,6 @@
   },
   "files": [
     "../../../../../../../front_end/ui/components/icon_button/FileSourceIcon.ts",
-    "../../../../../../../front_end/ui/components/icon_button/Icon.ts",
     "../../../../../../../front_end/ui/components/icon_button/IconButton.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -51,6 +50,9 @@
     },
     {
       "path": "../render_coordinator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../kit/bundle-tsconfig.json"
     },
     {
       "path": "../../lit/bundle-tsconfig.json"

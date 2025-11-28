@@ -1,12 +1,14 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../../kit/kit.js';
+import '../../../components/highlighting/highlighting.js';
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Diff from '../../../../third_party/diff/diff.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
+import { html, nothing } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { FilteredListWidget, Provider, registerProvider } from './FilteredListWidget.js';
 import { QuickOpenImpl } from './QuickOpen.js';
@@ -255,31 +257,26 @@ export class CommandMenuProvider extends Provider {
         }
         return score;
     }
-    renderItem(itemIndex, query, wrapperElement) {
+    renderItem(itemIndex, query) {
         const command = this.commands[itemIndex];
-        const itemElement = wrapperElement.createChild('div');
-        const titleElement = itemElement.createChild('div');
-        titleElement.removeChildren();
-        const icon = IconButton.Icon.create(categoryIcons[command.category]);
-        wrapperElement.insertBefore(icon, itemElement);
-        UI.UIUtils.createTextChild(titleElement, command.title);
-        FilteredListWidget.highlightRanges(titleElement, query, true);
-        const subtitleElement = itemElement.createChild('div');
-        if (command.featurePromotionId) {
-            const badge = UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
-            if (badge) {
-                itemElement.insertBefore(badge, subtitleElement);
-            }
-        }
-        subtitleElement.textContent = command.shortcut;
+        const badge = command.featurePromotionId ? UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId) : undefined;
         const deprecationWarning = command.deprecationWarning;
-        if (deprecationWarning) {
-            const deprecatedTagElement = itemElement.createChild('span', 'deprecated-tag');
-            deprecatedTagElement.textContent = i18nString(UIStrings.deprecated);
-            deprecatedTagElement.title = deprecationWarning;
-        }
-        const tagElement = wrapperElement.createChild('span', 'tag');
-        tagElement.textContent = command.category;
+        // clang-format off
+        return html `
+      <devtools-icon name=${categoryIcons[command.category]}></devtools-icon>
+      <div>
+        <devtools-highlight type="markup" ranges=${FilteredListWidget.getHighlightRanges(command.title, query, true)}>
+          ${command.title}
+        </devtools-highlight>
+        ${badge ?? nothing}
+        <div>${command.shortcut}</div>
+        ${deprecationWarning ? html `
+          <span class="deprecated-tag" title=${deprecationWarning}>
+            ${i18nString(UIStrings.deprecated)}
+          </span>` : nothing}
+      </div>
+      <span class="tag">${command.category}</span>`;
+        // clang-format on
     }
     jslogContextAt(itemIndex) {
         return this.commands[itemIndex].jslogContext;

@@ -1594,7 +1594,7 @@ __export(ElementsBreadcrumbs_exports, {
   ElementsBreadcrumbs: () => ElementsBreadcrumbs,
   NodeSelectedEvent: () => NodeSelectedEvent
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
@@ -2027,7 +2027,7 @@ var ElementsTreeExpandButton_exports = {};
 __export(ElementsTreeExpandButton_exports, {
   ElementsTreeExpandButton: () => ElementsTreeExpandButton
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n13 from "./../../../core/i18n/i18n.js";
 import { html as html9, render as render9 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
@@ -2151,7 +2151,7 @@ __export(QueryContainer_exports, {
   QueriedSizeRequestedEvent: () => QueriedSizeRequestedEvent,
   QueryContainer: () => QueryContainer
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
 import * as SDK2 from "./../../../core/sdk/sdk.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
@@ -2298,7 +2298,7 @@ __export(StylePropertyEditor_exports, {
   PropertySelectedEvent: () => PropertySelectedEvent,
   StylePropertyEditor: () => StylePropertyEditor
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";

@@ -1,4 +1,4 @@
-import '../../components/icon_button/icon_button.js';
+import '../../kit/kit.js';
 export interface MarkdownImageData {
     key: string;
     title: string;

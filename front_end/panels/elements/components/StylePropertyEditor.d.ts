@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import { type IconInfo } from './CSSPropertyIconResolver.js';
 declare global {
     interface HTMLElementEventMap {

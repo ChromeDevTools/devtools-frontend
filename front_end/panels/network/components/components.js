@@ -2388,7 +2388,7 @@ __export(RequestTrustTokensView_exports, {
   statusConsideredSuccess: () => statusConsideredSuccess
 });
 import "./../../../ui/components/report_view/report_view.js";
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as LegacyWrapper3 from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";

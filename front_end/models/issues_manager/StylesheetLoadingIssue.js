@@ -7,33 +7,29 @@ export const lateImportStylesheetLoadingCode = [
     "LateImportRule" /* Protocol.Audits.StyleSheetLoadingIssueReason.LateImportRule */,
 ].join('::');
 export class StylesheetLoadingIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         const code = `${"StylesheetLoadingIssue" /* Protocol.Audits.InspectorIssueCode.StylesheetLoadingIssue */}::${issueDetails.styleSheetLoadingIssueReason}`;
-        super(code, issuesModel);
-        this.#issueDetails = issueDetails;
+        super(code, issueDetails, issuesModel);
     }
     sources() {
-        return [this.#issueDetails.sourceCodeLocation];
+        return [this.details().sourceCodeLocation];
     }
     requests() {
-        if (!this.#issueDetails.failedRequestInfo) {
+        const details = this.details();
+        if (!details.failedRequestInfo) {
             return [];
         }
-        const { url, requestId } = this.#issueDetails.failedRequestInfo;
+        const { url, requestId } = details.failedRequestInfo;
         if (!requestId) {
             return [];
         }
         return [{ url, requestId }];
     }
-    details() {
-        return this.#issueDetails;
-    }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getDescription() {
-        switch (this.#issueDetails.styleSheetLoadingIssueReason) {
+        switch (this.details().styleSheetLoadingIssueReason) {
             case "LateImportRule" /* Protocol.Audits.StyleSheetLoadingIssueReason.LateImportRule */:
                 return {
                     file: 'stylesheetLateImport.md',

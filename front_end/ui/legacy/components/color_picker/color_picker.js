@@ -289,7 +289,7 @@ import * as Host from "./../../../../core/host/host.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Root from "./../../../../core/root/root.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
+import { createIcon, Icon } from "./../../../kit/kit.js";
 import * as UIHelpers from "./../../../helpers/helpers.js";
 import * as UI from "./../../legacy.js";
 var UIStrings = {
@@ -390,9 +390,9 @@ var ContrastDetails = class _ContrastDetails extends Common2.ObjectWrapper.Objec
     this.contrastValueBubble = contrastValueRowContents.createChild("span", "contrast-details-value");
     this.contrastValue = this.contrastValueBubble.createChild("span");
     this.contrastValueBubbleIcons = [];
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create("checkmark")));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create("check-double")));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create("clear")));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(createIcon("checkmark")));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(createIcon("check-double")));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(createIcon("clear")));
     this.contrastValueBubbleIcons.forEach((button) => button.addEventListener("click", (event) => {
       _ContrastDetails.showHelp();
       event.consume(false);
@@ -683,7 +683,7 @@ var Swatch = class {
   }
 };
 function createIconCheckmark() {
-  const icon = new IconButton.Icon.Icon();
+  const icon = new Icon();
   icon.name = "checkmark";
   icon.style.color = "var(--icon-checkmark-green)";
   icon.style.width = "var(--sys-size-9)";
@@ -691,7 +691,7 @@ function createIconCheckmark() {
   return icon;
 }
 function createIconNo() {
-  const icon = new IconButton.Icon.Icon();
+  const icon = new Icon();
   icon.name = "clear";
   icon.style.color = "var(--icon-error)";
   icon.classList.add("small");
@@ -1070,8 +1070,8 @@ import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
-import * as IconButton2 from "./../../../components/icon_button/icon_button.js";
 import * as SrgbOverlay from "./../../../components/srgb_overlay/srgb_overlay.js";
+import { createIcon as createIcon2, Icon as Icon2 } from "./../../../kit/kit.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI4 from "./../../legacy.js";
 
@@ -2241,7 +2241,7 @@ var Spectrum = class extends Common6.ObjectWrapper.eventMixin(UI4.Widget.VBox) {
       return unit;
     }
     function appendSwitcherIcon(parentElement) {
-      const switcherIcon = new IconButton2.Icon.Icon();
+      const switcherIcon = new Icon2();
       switcherIcon.name = "fold-more";
       switcherIcon.classList.add("medium");
       parentElement.appendChild(switcherIcon);
@@ -3161,7 +3161,7 @@ var Swatch2 = class {
     self.onInvokeElement(this.swatchOverlayElement, this.onCopyText.bind(this));
     this.swatchOverlayElement.addEventListener("mouseout", this.onCopyIconMouseout.bind(this));
     this.swatchOverlayElement.addEventListener("blur", this.onCopyIconMouseout.bind(this));
-    this.swatchCopyIcon = IconButton2.Icon.create("copy", "copy-color-icon");
+    this.swatchCopyIcon = createIcon2("copy", "copy-color-icon");
     UI4.Tooltip.Tooltip.install(this.swatchCopyIcon, i18nString3(UIStrings3.copyColorToClipboard));
     this.swatchOverlayElement.appendChild(this.swatchCopyIcon);
     UI4.ARIAUtils.setLabel(this.swatchOverlayElement, this.swatchCopyIcon.title);

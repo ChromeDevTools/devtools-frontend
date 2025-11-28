@@ -12,21 +12,16 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/QuirksModeIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class QuirksModeIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         const mode = issueDetails.isLimitedQuirksMode ? 'LimitedQuirksMode' : 'QuirksMode';
         const umaCode = ["QuirksModeIssue" /* Protocol.Audits.InspectorIssueCode.QuirksModeIssue */, mode].join('::');
-        super({ code: "QuirksModeIssue" /* Protocol.Audits.InspectorIssueCode.QuirksModeIssue */, umaCode }, issuesModel);
-        this.#issueDetails = issueDetails;
+        super({ code: "QuirksModeIssue" /* Protocol.Audits.InspectorIssueCode.QuirksModeIssue */, umaCode }, issueDetails, issuesModel);
     }
     primaryKey() {
-        return `${this.code()}-(${this.#issueDetails.documentNodeId})-(${this.#issueDetails.url})`;
+        return `${this.code()}-(${this.details().documentNodeId})-(${this.details().url})`;
     }
     getCategory() {
         return "QuirksMode" /* IssueCategory.QUIRKS_MODE */;
-    }
-    details() {
-        return this.#issueDetails;
     }
     getDescription() {
         return {

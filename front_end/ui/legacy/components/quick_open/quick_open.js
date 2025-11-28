@@ -12,12 +12,14 @@ __export(CommandMenu_exports, {
   CommandMenuProvider: () => CommandMenuProvider,
   ShowActionDelegate: () => ShowActionDelegate2
 });
+import "./../../../kit/kit.js";
+import "./../../../components/highlighting/highlighting.js";
 import * as Common2 from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Diff3 from "./../../../../third_party/diff/diff.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
+import { html, nothing as nothing2 } from "./../../../lit/lit.js";
 import * as UI2 from "./../../legacy.js";
 
 // gen/front_end/ui/legacy/components/quick_open/FilteredListWidget.js
@@ -34,8 +36,8 @@ import * as Platform from "./../../../../core/platform/platform.js";
 import * as Geometry from "./../../../../models/geometry/geometry.js";
 import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
 import * as Diff from "./../../../../third_party/diff/diff.js";
-import * as Highlighting from "./../../../components/highlighting/highlighting.js";
 import * as TextPrompt from "./../../../components/text_prompt/text_prompt.js";
+import { nothing, render } from "./../../../lit/lit.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI from "./../../legacy.js";
 
@@ -288,9 +290,9 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
     this.provider = provider;
     this.queryChangedCallback = queryChangedCallback;
   }
-  static highlightRanges(element, query, caseInsensitive) {
+  static getHighlightRanges(text, query, caseInsensitive) {
     if (!query) {
-      return false;
+      return "";
     }
     function rangesForMatch(text2, query2) {
       const opcodes = Diff.Diff.DiffWrapper.charDiff(query2, text2);
@@ -307,19 +309,11 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
       }
       return ranges2;
     }
-    if (element.textContent === null) {
-      return false;
-    }
-    const text = element.textContent;
     let ranges = rangesForMatch(text, query);
     if (!ranges || caseInsensitive) {
       ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
     }
-    if (ranges) {
-      Highlighting.highlightRangesWithStyleClass(element, ranges, "highlight");
-      return true;
-    }
-    return false;
+    return ranges?.map((range) => `${range.offset},${range.length}`).join(" ") || "";
   }
   setCommandPrefix(commandPrefix) {
     this.inputBoxElement.setPrefix(commandPrefix);
@@ -442,7 +436,7 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
     const wrapperElement = document.createElement("div");
     wrapperElement.className = "filtered-list-widget-item";
     if (this.provider) {
-      this.provider.renderItem(item2, this.cleanValue(), wrapperElement);
+      render(this.provider.renderItem(item2, this.cleanValue()), wrapperElement);
       wrapperElement.setAttribute("jslog", `${VisualLogging.item(this.provider.jslogContextAt(item2)).track({ click: true })}`);
     }
     UI.ARIAUtils.markAsOption(wrapperElement);
@@ -713,7 +707,8 @@ var Provider = class {
   itemScoreAt(_itemIndex, _query) {
     return 1;
   }
-  renderItem(_itemIndex, _query, _wrapperElement) {
+  renderItem(_itemIndex, _query) {
+    return nothing;
   }
   jslogContextAt(_itemIndex) {
     return this.jslogContext;
@@ -1078,31 +1073,24 @@ var CommandMenuProvider = class extends Provider {
     }
     return score;
   }
-  renderItem(itemIndex, query, wrapperElement) {
+  renderItem(itemIndex, query) {
     const command = this.commands[itemIndex];
-    const itemElement = wrapperElement.createChild("div");
-    const titleElement = itemElement.createChild("div");
-    titleElement.removeChildren();
-    const icon = IconButton.Icon.create(categoryIcons[command.category]);
-    wrapperElement.insertBefore(icon, itemElement);
-    UI2.UIUtils.createTextChild(titleElement, command.title);
-    FilteredListWidget.highlightRanges(titleElement, query, true);
-    const subtitleElement = itemElement.createChild("div");
-    if (command.featurePromotionId) {
-      const badge = UI2.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
-      if (badge) {
-        itemElement.insertBefore(badge, subtitleElement);
-      }
-    }
-    subtitleElement.textContent = command.shortcut;
+    const badge = command.featurePromotionId ? UI2.UIUtils.maybeCreateNewBadge(command.featurePromotionId) : void 0;
     const deprecationWarning = command.deprecationWarning;
-    if (deprecationWarning) {
-      const deprecatedTagElement = itemElement.createChild("span", "deprecated-tag");
-      deprecatedTagElement.textContent = i18nString3(UIStrings3.deprecated);
-      deprecatedTagElement.title = deprecationWarning;
-    }
-    const tagElement = wrapperElement.createChild("span", "tag");
-    tagElement.textContent = command.category;
+    return html`
+      <devtools-icon name=${categoryIcons[command.category]}></devtools-icon>
+      <div>
+        <devtools-highlight type="markup" ranges=${FilteredListWidget.getHighlightRanges(command.title, query, true)}>
+          ${command.title}
+        </devtools-highlight>
+        ${badge ?? nothing2}
+        <div>${command.shortcut}</div>
+        ${deprecationWarning ? html`
+          <span class="deprecated-tag" title=${deprecationWarning}>
+            ${i18nString3(UIStrings3.deprecated)}
+          </span>` : nothing2}
+      </div>
+      <span class="tag">${command.category}</span>`;
   }
   jslogContextAt(itemIndex) {
     return this.commands[itemIndex].jslogContext;
@@ -1191,8 +1179,8 @@ var HelpQuickOpen_exports = {};
 __export(HelpQuickOpen_exports, {
   HelpQuickOpen: () => HelpQuickOpen
 });
-import * as IconButton2 from "./../../../components/icon_button/icon_button.js";
-import * as UI3 from "./../../legacy.js";
+import "./../../../kit/kit.js";
+import { html as html2 } from "./../../../lit/lit.js";
 var HelpQuickOpen = class extends Provider {
   providers;
   constructor(jslogContext) {
@@ -1217,15 +1205,13 @@ var HelpQuickOpen = class extends Provider {
   itemScoreAt(itemIndex, _query) {
     return -this.providers[itemIndex].prefix.length;
   }
-  renderItem(itemIndex, _query, wrapperElement) {
+  renderItem(itemIndex, _query) {
     const provider = this.providers[itemIndex];
-    const itemElement = wrapperElement.createChild("div");
-    const titleElement = itemElement.createChild("div");
-    const iconElement = new IconButton2.Icon.Icon();
-    iconElement.name = provider.iconName;
-    iconElement.classList.add("large");
-    wrapperElement.insertBefore(iconElement, itemElement);
-    UI3.UIUtils.createTextChild(titleElement, provider.title);
+    return html2`
+      <devtools-icon class="large" name=${provider.iconName}></devtools-icon>
+      <div>
+        <div>${provider.title}</div>
+      </div>`;
   }
   jslogContextAt(itemIndex) {
     return this.providers[itemIndex].jslogContext;

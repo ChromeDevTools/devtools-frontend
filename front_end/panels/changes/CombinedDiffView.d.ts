@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import type * as Diff from '../../third_party/diff/diff.js';
 import * as UI from '../../ui/legacy/legacy.js';

@@ -30,7 +30,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -558,7 +558,7 @@ export class ProfilesSidebarTreeElement extends UI.TreeOutline.TreeElement {
             .createChild('span', 'title-container')
             .createChild('span', 'title')
             .textContent = i18nString(UIStrings.profiles);
-        this.setLeadingIcons([IconButton.Icon.create('tune')]);
+        this.setLeadingIcons([createIcon('tune')]);
     }
 }
 export class ActionDelegate {

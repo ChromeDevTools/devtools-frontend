@@ -6,7 +6,7 @@ export declare class MockIssuesManager extends Common.ObjectWrapper.ObjectWrappe
     private issueCounts;
     private mockModel;
     constructor(issues: Iterable<IssuesManager.Issue.Issue>);
-    issues(): IssuesManager.Issue.Issue<string>[];
+    issues(): IssuesManager.Issue.Issue<IssuesManager.Issue.ValidIssueDetails | null, string>[];
     getIssueById(id: string): IssuesManager.Issue.Issue | null;
     numberOfIssues(kind?: IssuesManager.Issue.IssueKind): number;
     setNumberOfIssues(counts: Map<IssuesManager.Issue.IssueKind, number>): void;

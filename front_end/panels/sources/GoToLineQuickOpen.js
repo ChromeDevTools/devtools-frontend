@@ -1,10 +1,11 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html } from '../../ui/lit/lit.js';
 import { SourcesView } from './SourcesView.js';
 const UIStrings = {
     /**
@@ -68,12 +69,14 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     itemCount() {
         return this.#goToLineStrings.length;
     }
-    renderItem(itemIndex, _query, wrapperElement) {
-        const itemElement = wrapperElement.createChild('div');
-        const titleElement = itemElement.createChild('div');
-        const icon = IconButton.Icon.create('colon');
-        wrapperElement.insertBefore(icon, itemElement);
-        UI.UIUtils.createTextChild(titleElement, this.#goToLineStrings[itemIndex]);
+    renderItem(itemIndex, _query) {
+        // clang-format off
+        return html `
+      <devtools-icon name="colon"></devtools-icon>
+      <div>
+        <div>${this.#goToLineStrings[itemIndex]}</div>
+      </div>`;
+        // clang-format on
     }
     rewriteQuery(_query) {
         // For Go to Line Quick Open, we don't need to filter any item, set query to empty string, so the filter regex matching will be skipped

@@ -4,7 +4,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { ServiceWorkerCacheView } from './ServiceWorkerCacheViews.js';
@@ -38,7 +38,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     storageBucket;
     constructor(resourcesPanel, storageBucket) {
         super(resourcesPanel, i18nString(UIStrings.cacheStorage), i18nString(UIStrings.noCacheStorage), i18nString(UIStrings.cacheStorageDescription), 'cache-storage');
-        const icon = IconButton.Icon.create('database');
+        const icon = createIcon('database');
         this.setLink('https://developer.chrome.com/docs/devtools/storage/cache/');
         this.setLeadingIcons([icon]);
         this.swCacheModels = new Set();
@@ -141,7 +141,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
         this.model = model;
         this.cache = cache;
         this.view = null;
-        const icon = IconButton.Icon.create('table');
+        const icon = createIcon('table');
         this.setLeadingIcons([icon]);
     }
     get itemURL() {

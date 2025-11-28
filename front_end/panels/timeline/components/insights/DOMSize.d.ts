@@ -1,4 +1,4 @@
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import './Table.js';
 import './NodeLink.js';
 import type { DOMSizeInsightModel } from '../../../../models/trace/insights/DOMSize.js';

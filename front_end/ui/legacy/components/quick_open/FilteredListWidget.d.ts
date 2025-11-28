@@ -1,5 +1,6 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import { type LitTemplate } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 declare const FilteredListWidget_base: (new (...args: any[]) => {
     "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
@@ -30,7 +31,7 @@ export declare class FilteredListWidget extends FilteredListWidget_base implemen
     private provider;
     private readonly queryChangedCallback?;
     constructor(provider: Provider | null, promptHistory?: string[], queryChangedCallback?: ((arg0: string) => void));
-    static highlightRanges(element: Element, query: string, caseInsensitive?: boolean): boolean;
+    static getHighlightRanges(text: string, query: string, caseInsensitive?: boolean): string;
     setCommandPrefix(commandPrefix: string): void;
     setCommandSuggestion(suggestion: string): void;
     setHintElement(hint: string): void;
@@ -80,7 +81,7 @@ export declare class Provider {
     itemCount(): number;
     itemKeyAt(_itemIndex: number): string;
     itemScoreAt(_itemIndex: number, _query: string): number;
-    renderItem(_itemIndex: number, _query: string, _wrapperElement: Element): void;
+    renderItem(_itemIndex: number, _query: string): LitTemplate;
     jslogContextAt(_itemIndex: number): string;
     selectItem(_itemIndex: number | null, _promptValue: string): void;
     refresh(): void;

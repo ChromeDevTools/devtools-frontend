@@ -30,12 +30,10 @@ export declare const enum IssueCode {
     WRITE_ERROR_UNSUPPORTED_TYPE = "SharedDictionaryIssue::WriteErrorUnsupportedType",
     UNKNOWN = "SharedDictionaryIssue::WriteErrorUnknown"
 }
-export declare class SharedDictionaryIssue extends Issue {
-    #private;
+export declare class SharedDictionaryIssue extends Issue<Protocol.Audits.SharedDictionaryIssueDetails, IssueCode> {
     constructor(issueDetails: Protocol.Audits.SharedDictionaryIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null);
     requests(): Iterable<Protocol.Audits.AffectedRequest>;
     getCategory(): IssueCategory;
-    details(): Protocol.Audits.SharedDictionaryIssueDetails;
     getDescription(): MarkdownIssueDescription | null;
     primaryKey(): string;
     getKind(): IssueKind;

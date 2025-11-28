@@ -1,4 +1,4 @@
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/report_view/report_view.js';
 import './PreloadingMismatchedHeadersGrid.js';
 import './MismatchedPreloadingGrid.js';

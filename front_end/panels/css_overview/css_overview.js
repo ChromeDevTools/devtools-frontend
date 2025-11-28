@@ -580,7 +580,7 @@ __export(CSSOverviewCompletedView_exports, {
   ElementDetailsView: () => ElementDetailsView
 });
 import "./../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../ui/components/icon_button/icon_button.js";
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";

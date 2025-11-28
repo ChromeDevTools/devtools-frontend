@@ -7,8 +7,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkComponents from './components/components.js';
@@ -179,7 +179,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
             this.appendTab("preview" /* NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW */, i18nString(UIStrings.preview), previewView, i18nString(UIStrings.responsePreview));
             const signedExchangeInfo = request.signedExchangeInfo();
             if (signedExchangeInfo?.errors?.length) {
-                const icon = new IconButton.Icon.Icon();
+                const icon = new Icon();
                 icon.name = 'cross-circle-filled';
                 icon.classList.add('small');
                 UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.signedexchangeError));
@@ -236,7 +236,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
             this.appendTab("cookies" /* NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES */, i18nString(UIStrings.cookies), this.#cookiesView, i18nString(UIStrings.requestAndResponseCookies));
         }
         if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
-            const icon = new IconButton.Icon.Icon();
+            const icon = new Icon();
             icon.name = 'warning-filled';
             icon.classList.add('small');
             icon.title = i18nString(UIStrings.thirdPartyPhaseout);
@@ -257,7 +257,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
         if (trustTokenResult &&
             !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
-            const icon = new IconButton.Icon.Icon();
+            const icon = new Icon();
             icon.name = 'cross-circle-filled';
             icon.classList.add('small');
             this.setTabIcon("trust-tokens" /* NetworkForward.UIRequestLocation.UIRequestTabs.TRUST_TOKENS */, icon);

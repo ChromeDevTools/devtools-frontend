@@ -1,4 +1,4 @@
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/tooltips/tooltips.js';
 import '../../../../ui/components/spinners/spinners.js';
 import * as AiAssistanceModels from '../../../../models/ai_assistance/ai_assistance.js';

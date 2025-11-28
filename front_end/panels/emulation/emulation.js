@@ -2296,11 +2296,31 @@ var ActionDelegate = class {
             return;
           }
           const result = await object.callFunction(function() {
+            function getFrameOffset(frame) {
+              if (!frame) {
+                return { x: 0, y: 0 };
+              }
+              const borderTop = frame.clientTop;
+              const borderLeft = frame.clientLeft;
+              const styles = window.getComputedStyle(frame);
+              const paddingTop = parseFloat(styles.paddingTop);
+              const paddingLeft = parseFloat(styles.paddingLeft);
+              const rect2 = frame.getBoundingClientRect();
+              const parentFrameOffset = getFrameOffset(frame.ownerDocument.defaultView?.frameElement ?? null);
+              const scrollX2 = frame.ownerDocument.defaultView?.scrollX ?? 0;
+              const scrollY2 = frame.ownerDocument.defaultView?.scrollY ?? 0;
+              return {
+                x: parentFrameOffset.x + rect2.left + borderLeft + paddingLeft + scrollX2,
+                y: parentFrameOffset.y + rect2.top + borderTop + paddingTop + scrollY2
+              };
+            }
             const rect = this.getBoundingClientRect();
-            const docRect = this.ownerDocument.documentElement.getBoundingClientRect();
+            const frameOffset = getFrameOffset(this.ownerDocument.defaultView?.frameElement ?? null);
+            const scrollX = this.ownerDocument.defaultView?.scrollX ?? 0;
+            const scrollY = this.ownerDocument.defaultView?.scrollY ?? 0;
             return JSON.stringify({
-              x: rect.left - docRect.left,
-              y: rect.top - docRect.top,
+              x: rect.left + frameOffset.x + scrollX,
+              y: rect.top + frameOffset.y + scrollY,
               width: rect.width,
               height: rect.height,
               scale: 1

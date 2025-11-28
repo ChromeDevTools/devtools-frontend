@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import type { HighlightInfo } from './LinearMemoryViewerUtils.js';
 export interface LinearMemoryHighlightChipListData {
     highlightInfos: HighlightInfo[];

@@ -26,11 +26,9 @@ export declare const enum IssueCode {
     PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED = "CorsIssue::PrivateNetworkAccessPermissionDenied",
     LOCAL_NETWORK_ACCESS_PERMISSION_DENIED = "CorsIssue::LocalNetworkAccessPermissionDenied"
 }
-export declare class CorsIssue extends Issue<IssueCode> {
-    #private;
+export declare class CorsIssue extends Issue<Protocol.Audits.CorsIssueDetails, IssueCode> {
     constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId: Protocol.Audits.IssueId | undefined);
     getCategory(): IssueCategory;
-    details(): Protocol.Audits.CorsIssueDetails;
     getDescription(): MarkdownIssueDescription | null;
     primaryKey(): string;
     getKind(): IssueKind;

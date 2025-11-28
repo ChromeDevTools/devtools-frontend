@@ -96,7 +96,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     async #appendDetail(issueCode, issue) {
         const element = document.createElement('tr');
         element.classList.add('affected-resource-directive');
-        const details = issue.issueDetails;
+        const details = issue.details();
         switch (issueCode) {
             case "AttributionReportingIssue::InvalidRegisterSourceHeader" /* IssuesManager.AttributionReportingIssue.IssueCode.INVALID_REGISTER_SOURCE_HEADER */:
             case "AttributionReportingIssue::InvalidRegisterTriggerHeader" /* IssuesManager.AttributionReportingIssue.IssueCode.INVALID_REGISTER_TRIGGER_HEADER */:
@@ -137,7 +137,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.affectedResources.appendChild(element);
     }
     async #appendElementOrEmptyCell(parent, issue) {
-        const details = issue.issueDetails;
+        const details = issue.details();
         if (details.violatingNodeId !== undefined) {
             const target = issue.model()?.target() || null;
             parent.appendChild(await this.createElementCell({ backendNodeId: details.violatingNodeId, target, nodeName: 'Attribution source element' }, issue.getCategory()));

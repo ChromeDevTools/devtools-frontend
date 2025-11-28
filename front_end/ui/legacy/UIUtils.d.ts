@@ -4,7 +4,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../components/buttons/buttons.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import { type IconData } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
 declare global {
     interface HTMLElementTagNameMap {
@@ -167,7 +167,7 @@ export declare class CheckboxLabel extends HTMLElement {
 export declare class DevToolsIconLabel extends HTMLElement {
     #private;
     constructor();
-    set data(data: IconButton.Icon.IconData);
+    set data(data: IconData);
 }
 export declare class DevToolsSmallBubble extends HTMLElement {
     private textElement;

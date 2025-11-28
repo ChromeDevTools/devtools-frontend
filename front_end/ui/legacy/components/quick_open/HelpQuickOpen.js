@@ -1,9 +1,8 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-import * as IconButton from '../../../components/icon_button/icon_button.js';
-import * as UI from '../../legacy.js';
+import '../../../kit/kit.js';
+import { html } from '../../../lit/lit.js';
 import { getRegisteredProviders, Provider, registerProvider } from './FilteredListWidget.js';
 import { QuickOpenImpl } from './QuickOpen.js';
 export class HelpQuickOpen extends Provider {
@@ -30,15 +29,15 @@ export class HelpQuickOpen extends Provider {
     itemScoreAt(itemIndex, _query) {
         return -this.providers[itemIndex].prefix.length;
     }
-    renderItem(itemIndex, _query, wrapperElement) {
+    renderItem(itemIndex, _query) {
         const provider = this.providers[itemIndex];
-        const itemElement = wrapperElement.createChild('div');
-        const titleElement = itemElement.createChild('div');
-        const iconElement = new IconButton.Icon.Icon();
-        iconElement.name = provider.iconName;
-        iconElement.classList.add('large');
-        wrapperElement.insertBefore(iconElement, itemElement);
-        UI.UIUtils.createTextChild(titleElement, provider.title);
+        // clang-format off
+        return html `
+      <devtools-icon class="large" name=${provider.iconName}></devtools-icon>
+      <div>
+        <div>${provider.title}</div>
+      </div>`;
+        // clang-format on
     }
     jslogContextAt(itemIndex) {
         return this.providers[itemIndex].jslogContext;

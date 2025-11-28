@@ -8,6 +8,10 @@ interface BaseAnnotationData {
     lookupId: string;
     anchorToString?: string;
 }
+export interface ElementsAnnotationData extends BaseAnnotationData {
+    type: AnnotationType.ELEMENT_NODE;
+    anchor?: SDK.DOMModel.DOMNode;
+}
 export declare const enum Events {
     ANNOTATION_ADDED = "AnnotationAdded"
 }

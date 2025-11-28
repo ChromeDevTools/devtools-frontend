@@ -6,10 +6,10 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
+import { Icon } from '../../kit/kit.js';
 import * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
-import * as Icon from '../icon_button/icon_button.js';
 import { editorTheme } from './theme.js';
 const LINES_TO_SCAN_FOR_INDENTATION_GUESSING = 1000;
 const RECOMPUTE_INDENT_MAX_SIZE = 200;
@@ -169,7 +169,7 @@ export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
     CM.foldGutter({
         markerDOM(open) {
             const iconName = open ? 'triangle-down' : 'triangle-right';
-            const icon = new Icon.Icon.Icon();
+            const icon = new Icon();
             icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
             icon.setAttribute('jslog', `${VisualLogging.expand().track({ click: true })}`);
             icon.name = iconName;

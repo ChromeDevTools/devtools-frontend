@@ -43,8 +43,8 @@ import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
+import { createIcon } from '../../ui/kit/kit.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
@@ -1492,7 +1492,7 @@ export class ConsoleViewFilter {
         ]));
         this.levelMenuButton =
             new UI.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), undefined, undefined, 'log-level');
-        const levelMenuButtonInfoIcon = IconButton.Icon.create('info', 'console-sidebar-levels-info');
+        const levelMenuButtonInfoIcon = createIcon('info', 'console-sidebar-levels-info');
         levelMenuButtonInfoIcon.title = i18nString(UIStrings.overriddenByFilterSidebar);
         this.levelMenuButtonInfo = new UI.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
         this.levelMenuButtonInfo.setVisible(false);

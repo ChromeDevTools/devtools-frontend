@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Lit from '../../lit/lit.js';
-import { Icon } from './icon_button.js';
+import { createIcon } from '../kit.js';
 const { html } = Lit;
 export function render(container) {
     const iconTable = document.createElement('table');
@@ -19,7 +19,7 @@ export function render(container) {
     const iconDescription1 = document.createElement('td');
     iconDescription1.textContent = 'Programmatically created with default size and color';
     row1.appendChild(iconDescription1);
-    const icon = Icon.create('select-element');
+    const icon = createIcon('select-element');
     const icon1 = document.createElement('td');
     icon1.appendChild(icon);
     row1.appendChild(icon1);
@@ -28,7 +28,7 @@ export function render(container) {
     const iconDescription2 = document.createElement('td');
     iconDescription2.textContent = 'Programmatically created with custom size and color';
     row2.appendChild(iconDescription2);
-    const otherIcon = Icon.create('issue-exclamation-filled');
+    const otherIcon = createIcon('issue-exclamation-filled');
     otherIcon.classList.toggle('custom-size-and-color');
     const icon2 = document.createElement('td');
     icon2.appendChild(otherIcon);

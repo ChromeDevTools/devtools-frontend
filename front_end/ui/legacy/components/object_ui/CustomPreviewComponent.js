@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
+import { createIcon } from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import { ObjectPropertiesSection, ObjectPropertiesSectionsTreeOutline, ObjectPropertyTreeElement, ObjectTree, } from './ObjectPropertiesSection.js';
@@ -51,7 +51,7 @@ export class CustomPreviewSection {
                 this.header.classList.add('custom-expandable-section-header');
             }
             this.header.addEventListener('click', this.onClick.bind(this), false);
-            this.expandIcon = IconButton.Icon.create('triangle-right', 'custom-expand-icon');
+            this.expandIcon = createIcon('triangle-right', 'custom-expand-icon');
             this.header.insertBefore(this.expandIcon, this.header.firstChild);
         }
         this.sectionElement.appendChild(this.header);

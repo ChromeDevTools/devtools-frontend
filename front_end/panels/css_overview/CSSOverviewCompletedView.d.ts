@@ -1,5 +1,5 @@
 import '../../ui/legacy/components/data_grid/data_grid.js';
-import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';

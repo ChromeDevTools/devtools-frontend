@@ -92,13 +92,13 @@
       "path": "../../../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../../ui/components/linkifier/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/markdown_view/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/lit/bundle-tsconfig.json"

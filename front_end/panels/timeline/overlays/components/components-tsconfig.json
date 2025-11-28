@@ -69,9 +69,6 @@
       "path": "../../../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../../ui/components/spinners/bundle-tsconfig.json"
     },
     {
@@ -79,6 +76,9 @@
     },
     {
       "path": "../../../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/legacy/theme_support/bundle-tsconfig.json"

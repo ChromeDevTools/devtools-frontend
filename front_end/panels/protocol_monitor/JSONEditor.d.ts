@@ -1,4 +1,4 @@
-import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/kit/kit.js';
 import '../../ui/components/menus/menus.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';

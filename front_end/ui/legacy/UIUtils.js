@@ -39,7 +39,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../components/buttons/buttons.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import { Icon } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import { ActionRegistry } from './ActionRegistry.js';
@@ -1098,7 +1098,7 @@ export class DevToolsIconLabel extends HTMLElement {
     constructor() {
         super();
         const root = createShadowRootWithCoreStyles(this);
-        this.#icon = new IconButton.Icon.Icon();
+        this.#icon = new Icon();
         this.#icon.style.setProperty('margin-right', '4px');
         this.#icon.style.setProperty('vertical-align', 'baseline');
         root.appendChild(this.#icon);

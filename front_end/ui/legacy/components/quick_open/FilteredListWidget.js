@@ -1,15 +1,15 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Geometry from '../../../../models/geometry/geometry.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Diff from '../../../../third_party/diff/diff.js';
-import * as Highlighting from '../../../../ui/components/highlighting/highlighting.js';
 import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.js';
+import { nothing, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import filteredListWidgetStyles from './filteredListWidget.css.js';
@@ -100,9 +100,9 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
         this.provider = provider;
         this.queryChangedCallback = queryChangedCallback;
     }
-    static highlightRanges(element, query, caseInsensitive) {
+    static getHighlightRanges(text, query, caseInsensitive) {
         if (!query) {
-            return false;
+            return '';
         }
         function rangesForMatch(text, query) {
             const opcodes = Diff.Diff.DiffWrapper.charDiff(query, text);
@@ -120,19 +120,11 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
             }
             return ranges;
         }
-        if (element.textContent === null) {
-            return false;
-        }
-        const text = element.textContent;
         let ranges = rangesForMatch(text, query);
         if (!ranges || caseInsensitive) {
             ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
         }
-        if (ranges) {
-            Highlighting.highlightRangesWithStyleClass(element, ranges, 'highlight');
-            return true;
-        }
-        return false;
+        return ranges?.map(range => `${range.offset},${range.length}`).join(' ') || '';
     }
     setCommandPrefix(commandPrefix) {
         this.inputBoxElement.setPrefix(commandPrefix);
@@ -246,7 +238,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
         const wrapperElement = document.createElement('div');
         wrapperElement.className = 'filtered-list-widget-item';
         if (this.provider) {
-            this.provider.renderItem(item, this.cleanValue(), wrapperElement);
+            render(this.provider.renderItem(item, this.cleanValue()), wrapperElement);
             wrapperElement.setAttribute('jslog', `${VisualLogging.item(this.provider.jslogContextAt(item)).track({ click: true })}`);
         }
         UI.ARIAUtils.markAsOption(wrapperElement);
@@ -531,7 +523,8 @@ export class Provider {
     itemScoreAt(_itemIndex, _query) {
         return 1;
     }
-    renderItem(_itemIndex, _query, _wrapperElement) {
+    renderItem(_itemIndex, _query) {
+        return nothing;
     }
     jslogContextAt(_itemIndex) {
         return this.jslogContext;

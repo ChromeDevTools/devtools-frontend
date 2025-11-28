@@ -6670,14 +6670,17 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
+import * as Common7 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import * as Root10 from "./../../core/root/root.js";
 var builtInAiInstance;
-var BuiltInAi = class _BuiltInAi {
+var BuiltInAi = class _BuiltInAi extends Common7.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;
   initDoneForTesting;
+  #downloadProgress = null;
+  #currentlyCreatingSession = false;
   static instance() {
     if (builtInAiInstance === void 0) {
       builtInAiInstance = new _BuiltInAi();
@@ -6685,8 +6688,9 @@ var BuiltInAi = class _BuiltInAi {
     return builtInAiInstance;
   }
   constructor() {
+    super();
     this.#hasGpu = this.#isGpuAvailable();
-    this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.initialize()).then(() => this.#sendAvailabilityMetrics());
+    this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
     if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.enabled) {
@@ -6694,11 +6698,48 @@ var BuiltInAi = class _BuiltInAi {
       return this.#availability;
     }
     try {
-      this.#availability = await window.LanguageModel.availability({ expectedOutputs: [{ type: "text", languages: ["en"] }] });
+      this.#availability = await window.LanguageModel.availability({
+        expectedInputs: [{
+          type: "text",
+          languages: ["en"]
+        }],
+        expectedOutputs: [{
+          type: "text",
+          languages: ["en"]
+        }]
+      });
     } catch {
       this.#availability = "unavailable";
     }
     return this.#availability;
+  }
+  isDownloading() {
+    return this.#availability === "downloading";
+  }
+  isEventuallyAvailable() {
+    if (!this.#hasGpu && !Boolean(Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu)) {
+      return false;
+    }
+    return this.#availability === "available" || this.#availability === "downloading" || this.#availability === "downloadable";
+  }
+  #setDownloadProgress(newValue) {
+    this.#downloadProgress = newValue;
+    this.dispatchEventToListeners("downloadProgressChanged", this.#downloadProgress);
+  }
+  getDownloadProgress() {
+    return this.#downloadProgress;
+  }
+  startDownloadingModel() {
+    if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
+      return;
+    }
+    if (this.#availability !== "downloadable") {
+      return;
+    }
+    void this.#createSession();
+    setTimeout(() => {
+      void this.getLanguageModelAvailability();
+    }, 1e3);
   }
   #isGpuAvailable() {
     const canvas = document.createElement("canvas");
@@ -6727,14 +6768,24 @@ var BuiltInAi = class _BuiltInAi {
     if (!Root10.Runtime.hostConfig.devToolsAiPromptApi?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
-    if (this.#availability !== "available") {
+    if (this.#availability !== "available" && this.#availability !== "downloading") {
       return;
     }
     await this.#createSession();
   }
   async #createSession() {
+    if (this.#currentlyCreatingSession) {
+      return;
+    }
+    this.#currentlyCreatingSession = true;
+    const monitor = (m) => {
+      m.addEventListener("downloadprogress", (e) => {
+        this.#setDownloadProgress(e.loaded);
+      });
+    };
     try {
       this.#consoleInsightsSession = await window.LanguageModel.create({
+        monitor,
         initialPrompts: [{
           role: "system",
           content: `
@@ -6764,11 +6815,16 @@ Your instructions are as follows:
         }]
       });
       if (this.#availability !== "available") {
+        this.dispatchEventToListeners(
+          "downloadedAndSessionCreated"
+          /* Events.DOWNLOADED_AND_SESSION_CREATED */
+        );
         void this.getLanguageModelAvailability();
       }
     } catch (e) {
       console.error("Error when creating LanguageModel session", e.message);
     }
+    this.#currentlyCreatingSession = false;
   }
   static removeInstance() {
     builtInAiInstance = void 0;
@@ -6868,7 +6924,7 @@ var ConversationHandler_exports = {};
 __export(ConversationHandler_exports, {
   ConversationHandler: () => ConversationHandler
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
@@ -6890,7 +6946,7 @@ async function inspectElementBySelector(selector) {
   if (!whitespaceTrimmedQuery.length) {
     return null;
   }
-  const showUAShadowDOM = Common7.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
+  const showUAShadowDOM = Common8.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
   const domModels = SDK6.TargetManager.TargetManager.instance().models(SDK6.DOMModel.DOMModel, { scoped: true });
   const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
   const resultCounts = await Promise.all(performSearchPromises);
@@ -6915,7 +6971,7 @@ async function inspectNetworkRequestByUrl(selector) {
   return request ?? null;
 }
 var conversationHandlerInstance;
-var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapper.ObjectWrapper {
+var ConversationHandler = class _ConversationHandler extends Common8.ObjectWrapper.ObjectWrapper {
   #aiAssistanceEnabledSetting;
   #aidaClient;
   #aidaAvailability;
@@ -6940,7 +6996,7 @@ var ConversationHandler = class _ConversationHandler extends Common7.ObjectWrapp
   }
   #getAiAssistanceEnabledSetting() {
     try {
-      return Common7.Settings.moduleSetting("ai-assistance-enabled");
+      return Common8.Settings.moduleSetting("ai-assistance-enabled");
     } catch {
       return;
     }

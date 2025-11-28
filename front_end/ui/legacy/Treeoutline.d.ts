@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Buttons from '../components/buttons/buttons.js';
-import type * as IconButton from '../components/icon_button/icon_button.js';
+import type { Icon } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
 import { type Config } from './InplaceEditor.js';
 import type { SearchableView } from './SearchableView.js';
@@ -134,7 +134,7 @@ export declare class TreeElement {
     set title(x: string | Node);
     titleAsText(): string;
     startEditingTitle<T>(editingConfig: Config<T>): void;
-    setLeadingIcons(icons: IconButton.Icon.Icon[] | Lit.TemplateResult[]): void;
+    setLeadingIcons(icons: Icon[] | Lit.TemplateResult[]): void;
     get tooltip(): string;
     set tooltip(x: string);
     isExpandable(): boolean;

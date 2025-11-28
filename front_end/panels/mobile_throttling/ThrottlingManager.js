@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { MobileThrottlingSelector } from './MobileThrottlingSelector.js';
@@ -312,7 +312,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         const checkbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.hardwareConcurrency), false, i18nString(UIStrings.hardwareConcurrencySettingLabel), 'hardware-concurrency');
         const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo', undefined, 'hardware-concurrency-reset');
         reset.setTitle(i18nString(UIStrings.resetConcurrency));
-        const icon = new IconButton.Icon.Icon();
+        const icon = new Icon();
         icon.name = 'warning-filled';
         icon.classList.add('small');
         const warning = new UI.Toolbar.ToolbarItem(icon);

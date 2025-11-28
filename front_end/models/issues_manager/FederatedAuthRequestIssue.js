@@ -13,7 +13,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/FederatedAuthRequestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class FederatedAuthRequestIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         super({
             code: "FederatedAuthRequestIssue" /* Protocol.Audits.InspectorIssueCode.FederatedAuthRequestIssue */,
@@ -21,24 +20,20 @@ export class FederatedAuthRequestIssue extends Issue {
                 "FederatedAuthRequestIssue" /* Protocol.Audits.InspectorIssueCode.FederatedAuthRequestIssue */,
                 issueDetails.federatedAuthRequestIssueReason,
             ].join('::'),
-        }, issuesModel);
-        this.#issueDetails = issueDetails;
+        }, issueDetails, issuesModel);
     }
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
     }
-    details() {
-        return this.#issueDetails;
-    }
     getDescription() {
-        const description = issueDescriptions.get(this.#issueDetails.federatedAuthRequestIssueReason);
+        const description = issueDescriptions.get(this.details().federatedAuthRequestIssueReason);
         if (!description) {
             return null;
         }
         return resolveLazyDescription(description);
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
         return "PageError" /* IssueKind.PAGE_ERROR */;

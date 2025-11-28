@@ -55,10 +55,8 @@ const structuredHeaderLink = {
     linkTitle: 'Structured Headers RFC',
 };
 export class AttributionReportingIssue extends Issue {
-    issueDetails;
     constructor(issueDetails, issuesModel) {
-        super(getIssueCode(issueDetails), issuesModel);
-        this.issueDetails = issueDetails;
+        super(getIssueCode(issueDetails), issueDetails, issuesModel);
     }
     getCategory() {
         return "AttributionReporting" /* IssueCategory.ATTRIBUTION_REPORTING */;
@@ -66,8 +64,9 @@ export class AttributionReportingIssue extends Issue {
     getHeaderValidatorLink(name) {
         const url = new URL('https://wicg.github.io/attribution-reporting-api/validate-headers');
         url.searchParams.set('header', name);
-        if (this.issueDetails.invalidParameter) {
-            url.searchParams.set('json', this.issueDetails.invalidParameter);
+        const details = this.details();
+        if (details.invalidParameter) {
+            url.searchParams.set('json', details.invalidParameter);
         }
         return {
             link: url.toString(),
@@ -186,7 +185,7 @@ export class AttributionReportingIssue extends Issue {
         }
     }
     primaryKey() {
-        return JSON.stringify(this.issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
         return "PageError" /* IssueKind.PAGE_ERROR */;

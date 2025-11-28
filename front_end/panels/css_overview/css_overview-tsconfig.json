@@ -81,13 +81,13 @@
       "path": "../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/panel_feedback/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/panel_introduction_steps/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

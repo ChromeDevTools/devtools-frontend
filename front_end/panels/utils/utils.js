@@ -1,4 +1,5 @@
 // gen/front_end/panels/utils/utils.prebundle.js
+import "./../../ui/kit/kit.js";
 import "./../../ui/components/icon_button/icon_button.js";
 import * as Common from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";

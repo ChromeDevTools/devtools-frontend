@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-import '../../../components/icon_button/icon_button.js';
+import '../../../kit/kit.js';
 import { html, render } from '../../../lit/lit.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 export class CSSShadowSwatch extends HTMLElement {

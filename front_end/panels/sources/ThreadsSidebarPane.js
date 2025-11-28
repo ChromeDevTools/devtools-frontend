@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
@@ -42,7 +42,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
         element.classList.add('thread-item');
         const title = element.createChild('div', 'thread-item-title');
         const pausedState = element.createChild('div', 'thread-item-paused-state');
-        const icon = new IconButton.Icon.Icon();
+        const icon = new Icon();
         icon.name = 'large-arrow-right-filled';
         icon.classList.add('selected-thread-icon', 'small');
         element.appendChild(icon);

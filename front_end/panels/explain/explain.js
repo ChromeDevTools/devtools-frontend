@@ -830,7 +830,7 @@ function renderSignInFooter(onGoToSignIn) {
         .variant=${"primary"}
         .jslogContext=${"update-settings"}
       >
-        ${UIStrings.signIn}
+        ${i18nString(UIStrings.signIn)}
       </devtools-button>
     </div>`;
 }
@@ -840,9 +840,9 @@ function renderConsentReminderFooter(onReminderSettingsLink, onConsentReminderCo
     <div class="buttons">
       <devtools-button
         @click=${onReminderSettingsLink}
-          .variant=${"tonal"}
-          jslogContext=${"settings"}
-          title=${"Settings"}
+        .variant=${"tonal"}
+        .jslogContext=${"settings"}
+        .title=${"Settings"}
       >
         Settings
       </devtools-button>

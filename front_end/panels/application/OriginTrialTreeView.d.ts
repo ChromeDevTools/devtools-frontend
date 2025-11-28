@@ -1,4 +1,4 @@
-import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/adorners/adorners.js';
 import * as Protocol from '../../generated/protocol.js';

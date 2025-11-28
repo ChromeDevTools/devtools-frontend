@@ -5,8 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -227,7 +227,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
             this.malformedResponseCookiesList.removeChildren();
             for (const malformedCookie of malformedResponseCookies) {
                 const listItem = this.malformedResponseCookiesList.createChild('span', 'cookie-line source-code');
-                const icon = new IconButton.Icon.Icon();
+                const icon = new Icon();
                 icon.name = 'cross-circle-filled';
                 icon.classList.add('cookie-warning-icon', 'small');
                 listItem.appendChild(icon);

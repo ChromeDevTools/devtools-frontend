@@ -7,8 +7,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -136,7 +136,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         const frameCell = document.createElement('td');
         frameCell.classList.add('affected-resource-cell');
         if (frame) {
-            const icon = new IconButton.Icon.Icon();
+            const icon = new Icon();
             icon.name = 'code-circle';
             icon.classList.add('link', 'elements-panel', 'medium');
             icon.onclick = async () => {

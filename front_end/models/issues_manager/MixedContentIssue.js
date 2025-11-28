@@ -12,19 +12,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/MixedContentIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MixedContentIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
-        super("MixedContentIssue" /* Protocol.Audits.InspectorIssueCode.MixedContentIssue */, issuesModel);
-        this.#issueDetails = issueDetails;
+        super("MixedContentIssue" /* Protocol.Audits.InspectorIssueCode.MixedContentIssue */, issueDetails, issuesModel);
     }
     requests() {
-        if (this.#issueDetails.request) {
-            return [this.#issueDetails.request];
+        const details = this.details();
+        if (details.request) {
+            return [details.request];
         }
         return [];
-    }
-    getDetails() {
-        return this.#issueDetails;
     }
     getCategory() {
         return "MixedContent" /* IssueCategory.MIXED_CONTENT */;
@@ -36,10 +32,10 @@ export class MixedContentIssue extends Issue {
         };
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
-        switch (this.#issueDetails.resolutionStatus) {
+        switch (this.details().resolutionStatus) {
             case "MixedContentAutomaticallyUpgraded" /* Protocol.Audits.MixedContentResolutionStatus.MixedContentAutomaticallyUpgraded */:
                 return "Improvement" /* IssueKind.IMPROVEMENT */;
             case "MixedContentBlocked" /* Protocol.Audits.MixedContentResolutionStatus.MixedContentBlocked */:

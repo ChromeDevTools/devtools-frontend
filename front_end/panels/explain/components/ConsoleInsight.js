@@ -417,9 +417,10 @@ function renderSignInFooter(onGoToSignIn) {
         .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
         .jslogContext=${'update-settings'}
       >
-        ${UIStrings.signIn}
+        ${i18nString(UIStrings.signIn)}
       </devtools-button>
     </div>`;
+    // clang-format on
 }
 function renderConsentReminderFooter(onReminderSettingsLink, onConsentReminderConfirmed) {
     // clang-format off
@@ -428,9 +429,9 @@ function renderConsentReminderFooter(onReminderSettingsLink, onConsentReminderCo
     <div class="buttons">
       <devtools-button
         @click=${onReminderSettingsLink}
-          .variant=${"tonal" /* Buttons.Button.Variant.TONAL */}
-          jslogContext=${'settings'}
-          title=${'Settings'}
+        .variant=${"tonal" /* Buttons.Button.Variant.TONAL */}
+        .jslogContext=${'settings'}
+        .title=${'Settings'}
       >
         Settings
       </devtools-button>
@@ -444,6 +445,7 @@ function renderConsentReminderFooter(onReminderSettingsLink, onConsentReminderCo
         Continue
       </devtools-button>
     </div>`;
+    // clang-format on
 }
 function renderInsightFooter(noLogging, selectedRating, callbacks) {
     // clang-format off

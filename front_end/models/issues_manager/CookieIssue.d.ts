@@ -24,9 +24,7 @@ export interface CookieReportInfo {
     status: CookieStatus;
     insight?: Protocol.Audits.CookieIssueInsight;
 }
-export declare class CookieIssue extends Issue {
-    #private;
-    constructor(code: string, issueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId: Protocol.Audits.IssueId | undefined);
+export declare class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetails> {
     cookieId(): string;
     primaryKey(): string;
     /**

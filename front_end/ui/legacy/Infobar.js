@@ -5,7 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import { createIcon } from '../kit/kit.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import infobarStyles from './infobar.css.js';
 import { Keys } from './KeyboardShortcut.js';
@@ -44,7 +44,7 @@ export class Infobar {
         this.element.classList.add('flex-none');
         this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobarStyles });
         this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type);
-        const icon = IconButton.Icon.create(TYPE_TO_ICON[type], type + '-icon');
+        const icon = createIcon(TYPE_TO_ICON[type], type + '-icon');
         this.contentElement.createChild('div', 'icon-container').appendChild(icon);
         this.mainRow = this.contentElement.createChild('div', 'infobar-main-row');
         this.infoContainer = this.mainRow.createChild('div', 'infobar-info-container');
@@ -144,7 +144,7 @@ export class Infobar {
         if (!this.detailsRows) {
             const details = document.createElement('details');
             const summary = details.createChild('summary');
-            const triangleIcon = IconButton.Icon.create('arrow-drop-down');
+            const triangleIcon = createIcon('arrow-drop-down');
             summary.createChild('div', 'icon-container').appendChild(triangleIcon);
             this.contentElement.insertBefore(details, this.mainRow);
             summary.appendChild(this.mainRow);

@@ -57,7 +57,7 @@
       "path": "../../lit/bundle-tsconfig.json"
     },
     {
-      "path": "../icon_button/bundle-tsconfig.json"
+      "path": "../../kit/bundle-tsconfig.json"
     }
   ]
 }

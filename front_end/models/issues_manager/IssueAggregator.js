@@ -23,6 +23,7 @@ import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
  * of all resources that are affected by the aggregated issues.
  */
 export class AggregatedIssue extends Issue {
+    #allIssues = new Set();
     #affectedCookies = new Map();
     #affectedRawCookieLines = new Map();
     #affectedRequests = [];
@@ -48,7 +49,7 @@ export class AggregatedIssue extends Issue {
     #aggregatedIssuesCount = 0;
     #key;
     constructor(code, aggregationKey) {
-        super(code);
+        super(code, null);
         this.#key = aggregationKey;
     }
     primaryKey() {
@@ -145,6 +146,7 @@ export class AggregatedIssue extends Issue {
         if (!this.#representative) {
             this.#representative = issue;
         }
+        this.#allIssues.add(issue);
         this.#issueKind = unionIssueKind(this.#issueKind, issue.getKind());
         let hasRequest = false;
         for (const request of issue.requests()) {
@@ -226,6 +228,9 @@ export class AggregatedIssue extends Issue {
     }
     getKind() {
         return this.#issueKind;
+    }
+    getAllIssues() {
+        return Array.from(this.#allIssues);
     }
     isHidden() {
         return this.#representative?.isHidden() || false;

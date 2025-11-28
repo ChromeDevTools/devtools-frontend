@@ -1,4 +1,4 @@
-import './Icon.js';
+import '../../kit/kit.js';
 export interface IconWithTextData {
     iconName: string;
     iconColor?: string;

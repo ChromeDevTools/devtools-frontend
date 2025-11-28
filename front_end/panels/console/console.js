@@ -777,9 +777,9 @@ import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting from "./../../ui/components/highlighting/highlighting.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as RequestLinkIcon from "./../../ui/components/request_link_icon/request_link_icon.js";
+import { createIcon, Icon } from "./../../ui/kit/kit.js";
 import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 
@@ -2226,7 +2226,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return null;
   }
   buildMessageWithStackTrace(runtimeModel) {
-    const icon = IconButton.Icon.create("triangle-right", "console-message-expand-icon");
+    const icon = createIcon("triangle-right", "console-message-expand-icon");
     const { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement } = this.buildMessageHelper(runtimeModel.target(), this.message.stackTrace, icon);
     const DEBOUNCE_MS = 300;
     let debounce;
@@ -2999,7 +2999,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return EXPLAIN_CONTEXT_OTHER_ACTION_ID;
   }
   #createHoverButton() {
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = "lightbulb-spark";
     icon.style.color = "var(--devtools-icon-color)";
     icon.classList.add("medium");
@@ -3051,7 +3051,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!iconName) {
       return;
     }
-    this.messageIcon = new IconButton.Icon.Icon();
+    this.messageIcon = new Icon();
     this.messageIcon.name = iconName;
     this.messageIcon.style.color = color;
     this.messageIcon.classList.add("message-level-icon", "small");
@@ -3441,7 +3441,7 @@ var ConsoleGroupViewMessage = class extends ConsoleViewMessage {
     if (!element) {
       element = super.toMessageElement();
       const iconType = this.collapsedInternal ? "triangle-right" : "triangle-down";
-      this.expandGroupIcon = IconButton.Icon.create(iconType, "expand-group-icon");
+      this.expandGroupIcon = createIcon(iconType, "expand-group-icon");
       this.contentElement().tabIndex = -1;
       if (this.repeatCountElement) {
         this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
@@ -3492,7 +3492,7 @@ var ConsoleCommand = class extends ConsoleViewMessage {
     const newContentElement = document.createElement("div");
     this.setContentElement(newContentElement);
     newContentElement.classList.add("console-user-command");
-    const userCommandIcon = new IconButton.Icon.Icon();
+    const userCommandIcon = new Icon();
     userCommandIcon.name = "chevron-right";
     userCommandIcon.classList.add("command-result-icon", "medium");
     newContentElement.appendChild(userCommandIcon);
@@ -3519,7 +3519,7 @@ var ConsoleCommandResult = class extends ConsoleViewMessage {
     if (!element.classList.contains("console-user-command-result")) {
       element.classList.add("console-user-command-result");
       if (this.consoleMessage().level === "info") {
-        const icon = new IconButton.Icon.Icon();
+        const icon = new Icon();
         icon.name = "chevron-left-dot";
         icon.classList.add("command-result-icon", "medium");
         element.insertBefore(icon, element.firstChild);
@@ -5689,8 +5689,8 @@ import * as Badges from "./../../models/badges/badges.js";
 import * as Formatter2 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
 import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
+import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
@@ -5726,8 +5726,8 @@ import * as Logs3 from "./../../models/logs/logs.js";
 import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
 import * as IssueCounter2 from "./../../ui/components/issue_counter/issue_counter.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
@@ -7117,7 +7117,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
       ["error", i18nString5(UIStrings5.errors)]
     ]);
     this.levelMenuButton = new UI7.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), void 0, void 0, "log-level");
-    const levelMenuButtonInfoIcon = IconButton2.Icon.create("info", "console-sidebar-levels-info");
+    const levelMenuButtonInfoIcon = createIcon2("info", "console-sidebar-levels-info");
     levelMenuButtonInfoIcon.title = i18nString5(UIStrings5.overriddenByFilterSidebar);
     this.levelMenuButtonInfo = new UI7.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
     this.levelMenuButtonInfo.setVisible(false);
@@ -7497,13 +7497,13 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI9.Widget.Wi
     this.textChangeThrottler = new Common9.Throttler.Throttler(150);
     this.requestPreviewBound = this.requestPreview.bind(this);
     this.innerPreviewElement = this.eagerPreviewElement.createChild("div", "console-eager-inner-preview");
-    const previewIcon = new IconButton3.Icon.Icon();
+    const previewIcon = new Icon2();
     previewIcon.name = "chevron-left-dot";
     previewIcon.classList.add("preview-result-icon", "medium");
     this.eagerPreviewElement.appendChild(previewIcon);
     const editorContainerElement = this.element.createChild("div", "console-prompt-editor-container");
     this.element.appendChild(this.eagerPreviewElement);
-    this.promptIcon = new IconButton3.Icon.Icon();
+    this.promptIcon = new Icon2();
     this.promptIcon.name = "chevron-right";
     this.promptIcon.style.color = "var(--icon-action)";
     this.promptIcon.classList.add("console-prompt-icon", "medium");

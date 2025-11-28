@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import { Endianness, ValueType, ValueTypeMode } from './ValueInterpreterDisplayUtils.js';
 export interface ValueDisplayData {
     buffer: ArrayBuffer;

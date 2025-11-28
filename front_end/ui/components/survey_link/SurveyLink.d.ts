@@ -1,4 +1,4 @@
-import '../icon_button/icon_button.js';
+import '../../kit/kit.js';
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 export type CanShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.CanShowSurveyResult) => void;

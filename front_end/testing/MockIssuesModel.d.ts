@@ -4,7 +4,7 @@ import type * as IssuesManager from '../models/issues_manager/issues_manager.js'
 export declare class MockIssuesModel extends Common.ObjectWrapper.ObjectWrapper<SDK.IssuesModel.EventTypes> {
     private mockIssues;
     constructor(issues: Iterable<IssuesManager.Issue.Issue>);
-    issues(): Iterable<IssuesManager.Issue.Issue<string>>;
+    issues(): Iterable<IssuesManager.Issue.Issue<IssuesManager.Issue.ValidIssueDetails | null, string>>;
     target(): {
         id: () => string;
     };

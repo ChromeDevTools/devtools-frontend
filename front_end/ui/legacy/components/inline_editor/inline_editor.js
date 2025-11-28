@@ -2551,7 +2551,7 @@ import "./../../legacy.js";
 import * as Common5 from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform6 from "./../../../../core/platform/platform.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
+import { Icon } from "./../../../kit/kit.js";
 import * as VisualLogging8 from "./../../../visual_logging/visual_logging.js";
 import * as UI7 from "./../../legacy.js";
 
@@ -3789,7 +3789,7 @@ var FontPropertyInputs = class {
   }
   createTypeToggle(field, jslogContext) {
     const displaySwitcher = field.createChild("div", "spectrum-switcher");
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = "fold-more";
     icon.classList.add("medium");
     displaySwitcher.appendChild(icon);
@@ -3947,7 +3947,7 @@ var Swatches_exports = {};
 __export(Swatches_exports, {
   CSSShadowSwatch: () => CSSShadowSwatch
 });
-import "./../../../components/icon_button/icon_button.js";
+import "./../../../kit/kit.js";
 import { html as html7, render as render7 } from "./../../../lit/lit.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/cssShadowSwatch.css.js

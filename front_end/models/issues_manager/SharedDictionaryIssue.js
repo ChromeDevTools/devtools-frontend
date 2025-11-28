@@ -69,7 +69,6 @@ function getIssueCode(details) {
     }
 }
 export class SharedDictionaryIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         super({
             code: getIssueCode(issueDetails),
@@ -77,30 +76,26 @@ export class SharedDictionaryIssue extends Issue {
                 "SharedDictionaryIssue" /* Protocol.Audits.InspectorIssueCode.SharedDictionaryIssue */,
                 issueDetails.sharedDictionaryError,
             ].join('::'),
-        }, issuesModel);
-        this.#issueDetails = issueDetails;
+        }, issueDetails, issuesModel);
     }
     requests() {
-        if (this.#issueDetails.request) {
-            return [this.#issueDetails.request];
+        if (this.details().request) {
+            return [this.details().request];
         }
         return [];
     }
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
     }
-    details() {
-        return this.#issueDetails;
-    }
     getDescription() {
-        const description = issueDescriptions.get(this.#issueDetails.sharedDictionaryError);
+        const description = issueDescriptions.get(this.details().sharedDictionaryError);
         if (!description) {
             return null;
         }
         return resolveLazyDescription(description);
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
         return "PageError" /* IssueKind.PAGE_ERROR */;

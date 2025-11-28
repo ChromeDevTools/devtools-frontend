@@ -1,4 +1,4 @@
-import '../icon_button/icon_button.js';
+import '../../kit/kit.js';
 /**
  * A simple floating button component, primarily used to display the 'Ask AI!'
  * teaser when hovering over specific UI elements.

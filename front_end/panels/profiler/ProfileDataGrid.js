@@ -28,7 +28,7 @@
  */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 const UIStrings = {
@@ -169,7 +169,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
                 cell.classList.toggle('highlight', this.searchMatchedFunctionColumn);
                 if (this.deoptReason) {
                     cell.classList.add('not-optimized');
-                    const warningIcon = new IconButton.Icon.Icon();
+                    const warningIcon = new Icon();
                     warningIcon.name = 'warning-filled';
                     warningIcon.classList.add('profile-warn-marker', 'small');
                     UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, { PH1: this.deoptReason }));

@@ -7,7 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -455,7 +455,7 @@ export function getSecurityStateIconForDetailedView(securityState, className) {
             iconName = UNKNOWN_ICON_NAME;
             break;
     }
-    return IconButton.Icon.create(iconName, className);
+    return createIcon(iconName, className);
 }
 export function getSecurityStateIconForOverview(securityState, className) {
     let iconName;
@@ -474,7 +474,7 @@ export function getSecurityStateIconForOverview(securityState, className) {
         case "info" /* Protocol.Security.SecurityState.Info */:
             throw new Error(`Unexpected security state ${securityState}`);
     }
-    return IconButton.Icon.create(iconName, className);
+    return createIcon(iconName, className);
 }
 export function createHighlightedUrl(url, securityState) {
     const schemeSeparator = '://';

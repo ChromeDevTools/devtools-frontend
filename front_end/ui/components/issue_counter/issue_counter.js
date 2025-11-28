@@ -228,7 +228,7 @@ __export(IssueLinkIcon_exports, {
   IssueLinkIcon: () => IssueLinkIcon,
   extractShortPath: () => extractShortPath
 });
-import "./../icon_button/icon_button.js";
+import "./../../kit/kit.js";
 import * as Common2 from "./../../../core/common/common.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
 import * as IssuesManager2 from "./../../../models/issues_manager/issues_manager.js";

@@ -1,7 +1,7 @@
 /**
  * @file A list of pass/fail conditions for an insight.
  */
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 type GenericChecklist = Trace.Insights.Types.Checklist<any>;

@@ -36,8 +36,8 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as SrgbOverlay from '../../../components/srgb_overlay/srgb_overlay.js';
+import { createIcon, Icon } from '../../../kit/kit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import { colorFormatSpec } from './ColorFormatSpec.js';
@@ -493,7 +493,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
             return unit;
         }
         function appendSwitcherIcon(parentElement) {
-            const switcherIcon = new IconButton.Icon.Icon();
+            const switcherIcon = new Icon();
             switcherIcon.name = 'fold-more';
             switcherIcon.classList.add('medium');
             parentElement.appendChild(switcherIcon);
@@ -1464,7 +1464,7 @@ export class Swatch {
         self.onInvokeElement(this.swatchOverlayElement, this.onCopyText.bind(this));
         this.swatchOverlayElement.addEventListener('mouseout', this.onCopyIconMouseout.bind(this));
         this.swatchOverlayElement.addEventListener('blur', this.onCopyIconMouseout.bind(this));
-        this.swatchCopyIcon = IconButton.Icon.create('copy', 'copy-color-icon');
+        this.swatchCopyIcon = createIcon('copy', 'copy-color-icon');
         UI.Tooltip.Tooltip.install(this.swatchCopyIcon, i18nString(UIStrings.copyColorToClipboard));
         this.swatchOverlayElement.appendChild(this.swatchCopyIcon);
         UI.ARIAUtils.setLabel(this.swatchOverlayElement, this.swatchCopyIcon.title);

@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 interface ListItem extends CrUXManager.OriginMapping {

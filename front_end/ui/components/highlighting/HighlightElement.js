@@ -4,10 +4,13 @@
 /* eslint-disable @devtools/enforce-custom-element-definitions-location */
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import { HighlightManager } from './HighlightManager.js';
+import { highlightRangesWithStyleClass, revertDomChanges } from './MarkupHighlight.js';
 export class HighlightElement extends HTMLElement {
-    static observedAttributes = ['ranges', 'current-range'];
+    static observedAttributes = ['ranges', 'current-range', 'type'];
     #ranges = [];
     #currentRange;
+    #type = 'css';
+    #markupChanges = [];
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue === newValue) {
             return;
@@ -19,8 +22,19 @@ export class HighlightElement extends HTMLElement {
             case 'current-range':
                 this.#currentRange = parseRanges(newValue)[0];
                 break;
+            case 'type':
+                this.#type = newValue || 'css';
+                break;
         }
-        HighlightManager.instance().set(this, this.#ranges, this.#currentRange);
+        queueMicrotask(() => {
+            if (this.#type === 'css') {
+                HighlightManager.instance().set(this, this.#ranges, this.#currentRange);
+            }
+            else {
+                revertDomChanges(this.#markupChanges);
+                highlightRangesWithStyleClass(this, this.#ranges, 'highlight', this.#markupChanges);
+            }
+        });
     }
 }
 function parseRanges(value) {

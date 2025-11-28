@@ -32,8 +32,8 @@ import * as i18n55 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
-import * as IconButton13 from "./../../ui/components/icon_button/icon_button.js";
 import * as LegacyWrapper7 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import { createIcon as createIcon12 } from "./../../ui/kit/kit.js";
 import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 
@@ -141,8 +141,8 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as InlineEditor from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
@@ -770,7 +770,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
       UI2.ARIAUtils.setLabel(appIdField, "App Id");
       appIdField.textContent = appId;
-      const helpIcon = IconButton.Icon.create("help", "inline-icon");
+      const helpIcon = createIcon("help", "inline-icon");
       helpIcon.title = i18nString(UIStrings.appIdExplainer);
       helpIcon.setAttribute("jslog", `${VisualLogging.action("help").track({ hover: true })}`);
       appIdField.appendChild(helpIcon);
@@ -1000,7 +1000,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     displayOverrideText.appendChild(displayOverrideLink);
     const wcoStatusMessage = this.windowControlsSection.appendRow();
     if (hasWco) {
-      const checkmarkIcon = IconButton.Icon.create("check-circle", "inline-icon");
+      const checkmarkIcon = createIcon("check-circle", "inline-icon");
       wcoStatusMessage.appendChild(checkmarkIcon);
       const wco = document.createElement("code");
       wco.classList.add("wco");
@@ -1010,7 +1010,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
         await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty("theme_color"));
       }
     } else {
-      const infoIcon = IconButton.Icon.create("info", "inline-icon");
+      const infoIcon = createIcon("info", "inline-icon");
       wcoStatusMessage.appendChild(infoIcon);
       wcoStatusMessage.appendChild(uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNotFound, { PH1: displayOverrideText }));
     }
@@ -1292,7 +1292,7 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
 // gen/front_end/panels/application/BackForwardCacheTreeElement.js
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as ApplicationComponents2 from "./components/components.js";
 var UIStrings2 = {
   /**
@@ -1306,7 +1306,7 @@ var BackForwardCacheTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(resourcesPanel) {
     super(resourcesPanel, i18nString2(UIStrings2.backForwardCache), false, "bfcache");
-    const icon = IconButton2.Icon.create("database");
+    const icon = createIcon2("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -1973,8 +1973,8 @@ __export(BounceTrackingMitigationsTreeElement_exports, {
 });
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
 import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as ApplicationComponents3 from "./components/components.js";
 var UIStrings4 = {
@@ -1989,7 +1989,7 @@ var BounceTrackingMitigationsTreeElement = class extends ApplicationPanelTreeEle
   view;
   constructor(resourcesPanel) {
     super(resourcesPanel, i18nString4(UIStrings4.bounceTrackingMitigations), false, "bounce-tracking-mitigations");
-    const icon = IconButton3.Icon.create("database");
+    const icon = createIcon3("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -2519,7 +2519,7 @@ __export(OriginTrialTreeView_exports, {
   OriginTrialTokenRows: () => OriginTrialTokenRows,
   OriginTrialTreeView: () => OriginTrialTreeView
 });
-import "./../../ui/components/icon_button/icon_button.js";
+import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/adorners/adorners.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
@@ -4883,7 +4883,7 @@ __export(InterestGroupTreeElement_exports, {
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as IconButton4 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon4 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/InterestGroupStorageView.js
 var InterestGroupStorageView_exports = {};
@@ -5043,7 +5043,7 @@ var InterestGroupTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString9(UIStrings9.interestGroups), false, "interest-groups");
-    const interestGroupIcon = IconButton4.Icon.create("database");
+    const interestGroupIcon = createIcon4("database");
     this.setLeadingIcons([interestGroupIcon]);
     this.view = new InterestGroupStorageView(this);
   }
@@ -5081,7 +5081,7 @@ __export(OpenedWindowDetailsView_exports, {
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as IconButton5 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon5 } from "./../../ui/kit/kit.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/openedWindowDetailsView.css.js
@@ -5239,7 +5239,7 @@ var str_10 = i18n19.i18n.registerUIStrings("panels/application/OpenedWindowDetai
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var booleanToYesNo = (b) => b ? i18nString10(UIStrings10.yes) : i18nString10(UIStrings10.no);
 function linkifyIcon(iconType, title, eventHandler) {
-  const icon = IconButton5.Icon.create(iconType, "icon-link devtools-link");
+  const icon = createIcon5(iconType, "icon-link devtools-link");
   const button = document.createElement("button");
   UI9.Tooltip.Tooltip.install(button, title);
   button.classList.add("devtools-link", "link-style", "text-button");
@@ -5417,7 +5417,7 @@ __export(PreloadingTreeElement_exports, {
   PreloadingSummaryTreeElement: () => PreloadingSummaryTreeElement
 });
 import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as IconButton6 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon6 } from "./../../ui/kit/kit.js";
 import * as PreloadingHelper from "./preloading/helper/helper.js";
 
 // gen/front_end/panels/application/preloading/PreloadingView.js
@@ -6457,7 +6457,7 @@ var PreloadingTreeElementBase = class extends ApplicationPanelTreeElement {
     super(panel, title, false, "speculative-loads");
     this.#viewConstructor = viewConstructor;
     this.#path = path;
-    const icon = IconButton6.Icon.create("speculative-loads");
+    const icon = createIcon6("speculative-loads");
     this.setLeadingIcons([icon]);
     this.#selected = false;
   }
@@ -6491,7 +6491,7 @@ var PreloadingSummaryTreeElement = class extends ExpandableApplicationPanelTreeE
   #attempt = null;
   constructor(panel) {
     super(panel, i18nString13(UIStrings13.speculativeLoads), "", "", "preloading");
-    const icon = IconButton6.Icon.create("speculative-loads");
+    const icon = createIcon6("speculative-loads");
     this.setLeadingIcons([icon]);
     this.#selected = false;
   }
@@ -6577,7 +6577,7 @@ var PreloadingAttemptTreeElement = class extends PreloadingTreeElementBase {
 // gen/front_end/panels/application/ReportingApiTreeElement.js
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as IconButton7 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon7 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/ReportingApiView.js
 var ReportingApiView_exports = {};
@@ -6753,7 +6753,7 @@ var ReportingApiTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString15(UIStrings15.reportingApi), false, "reporting-api");
-    const icon = IconButton7.Icon.create("document");
+    const icon = createIcon7("document");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -6836,7 +6836,7 @@ devtools-icon.navigator-font-tree-item {
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
-import * as IconButton8 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon8 } from "./../../ui/kit/kit.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/ServiceWorkerCacheViews.js
@@ -7446,7 +7446,7 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
   storageBucket;
   constructor(resourcesPanel, storageBucket) {
     super(resourcesPanel, i18nString17(UIStrings17.cacheStorage), i18nString17(UIStrings17.noCacheStorage), i18nString17(UIStrings17.cacheStorageDescription), "cache-storage");
-    const icon = IconButton8.Icon.create("database");
+    const icon = createIcon8("database");
     this.setLink("https://developer.chrome.com/docs/devtools/storage/cache/");
     this.setLeadingIcons([icon]);
     this.swCacheModels = /* @__PURE__ */ new Set();
@@ -7548,7 +7548,7 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
     this.model = model;
     this.cache = cache;
     this.view = null;
-    const icon = IconButton8.Icon.create("table");
+    const icon = createIcon8("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -8881,7 +8881,7 @@ __export(SharedStorageListTreeElement_exports, {
 });
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as IconButton9 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon9 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/SharedStorageEventsView.js
 var SharedStorageEventsView_exports = {};
@@ -9018,7 +9018,7 @@ var SharedStorageListTreeElement = class extends ApplicationPanelTreeElement {
   constructor(resourcesPanel, expandedSettingsDefault = false) {
     super(resourcesPanel, i18nString21(UIStrings21.sharedStorage), false, "shared-storage");
     this.#expandedSetting = Common11.Settings.Settings.instance().createSetting("resources-shared-storage-expanded", expandedSettingsDefault);
-    const sharedStorageIcon = IconButton9.Icon.create("database");
+    const sharedStorageIcon = createIcon9("database");
     this.setLeadingIcons([sharedStorageIcon]);
     this.view = new SharedStorageEventsView();
   }
@@ -9874,8 +9874,8 @@ __export(StorageBucketsTreeElement_exports, {
 });
 import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
-import * as IconButton10 from "./../../ui/components/icon_button/icon_button.js";
 import * as LegacyWrapper5 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import { createIcon as createIcon10 } from "./../../ui/kit/kit.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView5 } from "./components/components.js";
 var UIStrings25 = {
@@ -9905,7 +9905,7 @@ var StorageBucketsTreeParentElement = class extends ExpandableApplicationPanelTr
   bucketTreeElements = /* @__PURE__ */ new Set();
   constructor(storagePanel) {
     super(storagePanel, i18nString25(UIStrings25.storageBuckets), i18nString25(UIStrings25.noStorageBuckets), i18nString25(UIStrings25.storageBucketsDescription), "storage-buckets");
-    const icon = IconButton10.Icon.create("bucket");
+    const icon = createIcon10("bucket");
     this.setLeadingIcons([icon]);
     this.setLink("https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md");
   }
@@ -9980,7 +9980,7 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
     super(resourcesPanel, `${bucket.name} - ${origin}`, "", "", "storage-bucket");
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
-    const icon = IconButton10.Icon.create("database");
+    const icon = createIcon10("database");
     this.setLeadingIcons([icon]);
   }
   initialize() {
@@ -10030,8 +10030,8 @@ import * as Common15 from "./../../core/common/common.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
-import * as IconButton11 from "./../../ui/components/icon_button/icon_button.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -10594,7 +10594,7 @@ var StorageView = class _StorageView extends UI21.Widget.VBox {
     this.quotaRow.appendChild(element);
     UI21.Tooltip.Tooltip.install(this.quotaRow, i18nString26(UIStrings26.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
     if (!response.overrideActive && response.quota < 125829120) {
-      const icon = new IconButton11.Icon.Icon();
+      const icon = new Icon();
       icon.name = "info";
       icon.style.color = "var(--icon-info)";
       icon.classList.add("small");
@@ -10685,7 +10685,7 @@ __export(TrustTokensTreeElement_exports, {
 });
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n53 from "./../../core/i18n/i18n.js";
-import * as IconButton12 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon11 } from "./../../ui/kit/kit.js";
 import * as ApplicationComponents14 from "./components/components.js";
 var UIStrings27 = {
   /**
@@ -10700,7 +10700,7 @@ var TrustTokensTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString27(UIStrings27.trustTokens), false, "private-state-tokens");
-    const icon = IconButton12.Icon.create("database");
+    const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -11007,17 +11007,17 @@ var ApplicationPanelSidebar = class extends UI22.Widget.VBox {
     const storageTreeElement = this.addSidebarSection(storageSectionTitle, "storage");
     this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.localStorage), i18nString28(UIStrings28.noLocalStorage), i18nString28(UIStrings28.localStorageDescription), "local-storage");
     this.localStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/localstorage/");
-    const localStorageIcon = IconButton13.Icon.create("table");
+    const localStorageIcon = createIcon12("table");
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.sessionStorage), i18nString28(UIStrings28.noSessionStorage), i18nString28(UIStrings28.sessionStorageDescription), "session-storage");
     this.sessionStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/sessionstorage/");
-    const sessionStorageIcon = IconButton13.Icon.create("table");
+    const sessionStorageIcon = createIcon12("table");
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
     this.extensionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.extensionStorage), i18nString28(UIStrings28.noExtensionStorage), i18nString28(UIStrings28.extensionStorageDescription), "extension-storage");
     this.extensionStorageListTreeElement.setLink("https://developer.chrome.com/docs/extensions/reference/api/storage/");
-    const extensionStorageIcon = IconButton13.Icon.create("table");
+    const extensionStorageIcon = createIcon12("table");
     this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
     storageTreeElement.appendChild(this.extensionStorageListTreeElement);
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
@@ -11025,7 +11025,7 @@ var ApplicationPanelSidebar = class extends UI22.Widget.VBox {
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString28(UIStrings28.cookies), i18nString28(UIStrings28.noCookies), i18nString28(UIStrings28.cookiesDescription), "cookies");
     this.cookieListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/cookies/");
-    const cookieIcon = IconButton13.Icon.create("cookie");
+    const cookieIcon = createIcon12("cookie");
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
     this.trustTokensTreeElement = new TrustTokensTreeElement(panel);
@@ -11516,7 +11516,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
     this.#selected = false;
     this.view = null;
     this.model = null;
-    const backgroundServiceIcon = IconButton13.Icon.create(this.getIconType());
+    const backgroundServiceIcon = createIcon12(this.getIconType());
     this.setLeadingIcons([backgroundServiceIcon]);
   }
   getIconType() {
@@ -11572,7 +11572,7 @@ var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18n55.i18n.lockedString("Service workers"), false, "service-workers");
-    const icon = IconButton13.Icon.create("gears");
+    const icon = createIcon12("gears");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -11592,7 +11592,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString28(UIStrings28.manifest), true, "manifest");
-    const icon = IconButton13.Icon.create("document");
+    const icon = createIcon12("document");
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     const emptyView = new UI22.EmptyWidget.EmptyWidget(i18nString28(UIStrings28.noManifestDetected), i18nString28(UIStrings28.manifestDescription));
@@ -11636,7 +11636,7 @@ var ManifestChildTreeElement = class extends ApplicationPanelTreeElement {
   #sectionFieldElement;
   constructor(storagePanel, element, childTitle, fieldElement, jslogContext) {
     super(storagePanel, childTitle, false, jslogContext);
-    const icon = IconButton13.Icon.create("document");
+    const icon = createIcon12("document");
     this.setLeadingIcons([icon]);
     this.#sectionElement = element;
     this.#sectionFieldElement = fieldElement;
@@ -11674,7 +11674,7 @@ var ClearStorageTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
     super(storagePanel, i18nString28(UIStrings28.storage), false, "storage");
-    const icon = IconButton13.Icon.create("database");
+    const icon = createIcon12("database");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -11695,7 +11695,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   storageBucket;
   constructor(storagePanel, storageBucket) {
     super(storagePanel, i18nString28(UIStrings28.indexeddb), i18nString28(UIStrings28.noIndexeddb), i18nString28(UIStrings28.indexeddbDescription), "indexed-db");
-    const icon = IconButton13.Icon.create("database");
+    const icon = createIcon12("database");
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
     this.storageBucket = storageBucket;
@@ -11802,7 +11802,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.model = model;
     this.databaseId = databaseId;
     this.idbObjectStoreTreeElements = /* @__PURE__ */ new Map();
-    const icon = IconButton13.Icon.create("database");
+    const icon = createIcon12("database");
     this.setLeadingIcons([icon]);
     this.model.addEventListener(Events2.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
   }
@@ -11908,7 +11908,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
     this.idbIndexTreeElements = /* @__PURE__ */ new Map();
     this.objectStore = objectStore;
     this.view = null;
-    const icon = IconButton13.Icon.create("table");
+    const icon = createIcon12("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -12077,7 +12077,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, domStorage) {
     super(storagePanel, domStorage.storageKey ? SDK23.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString28(UIStrings28.localFiles), false, domStorage.isLocalStorage ? "local-storage-for-domain" : "session-storage-for-domain");
     this.domStorage = domStorage;
-    const icon = IconButton13.Icon.create("table");
+    const icon = createIcon12("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -12104,7 +12104,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, extensionStorage) {
     super(storagePanel, nameForExtensionStorageArea(extensionStorage.storageArea), false, "extension-storage-for-domain");
     this.extensionStorage = extensionStorage;
-    const icon = IconButton13.Icon.create("table");
+    const icon = createIcon12("table");
     this.setLeadingIcons([icon]);
   }
   get storageArea() {
@@ -12134,7 +12134,7 @@ var ExtensionStorageTreeParentElement = class extends ApplicationPanelTreeElemen
   constructor(storagePanel, extensionId, extensionName) {
     super(storagePanel, extensionName || extensionId, true, "extension-storage-for-domain");
     this.extensionId = extensionId;
-    const icon = IconButton13.Icon.create("table");
+    const icon = createIcon12("table");
     this.setLeadingIcons([icon]);
   }
   get itemURL() {
@@ -12149,7 +12149,7 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     this.target = frame.resourceTreeModel().target();
     this.#cookieDomain = cookieUrl.securityOrigin();
     this.tooltip = i18nString28(UIStrings28.cookiesUsedByFramesFromS, { PH1: this.#cookieDomain });
-    const icon = IconButton13.Icon.create("cookie");
+    const icon = createIcon12("cookie");
     if (IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssueForDomain(cookieUrl.domain())) {
       icon.name = "warning-filled";
       this.tooltip = i18nString28(UIStrings28.thirdPartyPhaseout, { PH1: this.#cookieDomain });
@@ -12410,7 +12410,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     return frame.unreachableUrl() ? "iframe-crossed" : "iframe";
   }
   async frameNavigated(frame) {
-    const icon = IconButton13.Icon.create(this.getIconTypeForFrame(frame));
+    const icon = createIcon12(this.getIconTypeForFrame(frame));
     if (frame.unreachableUrl()) {
       icon.classList.add("red-icon");
     }
@@ -12571,7 +12571,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     this.previewPromise = null;
     this.tooltip = resource.url;
     resourceToFrameResourceTreeElement.set(this.resource, this);
-    const icon = IconButton13.Icon.create("document", "navigator-file-tree-item");
+    const icon = createIcon12("document", "navigator-file-tree-item");
     icon.classList.add("navigator-" + resource.resourceType().name() + "-tree-item");
     this.setLeadingIcons([icon]);
   }
@@ -12649,7 +12649,7 @@ var FrameWindowTreeElement = class extends ApplicationPanelTreeElement {
   }
   updateIcon(canAccessOpener) {
     const iconType = canAccessOpener ? "popup" : "frame";
-    const icon = IconButton13.Icon.create(iconType);
+    const icon = createIcon12(iconType);
     this.setLeadingIcons([icon]);
   }
   update(targetInfo) {
@@ -12692,7 +12692,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
     super(storagePanel, targetInfo.title || targetInfo.url || i18nString28(UIStrings28.worker), false, "worker");
     this.targetInfo = targetInfo;
     this.view = null;
-    const icon = IconButton13.Icon.create("gears", "navigator-file-tree-item");
+    const icon = createIcon12("gears", "navigator-file-tree-item");
     this.setLeadingIcons([icon]);
   }
   onselect(selectedByUser) {

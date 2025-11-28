@@ -1,4 +1,4 @@
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/kit/kit.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import { StorageMetadataView } from './StorageMetadataView.js';

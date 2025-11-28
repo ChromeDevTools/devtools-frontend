@@ -5402,7 +5402,7 @@ __export(OverviewGrid_exports, {
 import * as Common5 from "./../../../../core/common/common.js";
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../../core/platform/platform.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
+import { createIcon } from "./../../../kit/kit.js";
 import * as VisualLogging3 from "./../../../visual_logging/visual_logging.js";
 import * as UI6 from "./../../legacy.js";
 
@@ -5721,7 +5721,7 @@ var Window = class extends Common5.ObjectWrapper.ObjectWrapper {
   }
   enableCreateBreadcrumbsButton() {
     this.curtainsRange = this.createBreadcrumbButton.createChild("div");
-    this.breadcrumbZoomIcon = IconButton.Icon.create("zoom-in");
+    this.breadcrumbZoomIcon = createIcon("zoom-in");
     this.createBreadcrumbButton.appendChild(this.breadcrumbZoomIcon);
     this.createBreadcrumbButton.addEventListener("click", () => {
       this.#createBreadcrumb();

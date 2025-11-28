@@ -7,7 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -528,12 +528,12 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
         const div = fragment.$('container');
         this.prefixObjectCell(div);
         if (this.reachableFromWindow) {
-            const frameIcon = IconButton.Icon.create('frame', 'heap-object-tag');
+            const frameIcon = createIcon('frame', 'heap-object-tag');
             UI.Tooltip.Tooltip.install(frameIcon, i18nString(UIStrings.userObjectReachableFromWindow));
             div.appendChild(frameIcon);
         }
         if (this.detachedDOMTreeNode) {
-            const frameIcon = IconButton.Icon.create('scissors', 'heap-object-tag');
+            const frameIcon = createIcon('scissors', 'heap-object-tag');
             UI.Tooltip.Tooltip.install(frameIcon, i18nString(UIStrings.detachedFromDomTree));
             div.appendChild(frameIcon);
         }

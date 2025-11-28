@@ -116,6 +116,10 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void;
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
     copyStyles(node: SDK.DOMModel.DOMNode): void;
+    resolveRelativePosition(parentElement: Element, revealNode: boolean, lookupId: string, node?: SDK.DOMModel.DOMNode): Promise<{
+        x: number;
+        y: number;
+    } | null>;
     protected static firstInspectElementCompletedForTest: () => void;
     protected static firstInspectElementNodeNameForTest: string;
 }

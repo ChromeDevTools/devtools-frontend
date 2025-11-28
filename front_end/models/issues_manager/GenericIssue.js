@@ -33,18 +33,17 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class GenericIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel, issueId) {
         const issueCode = [
             "GenericIssue" /* Protocol.Audits.InspectorIssueCode.GenericIssue */,
             issueDetails.errorType,
         ].join('::');
-        super(issueCode, issuesModel, issueId);
-        this.#issueDetails = issueDetails;
+        super(issueCode, issueDetails, issuesModel, issueId);
     }
     requests() {
-        if (this.#issueDetails.request) {
-            return [this.#issueDetails.request];
+        const details = this.details();
+        if (details.request) {
+            return [details.request];
         }
         return [];
     }
@@ -52,21 +51,19 @@ export class GenericIssue extends Issue {
         return "Generic" /* IssueCategory.GENERIC */;
     }
     primaryKey() {
-        const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : 'no-request';
-        return `${this.code()}-(${this.#issueDetails.frameId})-(${this.#issueDetails.violatingNodeId})-(${this.#issueDetails.violatingNodeAttribute})-(${requestId})`;
+        const details = this.details();
+        const requestId = details.request ? details.request.requestId : 'no-request';
+        return `${this.code()}-(${details.frameId})-(${details.violatingNodeId})-(${details.violatingNodeAttribute})-(${requestId})`;
     }
     getDescription() {
-        const description = issueDescriptions.get(this.#issueDetails.errorType);
+        const description = issueDescriptions.get(this.details().errorType);
         if (!description) {
             return null;
         }
         return resolveLazyDescription(description);
     }
-    details() {
-        return this.#issueDetails;
-    }
     getKind() {
-        return issueTypes.get(this.#issueDetails.errorType) || "Improvement" /* IssueKind.IMPROVEMENT */;
+        return issueTypes.get(this.details().errorType) || "Improvement" /* IssueKind.IMPROVEMENT */;
     }
     static fromInspectorIssue(issuesModel, inspectorIssue) {
         const genericDetails = inspectorIssue.details.genericIssueDetails;

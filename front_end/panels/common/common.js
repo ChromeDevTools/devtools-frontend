@@ -594,6 +594,39 @@ var AiCodeGenerationTeaser = class extends UI3.Widget.Widget {
   }
 };
 
+// gen/front_end/panels/common/AnnotationManager.js
+import * as Annotations from "./../../ui/components/annotations/annotations.js";
+var AnnotationManager = class _AnnotationManager {
+  static #instance = null;
+  #annotationPlacements = null;
+  constructor() {
+    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+      console.warn("AnnotationManager created with annotations disabled");
+      return;
+    }
+    Annotations.AnnotationRepository.instance().addEventListener("AnnotationAdded", this.#onAnnotationAdded, this);
+  }
+  static instance() {
+    if (!_AnnotationManager.#instance) {
+      _AnnotationManager.#instance = new _AnnotationManager();
+    }
+    return _AnnotationManager.#instance;
+  }
+  initializePlacementForAnnotationType(type, resolveRelativePosition, parentElement, insertBefore = null) {
+    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+      return;
+    }
+    if (!this.#annotationPlacements) {
+      this.#annotationPlacements = /* @__PURE__ */ new Map();
+    }
+    this.#annotationPlacements.set(type, { parentElement, insertBefore, resolveRelativePosition });
+    console.log(`[AnnotationManager] initializing placement for ${Annotations.AnnotationType[type]}`, { parentElement }, "placement count:", this.#annotationPlacements);
+  }
+  async #onAnnotationAdded(event) {
+    console.log("[AnnotationManager] received event onAnnotationAdded", event);
+  }
+};
+
 // gen/front_end/panels/common/GdpSignUpDialog.js
 import "./../../ui/components/switch/switch.js";
 import * as Common2 from "./../../core/common/common.js";
@@ -3383,7 +3416,7 @@ import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 var UIStrings4 = {
@@ -3420,7 +3453,7 @@ var PersistenceUtils = class _PersistenceUtils {
       if (!Common5.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
-      const icon2 = new IconButton.Icon.Icon();
+      const icon2 = new Icon();
       icon2.name = "document";
       icon2.classList.add("small");
       UI11.Tooltip.Tooltip.install(icon2, _PersistenceUtils.tooltipForUISourceCode(binding.network));
@@ -3435,13 +3468,13 @@ var PersistenceUtils = class _PersistenceUtils {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
-      const icon2 = new IconButton.Icon.Icon();
+      const icon2 = new Icon();
       icon2.name = "document";
       icon2.classList.add("small");
       icon2.classList.add("dot", "purple");
       return icon2;
     }
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = "document";
     icon.classList.add("small");
     UI11.Tooltip.Tooltip.install(icon, _PersistenceUtils.tooltipForUISourceCode(uiSourceCode));
@@ -3802,6 +3835,7 @@ export {
   AiCodeCompletionSummaryToolbar,
   AiCodeCompletionTeaser,
   AiCodeGenerationTeaser,
+  AnnotationManager,
   BadgeNotification,
   DOMLinkifier_exports as DOMLinkifier,
   ExtensionPanel_exports as ExtensionPanel,

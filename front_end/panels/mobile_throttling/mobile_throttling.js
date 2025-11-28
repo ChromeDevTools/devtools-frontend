@@ -158,7 +158,7 @@ import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
+import { Icon } from "./../../ui/kit/kit.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings2 = {
@@ -466,7 +466,7 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     const checkbox = UI.UIUtils.CheckboxLabel.create(i18nString2(UIStrings2.hardwareConcurrency), false, i18nString2(UIStrings2.hardwareConcurrencySettingLabel), "hardware-concurrency");
     const reset = new UI.Toolbar.ToolbarButton("Reset concurrency", "undo", void 0, "hardware-concurrency-reset");
     reset.setTitle(i18nString2(UIStrings2.resetConcurrency));
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = "warning-filled";
     icon.classList.add("small");
     const warning = new UI.Toolbar.ToolbarItem(icon);
@@ -947,7 +947,7 @@ import * as Common4 from "./../../core/common/common.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -1634,7 +1634,7 @@ var CPUThrottlingCard = class {
   createTextWithIcon(text, icon) {
     const el = document.createElement("div");
     el.classList.add("text-with-icon");
-    el.append(IconButton2.Icon.create(icon));
+    el.append(createIcon(icon));
     el.append(text);
     return el;
   }

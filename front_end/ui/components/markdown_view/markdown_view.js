@@ -358,7 +358,7 @@ var MarkdownImage_exports = {};
 __export(MarkdownImage_exports, {
   MarkdownImage: () => MarkdownImage
 });
-import "./../icon_button/icon_button.js";
+import "./../../kit/kit.js";
 import * as Lit2 from "./../../lit/lit.js";
 
 // gen/front_end/ui/components/markdown_view/markdownImage.css.js

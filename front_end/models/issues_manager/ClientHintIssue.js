@@ -13,32 +13,27 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ClientHintIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class ClientHintIssue extends Issue {
-    issueDetails;
     constructor(issueDetails, issuesModel) {
         super({
             code: "ClientHintIssue" /* Protocol.Audits.InspectorIssueCode.ClientHintIssue */,
             umaCode: ["ClientHintIssue" /* Protocol.Audits.InspectorIssueCode.ClientHintIssue */, issueDetails.clientHintIssueReason].join('::'),
-        }, issuesModel);
-        this.issueDetails = issueDetails;
+        }, issueDetails, issuesModel);
     }
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
     }
-    details() {
-        return this.issueDetails;
-    }
     getDescription() {
-        const description = issueDescriptions.get(this.issueDetails.clientHintIssueReason);
+        const description = issueDescriptions.get(this.details().clientHintIssueReason);
         if (!description) {
             return null;
         }
         return resolveLazyDescription(description);
     }
     sources() {
-        return [this.issueDetails.sourceCodeLocation];
+        return [this.details().sourceCodeLocation];
     }
     primaryKey() {
-        return JSON.stringify(this.issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
         return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;

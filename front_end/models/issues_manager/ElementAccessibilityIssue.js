@@ -4,17 +4,15 @@
 import { Issue } from './Issue.js';
 import { resolveLazyDescription } from './MarkdownIssueDescription.js';
 export class ElementAccessibilityIssue extends Issue {
-    issueDetails;
     constructor(issueDetails, issuesModel, issueId) {
         const issueCode = [
             "ElementAccessibilityIssue" /* Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue */,
             issueDetails.elementAccessibilityIssueReason,
         ].join('::');
-        super(issueCode, issuesModel, issueId);
-        this.issueDetails = issueDetails;
+        super(issueCode, issueDetails, issuesModel, issueId);
     }
     primaryKey() {
-        return JSON.stringify(this.issueDetails);
+        return JSON.stringify(this.details());
     }
     getDescription() {
         if (this.isInteractiveContentAttributesSelectDescendantIssue()) {
@@ -23,7 +21,7 @@ export class ElementAccessibilityIssue extends Issue {
                 links: [],
             };
         }
-        const description = issueDescriptions.get(this.issueDetails.elementAccessibilityIssueReason);
+        const description = issueDescriptions.get(this.details().elementAccessibilityIssueReason);
         if (!description) {
             return null;
         }
@@ -35,14 +33,11 @@ export class ElementAccessibilityIssue extends Issue {
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
     }
-    details() {
-        return this.issueDetails;
-    }
     isInteractiveContentAttributesSelectDescendantIssue() {
-        return this.issueDetails.hasDisallowedAttributes &&
-            (this.issueDetails.elementAccessibilityIssueReason !==
+        return this.details().hasDisallowedAttributes &&
+            (this.details().elementAccessibilityIssueReason !==
                 "InteractiveContentOptionChild" /* Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild */ &&
-                this.issueDetails.elementAccessibilityIssueReason !==
+                this.details().elementAccessibilityIssueReason !==
                     "InteractiveContentSummaryDescendant" /* Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant */);
     }
     static fromInspectorIssue(issuesModel, inspectorIssue) {

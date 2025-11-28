@@ -1,4 +1,4 @@
-import '../icon_button/icon_button.js';
+import '../../kit/kit.js';
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-button': Button;

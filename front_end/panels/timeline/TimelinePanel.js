@@ -379,8 +379,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     #classicNavRadioButton = UI.UIUtils.createRadioButton('flamechart-selected-navigation', 'Classic - scroll to zoom', 'timeline.select-classic-navigation');
     #onMainEntryHovered;
     #hiddenTracksInfoBarByParsedTrace = new WeakMap();
-    constructor(traceModel) {
+    #resourceLoader;
+    constructor(resourceLoader, traceModel) {
         super('timeline');
+        this.#resourceLoader = resourceLoader;
         this.registerRequiredCSS(timelinePanelStyles);
         const adornerContent = document.createElement('span');
         adornerContent.innerHTML = `<div style="
@@ -588,10 +590,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             this.#thirdPartyCheckbox?.setIndeterminate(disabled);
         }
     }
-    static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
-        if (!timelinePanelInstance || forceNew) {
-            timelinePanelInstance = new TimelinePanel(opts.traceModel);
+    static instance(opts = undefined) {
+        if (opts) {
+            timelinePanelInstance = new TimelinePanel(opts.resourceLoader, opts.traceModel);
+        }
+        if (!timelinePanelInstance) {
+            throw new Error('No TimelinePanel instance');
         }
         return timelinePanelInstance;
     }
@@ -2243,7 +2247,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                     frameId: script.frame,
                     initiatorUrl: script.url
                 };
-                rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(SDK.PageResourceLoader.PageResourceLoader.instance(), script.sourceMapUrl, initiator);
+                rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(this.#resourceLoader, script.sourceMapUrl, initiator);
             }
             if (script.url && rawSourceMap) {
                 metadata.sourceMaps?.push({ url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap });
@@ -2325,7 +2329,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 frameId: frame,
                 initiatorUrl: sourceUrl
             };
-            const payload = await SDK.SourceMapManager.tryLoadSourceMap(SDK.PageResourceLoader.PageResourceLoader.instance(), sourceMapUrl, initiator);
+            const payload = await SDK.SourceMapManager.tryLoadSourceMap(TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
             return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
         };
     }

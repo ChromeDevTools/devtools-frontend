@@ -6,7 +6,7 @@ import * as Platform from '../platform/platform.js';
 import { NetworkRequest } from './NetworkRequest.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
-import { type SDKModelObserver } from './TargetManager.js';
+import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 /**
  * We store two settings to disk to persist network throttling.
  * 1. The custom conditions that the user has defined.
@@ -253,9 +253,10 @@ export declare class AppliedNetworkConditions {
 export declare class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes> implements SDKModelObserver<NetworkManager> {
     #private;
     readonly inflightMainResourceRequests: Map<string, NetworkRequest>;
-    constructor();
+    constructor(targetManager: TargetManager);
     static instance(opts?: {
         forceNew: boolean | null;
+        targetManager?: TargetManager;
     }): MultitargetNetworkManager;
     static dispose(): void;
     static patchUserAgentWithChromeVersion(uaString: string): string;

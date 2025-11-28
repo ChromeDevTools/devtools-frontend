@@ -12,7 +12,7 @@ __export(CustomPreviewComponent_exports, {
 });
 import * as Common2 from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
+import { createIcon } from "./../../../kit/kit.js";
 import * as UI3 from "./../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/customPreviewComponent.css.js
@@ -2045,7 +2045,7 @@ var CustomPreviewSection = class _CustomPreviewSection {
         this.header.classList.add("custom-expandable-section-header");
       }
       this.header.addEventListener("click", this.onClick.bind(this), false);
-      this.expandIcon = IconButton.Icon.create("triangle-right", "custom-expand-icon");
+      this.expandIcon = createIcon("triangle-right", "custom-expand-icon");
       this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
     this.sectionElement.appendChild(this.header);

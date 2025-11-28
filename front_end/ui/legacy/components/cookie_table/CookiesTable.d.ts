@@ -1,6 +1,6 @@
 import '../data_grid/data_grid.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
+import { Icon } from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
 interface ViewInput {
     data: CookieData[];
@@ -24,7 +24,7 @@ type CookieData = Partial<Record<SDK.Cookie.Attribute, string>> & {
 } & {
     key?: string;
     flagged?: boolean;
-    icons?: Partial<Record<AttributeWithIcon, IconButton.Icon.Icon>>;
+    icons?: Partial<Record<AttributeWithIcon, Icon>>;
     priorityValue?: number;
     expiresTooltip?: string;
     dirty?: boolean;

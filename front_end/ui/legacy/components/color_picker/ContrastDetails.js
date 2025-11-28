@@ -8,7 +8,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import { createIcon, Icon } from '../../../../ui/kit/kit.js';
 import * as UIHelpers from '../../../helpers/helpers.js';
 import * as UI from '../../legacy.js';
 const UIStrings = {
@@ -112,9 +112,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
         this.contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
         this.contrastValue = this.contrastValueBubble.createChild('span');
         this.contrastValueBubbleIcons = [];
-        this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('checkmark')));
-        this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('check-double')));
-        this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('clear')));
+        this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(createIcon('checkmark')));
+        this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(createIcon('check-double')));
+        this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(createIcon('clear')));
         this.contrastValueBubbleIcons.forEach(button => button.addEventListener('click', (event) => {
             ContrastDetails.showHelp();
             event.consume(false);
@@ -409,7 +409,7 @@ export class Swatch {
     }
 }
 function createIconCheckmark() {
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = 'checkmark';
     icon.style.color = 'var(--icon-checkmark-green)';
     icon.style.width = 'var(--sys-size-9)';
@@ -417,7 +417,7 @@ function createIconCheckmark() {
     return icon;
 }
 function createIconNo() {
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = 'clear';
     icon.style.color = 'var(--icon-error)';
     icon.classList.add('small');

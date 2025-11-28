@@ -1,4 +1,4 @@
-import './IconButton.js';
+import '../../kit/kit.js';
 export interface FileSourceIconData {
     iconType?: string;
     contentType?: string;

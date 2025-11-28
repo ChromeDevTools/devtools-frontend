@@ -63,9 +63,6 @@
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {

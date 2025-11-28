@@ -1355,6 +1355,64 @@ export declare namespace Audits {
          */
         sourceCodeLocation?: SourceCodeLocation;
     }
+    const enum PermissionElementIssueType {
+        InvalidType = "InvalidType",
+        FencedFrameDisallowed = "FencedFrameDisallowed",
+        CspFrameAncestorsMissing = "CspFrameAncestorsMissing",
+        PermissionsPolicyBlocked = "PermissionsPolicyBlocked",
+        PaddingRightUnsupported = "PaddingRightUnsupported",
+        PaddingBottomUnsupported = "PaddingBottomUnsupported",
+        InsetBoxShadowUnsupported = "InsetBoxShadowUnsupported",
+        RequestInProgress = "RequestInProgress",
+        UntrustedEvent = "UntrustedEvent",
+        RegistrationFailed = "RegistrationFailed",
+        TypeNotSupported = "TypeNotSupported",
+        InvalidTypeActivation = "InvalidTypeActivation",
+        SecurityChecksFailed = "SecurityChecksFailed",
+        ActivationDisabled = "ActivationDisabled",
+        GeolocationDeprecated = "GeolocationDeprecated",
+        InvalidDisplayStyle = "InvalidDisplayStyle",
+        NonOpaqueColor = "NonOpaqueColor",
+        LowContrast = "LowContrast",
+        FontSizeTooSmall = "FontSizeTooSmall",
+        FontSizeTooLarge = "FontSizeTooLarge",
+        InvalidSizeValue = "InvalidSizeValue"
+    }
+    /**
+     * This issue warns about improper usage of the <permission> element.
+     */
+    interface PermissionElementIssueDetails {
+        issueType: PermissionElementIssueType;
+        /**
+         * The value of the type attribute.
+         */
+        type?: string;
+        /**
+         * The node ID of the <permission> element.
+         */
+        nodeId?: DOM.BackendNodeId;
+        /**
+         * True if the issue is a warning, false if it is an error.
+         */
+        isWarning?: boolean;
+        /**
+         * Fields for message construction:
+         * Used for messages that reference a specific permission name
+         */
+        permissionName?: string;
+        /**
+         * Used for messages about occlusion
+         */
+        occluderNodeInfo?: string;
+        /**
+         * Used for messages about occluder's parent
+         */
+        occluderParentNodeInfo?: string;
+        /**
+         * Used for messages about activation disabled reason
+         */
+        disableReason?: string;
+    }
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -1386,7 +1444,8 @@ export declare namespace Audits {
         ElementAccessibilityIssue = "ElementAccessibilityIssue",
         SRIMessageSignatureIssue = "SRIMessageSignatureIssue",
         UnencodedDigestIssue = "UnencodedDigestIssue",
-        UserReidentificationIssue = "UserReidentificationIssue"
+        UserReidentificationIssue = "UserReidentificationIssue",
+        PermissionElementIssue = "PermissionElementIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1423,6 +1482,7 @@ export declare namespace Audits {
         sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
         unencodedDigestIssueDetails?: UnencodedDigestIssueDetails;
         userReidentificationIssueDetails?: UserReidentificationIssueDetails;
+        permissionElementIssueDetails?: PermissionElementIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -17122,6 +17182,18 @@ export declare namespace Target {
          * List of remote locations.
          */
         locations: RemoteLocation[];
+    }
+    interface GetDevToolsTargetRequest {
+        /**
+         * Page or tab target ID.
+         */
+        targetId: TargetID;
+    }
+    interface GetDevToolsTargetResponse extends ProtocolResponseWithError {
+        /**
+         * The targetId of DevTools page target if exists.
+         */
+        targetId?: TargetID;
     }
     interface OpenDevToolsRequest {
         /**

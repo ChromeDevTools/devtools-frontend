@@ -38,6 +38,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as PanelCommon from '../../panels/common/common.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -266,6 +267,9 @@ export class ElementsPanel extends UI.Panel.Panel {
             .moduleSetting('show-ua-shadow-dom')
             .addChangeListener(this.showUAShadowDOMChanged.bind(this));
         PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded" /* PanelCommon.ExtensionServer.Events.SidebarPaneAdded */, this.extensionSidebarPaneAdded, this);
+        if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveRelativePosition.bind(this), this.#domTreeWidget.element);
+        }
     }
     initializeFullAccessibilityTreeView() {
         this.accessibilityTreeButton = createAccessibilityTreeToggleButton(false);
@@ -960,6 +964,41 @@ export class ElementsPanel extends UI.Panel.Panel {
     }
     copyStyles(node) {
         this.#domTreeWidget.copyStyles(node);
+    }
+    async resolveRelativePosition(parentElement, revealNode, lookupId, node) {
+        if (!node) {
+            const backendNodeId = Number(lookupId);
+            if (isNaN(backendNodeId)) {
+                return null;
+            }
+            const rootDOMNode = this.#domTreeWidget.rootDOMNode;
+            if (!rootDOMNode) {
+                return null;
+            }
+            const domModel = rootDOMNode.domModel();
+            const nodes = await domModel.pushNodesByBackendIdsToFrontend(new Set([backendNodeId]));
+            if (!nodes) {
+                return null;
+            }
+            const foundNode = nodes.get(backendNodeId);
+            if (!foundNode) {
+                return null;
+            }
+            node = foundNode;
+        }
+        const element = this.#domTreeWidget.treeElementForNode(node);
+        if (!element) {
+            return null;
+        }
+        if (revealNode) {
+            // The node must have been revealed in order to calculate its position.
+            await Common.Revealer.reveal(node);
+        }
+        const targetRect = element.listItemElement.getBoundingClientRect();
+        const parentRect = parentElement.getBoundingClientRect();
+        const relativeX = 0;
+        const relativeY = targetRect.y - parentRect.y;
+        return { x: relativeX, y: relativeY };
     }
     static firstInspectElementCompletedForTest = function () { };
     static firstInspectElementNodeNameForTest = '';

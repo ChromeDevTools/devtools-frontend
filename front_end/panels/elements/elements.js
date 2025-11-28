@@ -33,6 +33,7 @@ import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as PanelCommon from "./../common/common.js";
+import * as Annotations from "./../../ui/components/annotations/annotations.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as TreeOutline12 from "./../../ui/components/tree_outline/tree_outline.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -1346,7 +1347,7 @@ import * as Root4 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon3, Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as InlineEditor3 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
@@ -1592,7 +1593,7 @@ var StyleEditorWidget_exports = {};
 __export(StyleEditorWidget_exports, {
   StyleEditorWidget: () => StyleEditorWidget
 });
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/elements/StylePropertyTreeElement.js
@@ -1636,8 +1637,8 @@ import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as Tooltips from "./../../ui/components/tooltips/tooltips.js";
+import { createIcon, Icon } from "./../../ui/kit/kit.js";
 import * as ColorPicker2 from "./../../ui/legacy/components/color_picker/color_picker.js";
 import * as InlineEditor2 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
@@ -3763,7 +3764,7 @@ var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
           if (!maybeAnimationGroup) {
             return;
           }
-          const icon = IconButton.Icon.create("animation", "open-in-animations-panel");
+          const icon = createIcon("animation", "open-in-animations-panel");
           icon.setAttribute("jslog", `${VisualLogging3.link("open-in-animations-panel").track({ click: true })}`);
           icon.setAttribute("role", "button");
           icon.setAttribute("title", i18nString5(UIStrings5.jumpToAnimationsPanel));
@@ -3792,7 +3793,7 @@ var BezierRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.B
       return nodes;
     }
     const swatchPopoverHelper = this.#treeElement.parentPane().swatchPopoverHelper();
-    const icon = IconButton.Icon.create("bezier-curve-filled", "bezier-swatch-icon");
+    const icon = createIcon("bezier-curve-filled", "bezier-swatch-icon");
     icon.setAttribute("jslog", `${VisualLogging3.showStyleEditor("bezier")}`);
     icon.tabIndex = -1;
     icon.addEventListener("click", () => {
@@ -4752,7 +4753,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
     this.#tooltipKeyCounts.clear();
     this.updateState();
     if (this.isExpandable()) {
-      this.expandElement = IconButton.Icon.create("triangle-right", "expand-icon");
+      this.expandElement = createIcon("triangle-right", "expand-icon");
       this.expandElement.setAttribute("jslog", `${VisualLogging3.expand().track({ click: true })}`);
     }
     const renderers = this.property.parsedOk ? getPropertyRenderers(this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? /* @__PURE__ */ new Map()) : [];
@@ -4991,7 +4992,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI8.TreeO
       if (hint) {
         const wrapper = document.createElement("span");
         wrapper.classList.add("hint-wrapper");
-        const hintIcon = new IconButton.Icon.Icon();
+        const hintIcon = new Icon();
         hintIcon.name = "info";
         hintIcon.classList.add("hint", "small");
         hintIcon.tabIndex = -1;
@@ -5686,7 +5687,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI9.Widget.VBox {
     }
   }
   static createTriggerButton(pane9, section3, editorClass, buttonTitle, triggerKey) {
-    const triggerButton = IconButton2.Icon.create("flex-wrap", "styles-pane-button");
+    const triggerButton = createIcon2("flex-wrap", "styles-pane-button");
     triggerButton.title = buttonTitle;
     triggerButton.role = "button";
     triggerButton.onclick = async (event) => {
@@ -8881,7 +8882,7 @@ var SectionBlock = class _SectionBlock {
     this.sections = [];
     this.#expanded = expandedByDefault ?? false;
     if (expandable && titleElement instanceof HTMLElement) {
-      this.#icon = IconButton3.Icon.create(this.#expanded ? "triangle-down" : "triangle-right", "section-block-expand-icon");
+      this.#icon = createIcon3(this.#expanded ? "triangle-down" : "triangle-right", "section-block-expand-icon");
       titleElement.classList.toggle("empty-section", !this.#expanded);
       UI11.ARIAUtils.setExpanded(titleElement, this.#expanded);
       titleElement.appendChild(this.#icon);
@@ -9273,7 +9274,7 @@ var CSSPropertyPrompt = class extends UI11.TextPrompt.TextPrompt {
       if (!iconInfo) {
         continue;
       }
-      const icon = new IconButton3.Icon.Icon();
+      const icon = new Icon2();
       icon.name = iconInfo.iconName;
       icon.classList.add("extra-small");
       icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
@@ -10757,8 +10758,8 @@ import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
-import * as IconButton4 from "./../../ui/components/icon_button/icon_button.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
+import { createIcon as createIcon4, Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
@@ -11260,6 +11261,16 @@ var UIStrings12 = {
    */
   disableScrollSnap: "Disable scroll-snap overlay",
   /**
+   * @description Label of an adorner in the Elements panel. When clicked, it enables
+   * the overlay showing the container overlay for the current element.
+   */
+  enableContainer: "Enable container overlay",
+  /**
+   * @description Label of an adorner in the Elements panel. When clicked, it disables
+   * the overlay showing container for the current element.
+   */
+  disableContainer: "Disable container overlay",
+  /**
    * @description Label of an adorner in the Elements panel. When clicked, it forces
    * the element into applying its starting-style rules.
    */
@@ -11369,20 +11380,21 @@ function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
 function adornerRef(input) {
-  let adorner;
+  let adorner2;
   return ref2((el) => {
-    if (adorner) {
-      input.onAdornerRemoved(adorner);
+    if (adorner2) {
+      input.onAdornerRemoved(adorner2);
     }
-    adorner = el;
-    if (adorner) {
-      input.onAdornerAdded(adorner);
+    adorner2 = el;
+    if (adorner2) {
+      input.onAdornerAdded(adorner2);
     }
   });
 }
 var DEFAULT_VIEW3 = (input, output, target) => {
   const adAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD);
-  const hasAdorners = input.adorners || input.showAdAdorner;
+  const containerAdornerConfig = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER);
+  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner;
   render5(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
@@ -11398,13 +11410,32 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       </div>
       ${hasAdorners ? html8`<div class="adorner-container ${!hasAdorners ? "hidden" : ""}">
         ${input.showAdAdorner ? html8`<devtools-adorner
-          .data=${{ name: adAdornerConfig.name, jslogContext: adAdornerConfig.name }}
           aria-label=${i18nString11(UIStrings12.thisFrameWasIdentifiedAsAnAd)}
+          .data=${{ name: adAdornerConfig.name, jslogContext: adAdornerConfig.name }}
           ${adornerRef(input)}>
           <span>${adAdornerConfig.name}</span>
         </devtools-adorner>` : nothing2}
-        ${repeat(Array.from((input.adorners ?? /* @__PURE__ */ new Set()).values()).sort(adornerComparator), (adorner) => {
-    return adorner;
+        ${input.showContainerAdorner ? html8`<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .data=${{ name: containerAdornerConfig.name, jslogContext: containerAdornerConfig.name }}
+          jslog=${VisualLogging7.adorner(containerAdornerConfig.name).track({ click: true })}
+          active=${input.containerAdornerActive}
+          aria-label=${input.containerAdornerActive ? i18nString11(UIStrings12.enableContainer) : i18nString11(UIStrings12.disableContainer)}
+          @click=${input.onContainerAdornerClick}
+          @keydown=${(event) => {
+    if (event.code === "Enter" || event.code === "Space") {
+      input.onContainerAdornerClick(event);
+      event.stopPropagation();
+    }
+  }}
+          ${adornerRef(input)}>
+          <span>${containerAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing2}
+        ${repeat(Array.from((input.adorners ?? /* @__PURE__ */ new Set()).values()).sort(adornerComparator), (adorner2) => {
+    return adorner2;
   })}
       </div>` : nothing2}
     </div>
@@ -11435,6 +11466,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
   #adornersThrottler = new Common9.Throttler.Throttler(100);
   #adorners = /* @__PURE__ */ new Set();
   #nodeInfo;
+  #containerAdornerActive = false;
+  #layout = null;
   constructor(node, isClosingTag) {
     super();
     this.nodeInternal = node;
@@ -11462,11 +11495,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       };
       void this.updateStyleAdorners();
       void this.updateScrollAdorner();
+      void this.#updateAdorners();
     }
     this.expandAllButtonElement = null;
     this.performUpdate();
     if (this.nodeInternal.retained && !this.isClosingTag()) {
-      const icon = new IconButton4.Icon.Icon();
+      const icon = new Icon3();
       icon.name = "small-status-dot";
       icon.style.color = "var(--icon-error)";
       icon.classList.add("extra-small");
@@ -11479,6 +11513,14 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     if (this.nodeInternal.detached && !this.isClosingTag()) {
       this.listItemNode.setAttribute("title", "Detached Tree Node");
     }
+    node.domModel().overlayModel().addEventListener("PersistentContainerQueryOverlayStateChanged", (event) => {
+      const { nodeId: eventNodeId, enabled } = event.data;
+      if (eventNodeId !== node.id) {
+        return;
+      }
+      this.#containerAdornerActive = enabled;
+      this.performUpdate();
+    });
   }
   static animateOnDOMUpdate(treeElement) {
     const tagName = treeElement.listItemElement.querySelector(".webkit-html-tag-name");
@@ -11528,17 +11570,38 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
   }
   performUpdate() {
     DEFAULT_VIEW3({
+      containerAdornerActive: this.#containerAdornerActive,
       adorners: !this.isClosingTag() ? this.#adorners : void 0,
       showAdAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents5.AdornerManager.RegisteredAdorners.AD) && this.nodeInternal.isAdFrameNode(),
+      showContainerAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER) && Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
       nodeInfo: this.#nodeInfo,
       onGutterClick: this.showContextMenu.bind(this),
-      onAdornerAdded: (adorner) => {
-        ElementsPanel.instance().registerAdorner(adorner);
+      onAdornerAdded: (adorner2) => {
+        ElementsPanel.instance().registerAdorner(adorner2);
       },
-      onAdornerRemoved: (adorner) => {
-        ElementsPanel.instance().deregisterAdorner(adorner);
-      }
+      onAdornerRemoved: (adorner2) => {
+        ElementsPanel.instance().deregisterAdorner(adorner2);
+      },
+      onContainerAdornerClick: (event) => this.#onContainerAdornerClick(event)
     }, this, this.listItemElement);
+  }
+  #onContainerAdornerClick(event) {
+    event.stopPropagation();
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return;
+    }
+    const model = node.domModel().overlayModel();
+    if (model.isHighlightedContainerQueryInPersistentOverlay(nodeId)) {
+      model.hideContainerQueryInPersistentOverlay(nodeId);
+      this.#containerAdornerActive = false;
+    } else {
+      model.highlightContainerQueryInPersistentOverlay(nodeId);
+      this.#containerAdornerActive = true;
+      Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    }
+    void this.updateAdorners();
   }
   highlightAttribute(attributeName) {
     let animationElement = this.listItemElement.querySelector(".webkit-html-tag-name") ?? this.listItemElement;
@@ -11662,15 +11725,15 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     }
     if (nodeShortcut) {
       const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SLOT);
-      const adorner = this.adornSlot(config);
-      this.#adorners.add(adorner);
+      const adorner2 = this.adornSlot(config);
+      this.#adorners.add(adorner2);
       const deferredNode = nodeShortcut.deferredNode;
-      adorner.addEventListener("click", () => {
+      adorner2.addEventListener("click", () => {
         deferredNode.resolve((node) => {
           void Common9.Revealer.reveal(node);
         });
       });
-      adorner.addEventListener("mousedown", (e) => e.consume(), false);
+      adorner2.addEventListener("mousedown", (e) => e.consume(), false);
     }
   }
   createSelection() {
@@ -13073,56 +13136,56 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       adornerContent = document.createElement("span");
       adornerContent.textContent = name;
     }
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.data = {
+    const adorner2 = new Adorners.Adorner.Adorner();
+    adorner2.data = {
       name,
       content: adornerContent,
       jslogContext: name
     };
     if (isOpeningTag(this.tagTypeContext)) {
-      this.#adorners.add(adorner);
-      ElementsPanel.instance().registerAdorner(adorner);
+      this.#adorners.add(adorner2);
+      ElementsPanel.instance().registerAdorner(adorner2);
       this.updateAdorners();
     }
-    return adorner;
+    return adorner2;
   }
   adornSlot({ name }) {
-    const linkIcon = IconButton4.Icon.create("select-element");
+    const linkIcon = createIcon4("select-element");
     const slotText = document.createElement("span");
     slotText.textContent = name;
     const adornerContent = document.createElement("span");
     adornerContent.append(linkIcon);
     adornerContent.append(slotText);
     adornerContent.classList.add("adorner-with-icon");
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.data = {
+    const adorner2 = new Adorners.Adorner.Adorner();
+    adorner2.data = {
       name,
       content: adornerContent,
       jslogContext: "slot"
     };
-    this.#adorners.add(adorner);
-    ElementsPanel.instance().registerAdorner(adorner);
+    this.#adorners.add(adorner2);
+    ElementsPanel.instance().registerAdorner(adorner2);
     this.updateAdorners();
-    return adorner;
+    return adorner2;
   }
   adornMedia({ name }) {
     const adornerContent = document.createElement("span");
     adornerContent.textContent = name;
     adornerContent.classList.add("adorner-with-icon");
-    const linkIcon = IconButton4.Icon.create("select-element");
+    const linkIcon = createIcon4("select-element");
     adornerContent.append(linkIcon);
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.data = {
+    const adorner2 = new Adorners.Adorner.Adorner();
+    adorner2.data = {
       name,
       content: adornerContent,
       jslogContext: "media"
     };
     if (isOpeningTag(this.tagTypeContext)) {
-      this.#adorners.add(adorner);
-      ElementsPanel.instance().registerAdorner(adorner);
+      this.#adorners.add(adorner2);
+      ElementsPanel.instance().registerAdorner(adorner2);
       this.updateAdorners();
     }
-    return adorner;
+    return adorner2;
   }
   removeAdorner(adornerToRemove) {
     ElementsPanel.instance().deregisterAdorner(adornerToRemove);
@@ -13137,19 +13200,30 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     if (!isOpeningTag(this.tagTypeContext)) {
       return;
     }
-    for (const adorner of this.#adorners) {
-      if (adorner.name === adornerType || !adornerType) {
-        this.removeAdorner(adorner);
+    for (const adorner2 of this.#adorners) {
+      if (adorner2.name === adornerType || !adornerType) {
+        this.removeAdorner(adorner2);
       }
     }
   }
   updateAdorners() {
     void this.#adornersThrottler.schedule(this.#updateAdorners.bind(this));
   }
-  #updateAdorners() {
+  async #updateAdorners() {
+    if (this.isClosingTag()) {
+      this.performUpdate();
+      return;
+    }
+    const node = this.node();
+    const nodeId = node.id;
+    if (node.nodeType() !== Node.COMMENT_NODE && node.nodeType() !== Node.DOCUMENT_FRAGMENT_NODE && node.nodeType() !== Node.TEXT_NODE && nodeId !== void 0) {
+      this.#layout = await node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(nodeId);
+    } else {
+      this.#layout = null;
+    }
     this.performUpdate();
-    return Promise.resolve();
   }
+  // TODO: remove in favour of updateAdorners.
   async updateStyleAdorners() {
     if (!isOpeningTag(this.tagTypeContext)) {
       return;
@@ -13165,7 +13239,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
-    this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE);
     this.removeAdornersByType(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
@@ -13181,9 +13254,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       }
       if (layout.hasScroll) {
         this.pushScrollSnapAdorner();
-      }
-      if (layout.isContainer) {
-        this.pushContainerAdorner();
       }
     }
     if (node.isMediaNode()) {
@@ -13206,10 +13276,10 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
     const node = this.node();
     const nodeId = node.id;
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER);
-    const adorner = this.adorn(config);
+    const adorner2 = this.adorn(config);
     const onClick = async () => {
-      const { nodeIds } = await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: adorner.isActive() });
-      if (adorner.isActive()) {
+      const { nodeIds } = await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: adorner2.isActive() });
+      if (adorner2.isActive()) {
         Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
       }
       for (const closedPopoverNodeId of nodeIds) {
@@ -13218,17 +13288,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
         if (!treeElement || !isOpeningTag(treeElement.tagTypeContext)) {
           return;
         }
-        const adorner2 = this.#adorners.values().find((adorner3) => adorner3.name === config.name);
-        adorner2?.toggle(false);
+        const adorner3 = this.#adorners.values().find((adorner4) => adorner4.name === config.name);
+        adorner3?.toggle(false);
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.forceOpenPopover),
       ariaLabelActive: i18nString11(UIStrings12.stopForceOpenPopover)
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
   }
   pushGridAdorner(isSubgrid) {
     const node = this.node();
@@ -13237,10 +13307,10 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       return;
     }
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID);
-    const adorner = this.adorn(config);
-    adorner.classList.add("grid");
+    const adorner2 = this.adorn(config);
+    adorner2.classList.add("grid");
     const onClick = () => {
-      if (adorner.isActive()) {
+      if (adorner2.isActive()) {
         node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
         if (isSubgrid) {
           Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
@@ -13249,7 +13319,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
         node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.enableGridMode),
@@ -13260,11 +13330,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       if (eventNodeId !== nodeId) {
         return;
       }
-      adorner.toggle(enabled);
+      adorner2.toggle(enabled);
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
     if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
+      adorner2.toggle(true);
     }
   }
   pushGridLanesAdorner() {
@@ -13274,17 +13344,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       return;
     }
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES);
-    const adorner = this.adorn(config);
-    adorner.classList.add("grid-lanes");
+    const adorner2 = this.adorn(config);
+    adorner2.classList.add("grid-lanes");
     const onClick = () => {
-      if (adorner.isActive()) {
+      if (adorner2.isActive()) {
         node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
         Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
       } else {
         node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.enableGridLanesMode),
@@ -13295,11 +13365,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       if (eventNodeId !== nodeId) {
         return;
       }
-      adorner.toggle(enabled);
+      adorner2.toggle(enabled);
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
     if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
+      adorner2.toggle(true);
     }
   }
   pushScrollSnapAdorner() {
@@ -13309,17 +13379,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       return;
     }
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
-    const adorner = this.adorn(config);
-    adorner.classList.add("scroll-snap");
+    const adorner2 = this.adorn(config);
+    adorner2.classList.add("scroll-snap");
     const onClick = () => {
       const model = node.domModel().overlayModel();
-      if (adorner.isActive()) {
+      if (adorner2.isActive()) {
         model.highlightScrollSnapInPersistentOverlay(nodeId);
       } else {
         model.hideScrollSnapInPersistentOverlay(nodeId);
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.enableScrollSnap),
@@ -13330,11 +13400,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       if (eventNodeId !== nodeId) {
         return;
       }
-      adorner.toggle(enabled);
+      adorner2.toggle(enabled);
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
     if (node.domModel().overlayModel().isHighlightedScrollSnapInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
+      adorner2.toggle(true);
     }
   }
   pushStartingStyleAdorner() {
@@ -13344,23 +13414,23 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       return;
     }
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE);
-    const adorner = this.adorn(config);
-    adorner.classList.add("starting-style");
+    const adorner2 = this.adorn(config);
+    adorner2.classList.add("starting-style");
     const onClick = () => {
       const model = node.domModel().cssModel();
-      if (adorner.isActive()) {
+      if (adorner2.isActive()) {
         model.forceStartingStyle(node, true);
       } else {
         model.forceStartingStyle(node, false);
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.enableStartingStyle),
       ariaLabelActive: i18nString11(UIStrings12.disableStartingStyle)
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
   }
   pushFlexAdorner() {
     const node = this.node();
@@ -13369,17 +13439,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       return;
     }
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX);
-    const adorner = this.adorn(config);
-    adorner.classList.add("flex");
+    const adorner2 = this.adorn(config);
+    adorner2.classList.add("flex");
     const onClick = () => {
       const model = node.domModel().overlayModel();
-      if (adorner.isActive()) {
+      if (adorner2.isActive()) {
         model.highlightFlexContainerInPersistentOverlay(nodeId);
       } else {
         model.hideFlexContainerInPersistentOverlay(nodeId);
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.enableFlexMode),
@@ -13390,47 +13460,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       if (eventNodeId !== nodeId) {
         return;
       }
-      adorner.toggle(enabled);
+      adorner2.toggle(enabled);
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
     if (node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
-    }
-  }
-  pushContainerAdorner() {
-    const node = this.node();
-    const nodeId = node.id;
-    if (!nodeId) {
-      return;
-    }
-    const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER);
-    const adorner = this.adorn(config);
-    adorner.classList.add("container");
-    const onClick = () => {
-      const model = node.domModel().overlayModel();
-      if (adorner.isActive()) {
-        model.highlightContainerQueryInPersistentOverlay(nodeId);
-        Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-      } else {
-        model.hideContainerQueryInPersistentOverlay(nodeId);
-      }
-    };
-    adorner.addInteraction(onClick, {
-      isToggle: true,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString11(UIStrings12.enableScrollSnap),
-      ariaLabelActive: i18nString11(UIStrings12.disableScrollSnap)
-    });
-    node.domModel().overlayModel().addEventListener("PersistentContainerQueryOverlayStateChanged", (event) => {
-      const { nodeId: eventNodeId, enabled } = event.data;
-      if (eventNodeId !== nodeId) {
-        return;
-      }
-      adorner.toggle(enabled);
-    });
-    this.#adorners.add(adorner);
-    if (node.domModel().overlayModel().isHighlightedContainerQueryInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
+      adorner2.toggle(true);
     }
   }
   pushMediaAdorner() {
@@ -13440,8 +13474,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
       return;
     }
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA);
-    const adorner = this.adornMedia(config);
-    adorner.classList.add("media");
+    const adorner2 = this.adornMedia(config);
+    adorner2.classList.add("media");
     const onClick = async () => {
       await UI15.ViewManager.ViewManager.instance().showView("medias");
       const view = UI15.ViewManager.ViewManager.instance().view("medias");
@@ -13453,13 +13487,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
         }
       }
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: false,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString11(UIStrings12.openMediaPanel),
       ariaLabelActive: i18nString11(UIStrings12.openMediaPanel)
     });
-    this.#adorners.add(adorner);
+    this.#adorners.add(adorner2);
   }
   updateScrollAdorner() {
     if (!isOpeningTag(this.tagTypeContext)) {
@@ -13475,9 +13509,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI15.TreeOutline.Tr
   }
   pushScrollAdorner() {
     const config = ElementsComponents5.AdornerManager.getRegisteredAdorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL);
-    const adorner = this.adorn(config);
-    UI15.Tooltip.Tooltip.install(adorner, i18nString11(UIStrings12.elementHasScrollableOverflow));
-    adorner.classList.add("scroll");
+    const adorner2 = this.adorn(config);
+    UI15.Tooltip.Tooltip.install(adorner2, i18nString11(UIStrings12.elementHasScrollableOverflow));
+    adorner2.classList.add("scroll");
   }
 };
 var InitialChildrenLimit = 500;
@@ -13920,7 +13954,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 import * as Common10 from "./../../core/common/common.js";
 import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as Adorners2 from "./../../ui/components/adorners/adorners.js";
-import * as IconButton5 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon5 } from "./../../ui/kit/kit.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
 import * as ElementsComponents6 from "./components/components.js";
 var UIStrings13 = {
@@ -13947,36 +13981,36 @@ var ShortcutTreeElement = class extends UI16.TreeOutline.TreeElement {
     this.addRevealAdorner();
   }
   addRevealAdorner() {
-    const adorner = new Adorners2.Adorner.Adorner();
-    adorner.classList.add("adorner-reveal");
+    const adorner2 = new Adorners2.Adorner.Adorner();
+    adorner2.classList.add("adorner-reveal");
     const config = ElementsComponents6.AdornerManager.getRegisteredAdorner(ElementsComponents6.AdornerManager.RegisteredAdorners.REVEAL);
     const name = config.name;
     const adornerContent = document.createElement("span");
-    const linkIcon = IconButton5.Icon.create("select-element");
+    const linkIcon = createIcon5("select-element");
     const slotText = document.createElement("span");
     slotText.textContent = name;
     adornerContent.append(linkIcon);
     adornerContent.append(slotText);
     adornerContent.classList.add("adorner-with-icon");
-    adorner.data = {
+    adorner2.data = {
       name,
       content: adornerContent,
       jslogContext: "reveal"
     };
-    this.listItemElement.appendChild(adorner);
+    this.listItemElement.appendChild(adorner2);
     const onClick = () => {
       this.nodeShortcut.deferredNode.resolve((node) => {
         void Common10.Revealer.reveal(node);
       });
     };
-    adorner.addInteraction(onClick, {
+    adorner2.addInteraction(onClick, {
       isToggle: false,
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString12(UIStrings13.reveal),
       ariaLabelActive: i18nString12(UIStrings13.reveal)
     });
-    adorner.addEventListener("mousedown", (e) => e.consume(), false);
-    ElementsPanel.instance().registerAdorner(adorner);
+    adorner2.addEventListener("mousedown", (e) => e.consume(), false);
+    ElementsPanel.instance().registerAdorner(adorner2);
   }
   get hovered() {
     return Boolean(this.#hovered);
@@ -14029,7 +14063,7 @@ __export(TopLayerContainer_exports, {
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
-import * as IconButton6 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon6 } from "./../../ui/kit/kit.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as ElementsComponents7 from "./components/components.js";
 var UIStrings14 = {
@@ -14097,23 +14131,23 @@ var TopLayerContainer = class extends UI17.TreeOutline.TreeElement {
     const config = ElementsComponents7.AdornerManager.getRegisteredAdorner(ElementsComponents7.AdornerManager.RegisteredAdorners.TOP_LAYER);
     const adornerContent = document.createElement("span");
     adornerContent.classList.add("adorner-with-icon");
-    const linkIcon = IconButton6.Icon.create("select-element");
+    const linkIcon = createIcon6("select-element");
     const adornerText = document.createElement("span");
     adornerText.textContent = `top-layer (${topLayerElementIndex})`;
     adornerContent.append(linkIcon);
     adornerContent.append(adornerText);
-    const adorner = element?.adorn(config, adornerContent);
-    if (adorner) {
+    const adorner2 = element?.adorn(config, adornerContent);
+    if (adorner2) {
       const onClick = () => {
         topLayerElementRepresentation.revealAndSelect();
       };
-      adorner.addInteraction(onClick, {
+      adorner2.addInteraction(onClick, {
         isToggle: false,
         shouldPropagateOnKeydown: false,
         ariaLabelDefault: i18nString13(UIStrings14.reveal),
         ariaLabelActive: i18nString13(UIStrings14.reveal)
       });
-      adorner.addEventListener("mousedown", (e) => e.consume(), false);
+      adorner2.addEventListener("mousedown", (e) => e.consume(), false);
     }
   }
 };
@@ -14260,7 +14294,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       return;
     }
     this.#currentHighlightedNode = null;
-    this.requestUpdate();
+    this.performUpdate();
   }
   selectDOMNode(node, focus2) {
     this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus2);
@@ -14288,6 +14322,9 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
    */
   getTreeOutlineForTesting() {
     return this.#viewOutput.elementsTreeOutline;
+  }
+  treeElementForNode(node) {
+    return this.#viewOutput.elementsTreeOutline?.findTreeElement(node) || null;
   }
   performUpdate() {
     this.#view({
@@ -14340,7 +14377,9 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
    * FIXME: adorners should be part of the view input.
    */
   updateNodeAdorners(node) {
-    void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.updateStyleAdorners();
+    const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    void element?.updateStyleAdorners();
+    void element?.updateAdorners();
   }
   highlightMatch(node, query) {
     const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
@@ -15676,6 +15715,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement && isOpeningTag(treeElement.tagTypeContext)) {
       void treeElement.updateStyleAdorners();
+      void treeElement.updateAdorners();
     }
   }
 };
@@ -17077,6 +17117,9 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     SDK18.TargetManager.TargetManager.instance().addEventListener("NameChanged", (event) => this.targetNameChanged(event.data));
     Common15.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveRelativePosition.bind(this), this.#domTreeWidget.element);
+    }
   }
   initializeFullAccessibilityTreeView() {
     this.accessibilityTreeButton = createAccessibilityTreeToggleButton(false);
@@ -17708,40 +17751,40 @@ ${node.simpleSelector()} {}`, false);
   populateAdornerSettingsContextMenu(contextMenu) {
     const adornerSubMenu = contextMenu.viewSection().appendSubMenuItem(i18nString16(UIStrings17.adornerSettings), false, "show-adorner-settings");
     const adornerSettings = this.adornerManager.getSettings();
-    for (const [adorner, isEnabled] of adornerSettings) {
-      adornerSubMenu.defaultSection().appendCheckboxItem(adorner, () => {
+    for (const [adorner2, isEnabled] of adornerSettings) {
+      adornerSubMenu.defaultSection().appendCheckboxItem(adorner2, () => {
         const updatedIsEnabled = !isEnabled;
-        const adornersToUpdate = this.adornersByName.get(adorner);
+        const adornersToUpdate = this.adornersByName.get(adorner2);
         if (adornersToUpdate) {
           for (const adornerToUpdate of adornersToUpdate) {
             updatedIsEnabled ? adornerToUpdate.show() : adornerToUpdate.hide();
           }
         }
-        this.adornerManager.getSettings().set(adorner, updatedIsEnabled);
+        this.adornerManager.getSettings().set(adorner2, updatedIsEnabled);
         this.adornerManager.updateSettings(adornerSettings);
-      }, { checked: isEnabled, jslogContext: adorner });
+      }, { checked: isEnabled, jslogContext: adorner2 });
     }
   }
   isAdornerEnabled(adornerText) {
     return this.adornerManager.isAdornerEnabled(adornerText);
   }
-  registerAdorner(adorner) {
-    let adornerSet = this.adornersByName.get(adorner.name);
+  registerAdorner(adorner2) {
+    let adornerSet = this.adornersByName.get(adorner2.name);
     if (!adornerSet) {
       adornerSet = /* @__PURE__ */ new Set();
-      this.adornersByName.set(adorner.name, adornerSet);
+      this.adornersByName.set(adorner2.name, adornerSet);
     }
-    adornerSet.add(adorner);
-    if (!this.isAdornerEnabled(adorner.name)) {
-      adorner.hide();
+    adornerSet.add(adorner2);
+    if (!this.isAdornerEnabled(adorner2.name)) {
+      adorner2.hide();
     }
   }
-  deregisterAdorner(adorner) {
-    const adornerSet = this.adornersByName.get(adorner.name);
+  deregisterAdorner(adorner2) {
+    const adornerSet = this.adornersByName.get(adorner2.name);
     if (!adornerSet) {
       return;
     }
-    adornerSet.delete(adorner);
+    adornerSet.delete(adorner2);
   }
   toggleHideElement(node) {
     this.#domTreeWidget.toggleHideElement(node);
@@ -17754,6 +17797,40 @@ ${node.simpleSelector()} {}`, false);
   }
   copyStyles(node) {
     this.#domTreeWidget.copyStyles(node);
+  }
+  async resolveRelativePosition(parentElement, revealNode, lookupId, node) {
+    if (!node) {
+      const backendNodeId = Number(lookupId);
+      if (isNaN(backendNodeId)) {
+        return null;
+      }
+      const rootDOMNode = this.#domTreeWidget.rootDOMNode;
+      if (!rootDOMNode) {
+        return null;
+      }
+      const domModel = rootDOMNode.domModel();
+      const nodes = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([backendNodeId]));
+      if (!nodes) {
+        return null;
+      }
+      const foundNode = nodes.get(backendNodeId);
+      if (!foundNode) {
+        return null;
+      }
+      node = foundNode;
+    }
+    const element = this.#domTreeWidget.treeElementForNode(node);
+    if (!element) {
+      return null;
+    }
+    if (revealNode) {
+      await Common15.Revealer.reveal(node);
+    }
+    const targetRect = element.listItemElement.getBoundingClientRect();
+    const parentRect = parentElement.getBoundingClientRect();
+    const relativeX = 0;
+    const relativeY = targetRect.y - parentRect.y;
+    return { x: relativeX, y: relativeY };
   }
   static firstInspectElementCompletedForTest = function() {
   };

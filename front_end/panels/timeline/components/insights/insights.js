@@ -1112,7 +1112,7 @@ var Checklist_exports = {};
 __export(Checklist_exports, {
   Checklist: () => Checklist
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as i18n7 from "./../../../../core/i18n/i18n.js";
 import * as ComponentHelpers4 from "./../../../../ui/components/helpers/helpers.js";
 import * as Lit6 from "./../../../../ui/lit/lit.js";
@@ -1406,7 +1406,7 @@ var DOMSize_exports = {};
 __export(DOMSize_exports, {
   DOMSize: () => DOMSize
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as i18n10 from "./../../../../core/i18n/i18n.js";
 import * as Trace5 from "./../../../../models/trace/trace.js";
 import * as Lit10 from "./../../../../ui/lit/lit.js";
@@ -1803,7 +1803,7 @@ var ImageDelivery_exports = {};
 __export(ImageDelivery_exports, {
   ImageDelivery: () => ImageDelivery
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as Trace9 from "./../../../../models/trace/trace.js";
 import * as Lit14 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings10, i18nString: i18nString10, createOverlayForRequest: createOverlayForRequest2 } = Trace9.Insights.Models.ImageDelivery;
@@ -2212,7 +2212,7 @@ __export(NetworkDependencyTree_exports, {
   MAX_CHAINS_TO_SHOW: () => MAX_CHAINS_TO_SHOW,
   NetworkDependencyTree: () => NetworkDependencyTree
 });
-import "./../../../../ui/components/icon_button/icon_button.js";
+import "./../../../../ui/kit/kit.js";
 import * as i18n19 from "./../../../../core/i18n/i18n.js";
 import * as Trace15 from "./../../../../models/trace/trace.js";
 import * as Lit20 from "./../../../../ui/lit/lit.js";

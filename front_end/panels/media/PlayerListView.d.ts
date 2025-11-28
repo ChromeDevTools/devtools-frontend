@@ -1,4 +1,4 @@
-import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/kit/kit.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { MainView, TriggerDispatcher } from './MainView.js';

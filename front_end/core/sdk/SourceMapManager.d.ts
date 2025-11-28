@@ -1,7 +1,7 @@
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import type { FrameAssociated } from './FrameAssociated.js';
-import { PageResourceLoader, type PageResourceLoadInitiator } from './PageResourceLoader.js';
+import { type PageResourceLoadInitiator, type ResourceLoader } from './PageResourceLoader.js';
 import { SourceMap, type SourceMapV3 } from './SourceMap.js';
 import { type Target } from './Target.js';
 export type SourceMapFactory<T> = (compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString, payload: SourceMapV3, client: T) => SourceMap;
@@ -19,7 +19,7 @@ export declare class SourceMapManager<T extends FrameAssociated> extends Common.
     detachSourceMap(client: T): void;
     waitForSourceMapsProcessedForTest(): Promise<unknown>;
 }
-export declare function tryLoadSourceMap(pageResourceLoader: PageResourceLoader, url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3 | null>;
+export declare function tryLoadSourceMap(resourceLoader: ResourceLoader, url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3 | null>;
 export declare enum Events {
     SourceMapWillAttach = "SourceMapWillAttach",
     SourceMapFailedToAttach = "SourceMapFailedToAttach",

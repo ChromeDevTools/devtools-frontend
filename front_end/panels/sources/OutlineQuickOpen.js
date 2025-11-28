@@ -1,11 +1,13 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
+import '../../ui/components/highlighting/highlighting.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, nothing } from '../../ui/lit/lit.js';
 import { SourcesView } from './SourcesView.js';
 const UIStrings = {
     /**
@@ -305,31 +307,29 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
         }
         return -item.lineNumber - 1;
     }
-    renderItem(itemIndex, query, wrapperElement) {
+    renderItem(itemIndex, query) {
         const item = this.items[itemIndex];
-        const itemElement = wrapperElement.createChild('div');
-        const titleElement = itemElement.createChild('div');
-        const icon = IconButton.Icon.create('deployed');
-        wrapperElement.insertBefore(icon, itemElement);
-        titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
-        QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
+        let location;
         const sourceFrame = this.currentSourceFrame();
-        if (!sourceFrame) {
-            return;
+        if (sourceFrame) {
+            const disassembly = sourceFrame.wasmDisassembly;
+            if (disassembly) {
+                const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
+                const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
+                location = `:0x${item.columnNumber.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
+            }
+            else {
+                location = `:${item.lineNumber + 1}`;
+            }
         }
-        const tagElement = wrapperElement.createChild('span', 'tag');
-        if (!tagElement) {
-            return;
-        }
-        const disassembly = sourceFrame.wasmDisassembly;
-        if (disassembly) {
-            const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
-            const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
-            tagElement.textContent = `:0x${item.columnNumber.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
-        }
-        else {
-            tagElement.textContent = `:${item.lineNumber + 1}`;
-        }
+        const title = item.title + (item.subtitle ? item.subtitle : '');
+        const highlightRanges = QuickOpen.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
+        // clang-format off
+        return html `
+      <devtools-icon name="deployed"></devtools-icon>
+      <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
+      ${location ? html `<span class="tag">${location}</span>` : nothing}`;
+        // clang-format on
     }
     selectItem(itemIndex, _promptValue) {
         if (itemIndex === null) {

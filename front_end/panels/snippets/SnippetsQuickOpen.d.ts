@@ -1,4 +1,7 @@
+import '../../ui/kit/kit.js';
+import '../../ui/components/highlighting/highlighting.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
+import { type TemplateResult } from '../../ui/lit/lit.js';
 export declare class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     private snippets;
     private constructor();
@@ -12,5 +15,5 @@ export declare class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Prov
     itemScoreAt(itemIndex: number, query: string): number;
     itemCount(): number;
     itemKeyAt(itemIndex: number): string;
-    renderItem(itemIndex: number, query: string, wrapperElement: Element): void;
+    renderItem(itemIndex: number, query: string): TemplateResult;
 }

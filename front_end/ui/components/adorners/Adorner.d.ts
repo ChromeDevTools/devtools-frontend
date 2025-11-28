@@ -4,12 +4,18 @@ export interface AdornerData {
     content?: HTMLElement;
     jslogContext?: string;
 }
+/**
+ * @deprecated Do not add new usages. The custom component will be removed an
+ * embedded into the corresponding views.
+ */
 export declare class Adorner extends HTMLElement {
     #private;
+    static readonly observedAttributes: string[];
     name: string;
     set data(data: AdornerData);
     cloneNode(deep?: boolean): Node;
     connectedCallback(): void;
+    attributeChangedCallback(name: string, oldValue: string, newValue: string): void;
     isActive(): boolean;
     /**
      * Toggle the active state of the adorner. Optionally pass `true` to force-set

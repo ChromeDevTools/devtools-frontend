@@ -16,9 +16,9 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
+import { createIcon, Icon } from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
@@ -578,7 +578,7 @@ export class ConsoleViewMessage {
         return null;
     }
     buildMessageWithStackTrace(runtimeModel) {
-        const icon = IconButton.Icon.create('triangle-right', 'console-message-expand-icon');
+        const icon = createIcon('triangle-right', 'console-message-expand-icon');
         const { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement } = this.buildMessageHelper(runtimeModel.target(), this.message.stackTrace, icon);
         // We debounce the trace expansion metric in case this was accidental.
         const DEBOUNCE_MS = 300;
@@ -1377,7 +1377,7 @@ export class ConsoleViewMessage {
         return EXPLAIN_CONTEXT_OTHER_ACTION_ID;
     }
     #createHoverButton() {
-        const icon = new IconButton.Icon.Icon();
+        const icon = new Icon();
         icon.name = 'lightbulb-spark';
         icon.style.color = 'var(--devtools-icon-color)';
         icon.classList.add('medium');
@@ -1439,7 +1439,7 @@ export class ConsoleViewMessage {
         if (!iconName) {
             return;
         }
-        this.messageIcon = new IconButton.Icon.Icon();
+        this.messageIcon = new Icon();
         this.messageIcon.name = iconName;
         this.messageIcon.style.color = color;
         this.messageIcon.classList.add('message-level-icon', 'small');
@@ -1847,7 +1847,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
         if (!element) {
             element = super.toMessageElement();
             const iconType = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
-            this.expandGroupIcon = IconButton.Icon.create(iconType, 'expand-group-icon');
+            this.expandGroupIcon = createIcon(iconType, 'expand-group-icon');
             // Intercept focus to avoid highlight on click.
             this.contentElement().tabIndex = -1;
             if (this.repeatCountElement) {
@@ -1900,7 +1900,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
         const newContentElement = document.createElement('div');
         this.setContentElement(newContentElement);
         newContentElement.classList.add('console-user-command');
-        const userCommandIcon = new IconButton.Icon.Icon();
+        const userCommandIcon = new Icon();
         userCommandIcon.name = 'chevron-right';
         userCommandIcon.classList.add('command-result-icon', 'medium');
         newContentElement.appendChild(userCommandIcon);
@@ -1929,7 +1929,7 @@ export class ConsoleCommandResult extends ConsoleViewMessage {
         if (!element.classList.contains('console-user-command-result')) {
             element.classList.add('console-user-command-result');
             if (this.consoleMessage().level === "info" /* Protocol.Log.LogEntryLevel.Info */) {
-                const icon = new IconButton.Icon.Icon();
+                const icon = new Icon();
                 icon.name = 'chevron-left-dot';
                 icon.classList.add('command-result-icon', 'medium');
                 element.insertBefore(icon, element.firstChild);

@@ -13,17 +13,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedArrayBufferIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SharedArrayBufferIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         const umaCode = ["SharedArrayBufferIssue" /* Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue */, issueDetails.type].join('::');
-        super({ code: "SharedArrayBufferIssue" /* Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue */, umaCode }, issuesModel);
-        this.#issueDetails = issueDetails;
+        super({ code: "SharedArrayBufferIssue" /* Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue */, umaCode }, issueDetails, issuesModel);
     }
     getCategory() {
         return "Other" /* IssueCategory.OTHER */;
-    }
-    details() {
-        return this.#issueDetails;
     }
     getDescription() {
         return {
@@ -35,10 +30,10 @@ export class SharedArrayBufferIssue extends Issue {
         };
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
-        if (this.#issueDetails.isWarning) {
+        if (this.details().isWarning) {
             return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;
         }
         return "PageError" /* IssueKind.PAGE_ERROR */;

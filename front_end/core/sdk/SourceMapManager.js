@@ -89,8 +89,14 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
                 if (this.#attachingClient === client) {
                     this.#attachingClient = null;
                     const initiator = client.createPageResourceLoadInitiator();
+                    // TODO(crbug.com/458180550): Pass PageResourceLoader via constructor.
+                    //     The reason we grab it here lazily from the context is that otherwise every
+                    //     unit test using `createTarget` would need to set up a `PageResourceLoader`, as
+                    //     CSSModel and DebuggerModel are autostarted by default, and they create a
+                    //     SourceMapManager in their respective constructors.
+                    const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
                     clientData.sourceMapPromise =
-                        loadSourceMap(PageResourceLoader.instance(), sourceMapURL, client.debugId(), initiator)
+                        loadSourceMap(resourceLoader, sourceMapURL, client.debugId(), initiator)
                             .then(payload => {
                             const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
                             if (this.#clientData.get(client) === clientData) {
@@ -155,7 +161,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.scopesFallbackPromiseForTest));
     }
 }
-async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
+async function loadSourceMap(resourceLoader, url, debugId, initiator) {
     try {
         if (debugId) {
             const cachedSourceMap = await SourceMapCache.instance().get(debugId);
@@ -163,7 +169,7 @@ async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
                 return cachedSourceMap;
             }
         }
-        const { content } = await pageResourceLoader.loadResource(url, initiator);
+        const { content } = await resourceLoader.loadResource(url, initiator);
         const sourceMap = parseSourceMap(content);
         if ('debugId' in sourceMap && sourceMap.debugId) {
             // In case something goes wrong with updating the cache, we still want to use the source map.
@@ -175,9 +181,9 @@ async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
         throw new Error(`Could not load content for ${url}: ${cause.message}`, { cause });
     }
 }
-export async function tryLoadSourceMap(pageResourceLoader, url, initiator) {
+export async function tryLoadSourceMap(resourceLoader, url, initiator) {
     try {
-        return await loadSourceMap(pageResourceLoader, url, null, initiator);
+        return await loadSourceMap(resourceLoader, url, null, initiator);
     }
     catch (cause) {
         console.error(cause);

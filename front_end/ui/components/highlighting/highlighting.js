@@ -5,7 +5,7 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/ui/components/highlighting/HighlightElement.js
-import * as TextUtils from "./../../../models/text_utils/text_utils.js";
+import * as TextUtils2 from "./../../../models/text_utils/text_utils.js";
 
 // gen/front_end/ui/components/highlighting/HighlightManager.js
 var HighlightManager_exports = {};
@@ -159,67 +159,8 @@ var HighlightManager = class _HighlightManager {
   }
 };
 
-// gen/front_end/ui/components/highlighting/HighlightElement.js
-var HighlightElement = class extends HTMLElement {
-  static observedAttributes = ["ranges", "current-range"];
-  #ranges = [];
-  #currentRange;
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue) {
-      return;
-    }
-    switch (name) {
-      case "ranges":
-        this.#ranges = parseRanges(newValue);
-        break;
-      case "current-range":
-        this.#currentRange = parseRanges(newValue)[0];
-        break;
-    }
-    HighlightManager.instance().set(this, this.#ranges, this.#currentRange);
-  }
-};
-function parseRanges(value) {
-  if (!value) {
-    return [];
-  }
-  const ranges = value.split(" ").filter((rangeString) => {
-    const parts = rangeString.split(",");
-    if (parts.length !== 2) {
-      return false;
-    }
-    const num1 = Number(parts[0]);
-    const num2 = Number(parts[1]);
-    return !isNaN(num1) && !isNaN(num2);
-  }).map((rangeString) => {
-    const parts = rangeString.split(",").map((part) => Number(part));
-    return new TextUtils.TextRange.SourceRange(parts[0], parts[1]);
-  });
-  return sortAndMergeRanges(ranges);
-}
-function sortAndMergeRanges(ranges) {
-  ranges.sort((a, b) => a.offset - b.offset);
-  if (ranges.length === 0) {
-    return [];
-  }
-  const merged = [ranges[0]];
-  for (let i = 1; i < ranges.length; i++) {
-    const last = merged[merged.length - 1];
-    const current = ranges[i];
-    if (current.offset <= last.offset + last.length) {
-      const newEnd = Math.max(last.offset + last.length, current.offset + current.length);
-      const newLength = newEnd - last.offset;
-      merged[merged.length - 1] = new TextUtils.TextRange.SourceRange(last.offset, newLength);
-    } else {
-      merged.push(current);
-    }
-  }
-  return merged;
-}
-customElements.define("devtools-highlight", HighlightElement);
-
 // gen/front_end/ui/components/highlighting/MarkupHighlight.js
-import * as TextUtils2 from "./../../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../../models/text_utils/text_utils.js";
 var highlightedSearchResultClassName = "highlighted-search-result";
 var highlightedCurrentSearchResultClassName = "current-search-result";
 function highlightRangesWithStyleClass(element, resultRanges, styleClass, changes) {
@@ -236,7 +177,7 @@ function highlightRangesWithStyleClass(element, resultRanges, styleClass, change
   const nodeRanges = [];
   let rangeEndOffset = 0;
   for (const textNode of textNodes) {
-    const range = new TextUtils2.TextRange.SourceRange(rangeEndOffset, textNode.textContent ? textNode.textContent.length : 0);
+    const range = new TextUtils.TextRange.SourceRange(rangeEndOffset, textNode.textContent ? textNode.textContent.length : 0);
     rangeEndOffset = range.offset + range.length;
     nodeRanges.push(range);
   }
@@ -347,6 +288,77 @@ function revertDomChanges(domChanges) {
     }
   }
 }
+
+// gen/front_end/ui/components/highlighting/HighlightElement.js
+var HighlightElement = class extends HTMLElement {
+  static observedAttributes = ["ranges", "current-range", "type"];
+  #ranges = [];
+  #currentRange;
+  #type = "css";
+  #markupChanges = [];
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+    switch (name) {
+      case "ranges":
+        this.#ranges = parseRanges(newValue);
+        break;
+      case "current-range":
+        this.#currentRange = parseRanges(newValue)[0];
+        break;
+      case "type":
+        this.#type = newValue || "css";
+        break;
+    }
+    queueMicrotask(() => {
+      if (this.#type === "css") {
+        HighlightManager.instance().set(this, this.#ranges, this.#currentRange);
+      } else {
+        revertDomChanges(this.#markupChanges);
+        highlightRangesWithStyleClass(this, this.#ranges, "highlight", this.#markupChanges);
+      }
+    });
+  }
+};
+function parseRanges(value) {
+  if (!value) {
+    return [];
+  }
+  const ranges = value.split(" ").filter((rangeString) => {
+    const parts = rangeString.split(",");
+    if (parts.length !== 2) {
+      return false;
+    }
+    const num1 = Number(parts[0]);
+    const num2 = Number(parts[1]);
+    return !isNaN(num1) && !isNaN(num2);
+  }).map((rangeString) => {
+    const parts = rangeString.split(",").map((part) => Number(part));
+    return new TextUtils2.TextRange.SourceRange(parts[0], parts[1]);
+  });
+  return sortAndMergeRanges(ranges);
+}
+function sortAndMergeRanges(ranges) {
+  ranges.sort((a, b) => a.offset - b.offset);
+  if (ranges.length === 0) {
+    return [];
+  }
+  const merged = [ranges[0]];
+  for (let i = 1; i < ranges.length; i++) {
+    const last = merged[merged.length - 1];
+    const current = ranges[i];
+    if (current.offset <= last.offset + last.length) {
+      const newEnd = Math.max(last.offset + last.length, current.offset + current.length);
+      const newLength = newEnd - last.offset;
+      merged[merged.length - 1] = new TextUtils2.TextRange.SourceRange(last.offset, newLength);
+    } else {
+      merged.push(current);
+    }
+  }
+  return merged;
+}
+customElements.define("devtools-highlight", HighlightElement);
 export {
   HighlightManager_exports as HighlightManager,
   highlightRangesWithStyleClass,

@@ -725,17 +725,9 @@ var MainImpl = class {
     });
     IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
     UI2.DockController.DockController.instance({ forceNew: true, canDock });
-    SDK2.NetworkManager.MultitargetNetworkManager.instance({ forceNew: true });
     SDK2.DOMDebuggerModel.DOMDebuggerManager.instance({ forceNew: true });
     const targetManager = SDK2.TargetManager.TargetManager.instance();
     targetManager.addEventListener("SuspendStateChanged", this.#onSuspendStateChanged.bind(this));
-    SDK2.PageResourceLoader.PageResourceLoader.instance({
-      forceNew: true,
-      targetManager,
-      settings: Common2.Settings.Settings.instance(),
-      userAgentProvider: SDK2.NetworkManager.MultitargetNetworkManager.instance(),
-      loadOverride: null
-    });
     Workspace.FileManager.FileManager.instance({ forceNew: true });
     Bindings.NetworkProject.NetworkProjectManager.instance();
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();

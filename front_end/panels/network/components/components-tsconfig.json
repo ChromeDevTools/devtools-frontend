@@ -90,9 +90,6 @@
       "path": "../../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
-      "path": "../../../ui/components/icon_button/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../ui/components/input/bundle-tsconfig.json"
     },
     {
@@ -100,6 +97,9 @@
     },
     {
       "path": "../../../ui/components/report_view/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/legacy/bundle-tsconfig.json"

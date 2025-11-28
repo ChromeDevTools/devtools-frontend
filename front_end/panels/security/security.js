@@ -1240,7 +1240,7 @@ import * as Host2 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
-import * as IconButton3 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
@@ -1697,11 +1697,11 @@ import * as Root2 from "./../../core/root/root.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/security/CookieControlsTreeElement.js
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon } from "./../../ui/kit/kit.js";
 var CookieControlsTreeElement = class extends SecurityPanelSidebarTreeElement {
   constructor(title, jslogContext) {
     super(title, false, jslogContext);
-    this.setLeadingIcons([IconButton.Icon.create("gear", "cookie-icon")]);
+    this.setLeadingIcons([createIcon("gear", "cookie-icon")]);
   }
   get elemId() {
     return "controls";
@@ -1712,11 +1712,11 @@ var CookieControlsTreeElement = class extends SecurityPanelSidebarTreeElement {
 };
 
 // gen/front_end/panels/security/CookieReportTreeElement.js
-import * as IconButton2 from "./../../ui/components/icon_button/icon_button.js";
+import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 var CookieReportTreeElement = class extends SecurityPanelSidebarTreeElement {
   constructor(title, jslogContext) {
     super(title, false, jslogContext);
-    this.setLeadingIcons([IconButton2.Icon.create("cookie", "cookie-icon")]);
+    this.setLeadingIcons([createIcon2("cookie", "cookie-icon")]);
   }
   get elemId() {
     return "report";
@@ -2498,7 +2498,7 @@ function getSecurityStateIconForDetailedView(securityState, className) {
       iconName = UNKNOWN_ICON_NAME;
       break;
   }
-  return IconButton3.Icon.create(iconName, className);
+  return createIcon3(iconName, className);
 }
 function getSecurityStateIconForOverview(securityState, className) {
   let iconName;
@@ -2519,7 +2519,7 @@ function getSecurityStateIconForOverview(securityState, className) {
     case "info":
       throw new Error(`Unexpected security state ${securityState}`);
   }
-  return IconButton3.Icon.create(iconName, className);
+  return createIcon3(iconName, className);
 }
 function createHighlightedUrl(url, securityState) {
   const schemeSeparator = "://";

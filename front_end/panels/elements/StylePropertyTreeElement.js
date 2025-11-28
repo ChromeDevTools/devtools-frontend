@@ -12,8 +12,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
+import { createIcon, Icon } from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -938,7 +938,7 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
                     if (!maybeAnimationGroup) {
                         return;
                     }
-                    const icon = IconButton.Icon.create('animation', 'open-in-animations-panel');
+                    const icon = createIcon('animation', 'open-in-animations-panel');
                     icon.setAttribute('jslog', `${VisualLogging.link('open-in-animations-panel').track({ click: true })}`);
                     icon.setAttribute('role', 'button');
                     icon.setAttribute('title', i18nString(UIStrings.jumpToAnimationsPanel));
@@ -970,7 +970,7 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
             return nodes;
         }
         const swatchPopoverHelper = this.#treeElement.parentPane().swatchPopoverHelper();
-        const icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+        const icon = createIcon('bezier-curve-filled', 'bezier-swatch-icon');
         icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
         icon.tabIndex = -1;
         icon.addEventListener('click', () => {
@@ -1952,7 +1952,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.#tooltipKeyCounts.clear();
         this.updateState();
         if (this.isExpandable()) {
-            this.expandElement = IconButton.Icon.create('triangle-right', 'expand-icon');
+            this.expandElement = createIcon('triangle-right', 'expand-icon');
             this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({ click: true })}`);
         }
         const renderers = this.property.parsedOk ?
@@ -2213,7 +2213,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             if (hint) {
                 const wrapper = document.createElement('span');
                 wrapper.classList.add('hint-wrapper');
-                const hintIcon = new IconButton.Icon.Icon();
+                const hintIcon = new Icon();
                 hintIcon.name = 'info';
                 hintIcon.classList.add('hint', 'small');
                 hintIcon.tabIndex = -1;

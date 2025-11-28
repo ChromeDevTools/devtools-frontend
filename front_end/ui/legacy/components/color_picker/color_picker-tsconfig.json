@@ -62,10 +62,10 @@
       "path": "../../../../core/sdk/bundle-tsconfig.json"
     },
     {
-      "path": "../../../components/icon_button/bundle-tsconfig.json"
+      "path": "../../../components/srgb_overlay/bundle-tsconfig.json"
     },
     {
-      "path": "../../../components/srgb_overlay/bundle-tsconfig.json"
+      "path": "../../../kit/bundle-tsconfig.json"
     },
     {
       "path": "../../bundle-tsconfig.json"

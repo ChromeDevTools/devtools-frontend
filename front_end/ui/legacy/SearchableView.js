@@ -38,7 +38,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../components/buttons/buttons.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
+import { createIcon } from '../kit/kit.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { InspectorView } from './InspectorView.js';
 import searchableViewStyles from './searchableView.css.js';
@@ -178,7 +178,7 @@ export class SearchableView extends VBox {
         // Elements within `searchInputElements` are added according to their expected tab order.
         const searchInputElements = this.footerElement.createChild('div', 'search-inputs');
         const iconAndInput = searchInputElements.createChild('div', 'icon-and-input');
-        const searchIcon = IconButton.Icon.create('search');
+        const searchIcon = createIcon('search');
         iconAndInput.appendChild(searchIcon);
         this.searchInputElement = createHistoryInput('search', 'search-replace search');
         this.searchInputElement.id = 'search-input-field';

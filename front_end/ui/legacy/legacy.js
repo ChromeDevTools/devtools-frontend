@@ -723,7 +723,7 @@ import * as Platform13 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
-import * as IconButton6 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon6 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/ContextMenu.js
 var ContextMenu_exports = {};
@@ -1504,7 +1504,7 @@ __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as IconButton5 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon5 } from "./../kit/kit.js";
 import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/InspectorView.js
@@ -1522,7 +1522,7 @@ import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
-import * as IconButton4 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon4 } from "./../kit/kit.js";
 import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/DockController.js
@@ -1703,7 +1703,7 @@ __export(Infobar_exports, {
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Buttons from "./../components/buttons/buttons.js";
 import * as VisualLogging3 from "./../visual_logging/visual_logging.js";
-import * as IconButton from "./../components/icon_button/icon_button.js";
+import { createIcon } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/infobar.css.js
 var infobar_css_default = `/*
@@ -1914,7 +1914,7 @@ var Infobar = class _Infobar {
     this.element.classList.add("flex-none");
     this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
     this.contentElement = this.shadowRoot.createChild("div", "infobar infobar-" + type);
-    const icon = IconButton.Icon.create(TYPE_TO_ICON[type], type + "-icon");
+    const icon = createIcon(TYPE_TO_ICON[type], type + "-icon");
     this.contentElement.createChild("div", "icon-container").appendChild(icon);
     this.mainRow = this.contentElement.createChild("div", "infobar-main-row");
     this.infoContainer = this.mainRow.createChild("div", "infobar-info-container");
@@ -2017,7 +2017,7 @@ var Infobar = class _Infobar {
     if (!this.detailsRows) {
       const details = document.createElement("details");
       const summary = details.createChild("summary");
-      const triangleIcon = IconButton.Icon.create("arrow-drop-down");
+      const triangleIcon = createIcon("arrow-drop-down");
       summary.createChild("div", "icon-container").appendChild(triangleIcon);
       this.contentElement.insertBefore(details, this.mainRow);
       summary.appendChild(this.mainRow);
@@ -4112,7 +4112,7 @@ import * as Geometry3 from "./../../models/geometry/geometry.js";
 import * as Annotations from "./../components/annotations/annotations.js";
 import * as Buttons2 from "./../components/buttons/buttons.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
-import * as IconButton2 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon2, Icon } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/tabbedPane.css.js
 var tabbedPane_css_default = `/*
@@ -5220,7 +5220,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     const dropDownContainer = document.createElement("div");
     dropDownContainer.classList.add("tabbed-pane-header-tabs-drop-down-container");
     dropDownContainer.setAttribute("jslog", `${VisualLogging5.dropDown("more-tabs").track({ click: true })}`);
-    const chevronIcon = IconButton2.Icon.create("chevron-double-right", "chevron-icon");
+    const chevronIcon = createIcon2("chevron-double-right", "chevron-icon");
     const moreTabsString = i18nString4(UIStrings4.moreTabs);
     dropDownContainer.title = moreTabsString;
     markAsMenuButton(dropDownContainer);
@@ -5764,7 +5764,7 @@ var TabbedPaneTab = class {
   createTabAnnotationIcon() {
     const iconContainer = document.createElement("div");
     iconContainer.classList.add("ai-icon");
-    const tabAnnotationIcon = new IconButton2.Icon.Icon();
+    const tabAnnotationIcon = new Icon();
     tabAnnotationIcon.name = "smart-assistant";
     tabAnnotationIcon.classList.add("small");
     iconContainer.appendChild(tabAnnotationIcon);
@@ -5788,7 +5788,7 @@ var TabbedPaneTab = class {
   createPreviewIcon() {
     const iconContainer = document.createElement("div");
     iconContainer.classList.add("preview-icon");
-    const previewIcon = new IconButton2.Icon.Icon();
+    const previewIcon = new Icon();
     previewIcon.name = "experiment";
     previewIcon.classList.add("small");
     iconContainer.appendChild(previewIcon);
@@ -5954,7 +5954,7 @@ import * as Host4 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as IconButton3 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon3 } from "./../kit/kit.js";
 import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/viewContainers.css.js
@@ -6502,7 +6502,7 @@ var ExpandableContainerWidget = class extends VBox {
       keydown: "Enter|Space|ArrowLeft|ArrowRight"
     })}`);
     markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = IconButton3.Icon.create("triangle-right", "title-expand-icon");
+    this.titleExpandIcon = createIcon3("triangle-right", "title-expand-icon");
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -6768,7 +6768,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
     this.#tabbedPane.appendTab(view.viewId(), view.title(), new ContainerWidget(view), void 0, false, view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
     const iconName = view.iconName();
     if (iconName) {
-      const icon = IconButton3.Icon.create(iconName);
+      const icon = createIcon3(iconName);
       this.#tabbedPane.setTabIcon(view.viewId(), icon);
     }
   }
@@ -7277,7 +7277,7 @@ var InspectorView = class _InspectorView extends VBox {
       let icon = null;
       if (warnings.length !== 0) {
         const warning = warnings.length === 1 ? warnings[0] : "\xB7 " + warnings.join("\n\xB7 ");
-        icon = IconButton4.Icon.create("warning-filled", "small");
+        icon = createIcon4("warning-filled", "small");
         icon.classList.add("warning");
         Tooltip.install(icon, warning);
       }
@@ -7949,7 +7949,7 @@ var SoftContextMenu = class _SoftContextMenu {
       menuItemElement.setAttribute("data-action-id", item8.id.toString());
     }
     if (menuContainsCheckbox) {
-      const checkMarkElement = IconButton5.Icon.create("checkmark", "checkmark");
+      const checkMarkElement = createIcon5("checkmark", "checkmark");
       menuItemElement.appendChild(checkMarkElement);
     }
     if (item8.tooltip) {
@@ -8010,7 +8010,7 @@ var SoftContextMenu = class _SoftContextMenu {
     }
     setLabel(menuItemElement, accessibleName);
     if (item8.isExperimentalFeature) {
-      const experimentIcon = IconButton5.Icon.create("experiment");
+      const experimentIcon = createIcon5("experiment");
       menuItemElement.appendChild(experimentIcon);
     }
     this.detailsForElementMap.set(menuItemElement, detailsForElement);
@@ -8029,12 +8029,12 @@ var SoftContextMenu = class _SoftContextMenu {
       subMenuTimer: void 0
     });
     if (menuContainsCheckbox) {
-      const checkMarkElement = IconButton5.Icon.create("checkmark", "checkmark soft-context-menu-item-checkmark");
+      const checkMarkElement = createIcon5("checkmark", "checkmark soft-context-menu-item-checkmark");
       menuItemElement.appendChild(checkMarkElement);
     }
     createTextChild(menuItemElement, item8.label || "");
     setExpanded(menuItemElement, false);
-    const subMenuArrowElement = IconButton5.Icon.create("keyboard-arrow-right", "soft-context-menu-item-submenu-arrow");
+    const subMenuArrowElement = createIcon5("keyboard-arrow-right", "soft-context-menu-item-submenu-arrow");
     menuItemElement.appendChild(subMenuArrowElement);
     menuItemElement.addEventListener("mousedown", this.menuItemMouseDown.bind(this), false);
     menuItemElement.addEventListener("mouseup", this.menuItemMouseUp.bind(this), false);
@@ -11774,7 +11774,7 @@ var ToolbarFilter = class extends ToolbarInput {
   constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element) {
     const filterPlaceholder = filterBy ? filterBy : i18nString10(UIStrings10.filter);
     super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || "filter", element);
-    const filterIcon = IconButton6.Icon.create("filter");
+    const filterIcon = createIcon6("filter");
     this.element.prepend(filterIcon);
     this.element.classList.add("toolbar-filter");
   }
@@ -11938,7 +11938,7 @@ var ToolbarMenuButton = class extends ToolbarItem {
     this.title = "";
     if (!isIconDropdown) {
       this.element.classList.add("toolbar-has-dropdown");
-      const dropdownArrowIcon = IconButton6.Icon.create("triangle-down", "toolbar-dropdown-arrow");
+      const dropdownArrowIcon = createIcon6("triangle-down", "toolbar-dropdown-arrow");
       this.element.appendChild(dropdownArrowIcon);
     }
     if (jslogContext) {
@@ -12249,7 +12249,7 @@ import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
-import * as IconButton7 from "./../components/icon_button/icon_button.js";
+import { Icon as Icon2 } from "./../kit/kit.js";
 import * as Lit2 from "./../lit/lit.js";
 import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
 
@@ -14718,7 +14718,7 @@ var DevToolsIconLabel = class extends HTMLElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this);
-    this.#icon = new IconButton7.Icon.Icon();
+    this.#icon = new Icon2();
     this.#icon.style.setProperty("margin-right", "4px");
     this.#icon.style.setProperty("vertical-align", "baseline");
     root.appendChild(this.#icon);
@@ -19320,7 +19320,7 @@ import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform23 from "./../../core/platform/platform.js";
 import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
 import * as Buttons9 from "./../components/buttons/buttons.js";
-import * as IconButton8 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon7 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
 var searchableView_css_default = `/*
@@ -19620,7 +19620,7 @@ var SearchableView = class extends VBox {
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
     const searchInputElements = this.footerElement.createChild("div", "search-inputs");
     const iconAndInput = searchInputElements.createChild("div", "icon-and-input");
-    const searchIcon = IconButton8.Icon.create("search");
+    const searchIcon = createIcon7("search");
     iconAndInput.appendChild(searchIcon);
     this.searchInputElement = createHistoryInput("search", "search-replace search");
     this.searchInputElement.id = "search-input-field";
@@ -20081,7 +20081,7 @@ __export(SoftDropDown_exports, {
 });
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
-import * as IconButton9 from "./../components/icon_button/icon_button.js";
+import { createIcon as createIcon8 } from "./../kit/kit.js";
 import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/softDropDown.css.js
@@ -20210,7 +20210,7 @@ var SoftDropDown = class {
     this.element.classList.add("soft-dropdown");
     appendStyle(this.element, softDropDownButton_css_default);
     this.titleElement = this.element.createChild("span", "title");
-    const dropdownArrowIcon = IconButton9.Icon.create("triangle-down");
+    const dropdownArrowIcon = createIcon8("triangle-down");
     this.element.appendChild(dropdownArrowIcon);
     setExpanded(this.element, false);
     this.glassPane = new GlassPane();

@@ -4,6 +4,7 @@
         "outDir": "."
     },
     "files": [
-        "cards/card.css.js"
+        "cards/card.css.js",
+        "icons/icon.css.js"
     ]
 }

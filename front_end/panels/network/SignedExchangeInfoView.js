@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.js';
@@ -117,7 +117,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
             const errorMessagesCategory = new Category(root, i18nString(UIStrings.errors));
             for (const error of signedExchangeInfo.errors) {
                 const fragment = document.createDocumentFragment();
-                const icon = new IconButton.Icon.Icon();
+                const icon = new Icon();
                 icon.name = 'cross-circle-filled';
                 icon.classList.add('prompt-icon', 'small');
                 fragment.appendChild(icon);

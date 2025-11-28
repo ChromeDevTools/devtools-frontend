@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -115,7 +115,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
         placeholder.classList.add('sources-placeholder');
         const workspaceElement = placeholder.createChild('div', 'tabbed-pane-placeholder-row');
         workspaceElement.classList.add('workspace');
-        const icon = IconButton.Icon.create('sync', 'sync-icon');
+        const icon = createIcon('sync', 'sync-icon');
         workspaceElement.createChild('span', 'icon-container').appendChild(icon);
         const text = workspaceElement.createChild('span');
         text.textContent = UIStrings.workspaceDropInAFolderToSyncSources;

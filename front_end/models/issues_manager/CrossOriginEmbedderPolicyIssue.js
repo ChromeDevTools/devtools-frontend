@@ -32,19 +32,17 @@ export function isCrossOriginEmbedderPolicyIssue(reason) {
     return false;
 }
 export class CrossOriginEmbedderPolicyIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
-        super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
-        this.#issueDetails = issueDetails;
+        super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issueDetails, issuesModel);
     }
     primaryKey() {
-        return `${this.code()}-(${this.#issueDetails.request.requestId})`;
+        return `${this.code()}-(${this.details().request.requestId})`;
     }
     getBlockedByResponseDetails() {
-        return [this.#issueDetails];
+        return [this.details()];
     }
     requests() {
-        return [this.#issueDetails.request];
+        return [this.details().request];
     }
     getCategory() {
         return "CrossOriginEmbedderPolicy" /* IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */;

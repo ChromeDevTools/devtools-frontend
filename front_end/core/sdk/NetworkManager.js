@@ -1603,7 +1603,6 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 _a = RequestConditions;
-let multiTargetNetworkManagerInstance;
 export class AppliedNetworkConditions {
     conditions;
     appliedNetworkConditionsId;
@@ -1615,6 +1614,7 @@ export class AppliedNetworkConditions {
     }
 }
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper {
+    #targetManager;
     #userAgentOverride = '';
     #userAgentMetadataOverride = null;
     #customAcceptedEncodings = null;
@@ -1628,8 +1628,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     #extraHeaders;
     #customUserAgent;
     #isBlocking = false;
-    constructor() {
+    constructor(targetManager) {
         super();
+        this.#targetManager = targetManager;
         // TODO(allada) Remove these and merge it with request interception.
         const blockedPatternChanged = () => {
             this.updateBlockedPatterns();
@@ -1637,17 +1638,17 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         };
         this.#requestConditions.addEventListener("request-conditions-changed" /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */, blockedPatternChanged);
         this.updateBlockedPatterns();
-        TargetManager.instance().observeModels(NetworkManager, this);
+        this.#targetManager.observeModels(NetworkManager, this);
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
-        if (!multiTargetNetworkManagerInstance || forceNew) {
-            multiTargetNetworkManagerInstance = new MultitargetNetworkManager();
+        const { forceNew, targetManager } = opts;
+        if (!Root.DevToolsContext.globalInstance().has(MultitargetNetworkManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(MultitargetNetworkManager, new MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
         }
-        return multiTargetNetworkManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(MultitargetNetworkManager);
     }
     static dispose() {
-        multiTargetNetworkManagerInstance = null;
+        Root.DevToolsContext.globalInstance().delete(MultitargetNetworkManager);
     }
     static patchUserAgentWithChromeVersion(uaString) {
         // Patches Chrome/ChrOS version from user #agent ("1.2.3.4" when user #agent is: "Chrome/1.2.3.4").
@@ -1898,7 +1899,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         }
     }
     async getCertificate(origin) {
-        const target = TargetManager.instance().primaryPageTarget();
+        const target = this.#targetManager.primaryPageTarget();
         if (!target) {
             return [];
         }

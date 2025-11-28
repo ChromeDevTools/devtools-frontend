@@ -11702,7 +11702,6 @@ var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
   }
 };
 _a = RequestConditions;
-var multiTargetNetworkManagerInstance;
 var AppliedNetworkConditions = class {
   conditions;
   appliedNetworkConditionsId;
@@ -11714,6 +11713,7 @@ var AppliedNetworkConditions = class {
   }
 };
 var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5.ObjectWrapper.ObjectWrapper {
+  #targetManager;
   #userAgentOverride = "";
   #userAgentMetadataOverride = null;
   #customAcceptedEncodings = null;
@@ -11727,8 +11727,9 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
   #extraHeaders;
   #customUserAgent;
   #isBlocking = false;
-  constructor() {
+  constructor(targetManager) {
     super();
+    this.#targetManager = targetManager;
     const blockedPatternChanged = () => {
       this.updateBlockedPatterns();
       this.dispatchEventToListeners(
@@ -11738,17 +11739,17 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
     };
     this.#requestConditions.addEventListener("request-conditions-changed", blockedPatternChanged);
     this.updateBlockedPatterns();
-    TargetManager.instance().observeModels(NetworkManager, this);
+    this.#targetManager.observeModels(NetworkManager, this);
   }
   static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!multiTargetNetworkManagerInstance || forceNew) {
-      multiTargetNetworkManagerInstance = new _MultitargetNetworkManager();
+    const { forceNew, targetManager } = opts;
+    if (!Root2.DevToolsContext.globalInstance().has(_MultitargetNetworkManager) || forceNew) {
+      Root2.DevToolsContext.globalInstance().set(_MultitargetNetworkManager, new _MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
     }
-    return multiTargetNetworkManagerInstance;
+    return Root2.DevToolsContext.globalInstance().get(_MultitargetNetworkManager);
   }
   static dispose() {
-    multiTargetNetworkManagerInstance = null;
+    Root2.DevToolsContext.globalInstance().delete(_MultitargetNetworkManager);
   }
   static patchUserAgentWithChromeVersion(uaString) {
     const chromeVersion = Root2.Runtime.getChromeVersion();
@@ -12001,7 +12002,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
     }
   }
   async getCertificate(origin) {
-    const target = TargetManager.instance().primaryPageTarget();
+    const target = this.#targetManager.primaryPageTarget();
     if (!target) {
       return [];
     }
@@ -19844,7 +19845,8 @@ var SourceMapManager = class _SourceMapManager extends Common12.ObjectWrapper.Ob
         if (this.#attachingClient === client) {
           this.#attachingClient = null;
           const initiator = client.createPageResourceLoadInitiator();
-          clientData.sourceMapPromise = loadSourceMap(PageResourceLoader.instance(), sourceMapURL, client.debugId(), initiator).then((payload) => {
+          const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
+          clientData.sourceMapPromise = loadSourceMap(resourceLoader, sourceMapURL, client.debugId(), initiator).then((payload) => {
             const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
             if (this.#clientData.get(client) === clientData) {
               clientData.sourceMap = sourceMap;
@@ -19901,7 +19903,7 @@ var SourceMapManager = class _SourceMapManager extends Common12.ObjectWrapper.Ob
     return Promise.all(this.#sourceMaps.keys().map((sourceMap) => sourceMap.scopesFallbackPromiseForTest));
   }
 };
-async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
+async function loadSourceMap(resourceLoader, url, debugId, initiator) {
   try {
     if (debugId) {
       const cachedSourceMap = await SourceMapCache.instance().get(debugId);
@@ -19909,7 +19911,7 @@ async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
         return cachedSourceMap;
       }
     }
-    const { content } = await pageResourceLoader.loadResource(url, initiator);
+    const { content } = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
     if ("debugId" in sourceMap && sourceMap.debugId) {
       await SourceMapCache.instance().set(sourceMap.debugId, sourceMap).catch();
@@ -19919,9 +19921,9 @@ async function loadSourceMap(pageResourceLoader, url, debugId, initiator) {
     throw new Error(`Could not load content for ${url}: ${cause.message}`, { cause });
   }
 }
-async function tryLoadSourceMap(pageResourceLoader, url, initiator) {
+async function tryLoadSourceMap(resourceLoader, url, initiator) {
   try {
-    return await loadSourceMap(pageResourceLoader, url, null, initiator);
+    return await loadSourceMap(resourceLoader, url, null, initiator);
   } catch (cause) {
     console.error(cause);
     return null;

@@ -3,7 +3,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { ConsoleViewportElement } from './ConsoleViewport.js';
@@ -31,7 +31,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     protected consoleRowWrapper: HTMLElement | null;
     private readonly previewFormatter;
     private searchRegexInternal;
-    protected messageIcon: IconButton.Icon.Icon | null;
+    protected messageIcon: Icon | null;
     private traceExpanded;
     private expandTrace;
     protected anchorElement: HTMLElement | null;

@@ -36,11 +36,15 @@
   },
   "files": [
     "../../../../../../front_end/ui/kit/cards/Card.ts",
+    "../../../../../../front_end/ui/kit/icons/Icon.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
+    {
+      "path": "../../Images/optimize_images-tsconfig.json"
+    },
     {
       "path": "../lit/bundle-tsconfig.json"
     }

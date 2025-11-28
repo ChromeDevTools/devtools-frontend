@@ -3,12 +3,10 @@ import * as Protocol from '../../generated/protocol.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
 import type { MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 export declare const lateImportStylesheetLoadingCode: string;
-export declare class StylesheetLoadingIssue extends Issue {
-    #private;
+export declare class StylesheetLoadingIssue extends Issue<Protocol.Audits.StylesheetLoadingIssueDetails> {
     constructor(issueDetails: Protocol.Audits.StylesheetLoadingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null);
     sources(): Protocol.Audits.SourceCodeLocation[];
     requests(): Protocol.Audits.AffectedRequest[];
-    details(): Protocol.Audits.StylesheetLoadingIssueDetails;
     primaryKey(): string;
     getDescription(): MarkdownIssueDescription;
     getCategory(): IssueCategory;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import '../../../../ui/components/report_view/report_view.js';
 import './PreloadingMismatchedHeadersGrid.js';
 import './MismatchedPreloadingGrid.js';

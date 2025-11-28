@@ -17,16 +17,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/UnencodedDigestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class UnencodedDigestIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel) {
         super({
             code: `${"UnencodedDigestIssue" /* Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue */}::${issueDetails.error}`,
             umaCode: `${"UnencodedDigestIssue" /* Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue */}::${issueDetails.error}`,
-        }, issuesModel);
-        this.#issueDetails = issueDetails;
-    }
-    details() {
-        return this.#issueDetails;
+        }, issueDetails, issuesModel);
     }
     primaryKey() {
         return JSON.stringify(this.details());

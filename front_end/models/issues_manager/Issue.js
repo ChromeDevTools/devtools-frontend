@@ -72,9 +72,11 @@ export class Issue {
     #issueCode;
     #issuesModel;
     issueId = undefined;
+    #issueDetails;
     #hidden;
-    constructor(code, issuesModel = null, issueId) {
+    constructor(code, issueDetails, issuesModel = null, issueId) {
         this.#issueCode = typeof code === 'object' ? code.code : code;
+        this.#issueDetails = issueDetails;
         this.#issuesModel = issuesModel;
         this.issueId = issueId;
         Host.userMetrics.issueCreated(typeof code === 'string' ? code : code.umaCode);
@@ -82,6 +84,9 @@ export class Issue {
     }
     code() {
         return this.#issueCode;
+    }
+    details() {
+        return this.#issueDetails;
     }
     getBlockedByResponseDetails() {
         return [];

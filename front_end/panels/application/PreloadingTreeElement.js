@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import { createIcon } from '../../ui/kit/kit.js';
 import { ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import * as PreloadingHelper from './preloading/helper/helper.js';
 import { PreloadingAttemptView, PreloadingRuleSetView, PreloadingSummaryView } from './preloading/PreloadingView.js';
@@ -32,7 +32,7 @@ class PreloadingTreeElementBase extends ApplicationPanelTreeElement {
         super(panel, title, false, 'speculative-loads');
         this.#viewConstructor = viewConstructor;
         this.#path = path;
-        const icon = IconButton.Icon.create('speculative-loads');
+        const icon = createIcon('speculative-loads');
         this.setLeadingIcons([icon]);
         this.#selected = false;
         // TODO(https://crbug.com/1384419): Set link
@@ -68,7 +68,7 @@ export class PreloadingSummaryTreeElement extends ExpandableApplicationPanelTree
     #attempt = null;
     constructor(panel) {
         super(panel, i18nString(UIStrings.speculativeLoads), '', '', 'preloading');
-        const icon = IconButton.Icon.create('speculative-loads');
+        const icon = createIcon('speculative-loads');
         this.setLeadingIcons([icon]);
         this.#selected = false;
         // TODO(https://crbug.com/1384419): Set link

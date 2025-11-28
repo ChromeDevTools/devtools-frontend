@@ -9,7 +9,7 @@ var Button_exports = {};
 __export(Button_exports, {
   Button: () => Button
 });
-import "./../icon_button/icon_button.js";
+import "./../../kit/kit.js";
 import * as Lit from "./../../lit/lit.js";
 import * as VisualLogging from "./../../visual_logging/visual_logging.js";
 
@@ -661,7 +661,7 @@ __export(FloatingButton_exports, {
   FloatingButton: () => FloatingButton,
   create: () => create
 });
-import "./../icon_button/icon_button.js";
+import "./../../kit/kit.js";
 import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
 import * as Lit2 from "./../../lit/lit.js";
 

@@ -16,7 +16,7 @@ import * as Root from "./../../../../core/root/root.js";
 import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as IssuesManager from "./../../../../models/issues_manager/issues_manager.js";
 import * as NetworkForward from "./../../../../panels/network/forward/forward.js";
-import * as IconButton from "./../../../components/icon_button/icon_button.js";
+import { Icon } from "./../../../kit/kit.js";
 import { Directives, html, render } from "./../../../lit/lit.js";
 import * as UI from "./../../legacy.js";
 
@@ -515,7 +515,7 @@ var CookiesTable = class extends UI.Widget.VBox {
       const attribute = blockedReason.attribute || "name";
       data.icons = data.icons || {};
       if (!(attribute in data.icons)) {
-        data.icons[attribute] = new IconButton.Icon.Icon();
+        data.icons[attribute] = new Icon();
         if (attribute === "name" && IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(cookie)) {
           data.icons[attribute].name = "warning-filled";
           data.icons[attribute].onclick = () => IssuesManager.RelatedIssue.reveal(cookie);
@@ -533,7 +533,7 @@ var CookiesTable = class extends UI.Widget.VBox {
     if (exemptionReason) {
       data.icons = data.icons || {};
       data.flagged = true;
-      data.icons.name = new IconButton.Icon.Icon();
+      data.icons.name = new Icon();
       data.icons.name.name = "info";
       data.icons.name.classList.add("small");
       data.icons.name.title = exemptionReason;

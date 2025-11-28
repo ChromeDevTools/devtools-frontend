@@ -1,4 +1,4 @@
-import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/kit/kit.js';
 import type { ImageDeliveryInsightModel } from '../../../../models/trace/insights/ImageDelivery.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';

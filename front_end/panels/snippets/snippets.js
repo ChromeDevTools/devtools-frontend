@@ -202,9 +202,11 @@ var SnippetsQuickOpen_exports = {};
 __export(SnippetsQuickOpen_exports, {
   SnippetsQuickOpen: () => SnippetsQuickOpen
 });
+import "./../../ui/kit/kit.js";
+import "./../../ui/components/highlighting/highlighting.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as IconButton from "./../../ui/components/icon_button/icon_button.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
+import { html } from "./../../ui/lit/lit.js";
 var UIStrings2 = {
   /**
    * @description Text in Snippets Quick Open of the Sources panel when opening snippets
@@ -264,13 +266,16 @@ var SnippetsQuickOpen = class _SnippetsQuickOpen extends QuickOpen.FilteredListW
   itemKeyAt(itemIndex) {
     return this.snippets[itemIndex].name();
   }
-  renderItem(itemIndex, query, wrapperElement) {
-    const itemElement = wrapperElement.createChild("div");
-    const titleElement = itemElement.createChild("div");
-    const icon = IconButton.Icon.create("snippet", "snippet");
-    wrapperElement.insertBefore(icon, itemElement);
-    titleElement.textContent = this.snippets[itemIndex].name();
-    QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);
+  renderItem(itemIndex, query) {
+    const snippet = this.snippets[itemIndex].name();
+    const highlightRanges = QuickOpen.FilteredListWidget.FilteredListWidget.getHighlightRanges(snippet, query, true);
+    return html`
+      <devtools-icon class="snippet" name="snippet"></devtools-icon>
+      <div>
+        <devtools-highlight type="markup" ranges=${highlightRanges}>
+          ${snippet}
+        </devtools-highlight>
+      </div>`;
   }
 };
 QuickOpen.FilteredListWidget.registerProvider({

@@ -235,7 +235,7 @@ __export(CPUThrottlingSelector_exports, {
   CPUThrottlingSelector: () => CPUThrottlingSelector,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/menus/menus.js";
 import * as Common from "./../../../core/common/common.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
@@ -1010,7 +1010,7 @@ var OriginMap_exports = {};
 __export(OriginMap_exports, {
   OriginMap: () => OriginMap
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n9 from "./../../../core/i18n/i18n.js";
 import * as SDK2 from "./../../../core/sdk/sdk.js";
 import * as CrUXManager from "./../../../models/crux-manager/crux-manager.js";
@@ -2639,14 +2639,14 @@ __export(LiveMetricsView_exports, {
   LiveMetricsView: () => LiveMetricsView
 });
 import "./../../../ui/components/settings/settings.js";
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 
 // gen/front_end/panels/timeline/components/NetworkThrottlingSelector.js
 var NetworkThrottlingSelector_exports = {};
 __export(NetworkThrottlingSelector_exports, {
   NetworkThrottlingSelector: () => NetworkThrottlingSelector
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/menus/menus.js";
 import * as Common4 from "./../../../core/common/common.js";
 import * as i18n19 from "./../../../core/i18n/i18n.js";
@@ -5955,7 +5955,7 @@ var NetworkRequestTooltip_exports = {};
 __export(NetworkRequestTooltip_exports, {
   NetworkRequestTooltip: () => NetworkRequestTooltip
 });
-import "./../../../ui/components/icon_button/icon_button.js";
+import "./../../../ui/kit/kit.js";
 import * as i18n29 from "./../../../core/i18n/i18n.js";
 import * as Platform7 from "./../../../core/platform/platform.js";
 import * as SDK7 from "./../../../core/sdk/sdk.js";

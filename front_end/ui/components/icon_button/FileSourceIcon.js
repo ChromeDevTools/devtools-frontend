@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
-import './IconButton.js';
+import '../../kit/kit.js';
 import { Directives, html, render } from '../../lit/lit.js';
 import fileSourceIconStyles from './fileSourceIcon.css.js';
 const { classMap } = Directives;

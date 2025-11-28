@@ -81,19 +81,14 @@ function getIssueCode(details) {
     }
 }
 export class CorsIssue extends Issue {
-    #issueDetails;
     constructor(issueDetails, issuesModel, issueId) {
-        super(getIssueCode(issueDetails), issuesModel, issueId);
-        this.#issueDetails = issueDetails;
+        super(getIssueCode(issueDetails), issueDetails, issuesModel, issueId);
     }
     getCategory() {
         return "Cors" /* IssueCategory.CORS */;
     }
-    details() {
-        return this.#issueDetails;
-    }
     getDescription() {
-        switch (getIssueCode(this.#issueDetails)) {
+        switch (getIssueCode(this.details())) {
             case "CorsIssue::InsecurePrivateNetwork" /* IssueCode.INSECURE_PRIVATE_NETWORK */:
                 return {
                     file: 'corsInsecurePrivateNetwork.md',
@@ -227,15 +222,13 @@ export class CorsIssue extends Issue {
         }
     }
     primaryKey() {
-        return JSON.stringify(this.#issueDetails);
+        return JSON.stringify(this.details());
     }
     getKind() {
-        if (this.#issueDetails.isWarning &&
-            (this.#issueDetails.corsErrorStatus.corsError === "InsecurePrivateNetwork" /* Protocol.Network.CorsError.InsecurePrivateNetwork */ ||
-                this.#issueDetails.corsErrorStatus.corsError ===
-                    "PreflightMissingAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork */ ||
-                this.#issueDetails.corsErrorStatus.corsError ===
-                    "PreflightInvalidAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork */)) {
+        if (this.details().isWarning &&
+            (this.details().corsErrorStatus.corsError === "InsecurePrivateNetwork" /* Protocol.Network.CorsError.InsecurePrivateNetwork */ ||
+                this.details().corsErrorStatus.corsError === "PreflightMissingAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork */ ||
+                this.details().corsErrorStatus.corsError === "PreflightInvalidAllowPrivateNetwork" /* Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork */)) {
             return "BreakingChange" /* IssueKind.BREAKING_CHANGE */;
         }
         return "PageError" /* IssueKind.PAGE_ERROR */;

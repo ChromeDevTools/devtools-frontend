@@ -416,7 +416,7 @@ __export(SearchView_exports, {
   SearchView: () => SearchView
 });
 import "./../../ui/legacy/legacy.js";
-import "./../../ui/components/icon_button/icon_button.js";
+import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";

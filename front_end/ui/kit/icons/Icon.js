@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api, @devtools/enforce-custom-element-definitions-location */
+/* eslint-disable @devtools/no-imperative-dom-api */
 import '../../../Images/Images.js';
 import iconStyles from './icon.css.js';
 /**
@@ -12,8 +12,8 @@ import iconStyles from './icon.css.js';
  *
  * ```js
  * // Instantiate programmatically via the `create()` helper:
- * const icon = IconButton.Icon.create('bin');
- * const iconWithClassName = IconButton.Icon.create('bin', 'delete-icon');
+ * const icon = createIcon('bin');
+ * const iconWithClassName = createIcon('bin', 'delete-icon');
  *
  * // Use within a template:
  * Lit.html`
@@ -140,7 +140,7 @@ export class Icon extends HTMLElement {
  * @param className optional CSS class name(s) to put onto the element.
  * @returns the newly created `Icon` instance.
  */
-export const create = (name, className) => {
+export const createIcon = (name, className) => {
     const icon = new Icon();
     icon.name = name;
     if (className !== undefined) {

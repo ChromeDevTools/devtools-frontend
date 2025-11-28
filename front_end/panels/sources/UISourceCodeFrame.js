@@ -12,9 +12,9 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import { Icon } from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { AiCodeCompletionPlugin } from './AiCodeCompletionPlugin.js';
@@ -639,7 +639,7 @@ class RowMessageDecorations {
     }
 }
 function createIconFromIconData(data) {
-    const icon = new IconButton.Icon.Icon();
+    const icon = new Icon();
     icon.name = data.iconName;
     if (data.width) {
         icon.style.width = data.width;

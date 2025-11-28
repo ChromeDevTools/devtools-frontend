@@ -75,8 +75,11 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
       });
       sinon.stub(TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider, 'createInstance')
           .returns(sinon.createStubInstance(TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider));
-      sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
-          .resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      sinon.stub(Host.AidaClient.HostConfigTracker, 'instance').returns({
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispose: () => {},
+      } as unknown as Host.AidaClient.HostConfigTracker);
     });
 
     afterEach(() => {

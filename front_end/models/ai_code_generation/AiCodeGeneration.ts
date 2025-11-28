@@ -150,4 +150,16 @@ export class AiCodeGeneration {
 
     return response;
   }
+
+  static isAiCodeGenerationEnabled(locale: string): boolean {
+    if (!locale.startsWith('en-')) {
+      return false;
+    }
+    const aidaAvailability = Root.Runtime.hostConfig.aidaAvailability;
+    if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge ||
+        aidaAvailability.blockedByEnterprisePolicy) {
+      return false;
+    }
+    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled);
+  }
 }

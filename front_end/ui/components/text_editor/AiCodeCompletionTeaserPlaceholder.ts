@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import type * as PanelCommon from '../../../panels/common/common.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
 
 export function flattenRect(rect: DOMRect, left: boolean): {
   left: number,
@@ -16,8 +16,17 @@ export function flattenRect(rect: DOMRect, left: boolean): {
   return {left: x, right: x, top: rect.top, bottom: rect.bottom};
 }
 
+// TODO(b/462393094): Rename this to be a generic accessible placeholder
+/**
+ * A CodeMirror WidgetType that displays a UI.Widget.Widget as a placeholder.
+ *
+ * This custom placeholder implementation is used in place of the default
+ * CodeMirror placeholder to provide better accessibility. Specifically,
+ * it ensures that screen readers can properly announce the content within
+ * the encapsulated widget.
+ */
 export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
-  constructor(readonly teaser: PanelCommon.AiCodeCompletionTeaser) {
+  constructor(readonly teaser: UI.Widget.Widget) {
     super();
   }
 
@@ -64,7 +73,7 @@ export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
   }
 }
 
-export function aiCodeCompletionTeaserPlaceholder(teaser: PanelCommon.AiCodeCompletionTeaser): CM.Extension {
+export function aiCodeCompletionTeaserPlaceholder(teaser: UI.Widget.Widget): CM.Extension {
   const plugin = CM.ViewPlugin.fromClass(class {
     placeholder: CM.DecorationSet;
 

@@ -11,6 +11,7 @@ devtools_ui_module("text_editor") {
   sources = [
     "AiCodeCompletionProvider.ts",
     "AiCodeCompletionTeaserPlaceholder.ts",
+    "AiCodeGenerationProvider.ts",
     "AutocompleteHistory.ts",
     "ExecutionPositionHighlighter.ts",
     "TextEditor.ts",
@@ -29,6 +30,7 @@ devtools_ui_module("text_editor") {
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../models/ai_code_completion:bundle",
+    "../../../models/ai_code_generation:bundle",
     "../../../models/formatter:bundle",
     "../../../models/javascript_metadata:bundle",
     "../../../models/source_map_scopes:bundle",
@@ -62,6 +64,7 @@ devtools_ui_module("unittests") {
   sources = [
     "AiCodeCompletionProvider.test.ts",
     "AiCodeCompletionTeaserPlaceholder.test.ts",
+    "AiCodeGenerationProvider.test.ts",
     "AutocompleteHistory.test.ts",
     "ExecutionPositionHighlighter.test.ts",
     "TextEditor.test.ts",

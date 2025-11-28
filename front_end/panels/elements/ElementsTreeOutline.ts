@@ -47,6 +47,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit, isOpeningTag} from './ElementsTreeElement.js';
@@ -945,7 +946,10 @@ export class ElementsTreeOutline extends
     this.dispatchEventToListeners(ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
   }
 
-  findTreeElement(node: SDK.DOMModel.DOMNode): ElementsTreeElement|null {
+  findTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet): ElementsTreeElement|null {
+    if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
+      return null;
+    }
     let treeElement = this.lookUpTreeElement(node);
     if (!treeElement && node.nodeType() === Node.TEXT_NODE) {
       // The text node might have been inlined if it was short, so try to find the parent element.
@@ -1518,6 +1522,7 @@ export class ElementsTreeOutline extends
     domModel.addEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     domModel.addEventListener(
         SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
   }
 
   unwireFromDOMModel(domModel: SDK.DOMModel.DOMModel): void {
@@ -1534,6 +1539,7 @@ export class ElementsTreeOutline extends
     domModel.removeEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     domModel.removeEventListener(
         SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
   }
 
@@ -1607,6 +1613,12 @@ export class ElementsTreeOutline extends
   }
 
   private distributedNodesChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
+    this.addUpdateRecord(node).childrenModified();
+    this.updateModifiedNodesSoon();
+  }
+
+  private adoptedStyleSheetsModified(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     const node = event.data;
     this.addUpdateRecord(node).childrenModified();
     this.updateModifiedNodesSoon();
@@ -1711,7 +1723,11 @@ export class ElementsTreeOutline extends
     this.#topLayerContainerByParent.set(parent, container);
   }
 
-  private createElementTreeElement(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean): ElementsTreeElement {
+  private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet, isClosingTag?: boolean):
+      UI.TreeOutline.TreeElement {
+    if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
+      return new AdoptedStyleSheetTreeElement(node);
+    }
     const treeElement = new ElementsTreeElement(node, isClosingTag);
     treeElement.setExpandable(!isClosingTag && this.hasVisibleChildren(node));
     if (node.nodeType() === Node.ELEMENT_NODE && node.parentNode && node.parentNode.nodeType() === Node.DOCUMENT_NODE &&
@@ -1743,8 +1759,8 @@ export class ElementsTreeOutline extends
     return treeElement.childAt(index) as ElementsTreeElement;
   }
 
-  private visibleChildren(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[] {
-    let visibleChildren = ElementsTreeElement.visibleShadowRoots(node);
+  private visibleChildren(node: SDK.DOMModel.DOMNode): Array<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet> {
+    let visibleChildren = [...node.adoptedStyleSheetsForNode, ...ElementsTreeElement.visibleShadowRoots(node)];
 
     const contentDocument = node.contentDocument();
     if (contentDocument) {
@@ -1870,8 +1886,8 @@ export class ElementsTreeOutline extends
   }
 
   insertChildElement(
-      treeElement: ElementsTreeElement|TopLayerContainer, child: SDK.DOMModel.DOMNode, index: number,
-      isClosingTag?: boolean): ElementsTreeElement {
+      treeElement: ElementsTreeElement|TopLayerContainer, child: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet,
+      index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
     if (child instanceof SDK.DOMModel.DOMDocument) {
@@ -1903,11 +1919,12 @@ export class ElementsTreeOutline extends
 
     const node = treeElement.node();
     const visibleChildren = this.visibleChildren(node);
-    const visibleChildrenSet = new Set<SDK.DOMModel.DOMNode>(visibleChildren);
+    const visibleChildrenSet = new Set<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet>(visibleChildren);
 
     // Remove any tree elements that no longer have this node as their parent and save
     // all existing elements that could be reused. This also removes closing tag element.
-    const existingTreeElements = new Map<SDK.DOMModel.DOMNode, UI.TreeOutline.TreeElement&ElementsTreeElement>();
+    const existingTreeElements =
+        new Map<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet, UI.TreeOutline.TreeElement&ElementsTreeElement>();
     for (let i = treeElement.childCount() - 1; i >= 0; --i) {
       const existingTreeElement = treeElement.childAt(i);
       if (!(existingTreeElement instanceof ElementsTreeElement)) {
@@ -1926,6 +1943,7 @@ export class ElementsTreeOutline extends
       treeElement.removeChildAtIndex(i);
     }
 
+    // Insert child nodes.
     for (let i = 0; i < visibleChildren.length && i < treeElement.expandedChildrenLimit(); ++i) {
       const child = visibleChildren[i];
       const existingTreeElement = existingTreeElements.get(child) || this.findTreeElement(child);
@@ -1935,7 +1953,7 @@ export class ElementsTreeOutline extends
       } else {
         // No existing element found, insert a new element.
         const newElement = this.insertChildElement(treeElement, child, i);
-        if (this.updateRecordForHighlight(node) && treeElement.expanded) {
+        if (this.updateRecordForHighlight(node) && treeElement.expanded && newElement instanceof ElementsTreeElement) {
           ElementsTreeElement.animateOnDOMUpdate(newElement);
         }
         // If a node was inserted in the middle of existing list dynamically we might need to increase the limit.

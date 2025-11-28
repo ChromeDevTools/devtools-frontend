@@ -637,6 +637,16 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
+  waitForTextNotMatching(element: puppeteer.ElementHandle<Element>, regex: RegExp): Promise<string> {
+    return this.waitForFunction(async () => {
+      const text = await element.evaluate(e => e.textContent);
+      if (text.match(regex)) {
+        return undefined;
+      }
+      return text;
+    });
+  }
+
   async renderCoordinatorQueueEmpty() {
     await this.page.evaluate(() => {
       return new Promise<void>(resolve => {

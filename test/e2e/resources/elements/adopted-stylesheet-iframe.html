@@ -1,0 +1,6 @@
+<div class="from-iframe">from iframe</div>
+<script>
+  const iframeStyle = new CSSStyleSheet();
+  iframeStyle.replaceSync('/* For iframe */\n.from-iframe {\n  color: blue;\n}\n');
+  document.adoptedStyleSheets = [iframeStyle];
+</script>

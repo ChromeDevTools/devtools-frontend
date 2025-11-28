@@ -1,0 +1,115 @@
+<div class="from-document">from document</div>
+<div class="with-style-tag"></div>
+<div class="with-style-tag-sourceurl"></div>
+<div class="with-constructed-stylesheet-sourceurl"></div>
+<div class="with-constructed-stylesheet"></div>
+<div class="with-same-sheet"></div>
+<div class="with-constructed-stylesheet-rule"></div>
+<div class="with-constructed-stylesheet-import"></div>
+<div class="with-same-import"></div>
+<iframe src="adopted-stylesheet-iframe.html"></iframe>
+<script type="module">
+  import adoptedStyle from "./adopted-style.css" with { type: "css" };
+
+  function createShadowDomWithText(element, text) {
+    const shadow = element.attachShadow({
+      mode: "open",
+    });
+    const div = document.createElement("div");
+    div.classList.add("item", "item2");
+    div.textContent = text;
+    shadow.append(div);
+    return shadow;
+  }
+
+  async function main() {
+    const styleText = `
+:host .item {
+  color: blue;
+}
+`;
+    const styleText1 = `
+:host .item {
+  color: blue;
+}
+
+/*# sourceURL=style.css */
+`;
+    const styleText2 = `
+:host .item2 {
+  color: blue;
+}
+
+/*# sourceURL=style2.css */
+`;
+    const styleText3 = `
+:host .item2 {
+  color: blue;
+}
+`;
+
+    // from document
+    const documentStyle = new CSSStyleSheet();
+    documentStyle.replaceSync("/* For document */\n.from-document {\n  color: blue;\n}\n");
+    document.adoptedStyleSheets = [documentStyle];
+
+    // With <style> tag.
+    const styleElement = document.createElement("style");
+    styleElement.textContent = styleText;
+
+    const withStyles = document.querySelector(".with-style-tag");
+    const shadow = createShadowDomWithText(withStyles, "with style tag");
+    shadow.append(styleElement);
+
+    // With <style> tag and sourceURL.
+    const styleElement1 = document.createElement("style");
+    styleElement1.textContent = styleText1;
+
+    const withStyleSource = document.querySelector(".with-style-tag-sourceurl");
+    const shadow1 = createShadowDomWithText(withStyleSource, "with style tag and sourceURL");
+    shadow1.append(styleElement1);
+
+    // with constructed stylesheet and sourceURL
+    const styles = new CSSStyleSheet();
+    styles.replaceSync(styleText2);
+
+    const withSourceUrl = document.querySelector(".with-constructed-stylesheet-sourceurl");
+    const shadow2 = createShadowDomWithText(
+      withSourceUrl,
+      "with constructed stylesheet and sourceURL",
+    );
+    shadow2.adoptedStyleSheets = [styles];
+
+    // with constructed stylesheet
+    const style3 = new CSSStyleSheet();
+    style3.replaceSync(styleText3);
+
+    const withoutStyles = document.querySelector(".with-constructed-stylesheet");
+    const shadow3 = createShadowDomWithText(withoutStyles, "with constructed stylesheet");
+    shadow3.adoptedStyleSheets = [style3];
+
+    // with same stylesheet
+    const withSameSheet = document.querySelector(".with-same-sheet");
+    const shadow3b = createShadowDomWithText(withSameSheet, "with same stylesheet");
+    shadow3b.adoptedStyleSheets = [style3];
+
+    // from rule
+    const style3c = new CSSStyleSheet();
+    style3c.insertRule(styleText3);
+    const withRule = document.querySelector(".with-constructed-stylesheet-rule");
+    const shadow3c = createShadowDomWithText(withRule, "with constructed stylesheet from rule");
+    shadow3c.adoptedStyleSheets = [style3c];
+
+    // with constructed stylesheet from import
+    const withImport = document.querySelector(".with-constructed-stylesheet-import");
+    const shadow4 = createShadowDomWithText(withImport, "with constructed stylesheet from import");
+    shadow4.adoptedStyleSheets = [adoptedStyle];
+
+    // with same import
+    const withSameImport = document.querySelector(".with-same-import");
+    const shadow5 = createShadowDomWithText(withSameImport, "with same import");
+    shadow5.adoptedStyleSheets = [adoptedStyle];
+  }
+
+  main();
+</script>

@@ -32,6 +32,7 @@ devtools_ui_module("elements") {
   sources = [
     "AccessibilityTreeUtils.ts",
     "AccessibilityTreeView.ts",
+    "AdoptedStyleSheetTreeElement.ts",
     "CSSRuleValidator.ts",
     "CSSRuleValidatorHelper.ts",
     "CSSValueTraceView.ts",

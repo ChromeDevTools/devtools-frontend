@@ -8,6 +8,9 @@ copy_to_gen("elements") {
   sources = [
     "accessibility-iframe-page.html",
     "accessibility-simple-page.html",
+    "adopted-style.css",
+    "adopted-stylesheet-iframe.html",
+    "adopted-stylesheet.html",
     "adornment-container-query.html",
     "adornment-grid-lanes.html",
     "adornment-media.html",

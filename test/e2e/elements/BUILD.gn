@@ -9,6 +9,7 @@ ts_e2e_library("elements") {
     "accessibility-pane.test.ts",
     "accessibility-tree.test.ts",
     "add-view-transition-pseudo-styles.test.ts",
+    "adopted-stylesheets.test.ts",
     "adornment.test.ts",
     "at-function-sections.test.ts",
     "at-property-sections.test.ts",

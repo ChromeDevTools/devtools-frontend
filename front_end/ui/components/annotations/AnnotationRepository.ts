@@ -8,12 +8,12 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 
 import {AnnotationType} from './AnnotationType.js';
 
-interface BaseAnnotationData {
+export interface BaseAnnotationData {
   id: number;
   type: AnnotationType;
   message: string;
   // Sometimes the anchor for an annotation is not known, but is provided using a
-  // string id instead (which can be converted to an `anchor` later).
+  // string id instead (which can be converted to a proper `anchor`).
   lookupId: string;
   // Sometimes we want annotations to anchor to a particular string on the page.
   anchorToString?: string;
@@ -34,8 +34,11 @@ export interface EventTypes {
 
 export class AnnotationRepository {
   static #instance: AnnotationRepository|null = null;
+  static #hasRepliedGreenDevDisabled = false;
+  static #hasShownFlagWarning = false;
+
   #events = new Common.ObjectWrapper.ObjectWrapper<EventTypes>();
-  #annotations: BaseAnnotationData[] = [];
+  #annotationData: BaseAnnotationData[] = [];
   #nextId = 0;
 
   static instance(): AnnotationRepository {
@@ -46,7 +49,17 @@ export class AnnotationRepository {
   }
 
   static annotationsEnabled(): boolean {
-    return Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
+    const enabled = Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled);
+    // TODO(finnur): Fix race when Repository is created before feature flags have been set properly.
+    if (!enabled) {
+      this.#hasRepliedGreenDevDisabled = true;
+    } else if (this.#hasRepliedGreenDevDisabled && !this.#hasShownFlagWarning) {
+      console.warn(
+          'Flag controlling GreenDev has flipped from false to true. ' +
+          'Only some callers will expect GreenDev to be enabled, which can lead to unexpected results.');
+      this.#hasShownFlagWarning = true;
+    }
+    return Boolean(enabled);
   }
 
   addEventListener<T extends keyof EventTypes>(
@@ -58,20 +71,28 @@ export class AnnotationRepository {
     return this.#events.addEventListener(eventType, listener, thisObject);
   }
 
-  getAnnotationsByType(type: AnnotationType): BaseAnnotationData[] {
+  getAnnotationDataByType(type: AnnotationType): BaseAnnotationData[] {
     if (!AnnotationRepository.annotationsEnabled()) {
       console.warn('Received query for annotation types with annotations disabled');
       return [];
     }
 
-    const annotations = this.#annotations.filter(annotation => annotation.type === type);
+    const annotations = this.#annotationData.filter(annotation => annotation.type === type);
     return annotations;
+  }
+
+  getAnnotationDataById(id: number): BaseAnnotationData|undefined {
+    if (!AnnotationRepository.annotationsEnabled()) {
+      console.warn('Received query for annotation type with annotations disabled');
+      return undefined;
+    }
+
+    return this.#annotationData.find(annotation => annotation.id === id);
   }
 
   addElementsAnnotation(
       label: string,
-      lookupId?: string,
-      anchor?: SDK.DOMModel.DOMNode,
+      anchor?: SDK.DOMModel.DOMNode|string,
       anchorToString?: string,
       ): void {
     if (!AnnotationRepository.annotationsEnabled()) {
@@ -83,15 +104,15 @@ export class AnnotationRepository {
       id: this.#nextId++,
       type: AnnotationType.ELEMENT_NODE,
       message: label,
-      lookupId: lookupId || '',
-      anchor,
+      lookupId: typeof anchor === 'string' ? anchor : '',
+      anchor: typeof anchor !== 'string' ? anchor : undefined,
       anchorToString
     };
-    this.#annotations.push(annotationData);
+    this.#annotationData.push(annotationData);
     // eslint-disable-next-line no-console
     console.log('[AnnotationRepository] Added annotation:', label, {
       annotationData,
-      annotations: this.#annotations.length,
+      annotations: this.#annotationData.length,
     });
     this.#events.dispatchEventToListeners(Events.ANNOTATION_ADDED, annotationData);
   }

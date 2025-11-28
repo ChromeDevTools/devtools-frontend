@@ -589,8 +589,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
           break;
       }
 
-      const showTabAnnotationIcon = annotations.getAnnotationsByType(primaryType).length > 0 ||
-          annotations.getAnnotationsByType(secondaryType).length > 0;
+      const showTabAnnotationIcon = annotations.getAnnotationDataByType(primaryType).length > 0 ||
+          annotations.getAnnotationDataByType(secondaryType).length > 0;
       this.setTabAnnotationIcon(tab.id, showTabAnnotationIcon);
     }
   }

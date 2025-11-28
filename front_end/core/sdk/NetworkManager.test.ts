@@ -1217,6 +1217,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
 
   it('uses main frame to get certificate', () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     const mainFrameTarget = createTarget({parentTarget: tabTarget});
     const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
@@ -1225,7 +1226,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     const unexpectedCalls =
         [tabTarget, prerenderTarget, subframeTarget].map(t => sinon.spy(t.networkAgent(), 'invoke_getCertificate'));
     const expectedCall = sinon.spy(mainFrameTarget.networkAgent(), 'invoke_getCertificate');
-    void SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate('https://example.com');
+    void (new SDK.NetworkManager.MultitargetNetworkManager(targetManager)).getCertificate('https://example.com');
     for (const unexpectedCall of unexpectedCalls) {
       sinon.assert.notCalled(unexpectedCall);
     }

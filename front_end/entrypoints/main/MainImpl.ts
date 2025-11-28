@@ -809,8 +809,8 @@ export class MainMenuItem implements UI.Toolbar.Provider {
   readonly #item: UI.Toolbar.ToolbarMenuButton;
   constructor() {
     this.#item = new UI.Toolbar.ToolbarMenuButton(
-        this.#handleContextMenu.bind(this), /* isIconDropdown */ true, /* useSoftMenu */ true, 'main-menu',
-        'dots-vertical');
+        this.#handleContextMenu.bind(this), /* isIconDropdown */ true,
+        /* useSoftMenu */ true, 'main-menu', 'dots-vertical');
     this.#item.element.classList.add('main-menu');
     this.#item.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }

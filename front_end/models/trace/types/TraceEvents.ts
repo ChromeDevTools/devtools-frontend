@@ -85,6 +85,9 @@ export interface Event {
   tdur?: Micro;
   dur?: Micro;
 }
+export function objectIsEvent(obj: object): obj is Event {
+  return 'cat' in obj && 'name' in obj && 'ts' in obj;
+}
 
 export interface Args {
   data?: ArgsData;

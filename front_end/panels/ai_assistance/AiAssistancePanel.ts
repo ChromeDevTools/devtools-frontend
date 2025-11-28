@@ -505,6 +505,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #isTextInputEmpty = true;
   #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
   #runAbortController = new AbortController();
+  #additionalContextItemsFromFloaty: UI.Floaty.FloatyContextSelection[] = [];
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -549,6 +550,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return {
         state: ViewState.CHAT_VIEW,
         props: {
+          additionalFloatyContext: this.#additionalContextItemsFromFloaty,
           blockedByCrossOrigin: this.#blockedByCrossOrigin,
           isLoading: this.#isLoading,
           messages: this.#messages,
@@ -647,6 +649,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#timelinePanelInstance.addEventListener(
           TimelinePanel.TimelinePanel.Events.IS_VIEWING_TRACE, this.requestUpdate, this);
     }
+  }
+
+  #bindFloatyListener(): void {
+    const additionalContexts = UI.Context.Context.instance().flavor(UI.Floaty.FloatyFlavor);
+    if (!additionalContexts) {
+      return;
+    }
+    this.#additionalContextItemsFromFloaty = additionalContexts.selectedContexts;
+    this.requestUpdate();
   }
 
   #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {
@@ -765,6 +776,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectDefaultAgentIfNeeded();
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
+
+    if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+      UI.Context.Context.instance().addFlavorChangeListener(UI.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
+      this.#bindFloatyListener();
+    }
   }
 
   override willHide(): void {
@@ -1409,6 +1425,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             text, {
               signal,
               selected: context,
+              extraContext: this.#additionalContextItemsFromFloaty,
             },
             multimodalInput),
     );

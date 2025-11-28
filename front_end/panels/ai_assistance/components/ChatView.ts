@@ -8,9 +8,11 @@ import '../../../ui/components/spinners/spinners.js';
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as PanelsCommon from '../../../panels/common/common.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
@@ -265,6 +267,7 @@ export interface Props {
   isTextInputEmpty: boolean;
   uploadImageInputEnabled?: boolean;
   markdownRenderer: MarkdownLitRenderer;
+  additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
 
 export class ChatView extends HTMLElement {
@@ -517,7 +520,8 @@ export class ChatView extends HTMLElement {
         onTakeScreenshot: this.#props.onTakeScreenshot,
         onRemoveImageInput: this.#props.onRemoveImageInput,
         onTextInputChange: this.#props.onTextInputChange,
-        onImageUpload: this.#handleImageUpload
+        onImageUpload: this.#handleImageUpload,
+        additionalFloatyContext: this.#props.additionalFloatyContext,
       });
     };
 
@@ -1347,6 +1351,7 @@ function renderChatInput({
   isTextInputEmpty,
   uploadImageInputEnabled,
   disclaimerText,
+  additionalFloatyContext,
   onContextClick,
   onInspectElementClick,
   onSubmit,
@@ -1365,6 +1370,7 @@ function renderChatInput({
   selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
   isTextInputEmpty: boolean,
+  additionalFloatyContext: UI.Floaty.FloatyContextSelection[],
   disclaimerText: string,
   onContextClick: () => void,
   onInspectElementClick: () => void,
@@ -1389,6 +1395,7 @@ function renderChatInput({
 
   // clang-format off
   return html` <form class="input-form" @submit=${onSubmit}>
+  ${renderFloatyExtraContext(additionalFloatyContext)}
     <div class=${chatInputContainerCls}>
       ${renderImageInput({
         multimodalInputEnabled,
@@ -1461,6 +1468,75 @@ function renderChatInput({
     </div>
   </form>`;
   // clang-format on
+}
+
+function renderFloatyExtraContext(contexts: UI.Floaty.FloatyContextSelection[]): Lit.LitTemplate {
+  if (!Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    return Lit.nothing;
+  }
+
+  // clang-format off
+  return html`
+  <ul class="floaty">
+    ${contexts.map(c => {
+      function onDelete(e: MouseEvent): void {
+        e.preventDefault();
+        UI.Floaty.onFloatyContextDelete(c);
+      }
+
+      return html`<li>
+        <span class="context-item">
+          ${renderFloatyContext(c)}
+        </span>
+        <devtools-button
+          class="floaty-delete-button"
+          @click=${onDelete}
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            iconName: 'cross',
+            title: 'Delete',
+            size: Buttons.Button.Size.SMALL,
+          } as Buttons.Button.ButtonData}
+        ></devtools-button>
+      </li>`;
+    })}
+    <li class="open-floaty">
+      <devtools-button
+        class="floaty-add-button"
+        @click=${UI.Floaty.onFloatyOpen}
+        .data=${{
+          variant: Buttons.Button.Variant.ICON,
+          iconName: 'select-element',
+          title: 'Open context picker',
+          size: Buttons.Button.Size.SMALL,
+        } as Buttons.Button.ButtonData}
+      ></devtools-button>
+    </li>
+  </ul>
+  `;
+  // clang-format on
+}
+
+function renderFloatyContext(context: UI.Floaty.FloatyContextSelection): Lit.TemplateResult {
+  if (context instanceof SDK.NetworkRequest.NetworkRequest) {
+    return html`${context.url()}`;
+  }
+
+  if (context instanceof SDK.DOMModel.DOMNode) {
+    return html`<devtools-widget .widgetConfig=${
+        UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: context})}>`;
+  }
+
+  if ('insight' in context) {
+    return html`${context.insight.title}`;
+  }
+
+  if ('event' in context && 'traceStartTime' in context) {
+    const time = Trace.Types.Timing.Micro(context.event.ts - context.traceStartTime);
+    return html`${context.event.name} @ ${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(time)}`;
+  }
+
+  Platform.assertNever(context, 'Unsupported context');
 }
 
 function renderMainContents({

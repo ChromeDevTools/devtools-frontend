@@ -37,6 +37,7 @@ devtools_entrypoint("bundle") {
     "../../panels/issues/*",
     "../../panels/network/*",
     "../../ui/components/request_link_icon/*",
+    "../../ui/legacy/*",
     "../ai_assistance/*",
     "../extensions/*",
   ]

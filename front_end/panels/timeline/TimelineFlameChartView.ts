@@ -1664,6 +1664,18 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #onEntryInvoked(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<number>): void {
+    const selectedEvent = dataProvider.eventByIndex(event.data);
+    if (this.#parsedTrace && selectedEvent) {
+      const handledByFloaty = UI.Floaty.onFloatyClick({
+        type: UI.Floaty.FloatyContextTypes.PERFORMANCE_EVENT,
+        data: {event: selectedEvent, traceStartTime: this.#parsedTrace.data.Meta.traceBounds.min}
+      });
+      if (handledByFloaty) {
+        // If this was added to the Floaty context, we do not need to actually
+        // select the event.
+        return;
+      }
+    }
     this.#updateSelectedEntryStatus(dataProvider, event);
 
     const entryIndex = event.data;

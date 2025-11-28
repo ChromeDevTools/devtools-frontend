@@ -446,6 +446,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
               this.#activeInsightElement = elem as BaseInsightComponent<Trace.Insights.Types.InsightModel>;
             }
           })}
+          .parsedTrace=${this.#data.parsedTrace}
           .model=${model}
           .bounds=${insightSet.bounds}
           .insightSetKey=${insightSetKey}

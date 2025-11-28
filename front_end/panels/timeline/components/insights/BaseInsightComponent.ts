@@ -89,6 +89,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   #model: T|null = null;
   #agentFocus: AIAssistance.AIContext.AgentFocus|null = null;
   #fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
 
   get model(): T|null {
     return this.#model;
@@ -139,6 +140,10 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     return this.#selected;
   }
 
+  set parsedTrace(trace: Trace.TraceModel.ParsedTrace|null) {
+    this.#parsedTrace = trace;
+  }
+
   set model(model: T) {
     this.#model = model;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
@@ -178,6 +183,19 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     if (!this.data.insightSetKey || !this.model) {
       // Shouldn't happen, but needed to satisfy TS.
       return;
+    }
+
+    if (this.#parsedTrace && UI.Floaty.enabled()) {
+      const floatyHandled = UI.Floaty.onFloatyClick({
+        type: UI.Floaty.FloatyContextTypes.PERFORMANCE_INSIGHT,
+        data: {
+          insight: this.model,
+          trace: this.#parsedTrace,
+        }
+      });
+      if (floatyHandled) {
+        return;
+      }
     }
 
     const focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);

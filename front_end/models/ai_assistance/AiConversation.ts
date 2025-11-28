@@ -4,6 +4,9 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Trace from '../../models/trace/trace.js';
+import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 
 import {
   type AiAgent,
@@ -19,6 +22,10 @@ import {PerformanceAgent} from './agents/PerformanceAgent.js';
 import {StylingAgent} from './agents/StylingAgent.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import type {ChangeManager} from './ChangeManager.js';
+import {NetworkRequestFormatter} from './data_formatters/NetworkRequestFormatter.js';
+import {PerformanceInsightFormatter} from './data_formatters/PerformanceInsightFormatter.js';
+import {micros} from './data_formatters/UnitFormatters.js';
+import {AgentFocus} from './performance/AIContext.js';
 
 export const NOT_FOUND_IMAGE_DATA = '';
 const MAX_TITLE_LENGTH = 80;
@@ -240,15 +247,91 @@ export class AiConversation {
     return agent;
   }
 
+  #factsCache = new Map<ExtraContext, Host.AidaClient.RequestFact>();
+
+  async #createFactsForExtraContext(contexts: ExtraContext[]): Promise<void> {
+    for (const context of contexts) {
+      const cached = this.#factsCache.get(context);
+      if (cached) {
+        this.#agent.addFact(cached);
+        continue;
+      }
+
+      if (context instanceof SDK.DOMModel.DOMNode) {
+        const desc = await StylingAgent.describeElement(context);
+
+        const fact = {
+          text: `Relevant HTML element:\n${desc}`,
+          metadata: {
+            source: 'devtools-floaty',
+            score: 1,
+          }
+        };
+        this.#factsCache.set(context, fact);
+        this.#agent.addFact(fact);
+      } else if (context instanceof SDK.NetworkRequest.NetworkRequest) {
+        const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+        calculator.updateBoundaries(context);
+        const formatter = new NetworkRequestFormatter(context, calculator);
+        const desc = await formatter.formatNetworkRequest();
+
+        const fact = {
+          text: `Relevant network request:\n${desc}`,
+          metadata: {
+            source: 'devtools-floaty',
+            score: 1,
+          }
+        };
+        this.#factsCache.set(context, fact);
+        this.#agent.addFact(fact);
+      } else if ('insight' in context) {
+        const focus = AgentFocus.fromInsight(context.trace, context.insight);
+        const formatter = new PerformanceInsightFormatter(
+            focus,
+            context.insight,
+        );
+
+        const text = `Relevant Performance Insight:\n${formatter.formatInsight()}`;
+        const fact = {
+          text,
+          metadata: {
+            source: 'devtools-floaty',
+            score: 1,
+          }
+        };
+        this.#factsCache.set(context, fact);
+        this.#agent.addFact(fact);
+      } else {
+        // Must be a trace event
+        const time = Trace.Types.Timing.Micro(
+            context.event.ts - context.traceStartTime,
+        );
+
+        const desc = `Trace event: ${context.event.name}
+Time: ${micros(time)}`;
+
+        const fact = {
+          text: `Relevant trace event:\n${desc}`,
+          metadata: {
+            source: 'devtools-floaty',
+            score: 1,
+          }
+        };
+        this.#factsCache.set(context, fact);
+        this.#agent.addFact(fact);
+      }
+    }
+  }
+
   async *
       run(
           initialQuery: string,
-          options: {
-            selected: ConversationContext<unknown>|null,
-            signal?: AbortSignal,
-          },
+          options: {selected: ConversationContext<unknown>|null, signal?: AbortSignal, extraContext?: ExtraContext[]},
           multimodalInput?: MultimodalInput,
           ): AsyncGenerator<ResponseData, void, void> {
+    if (options.extraContext) {
+      await this.#createFactsForExtraContext(options.extraContext);
+    }
     for await (const data of this.#agent.run(initialQuery, options, multimodalInput)) {
       // We don't want to save partial responses to the conversation history.
       // TODO(crbug.com/463325400): We should save interleaved answers to the history as well.
@@ -267,3 +350,10 @@ export class AiConversation {
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
+
+// TODO: this is the same as the type in UI.Floaty but we cannot use UI
+// here. This is fine for prototyping but if we take this further we can
+// rearchitect.
+type ExtraContext = SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest|
+                    {event: Trace.Types.Events.Event, traceStartTime: Trace.Types.Timing.Micro}|
+                    {insight: Trace.Insights.Types.InsightModel, trace: Trace.TraceModel.ParsedTrace};

@@ -49,6 +49,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../mcp/*",
     "../../../test/interactions/*",
     "../../core/sdk:unittests",
     "../../legacy_test_runner/*",
@@ -60,12 +61,11 @@ devtools_entrypoint("bundle") {
     "../../services/tracing/*",
     "../../testing/*",
     "../../ui/components/docs/*",
-    "../../ui/legacy/components/utils/*",
+    "../../ui/legacy/*",
     "../ai_assistance/*",
     "../live-metrics/*",
     "../trace_source_maps_resolver/*",
     "./*",
-    "../../../mcp/*",
   ]
 
   visibility += devtools_models_visibility

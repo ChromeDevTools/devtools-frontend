@@ -368,9 +368,11 @@ export function isOpeningTag(context: TagTypeContext): context is OpeningTagCont
 
 export interface ViewInput {
   containerAdornerActive: boolean;
+  flexAdornerActive: boolean;
 
   showAdAdorner: boolean;
   showContainerAdorner: boolean;
+  showFlexAdorner: boolean;
 
   adorners?: Set<Adorners.Adorner.Adorner>;
   nodeInfo?: DocumentFragment;
@@ -379,6 +381,7 @@ export interface ViewInput {
   onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
   onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
   onContainerAdornerClick: (e: Event) => void;
+  onFlexAdornerClick: (e: Event) => void;
 }
 
 export interface ViewOutput {
@@ -405,7 +408,10 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD);
   const containerAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(
       ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER);
-  const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner;
+  const flexAdornerConfig =
+      ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
+  const hasAdorners =
+      input.adorners?.size || input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner;
   // clang-format off
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
@@ -414,7 +420,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         <devtools-icon name="dots-horizontal"></devtools-icon>
         <div class="hidden" ${ref(el => { output.decorationsElement = el as HTMLElement; })}></div>
       </div>
-      ${hasAdorners? html`<div class="adorner-container ${!hasAdorners ? 'hidden': ''}">
+      ${hasAdorners ? html`<div class="adorner-container ${!hasAdorners ? 'hidden' : ''}">
         ${input.showAdAdorner ? html`<devtools-adorner
           aria-label=${i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd)}
           .data=${{name: adAdornerConfig.name, jslogContext: adAdornerConfig.name}}
@@ -439,6 +445,25 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           }}
           ${adornerRef(input)}>
           <span>${containerAdornerConfig.name}</span>
+        </devtools-adorner>`: nothing}
+        ${input.showFlexAdorner ? html`<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .data=${{name: flexAdornerConfig.name, jslogContext: flexAdornerConfig.name}}
+          jslog=${VisualLogging.adorner(flexAdornerConfig.name).track({click: true})}
+          active=${input.flexAdornerActive}
+          aria-label=${input.flexAdornerActive ? i18nString(UIStrings.enableFlexMode) : i18nString(UIStrings.disableFlexMode)}
+          @click=${input.onFlexAdornerClick}
+          @keydown=${(event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'Space') {
+              input.onFlexAdornerClick(event);
+              event.stopPropagation();
+            }
+          }}
+          ${adornerRef(input)}>
+          <span>${flexAdornerConfig.name}</span>
         </devtools-adorner>`: nothing}
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
           return adorner;
@@ -479,6 +504,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   #adorners = new Set<Adorners.Adorner.Adorner>();
   #nodeInfo?: DocumentFragment;
   #containerAdornerActive = false;
+  #flexAdornerActive = false;
   #layout: SDK.CSSModel.LayoutProperties|null = null;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
@@ -541,6 +567,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             return;
           }
           this.#containerAdornerActive = enabled;
+          this.performUpdate();
+        });
+    node.domModel().overlayModel().addEventListener(
+        SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, event => {
+          const {nodeId: eventNodeId, enabled} = event.data;
+          if (eventNodeId !== node.id) {
+            return;
+          }
+          this.#flexAdornerActive = enabled;
           this.performUpdate();
         });
   }
@@ -613,6 +648,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           showContainerAdorner: ElementsPanel.instance().isAdornerEnabled(
                                     ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER) &&
               Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
+          showFlexAdorner:
+              ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX) &&
+              Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
+          flexAdornerActive: this.#flexAdornerActive,
           nodeInfo: this.#nodeInfo,
           onGutterClick: this.showContextMenu.bind(this),
           onAdornerAdded: adorner => {
@@ -622,6 +661,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             ElementsPanel.instance().deregisterAdorner(adorner);
           },
           onContainerAdornerClick: (event: Event) => this.#onContainerAdornerClick(event),
+          onFlexAdornerClick: (event: Event) => this.#onFlexAdornerClick(event),
         },
         this, this.listItemElement);
   }
@@ -640,6 +680,25 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       model.highlightContainerQueryInPersistentOverlay(nodeId);
       this.#containerAdornerActive = true;
+      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    }
+    void this.updateAdorners();
+  }
+
+  #onFlexAdornerClick(event: Event): void {
+    event.stopPropagation();
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return;
+    }
+    const model = node.domModel().overlayModel();
+    if (model.isHighlightedFlexContainerInPersistentOverlay(nodeId)) {
+      model.hideFlexContainerInPersistentOverlay(nodeId);
+      this.#flexAdornerActive = false;
+    } else {
+      model.highlightFlexContainerInPersistentOverlay(nodeId);
+      this.#flexAdornerActive = true;
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
     void this.updateAdorners();
@@ -1091,7 +1150,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isEditable = this.hasEditableNode();
     // clang-format off
     if (isEditable && !this.editing) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), {jslogContext: 'elements.edit-as-html'});
+      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), { jslogContext: 'elements.edit-as-html' });
     }
     // clang-format on
     const isShadowRoot = this.nodeInternal.isShadowRoot();
@@ -2724,9 +2783,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (layout.isGridLanes) {
         this.pushGridLanesAdorner();
       }
-      if (layout.isFlex) {
-        this.pushFlexAdorner();
-      }
       if (layout.hasScroll) {
         this.pushScrollSnapAdorner();
       }
@@ -2941,50 +2997,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     this.#adorners.add(adorner);
-  }
-
-  pushFlexAdorner(): void {
-    const node = this.node();
-    const nodeId = node.id;
-    if (!nodeId) {
-      return;
-    }
-    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
-    const adorner = this.adorn(config);
-    adorner.classList.add('flex');
-
-    const onClick = ((() => {
-                       const model = node.domModel().overlayModel();
-                       if (adorner.isActive()) {
-                         model.highlightFlexContainerInPersistentOverlay(nodeId);
-                       } else {
-                         model.hideFlexContainerInPersistentOverlay(nodeId);
-                       }
-                     }) as EventListener);
-
-    adorner.addInteraction(onClick, {
-      isToggle: true,
-      shouldPropagateOnKeydown: false,
-      ariaLabelDefault: i18nString(UIStrings.enableFlexMode),
-      ariaLabelActive: i18nString(UIStrings.disableFlexMode),
-    });
-
-    node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, event => {
-          const {nodeId: eventNodeId, enabled} = event.data;
-          if (eventNodeId !== nodeId) {
-            return;
-          }
-
-          adorner.toggle(enabled);
-        });
-
-    this.#adorners.add(adorner);
-
-    if (node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId)) {
-      adorner.toggle(true);
-    }
   }
 
   pushMediaAdorner(): void {

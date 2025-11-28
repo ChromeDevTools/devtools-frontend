@@ -30,7 +30,8 @@ export const uiFragment: RuleCreator = {
         }
         const object = node.callee.object;
         const objectFragment = DomFragment.get(object, sourceCode);
-        if (!objectFragment || objectFragment.tagName || !objectFragment.expression?.startsWith('`')) {
+        if (!objectFragment || objectFragment.tagName || typeof objectFragment.expression !== 'string' ||
+            !objectFragment.expression.startsWith('`')) {
           return;
         }
         if (isIdentifier(node.callee.property, 'element')) {

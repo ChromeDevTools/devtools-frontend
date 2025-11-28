@@ -31,7 +31,7 @@ export class DomFragment {
   children: DomFragment[] = [];
   parent?: DomFragment;
   nextSiblings: DomFragment[] = [];
-  expression?: string;
+  expression?: string|((indent: number) => string);
   widgetClass?: Node;
   replacer?: (fixer: TSESLint.RuleFixer, template: string) => TSESLint.RuleFix;
   initializer?: Node;
@@ -107,12 +107,13 @@ export class DomFragment {
     components.push(`\n${' '.repeat(indent)}`);
     let lineLength = indent;
     if (this.expression && !this.tagName) {
-      if (this.expression.startsWith('`') && this.expression.endsWith('`')) {
-        components.push(this.expression.slice(1, -1).trim());
+      let expression = this.expression instanceof Function ? this.expression(indent) : this.expression;
+      if (expression.startsWith('`') && expression.endsWith('`')) {
+        components.push(expression.slice(1, -1).trim());
       } else {
-        const expression = (this.references.every(r => r.processed) && this.initializer) ?
-            sourceCode.getText(this.initializer) :
-            this.expression;
+        if (this.references.every(r => r.processed) && this.initializer) {
+          expression = sourceCode.getText(this.initializer);
+        }
         components.push('${', expression, '}');
       }
 

@@ -1399,5 +1399,38 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.appendChild(uiI18n.getFormatLocalizedString(locString, UIStrings.testString, {
+      PH1: document.createElement('div'),
+      PH2: 'some text',
+    }));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      \${i18nTemplate(locString, UIStrings.testString, {
+        PH1: html\`
+        <div></div>\`,
+        PH2: 'some text',
+      })}
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

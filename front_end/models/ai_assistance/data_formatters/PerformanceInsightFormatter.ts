@@ -206,7 +206,7 @@ export class PerformanceInsightFormatter {
           {title: 'How can I reduce the amount of legacy JavaScript on my page?'},
         ];
       default:
-        throw new Error('Unknown insight key');
+        throw new Error(`Unknown insight key '${this.#insight.insightKey}'`);
     }
   }
 

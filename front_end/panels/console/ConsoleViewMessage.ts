@@ -1526,7 +1526,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return false;
     }
     if (!Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').getIfNotDisabled() ||
-        !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().hasSession()) {
+        !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
       return false;
     }
     const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();

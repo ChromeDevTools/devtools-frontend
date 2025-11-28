@@ -124,6 +124,10 @@ const UIStrings = {
    * @description Notification shown to the user whenever DevTools receives an external request.
    */
   externalRequestReceived: '`DevTools` received an external request',
+  /**
+   * @description Notification shown to the user whenever DevTools has finished downloading a local AI model.
+   */
+  aiModelDownloaded: 'AI model downloaded',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -505,7 +509,10 @@ export class MainImpl {
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();
 
-    AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    builtInAi.addEventListener(
+        AiAssistanceModel.BuiltInAi.Events.DOWNLOADED_AND_SESSION_CREATED,
+        () => Snackbar.Snackbar.Snackbar.show({message: i18nString(UIStrings.aiModelDownloaded)}));
 
     new PauseListener();
 

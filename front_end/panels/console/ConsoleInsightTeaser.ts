@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -20,6 +21,8 @@ import {ConsoleViewMessage} from './ConsoleViewMessage.js';
 import {PromptBuilder} from './PromptBuilder.js';
 
 const {render, html} = Lit;
+
+const BUILT_IN_AI_DOCUMENTATION = 'https://developer.chrome.com/docs/ai/built-in';
 
 const UIStringsNotTranslate = {
   /**
@@ -85,6 +88,35 @@ const UIStringsNotTranslate = {
    * @description Header text if there was an error during AI summary generation
    */
   summaryNotAvailable: 'Summary not available',
+  /**
+   * @description Header text informing the user that they can get an AI-generated explanation
+   */
+  getHelpForWarning: 'Get help understanding this warning',
+  /**
+   * @description Header text informing the user that they can get an AI-generated explanation
+   */
+  getHelpForError: 'Get help understanding this error',
+  /**
+   * @description Call to action for downloading an AI model
+   */
+  toUseDownload: 'To use Chrome’s Built-in AI here and elsewhere, download the AI model (~4 GB).',
+  /**
+   * @description Button text to trigger model download
+   */
+  downloadModel: 'Download model',
+  /**
+   * @description Header text while the model download is in progress
+   */
+  downloadingAiModel: 'Downloading AI model',
+  /**
+   * @description Label for a progress bar for the AI model download
+   */
+  progress: 'Progress',
+  /**
+   * @description Progress indicator when the progress status is unknown. If the
+   * progress status is known, this is replaced by a progress bar.
+   */
+  progressUnknown: 'Progress: unknown',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -95,6 +127,8 @@ const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
 const SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
 
 const enum State {
+  NO_MODEL = 'no-model',
+  DOWNLOADING = 'downloading',
   READY = 'ready',
   GENERATING = 'generating',          // Before receiving first chunk
   PARTIAL_TEASER = 'partial-teaser',  // After receiving first chunk
@@ -113,7 +147,91 @@ interface ViewInput {
   dontShowChanged: (e: Event) => void;
   hasTellMeMoreButton: boolean;
   isSlowGeneration: boolean;
+  onDownloadModelClick: (event: Event) => void;
+  downloadProgress: number|null;
   state: State;
+  isForWarning: boolean;
+}
+
+function renderNoModel(input: ViewInput): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <div class="teaser-tooltip-container">
+      <div class="response-container">
+        <h2>${input.isForWarning ?
+          lockedString(UIStringsNotTranslate.getHelpForWarning) :
+          lockedString(UIStringsNotTranslate.getHelpForError)}
+        </h2>
+        <div>You can get quick answers from
+          <x-link
+            .jslog=${VisualLogging.link().track({click: true, keydown: 'Enter|Space'}).context('insights-teaser-built-in-ai-documentation')}
+            class="link"
+            href=${BUILT_IN_AI_DOCUMENTATION}
+          >
+            Chrome’s Built-in AI
+          </x-link>
+          , without any data leaving your device.
+        </div>
+        <div>${lockedString(UIStringsNotTranslate.toUseDownload)}</div>
+      </div>
+      <div class="tooltip-footer">
+        <devtools-button
+          title=${lockedString(UIStringsNotTranslate.downloadModel)}
+          .jslogContext=${'insights-teaser-download-model'}
+          .variant=${Buttons.Button.Variant.PRIMARY}
+          @click=${input.onDownloadModelClick}
+          @focusout=${(e: Event) => {
+            e.stopPropagation();
+          }}
+        >
+          ${lockedString(UIStringsNotTranslate.downloadModel)}
+        </devtools-button>
+        ${renderDontShowCheckbox(input)}
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderDownloading(input: ViewInput): Lit.TemplateResult {
+  const percent = ((input.downloadProgress || 0) * 100).toFixed(0);
+  // clang-format off
+  return html`
+    <div class="teaser-tooltip-container">
+      <div class="response-container">
+        <h2>${lockedString(UIStringsNotTranslate.downloadingAiModel)}</h2>
+        <div class="progress-line">
+          ${input.downloadProgress === null ?
+            html`
+              <div class="label">${lockedString(UIStringsNotTranslate.progressUnknown)}</div>
+            ` : html`
+              <div class="label">${lockedString(UIStringsNotTranslate.progress)}</div>
+              <div class="indicator-container">
+                <div
+                  class="indicator"
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow=${percent}
+                  style="width: ${percent}%"
+                ></div>
+              </div>
+          `}
+        </div>
+      </div>
+      <div class="tooltip-footer">
+        <devtools-button
+          title=${lockedString(UIStringsNotTranslate.downloadModel)}
+          .jslogContext=${'insights-teaser-download-model'}
+          .variant=${Buttons.Button.Variant.PRIMARY}
+          .disabled=${true}
+        >
+          ${lockedString(UIStringsNotTranslate.downloadModel)}
+        </devtools-button>
+      </div>
+    </div>
+  `;
+  // clang-format on
 }
 
 function renderGenerating(input: ViewInput): Lit.TemplateResult {
@@ -249,6 +367,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
     >
       ${(() => {
         switch (input.state) {
+          case State.NO_MODEL:
+            return renderNoModel(input);
+          case State.DOWNLOADING:
+            return renderDownloading(input);
           case State.READY:
           case State.GENERATING:
             return renderGenerating(input);
@@ -280,7 +402,12 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   #timeoutId: ReturnType<typeof setTimeout>|null = null;
   #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
+  #boundOnDownloadProgressChange: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  #boundOnSessionCreation: () => void;
+  #downloadProgress: number|null = null;
   #state: State;
+  #eventListeners: Common.EventTarget.EventDescriptor[] = [];
+  #isForWarning: boolean;
 
   constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View) {
     super(element);
@@ -288,9 +415,12 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.#uuid = uuid;
     this.#promptBuilder = new PromptBuilder(consoleViewMessage);
     this.#consoleViewMessage = consoleViewMessage;
+    this.#isForWarning = this.#consoleViewMessage.consoleMessage().level === Protocol.Log.LogEntryLevel.Warning;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+    this.#boundOnDownloadProgressChange = this.#onDownloadProgressChange.bind(this);
+    this.#boundOnSessionCreation = this.#onSessionCreation.bind(this);
     this.#builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
-    this.#state = State.READY;
+    this.#state = this.#builtInAi.hasSession() ? State.READY : State.NO_MODEL;
     this.requestUpdate();
   }
 
@@ -328,6 +458,27 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
       return;
     }
     void this.#showFreDialog();
+  }
+
+  #onDownloadModelClick(event: Event): void {
+    event.stopPropagation();
+    this.#state = State.DOWNLOADING;
+    this.#builtInAi.startDownloadingModel();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserModelDownloadStarted);
+    this.requestUpdate();
+  }
+
+  #onDownloadProgressChange(event: Common.EventTarget.EventTargetEvent<number>): void {
+    this.#downloadProgress = event.data;
+    this.requestUpdate();
+  }
+
+  #onSessionCreation(): void {
+    if (this.#builtInAi.hasSession() && (this.#state === State.NO_MODEL || this.#state === State.DOWNLOADING)) {
+      this.#state = State.READY;
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserModelDownloadCompleted);
+      this.maybeGenerateTeaser();
+    }
   }
 
   async #showFreDialog(): Promise<void> {
@@ -373,12 +524,39 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   }
 
   maybeGenerateTeaser(): void {
+    const startGeneratingTeaser = (): void => {
+      if (!this.#isInactive &&
+          Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
+        void this.#generateTeaserText();
+      }
+    };
+
+    const hasSession = this.#builtInAi.hasSession();
+
     switch (this.#state) {
-      case State.READY:
-        if (!this.#isInactive &&
-            Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
-          void this.#generateTeaserText();
+      case State.NO_MODEL:
+      case State.DOWNLOADING:
+        if (hasSession) {
+          this.#state = State.READY;
+          startGeneratingTeaser();
+        } else {
+          if (this.#eventListeners.length === 0) {
+            this.#eventListeners = [
+              this.#builtInAi.addEventListener(
+                  AiAssistanceModel.BuiltInAi.Events.DOWNLOAD_PROGRESS_CHANGED, this.#boundOnDownloadProgressChange),
+              this.#builtInAi.addEventListener(
+                  AiAssistanceModel.BuiltInAi.Events.DOWNLOADED_AND_SESSION_CREATED, this.#boundOnSessionCreation),
+            ];
+          }
+          if (this.#builtInAi.isDownloading()) {
+            this.#state = State.DOWNLOADING;
+            this.#downloadProgress = this.#builtInAi.getDownloadProgress();
+          }
         }
+        this.requestUpdate();
+        return;
+      case State.READY:
+        startGeneratingTeaser();
         this.requestUpdate();
         return;
       case State.GENERATING:
@@ -406,6 +584,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     if (this.#timeoutId) {
       clearTimeout(this.#timeoutId);
     }
+    Common.EventTarget.removeEventListeners(this.#eventListeners);
   }
 
   setInactive(isInactive: boolean): void {
@@ -502,7 +681,10 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
           dontShowChanged: this.#dontShowChanged.bind(this),
           hasTellMeMoreButton: this.#hasTellMeMoreButton(),
           isSlowGeneration: this.#isSlow,
+          onDownloadModelClick: this.#onDownloadModelClick.bind(this),
+          downloadProgress: this.#downloadProgress,
           state: this.#state,
+          isForWarning: this.#isForWarning,
         },
         undefined, this.contentElement);
   }

@@ -1922,6 +1922,8 @@ export const knownContextValues = new Set([
   'insights-deprecation-learn-more',
   'insights-deprecation-open-performance-panel',
   'insights-deprecation-send-feedback',
+  'insights-teaser-built-in-ai-documentation',
+  'insights-teaser-download-model',
   'insights-teaser-tell-me-more',
   'inspect',
   'inspect-prerendered-page',

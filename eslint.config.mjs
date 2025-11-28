@@ -704,6 +704,13 @@ export default defineConfig([
     },
   },
   {
+    name: 'Front-end docs files',
+    files: ['front_end/**/*.docs.ts'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     name: 'TypeScript test files',
     files: [
       '*.test.ts',

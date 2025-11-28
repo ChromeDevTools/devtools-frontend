@@ -6,7 +6,6 @@ import {Snackbar} from './snackbars.js';
 
 export function render(container: HTMLElement) {
   const onActionClick = (): void => {
-    // eslint-disable-next-line no-console
     console.log('Action button clicked!');
   };
 

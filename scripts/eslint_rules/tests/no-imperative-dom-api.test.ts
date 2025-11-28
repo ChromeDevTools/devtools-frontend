@@ -1405,6 +1405,88 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
+    this.reportView = new UI.ReportView.ReportView();
+    this.reportView.show(this.contentElement);
+    this.section = this.reportView.appendSection('Some Section');
+    this.section.appendRow().appendChild(document.createTextNode('some message'));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-report>
+        <devtools-report-section-header>Some Section</devtools-report-section-header>
+        <devtools-report-section>
+          some message
+        </devtools-report-section>
+      </devtools-report>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.reportView = new UI.ReportView.ReportView('Some report');
+    this.reportView.show(this.contentElement);
+    const section1 = this.reportView.appendSection('Some Section', 'section-class', 'section-context');
+    section1.appendField('Field 1', 'Value 1');
+    section1.appendFlexedField('Field 2').appendChild(document.createTextNode('Value 2'));
+    section1.setTitle('New Section Title');
+    section1.appendRow().textContent = 'some content';
+
+    const section2 = this.reportView.appendSection('Another Section');
+    section2.appendSelectableRow().textContent = 'selectable content';
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-report .data=\${{title: 'Some report'}}>
+        <devtools-report-section-header class="section-class"
+            jslog=\${VisualLogging.section('section-context')}>New Section Title</devtools-report-section-header>
+        <devtools-report-key>Field 1</devtools-report-key>
+        <devtools-report-value>Value 1</devtools-report-value>
+        <devtools-report-key>Field 2</devtools-report-key>
+        <devtools-report-value class="report-field-value-is-flexed">
+          Value 2
+        </devtools-report-value>
+        <devtools-report-section>some content</devtools-report-section>
+        <devtools-report-divider></devtools-report-divider>
+        <devtools-report-section-header>Another Section</devtools-report-section-header>
+        <devtools-report-section class="report-row-selectable">selectable content</devtools-report-section>
+      </devtools-report>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
     this.contentElement.appendChild(
         UI.XLink.XLink.create('https://google.com', 'Google', 'some-class', undefined, 'some-context', 0));
     this.contentElement.appendChild(

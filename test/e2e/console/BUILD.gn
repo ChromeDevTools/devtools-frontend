@@ -32,7 +32,6 @@ ts_e2e_library("console") {
     "console-truncate-long-messages.test.ts",
     "console-trusted-types.test.ts",
     "console-uncaught-promise.test.ts",
-    "dom-warnings.test.ts",
     "filter.test.ts",
     "issues-toolbar.test.ts",
     "search.test.ts",

@@ -407,6 +407,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #isTextInputEmpty = true;
     #timelinePanelInstance = null;
     #runAbortController = new AbortController();
+    #additionalContextItemsFromFloaty = [];
     constructor(view = defaultView, { aidaClient, aidaAvailability, syncInfo }) {
         super(AiAssistancePanel.panelName);
         this.view = view;
@@ -441,6 +442,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return {
                 state: "chat-view" /* ViewState.CHAT_VIEW */,
                 props: {
+                    additionalFloatyContext: this.#additionalContextItemsFromFloaty,
                     blockedByCrossOrigin: this.#blockedByCrossOrigin,
                     isLoading: this.#isLoading,
                     messages: this.#messages,
@@ -524,6 +526,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (this.#timelinePanelInstance) {
             this.#timelinePanelInstance.addEventListener("IsViewingTrace" /* TimelinePanel.TimelinePanel.Events.IS_VIEWING_TRACE */, this.requestUpdate, this);
         }
+    }
+    #bindFloatyListener() {
+        const additionalContexts = UI.Context.Context.instance().flavor(UI.Floaty.FloatyFlavor);
+        if (!additionalContexts) {
+            return;
+        }
+        this.#additionalContextItemsFromFloaty = additionalContexts.selectedContexts;
+        this.requestUpdate();
     }
     #getDefaultConversationType() {
         const { hostConfig } = Root.Runtime;
@@ -615,6 +625,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#bindTimelineTraceListener();
         this.#selectDefaultAgentIfNeeded();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
+        if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+            UI.Context.Context.instance().addFlavorChangeListener(UI.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
+            this.#bindFloatyListener();
+        }
     }
     willHide() {
         super.willHide();
@@ -1151,6 +1165,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         await this.#doConversation(this.#conversation.run(text, {
             signal,
             selected: context,
+            extraContext: this.#additionalContextItemsFromFloaty,
         }, multimodalInput));
     }
     async #doConversation(items) {

@@ -7,6 +7,15 @@ export function flattenRect(rect, left) {
     const x = left ? rect.left : rect.right;
     return { left: x, right: x, top: rect.top, bottom: rect.bottom };
 }
+// TODO(b/462393094): Rename this to be a generic accessible placeholder
+/**
+ * A CodeMirror WidgetType that displays a UI.Widget.Widget as a placeholder.
+ *
+ * This custom placeholder implementation is used in place of the default
+ * CodeMirror placeholder to provide better accessibility. Specifically,
+ * it ensures that screen readers can properly announce the content within
+ * the encapsulated widget.
+ */
 export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
     teaser;
     constructor(teaser) {

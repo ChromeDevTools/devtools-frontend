@@ -37,6 +37,7 @@
   "files": [
     "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionProvider.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.ts",
+    "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationProvider.ts",
     "../../../../../../../front_end/ui/components/text_editor/AutocompleteHistory.ts",
     "../../../../../../../front_end/ui/components/text_editor/ExecutionPositionHighlighter.ts",
     "../../../../../../../front_end/ui/components/text_editor/TextEditor.ts",
@@ -68,6 +69,9 @@
     },
     {
       "path": "../../../models/ai_code_completion/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/ai_code_generation/bundle-tsconfig.json"
     },
     {
       "path": "../../../models/formatter/bundle-tsconfig.json"

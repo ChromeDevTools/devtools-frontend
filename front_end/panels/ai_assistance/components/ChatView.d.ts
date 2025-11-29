@@ -1,8 +1,9 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 export interface Step {
     isLoading: boolean;
     thought?: string;
@@ -82,6 +83,7 @@ export interface Props {
     isTextInputEmpty: boolean;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
+    additionalFloatyContext: UI.Floaty.FloatyContextSelection[];
 }
 export declare class ChatView extends HTMLElement {
     #private;

@@ -287,12 +287,14 @@ export class AiAgent {
                 if (!('answer' in parsedResponse)) {
                     throw new Error('Expected a completed response to have an answer');
                 }
-                this.#history.push({
-                    parts: [{
-                            text: parsedResponse.answer,
-                        }],
-                    role: Host.AidaClient.Role.MODEL,
-                });
+                if (!functionCall) {
+                    this.#history.push({
+                        parts: [{
+                                text: parsedResponse.answer,
+                            }],
+                        role: Host.AidaClient.Role.MODEL,
+                    });
+                }
                 Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
                 yield {
                     type: "answer" /* ResponseType.ANSWER */,
@@ -301,11 +303,16 @@ export class AiAgent {
                     complete: true,
                     rpcId,
                 };
-                break;
+                if (!functionCall) {
+                    break;
+                }
             }
             if (functionCall) {
                 try {
-                    const result = yield* this.#callFunction(functionCall.name, functionCall.args, options);
+                    const result = yield* this.#callFunction(functionCall.name, functionCall.args, {
+                        ...options,
+                        explanation: textResponse,
+                    });
                     if (options.signal?.aborted) {
                         yield this.#createErrorResponse("abort" /* ErrorType.ABORT */);
                         break;
@@ -337,13 +344,20 @@ export class AiAgent {
         if (!call) {
             throw new Error(`Function ${name} is not found.`);
         }
+        const parts = [];
+        if (options?.explanation) {
+            parts.push({
+                text: options.explanation,
+            });
+        }
+        parts.push({
+            functionCall: {
+                name,
+                args,
+            },
+        });
         this.#history.push({
-            parts: [{
-                    functionCall: {
-                        name,
-                        args,
-                    },
-                }],
+            parts,
             role: Host.AidaClient.Role.MODEL,
         });
         let code;
@@ -432,6 +446,7 @@ export class AiAgent {
                     rpcId,
                     functionCall: aidaResponse.functionCalls[0],
                     completed: true,
+                    text: aidaResponse.explanation,
                 };
                 break;
             }

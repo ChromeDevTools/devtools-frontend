@@ -12,6 +12,9 @@ export function isPhaseAsync(phase) {
 export function isFlowPhase(phase) {
     return phase === "s" /* Phase.FLOW_START */ || phase === "t" /* Phase.FLOW_STEP */ || phase === "f" /* Phase.FLOW_END */;
 }
+export function objectIsEvent(obj) {
+    return 'cat' in obj && 'name' in obj && 'ts' in obj;
+}
 export function objectIsCallFrame(object) {
     return ('functionName' in object && typeof object.functionName === 'string') &&
         ('scriptId' in object && (typeof object.scriptId === 'string' || typeof object.scriptId === 'number')) &&

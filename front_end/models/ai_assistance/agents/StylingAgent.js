@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Annotations from '../../../ui/components/annotations/annotations.js';
 import { ChangeManager } from '../ChangeManager.js';
 import { debugLog } from '../debug.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
@@ -329,6 +330,33 @@ const data = {
                 return await this.executeAction(params.code, options);
             },
         });
+        if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            this.declareFunction('addElementAnnotation', {
+                description: 'Adds a visual annotation in the Elements panel, attached to a node with ' +
+                    'the specific UID provided. Use it to highlight nodes in the Elements panel ' +
+                    'and provide contextual suggestions to the user related to their queries.',
+                parameters: {
+                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                    description: '',
+                    nullable: false,
+                    properties: {
+                        elementId: {
+                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                            description: 'The UID of the element to annotate.',
+                            nullable: false,
+                        },
+                        annotationMessage: {
+                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                            description: 'The message the annotation should show to the user.',
+                            nullable: false,
+                        },
+                    },
+                },
+                handler: async (params) => {
+                    return await this.addElementAnnotation(params.elementId, params.annotationMessage);
+                },
+            });
+        }
     }
     async generateObservation(action, { throwOnSideEffect, }) {
         const functionDeclaration = `async function ($0) {
@@ -558,6 +586,29 @@ const data = {
         finally {
             await scope.uninstall();
         }
+    }
+    async addElementAnnotation(elementId, annotationMessage) {
+        if (!Annotations.AnnotationRepository.annotationsEnabled()) {
+            console.warn('Received agent request to add annotation with annotations disabled');
+            return { error: 'Annotations are not currently enabled' };
+        }
+        // eslint-disable-next-line no-console
+        console.log(`AI AGENT EVENT: Styling Agent adding annotation for element ${elementId} with message '${annotationMessage}'`);
+        const selectedNode = this.#getSelectedNode();
+        if (!selectedNode) {
+            return { error: 'Error: Unable to find currently selected element.' };
+        }
+        const domModel = selectedNode.domModel();
+        const backendNodeId = Number(elementId);
+        const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([backendNodeId]));
+        const node = nodeMap?.get(backendNodeId);
+        if (!node) {
+            return { error: `Error: Could not find the element with backendNodeId=${elementId}` };
+        }
+        Annotations.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, node);
+        return {
+            result: `Annotation added for element ${elementId}: ${annotationMessage}`,
+        };
     }
     async *handleContextDetails(selectedElement) {
         if (!selectedElement) {

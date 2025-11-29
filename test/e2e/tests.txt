@@ -38,7 +38,6 @@ console/console-time.test.js
 console/console-truncate-long-messages.test.js
 console/console-trusted-types.test.js
 console/console-uncaught-promise.test.js
-console/dom-warnings.test.js
 console/filter.test.js
 console/issues-toolbar.test.js
 console/search.test.js
@@ -50,6 +49,7 @@ css_overview/css_overview.test.js
 elements/accessibility-pane.test.js
 elements/accessibility-tree.test.js
 elements/add-view-transition-pseudo-styles.test.js
+elements/adopted-stylesheets.test.js
 elements/adornment.test.js
 elements/at-function-sections.test.js
 elements/at-property-sections.test.js

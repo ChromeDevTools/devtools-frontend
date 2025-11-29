@@ -67,6 +67,7 @@ export class BaseInsightComponent extends HTMLElement {
     #model = null;
     #agentFocus = null;
     #fieldMetrics = null;
+    #parsedTrace = null;
     get model() {
         return this.#model;
     }
@@ -107,6 +108,9 @@ export class BaseInsightComponent extends HTMLElement {
     get selected() {
         return this.#selected;
     }
+    set parsedTrace(trace) {
+        this.#parsedTrace = trace;
+    }
     set model(model) {
         this.#model = model;
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
@@ -138,6 +142,18 @@ export class BaseInsightComponent extends HTMLElement {
         if (!this.data.insightSetKey || !this.model) {
             // Shouldn't happen, but needed to satisfy TS.
             return;
+        }
+        if (this.#parsedTrace && UI.Floaty.enabled()) {
+            const floatyHandled = UI.Floaty.onFloatyClick({
+                type: "PERFORMANCE_INSIGHT" /* UI.Floaty.FloatyContextTypes.PERFORMANCE_INSIGHT */,
+                data: {
+                    insight: this.model,
+                    trace: this.#parsedTrace,
+                }
+            });
+            if (floatyHandled) {
+                return;
+            }
         }
         const focus = UI.Context.Context.instance().flavor(AIAssistance.AIContext.AgentFocus);
         if (this.#selected) {

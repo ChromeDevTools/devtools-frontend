@@ -1,5 +1,6 @@
 export * as AiCodeCompletionProvider from './AiCodeCompletionProvider.js';
 export * as AiCodeCompletionTeaserPlaceholder from './AiCodeCompletionTeaserPlaceholder.js';
+export * as AiCodeGenerationProvider from './AiCodeGenerationProvider.js';
 export * as AutocompleteHistory from './AutocompleteHistory.js';
 export * as Config from './config.js';
 export * as ExecutionPositionHighlighter from './ExecutionPositionHighlighter.js';

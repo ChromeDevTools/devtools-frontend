@@ -119,6 +119,9 @@ export declare class DOMNode {
     removeChild(node: DOMNode): void;
     setChildrenPayload(payloads: Protocol.DOM.Node[]): void;
     private setPseudoElements;
+    private toAdoptedStyleSheets;
+    setAdoptedStyleSheets(ids: Protocol.DOM.StyleSheetId[]): void;
+    get adoptedStyleSheetsForNode(): AdoptedStyleSheet[];
     setDistributedNodePayloads(payloads: Protocol.DOM.BackendNode[]): void;
     setAssignedSlot(payload: Protocol.DOM.BackendNode): void;
     private renumber;
@@ -177,6 +180,11 @@ export declare class DOMDocument extends DOMNode {
     baseURL: Platform.DevToolsPath.UrlString;
     constructor(domModel: DOMModel, payload: Protocol.DOM.Node);
 }
+export declare class AdoptedStyleSheet {
+    readonly id: Protocol.DOM.StyleSheetId;
+    readonly cssModel: CSSModel;
+    constructor(id: Protocol.DOM.StyleSheetId, cssModel: CSSModel);
+}
 export declare class DOMModel extends SDKModel<EventTypes> {
     #private;
     agent: ProtocolProxyApi.DOMApi;
@@ -212,6 +220,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     shadowRootPushed(hostId: Protocol.DOM.NodeId, root: Protocol.DOM.Node): void;
     shadowRootPopped(hostId: Protocol.DOM.NodeId, rootId: Protocol.DOM.NodeId): void;
     pseudoElementAdded(parentId: Protocol.DOM.NodeId, pseudoElement: Protocol.DOM.Node): void;
+    adoptedStyleSheetsModified(parentId: Protocol.DOM.NodeId, styleSheets: Protocol.DOM.StyleSheetId[]): void;
     scrollableFlagUpdated(nodeId: Protocol.DOM.NodeId, isScrollable: boolean): void;
     affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void;
     topLayerElementsUpdated(): void;
@@ -255,7 +264,8 @@ export declare enum Events {
     MarkersChanged = "MarkersChanged",
     TopLayerElementsChanged = "TopLayerElementsChanged",
     ScrollableFlagUpdated = "ScrollableFlagUpdated",
-    AffectedByStartingStylesFlagUpdated = "AffectedByStartingStylesFlagUpdated"
+    AffectedByStartingStylesFlagUpdated = "AffectedByStartingStylesFlagUpdated",
+    AdoptedStyleSheetsModified = "AdoptedStyleSheetsModified"
 }
 export interface EventTypes {
     [Events.AttrModified]: {
@@ -284,6 +294,7 @@ export interface EventTypes {
     [Events.AffectedByStartingStylesFlagUpdated]: {
         node: DOMNode;
     };
+    [Events.AdoptedStyleSheetsModified]: DOMNode;
 }
 export declare class DOMModelUndoStack {
     #private;

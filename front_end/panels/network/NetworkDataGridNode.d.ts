@@ -129,7 +129,7 @@ export declare class NetworkRequestNode extends NetworkNode {
     throttlingConditions(): SDK.NetworkManager.AppliedNetworkConditions | undefined;
     isWarning(): boolean;
     isError(): boolean;
-    createCells(element: Element): void;
+    createCells(trElement: HTMLElement): void;
     private setTextAndTitle;
     private setTextAndTitleAsLink;
     renderCell(c: Element, columnId: string): void;

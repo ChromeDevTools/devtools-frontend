@@ -309,7 +309,8 @@ __export(TraceEvents_exports, {
   isWebSocketSendHandshakeRequest: () => isWebSocketSendHandshakeRequest,
   isWebSocketTraceEvent: () => isWebSocketTraceEvent,
   isWebSocketTransfer: () => isWebSocketTransfer,
-  objectIsCallFrame: () => objectIsCallFrame
+  objectIsCallFrame: () => objectIsCallFrame,
+  objectIsEvent: () => objectIsEvent
 });
 function isNestableAsyncPhase(phase) {
   return phase === "b" || phase === "e" || phase === "n";
@@ -319,6 +320,9 @@ function isPhaseAsync(phase) {
 }
 function isFlowPhase(phase) {
   return phase === "s" || phase === "t" || phase === "f";
+}
+function objectIsEvent(obj) {
+  return "cat" in obj && "name" in obj && "ts" in obj;
 }
 function objectIsCallFrame(object) {
   return "functionName" in object && typeof object.functionName === "string" && ("scriptId" in object && (typeof object.scriptId === "string" || typeof object.scriptId === "number")) && ("columnNumber" in object && typeof object.columnNumber === "number") && ("lineNumber" in object && typeof object.lineNumber === "number") && ("url" in object && typeof object.url === "string");

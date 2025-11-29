@@ -669,7 +669,8 @@ let mainMenuItemInstance;
 export class MainMenuItem {
     #item;
     constructor() {
-        this.#item = new UI.Toolbar.ToolbarMenuButton(this.#handleContextMenu.bind(this), /* isIconDropdown */ true, /* useSoftMenu */ true, 'main-menu', 'dots-vertical');
+        this.#item = new UI.Toolbar.ToolbarMenuButton(this.#handleContextMenu.bind(this), /* isIconDropdown */ true, 
+        /* useSoftMenu */ true, 'main-menu', 'dots-vertical');
         this.#item.element.classList.add('main-menu');
         this.#item.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
     }

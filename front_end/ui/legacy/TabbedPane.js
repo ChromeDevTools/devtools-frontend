@@ -510,8 +510,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
                     secondaryType = Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS;
                     break;
             }
-            const showTabAnnotationIcon = annotations.getAnnotationsByType(primaryType).length > 0 ||
-                annotations.getAnnotationsByType(secondaryType).length > 0;
+            const showTabAnnotationIcon = annotations.getAnnotationDataByType(primaryType).length > 0 ||
+                annotations.getAnnotationDataByType(secondaryType).length > 0;
             this.setTabAnnotationIcon(tab.id, showTabAnnotationIcon);
         }
     }

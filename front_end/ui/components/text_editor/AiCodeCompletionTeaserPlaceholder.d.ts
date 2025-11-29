@@ -1,14 +1,22 @@
-import type * as PanelCommon from '../../../panels/common/common.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
 export declare function flattenRect(rect: DOMRect, left: boolean): {
     left: number;
     right: number;
     top: number;
     bottom: number;
 };
+/**
+ * A CodeMirror WidgetType that displays a UI.Widget.Widget as a placeholder.
+ *
+ * This custom placeholder implementation is used in place of the default
+ * CodeMirror placeholder to provide better accessibility. Specifically,
+ * it ensures that screen readers can properly announce the content within
+ * the encapsulated widget.
+ */
 export declare class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
-    readonly teaser: PanelCommon.AiCodeCompletionTeaser;
-    constructor(teaser: PanelCommon.AiCodeCompletionTeaser);
+    readonly teaser: UI.Widget.Widget;
+    constructor(teaser: UI.Widget.Widget);
     toDOM(): HTMLElement;
     /**
      * Controls the cursor's height by reporting this widget's bounds as a
@@ -24,4 +32,4 @@ export declare class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
     ignoreEvent(_: Event): boolean;
     destroy(dom: HTMLElement): void;
 }
-export declare function aiCodeCompletionTeaserPlaceholder(teaser: PanelCommon.AiCodeCompletionTeaser): CM.Extension;
+export declare function aiCodeCompletionTeaserPlaceholder(teaser: UI.Widget.Widget): CM.Extension;

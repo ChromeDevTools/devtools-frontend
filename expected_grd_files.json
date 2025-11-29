@@ -390,6 +390,7 @@
   "front_end/js_app.html",
   "front_end/models/ai_assistance/ai_assistance.js",
   "front_end/models/ai_code_completion/ai_code_completion.js",
+  "front_end/models/ai_code_generation/ai_code_generation.js",
   "front_end/models/autofill_manager/autofill_manager.js",
   "front_end/models/badges/badges.js",
   "front_end/models/bindings/bindings.js",

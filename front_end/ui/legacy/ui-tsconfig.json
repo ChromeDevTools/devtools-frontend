@@ -48,6 +48,7 @@
     "../../../../../../front_end/ui/legacy/EmptyWidget.ts",
     "../../../../../../front_end/ui/legacy/FilterBar.ts",
     "../../../../../../front_end/ui/legacy/FilterSuggestionBuilder.ts",
+    "../../../../../../front_end/ui/legacy/Floaty.ts",
     "../../../../../../front_end/ui/legacy/ForwardedInputEventHandler.ts",
     "../../../../../../front_end/ui/legacy/Fragment.ts",
     "../../../../../../front_end/ui/legacy/GlassPane.ts",
@@ -118,7 +119,13 @@
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/logs/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/trace/bundle-tsconfig.json"
     },
     {
       "path": "theme_support/bundle-tsconfig.json"

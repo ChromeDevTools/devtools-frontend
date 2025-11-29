@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/ai_code_generation"},"files":["../../../../../../front_end/models/ai_code_generation/ai_code_generation.ts"],"references":[{"path":"./ai_code_generation-tsconfig.json"}]}

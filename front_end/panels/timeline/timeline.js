@@ -16547,6 +16547,16 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
    * 2. Uses the keyboard and presses "enter" whilst an entry is selected
    */
   #onEntryInvoked(dataProvider, event) {
+    const selectedEvent = dataProvider.eventByIndex(event.data);
+    if (this.#parsedTrace && selectedEvent) {
+      const handledByFloaty = UI18.Floaty.onFloatyClick({
+        type: "PERFORMANCE_EVENT",
+        data: { event: selectedEvent, traceStartTime: this.#parsedTrace.data.Meta.traceBounds.min }
+      });
+      if (handledByFloaty) {
+        return;
+      }
+    }
     this.#updateSelectedEntryStatus(dataProvider, event);
     const entryIndex = event.data;
     if (this.#linkSelectionAnnotation) {

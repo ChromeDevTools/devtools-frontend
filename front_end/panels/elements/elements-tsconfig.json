@@ -37,6 +37,7 @@
   "files": [
     "../../../../../../front_end/panels/elements/AccessibilityTreeUtils.ts",
     "../../../../../../front_end/panels/elements/AccessibilityTreeView.ts",
+    "../../../../../../front_end/panels/elements/AdoptedStyleSheetTreeElement.ts",
     "../../../../../../front_end/panels/elements/CSSRuleValidator.ts",
     "../../../../../../front_end/panels/elements/CSSRuleValidatorHelper.ts",
     "../../../../../../front_end/panels/elements/CSSValueTraceView.ts",

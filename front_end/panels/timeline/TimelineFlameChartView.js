@@ -1364,6 +1364,18 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
      * 2. Uses the keyboard and presses "enter" whilst an entry is selected
      */
     #onEntryInvoked(dataProvider, event) {
+        const selectedEvent = dataProvider.eventByIndex(event.data);
+        if (this.#parsedTrace && selectedEvent) {
+            const handledByFloaty = UI.Floaty.onFloatyClick({
+                type: "PERFORMANCE_EVENT" /* UI.Floaty.FloatyContextTypes.PERFORMANCE_EVENT */,
+                data: { event: selectedEvent, traceStartTime: this.#parsedTrace.data.Meta.traceBounds.min }
+            });
+            if (handledByFloaty) {
+                // If this was added to the Floaty context, we do not need to actually
+                // select the event.
+                return;
+            }
+        }
         this.#updateSelectedEntryStatus(dataProvider, event);
         const entryIndex = event.data;
         // If we have a pending link connection, create it if we can now the final entry has been pressed.

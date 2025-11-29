@@ -14,6 +14,7 @@ import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { Dialog } from './Dialog.js';
 import { DockController } from './DockController.js';
+import { Floaty } from './Floaty.js';
 import { GlassPane } from './GlassPane.js';
 import { Infobar } from './Infobar.js';
 import { KeyboardShortcut } from './KeyboardShortcut.js';
@@ -300,6 +301,9 @@ export class InspectorView extends VBox {
         this.element.style.setProperty('--devtools-window-top', `${rect.top}px`);
         this.element.style.setProperty('--devtools-window-bottom', `${window.innerHeight - rect.bottom}px`);
         this.element.style.setProperty('--devtools-window-height', `${rect.height}px`);
+        if (Floaty.exists()) {
+            Floaty.instance().setDevToolsRect(rect);
+        }
     }
     wasShown() {
         super.wasShown();
@@ -308,6 +312,12 @@ export class InspectorView extends VBox {
         this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
         DockController.instance().addEventListener("DockSideChanged" /* DockControllerEvents.DOCK_SIDE_CHANGED */, this.#applyDrawerOrientationForDockSide, this);
         this.#applyDrawerOrientationForDockSide();
+        if (Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+            Floaty.instance({
+                forceNew: true,
+                document: this.element.ownerDocument,
+            });
+        }
     }
     willHide() {
         super.willHide();

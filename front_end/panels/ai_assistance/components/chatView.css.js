@@ -920,4 +920,32 @@ main {
   }
 }
 
+.floaty {
+  margin: var(--sys-size-3) 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: var(--sys-size-4);
+
+  li {
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+    padding: var(--sys-size-2) var(--sys-size-3);
+    max-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .context-item {
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 0;
+    }
+  }
+
+  .open-floaty {
+    margin-left: auto;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('././components/chatView.css')} */`;

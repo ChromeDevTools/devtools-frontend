@@ -49,6 +49,7 @@ export interface Event {
     tdur?: Micro;
     dur?: Micro;
 }
+export declare function objectIsEvent(obj: object): obj is Event;
 export interface Args {
     data?: ArgsData;
     sampleTraceId?: number;

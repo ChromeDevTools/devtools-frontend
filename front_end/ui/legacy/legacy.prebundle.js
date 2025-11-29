@@ -14,6 +14,7 @@ import * as DropTarget from './DropTarget.js';
 import * as EmptyWidget from './EmptyWidget.js';
 import * as FilterBar from './FilterBar.js';
 import * as FilterSuggestionBuilder from './FilterSuggestionBuilder.js';
+import * as Floaty from './Floaty.js';
 import * as ForwardedInputEventHandler from './ForwardedInputEventHandler.js';
 import * as Fragment from './Fragment.js';
 import * as GlassPane from './GlassPane.js';
@@ -51,5 +52,5 @@ import * as Widget from './Widget.js';
 import * as XElement from './XElement.js';
 import * as XLink from './XLink.js';
 import * as ZoomManager from './ZoomManager.js';
-export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, Fragment, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, XElement, XLink, ZoomManager, };
+export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, Floaty, ForwardedInputEventHandler, Fragment, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, XElement, XLink, ZoomManager, };
 //# sourceMappingURL=legacy.prebundle.js.map

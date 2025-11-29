@@ -2785,13 +2785,13 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   isError() {
     return this.isFailed() && !this.isPrefetch();
   }
-  createCells(element) {
+  createCells(trElement) {
     this.initiatorCell = null;
-    element.classList.toggle("network-throttled-row", Boolean(this.throttlingConditions()?.urlPattern));
-    element.classList.toggle("network-warning-row", this.isWarning());
-    element.classList.toggle("network-error-row", this.isError());
-    element.classList.toggle("network-navigation-row", this.isNavigationRequestInternal);
-    super.createCells(element);
+    trElement.classList.toggle("network-throttled-row", Boolean(this.throttlingConditions()?.urlPattern));
+    trElement.classList.toggle("network-warning-row", this.isWarning());
+    trElement.classList.toggle("network-error-row", this.isError());
+    trElement.classList.toggle("network-navigation-row", this.isNavigationRequestInternal);
+    super.createCells(trElement);
     this.updateBackgroundColor();
   }
   setTextAndTitle(element, text, title) {
@@ -2942,6 +2942,13 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     return array ? String(array.length) : "";
   }
   select(suppressSelectedEvent) {
+    const id = this.request()?.requestId();
+    if (id) {
+      const floatyHandled = UI5.Floaty.onFloatyClick({ type: "NETWORK_REQUEST", data: { requestId: id } });
+      if (floatyHandled) {
+        return;
+      }
+    }
     super.select(suppressSelectedEvent);
     this.parentView().dispatchEventToListeners("RequestSelected", this.requestInternal);
   }

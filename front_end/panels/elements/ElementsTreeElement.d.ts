@@ -22,14 +22,22 @@ export type TagTypeContext = OpeningTagContext | ClosingTagContext;
 export declare function isOpeningTag(context: TagTypeContext): context is OpeningTagContext;
 export interface ViewInput {
     containerAdornerActive: boolean;
+    flexAdornerActive: boolean;
+    gridAdornerActive: boolean;
     showAdAdorner: boolean;
     showContainerAdorner: boolean;
+    showFlexAdorner: boolean;
+    showGridAdorner: boolean;
+    showGridLanesAdorner: boolean;
+    isSubgrid: boolean;
     adorners?: Set<Adorners.Adorner.Adorner>;
     nodeInfo?: DocumentFragment;
     onGutterClick: (e: Event) => void;
     onAdornerAdded: (adorner: Adorners.Adorner.Adorner) => void;
     onAdornerRemoved: (adorner: Adorners.Adorner.Adorner) => void;
     onContainerAdornerClick: (e: Event) => void;
+    onFlexAdornerClick: (e: Event) => void;
+    onGridAdornerClick: (e: Event) => void;
 }
 export interface ViewOutput {
     gutterContainer?: HTMLElement;
@@ -147,11 +155,8 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     updateAdorners(): void;
     updateStyleAdorners(): Promise<void>;
     pushPopoverAdorner(): void;
-    pushGridAdorner(isSubgrid: boolean): void;
-    pushGridLanesAdorner(): void;
     pushScrollSnapAdorner(): void;
     pushStartingStyleAdorner(): void;
-    pushFlexAdorner(): void;
     pushMediaAdorner(): void;
     updateScrollAdorner(): void;
     pushScrollAdorner(): void;

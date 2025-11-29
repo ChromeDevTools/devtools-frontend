@@ -1,7 +1,7 @@
 import * as Common from '../../../core/common/common.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import { AnnotationType } from './AnnotationType.js';
-interface BaseAnnotationData {
+export interface BaseAnnotationData {
     id: number;
     type: AnnotationType;
     message: string;
@@ -23,7 +23,7 @@ export declare class AnnotationRepository {
     static instance(): AnnotationRepository;
     static annotationsEnabled(): boolean;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T]>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    getAnnotationsByType(type: AnnotationType): BaseAnnotationData[];
-    addElementsAnnotation(label: string, lookupId?: string, anchor?: SDK.DOMModel.DOMNode, anchorToString?: string): void;
+    getAnnotationDataByType(type: AnnotationType): BaseAnnotationData[];
+    getAnnotationDataById(id: number): BaseAnnotationData | undefined;
+    addElementsAnnotation(label: string, anchor?: SDK.DOMModel.DOMNode | string, anchorToString?: string): void;
 }
-export {};

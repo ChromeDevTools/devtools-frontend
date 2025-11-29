@@ -9,8 +9,8 @@ import "./../../ui/legacy/legacy.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Platform5 from "./../../core/platform/platform.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../models/badges/badges.js";
@@ -73,8 +73,11 @@ var aiAssistancePanel_css_default = `/*
 import "./../../ui/components/spinners/spinners.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Platform4 from "./../../core/platform/platform.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
+import * as Trace from "./../../models/trace/trace.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as PanelUtils from "./../utils/utils.js";
@@ -2070,6 +2073,34 @@ main {
   }
 }
 
+.floaty {
+  margin: var(--sys-size-3) 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: var(--sys-size-4);
+
+  li {
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+    padding: var(--sys-size-2) var(--sys-size-3);
+    max-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .context-item {
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 0;
+    }
+  }
+
+  .open-floaty {
+    margin-left: auto;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("././components/chatView.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/UserActionRow.js
@@ -2884,7 +2915,8 @@ var ChatView = class extends HTMLElement {
         onTakeScreenshot: this.#props.onTakeScreenshot,
         onRemoveImageInput: this.#props.onRemoveImageInput,
         onTextInputChange: this.#props.onTextInputChange,
-        onImageUpload: this.#handleImageUpload
+        onImageUpload: this.#handleImageUpload,
+        additionalFloatyContext: this.#props.additionalFloatyContext
       });
     };
     Lit2.render(html4`
@@ -3423,13 +3455,14 @@ function renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltip
     </p>
   `;
 }
-function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled, inputPlaceholder, selectedContext, inspectElementToggled, multimodalInputEnabled, conversationType, imageInput, isTextInputEmpty, uploadImageInputEnabled, disclaimerText, onContextClick, onInspectElementClick, onSubmit, onTextAreaKeyDown, onCancel, onNewConversation, onTakeScreenshot, onRemoveImageInput, onTextInputChange, onImageUpload }) {
+function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled, inputPlaceholder, selectedContext, inspectElementToggled, multimodalInputEnabled, conversationType, imageInput, isTextInputEmpty, uploadImageInputEnabled, disclaimerText, additionalFloatyContext, onContextClick, onInspectElementClick, onSubmit, onTextAreaKeyDown, onCancel, onNewConversation, onTakeScreenshot, onRemoveImageInput, onTextInputChange, onImageUpload }) {
   const chatInputContainerCls = Lit2.Directives.classMap({
     "chat-input-container": true,
     "single-line-layout": !selectedContext,
     disabled: isTextInputDisabled
   });
   return html4` <form class="input-form" @submit=${onSubmit}>
+  ${renderFloatyExtraContext(additionalFloatyContext)}
     <div class=${chatInputContainerCls}>
       ${renderImageInput({
     multimodalInputEnabled,
@@ -3499,6 +3532,64 @@ function renderChatInput({ isLoading, blockedByCrossOrigin, isTextInputDisabled,
     </div>
   </form>`;
 }
+function renderFloatyExtraContext(contexts) {
+  if (!Root3.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+    return Lit2.nothing;
+  }
+  return html4`
+  <ul class="floaty">
+    ${contexts.map((c) => {
+    function onDelete(e) {
+      e.preventDefault();
+      UI4.Floaty.onFloatyContextDelete(c);
+    }
+    return html4`<li>
+        <span class="context-item">
+          ${renderFloatyContext(c)}
+        </span>
+        <devtools-button
+          class="floaty-delete-button"
+          @click=${onDelete}
+          .data=${{
+      variant: "icon",
+      iconName: "cross",
+      title: "Delete",
+      size: "SMALL"
+    }}
+        ></devtools-button>
+      </li>`;
+  })}
+    <li class="open-floaty">
+      <devtools-button
+        class="floaty-add-button"
+        @click=${UI4.Floaty.onFloatyOpen}
+        .data=${{
+    variant: "icon",
+    iconName: "select-element",
+    title: "Open context picker",
+    size: "SMALL"
+  }}
+      ></devtools-button>
+    </li>
+  </ul>
+  `;
+}
+function renderFloatyContext(context) {
+  if (context instanceof SDK.NetworkRequest.NetworkRequest) {
+    return html4`${context.url()}`;
+  }
+  if (context instanceof SDK.DOMModel.DOMNode) {
+    return html4`<devtools-widget .widgetConfig=${UI4.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: context })}>`;
+  }
+  if ("insight" in context) {
+    return html4`${context.insight.title}`;
+  }
+  if ("event" in context && "traceStartTime" in context) {
+    const time = Trace.Types.Timing.Micro(context.event.ts - context.traceStartTime);
+    return html4`${context.event.name} @ ${i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(time)}`;
+  }
+  Platform4.assertNever(context, "Unsupported context");
+}
 function renderMainContents({ messages, isLoading, isReadOnly, canShowFeedbackForm, isTextInputDisabled, suggestions, userInfo, markdownRenderer, changeSummary, changeManager, onSuggestionClick, onFeedbackSubmit, onCopyResponseClick, onMessageContainerRef }) {
   if (messages.length > 0) {
     return renderMessages({
@@ -3549,7 +3640,7 @@ __export(DisabledWidget_exports, {
 });
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import { html as html5, render as render5 } from "./../../ui/lit/lit.js";
@@ -3707,7 +3798,7 @@ var DisabledWidget = class extends UI5.Widget.Widget {
     void this.requestUpdate();
   }
   performUpdate() {
-    const hostConfig = Root3.Runtime.hostConfig;
+    const hostConfig = Root4.Runtime.hostConfig;
     this.#view({
       aidaAvailability: this.aidaAvailability,
       hostConfig
@@ -3722,7 +3813,7 @@ __export(ExploreWidget_exports, {
   ExploreWidget: () => ExploreWidget
 });
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
@@ -3942,7 +4033,7 @@ var ExploreWidget = class extends UI6.Widget.Widget {
     void this.requestUpdate();
   }
   performUpdate() {
-    const config = Root4.Runtime.hostConfig;
+    const config = Root5.Runtime.hostConfig;
     const featureCards = [];
     if (config.devToolsFreestyler?.enabled && UI6.ViewManager.ViewManager.instance().hasView("elements")) {
       featureCards.push({
@@ -4016,7 +4107,7 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
 import * as Common4 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as Trace from "./../../models/trace/trace.js";
+import * as Trace2 from "./../../models/trace/trace.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
 var { html: html7 } = Lit3;
@@ -4049,7 +4140,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
       }
       let label = token.text;
       let title = "";
-      if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+      if (Trace2.Types.Events.isSyntheticNetworkRequest(event)) {
         title = event.args.data.url;
       } else {
         label += ` (${event.name})`;
@@ -4285,7 +4376,7 @@ async function getEmptyStateSuggestions(context, conversation) {
       ];
     }
     default:
-      Platform4.assertNever(conversation.type, "Unknown conversation type");
+      Platform5.assertNever(conversation.type, "Unknown conversation type");
   }
 }
 function getMarkdownRenderer(context, conversation) {
@@ -4454,6 +4545,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   #isTextInputEmpty = true;
   #timelinePanelInstance = null;
   #runAbortController = new AbortController();
+  #additionalContextItemsFromFloaty = [];
   constructor(view = defaultView, { aidaClient, aidaAvailability, syncInfo }) {
     super(_AiAssistancePanel.panelName);
     this.view = view;
@@ -4471,7 +4563,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     AiAssistanceModel3.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
   }
   async #getPanelViewInput() {
-    const blockedByAge = Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const blockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#aidaAvailability !== "available" || !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
       return {
         state: "disabled-view",
@@ -4486,6 +4578,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       return {
         state: "chat-view",
         props: {
+          additionalFloatyContext: this.#additionalContextItemsFromFloaty,
           blockedByCrossOrigin: this.#blockedByCrossOrigin,
           isLoading: this.#isLoading,
           messages: this.#messages,
@@ -4564,8 +4657,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       this.#timelinePanelInstance.addEventListener("IsViewingTrace", this.requestUpdate, this);
     }
   }
+  #bindFloatyListener() {
+    const additionalContexts = UI7.Context.Context.instance().flavor(UI7.Floaty.FloatyFlavor);
+    if (!additionalContexts) {
+      return;
+    }
+    this.#additionalContextItemsFromFloaty = additionalContexts.selectedContexts;
+    this.requestUpdate();
+  }
   #getDefaultConversationType() {
-    const { hostConfig } = Root5.Runtime;
+    const { hostConfig } = Root6.Runtime;
     const viewManager = UI7.ViewManager.ViewManager.instance();
     const isElementsPanelVisible = viewManager.isViewVisible("elements");
     const isNetworkPanelVisible = viewManager.isViewVisible("network");
@@ -4637,6 +4738,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
     Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistancePanelOpened);
+    if (Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+      UI7.Context.Context.instance().addFlavorChangeListener(UI7.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
+      this.#bindFloatyListener();
+    }
   }
   willHide() {
     super.willHide();
@@ -4774,7 +4879,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   }
   #shouldShowChatActions() {
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    const isBlockedByAge = Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const isBlockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (!aiAssistanceSetting || isBlockedByAge) {
       return false;
     }
@@ -4810,7 +4915,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     if (!this.#conversation || this.#conversation.isReadOnly) {
       return i18nString3(UIStrings3.inputDisclaimerForEmptyState);
     }
-    const noLogging = Root5.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root5.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const noLogging = Root6.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root6.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     switch (this.#conversation.type) {
       case "freestyler":
         if (noLogging) {
@@ -4876,8 +4981,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
   }
   #canExecuteQuery() {
-    const isBrandedBuild = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.enabled);
-    const isBlockedByAge = Boolean(Root5.Runtime.hostConfig.aidaAvailability?.blockedByAge);
+    const isBrandedBuild = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.enabled);
+    const isBlockedByAge = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge);
     const isAidaAvailable = Boolean(
       this.#aidaAvailability === "available"
       /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */
@@ -4992,7 +5097,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
     const markdownContent = this.#conversation.getConversationMarkdown();
     const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, "text/markdown");
-    const titleFormatted = Platform4.StringUtilities.toSnakeCase(this.#conversation.title || "");
+    const titleFormatted = Platform5.StringUtilities.toSnakeCase(this.#conversation.title || "");
     const prefix = "devtools_";
     const suffix = ".md";
     const maxTitleLength = 64 - prefix.length - suffix.length;
@@ -5166,7 +5271,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     await this.#doConversation(this.#conversation.run(text, {
       signal,
-      selected: context
+      selected: context,
+      extraContext: this.#additionalContextItemsFromFloaty
     }, multimodalInput));
   }
   async #doConversation(items) {
@@ -5405,13 +5511,13 @@ var ActionDelegate = class {
   }
 };
 function isAiAssistanceMultimodalUploadInputEnabled() {
-  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root5.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
 }
 function isAiAssistanceMultimodalInputEnabled() {
-  return Boolean(Root5.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+  return Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root5.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root6.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 export {
   ActionDelegate,

@@ -1218,6 +1218,168 @@ function aiCodeCompletionTeaserExtension(teaser) {
   });
 }
 
+// gen/front_end/ui/components/text_editor/AiCodeGenerationProvider.js
+var AiCodeGenerationProvider_exports = {};
+__export(AiCodeGenerationProvider_exports, {
+  AiCodeGenerationProvider: () => AiCodeGenerationProvider,
+  AiCodeGenerationTeaserMode: () => AiCodeGenerationTeaserMode,
+  setAiCodeGenerationTeaserMode: () => setAiCodeGenerationTeaserMode
+});
+import * as Common3 from "./../../../core/common/common.js";
+import * as Host2 from "./../../../core/host/host.js";
+import * as i18n4 from "./../../../core/i18n/i18n.js";
+import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
+import * as PanelCommon2 from "./../../../panels/common/common.js";
+import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI3 from "./../../legacy/legacy.js";
+import * as VisualLogging3 from "./../../visual_logging/visual_logging.js";
+var AiCodeGenerationTeaserMode;
+(function(AiCodeGenerationTeaserMode2) {
+  AiCodeGenerationTeaserMode2["ACTIVE"] = "active";
+  AiCodeGenerationTeaserMode2["DISMISSED"] = "dismissed";
+})(AiCodeGenerationTeaserMode || (AiCodeGenerationTeaserMode = {}));
+var setAiCodeGenerationTeaserMode = CodeMirror2.StateEffect.define();
+var aiCodeGenerationTeaserModeState = CodeMirror2.StateField.define({
+  create: () => AiCodeGenerationTeaserMode.ACTIVE,
+  update(value, tr) {
+    return tr.effects.find((effect) => effect.is(setAiCodeGenerationTeaserMode))?.value ?? value;
+  }
+});
+var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
+  #devtoolsLocale;
+  #aiCodeCompletionSetting = Common3.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  #generationTeaserCompartment = new CodeMirror2.Compartment();
+  #generationTeaser;
+  #editor;
+  #boundOnUpdateAiCodeGenerationState = this.#updateAiCodeGenerationState.bind(this);
+  constructor() {
+    this.#devtoolsLocale = i18n4.DevToolsLocale.DevToolsLocale.instance().locale;
+    if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(this.#devtoolsLocale)) {
+      throw new Error("AI code generation feature is not enabled.");
+    }
+    this.#generationTeaser = new PanelCommon2.AiCodeGenerationTeaser();
+  }
+  static createInstance() {
+    return new _AiCodeGenerationProvider();
+  }
+  extension() {
+    return [
+      CodeMirror2.EditorView.updateListener.of((update) => this.activateTeaser(update)),
+      aiCodeGenerationTeaserModeState,
+      this.#generationTeaserCompartment.of([]),
+      CodeMirror2.Prec.highest(CodeMirror2.keymap.of(this.#editorKeymap()))
+    ];
+  }
+  dispose() {
+    this.#cleanupAiCodeGeneration();
+  }
+  editorInitialized(editor) {
+    this.#editor = editor;
+    Host2.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeGenerationState);
+    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeGenerationState);
+    void this.#updateAiCodeGenerationState();
+  }
+  #setupAiCodeGeneration() {
+    this.#editor?.dispatch({
+      effects: [this.#generationTeaserCompartment.reconfigure([aiCodeGenerationTeaserExtension(this.#generationTeaser)])]
+    });
+  }
+  #cleanupAiCodeGeneration() {
+    this.#editor?.dispatch({
+      effects: [this.#generationTeaserCompartment.reconfigure([])]
+    });
+  }
+  async #updateAiCodeGenerationState() {
+    const aidaAvailability = await Host2.AidaClient.AidaClient.checkAccessPreconditions();
+    const isAvailable = aidaAvailability === "available";
+    const isEnabled = this.#aiCodeCompletionSetting.get();
+    if (isAvailable && isEnabled) {
+      this.#setupAiCodeGeneration();
+    } else {
+      this.#cleanupAiCodeGeneration();
+    }
+  }
+  #editorKeymap() {
+    return [
+      {
+        key: "Escape",
+        run: () => {
+          if (!this.#editor || !this.#generationTeaser.isShowing() || !this.#generationTeaser.loading) {
+            return false;
+          }
+          this.#editor.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED) });
+          return true;
+        }
+      },
+      {
+        any: (_view, event) => {
+          if (!this.#editor || !this.#generationTeaser.isShowing()) {
+            return false;
+          }
+          if (UI3.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
+            if (event.key === "i") {
+              event.consume(true);
+              void VisualLogging3.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered");
+              this.#generationTeaser.loading = true;
+              return true;
+            }
+          }
+          return false;
+        }
+      }
+    ];
+  }
+  async activateTeaser(update) {
+    const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
+    if (currentTeaserMode === AiCodeGenerationTeaserMode.ACTIVE) {
+      return;
+    }
+    if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
+      return;
+    }
+    update.view.dispatch({ effects: setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE) });
+  }
+};
+function aiCodeGenerationTeaserExtension(teaser) {
+  return CodeMirror2.ViewPlugin.fromClass(class {
+    view;
+    #teaserMode;
+    constructor(view) {
+      this.view = view;
+      this.#teaserMode = view.state.field(aiCodeGenerationTeaserModeState);
+    }
+    update(update) {
+      const currentTeaserMode = update.state.field(aiCodeGenerationTeaserModeState);
+      if (currentTeaserMode !== this.#teaserMode) {
+        this.#teaserMode = currentTeaserMode;
+      }
+      if (!update.docChanged && update.state.selection.main.head === update.startState.selection.main.head) {
+        return;
+      }
+      if (teaser.loading) {
+        teaser.loading = false;
+      }
+    }
+    get decorations() {
+      if (this.#teaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
+        return CodeMirror2.Decoration.none;
+      }
+      const cursorPosition = this.view.state.selection.main.head;
+      const line = this.view.state.doc.lineAt(cursorPosition);
+      const isComment = line.text.startsWith("//");
+      const isCursorAtEndOfLine = cursorPosition >= line.to;
+      if (!isComment || !isCursorAtEndOfLine) {
+        return CodeMirror2.Decoration.none;
+      }
+      return CodeMirror2.Decoration.set([
+        CodeMirror2.Decoration.widget({ widget: new AiCodeCompletionTeaserPlaceholder(teaser), side: 1 }).range(cursorPosition)
+      ]);
+    }
+  }, {
+    decorations: (v) => v.decorations
+  });
+}
+
 // gen/front_end/ui/components/text_editor/AutocompleteHistory.js
 var AutocompleteHistory_exports = {};
 __export(AutocompleteHistory_exports, {
@@ -1318,19 +1480,19 @@ __export(ExecutionPositionHighlighter_exports, {
   positionHighlighter: () => positionHighlighter,
   setHighlightedPosition: () => setHighlightedPosition
 });
-import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
-var setHighlightedPosition = CodeMirror2.StateEffect.define();
-var clearHighlightedPosition = CodeMirror2.StateEffect.define();
+import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
+var setHighlightedPosition = CodeMirror3.StateEffect.define();
+var clearHighlightedPosition = CodeMirror3.StateEffect.define();
 function positionHighlighter(executionLineClassName, executionTokenClassName) {
-  const executionLine = CodeMirror2.Decoration.line({ attributes: { class: executionLineClassName } });
-  const executionToken = CodeMirror2.Decoration.mark({ attributes: { class: executionTokenClassName } });
-  const positionHighlightedState = CodeMirror2.StateField.define({
+  const executionLine = CodeMirror3.Decoration.line({ attributes: { class: executionLineClassName } });
+  const executionToken = CodeMirror3.Decoration.mark({ attributes: { class: executionTokenClassName } });
+  const positionHighlightedState = CodeMirror3.StateField.define({
     create() {
       return null;
     },
     update(pos, tr) {
       if (pos) {
-        pos = tr.changes.mapPos(pos, -1, CodeMirror2.MapMode.TrackDel);
+        pos = tr.changes.mapPos(pos, -1, CodeMirror3.MapMode.TrackDel);
       }
       for (const effect of tr.effects) {
         if (effect.is(clearHighlightedPosition)) {
@@ -1349,11 +1511,11 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
     tree;
     decorations;
     constructor({ state }) {
-      this.tree = CodeMirror2.syntaxTree(state);
+      this.tree = CodeMirror3.syntaxTree(state);
       this.decorations = this.#computeDecorations(state, getHighlightedPosition(state));
     }
     update(update) {
-      const tree = CodeMirror2.syntaxTree(update.state);
+      const tree = CodeMirror3.syntaxTree(update.state);
       const position = getHighlightedPosition(update.state);
       const positionChanged = position !== getHighlightedPosition(update.startState);
       if (tree.length !== this.tree.length || positionChanged) {
@@ -1364,12 +1526,12 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
       }
     }
     #computeDecorations(state, position) {
-      const builder = new CodeMirror2.RangeSetBuilder();
+      const builder = new CodeMirror3.RangeSetBuilder();
       if (position !== null) {
         const { doc } = state;
         const line = doc.lineAt(position);
         builder.add(line.from, line.from, executionLine);
-        const syntaxTree3 = CodeMirror2.syntaxTree(state);
+        const syntaxTree3 = CodeMirror3.syntaxTree(state);
         const syntaxNode = syntaxTree3.resolveInner(position, 1);
         const tokenEnd = Math.min(line.to, syntaxNode.to);
         if (tokenEnd > position) {
@@ -1384,7 +1546,7 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
   };
   return [
     positionHighlightedState,
-    CodeMirror2.ViewPlugin.fromClass(PositionHighlighter, positionHighlighterSpec)
+    CodeMirror3.ViewPlugin.fromClass(PositionHighlighter, positionHighlighterSpec)
   ];
 }
 
@@ -1404,15 +1566,15 @@ import * as SDK from "./../../../core/sdk/sdk.js";
 import * as Bindings from "./../../../models/bindings/bindings.js";
 import * as JavaScriptMetaData from "./../../../models/javascript_metadata/javascript_metadata.js";
 import * as SourceMapScopes from "./../../../models/source_map_scopes/source_map_scopes.js";
-import * as CodeMirror4 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI3 from "./../../legacy/legacy.js";
+import * as CodeMirror5 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI4 from "./../../legacy/legacy.js";
 
 // gen/front_end/ui/components/text_editor/cursor_tooltip.js
-import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
-var closeTooltip = CodeMirror3.StateEffect.define();
+import * as CodeMirror4 from "./../../../third_party/codemirror.next/codemirror.next.js";
+var closeTooltip = CodeMirror4.StateEffect.define();
 function cursorTooltip(source) {
-  const openTooltip = CodeMirror3.StateEffect.define();
-  const state = CodeMirror3.StateField.define({
+  const openTooltip = CodeMirror4.StateEffect.define();
+  const state = CodeMirror4.StateField.define({
     create() {
       return null;
     },
@@ -1421,7 +1583,7 @@ function cursorTooltip(source) {
         val = null;
       }
       if (val && !tr.changes.empty) {
-        const newPos = tr.changes.mapPos(val.pos, -1, CodeMirror3.MapMode.TrackDel);
+        const newPos = tr.changes.mapPos(val.pos, -1, CodeMirror4.MapMode.TrackDel);
         val = newPos === null ? null : { pos: newPos, create: val.create, above: true };
       }
       for (const effect of tr.effects) {
@@ -1433,9 +1595,9 @@ function cursorTooltip(source) {
       }
       return val;
     },
-    provide: (field) => CodeMirror3.showTooltip.from(field)
+    provide: (field) => CodeMirror4.showTooltip.from(field)
   });
-  const plugin = CodeMirror3.ViewPlugin.fromClass(class {
+  const plugin = CodeMirror4.ViewPlugin.fromClass(class {
     pending = -1;
     updateID = 0;
     update(update) {
@@ -1474,17 +1636,17 @@ function cursorTooltip(source) {
 
 // gen/front_end/ui/components/text_editor/javascript.js
 function completion() {
-  return CodeMirror4.javascript.javascriptLanguage.data.of({
+  return CodeMirror5.javascript.javascriptLanguage.data.of({
     autocomplete: javascriptCompletionSource
   });
 }
 async function completeInContext(textBefore, query, force = false) {
-  const state = CodeMirror4.EditorState.create({
+  const state = CodeMirror5.EditorState.create({
     doc: textBefore + query,
     selection: { anchor: textBefore.length },
-    extensions: CodeMirror4.javascript.javascriptLanguage
+    extensions: CodeMirror5.javascript.javascriptLanguage
   });
-  const result = await javascriptCompletionSource(new CodeMirror4.CompletionContext(state, state.doc.length, force));
+  const result = await javascriptCompletionSource(new CodeMirror5.CompletionContext(state, state.doc.length, force));
   return result ? result.options.filter((o) => o.label.startsWith(query)).map((o) => ({
     text: o.label,
     priority: 100 + (o.boost || 0),
@@ -1639,7 +1801,7 @@ function getQueryType(tree, pos, doc) {
   };
 }
 async function javascriptCompletionSource(cx) {
-  const query = getQueryType(CodeMirror4.syntaxTree(cx.state), cx.pos, cx.state.doc);
+  const query = getQueryType(CodeMirror5.syntaxTree(cx.state), cx.pos, cx.state.doc);
   if (!query || query.from === void 0 && !cx.explicit && query.type === 0) {
     return null;
   }
@@ -1690,7 +1852,7 @@ var SPAN_IDENT = /^#?(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u
 var SPAN_SINGLE_QUOTE = /^\'(\\.|[^\\'\n])*'?$/;
 var SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
 function getExecutionContext() {
-  return UI3.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  return UI4.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
 }
 async function evaluateExpression(context, expression, group) {
   const result = await context.evaluate({
@@ -1723,7 +1885,7 @@ var PropertyCache = class _PropertyCache {
   constructor() {
     const clear = () => this.#cache.clear();
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, clear);
-    UI3.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
+    UI4.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, clear);
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, clear);
   }
@@ -1873,7 +2035,7 @@ async function completeExpressionGlobal() {
   return await fetchNames;
 }
 async function isExpressionComplete(expression) {
-  const currentExecutionContext = UI3.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  const currentExecutionContext = UI4.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
   if (!currentExecutionContext) {
     return true;
   }
@@ -1898,7 +2060,7 @@ function closeArgumentsHintsTooltip(view, tooltip) {
   return true;
 }
 async function getArgumentHints(state, pos) {
-  const node = CodeMirror4.syntaxTree(state).resolveInner(pos).enterUnfinishedNodesBefore(pos);
+  const node = CodeMirror5.syntaxTree(state).resolveInner(pos).enterUnfinishedNodesBefore(pos);
   if (node.name !== "ArgList") {
     return null;
   }
@@ -1974,14 +2136,14 @@ function argumentsList(input) {
   }
   try {
     try {
-      const { parser } = CodeMirror4.javascript.javascriptLanguage.configure({ strict: true, top: "SingleClassItem" });
+      const { parser } = CodeMirror5.javascript.javascriptLanguage.configure({ strict: true, top: "SingleClassItem" });
       const cursor = parser.parse(input).cursor();
       if (cursor.firstChild() && cursor.name === "MethodDeclaration" && cursor.firstChild()) {
         return parseParamList(cursor);
       }
       throw new Error("SingleClassItem rule is expected to have exactly one MethodDeclaration child");
     } catch {
-      const { parser } = CodeMirror4.javascript.javascriptLanguage.configure({ strict: true, top: "SingleExpression" });
+      const { parser } = CodeMirror5.javascript.javascriptLanguage.configure({ strict: true, top: "SingleExpression" });
       const cursor = parser.parse(input).cursor();
       if (!cursor.firstChild()) {
         throw new Error("SingleExpression rule is expected to have children");
@@ -2169,9 +2331,9 @@ var TextEditor_exports = {};
 __export(TextEditor_exports, {
   TextEditor: () => TextEditor
 });
-import * as Common3 from "./../../../core/common/common.js";
-import * as CodeMirror5 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI4 from "./../../legacy/legacy.js";
+import * as Common4 from "./../../../core/common/common.js";
+import * as CodeMirror6 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI5 from "./../../legacy/legacy.js";
 import * as ThemeSupport from "./../../legacy/theme_support/theme_support.js";
 import * as CodeHighlighter3 from "./../code_highlighter/code_highlighter.js";
 var TextEditor = class extends HTMLElement {
@@ -2187,7 +2349,7 @@ var TextEditor = class extends HTMLElement {
       this.#resizeTimeout = window.setTimeout(() => {
         this.#resizeTimeout = -1;
         if (this.#activeEditor) {
-          CodeMirror5.repositionTooltips(this.#activeEditor);
+          CodeMirror6.repositionTooltips(this.#activeEditor);
         }
       }, 50);
     }
@@ -2199,7 +2361,7 @@ var TextEditor = class extends HTMLElement {
     this.#shadow.createChild("style").textContent = CodeHighlighter3.codeHighlighterStyles;
   }
   #createEditor() {
-    this.#activeEditor = new CodeMirror5.EditorView({
+    this.#activeEditor = new CodeMirror6.EditorView({
       state: this.state,
       parent: this.#shadow,
       root: this.#shadow,
@@ -2240,7 +2402,7 @@ var TextEditor = class extends HTMLElement {
       return this.#activeEditor.state;
     }
     if (!this.#pendingState) {
-      this.#pendingState = CodeMirror5.EditorState.create({ extensions: baseConfiguration("") });
+      this.#pendingState = CodeMirror6.EditorState.create({ extensions: baseConfiguration("") });
     }
     return this.#pendingState;
   }
@@ -2296,20 +2458,20 @@ var TextEditor = class extends HTMLElement {
           this.#activeEditor.dispatch({ effects: change });
         }
       };
-      const setting = Common3.Settings.Settings.instance().moduleSetting(dynamicSetting2.settingName);
+      const setting = Common4.Settings.Settings.instance().moduleSetting(dynamicSetting2.settingName);
       setting.addChangeListener(handler);
       this.#activeSettingListeners.push([setting, handler]);
     }
   }
   #startObservingResize() {
-    const devtoolsElement = UI4.UIUtils.getDevToolsBoundingElement();
+    const devtoolsElement = UI5.UIUtils.getDevToolsBoundingElement();
     if (devtoolsElement) {
       this.#devtoolsResizeObserver.observe(devtoolsElement);
     }
     window.addEventListener("resize", this.#resizeListener);
   }
   #maybeDispatchInput(transaction) {
-    const userEvent = transaction.annotation(CodeMirror5.Transaction.userEvent);
+    const userEvent = transaction.annotation(CodeMirror6.Transaction.userEvent);
     const inputType = userEvent ? CODE_MIRROR_USER_EVENT_TO_INPUT_EVENT_TYPE.get(userEvent) : null;
     if (inputType) {
       this.dispatchEvent(new InputEvent("input", { inputType }));
@@ -2324,7 +2486,7 @@ var TextEditor = class extends HTMLElement {
     const effects = [];
     if (highlight) {
       if (!view.state.field(highlightedLineState, false)) {
-        view.dispatch({ effects: CodeMirror5.StateEffect.appendConfig.of(highlightedLineState) });
+        view.dispatch({ effects: CodeMirror6.StateEffect.appendConfig.of(highlightedLineState) });
       } else {
         view.dispatch({ effects: clearHighlightedLine.of(null) });
       }
@@ -2333,11 +2495,11 @@ var TextEditor = class extends HTMLElement {
     const editorRect = view.scrollDOM.getBoundingClientRect();
     const targetPos = view.coordsAtPos(selection.main.head);
     if (!selection.main.empty) {
-      effects.push(CodeMirror5.EditorView.scrollIntoView(selection.main));
+      effects.push(CodeMirror6.EditorView.scrollIntoView(selection.main));
     } else if (!targetPos || targetPos.top < editorRect.top || targetPos.bottom > editorRect.bottom) {
-      effects.push(CodeMirror5.EditorView.scrollIntoView(selection.main, { y: "center" }));
+      effects.push(CodeMirror6.EditorView.scrollIntoView(selection.main, { y: "center" }));
     } else if (targetPos.left < editorRect.left || targetPos.right > editorRect.right) {
-      effects.push(CodeMirror5.EditorView.scrollIntoView(selection.main, { x: "center" }));
+      effects.push(CodeMirror6.EditorView.scrollIntoView(selection.main, { x: "center" }));
     }
     view.dispatch({
       selection,
@@ -2348,7 +2510,7 @@ var TextEditor = class extends HTMLElement {
   createSelection(head, anchor) {
     const { doc } = this.state;
     const headPos = toOffset(doc, head);
-    return CodeMirror5.EditorSelection.single(anchor ? toOffset(doc, anchor) : headPos, headPos);
+    return CodeMirror6.EditorSelection.single(anchor ? toOffset(doc, anchor) : headPos, headPos);
   }
   toLineColumn(pos) {
     return toLineColumn(this.state.doc, pos);
@@ -2358,26 +2520,26 @@ var TextEditor = class extends HTMLElement {
   }
 };
 customElements.define("devtools-text-editor", TextEditor);
-var clearHighlightedLine = CodeMirror5.StateEffect.define();
-var setHighlightedLine = CodeMirror5.StateEffect.define();
-var highlightedLineState = CodeMirror5.StateField.define({
-  create: () => CodeMirror5.Decoration.none,
+var clearHighlightedLine = CodeMirror6.StateEffect.define();
+var setHighlightedLine = CodeMirror6.StateEffect.define();
+var highlightedLineState = CodeMirror6.StateField.define({
+  create: () => CodeMirror6.Decoration.none,
   update(value, tr) {
     if (!tr.changes.empty && value.size) {
       value = value.map(tr.changes);
     }
     for (const effect of tr.effects) {
       if (effect.is(clearHighlightedLine)) {
-        value = CodeMirror5.Decoration.none;
+        value = CodeMirror6.Decoration.none;
       } else if (effect.is(setHighlightedLine)) {
-        value = CodeMirror5.Decoration.set([
-          CodeMirror5.Decoration.line({ attributes: { class: "cm-highlightedLine" } }).range(effect.value)
+        value = CodeMirror6.Decoration.set([
+          CodeMirror6.Decoration.line({ attributes: { class: "cm-highlightedLine" } }).range(effect.value)
         ]);
       }
     }
     return value;
   },
-  provide: (field) => CodeMirror5.EditorView.decorations.from(field, (value) => value)
+  provide: (field) => CodeMirror6.EditorView.decorations.from(field, (value) => value)
 });
 var CODE_MIRROR_USER_EVENT_TO_INPUT_EVENT_TYPE = /* @__PURE__ */ new Map([
   ["input.type", "insertText"],
@@ -2399,7 +2561,7 @@ var TextEditorHistory_exports = {};
 __export(TextEditorHistory_exports, {
   TextEditorHistory: () => TextEditorHistory
 });
-import * as CodeMirror6 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror7 from "./../../../third_party/codemirror.next/codemirror.next.js";
 var TextEditorHistory = class {
   #editor;
   #history;
@@ -2433,13 +2595,13 @@ var TextEditorHistory = class {
     const cursorPos = newText.length;
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: newText },
-      selection: CodeMirror6.EditorSelection.cursor(cursorPos),
+      selection: CodeMirror7.EditorSelection.cursor(cursorPos),
       scrollIntoView: true
     });
     if (isBackward) {
       const firstLineBreak = newText.search(/\n|$/);
       editor.dispatch({
-        selection: CodeMirror6.EditorSelection.cursor(firstLineBreak)
+        selection: CodeMirror7.EditorSelection.cursor(firstLineBreak)
       });
     }
     return true;
@@ -2462,6 +2624,7 @@ var TextEditorHistory = class {
 export {
   AiCodeCompletionProvider_exports as AiCodeCompletionProvider,
   AiCodeCompletionTeaserPlaceholder_exports as AiCodeCompletionTeaserPlaceholder,
+  AiCodeGenerationProvider_exports as AiCodeGenerationProvider,
   AutocompleteHistory_exports as AutocompleteHistory,
   config_exports as Config,
   ExecutionPositionHighlighter_exports as ExecutionPositionHighlighter,

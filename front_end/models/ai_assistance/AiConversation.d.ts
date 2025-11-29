@@ -1,4 +1,6 @@
 import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Trace from '../../models/trace/trace.js';
 import { type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
 import { ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
@@ -21,6 +23,15 @@ export declare class AiConversation {
     run(initialQuery: string, options: {
         selected: ConversationContext<unknown> | null;
         signal?: AbortSignal;
+        extraContext?: ExtraContext[];
     }, multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void>;
     get origin(): string | undefined;
 }
+type ExtraContext = SDK.DOMModel.DOMNode | SDK.NetworkRequest.NetworkRequest | {
+    event: Trace.Types.Events.Event;
+    traceStartTime: Trace.Types.Timing.Micro;
+} | {
+    insight: Trace.Insights.Types.InsightModel;
+    trace: Trace.TraceModel.ParsedTrace;
+};
+export {};

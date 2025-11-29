@@ -122,6 +122,7 @@ export class DOMNode {
      */
     detached = false;
     #retainedNodes;
+    #adoptedStyleSheets = [];
     constructor(domModel) {
         this.#domModel = domModel;
         this.#agent = this.#domModel.getAgent();
@@ -156,6 +157,9 @@ export class DOMNode {
         }
         if (payload.attributes) {
             this.setAttributesPayload(payload.attributes);
+        }
+        if (payload.adoptedStyleSheets) {
+            this.#adoptedStyleSheets = this.toAdoptedStyleSheets(payload.adoptedStyleSheets);
         }
         this.childNodeCountInternal = payload.childNodeCount || 0;
         if (payload.shadowRoots) {
@@ -684,6 +688,16 @@ export class DOMNode {
             }
         }
     }
+    toAdoptedStyleSheets(ids) {
+        return ids.map(id => (new AdoptedStyleSheet(id, this.#domModel.cssModel())));
+    }
+    setAdoptedStyleSheets(ids) {
+        this.#adoptedStyleSheets = this.toAdoptedStyleSheets(ids);
+        this.#domModel.dispatchEventToListeners(Events.AdoptedStyleSheetsModified, this);
+    }
+    get adoptedStyleSheetsForNode() {
+        return this.#adoptedStyleSheets;
+    }
     setDistributedNodePayloads(payloads) {
         this.#distributedNodes = [];
         for (const payload of payloads) {
@@ -1005,6 +1019,14 @@ export class DOMDocument extends DOMNode {
         this.init(this, false, payload);
         this.documentURL = (payload.documentURL || '');
         this.baseURL = (payload.baseURL || '');
+    }
+}
+export class AdoptedStyleSheet {
+    id;
+    cssModel;
+    constructor(id, cssModel) {
+        this.id = id;
+        this.cssModel = cssModel;
     }
 }
 export class DOMModel extends SDKModel {
@@ -1331,6 +1353,13 @@ export class DOMModel extends SDKModel {
         this.dispatchEventToListeners(Events.NodeInserted, node);
         this.scheduleMutationEvent(node);
     }
+    adoptedStyleSheetsModified(parentId, styleSheets) {
+        const parent = this.idToDOMNode.get(parentId);
+        if (!parent) {
+            return;
+        }
+        parent.setAdoptedStyleSheets(styleSheets);
+    }
     scrollableFlagUpdated(nodeId, isScrollable) {
         const node = this.nodeForId(nodeId);
         if (!node || node.isScrollable() === isScrollable) {
@@ -1499,15 +1528,13 @@ export var Events;
     Events["TopLayerElementsChanged"] = "TopLayerElementsChanged";
     Events["ScrollableFlagUpdated"] = "ScrollableFlagUpdated";
     Events["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
+    Events["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Events || (Events = {}));
 class DOMDispatcher {
     #domModel;
     constructor(domModel) {
         this.#domModel = domModel;
-    }
-    adoptedStyleSheetsModified(_params) {
-        // TODO: implementation
     }
     documentUpdated() {
         this.#domModel.documentUpdated();
@@ -1517,6 +1544,9 @@ class DOMDispatcher {
     }
     attributeRemoved({ nodeId, name }) {
         this.#domModel.attributeRemoved(nodeId, name);
+    }
+    adoptedStyleSheetsModified({ nodeId, adoptedStyleSheets }) {
+        this.#domModel.adoptedStyleSheetsModified(nodeId, adoptedStyleSheets);
     }
     inlineStyleInvalidated({ nodeIds }) {
         this.#domModel.inlineStyleInvalidated(nodeIds);

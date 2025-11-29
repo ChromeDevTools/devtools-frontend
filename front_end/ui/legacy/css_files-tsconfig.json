@@ -10,6 +10,7 @@
         "dropTarget.css.js",
         "emptyWidget.css.js",
         "filter.css.js",
+        "floaty.css.js",
         "glassPane.css.js",
         "infobar.css.js",
         "inspectorCommon.css.js",

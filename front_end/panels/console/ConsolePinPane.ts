@@ -176,10 +176,9 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
 export class ConsolePinPresenter {
   private readonly pin: ConsolePin;
+  private readonly pinEditor: ConsolePinEditor;
   private readonly pinElement: Element;
   private readonly pinPreview: HTMLElement;
-  private lastResult: SDK.RuntimeModel.EvaluationResult|null;
-  private lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null;
   private editor: TextEditor.TextEditor.TextEditor;
   private hovered: boolean;
   private lastNode: SDK.RemoteObject.RemoteObject|null;
@@ -217,13 +216,16 @@ export class ConsolePinPresenter {
     UI.Tooltip.Tooltip.install(nameElement, expression);
     elementToConsolePin.set(this.pinElement, this);
 
-    this.lastResult = null;
-    this.lastExecutionContext = null;
     this.hovered = false;
     this.lastNode = null;
     this.editor = this.#createEditor(expression, nameElement);
 
-    this.pin = new ConsolePin({workingCopy: () => this.editor.state.doc.toString()}, expression);
+    this.pinEditor = {
+      workingCopy: () => this.editor.state.doc.toString(),
+      workingCopyWithHint: () => TextEditor.Config.contentIncludingHint(this.editor.editor),
+      isEditing: () => this.pinElement.hasFocus(),
+    };
+    this.pin = new ConsolePin(this.pinEditor, expression);
 
     this.pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
     this.pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
@@ -356,12 +358,13 @@ export class ConsolePinPresenter {
   }
 
   appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    if (this.lastResult && !('error' in this.lastResult) && this.lastResult.object) {
-      contextMenu.appendApplicableItems(this.lastResult.object);
+    const {lastResult} = this.pin;
+    if (lastResult && !('error' in lastResult) && lastResult.object) {
+      contextMenu.appendApplicableItems(lastResult.object);
       // Prevent result from being released automatically, since it may be used by
       // the context menu action. It will be released when the console is cleared,
       // where we release the 'live-expression' object group.
-      this.lastResult = null;
+      this.pin.skipReleaseLastResult();
     }
   }
 
@@ -369,19 +372,15 @@ export class ConsolePinPresenter {
     if (!this.editor) {
       return;
     }
-    const text = TextEditor.Config.contentIncludingHint(this.editor.editor);
-    const isEditing = this.pinElement.hasFocus();
-    const throwOnSideEffect = isEditing && text !== this.pin.expression;
-    const timeout = throwOnSideEffect ? 250 : undefined;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        text, throwOnSideEffect, true /* replMode */, timeout, !isEditing /* allowErrors */, 'live-expression',
-        true /* awaitPromise */, true /* silent */);
-    if (this.lastResult && this.lastExecutionContext) {
-      this.lastExecutionContext.runtimeModel.releaseEvaluationResult(this.lastResult);
+    if (!executionContext) {
+      return;
     }
-    this.lastResult = result || null;
-    this.lastExecutionContext = executionContext || null;
+
+    const {result, node} = await this.pin.evaluate(executionContext);
+
+    const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+    const preview = result ? formatter.renderEvaluationResultPreview(result) : document.createDocumentFragment();
 
     const previewText = preview.deepTextContent();
     if (!previewText || previewText !== this.pinPreview.deepTextContent()) {
@@ -392,16 +391,12 @@ export class ConsolePinPresenter {
         UI.Tooltip.Tooltip.install(sideEffectLabel, i18nString(UIStrings.evaluateAllowingSideEffects));
       } else if (previewText) {
         this.pinPreview.appendChild(preview);
-      } else if (!isEditing) {
+      } else if (!this.pinEditor.isEditing()) {
         UI.UIUtils.createTextChild(this.pinPreview, i18nString(UIStrings.notAvailable));
       }
       UI.Tooltip.Tooltip.install(this.pinPreview, previewText);
     }
 
-    let node: SDK.RemoteObject.RemoteObject|null = null;
-    if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
-      node = result.object;
-    }
     if (this.hovered) {
       if (node) {
         SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
@@ -422,6 +417,8 @@ export class ConsolePinPresenter {
  */
 interface ConsolePinEditor {
   workingCopy(): string;
+  workingCopyWithHint(): string;
+  isEditing(): boolean;
 }
 
 /**
@@ -431,6 +428,11 @@ export class ConsolePin {
   readonly #editor: ConsolePinEditor;
   #expression: string;
 
+  // We track the last evaluation result for this pin so we can release the RemoteObject.
+  #lastResult: SDK.RuntimeModel.EvaluationResult|null = null;
+  #lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null = null;
+  #releaseLastResult = true;
+
   constructor(editor: ConsolePinEditor, expression: string) {
     this.#editor = editor;
     this.#expression = expression;
@@ -438,6 +440,14 @@ export class ConsolePin {
 
   get expression(): string {
     return this.#expression;
+  }
+
+  get lastResult(): SDK.RuntimeModel.EvaluationResult|null {
+    return this.#lastResult;
+  }
+
+  skipReleaseLastResult(): void {
+    this.#releaseLastResult = false;
   }
 
   /**
@@ -449,5 +459,30 @@ export class ConsolePin {
     const trimmedText = text.trim();
     this.#expression = trimmedText;
     return this.#expression === text;
+  }
+
+  /** Evaluates the current working copy of the pinned expression. If the result is a DOM node, we return that separately for convenience.  */
+  async evaluate(executionContext: SDK.RuntimeModel.ExecutionContext):
+      Promise<{result: SDK.RuntimeModel.EvaluationResult | null, node: SDK.RemoteObject.RemoteObject|null}> {
+    const editorText = this.#editor.workingCopyWithHint();
+    const throwOnSideEffect = this.#editor.isEditing() && editorText !== this.#expression;
+    const timeout = throwOnSideEffect ? 250 : undefined;
+
+    const result = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluate(
+        editorText, executionContext, throwOnSideEffect, /* replMode*/ true, timeout, 'live-expression',
+        /* awaitPromise */ true, /* silent */ true);
+
+    if (this.#lastResult && this.#releaseLastResult) {
+      this.#lastExecutionContext?.runtimeModel.releaseEvaluationResult(this.#lastResult);
+    }
+
+    this.#lastResult = result;
+    this.#lastExecutionContext = executionContext;
+    this.#releaseLastResult = true;
+
+    if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
+      return {result, node: result.object};
+    }
+    return {result, node: null};
   }
 }

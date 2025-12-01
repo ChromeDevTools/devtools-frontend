@@ -56,10 +56,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const elementToConsolePin = new WeakMap<Element, ConsolePin>();
+const elementToConsolePin = new WeakMap<Element, ConsolePinPresenter>();
 
 export class ConsolePinPane extends UI.Widget.VBox {
-  private pins: Set<ConsolePin>;
+  private pins: Set<ConsolePinPresenter>;
   private readonly pinsSetting: Common.Settings.Setting<string[]>;
   private readonly throttler: Common.Throttler.Throttler;
   constructor(private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void) {
@@ -116,7 +116,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
     }
   }
 
-  removePin(pin: ConsolePin): void {
+  removePin(pin: ConsolePinPresenter): void {
     pin.element().remove();
     const newFocusedPin = this.focusedPinAfterDeletion(pin);
     this.pins.delete(pin);
@@ -129,7 +129,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   addPin(expression: string, userGesture?: boolean): void {
-    const pin = new ConsolePin(expression, this, this.focusOut);
+    const pin = new ConsolePinPresenter(expression, this, this.focusOut);
     this.contentElement.appendChild(pin.element());
     this.pins.add(pin);
     this.savePins();
@@ -139,7 +139,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  private focusedPinAfterDeletion(deletedPin: ConsolePin): ConsolePin|null {
+  private focusedPinAfterDeletion(deletedPin: ConsolePinPresenter): ConsolePinPresenter|null {
     const pinArray = Array.from(this.pins);
     for (let i = 0; i < pinArray.length; i++) {
       if (pinArray[i] === deletedPin) {
@@ -174,7 +174,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 }
 
-export class ConsolePin {
+export class ConsolePinPresenter {
   private readonly pinElement: Element;
   private readonly pinPreview: HTMLElement;
   private lastResult: SDK.RuntimeModel.EvaluationResult|null;

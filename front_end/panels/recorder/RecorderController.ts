@@ -23,7 +23,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
 import type {AddBreakpointEvent, RemoveBreakpointEvent} from './components/StepView.js';
-import type * as Controllers from './controllers/controllers.js';
 import * as Converters from './converters/converters.js';
 import * as Extensions from './extensions/extensions.js';
 import * as Models from './models/models.js';
@@ -1224,7 +1223,7 @@ export class RecorderController extends LitElement {
             titleChanged: this.#handleRecordingTitleChanged.bind(this),
           })}
           @requestselectorattribute=${(
-            event: Controllers.SelectorPicker.RequestSelectorAttributeEvent,
+            event: Components.SelectorPicker.RequestSelectorAttributeEvent,
           ) => {
             event.send(this.currentRecording?.flow.selectorAttribute);
           }}

@@ -33,7 +33,6 @@ devtools_ui_module("recorder") {
     "../../ui/kit:bundle",
     "../../ui/visual_logging:bundle",
     "./components:bundle",
-    "./controllers:bundle",
     "./converters:bundle",
     "./extensions:bundle",
     "./models:bundle",

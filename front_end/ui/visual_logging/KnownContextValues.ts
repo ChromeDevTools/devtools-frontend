@@ -2872,6 +2872,7 @@ export const knownContextValues = new Set([
   'performance.sidebar-toggle',
   'periodic-background-sync',
   'periodic-sync-tag',
+  'permission-element-elements',
   'persist-flame-config',
   'persistence-automatic-workspace-folders',
   'persistence-network-overrides-enabled',

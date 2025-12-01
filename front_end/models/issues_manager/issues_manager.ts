@@ -24,6 +24,7 @@ import * as LowTextContrastIssue from './LowTextContrastIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
 import * as MixedContentIssue from './MixedContentIssue.js';
 import * as PartitioningBlobURLIssue from './PartitioningBlobURLIssue.js';
+import * as PermissionElementIssue from './PermissionElementIssue.js';
 import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
@@ -57,6 +58,7 @@ export {
   MarkdownIssueDescription,
   MixedContentIssue,
   PartitioningBlobURLIssue,
+  PermissionElementIssue,
   PropertyRuleIssue,
   QuirksModeIssue,
   RelatedIssue,

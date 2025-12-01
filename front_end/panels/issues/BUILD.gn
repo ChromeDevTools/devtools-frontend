@@ -27,6 +27,7 @@ devtools_ui_module("issues") {
     "AffectedHeavyAdView.ts",
     "AffectedMetadataAllowedSitesView.ts",
     "AffectedPartitioningBlobURLView.ts",
+    "AffectedPermissionElementsView.ts",
     "AffectedResourcesView.ts",
     "AffectedSharedArrayBufferIssueDetailsView.ts",
     "AffectedSourcesView.ts",

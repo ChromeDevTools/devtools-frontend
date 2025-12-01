@@ -51,6 +51,7 @@ export const enum IssueCategory {
   CORS = 'Cors',
   ATTRIBUTION_REPORTING = 'AttributionReporting',
   QUIRKS_MODE = 'QuirksMode',
+  PERMISSION_ELEMENT = 'PermissionElement',
   OTHER = 'Other',
 }
 

@@ -42,7 +42,10 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
     this.#parsedTrace = data.parsedTrace;
     const entityMapper = new Trace.EntityMapper.EntityMapper(data.parsedTrace);
     this.#dataProvider.setModel(data.parsedTrace, entityMapper);
-    this.#dataProvider.timelineData(true);
+    this.#dataProvider.buildWithCustomTracksForTest({
+      filterTracks: trackName => trackName.startsWith('Main'),
+      expandTracks: () => true,
+    });
 
     const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
       min: Trace.Types.Timing.Micro(data.start),
@@ -89,10 +92,12 @@ export class PerformanceAgentFlameChart extends HTMLElement implements PerfUI.Fl
     this.#flameChart.update();
     this.#flameChart.setSize(600, 200);
   }
-  windowChanged(_startTime: number, _endTime: number, _animate: boolean): void {
+  windowChanged(startTime: number, endTime: number, animate: boolean): void {
+    this.#flameChart.setWindowTimes(startTime, endTime, animate);
   }
 
-  updateRangeSelection(_startTime: number, _endTime: number): void {
+  updateRangeSelection(startTime: number, endTime: number): void {
+    this.#flameChart.updateRangeSelection(startTime, endTime);
   }
 
   updateSelectedEntry(_entryIndex: number): void {

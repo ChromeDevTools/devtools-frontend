@@ -61,3 +61,6 @@ test/perf/.generated
 .eslintcache
 .stylelintcache
 **/tsconfig.tsbuildinfo
+
+# e2e test runner copies dumps into the source tree.
+*.dmp

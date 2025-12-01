@@ -1408,7 +1408,7 @@ describe('Recorder', function() {
     const step = await devToolsPage.waitFor('.section:last-child devtools-step-view:last-of-type');
 
     // Check that it's expanded.
-    if (!(await step.waitForSelector('pierce/devtools-timeline-section.expanded'))) {
+    if (!(await step.waitForSelector('pierce/.step.expanded'))) {
       throw new Error('Last step is not open.');
     }
 

@@ -9,7 +9,6 @@
 
 import '../../../ui/kit/kit.js';
 import './StepEditor.js';
-import './TimelineSection.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -22,7 +21,7 @@ import * as Models from '../models/models.js';
 
 import type {StepEditedEvent} from './StepEditor.js';
 import stepViewStyles from './stepView.css.js';
-import type {TimelineSectionData} from './TimelineSection.js';
+import {TimelineSection} from './TimelineSection.js';
 
 const {html} = Lit;
 
@@ -437,90 +436,89 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
   Lit.render(
     html`
     <style>${stepViewStyles}</style>
-    <devtools-timeline-section .data=${
-      {
-        isFirstSection: input.isFirstSection,
-        isLastSection: input.isLastSection,
-        isStartOfGroup: input.isStartOfGroup,
-        isEndOfGroup: input.isEndOfGroup,
-        isSelected: input.isSelected,
-      } as TimelineSectionData
-    } @contextmenu=${
-        (e: Event) => {
-        const menu = new UI.ContextMenu.ContextMenu(e as MouseEvent);
-        input.populateStepContextMenu(menu);
-        void menu.show();}
-      }
-      data-step-index=${
-      input.stepIndex
-    } data-section-index=${
-      input.sectionIndex
-    } class=${Lit.Directives.classMap(stepClasses)}>
-      <svg slot="icon" width="24" height="24" class="icon">
-        <circle class="circle-icon"/>
-        <g class="error-icon">
-          <path d="M1.5 1.5L6.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1.5 6.5L6.5 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <path @click=${input.onBreakpointClick} jslog=${VisualLogging.action('breakpoint').track({click: true})} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
-      </svg>
-      <div class="summary">
-        <div class="title-container ${isExpandable ? 'action' : ''}"
-          @click=${isExpandable && input.toggleShowDetails}
-          @keydown=${
-            isExpandable && input.onToggleShowDetailsKeydown
-          }
-          tabindex="0"
-          jslog=${VisualLogging.sectionHeader().track({click: true})}
-          aria-role=${isExpandable ? 'button' : ''}
-          aria-label=${isExpandable ? 'Show details for step' : ''}
-        >
-          ${
-            isExpandable
-              ? html`<devtools-icon
-                  class="chevron"
-                  jslog=${VisualLogging.expand().track({click: true})}
-                  name="triangle-down">
-                </devtools-icon>`
-              : ''
-          }
-          <div class="title">
-            <div class="main-title" title=${mainTitle}>${mainTitle}</div>
-            <div class="subtitle" title=${subtitle}>${subtitle}</div>
+    <div>
+      <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(TimelineSection, {
+          isFirstSection: input.isFirstSection,
+          isLastSection: input.isLastSection,
+          isStartOfGroup: input.isStartOfGroup,
+          isEndOfGroup: input.isEndOfGroup,
+          isSelected: input.isSelected,
+        })}
+        @contextmenu=${
+          (e: Event) => {
+          const menu = new UI.ContextMenu.ContextMenu(e as MouseEvent);
+          input.populateStepContextMenu(menu);
+          void menu.show();}
+        }
+        data-step-index=${input.stepIndex}
+        data-section-index=${input.sectionIndex}
+        class=${Lit.Directives.classMap(stepClasses)}>
+        <svg slot="icon" width="24" height="24" class="icon">
+          <circle class="circle-icon"/>
+          <g class="error-icon">
+            <path d="M1.5 1.5L6.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1.5 6.5L6.5 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <path @click=${input.onBreakpointClick} jslog=${VisualLogging.action('breakpoint').track({click: true})} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
+        </svg>
+        <div class="summary">
+          <div class="title-container ${isExpandable ? 'action' : ''}"
+            @click=${isExpandable && input.toggleShowDetails}
+            @keydown=${
+              isExpandable && input.onToggleShowDetailsKeydown
+            }
+            tabindex="0"
+            jslog=${VisualLogging.sectionHeader().track({click: true})}
+            aria-role=${isExpandable ? 'button' : ''}
+            aria-label=${isExpandable ? 'Show details for step' : ''}
+          >
+            ${
+              isExpandable
+                ? html`<devtools-icon
+                    class="chevron"
+                    jslog=${VisualLogging.expand().track({click: true})}
+                    name="triangle-down">
+                  </devtools-icon>`
+                : ''
+            }
+            <div class="title">
+              <div class="main-title" title=${mainTitle}>${mainTitle}</div>
+              <div class="subtitle" title=${subtitle}>${subtitle}</div>
+            </div>
           </div>
+          <div class="filler"></div>
+          ${renderStepActions(input)}
         </div>
-        <div class="filler"></div>
-        ${renderStepActions(input)}
-      </div>
-      <div class="details">
-        ${
-          input.step &&
-          html`<devtools-recorder-step-editor
-          class=${input.isSelected ? 'is-selected' : ''}
-          .step=${input.step}
-          .disabled=${input.isPlaying}
-          @stepedited=${input.stepEdited}>
-        </devtools-recorder-step-editor>`
-        }
-        ${
-          input.section?.causingStep &&
-          html`<devtools-recorder-step-editor
-          .step=${input.section.causingStep}
-          .isTypeEditable=${false}
-          .disabled=${input.isPlaying}
-          @stepedited=${input.stepEdited}>
-        </devtools-recorder-step-editor>`
-        }
-      </div>
-      ${
-        input.error &&
-        html`
-        <div class="error" role="alert">
-          ${input.error.message}
+        <div class="details">
+          ${
+            input.step &&
+            html`<devtools-recorder-step-editor
+            class=${input.isSelected ? 'is-selected' : ''}
+            .step=${input.step}
+            .disabled=${input.isPlaying}
+            @stepedited=${input.stepEdited}>
+          </devtools-recorder-step-editor>`
+          }
+          ${
+            input.section?.causingStep &&
+            html`<devtools-recorder-step-editor
+            .step=${input.section.causingStep}
+            .isTypeEditable=${false}
+            .disabled=${input.isPlaying}
+            @stepedited=${input.stepEdited}>
+          </devtools-recorder-step-editor>`
+          }
         </div>
-      `
-      }
-    </devtools-timeline-section>
+        ${
+          input.error &&
+          html`
+          <div class="error" role="alert">
+            ${input.error.message}
+          </div>
+        `
+        }
+      </devtools-widget>
+    </div>
   `,
     target,
   );

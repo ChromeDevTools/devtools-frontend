@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/spinners/spinners.js';
 
@@ -665,6 +664,85 @@ function renderHeader(
   // clang-format on
 }
 
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|ShadowRoot): void => {
+  const {state, noLogging, callbacks} = input;
+  const {onClose, onDisclaimerSettingsLink} = callbacks;
+
+  const jslog = `${VisualLogging.section(state.type).track({resize: true})}`;
+  let header: Lit.LitTemplate = Lit.nothing;
+  let main: Lit.LitTemplate = Lit.nothing;
+  const mainClasses: Record<string, true> = {};
+  let footer: Lit.LitTemplate|undefined;
+
+  switch (state.type) {
+    case State.LOADING:
+      header = renderHeader({headerText: i18nString(UIStrings.generating), onClose}, output.headerRef);
+      main = renderLoading();
+      break;
+    case State.INSIGHT:
+      header = renderHeader(
+          {headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed}, output.headerRef);
+      main = renderInsight(state, input, output);
+      footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
+      break;
+    case State.ERROR:
+      header = renderHeader({headerText: i18nString(UIStrings.error), onClose}, output.headerRef);
+      main = renderError(i18nString(UIStrings.errorBody));
+      footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
+      break;
+    case State.CONSENT_REMINDER:
+      header =
+          renderHeader({headerText: 'Understand console messages with AI', onClose, showIcon: true}, output.headerRef);
+      mainClasses['reminder-container'] = true;
+      main = renderConsentReminder(noLogging);
+      footer = renderConsentReminderFooter(callbacks.onReminderSettingsLink, callbacks.onConsentReminderConfirmed);
+      break;
+    case State.SETTING_IS_NOT_TRUE:
+      mainClasses['opt-in-teaser'] = true;
+      main = renderSettingIsNotTrue(callbacks.onEnableInsightsInSettingsLink);
+      break;
+    case State.NOT_LOGGED_IN:
+    case State.SYNC_IS_PAUSED:
+      header = renderHeader({headerText: i18nString(UIStrings.signInToUse), onClose}, output.headerRef);
+      main = renderNotLoggedIn();
+      footer = renderSignInFooter(callbacks.onGoToSignIn);
+      break;
+    case State.OFFLINE:
+      header = renderHeader({headerText: i18nString(UIStrings.offlineHeader), onClose}, output.headerRef);
+      main = renderError(i18nString(UIStrings.offline));
+      footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
+      break;
+  }
+
+  // clang-format off
+  render(html`
+    <style>${styles}</style>
+    <style>${Input.checkboxStyles}</style>
+    <div
+      class=${Directives.classMap({wrapper: true, closing: input.closing})}
+      jslog=${VisualLogging.pane('console-insights').track({resize: true})}
+      @animationend=${callbacks.onAnimationEnd}
+      @keydown=${blockPropagation}
+      @keyup=${blockPropagation}
+      @keypress=${blockPropagation}
+      @click=${blockPropagation}
+    >
+      <div class="animation-wrapper">
+        ${header}
+        <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>
+          ${main}
+        </main>
+        ${footer?html`<footer jslog=${VisualLogging.section('footer')}>
+          ${footer}
+        </footer>`:Lit.nothing}
+      </div>
+    </div>
+  `, target);
+  // clang-format on
+};
+
+export type ViewFunction = typeof DEFAULT_VIEW;
+
 export class ConsoleInsight extends HTMLElement {
   static async create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient): Promise<ConsoleInsight> {
     const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
@@ -1164,83 +1242,7 @@ export class ConsoleInsight extends HTMLElement {
       citationLinks: [],
     };
 
-    // Future Widget view function starts here.
-    const {state, noLogging, callbacks} = input;
-    const {onClose, onDisclaimerSettingsLink} = callbacks;
-
-    const jslog = `${VisualLogging.section(state.type).track({resize: true})}`;
-    let header: Lit.LitTemplate = Lit.nothing;
-    let main: Lit.LitTemplate = Lit.nothing;
-    const mainClasses: Record<string, true> = {};
-    let footer: Lit.LitTemplate|undefined;
-
-    switch (state.type) {
-      case State.LOADING:
-        header = renderHeader({headerText: i18nString(UIStrings.generating), onClose}, output.headerRef);
-        main = renderLoading();
-        break;
-      case State.INSIGHT:
-        header = renderHeader(
-            {headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed}, output.headerRef);
-        main = renderInsight(state, input, output);
-        footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
-        break;
-      case State.ERROR:
-        header = renderHeader({headerText: i18nString(UIStrings.error), onClose}, output.headerRef);
-        main = renderError(i18nString(UIStrings.errorBody));
-        footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
-        break;
-      case State.CONSENT_REMINDER:
-        header = renderHeader(
-            {headerText: 'Understand console messages with AI', onClose, showIcon: true}, output.headerRef);
-        mainClasses['reminder-container'] = true;
-        main = renderConsentReminder(noLogging);
-        footer = renderConsentReminderFooter(callbacks.onReminderSettingsLink, callbacks.onConsentReminderConfirmed);
-        break;
-      case State.SETTING_IS_NOT_TRUE:
-        mainClasses['opt-in-teaser'] = true;
-        main = renderSettingIsNotTrue(callbacks.onEnableInsightsInSettingsLink);
-        break;
-      case State.NOT_LOGGED_IN:
-      case State.SYNC_IS_PAUSED:
-        header = renderHeader({headerText: i18nString(UIStrings.signInToUse), onClose}, output.headerRef);
-        main = renderNotLoggedIn();
-        footer = renderSignInFooter(callbacks.onGoToSignIn);
-        break;
-      case State.OFFLINE:
-        header = renderHeader({headerText: i18nString(UIStrings.offlineHeader), onClose}, output.headerRef);
-        main = renderError(i18nString(UIStrings.offline));
-        footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
-        break;
-    }
-
-    // clang-format off
-    render(html`
-      <style>${styles}</style>
-      <style>${Input.checkboxStyles}</style>
-      <div
-        class=${Directives.classMap({wrapper: true, closing: input.closing})}
-        jslog=${VisualLogging.pane('console-insights').track({resize: true})}
-        @animationend=${callbacks.onAnimationEnd}
-        @keydown=${blockPropagation}
-        @keyup=${blockPropagation}
-        @keypress=${blockPropagation}
-        @click=${blockPropagation}
-      >
-        <div class="animation-wrapper">
-          ${header}
-          <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>
-            ${main}
-          </main>
-          ${footer?html`<footer jslog=${VisualLogging.section('footer')}>
-            ${footer}
-          </footer>`:Lit.nothing}
-        </div>
-      </div>
-    `, this.#shadow, {
-      host: this,
-    });
-    // clang-format on
+    DEFAULT_VIEW(input, output, this.#shadow);
 
     this.#citationLinks = output.citationLinks;
   }

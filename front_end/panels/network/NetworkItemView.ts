@@ -9,7 +9,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
+import * as PanelCommon from '../../panels/common/common.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import {Icon} from '../../ui/kit/kit.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
@@ -265,6 +267,15 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.#selectTab(this.#initialTab);
       this.#initialTab = undefined;
     }
+
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(
+          Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS, this.resolveInitialState.bind(this),
+          this.element);
+
+      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(
+          Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS);
+    }
   }
 
   override willHide(): void {
@@ -334,6 +345,34 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         }
       }, 0);
     }
+  }
+
+  async resolveInitialState(
+      parentElement: Element, reveal: boolean, lookupId: string,
+      anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest): Promise<{x: number, y: number}|null> {
+    const request = anchor as SDK.NetworkRequest.NetworkRequest;
+    if ((request && request !== this.request()) || (lookupId !== this.request().requestId())) {
+      return null;
+    }
+
+    if (!this.#headersViewComponent) {
+      return null;
+    }
+    await this.#headersViewComponent.render();
+
+    const element = this.#headersViewComponent.getHeaderElementById('request-url');
+    if (!element) {
+      return null;
+    }
+
+    const targetRect = element.getBoundingClientRect();
+    const parentRect = parentElement.getBoundingClientRect();
+    // Adjust the anchor position slightly.
+    const adjustX = 15;
+    const adjustY = -19;
+    const relativeX = targetRect.x - parentRect.x + adjustX;
+    const relativeY = targetRect.y - parentRect.y + adjustY;
+    return {x: relativeX, y: relativeY};
   }
 
   private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {

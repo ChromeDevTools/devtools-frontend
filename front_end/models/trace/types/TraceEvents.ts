@@ -957,7 +957,7 @@ export interface TraceImpactedNode {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-type LayoutShiftData = ArgsData&{
+export type LayoutShiftData = ArgsData&{
   // These keys come from the trace data, so we have to use underscores.
   /* eslint-disable @typescript-eslint/naming-convention */
   cumulative_score: number,

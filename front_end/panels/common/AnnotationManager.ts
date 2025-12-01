@@ -9,6 +9,7 @@ import * as Annotations from '../../ui/components/annotations/annotations.js';
 import {Annotation} from './Annotation.js';
 
 interface AnnotationData {
+  id: number;
   type: Annotations.AnnotationType;
   annotation: Annotation;
 }
@@ -16,9 +17,9 @@ interface AnnotationData {
 interface AnnotationPlacement {
   parentElement: Element;
   insertBefore?: Node|null;
-  resolveRelativePosition:
-      (parentElement: Element, revealNode: boolean, lookupId: string,
-       node?: SDK.DOMModel.DOMNode) => Promise<{x: number, y: number}|null>;
+  resolveInitialState:
+      (parentElement: Element, reveal: boolean, lookupId: string,
+       anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest) => Promise<{x: number, y: number}|null>;
 }
 
 // This class handles general management of Annotations, the data needed to display them and any panel-specific things
@@ -41,6 +42,10 @@ export class AnnotationManager {
 
     Annotations.AnnotationRepository.instance().addEventListener(
         Annotations.Events.ANNOTATION_ADDED, this.#onAnnotationAdded, this);
+    Annotations.AnnotationRepository.instance().addEventListener(
+        Annotations.Events.ANNOTATION_DELETED, this.#onAnnotationDeleted, this);
+    Annotations.AnnotationRepository.instance().addEventListener(
+        Annotations.Events.ALL_ANNOTATIONS_DELETED, this.#onAllAnnotationsDeleted, this);
   }
 
   static instance(): AnnotationManager {
@@ -52,9 +57,9 @@ export class AnnotationManager {
 
   initializePlacementForAnnotationType(
       type: Annotations.AnnotationType,
-      resolveRelativePosition:
-          (parentElement: Element, revealNode: boolean, lookupId: string,
-           node?: SDK.DOMModel.DOMNode) => Promise<{x: number, y: number}|null>,
+      resolveInitialState:
+          (parentElement: Element, reveal: boolean, lookupId: string,
+           anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest) => Promise<{x: number, y: number}|null>,
       parentElement: Element, insertBefore: Node|null = null): void {
     if (!Annotations.AnnotationRepository.annotationsEnabled()) {
       return;
@@ -63,7 +68,7 @@ export class AnnotationManager {
     if (!this.#annotationPlacements) {
       this.#annotationPlacements = new Map();
     }
-    this.#annotationPlacements.set(type, {parentElement, insertBefore, resolveRelativePosition});
+    this.#annotationPlacements.set(type, {parentElement, insertBefore, resolveInitialState});
 
     // eslint-disable-next-line no-console
     console.log(
@@ -95,6 +100,27 @@ export class AnnotationManager {
     this.#synced = true;
   }
 
+  #onAllAnnotationsDeleted(): void {
+    for (const annotation of this.#annotations.values()) {
+      annotation.annotation.hide();
+    }
+    this.#annotations = new Map();
+    // eslint-disable-next-line no-console
+    console.log('[AnnotationManager] deleted all annotations');
+  }
+
+  #onAnnotationDeleted(
+      event: Common.EventTarget.EventTargetEvent<Annotations.EventTypes[Annotations.Events.ANNOTATION_DELETED]>): void {
+    const {id} = event.data;
+    const annotation = this.#annotations.get(id);
+    if (annotation) {
+      annotation.annotation.hide();
+      this.#annotations.delete(id);
+    }
+    // eslint-disable-next-line no-console
+    console.log(`[AnnotationManager] Deleted annotation with id ${id}`);
+  }
+
   #onAnnotationAdded(
       event: Common.EventTarget.EventTargetEvent<Annotations.EventTypes[Annotations.Events.ANNOTATION_ADDED]>): void {
     const annotationData = event.data;
@@ -104,13 +130,26 @@ export class AnnotationManager {
   }
 
   #addAnnotation(annotationData: Annotations.BaseAnnotationData): void {
-    const annotation = new Annotation(annotationData.message, annotationData.type);
-    this.#annotations.set(annotationData.id, {type: annotationData.type, annotation});
+    const expandable = annotationData.type !== Annotations.AnnotationType.NETWORK_REQUEST;
+    const showExpanded = annotationData.type !== Annotations.AnnotationType.NETWORK_REQUEST;
+    const showAnchored = annotationData.type !== Annotations.AnnotationType.NETWORK_REQUEST;
+    const showCloseButton = annotationData.type !== Annotations.AnnotationType.NETWORK_REQUEST;
+    const annotation = new Annotation(
+        annotationData.id, annotationData.message, showExpanded, showAnchored, expandable, showCloseButton);
+    this.#annotations.set(annotationData.id, {id: annotationData.id, type: annotationData.type, annotation});
     // eslint-disable-next-line no-console
     console.log('[AnnotationManager] addAnnotation called. Annotations now', this.#annotations);
     requestAnimationFrame(async () => {
       await this.#resolveAnnotationWithId(annotationData.id);
     });
+  }
+
+  async resolveAnnotationsOfType(type: Annotations.AnnotationType): Promise<void> {
+    for (const annotationData of this.#annotations.values()) {
+      if (annotationData.type === type) {
+        await this.#resolveAnnotationWithId(annotationData.id);
+      }
+    }
   }
 
   async #resolveAnnotationWithId(id: number): Promise<void> {
@@ -122,18 +161,36 @@ export class AnnotationManager {
 
     const placement = this.#annotationPlacements?.get(annotation.type);
     if (!placement) {
-      console.warn('Unable to find placement for annotation with id', id);
+      console.warn(
+          'Unable to find placement for annotation with id', id,
+          '(note: this is expected if its panel hasn\'t been shown yet).');
       return;
     }
 
     let position = undefined;
     const annotationRegistration = Annotations.AnnotationRepository.instance().getAnnotationDataById(id);
-    if (annotationRegistration?.type === Annotations.AnnotationType.ELEMENT_NODE) {
-      const elementData = annotationRegistration as Annotations.ElementsAnnotationData;
-      position = await placement.resolveRelativePosition(
-          placement.parentElement, /* revealNode */ true, elementData.lookupId, elementData.anchor);
-    } else {
-      console.warn('[AnnotationManager] Unknown AnnotationType', annotationRegistration?.type);
+    const reveal = !annotation.annotation.hasShown();
+    switch (annotationRegistration?.type) {
+      case Annotations.AnnotationType.ELEMENT_NODE: {
+        const elementData = annotationRegistration as Annotations.ElementsAnnotationData;
+        position = await placement.resolveInitialState(
+            placement.parentElement, reveal, elementData.lookupId, elementData.anchor);
+        break;
+      }
+      case Annotations.AnnotationType.NETWORK_REQUEST: {
+        const networkRequestData = annotationRegistration as Annotations.NetworkRequestAnnotationData;
+        position = await placement.resolveInitialState(
+            placement.parentElement, reveal, networkRequestData.lookupId, networkRequestData.anchor);
+        break;
+      }
+      case Annotations.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS: {
+        const networkRequestDetailsData = annotationRegistration as Annotations.NetworkRequestDetailsAnnotationData;
+        position = await placement.resolveInitialState(
+            placement.parentElement, reveal, networkRequestDetailsData.lookupId, networkRequestDetailsData.anchor);
+        break;
+      }
+      default:
+        console.warn('[AnnotationManager] Unknown AnnotationType', annotationRegistration?.type);
     }
 
     if (!position) {
@@ -142,15 +199,9 @@ export class AnnotationManager {
       return;
     }
 
-    // eslint-disable-next-line no-console
-    console.log(
-        `Annotation placed at relative positions ${position.x}, ${position.y}` +
-        `${annotation.annotation.isShowing() ? ' (already showing)' : ' (and showing)'}`);
     annotation.annotation.setCoordinates(position.x, position.y);
 
     if (!annotation.annotation.isShowing()) {
-      // eslint-disable-next-line no-console
-      console.log('Annotation was not showing, showing now');
       annotation.annotation.show(placement.parentElement, placement.insertBefore);
     }
   }

@@ -51,6 +51,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -980,6 +981,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   summaryToolbar(): UI.Toolbar.Toolbar {
     return this.summaryToolbarInternal;
+  }
+
+  getDataGrid(): DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>|null {
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      return this.dataGrid;
+    }
+
+    return null;
   }
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {

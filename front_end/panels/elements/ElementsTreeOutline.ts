@@ -120,8 +120,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, this);
     output.elementsTreeOutline.addEventListener(
         ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, this);
-    output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementCollapsed, this);
-    output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementExpanded, this);
+    output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
+    output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
     target.appendChild(output.elementsTreeOutline.element);
   }
   if (input.visibleWidth !== undefined) {
@@ -199,6 +199,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
            Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void = () => {};
   onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void = () => {};
   onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void = () => {};
+  onElementExpanded: () => void = () => {};
+  onElementCollapsed: () => void = () => {};
 
   #visible = false;
   #visibleWidth?: number;
@@ -323,8 +325,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             this.#clearHighlightedNode();
             this.onSelectedNodeChanged(event);
           },
-          onElementCollapsed: this.#clearHighlightedNode.bind(this),
-          onElementExpanded: this.#clearHighlightedNode.bind(this),
+          onElementCollapsed: () => {
+            this.#clearHighlightedNode();
+            this.onElementCollapsed();
+          },
+          onElementExpanded: () => {
+            this.#clearHighlightedNode();
+            this.onElementExpanded();
+          },
         },
         this.#viewOutput, this.contentElement);
   }

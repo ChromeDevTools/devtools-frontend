@@ -24,12 +24,26 @@ export interface ElementsAnnotationData extends BaseAnnotationData {
   anchor?: SDK.DOMModel.DOMNode;
 }
 
+export interface NetworkRequestAnnotationData extends BaseAnnotationData {
+  type: AnnotationType.NETWORK_REQUEST;
+  anchor?: SDK.NetworkRequest.NetworkRequest;
+}
+
+export interface NetworkRequestDetailsAnnotationData extends BaseAnnotationData {
+  type: AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS;
+  anchor?: SDK.NetworkRequest.NetworkRequest;
+}
+
 export const enum Events {
   ANNOTATION_ADDED = 'AnnotationAdded',
+  ANNOTATION_DELETED = 'AnnotationDeleted',
+  ALL_ANNOTATIONS_DELETED = 'AllAnnotationsDeleted',
 }
 
 export interface EventTypes {
   [Events.ANNOTATION_ADDED]: BaseAnnotationData;
+  [Events.ANNOTATION_DELETED]: {id: number};
+  [Events.ALL_ANNOTATIONS_DELETED]: void;
 }
 
 export class AnnotationRepository {
@@ -90,6 +104,43 @@ export class AnnotationRepository {
     return this.#annotationData.find(annotation => annotation.id === id);
   }
 
+  #getExistingAnnotation(type: AnnotationType, anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest|string):
+      BaseAnnotationData|undefined {
+    const annotations = this.getAnnotationDataByType(type);
+    const annotation = annotations.find(annotation => {
+      if (typeof anchor === 'string') {
+        return annotation.lookupId === anchor;
+      }
+      switch (type) {
+        case AnnotationType.ELEMENT_NODE: {
+          const elementAnnotation = annotation as ElementsAnnotationData;
+          return elementAnnotation.anchor === anchor;
+        }
+        case AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS: {
+          const networkRequestDetailsAnnotation = annotation as NetworkRequestDetailsAnnotationData;
+          return networkRequestDetailsAnnotation.anchor === anchor;
+        }
+        default:
+          console.warn('[AnnotationRepository] Unknown AnnotationType', type);
+          return false;
+      }
+    });
+    return annotation;
+  }
+
+  #updateExistingAnnotationLabel(
+      label: string, type: AnnotationType,
+      anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest|string): boolean {
+    const annotation = this.#getExistingAnnotation(type, anchor);
+    if (annotation) {
+      // TODO(finnur): This should work for annotations that have not been displayed yet,
+      // but we need to also notify the AnnotationManager for those that have been shown.
+      annotation.message = label;
+      return true;
+    }
+    return false;
+  }
+
   addElementsAnnotation(
       label: string,
       anchor?: SDK.DOMModel.DOMNode|string,
@@ -100,13 +151,50 @@ export class AnnotationRepository {
       return;
     }
 
+    if (this.#updateExistingAnnotationLabel(label, AnnotationType.ELEMENT_NODE, anchor)) {
+      return;
+    }
+
     const annotationData: ElementsAnnotationData = {
       id: this.#nextId++,
       type: AnnotationType.ELEMENT_NODE,
       message: label,
       lookupId: typeof anchor === 'string' ? anchor : '',
       anchor: typeof anchor !== 'string' ? anchor : undefined,
-      anchorToString
+      anchorToString,
+    };
+    this.#annotationData.push(annotationData);
+    // eslint-disable-next-line no-console
+    console.log('[AnnotationRepository] Added element annotation:', label, {
+      annotationData,
+      annotations: this.#annotationData.length,
+    });
+    this.#events.dispatchEventToListeners(Events.ANNOTATION_ADDED, annotationData);
+  }
+
+  addNetworkRequestAnnotation(
+      label: string,
+      anchor?: SDK.NetworkRequest.NetworkRequest|string,
+      anchorToString?: string,
+      ): void {
+    if (!AnnotationRepository.annotationsEnabled()) {
+      console.warn('Received annotation registration with annotations disabled');
+      return;
+    }
+
+    // We only need to update the NETWORK_REQUEST_SUBPANEL_HEADERS because the
+    // NETWORK_REQUEST Annotation has no meaningful label.
+    if (this.#updateExistingAnnotationLabel(label, AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS, anchor)) {
+      return;
+    }
+
+    const annotationData: NetworkRequestAnnotationData = {
+      id: this.#nextId++,
+      type: AnnotationType.NETWORK_REQUEST,
+      message: '',
+      lookupId: typeof anchor === 'string' ? anchor : '',
+      anchor: typeof anchor !== 'string' ? anchor : undefined,
+      anchorToString,
     };
     this.#annotationData.push(annotationData);
     // eslint-disable-next-line no-console
@@ -115,5 +203,36 @@ export class AnnotationRepository {
       annotations: this.#annotationData.length,
     });
     this.#events.dispatchEventToListeners(Events.ANNOTATION_ADDED, annotationData);
+
+    const annotationDetailsData: NetworkRequestDetailsAnnotationData = {
+      id: this.#nextId++,
+      type: AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS,
+      message: label,
+      lookupId: typeof anchor === 'string' ? anchor : '',
+      anchor: typeof anchor !== 'string' ? anchor : undefined,
+      anchorToString,
+    };
+
+    this.#annotationData.push(annotationDetailsData);
+    this.#events.dispatchEventToListeners(Events.ANNOTATION_ADDED, annotationDetailsData);
+  }
+
+  deleteAllAnnotations(): void {
+    this.#annotationData = [];
+    this.#events.dispatchEventToListeners(Events.ALL_ANNOTATIONS_DELETED);
+    // eslint-disable-next-line no-console
+    console.log('[AnnotationRepository] Deleting all annotations');
+  }
+
+  deleteAnnotation(id: number): void {
+    const index = this.#annotationData.findIndex(annotation => annotation.id === id);
+    if (index === -1) {
+      console.warn(`[AnnotationRepository] Could not find annotation with id ${id}`);
+      return;
+    }
+    this.#annotationData.splice(index, 1);
+    this.#events.dispatchEventToListeners(Events.ANNOTATION_DELETED, {id});
+    // eslint-disable-next-line no-console
+    console.log(`[AnnotationRepository] Deleted annotation with id ${id}`);
   }
 }

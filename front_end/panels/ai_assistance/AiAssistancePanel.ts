@@ -15,6 +15,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as Badges from '../../models/badges/badges.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
@@ -1252,6 +1253,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #handleNewChatRequest(): void {
     this.#updateConversationState();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
+
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      Annotations.AnnotationRepository.instance().deleteAllAnnotations();
+    }
   }
 
   async #handleTakeScreenshot(): Promise<void> {

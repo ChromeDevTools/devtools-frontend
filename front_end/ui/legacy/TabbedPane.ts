@@ -129,7 +129,11 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       Annotations.AnnotationRepository.instance().addEventListener(
-          Annotations.Events.ANNOTATION_ADDED, this.#onAnnotationAdded, this);
+          Annotations.Events.ANNOTATION_ADDED, this.#onUpdateAnnotations, this);
+      Annotations.AnnotationRepository.instance().addEventListener(
+          Annotations.Events.ANNOTATION_DELETED, this.#onUpdateAnnotations, this);
+      Annotations.AnnotationRepository.instance().addEventListener(
+          Annotations.Events.ALL_ANNOTATIONS_DELETED, this.#onUpdateAnnotations, this);
     }
   }
 
@@ -987,7 +991,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  #onAnnotationAdded(): void {
+  #onUpdateAnnotations(): void {
     this.updateTabAnnotationIcons();
   }
 

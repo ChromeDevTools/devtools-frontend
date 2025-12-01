@@ -324,6 +324,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.#domTreeWidget.onSelectedNodeChanged = this.selectedNodeChanged.bind(this);
     this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
+    this.#domTreeWidget.onElementExpanded = this.handleElementExpanded.bind(this);
+    this.#domTreeWidget.onElementCollapsed = this.handleElementCollapsed.bind(this);
     this.#domTreeWidget.setWordWrap(Common.Settings.Settings.instance().moduleSetting('dom-word-wrap').get());
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this, {scoped: true});
@@ -337,8 +339,19 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(
-          Annotations.AnnotationType.ELEMENT_NODE, this.resolveRelativePosition.bind(this),
-          this.#domTreeWidget.element);
+          Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
+    }
+  }
+
+  private handleElementExpanded(): void {
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
+    }
+  }
+
+  private handleElementCollapsed(): void {
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
     }
   }
 
@@ -492,6 +505,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     super.wasShown();
     UI.Context.Context.instance().setFlavor(ElementsPanel, this);
     this.#domTreeWidget.show(this.domTreeContainer);
+
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
+    }
   }
 
   override willHide(): void {
@@ -1177,10 +1194,14 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.#domTreeWidget.copyStyles(node);
   }
 
-  async resolveRelativePosition(
-      parentElement: Element, revealNode: boolean, lookupId: string,
-      node?: SDK.DOMModel.DOMNode): Promise<{x: number, y: number}|null> {
-    if (!node) {
+  async resolveInitialState(
+      parentElement: Element, reveal: boolean, lookupId: string,
+      anchor?: SDK.DOMModel.DOMNode|SDK.NetworkRequest.NetworkRequest): Promise<{x: number, y: number}|null> {
+    if (!this.isShowing()) {
+      return null;
+    }
+
+    if (!anchor) {
       const backendNodeId = Number(lookupId) as Protocol.DOM.BackendNodeId;
       if (isNaN(backendNodeId)) {
         return null;
@@ -1198,23 +1219,28 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       if (!foundNode) {
         return null;
       }
-      node = foundNode;
+      anchor = foundNode;
     }
 
-    const element = this.#domTreeWidget.treeElementForNode(node);
+    const element = this.#domTreeWidget.treeElementForNode(anchor as SDK.DOMModel.DOMNode);
     if (!element) {
       return null;
     }
 
-    if (revealNode) {
+    if (reveal) {
       // The node must have been revealed in order to calculate its position.
-      await Common.Revealer.reveal(node);
+      await Common.Revealer.reveal(anchor);
     }
+
+    // The tree element element starts at the top-left of the expand/collapse arrow). We
+    // want to aim for the tagname instead.
+    const offsetToTagName = 22;
+    const yPadding = 5;
 
     const targetRect = element.listItemElement.getBoundingClientRect();
     const parentRect = parentElement.getBoundingClientRect();
-    const relativeX = 0;
-    const relativeY = targetRect.y - parentRect.y;
+    const relativeX = targetRect.x - parentRect.x + offsetToTagName;
+    const relativeY = targetRect.y - parentRect.y + yPadding;
     return {x: relativeX, y: relativeY};
   }
 

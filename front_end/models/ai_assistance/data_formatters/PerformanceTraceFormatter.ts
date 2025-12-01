@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Annotations from '../../../ui/components/annotations/annotations.js';
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
@@ -176,6 +177,16 @@ export class PerformanceTraceFormatter {
         if (cls) {
           const eventText = cls.worstClusterEvent ? `, event: ${this.serializeEvent(cls.worstClusterEvent)}` : '';
           parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
+
+          if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            const worstClusterEvent = cls.worstClusterEvent as Trace.Types.Events.SyntheticLayoutShiftCluster;
+            const layoutShiftData =
+                worstClusterEvent?.worstShiftEvent?.args?.data as Trace.Types.Events.LayoutShiftData;
+            if (layoutShiftData?.impacted_nodes && layoutShiftData.impacted_nodes?.length > 0) {
+              Annotations.AnnotationRepository.instance().addElementsAnnotation(
+                  'This element is impacted by a layout shift', layoutShiftData.impacted_nodes[0].node_id.toString());
+            }
+          }
         }
       } else {
         parts.push('Metrics (lab / observed): n/a');
@@ -562,6 +573,7 @@ export class PerformanceTraceFormatter {
       string {
     const {
       url,
+      requestId,
       statusCode,
       initialPriority,
       priority,
@@ -622,7 +634,8 @@ export class PerformanceTraceFormatter {
     const eventKey = this.#eventsSerializer.keyForEvent(request);
     const eventKeyLine = eventKey ? `eventKey: ${eventKey}\n` : '';
 
-    return `${titlePrefix}: ${url}
+    return `${titlePrefix}: ${url}${
+        Annotations.AnnotationRepository.annotationsEnabled() ? `\nrequestId: ${requestId}` : ''}
 ${eventKeyLine}Timings:
 - Queued at: ${micros(startTimesForLifecycle.queuedAt)}
 - Request sent at: ${micros(startTimesForLifecycle.requestSentAt)}

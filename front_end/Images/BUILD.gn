@@ -48,10 +48,6 @@ node_action("optimize_images") {
   ]
 
   args = [
-    # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
-    # as Chromium does not process the returncode of the subprocess correctly
-    # and instead looks if `stderr` is empty.
-    "--silent",
     "--config",
     rebase_path("rollup.config.mjs", root_build_dir),
     "--input",

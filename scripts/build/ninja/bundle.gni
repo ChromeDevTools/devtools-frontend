@@ -64,10 +64,6 @@ template("bundle") {
       ]
 
       args = [
-        # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
-        # as Chromium does not process the returncode of the subprocess correctly
-        # and instead looks if `stderr` is empty.
-        "--silent",
         "--config",
         rebase_path(
             devtools_location_prepend + "scripts/build/rollup.config.mjs",

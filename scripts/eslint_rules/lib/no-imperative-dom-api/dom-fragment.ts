@@ -30,6 +30,7 @@ export class DomFragment {
   textContent?: Node|string;
   children: DomFragment[] = [];
   parent?: DomFragment;
+  nextSiblings: DomFragment[] = [];
   expression?: string;
   widgetClass?: Node;
   replacer?: (fixer: TSESLint.RuleFixer, template: string) => TSESLint.RuleFix;
@@ -240,6 +241,9 @@ export class DomFragment {
     if (this.tagName && this.tagName !== 'input') {
       components.push('</', this.tagName, '>');
     }
+    for (const nextSibling of this.nextSiblings) {
+      components.push(...nextSibling.toTemplateLiteral(sourceCode, indent));
+    }
     return components;
   }
 
@@ -251,6 +255,9 @@ export class DomFragment {
     const child = DomFragment.getOrCreate(node, sourceCode);
     this.children.splice(index, 0, child);
     child.parent = this;
+    for (const nextSibling of child.nextSiblings) {
+      nextSibling.parent = this;
+    }
     if (processed) {
       for (const reference of child.references) {
         if (reference.node === node) {
@@ -259,6 +266,13 @@ export class DomFragment {
       }
     }
     return child;
+  }
+
+  appendSibling(node: Node, sourceCode: SourceCode): DomFragment {
+    const sibling = DomFragment.getOrCreate(node, sourceCode);
+    this.nextSiblings.push(sibling);
+    sibling.parent = this.parent;
+    return sibling;
   }
 }
 

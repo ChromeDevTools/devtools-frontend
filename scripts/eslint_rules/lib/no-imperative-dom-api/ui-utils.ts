@@ -11,6 +11,7 @@ import {isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} f
 import {DomFragment} from './dom-fragment.ts';
 
 type Node = TSESTree.Node;
+type Identifier = TSESTree.Identifier;
 
 export const uiUtils: RuleCreator = {
   create(context) {
@@ -175,6 +176,35 @@ export const uiUtils: RuleCreator = {
               key: 'jslog',
               value: '${VisualLogging.dropDown(' + sourceCode.getText(jslogContext) + ').track({click: true})}',
             });
+          }
+        }
+        if (isIdentifier(func, 'createIconLabel')) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'devtools-icon';
+          const opts = node.arguments[0];
+          if (opts?.type === 'ObjectExpression') {
+            for (const property of opts.properties) {
+              if (property.type !== 'Property') {
+                continue;
+              }
+              if (isIdentifier(property.key, 'iconName')) {
+                domFragment.attributes.push({
+                  key: 'name',
+                  value: property.value,
+                });
+              }
+              if (isIdentifier(property.key, ['color', 'width', 'height'])) {
+                domFragment.style.push({
+                  key: (property.key as Identifier).name,
+                  value: property.value,
+                });
+              }
+              if (isIdentifier(property.key, 'title')) {
+                const titleFragment = domFragment.appendSibling(property, sourceCode);
+                titleFragment.tagName = 'span';
+                titleFragment.textContent = property.value;
+              }
+            }
           }
         }
       },

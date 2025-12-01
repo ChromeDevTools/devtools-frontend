@@ -29,26 +29,6 @@ export const button: RuleCreator = {
             });
             return true;
           }
-        } else if (
-            domFragment.tagName === 'devtools-icon' && isIdentifier(property, 'data') &&
-            propertyValue.type === 'ObjectExpression') {
-          for (const property of propertyValue.properties) {
-            if (property.type !== 'Property' || property.key.type !== 'Identifier') {
-              continue;
-            }
-            if (isIdentifier(property.key, 'iconName')) {
-              domFragment.attributes.push({
-                key: 'name',
-                value: property.value,
-              });
-            } else {
-              domFragment.style.push({
-                key: property.key.name,
-                value: property.value,
-              });
-            }
-          }
-          return true;
         }
         return false;
       },
@@ -56,24 +36,6 @@ export const button: RuleCreator = {
         if (isIdentifierChain(node.callee, ['Buttons', 'Button', 'Button'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'devtools-button';
-        }
-        if (isIdentifierChain(node.callee, ['IconButton', 'Icon', 'Icon'])) {
-          const domFragment = DomFragment.getOrCreate(node, sourceCode);
-          domFragment.tagName = 'devtools-icon';
-        }
-      },
-      CallExpression(node) {
-        if (isIdentifierChain(node.callee, ['IconButton', 'Icon', 'create'])) {
-          const domFragment = DomFragment.getOrCreate(node, sourceCode);
-          domFragment.tagName = 'devtools-icon';
-          domFragment.attributes.push({
-            key: 'name',
-            value: node.arguments[0],
-          });
-          const className = node.arguments[1];
-          if (className) {
-            domFragment.classList.push(className);
-          }
         }
       },
     };

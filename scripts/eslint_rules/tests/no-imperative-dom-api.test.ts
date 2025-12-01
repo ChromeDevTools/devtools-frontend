@@ -729,9 +729,12 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const icon = new IconButton.Icon.Icon();
-    icon.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
+    const icon = createIcon('checkmark');
+    icon.data = {color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
     this.contentElement.appendChild(icon);
+    const icon2 = new Icon();
+    icon2.name = 'cross-circle-filled';
+    this.contentElement.appendChild(icon2);
   }
 }`,
       output: `
@@ -741,6 +744,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <div>
       <devtools-icon name="checkmark"
           style="color:var(--icon-checkmark-green); width:14px; height:14px"></devtools-icon>
+      <devtools-icon name="cross-circle-filled"></devtools-icon>
     </div>\`,
     target, {host: input});
 };
@@ -790,6 +794,40 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             \${bindToSetting(this.someSetting)}>\${i18nString(UIStrings.alternateToolbarTitle)}</devtools-checkbox>
         <devtools-checkbox \${bindToSetting(this.someOtherSetting)}>\${this.someOtherSetting.title()}</devtools-checkbox>
       </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.appendChild(UI.UIUtils.createIconLabel({
+        iconName: 'checkmark',
+        color: 'var(--icon-checkmark-green)',
+        width: '14px',
+        height: '14px',
+        title: 'some-title',
+    }));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-icon name="checkmark"
+          style="color:var(--icon-checkmark-green); width:14px; height:14px"></devtools-icon>
+      <span>some-title</span>
     </div>\`,
     target, {host: input});
 };

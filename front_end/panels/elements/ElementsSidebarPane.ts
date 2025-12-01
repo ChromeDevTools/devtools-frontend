@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -14,8 +13,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
   private readonly updateThrottler: Common.Throttler.Throttler;
   private updateWhenVisible: boolean;
   constructor(computedStyleModel: ComputedStyleModel, delegatesFocus?: boolean) {
-    super({useShadowDom: true, delegatesFocus});
-    this.element.classList.add('flex-none');
+    super({useShadowDom: true, delegatesFocus, classes: ['flex-none']});
     this.computedStyleModelInternal = computedStyleModel;
     this.computedStyleModelInternal.addEventListener(Events.CSS_MODEL_CHANGED, this.onCSSModelChanged, this);
     this.computedStyleModelInternal.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.onComputedStyleChanged, this);

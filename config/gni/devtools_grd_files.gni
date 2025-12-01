@@ -1337,6 +1337,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/ai_assistance/components/DisabledWidget.js",
   "front_end/panels/ai_assistance/components/ExploreWidget.js",
   "front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.js",
+  "front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.js",
   "front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js",
   "front_end/panels/ai_assistance/components/UserActionRow.js",
   "front_end/panels/ai_assistance/components/chatView.css.js",

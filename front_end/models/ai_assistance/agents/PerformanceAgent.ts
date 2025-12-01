@@ -92,6 +92,9 @@ you must render the appropriate Insight Overview component. Use these tags on a 
 - **Visualizing Network Request Details**: When discussing a specific network request, represent its details in a structured widget for improved readability and focus.
 Use this tag on a new line within your response, replacing \`EVENT_KEY\` (only the number, no letters prefix or -) with the actual trace event key:
   - For network event details: <network-request-widget value="EVENT_KEY">
+- **Visualizing Flamechart**: When discussing an interesting part of the trace, represent its details in a structured widget for improved readability and focus.
+Use this tag on a new line within your response, replacing "MIN_MICROSECONDS" and "MAX_MICROSECONDS" with the actual start and end times in microseconds:
+  - For a flame chart of a specific time range: <flame-chart-widget start="MIN_MICROSECONDS" end="MAX_MICROSECONDS">
 `;
 
 /**
@@ -1091,7 +1094,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     this.declareFunction<{url: string}, {content: string}>('getResourceContent', {
       description:
-          'Returns the content of the resource with the given url. Only use this for text resource types. Prefer getFunctionCode when possible.',
+          'Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',

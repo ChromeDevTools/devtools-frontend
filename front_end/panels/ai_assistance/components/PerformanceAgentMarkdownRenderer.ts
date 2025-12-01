@@ -5,6 +5,7 @@
 import './CollapsibleAssistanceContentWidget.js';
 import '../../../models/trace/insights/insights.js';
 import '../../../panels/timeline/components/components.js';
+import './PerformanceAgentFlameChart.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as Root from '../../../core/root/root.js';
@@ -22,6 +23,7 @@ import * as Network from '../../network/network.js';
 import * as Insights from '../../timeline/components/insights/insights.js';
 
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
+import type * as PerformanceAgentFlameChart from './PerformanceAgentFlameChart.js';
 
 const {html} = Lit.StaticHtml;
 const {ref, createRef} = Lit.Directives;
@@ -77,6 +79,21 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
     // is part of a prototype for the GreenDev project and is only rendered when the GreenDev
     // feature is enabled.
     if (token.type === 'html' && Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled)) {
+      if (token.text.includes('<flame-chart-widget')) {
+        const startMatch = token.text.match(/start="?(\d+)"?/);
+        const endMatch = token.text.match(/end="?(\d+)"?/);
+        if (this.parsedTrace) {
+          const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
+          const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
+          return html`<devtools-performance-agent-flame-chart .data=${{
+            parsedTrace: this.parsedTrace,
+            start,
+            end,
+          } as PerformanceAgentFlameChart.PerformanceAgentFlameChartData}
+          }></devtools-performance-agent-flame-chart>`;
+        }
+      }
+
       // Flexible regex to match the tag name and a value a.
       // match[1]: tagName (e.g., 'ai-insight', 'network-request-widget')
       // match[2]: value (value needed to display the widget)

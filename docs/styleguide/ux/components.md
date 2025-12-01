@@ -281,14 +281,39 @@ Find an exhaustive collection of icons currently used in DevTools [here](https:/
 
 #### Developer guidelines
 
-For some frequently used icons e.g. cross-circle, warning-filled etc. colors are auto-set in the component. See full list [here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/components/icon_button/icon.css;l=47)
+For some frequently used icons, colors are auto-set in the component. The full list of icons with auto-set colors is:
+
+- `warning-filled`
+- `issue-exclamation-filled`
+- `cross-circle`
+- `cross-circle-filled`
+- `issue-cross-filled`
+- `small-status-dot`
+- `issue-text-filled`
+- `large-arrow-right-filled`
+- `code-circle`
+- `file-document`
+- `file-font`
+- `file-script`
+- `file-stylesheet`
+- `file-media`
+
+For the definitions, refer to the [icon.css file](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/kit/icons/icon.css).
+
+The default icon size is at 20x20 pixels. There are predefined classes for other sizes, don't deviate from them:
+
+  * `.extra-small`: 12x12 pixels
+  * `.small`: 14x14 pixels
+  * `.medium`: 16x16 pixels
+  * `.large`: 18x18 pixels
+  * `.extra-large`: 20x20 pixels
 
 ##### Dos and Don'ts
 
 ###### Do
 
   * Set class and change color in .css files
-  * Set one of the predefined classes to change icon size e.g. extra-small for 12px
+  * Set one of the predefined classes to change icon size.
 
 ###### Don't
 
@@ -304,11 +329,12 @@ Usage with lit-html:
 html`<devtools-icon name=${'some-icon-name'}></devtools-icon>`;
 ```
 
-Usage with the imperative API:
+### Resources
 
-```ts
-const someIcon = createIcon('some-icon-name', 'some-class');
-```
+*   [`devtools-icon`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/kit/icons/Icon.ts)
+*   [Component Documentation Example](https://chromedevtools.github.io/devtools-frontend/#Icon)
+*   [Icon Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/Chrome-DevTools-Design-Kit?node-id=4323-3772)
+*   [Greenlines](http://go/chrome-devtools:icons-greenlines)
 
 ## Context menus
 
@@ -604,8 +630,8 @@ html`<devtools-card heading="Card with rich heading">
 ### Resources
 
 *   [`devtools-card`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/kit/cards/Card.ts)
-* [Component Documentation Example](https://chromedevtools.github.io/devtools-frontend/)
+* [Component Documentation Example](https://chromedevtools.github.io/devtools-frontend/#Card)
 
 * [Cards Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/Chrome-DevTools-Design-Kit?node-id=3456-939)
 
-* [Greenlines](go/chrome-devtools:cards-greenlines)
+* [Greenlines](http:/go/chrome-devtools:cards-greenlines)

@@ -222,7 +222,7 @@ export class ConsolePin {
     this.committedExpression = expression;
     this.hovered = false;
     this.lastNode = null;
-    this.editor = this.createEditor(expression, nameElement);
+    this.editor = this.#createEditor(expression, nameElement);
 
     this.pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
     this.pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
@@ -241,7 +241,7 @@ export class ConsolePin {
     });
   }
 
-  createEditor(doc: string, parent: HTMLElement): TextEditor.TextEditor.TextEditor {
+  #createInitialEditorState(doc: string): CodeMirror.EditorState {
     const extensions = [
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
       CodeMirror.EditorView.lineWrapping,
@@ -297,7 +297,7 @@ export class ConsolePin {
           },
         },
       ]),
-      CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
+      CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.#onBlur(view)}),
       TextEditor.Config.baseConfiguration(doc),
       TextEditor.Config.closeBrackets.instance(),
       TextEditor.Config.autocompletion.instance(),
@@ -305,12 +305,16 @@ export class ConsolePin {
     if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
       extensions.push(TextEditor.JavaScript.completion());
     }
-    const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({doc, extensions}));
+    return CodeMirror.EditorState.create({doc, extensions});
+  }
+
+  #createEditor(doc: string, parent: HTMLElement): TextEditor.TextEditor.TextEditor {
+    const editor = new TextEditor.TextEditor.TextEditor(this.#createInitialEditorState(doc));
     parent.appendChild(editor);
     return editor;
   }
 
-  onBlur(editor: CodeMirror.EditorView): void {
+  #onBlur(editor: CodeMirror.EditorView): void {
     const text = editor.state.doc.toString();
     const trimmedText = text.trim();
     this.committedExpression = trimmedText;

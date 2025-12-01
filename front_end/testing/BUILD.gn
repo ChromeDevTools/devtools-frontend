@@ -30,7 +30,6 @@ ts_library("testing") {
     "MockIssuesModel.ts",
     "MockNetworkLog.ts",
     "MockScopeChain.ts",
-    "MockSettingStorage.ts",
     "MutationHelpers.ts",
     "NetworkHelpers.ts",
     "OverridesHelpers.ts",

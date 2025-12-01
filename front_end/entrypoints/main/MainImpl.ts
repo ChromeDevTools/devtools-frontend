@@ -133,6 +133,21 @@ const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let loadedPanelCommonModule: typeof PanelCommon|undefined;
+
+const WINDOW_LOCAL_STORAGE: Common.Settings.SettingsBackingStore = {
+  register(_setting: string): void{},
+  async get(setting: string): Promise<string> {
+    return window.localStorage.getItem(setting) as unknown as string;
+  },
+  set(setting: string, value: string): void {
+    window.localStorage.setItem(setting, value);
+  },
+  remove(setting: string): void {
+    window.localStorage.removeItem(setting);
+  },
+  clear: () => window.localStorage.clear(),
+};
+
 export class MainImpl {
   #readyForTestPromise = Promise.withResolvers<void>();
   #veStartPromise!: Promise<void>;
@@ -275,15 +290,11 @@ export class MainImpl {
       storagePrefix = '__bundled__';
     }
 
-    let localStorage;
+    let localStorage: Common.Settings.SettingsStorage;
     if (!Host.InspectorFrontendHost.isUnderTest() && window.localStorage) {
-      const localbackingStore: Common.Settings.SettingsBackingStore = {
-        ...Common.Settings.NOOP_STORAGE,
-        clear: () => window.localStorage.clear(),
-      };
-      localStorage = new Common.Settings.SettingsStorage(window.localStorage, localbackingStore, storagePrefix);
+      localStorage = new Common.Settings.SettingsStorage(window.localStorage, WINDOW_LOCAL_STORAGE, storagePrefix);
     } else {
-      localStorage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, storagePrefix);
+      localStorage = new Common.Settings.SettingsStorage({}, undefined, storagePrefix);
     }
 
     const hostUnsyncedStorage: Common.Settings.SettingsBackingStore = {

@@ -186,12 +186,12 @@ describeWithEnvironment.skip = function(title: string, fn: (this: Mocha.Suite) =
 };
 
 export function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T> {
-  const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
+  const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
   return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 
 export function createFakeRegExpSetting(name: string, defaultValue: string): Common.Settings.RegExpSetting {
-  const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
+  const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
   return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 

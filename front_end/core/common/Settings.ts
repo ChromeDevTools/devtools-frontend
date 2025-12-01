@@ -246,17 +246,29 @@ export interface SettingsBackingStore {
   clear(): void;
 }
 
-export const NOOP_STORAGE: SettingsBackingStore = {
-  register: () => {},
-  set: () => {},
-  get: () => Promise.resolve(''),
-  remove: () => {},
-  clear: () => {},
-};
+export class InMemoryStorage implements SettingsBackingStore {
+  #store = new Map();
+
+  register(_setting: string): void {
+  }
+  set(key: string, value: string): void {
+    this.#store.set(key, value);
+  }
+  get(key: string): Promise<string> {
+    return this.#store.get(key);
+  }
+  remove(key: string): void {
+    this.#store.delete(key);
+  }
+  clear(): void {
+    this.#store.clear();
+  }
+}
 
 export class SettingsStorage {
   constructor(
-      private object: Record<string, string>, private readonly backingStore: SettingsBackingStore = NOOP_STORAGE,
+      private object: Record<string, string>,
+      private readonly backingStore: SettingsBackingStore = new InMemoryStorage(),
       private readonly storagePrefix = '') {
   }
 

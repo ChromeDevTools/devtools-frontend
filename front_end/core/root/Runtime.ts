@@ -478,16 +478,6 @@ interface AllowPopoverForcing {
   enabled: boolean;
 }
 
-interface AiSubmenuPrompts {
-  enabled: boolean;
-  featureName?: string;
-}
-
-interface AiDebugWithAi {
-  enabled: boolean;
-  featureName?: string;
-}
-
 interface GlobalAiButton {
   enabled: boolean;
   promotionEnabled: boolean;
@@ -561,7 +551,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsFreestyler: HostConfigFreestyler,
   devToolsGreenDevUi: HostConfigGreenDevUi,
   devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent,
-  devToolsAiDebugWithAi: AiDebugWithAi,
   devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent,
   devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
   devToolsAiCodeCompletion: HostConfigAiCodeCompletion,
@@ -580,7 +569,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
   devToolsAllowPopoverForcing: AllowPopoverForcing,
-  devToolsAiSubmenuPrompts: AiSubmenuPrompts,
   devToolsGlobalAiButton: GlobalAiButton,
   devToolsGdpProfiles: GdpProfiles,
   devToolsGdpProfilesAvailability: GdpProfilesAvailability,

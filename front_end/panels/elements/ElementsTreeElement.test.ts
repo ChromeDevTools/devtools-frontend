@@ -134,12 +134,6 @@ describeWithMockConnection('ElementsTreeElement ', () => {
   };
 
   beforeEach(() => {
-    updateHostConfig({
-      devToolsAiSubmenuPrompts: {
-        enabled: true,
-      },
-    });
-
     registerActions([{
       actionId: 'freestyler.element-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,

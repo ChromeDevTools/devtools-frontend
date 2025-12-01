@@ -13,7 +13,6 @@ import {
   describeWithEnvironment,
   registerActions,
   registerNoopActions,
-  updateHostConfig
 } from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -55,12 +54,6 @@ describeWithEnvironment('SourcesPanel', () => {
   }
 
   it('Shows Debug with Ai menu and submenu items', () => {
-    updateHostConfig({
-      devToolsAiSubmenuPrompts: {
-        enabled: true,
-      },
-    });
-
     registerNoopActions([
       'debugger.toggle-pause', 'debugger.step-over', 'debugger.step-into', 'debugger.step-out', 'debugger.step',
       'debugger.toggle-breakpoints-active'

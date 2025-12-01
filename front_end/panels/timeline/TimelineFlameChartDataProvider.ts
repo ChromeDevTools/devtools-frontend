@@ -256,40 +256,30 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (callTree) {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
 
-        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
-          function appendSubmenuPromptAction(
-              submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
-              label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
-            submenu.defaultSection().appendItem(
-                label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
-          }
-
-          const submenu = contextMenu.footerSection().appendSubMenuItem(
-              action.title(), false, PERF_AI_ACTION_ID,
-              Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.featureName);
-          submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString(UIStrings.startAChat));
-          submenu.defaultSection().appendItem(i18nString(UIStrings.labelEntry), () => {
-            this.dispatchEventToListeners(
-                Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex, withLinkCreationButton: false});
-          }, {
-            jslogContext: 'timeline.annotations.create-entry-label',
-          });
-          appendSubmenuPromptAction(
-              submenu, action, i18nString(UIStrings.assessThePurpose), 'What\'s the purpose of this entry?',
-              PERF_AI_ACTION_ID + '.purpose');
-          appendSubmenuPromptAction(
-              submenu, action, i18nString(UIStrings.identifyTimeSpent),
-              'Where is most time being spent in this call tree?', PERF_AI_ACTION_ID + '.time-spent');
-          appendSubmenuPromptAction(
-              submenu, action, i18nString(UIStrings.findImprovements), 'How can I reduce the time of this call tree?',
-              PERF_AI_ACTION_ID + '.improvements');
-        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
-          contextMenu.footerSection().appendAction(
-              PERF_AI_ACTION_ID, undefined, false, undefined,
-              Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.featureName);
-        } else {
-          contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID);
+        function appendSubmenuPromptAction(
+            submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
+            label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
+          submenu.defaultSection().appendItem(
+              label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
         }
+
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, PERF_AI_ACTION_ID);
+        submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString(UIStrings.startAChat));
+        submenu.defaultSection().appendItem(i18nString(UIStrings.labelEntry), () => {
+          this.dispatchEventToListeners(
+              Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex, withLinkCreationButton: false});
+        }, {
+          jslogContext: 'timeline.annotations.create-entry-label',
+        });
+        appendSubmenuPromptAction(
+            submenu, action, i18nString(UIStrings.assessThePurpose), 'What\'s the purpose of this entry?',
+            PERF_AI_ACTION_ID + '.purpose');
+        appendSubmenuPromptAction(
+            submenu, action, i18nString(UIStrings.identifyTimeSpent),
+            'Where is most time being spent in this call tree?', PERF_AI_ACTION_ID + '.time-spent');
+        appendSubmenuPromptAction(
+            submenu, action, i18nString(UIStrings.findImprovements), 'How can I reduce the time of this call tree?',
+            PERF_AI_ACTION_ID + '.improvements');
       }
     }
 

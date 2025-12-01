@@ -1725,11 +1725,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         }
 
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
-        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
           const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-          const submenu = contextMenu.footerSection().appendSubMenuItem(
-              action.title(), false, openAiAssistanceId,
-              Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
+          const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
           submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.explainPurpose), 'What is the purpose of this request?',
@@ -1743,13 +1740,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.assessSecurityHeaders), 'Are there any security headers present?',
               openAiAssistanceId + '.security');
-        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
-          contextMenu.footerSection().appendAction(
-              openAiAssistanceId, undefined, false, undefined,
-              Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
-        } else {
-          contextMenu.footerSection().appendAction(openAiAssistanceId);
-        }
       }
       copyMenu.defaultSection().appendItem(
           i18nString(UIStrings.copyURL),

@@ -12,7 +12,6 @@ import {
   describeWithEnvironment,
   registerActions,
   stubNoopSettings,
-  updateHostConfig
 } from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace, setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -277,11 +276,6 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   });
 
   it('shows Debug with AI submenu items', async function() {
-    updateHostConfig({
-      devToolsAiSubmenuPrompts: {
-        enabled: true,
-      },
-    });
     stubNoopSettings();
     registerActions([{
       actionId: 'drjones.performance-panel-context',

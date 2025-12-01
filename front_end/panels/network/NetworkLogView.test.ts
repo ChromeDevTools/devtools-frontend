@@ -1336,11 +1336,6 @@ describeWithEnvironment('NetworkLogView', () => {
   });
 
   it('shows Debug with AI menu and submenu items when the flag is on', () => {
-    updateHostConfig({
-      devToolsAiSubmenuPrompts: {
-        enabled: true,
-      },
-    });
     stubNoopSettings();
     registerActions([{
       actionId: 'drjones.network-panel-context',

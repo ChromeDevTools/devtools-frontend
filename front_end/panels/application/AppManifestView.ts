@@ -6,7 +6,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -483,6 +483,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private overlayModel?: SDK.OverlayModel.OverlayModel|null;
   private protocolHandlersView: ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView;
+  private manifestUrl: Platform.DevToolsPath.UrlString;
+  private manifestData: string|null;
+  private manifestErrors: Protocol.Page.AppManifestError[];
+  private installabilityErrors: Protocol.Page.InstallabilityError[];
+  private appIdResponse: Protocol.Page.GetAppIdResponse|null;
 
   constructor(
       emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
@@ -547,6 +552,12 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.throttler = throttler;
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
+
+    this.manifestUrl = Platform.DevToolsPath.EmptyUrlString;
+    this.manifestData = null;
+    this.manifestErrors = [];
+    this.installabilityErrors = [];
+    this.appIdResponse = null;
   }
 
   getStaticSections(): UI.ReportView.Section[] {
@@ -614,15 +625,26 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.resourceTreeModel.getAppId(),
     ]);
 
-    void this.throttler.schedule(
-        () => this.renderManifest(url, data, errors, installabilityErrors, appId),
-        immediately ? Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common.Throttler.Scheduling.DEFAULT);
+    this.manifestUrl = url;
+    this.manifestData = data;
+    this.manifestErrors = errors;
+    this.installabilityErrors = installabilityErrors;
+    this.appIdResponse = appId;
+
+    if (immediately) {
+      await this.performUpdate();
+    } else {
+      await this.requestUpdate();
+    }
   }
 
-  private async renderManifest(
-      url: Platform.DevToolsPath.UrlString, data: string|null, errors: Protocol.Page.AppManifestError[],
-      installabilityErrors: Protocol.Page.InstallabilityError[],
-      appIdResponse: Protocol.Page.GetAppIdResponse): Promise<void> {
+  override async performUpdate(): Promise<void> {
+    const url = this.manifestUrl;
+    let data = this.manifestData;
+    const errors = this.manifestErrors;
+    const installabilityErrors = this.installabilityErrors;
+    const appIdResponse = this.appIdResponse;
+
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
     if ((!data || data === '{}') && !errors.length) {

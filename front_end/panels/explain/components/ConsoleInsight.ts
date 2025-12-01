@@ -668,7 +668,9 @@ function renderHeader(
 export class ConsoleInsight extends HTMLElement {
   static async create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient): Promise<ConsoleInsight> {
     const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    return new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
+    const component = new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
+    component.classList.add('devtools-console-insight');
+    return component;
   }
 
   readonly #shadow = this.attachShadow({mode: 'open'});

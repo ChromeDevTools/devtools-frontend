@@ -379,13 +379,18 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   setInsight(insight: HTMLElement): void {
-    this.elementInternal?.querySelector('devtools-console-insight')?.remove();
+    this.elementInternal?.querySelector('.devtools-console-insight')?.remove();
     this.elementInternal?.append(insight);
     this.elementInternal?.classList.toggle('has-insight', true);
     insight.addEventListener('close', () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
       this.elementInternal?.classList.toggle('has-insight', false);
-      this.elementInternal?.removeChild(insight);
+      const widget = UI.Widget.Widget.get(insight);
+      if (widget) {
+        widget.detach();
+      } else {
+        this.elementInternal?.removeChild(insight);
+      }
       this.#teaser?.setInactive(false);
     }, {once: true});
     this.#teaser?.setInactive(true);

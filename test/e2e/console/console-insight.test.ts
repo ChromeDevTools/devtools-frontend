@@ -70,7 +70,7 @@ describe('ConsoleInsight', function() {
     });
     await clickOnContextMenu(CLICK_TARGET_SELECTOR, EXPLAIN_ACTION_ID, devToolsPage);
 
-    await devToolsPage.waitFor('devtools-console-insight');
+    await devToolsPage.waitFor('.devtools-console-insight');
   });
 
   it('shows an insight for a console message via the hover button', async ({devToolsPage, inspectedPage}) => {
@@ -83,7 +83,7 @@ describe('ConsoleInsight', function() {
     await devToolsPage.waitFor('.hover-button');
     await devToolsPage.hover('.console-message');
     await devToolsPage.click('.hover-button');
-    await devToolsPage.waitFor('devtools-console-insight');
+    await devToolsPage.waitFor('.devtools-console-insight');
   });
 
   it('does not show context menu if AIDA is not available', async ({devToolsPage, inspectedPage}) => {

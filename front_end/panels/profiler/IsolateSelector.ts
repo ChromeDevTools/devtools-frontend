@@ -88,7 +88,6 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
         this.totalTrendDiv, i18nString(UIStrings.totalPageJsHeapSizeChangeTrend, {PH1: trendIntervalMinutes}));
     UI.Tooltip.Tooltip.install(this.totalValueDiv, i18nString(UIStrings.totalPageJsHeapSizeAcrossAllVm));
 
-    SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.NAME_CHANGED, this.targetChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
@@ -97,6 +96,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
 
   override wasShown(): void {
     super.wasShown();
+    SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.IsolateManager.IsolateManager.instance().addEventListener(
         SDK.IsolateManager.Events.MEMORY_CHANGED, this.heapStatsChanged, this);
   }
@@ -105,6 +105,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     super.willHide();
     SDK.IsolateManager.IsolateManager.instance().removeEventListener(
         SDK.IsolateManager.Events.MEMORY_CHANGED, this.heapStatsChanged, this);
+    SDK.IsolateManager.IsolateManager.instance().unobserveIsolates(this);
   }
 
   isolateAdded(isolate: SDK.IsolateManager.Isolate): void {

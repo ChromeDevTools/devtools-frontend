@@ -23,6 +23,7 @@ import {toolbar} from './no-imperative-dom-api/toolbar.ts';
 import {uiFragment} from './no-imperative-dom-api/ui-fragment.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
+import {xLink} from './no-imperative-dom-api/x-link.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 type Identifier = TSESTree.Identifier;
@@ -63,6 +64,7 @@ export default createRule({
       uiFragment.create(context),
       uiUtils.create(context),
       widget.create(context),
+      xLink.create(context),
     ];
 
     function getEvent(event: Node): string|null {

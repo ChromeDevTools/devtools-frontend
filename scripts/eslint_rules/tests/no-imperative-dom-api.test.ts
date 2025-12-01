@@ -1405,6 +1405,36 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
+    this.contentElement.appendChild(
+        UI.XLink.XLink.create('https://google.com', 'Google', 'some-class', undefined, 'some-context', 0));
+    this.contentElement.appendChild(
+        UI.XLink.XLink.create('https://chromium.org', 'Chromium', undefined, undefined, undefined, 1));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-link class="some-class" href="https://google.com" .jslogContext=\${'some-context'}>Google</devtools-link>
+      <devtools-link href="https://chromium.org" tabindex="1">Chromium</devtools-link>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
     this.contentElement.appendChild(uiI18n.getFormatLocalizedString(locString, UIStrings.testString, {
       PH1: document.createElement('div'),
       PH2: 'some text',

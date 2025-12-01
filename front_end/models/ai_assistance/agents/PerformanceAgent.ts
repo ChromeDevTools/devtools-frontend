@@ -326,7 +326,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
       // Add up to 3 suggestions from the top failing insights.
       const top3FailingInsightSuggestions =
           Object.values(insightSet.model)
-              .filter(model => model.state !== 'pass')
+              .filter(model => model.state !== 'pass' && !(model instanceof Error))
               .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
               .filter(suggestion => !!suggestion)
               .slice(0, 3);

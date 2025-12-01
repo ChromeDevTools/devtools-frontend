@@ -84,6 +84,9 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   // This flag tracks if the Insights AI feature is enabled within Chrome for
   // the active user.
   #askAiEnabled = false;
+  // Tracks if this component is rendered withing the AI assistance panel.
+  // Currently only relevant to GreenDev.
+  #isAIAssistanceContext = false;
 
   #selected = false;
   #model: T|null = null;
@@ -124,6 +127,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
     const {devToolsAiAssistancePerformanceAgent} = Root.Runtime.hostConfig;
     this.#askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
+  }
+
+  set isAIAssistanceContext(isAIAssistanceContext: boolean) {
+    this.#isAIAssistanceContext = isAIAssistanceContext;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set selected(selected: boolean) {
@@ -222,7 +230,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     this.dispatchEvent(new SidebarInsight.InsightActivated(this.model, this.data.insightSetKey));
   }
 
-  #renderHoverIcon(insightIsActive: boolean): Lit.TemplateResult {
+  #renderHoverIcon(insightIsActive: boolean): Lit.LitTemplate {
+    if (this.#isAIAssistanceContext) {
+      return Lit.nothing;
+    }
+
     // clang-format off
     const containerClasses = Lit.Directives.classMap({
       'insight-hover-icon': true,
@@ -397,6 +409,9 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   #canShowAskAI(): boolean {
+    if (this.#isAIAssistanceContext) {
+      return false;
+    }
     const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
             Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
         this.#askAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
@@ -446,7 +461,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
     const containerClasses = Lit.Directives.classMap({
       insight: true,
-      closed: !this.#selected,
+      closed: !this.#selected || this.#isAIAssistanceContext,
+      'ai-assistance-context': this.#isAIAssistanceContext,
     });
     const estimatedSavingsString = this.#getEstimatedSavingsString();
     const estimatedSavingsAriaLabel = this.#getEstimatedSavingsAriaLabel();

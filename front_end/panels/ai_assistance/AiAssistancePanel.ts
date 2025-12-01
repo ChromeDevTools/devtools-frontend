@@ -276,7 +276,7 @@ function getMarkdownRenderer(
     if (!context.external) {
       const focus = context.getItem();
       return new PerformanceAgentMarkdownRenderer(
-          focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+          focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus), focus.parsedTrace);
     }
   } else if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE) {
     // Handle historical conversations (can't linkify anything).

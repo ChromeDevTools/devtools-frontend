@@ -77,10 +77,7 @@ export class NetworkRequestTooltip extends HTMLElement {
   }
 
   set data(data: NetworkTooltipData) {
-    if (this.#data.networkRequest === data.networkRequest) {
-      return;
-    }
-    if (this.#data.entityMapper === data.entityMapper) {
+    if (this.#data.networkRequest === data.networkRequest && this.#data.entityMapper === data.entityMapper) {
       return;
     }
     this.#data = {networkRequest: data.networkRequest, entityMapper: data.entityMapper};

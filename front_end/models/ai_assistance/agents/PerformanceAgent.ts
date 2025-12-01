@@ -55,14 +55,41 @@ const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled()
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
 
-const greenDevAdditionalFunction = `
+const greenDevAdditionalAnnotationsFunction = `
 - CRITICAL:You also have access to a function called addElementAnnotation, which should be used to highlight elements.`;
 
-const greenDevAdditionalGuidelines = `
+const greenDevAdditionalAnnotationsGuidelines = `
 - CRITICAL: Each time an element with a nodeId is mentioned, you MUST ALSO call the function addElementAnnotation for that element.
 - The addElementAnnotation function should be called as soon as you identify an element that needs to be highlighted.
 - The addElementAnnotation function should always be called for the LCP element, if known.
 - The annotationMessage should be descriptive and relevant to why the element is being highlighted.
+`;
+
+const greenDevAdditionalWidgetGuidelines = `
+- **Visualizing Insights**: When discussing the breakdown of specific metrics or a performance problem,
+you must render the appropriate Insight Overview component. Use these tags on a new line within your response:
+  - For LCP breakdown: <ai-insight value="LCPBreakdown">
+  - For INP breakdown: <ai-insight value="INPBreakdown">
+  - For CLS culprits: <ai-insight value="CLSCulprits">
+  - For third parties: <ai-insight value="ThirdParties">
+  - For document latency: <ai-insight value="DocumentLatency">
+  - For DOM size: <ai-insight value="DOMSize">
+  - For duplicate JavaScript: <ai-insight value="DuplicatedJavaScript">
+  - For font display: <ai-insight value="FontDisplay">
+  - For forced reflow: <ai-insight value="ForcedReflow">
+  - For image delivery: <ai-insight value="ImageDelivery">
+  - For LCP discovery: <ai-insight value="LCPDiscovery">
+  - For legacy JavaScript: <ai-insight value="LegacyJavaScript">
+  - For network dependency tree: <ai-insight value="NetworkDependencyTree">
+  - For render blocking: <ai-insight value="RenderBlocking">
+  - For slow CSS selector: <ai-insight value="SlowCSSSelector">
+  - For viewport: <ai-insight value="Viewport">
+  - For modern HTTP: <ai-insight value="ModernHTTP">
+  - For cache: <ai-insight value="Cache">
+- Do not place the <ai-insight> tag inside markdown code blocks (backticks). Output the tag directly as raw text.
+- **Visualizing Network Request Details**: When discussing a specific network request, represent its details in a structured widget for improved readability and focus.
+Use this tag on a new line within your response, replacing \`EVENT_KEY\` (only the number, no letters prefix or -) with the actual trace event key:
+  - For network event details: <network-request-widget value="EVENT_KEY">
 `;
 
 /**
@@ -72,7 +99,9 @@ const greenDevAdditionalGuidelines = `
  *
  * Check token length in https://aistudio.google.com/
  */
-const preamble = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+const buildPreamble = (): string => {
+  const greenDevEnabled = Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled;
+  return `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
 
@@ -82,7 +111,7 @@ Don't mention anything about an insight without first getting more data about it
 
 You have many functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
 
-${annotationsEnabled ? greenDevAdditionalFunction : ''}
+${annotationsEnabled ? greenDevAdditionalAnnotationsFunction : ''}
 
 You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
 
@@ -124,7 +153,8 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Structure your response using markdown headings and bullet points for improved readability.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
-${annotationsEnabled ? greenDevAdditionalGuidelines : ''}
+${annotationsEnabled ? greenDevAdditionalAnnotationsGuidelines : ''}
+${greenDevEnabled ? greenDevAdditionalWidgetGuidelines : ''}
 
 ## Strict Constraints
 
@@ -142,6 +172,7 @@ Adhere to the following critical requirements:
 - If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
 - Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
 `;
+};
 
 const extraPreambleWhenNotExternal = `Additional notes:
 
@@ -327,14 +358,16 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #traceFacts: Host.AidaClient.RequestFact[] = [];
 
   get preamble(): string {
-    return preamble;
+    return buildPreamble();
   }
 
   get clientFeature(): Host.AidaClient.ClientFeature {
     return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier(): string|undefined {
-    return annotationsEnabled ? 'TESTERS' : Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ?
+        'TESTERS' :
+        Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options(): RequestOptions {
     const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;

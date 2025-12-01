@@ -175,12 +175,12 @@ export class ConsolePinPane extends UI.Widget.VBox {
 }
 
 export class ConsolePinPresenter {
+  private readonly pin: ConsolePin;
   private readonly pinElement: Element;
   private readonly pinPreview: HTMLElement;
   private lastResult: SDK.RuntimeModel.EvaluationResult|null;
   private lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null;
   private editor: TextEditor.TextEditor.TextEditor;
-  private committedExpression: string;
   private hovered: boolean;
   private lastNode: SDK.RemoteObject.RemoteObject|null;
   private deletePinIcon: Buttons.Button.Button;
@@ -219,10 +219,11 @@ export class ConsolePinPresenter {
 
     this.lastResult = null;
     this.lastExecutionContext = null;
-    this.committedExpression = expression;
     this.hovered = false;
     this.lastNode = null;
     this.editor = this.#createEditor(expression, nameElement);
+
+    this.pin = new ConsolePin({workingCopy: () => this.editor.state.doc.toString()}, expression);
 
     this.pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
     this.pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
@@ -252,7 +253,7 @@ export class ConsolePinPresenter {
         {
           key: 'Escape',
           run: (view: CodeMirror.EditorView) => {
-            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
             this.focusOut();
             return true;
           },
@@ -278,7 +279,7 @@ export class ConsolePinPresenter {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done
-            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
             this.focusOut();
             return true;
           },
@@ -290,7 +291,7 @@ export class ConsolePinPresenter {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done
-            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
             this.editor.blur();
             this.deletePinIcon.focus();
             return true;
@@ -315,19 +316,18 @@ export class ConsolePinPresenter {
   }
 
   #onBlur(editor: CodeMirror.EditorView): void {
-    const text = editor.state.doc.toString();
-    const trimmedText = text.trim();
-    this.committedExpression = trimmedText;
+    const commitedAsIs = this.pin.commit();
     this.pinPane.savePins();
-    if (this.committedExpression.length) {
-      UI.ARIAUtils.setLabel(
-          this.deletePinIcon, i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
+    const newExpression = this.pin.expression;
+
+    if (newExpression.length) {
+      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeExpressionS, {PH1: newExpression}));
     } else {
       UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeBlankExpression));
     }
     editor.dispatch({
-      selection: {anchor: trimmedText.length},
-      changes: trimmedText !== text ? {from: 0, to: text.length, insert: trimmedText} : undefined,
+      selection: {anchor: this.pin.expression.length},
+      changes: !commitedAsIs ? {from: 0, to: this.editor.state.doc.length, insert: newExpression} : undefined,
     });
   }
 
@@ -342,7 +342,7 @@ export class ConsolePinPresenter {
   }
 
   expression(): string {
-    return this.committedExpression;
+    return this.pin.expression;
   }
 
   element(): Element {
@@ -371,7 +371,7 @@ export class ConsolePinPresenter {
     }
     const text = TextEditor.Config.contentIncludingHint(this.editor.editor);
     const isEditing = this.pinElement.hasFocus();
-    const throwOnSideEffect = isEditing && text !== this.committedExpression;
+    const throwOnSideEffect = isEditing && text !== this.pin.expression;
     const timeout = throwOnSideEffect ? 250 : undefined;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
@@ -414,5 +414,40 @@ export class ConsolePinPresenter {
     const isError = result && !('error' in result) && result.exceptionDetails &&
         !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
     this.pinElement.classList.toggle('error-level', Boolean(isError));
+  }
+}
+
+/**
+ * Small helper interface to allow `ConsolePin` to retrieve the current working copy.
+ */
+interface ConsolePinEditor {
+  workingCopy(): string;
+}
+
+/**
+ * A pinned console expression.
+ */
+export class ConsolePin {
+  readonly #editor: ConsolePinEditor;
+  #expression: string;
+
+  constructor(editor: ConsolePinEditor, expression: string) {
+    this.#editor = editor;
+    this.#expression = expression;
+  }
+
+  get expression(): string {
+    return this.#expression;
+  }
+
+  /**
+   * Commit the current working copy from the editor.
+   * @returns true, iff the working copy was commited as-is.
+   */
+  commit(): boolean {
+    const text = this.#editor.workingCopy();
+    const trimmedText = text.trim();
+    this.#expression = trimmedText;
+    return this.#expression === text;
   }
 }

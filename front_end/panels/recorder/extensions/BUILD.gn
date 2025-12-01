@@ -11,6 +11,7 @@ devtools_ui_module("extensions") {
   deps = [
     "../../../core/common:bundle",
     "../../../models/extensions:bundle",
+    "../../../panels/common:bundle",
   ]
 
   public_deps = []

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Extensions from '../../models/extensions/extensions.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
@@ -108,5 +109,51 @@ export class ExtensionNotifierView extends UI.Widget.VBox {
   override willHide(): void {
     super.willHide();
     this.server.notifyViewHidden(this.id);
+  }
+}
+
+export class ExtensionIframe {
+  #descriptor: Extensions.RecorderPluginManager.ViewDescriptor;
+  #iframe: HTMLIFrameElement;
+  #isShowing = false;
+  #isLoaded = false;
+
+  constructor(descriptor: Extensions.RecorderPluginManager.ViewDescriptor) {
+    this.#descriptor = descriptor;
+    // We are creating a single iframe here.
+    /* eslint-disable-next-line @devtools/no-imperative-dom-api */
+    this.#iframe = document.createElement('iframe');
+    this.#iframe.src = descriptor.pagePath;
+    this.#iframe.onload = this.#onIframeLoad;
+  }
+
+  #onIframeLoad = (): void => {
+    this.#isLoaded = true;
+    if (this.#isShowing) {
+      this.#descriptor.onShown();
+    }
+  };
+
+  show(): void {
+    if (this.#isShowing) {
+      return;
+    }
+    this.#isShowing = true;
+    if (this.#isLoaded) {
+      this.#descriptor.onShown();
+    }
+  }
+
+  hide(): void {
+    if (!this.#isShowing) {
+      return;
+    }
+    this.#isShowing = false;
+    this.#isLoaded = false;
+    this.#descriptor.onHidden();
+  }
+
+  frame(): HTMLIFrameElement {
+    return this.#iframe;
   }
 }

@@ -150,6 +150,12 @@ export async function typeIntoQuickOpen(
   if (expectEmptyResults) {
     await devtoolsPage.waitFor('.filtered-list-widget :not(.hidden).not-found-text');
   } else {
-    await devtoolsPage.waitFor('.filtered-list-widget devtools-highlight:not([ranges=""])');
+    await devtoolsPage.waitForFunction(async () => {
+      const matches = await devtoolsPage.$$(`.filtered-list-widget-item devtools-highlight`);
+      const ranges = await Promise.all(matches.map(async m => {
+        return await m.evaluate(m => m.getAttribute('ranges'));
+      }));
+      return ranges.some(r => (r?.match(/,1/g) || []).length === query.length);
+    });
   }
 }

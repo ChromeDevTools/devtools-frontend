@@ -98,14 +98,14 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   #queuedLoads: LoadQueueEntry[] = [];
   readonly #loadOverride: ((arg0: string) => Promise<{
                              success: boolean,
-                             content: string,
+                             content: string|Uint8Array<ArrayBuffer>,
                              errorDescription: Host.ResourceLoader.LoadErrorDescription,
                            }>)|null;
   constructor(
       targetManager: TargetManager, settings: Common.Settings.Settings, userAgentProvider: UserAgentProvider,
       loadOverride: ((arg0: string) => Promise<{
                        success: boolean,
-                       content: string,
+                       content: string|Uint8Array<ArrayBuffer>,
                        errorDescription: Host.ResourceLoader.LoadErrorDescription,
                      }>)|null,
       maxConcurrentLoads = 500) {
@@ -123,7 +123,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     forceNew: boolean,
     loadOverride: (null|((arg0: string) => Promise<{
                            success: boolean,
-                           content: string,
+                           content: string|Uint8Array<ArrayBuffer>,
                            errorDescription: Host.ResourceLoader.LoadErrorDescription,
                          }>)),
     targetManager?: TargetManager,

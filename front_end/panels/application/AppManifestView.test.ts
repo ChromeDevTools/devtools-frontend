@@ -129,26 +129,17 @@ describeWithMockConnection('AppManifestView', () => {
     sinon.stub(resourceTreeModel, 'getInstallabilityErrors').resolves([]);
     sinon.stub(resourceTreeModel, 'getAppId').resolves({} as Protocol.Page.GetAppIdResponse);
 
-    function loadResource(
-        url: Platform.DevToolsPath.UrlString, initiator: SDK.PageResourceLoader.PageResourceLoadInitiator,
-        isBinary: true): Promise<{
-      content: Uint8Array,
-    }>;
-    function loadResource(
-        url: Platform.DevToolsPath.UrlString, initiator: SDK.PageResourceLoader.PageResourceLoadInitiator,
-        isBinary?: false): Promise<{
-      content: string,
-    }>;
-    async function loadResource(
-        url: Platform.DevToolsPath.UrlString, initiator: SDK.PageResourceLoader.PageResourceLoadInitiator,
-        isBinary = false): Promise<{
-      content: string | Uint8Array,
-    }> {
-      assert(isBinary);
-      const res = await fetch(url);
-      return {content: await res.bytes()};
-    }
-    sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource').callsFake(loadResource);
+    SDK.PageResourceLoader.PageResourceLoader.instance({
+      forceNew: true,
+      loadOverride: async url => {
+        const res = await fetch(url);
+        return {
+          content: await res.bytes(),
+          success: true,
+          errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+        };
+      }
+    });
 
     view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
     renderElementIntoDOM(view);

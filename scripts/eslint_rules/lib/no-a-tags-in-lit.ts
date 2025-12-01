@@ -10,11 +10,11 @@ export default createRule({
   meta: {
     type: 'problem',
     docs: {
-      description: 'Check for <a> and </a> in Lit templates instead of using x-link.',
+      description: 'Check for <a> and </a> in Lit templates instead of using devtools-link.',
       category: 'Possible Errors',
     },
     messages: {
-      foundAnchor: 'Found an anchor element in a lit template. Use XLink.ts instead.',
+      foundAnchor: 'Found an anchor element in a lit template. Use <devtools-link> instead.',
     },
     fixable: 'code',
     schema: [],  // no options

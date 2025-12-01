@@ -2485,6 +2485,8 @@ grd_files_unbundled_sources = [
   "front_end/ui/kit/cards/card.css.js",
   "front_end/ui/kit/icons/Icon.js",
   "front_end/ui/kit/icons/icon.css.js",
+  "front_end/ui/kit/link/Link.js",
+  "front_end/ui/kit/link/link.css.js",
   "front_end/ui/legacy/ARIAUtils.js",
   "front_end/ui/legacy/ActionRegistration.js",
   "front_end/ui/legacy/ActionRegistry.js",

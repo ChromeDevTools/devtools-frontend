@@ -1,0 +1,27 @@
+/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--text-link);
+}
+
+@media (forced-colors: active) {
+  :host {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+:host(:focus-visible) {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
+  /* stylelint-disable-next-line declaration-no-important */
+  outline-style: solid !important;
+  border-radius: var(--sys-shape-corner-extra-small);
+}

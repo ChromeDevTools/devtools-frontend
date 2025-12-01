@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -364,12 +364,12 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
            : Lit.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
-        <x-link
-          class="toolbar-feedback-link devtools-link"
+        <devtools-link
+          class="toolbar-feedback-link"
           title=${i18nString(UIStrings.sendFeedback)}
           href=${AI_ASSISTANCE_SEND_FEEDBACK}
-          jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('freestyler.send-feedback')}
-        >${i18nString(UIStrings.sendFeedback)}</x-link>
+          jslogcontext=${'freestyler.send-feedback'}
+        >${i18nString(UIStrings.sendFeedback)}</devtools-link>
         <div class="toolbar-divider"></div>
         <devtools-button
           title=${i18nString(UIStrings.help)}

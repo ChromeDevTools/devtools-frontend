@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "cards/card.css",
     "icons/icon.css",
+    "link/link.css",
   ]
 }
 
@@ -18,11 +19,15 @@ devtools_ui_module("kit") {
   sources = [
     "cards/Card.ts",
     "icons/Icon.ts",
+    "link/Link.ts",
   ]
 
   deps = [
     "../../Images:optimize_images",
+    "../../core/platform:bundle",
+    "../helpers:bundle",
     "../lit:bundle",
+    "../visual_logging:bundle",
   ]
 }
 
@@ -48,6 +53,7 @@ devtools_ui_module("unittests") {
   sources = [
     "cards/Card.test.ts",
     "icons/Icon.test.ts",
+    "link/Link.test.ts",
   ]
 
   deps = [
@@ -60,6 +66,7 @@ component_doc("docs") {
   sources = [
     "cards/Card.docs.ts",
     "icons/Icon.docs.ts",
+    "link/Link.docs.ts",
   ]
   deps = [
     ":bundle",

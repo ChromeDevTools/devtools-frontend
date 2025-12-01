@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
@@ -17,8 +17,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as UIHelpers from '../../../helpers/helpers.js';
-import type {Icon} from '../../../kit/kit.js';
-import {html, render} from '../../../lit/lit.js';
+import {html, type LitTemplate, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -558,13 +557,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     if (!decorator || !info.uiLocation) {
       return;
     }
-    if (info.icon?.parentElement) {
-      anchor.removeChild(info.icon);
-    }
     const icon = decorator.linkIcon(info.uiLocation.uiSourceCode);
-    if (icon) {
-      icon.style.setProperty('margin-right', '2px');
-      anchor.insertBefore(icon, anchor.firstChild);
+    if (icon && anchor instanceof HTMLElement && anchor.firstElementChild instanceof HTMLElement) {
+      anchor.firstElementChild?.style.setProperty('margin-left', '2px');
+      render(icon, anchor, {renderBefore: anchor.firstElementChild});
     }
     info.icon = icon;
   }
@@ -946,7 +942,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 }
 
 export interface LinkDecorator extends Common.EventTarget.EventTarget<LinkDecorator.EventTypes> {
-  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): Icon|null;
+  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): LitTemplate|null;
 }
 
 export namespace LinkDecorator {
@@ -1106,7 +1102,7 @@ export class ContentProviderContextMenuProvider implements
 }
 
 interface LinkInfo {
-  icon: Icon|null;
+  icon: LitTemplate|null;
   enableDecorator: boolean;
   uiLocation: Workspace.UISourceCode.UILocation|null;
   liveLocation: Bindings.LiveLocation.LiveLocation|null;

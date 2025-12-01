@@ -1,16 +1,16 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate} from '../../ui/lit/lit.js';
 
 const UIStrings = {
   /**
@@ -43,23 +43,21 @@ export class PersistenceUtils {
     return i18nString(UIStrings.linkedToS, {PH1: Platform.StringUtilities.trimMiddle(binding.network.url(), 150)});
   }
 
-  static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Icon|null {
+  static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): LitTemplate|null {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       if (!Common.ParsedURL.schemeIs(binding.fileSystem.url(), 'file:')) {
         return null;
       }
-      const icon = new Icon();
-      icon.name = 'document';
-      icon.classList.add('small');
-      UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
-      if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
-          binding.fileSystem.project()) {
-        icon.classList.add('dot', 'purple');
-      } else {
-        icon.classList.add('dot', 'green');
-      }
-      return icon;
+      const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
+              binding.fileSystem.project() ?
+          'purple' :
+          'green';
+      // clang-format off
+      return html`<devtools-icon class="small dot ${dotClass}" name="document"
+                                 title=${PersistenceUtils.tooltipForUISourceCode(binding.network)}>
+                  </devtools-icon>`;
+      // clang-format on
     }
 
     if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem ||
@@ -69,18 +67,16 @@ export class PersistenceUtils {
 
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
             uiSourceCode)) {
-      const icon = new Icon();
-      icon.name = 'document';
-      icon.classList.add('small');
-      icon.classList.add('dot', 'purple');
-      return icon;
+      // clang-format off
+      return html`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      // clang-format on
     }
 
-    const icon = new Icon();
-    icon.name = 'document';
-    icon.classList.add('small');
-    UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(uiSourceCode));
-    return icon;
+    // clang-format off
+    return html`<devtools-icon class="small" name="document"
+                               title=${PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
+                </devtools-icon>`;
+    // clang-format on
   }
 }
 
@@ -97,7 +93,7 @@ export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED, binding.network);
   }
 
-  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): Icon|null {
+  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): LitTemplate|null {
     return PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
 }

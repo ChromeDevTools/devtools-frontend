@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
 
 import './Toolbar.js';
 
@@ -12,6 +12,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import {type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {createIcon, Icon} from '../kit/kit.js';
 
@@ -415,7 +416,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.requestUpdate();
   }
 
-  setTrailingTabIcon(id: string, icon: Icon|null): void {
+  setTrailingTabIcon(id: string, icon: Icon|LitTemplate|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;
@@ -423,7 +424,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     tab.setSuffixElement(icon);
   }
 
-  setSuffixElement(id: string, suffixElement: HTMLElement|null): void {
+  setSuffixElement(id: string, suffixElement: HTMLElement|LitTemplate|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;
@@ -1075,7 +1076,8 @@ export class TabbedPaneTab {
   measuredWidth!: number|undefined;
   #tabElement!: HTMLElement|undefined;
   private icon: Icon|null = null;
-  private suffixElement: HTMLElement|null = null;
+  private suffixElement: HTMLElement|LitTemplate|null = null;
+
   #width?: number;
   private delegate?: TabbedPaneTabDelegate;
   private titleElement?: HTMLElement;
@@ -1159,7 +1161,7 @@ export class TabbedPaneTab {
     delete this.measuredWidth;
   }
 
-  setSuffixElement(suffixElement: HTMLElement|null): void {
+  setSuffixElement(suffixElement: HTMLElement|LitTemplate|null): void {
     this.suffixElement = suffixElement;
     if (this.#tabElement && this.titleElement) {
       this.createSuffixElement(this.#tabElement, this.titleElement, false);
@@ -1248,8 +1250,12 @@ export class TabbedPaneTab {
 
     const suffixElementContainer = document.createElement('span');
     suffixElementContainer.classList.add('tabbed-pane-header-tab-suffix-element');
-    const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
-    suffixElementContainer.appendChild(suffixElement);
+    if (this.suffixElement instanceof HTMLElement) {
+      const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
+      suffixElementContainer.appendChild(suffixElement);
+    } else {
+      render(this.suffixElement, suffixElementContainer);
+    }
     titleElement.insertAdjacentElement('afterend', suffixElementContainer);
     tabSuffixElements.set(tabElement, suffixElementContainer);
   }

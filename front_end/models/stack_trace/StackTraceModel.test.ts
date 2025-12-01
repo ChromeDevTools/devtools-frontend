@@ -144,6 +144,38 @@ describeWithMockConnection('StackTraceModel', () => {
       ].join('\n'));
     });
 
+    it('ignores empty async fragments', async () => {
+      const {model} = setup();
+
+      const stackTrace = await model.createFromProtocolRuntime(
+          {
+            callFrames: [
+              'foo.js:1:foo:1:10',
+              'foo.js:1:bar:2:20',
+            ].map(protocolCallFrame),
+            parent: {
+              description: 'setTimeout',
+              callFrames: [],
+              parent: {
+                description: 'await',
+                callFrames: [
+                  'baz.js:3:bazFnY:1:10',
+                  'baz.js:3:bazFnY:2:20',
+                ].map(protocolCallFrame),
+              }
+            }
+          },
+          identityTranslateFn);
+
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at foo (foo.js:1:10)',
+        'at bar (foo.js:2:20)',
+        '--- await ------------------------------',
+        'at bazFnY (baz.js:1:10)',
+        'at bazFnY (baz.js:2:20)',
+      ].join('\n'));
+    });
+
     it('calls the translate function with the correct raw frames', async () => {
       const {model, translateSpy} = setup();
       const callFrames = [

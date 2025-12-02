@@ -330,6 +330,37 @@ Content:
 
 IMPORTANT: Never show eventKey to the user.
 
+The following are markdown block(s) of code that ran in the page, each representing a separate function. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.
+
+Here are 3 relevant functions:
+
+(anonymous) @ https://s.yimg.com/aaq/prebid/prebid-2.0.js:12:53984. With added context, chunk is from 9:0 to 18:0
+```
+// context ...
+
+() => { /* some code from https://s.yimg.com/aaq/prebid/prebid-2.0.js... */ }
+
+// context ...
+```
+
+(anonymous) @ https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js:0:43042. With added context, chunk is from 0:0 to 6:0
+```
+// context ...
+
+() => { /* some code from https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js... */ }
+
+// context ...
+```
+
+(anonymous) @ https://s.yimg.com/aaq/prebid/prebid-2.0.js:12:15854. With added context, chunk is from 9:0 to 18:0
+```
+// context ...
+
+() => { /* some code from https://s.yimg.com/aaq/prebid/prebid-2.0.js... */ }
+
+// context ...
+```
+
 # Bottom-up main thread summary
 
 This is the bottom-up summary for the entire trace. Only the top 20 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
@@ -437,18 +468,6 @@ Here are all the insights that contain some related request from the given range
 - ThirdParties: cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), gpt.js (securepubads.g.doubleclick.net) (eventKey: s-6244, ts: 157423760529), loader.js (cdn.taboola.com) (eventKey: s-6352, ts: 157423761978)
 - Cache: prebid-2.0.js (s.yimg.com) (eventKey: s-6279, ts: 157423760925), cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), d1irmdsmbztlvx.js (s.yimg.com) (eventKey: s-6185, ts: 157423759200), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794)
 - LegacyJavaScript: benji-2.2.99.js (s.yimg.com) (eventKey: s-3387, ts: 157423742567), 25fa214.caas-news_web.min.js (s.yimg.com) (eventKey: s-3412, ts: 157423743431), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
-=== end content
-
-Title: PerformanceTraceFormatter formatCallTree
-Content:
-# Call tree:
-
-1;r-62;Task;10.6;0.1;;2;;;S
-2;r-63;Evaluate script;10.5;1.5;;3-5;;
-3;r-75;Profiling overhead;8.8;8.8;;;;
-4;p-3728792-1-17-3;(anonymous);0.2;0.2;;;;
-
-IMPORTANT: Never show eventKey to the user.
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary web-dev.json.gz
@@ -922,6 +941,99 @@ Content:
 ## insight set id: NAVIGATION_1
 
 - name: localhost, main thread time: 0.3 ms, network transfer size: 22.9 kB
+=== end content
+
+Title: PerformanceTraceFormatter formatCallTree long-task-from-worker-thread.json.gz
+Content:
+# Call tree:
+
+1;r-62;Task;10.6;0.1;;2;;;S
+2;r-63;Evaluate script;10.5;1.5;;3-5;;
+3;r-75;Profiling overhead;8.8;8.8;;;;
+4;p-3728792-1-17-3;(anonymous);0.2;0.2;;;;
+
+IMPORTANT: Never show eventKey to the user.
+=== end content
+
+Title: PerformanceTraceFormatter formatCallTree web-dev.json.gz
+Content:
+# All URLs:
+
+  * 0: https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js
+  * 1: https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js
+
+# Call tree:
+
+1;r-4608;Task;7.2;;;2;;
+2;r-4619;Evaluate script;7.2;;0;3;;
+3;p-73704-775-2074-418;(anonymous);7.2;;0;4;0;0;S
+4;p-73704-775-2074-419;(anonymous);7.2;0.1;0;5;0;9
+5;p-73704-775-2075-420;(anonymous);7.1;;0;6;0;200
+6;p-73704-775-2075-421;(anonymous);7.1;2.6;0;7;0;231
+7;p-73704-775-2095-422;(anonymous);4.5;1.3;0;8-19;0;292
+8;p-73704-775-2095-423;(anonymous);0.5;0.1;0;19-21;0;756
+9;p-73704-775-2097-424;Et;0.1;0.1;0;;0;10766
+10;p-73704-775-2098-425;St;0.4;0.2;0;21;0;10904
+11;p-73704-775-2105-427;k;0.4;0.4;0;;0;5125
+12;p-73704-775-2108-428;Go;0.1;;0;22;0;68523
+13;p-73704-775-2109-430;Oi;0.4;0.2;0;23;0;38264
+14;p-73704-775-2115-432;tl;0.3;0.3;0;;0;154217
+15;p-73704-775-2118-433;ul;0.6;0.5;0;24;0;155034
+16;p-73704-775-2121-435;cl;0.1;0.1;0;;0;155107
+17;p-73704-775-2123-436;hl;0.1;;0;25;0;155309
+18;p-73704-775-2124-439;sl;0.1;0.1;0;;0;154927
+19;p-73704-775-2127-441;hl;0.1;0.1;0;;0;155309
+20;p-73704-775-2128-442;registerService;0.2;;1;26-28;0;9441
+21;p-73704-775-2099-426;vt;0.2;0.2;0;;0;10155
+22;p-73704-775-2108-429;Mo;0.1;0.1;0;;0;66493
+23;p-73704-775-2111-431;vi;0.1;0.1;0;;0;37138
+24;p-73704-775-2118-434;ll;0.1;0.1;0;;0;155345
+25;p-73704-775-2123-437;ll;0.1;;0;28;0;155345
+26;p-73704-775-2128-443;u;0.1;0.1;1;;0;10091
+27;p-73704-775-2129-444;d;0.1;0.1;1;;0;595
+28;p-73704-775-2123-438;get prototype;0.1;0.1;;;;
+
+IMPORTANT: Never show eventKey to the user.
+
+The following are markdown block(s) of code that ran in the page, each representing a separate function. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.
+
+Here are 4 relevant functions:
+
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:0. With added context, chunk is from 0:0 to 6:0
+```
+// context ...
+
+() => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
+
+// context ...
+```
+
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:231. With added context, chunk is from 0:0 to 6:0
+```
+// context ...
+
+() => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
+
+// context ...
+```
+
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:292. With added context, chunk is from 0:0 to 6:0
+```
+// context ...
+
+() => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
+
+// context ...
+```
+
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:155034. With added context, chunk is from 0:0 to 6:0
+```
+// context ...
+
+() => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
+
+// context ...
+```
 === end content
 
 Title: PerformanceTraceFormatter formatNetworkRequests formats network requests that have redirects

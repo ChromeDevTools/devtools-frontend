@@ -14,6 +14,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
+  createTarget,
   describeWithEnvironment,
   registerNoopActions,
 } from '../../testing/EnvironmentHelpers.js';
@@ -303,6 +304,7 @@ describeWithEnvironment('TimelinePanel', function() {
     beforeEach(async () => {
       AIAssistance.ConversationHandler.ConversationHandler.removeInstance();
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      createTarget();
     });
 
     it('handles performance requests', async function() {

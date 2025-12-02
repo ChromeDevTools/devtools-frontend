@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 
@@ -373,6 +374,47 @@ export class AICallTree {
     }
 
     return line;
+  }
+
+  topCallFramesBySelfTime(limit: number): Protocol.Runtime.CallFrame[] {
+    const functionNodesByCallFrame = new Map<string, Trace.Extras.TraceTree.Node[]>();
+
+    this.breadthFirstWalk(this.rootNode.children().values(), node => {
+      if (Trace.Types.Events.isProfileCall(node.event)) {
+        const callFrame = node.event.callFrame;
+        const callFrameKey = `${callFrame.scriptId}:${callFrame.lineNumber}:${callFrame.columnNumber}`;
+        const array = functionNodesByCallFrame.get(callFrameKey) ?? [];
+        array.push(node);
+        functionNodesByCallFrame.set(callFrameKey, array);
+      }
+    });
+
+    return [...functionNodesByCallFrame.values()]
+        .map(nodes => {
+          return {
+            callFrame: (nodes[0].event as Trace.Types.Events.SyntheticProfileCall).callFrame,
+            selfTime: nodes.reduce((total, cur) => total + cur.selfTime, 0),
+          };
+        })
+        .sort((a, b) => b.selfTime - a.selfTime)
+        .slice(0, limit)
+        .map(({callFrame}) => callFrame);
+  }
+
+  topCallFrameByTotalTime(): Protocol.Runtime.CallFrame|null {
+    let topChild: Trace.Extras.TraceTree.Node|null = null;
+    let topProfileCallEvent: Trace.Types.Events.SyntheticProfileCall|null = null;
+
+    for (const child of this.rootNode.children().values()) {
+      if (Trace.Types.Events.isProfileCall(child.event)) {
+        if (!topChild || child.totalTime > topChild.totalTime) {
+          topChild = child;
+          topProfileCallEvent = child.event;
+        }
+      }
+    }
+
+    return topProfileCallEvent?.callFrame ?? null;
   }
 
   // Only used for debugging.

@@ -5,17 +5,21 @@
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
-  describeWithEnvironment,
+  createTarget,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
   updateHostConfig
 } from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError} from '../../../testing/InsightHelpers.js';
+import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Bindings from '../../bindings/bindings.js';
 import * as Trace from '../../trace/trace.js';
+import * as Workspace from '../../workspace/workspace.js';
 import {
   AiAgent,
   AICallTree,
@@ -23,7 +27,7 @@ import {
   PerformanceTraceFormatter,
 } from '../ai_assistance.js';
 
-describeWithEnvironment('PerformanceAgent', () => {
+describeWithMockConnection('PerformanceAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
     updateHostConfig({
       devToolsAiAssistancePerformanceAgent: {
@@ -32,6 +36,20 @@ describeWithEnvironment('PerformanceAgent', () => {
       },
     });
   }
+
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+  });
 
   describe('buildRequest', () => {
     it('builds a request with a model id', async () => {
@@ -107,7 +125,22 @@ describeWithEnvironment('PerformanceAgent', () => {
   });
 });
 
-describeWithEnvironment('PerformanceAgent – call tree focus', () => {
+describeWithMockConnection('PerformanceAgent – call tree focus', () => {
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+    createTarget();
+  });
+
   describe('run', function() {
     it('generates an answer', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
@@ -253,7 +286,22 @@ function createAgentForConversation(opts: {aidaClient?: Host.AidaClient.AidaClie
   return agent;
 }
 
-describeWithEnvironment('PerformanceAgent', () => {
+describeWithMockConnection('PerformanceAgent', () => {
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+    createTarget();
+  });
+
   it('uses the min and max bounds of the trace as the origin', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
@@ -481,7 +529,7 @@ code
       assert.exists(action);
 
       const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(context.getItem());
-      const summary = formatter.formatMainThreadTrackSummary(bounds);
+      const summary = await formatter.formatMainThreadTrackSummary(bounds);
       assert.isOk(summary);
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(summary);

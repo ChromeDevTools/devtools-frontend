@@ -9,7 +9,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {imageRef} from './EventRef.js';
+import {imageRef} from './ImageRef.js';
 import {createLimitedRows, renderOthersLabel, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.ImageDelivery;

@@ -1,7 +1,6 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -61,21 +60,41 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ConsolePinPane extends UI.Widget.VBox {
-  private pinModel: ConsolePinModel;
-  private presenters: Set<ConsolePinPresenter>;
-  constructor(private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void) {
-    super({useShadowDom: true});
-    this.registerRequiredCSS(consolePinPaneStyles, objectValueStyles);
-    this.contentElement.classList.add('console-pins', 'monospace');
-    this.contentElement.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('console-pins')}`);
+export interface PaneViewInput {
+  pins: ConsolePin[];
+  focusOut: () => void;
+  onRemove: (pin: ConsolePin) => void;
+  onContextMenu: (event: Event) => void;
+}
 
-    this.presenters = new Set();
+export const DEFAULT_PANE_VIEW = (input: PaneViewInput, _output: object, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <style>${consolePinPaneStyles}</style>
+    <div class='console-pins monospace' jslog=${VisualLogging.pane('console-pins')} @contextmenu=${input.onContextMenu}>
+    ${input.pins.map(pin => html`
+        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ConsolePinPresenter, {
+          pin,
+          focusOut: input.focusOut,
+          onRemove: () => input.onRemove(pin),
+        })}></devtools-widget>`
+    )}
+    </div>`, target);
+  // clang-format on
+};
+export class ConsolePinPane extends UI.Widget.VBox {
+  readonly #view: typeof DEFAULT_PANE_VIEW;
+  /** When creating a new pin, we'll focus it after rendering the editor */
+  #newPin?: ConsolePin;
+  private pinModel: ConsolePinModel;
+
+  constructor(
+      private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void,
+      view = DEFAULT_PANE_VIEW) {
+    super({useShadowDom: true});
+    this.#view = view;
+
     this.pinModel = new ConsolePinModel(Common.Settings.Settings.instance());
-    for (const pin of this.pinModel.pins) {
-      this.#addPin(pin);
-    }
   }
 
   override willHide(): void {
@@ -92,7 +111,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
         const targetPin = UI.Widget.Widget.get(targetPinElement);
         if (targetPin instanceof ConsolePinPresenter) {
           contextMenu.editSection().appendItem(
-              i18nString(UIStrings.removeExpression), this.removePin.bind(this, targetPin),
+              i18nString(UIStrings.removeExpression), () => targetPin.pin ? this.removePin(targetPin.pin) : undefined,
               {jslogContext: 'remove-expression'});
           targetPin.appendToContextMenu(contextMenu);
         }
@@ -105,34 +124,19 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   private removeAllPins(): void {
-    for (const pin of this.presenters) {
-      this.removePin(pin);
-    }
+    this.pinModel.removeAll();
+    this.requestUpdate();
   }
 
-  removePin(presenter: ConsolePinPresenter): void {
-    presenter.detach();
-    this.presenters.delete(presenter);
-    if (presenter.pin) {
-      this.pinModel.remove(presenter.pin);
-    }
+  removePin(pin: ConsolePin): void {
+    this.pinModel.remove(pin);
+    this.requestUpdate();
   }
 
   addPin(expression: string, userGesture?: boolean): void {
     const pin = this.pinModel.add(expression);
-    this.#addPin(pin, userGesture);
-  }
-
-  #addPin(pin: ConsolePin, userGesture?: boolean): void {
-    const presenter = new ConsolePinPresenter();
-    presenter.pin = pin;
-    presenter.focusOut = this.focusOut;
-    presenter.onRemove = () => this.removePin(presenter);
-    presenter.show(this.contentElement);
-    this.presenters.add(presenter);
     if (userGesture) {
-      presenter.performUpdate();
-      void presenter.focus();
+      this.#newPin = pin;
     }
     this.requestUpdate();
   }
@@ -140,6 +144,27 @@ export class ConsolePinPane extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
     this.pinModel.startPeriodicEvaluate();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          pins: [...this.pinModel.pins],
+          focusOut: this.focusOut,
+          onRemove: (pin: ConsolePin) => this.removePin(pin),
+          onContextMenu: this.contextMenuEventFired.bind(this),
+        },
+        {}, this.contentElement);
+
+    // Focus the freshly created pin if the user clicked the button.
+    // We need to give it a tick though, so the child can also finish rendering.
+    for (const child of this.children()) {
+      if (child instanceof ConsolePinPresenter && child.pin === this.#newPin) {
+        void child.updateComplete.then(() => child.focus());
+      }
+    }
+    this.#newPin = undefined;
   }
 }
 
@@ -472,6 +497,11 @@ export class ConsolePinModel {
 
   remove(pin: ConsolePin): void {
     this.#pins.delete(pin);
+    this.#save();
+  }
+
+  removeAll(): void {
+    this.#pins.clear();
     this.#save();
   }
 

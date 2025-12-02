@@ -112,14 +112,8 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
   removePin(presenter: ConsolePinPresenter): void {
     presenter.detach();
-    const newFocusedPin = this.focusedPinAfterDeletion(presenter);
     this.presenters.delete(presenter);
     this.pinModel.remove(presenter.pin);
-    if (newFocusedPin) {
-      void newFocusedPin.focus();
-    } else {
-      this.liveExpressionButton.focus();
-    }
   }
 
   addPin(expression: string, userGesture?: boolean): void {
@@ -136,22 +130,6 @@ export class ConsolePinPane extends UI.Widget.VBox {
       void presenter.focus();
     }
     this.requestUpdate();
-  }
-
-  private focusedPinAfterDeletion(deletedPin: ConsolePinPresenter): ConsolePinPresenter|null {
-    const pinArray = Array.from(this.presenters);
-    for (let i = 0; i < pinArray.length; i++) {
-      if (pinArray[i] === deletedPin) {
-        if (pinArray.length === 1) {
-          return null;
-        }
-        if (i === pinArray.length - 1) {
-          return pinArray[i - 1];
-        }
-        return pinArray[i + 1];
-      }
-    }
-    return null;
   }
 
   override wasShown(): void {
@@ -191,7 +169,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           .iconName=${'cross'}
           .variant=${Buttons.Button.Variant.ICON}
           .size=${Buttons.Button.Size.MICRO}
-          tabIndex=0
+          tabindex=0
           aria-label=${deleteIconLabel}
           @click=${(event: MouseEvent) => {
             input.onDelete();
@@ -215,7 +193,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
             }
           }}
       >
-        <devtools-text-editor .state=${input.editorState} ${ref(editorRef)}
+        <devtools-text-editor .state=${input.editorState} ${ref(editorRef)} tabindex=0
         ></devtools-text-editor>
       </div>
       <div class='console-pin-preview'

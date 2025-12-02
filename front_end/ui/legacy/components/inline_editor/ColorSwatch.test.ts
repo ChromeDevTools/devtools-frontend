@@ -38,7 +38,7 @@ function createSwatch(color: Common.Color.Color|string, tooltip?: string) {
   assert.isOk(parsedColor);
   const swatch = new InlineEditor.ColorSwatch.ColorSwatch(tooltip);
   renderElementIntoDOM(swatch);
-  swatch.renderColor(parsedColor);
+  swatch.color = parsedColor;
   return swatch;
 }
 
@@ -55,7 +55,7 @@ describe('ColorSwatch', () => {
       backgroundColor: 'red',
     });
 
-    swatch.renderColor(new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.RGBA));
+    swatch.color = new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.RGBA);
 
     assertSwatch(swatch, {
       backgroundColor: 'rgba(255, 128, 51, 0.5)',
@@ -97,7 +97,7 @@ describe('ColorSwatch', () => {
 
   it('does not dispatch an event on click when it is readonly', () => {
     const swatch = createSwatch('red');
-    swatch.setReadonly(true);
+    swatch.readonly = true;
     const target = getClickTarget(swatch);
 
     const swatchClickEventsReceived: Event[] = [];
@@ -186,7 +186,7 @@ describe('ColorSwatch', () => {
     ]);
 
     // With alpha:
-    swatch.renderColor(Common.Color.parse('#ff000080') as Common.Color.Color);
+    swatch.color = Common.Color.parse('#ff000080') as Common.Color.Color;
     menu = getMenuForShiftClick(target);
 
     assert.deepEqual(getMenuItemLabels(menu.section('legacy')), [
@@ -218,7 +218,7 @@ describe('ColorSwatch', () => {
     ]);
 
     // With alpha:
-    swatch.renderColor(Common.Color.parse('lab(54.29 80.82 69.9 / 0.5)') as Common.Color.Color);
+    swatch.color = Common.Color.parse('lab(54.29 80.82 69.9 / 0.5)') as Common.Color.Color;
     menu = getMenuForShiftClick(target);
 
     assert.deepEqual(getMenuItemLabels(menu.section('legacy')), [
@@ -252,7 +252,7 @@ describe('ColorSwatch', () => {
 
   it('does not produce a color conversion menu when it is readonly', () => {
     const swatch = createSwatch('#ff0000');
-    swatch.setReadonly(true);
+    swatch.readonly = true;
     const target = getClickTarget(swatch);
     const menu = getMenuForShiftClick(target);
     assert.notExists(menu);

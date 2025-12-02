@@ -201,8 +201,8 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
     }
 
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    swatch.setReadonly(true);
-    swatch.renderColor(color);
+    swatch.readonly = true;
+    swatch.color = color;
     const valueElement = document.createElement('span');
     valueElement.textContent = match.text;
 

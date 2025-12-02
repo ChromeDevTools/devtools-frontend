@@ -827,13 +827,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const themeColor = Common.Color.parse(this.stringProperty(parsedManifest, 'theme_color') || 'white') ||
         Common.Color.parse('white');
     if (themeColor) {
-      this.themeColorSwatch.renderColor(themeColor);
+      this.themeColorSwatch.color = themeColor;
     }
     this.backgroundColorSwatch.classList.toggle('hidden', !this.stringProperty(parsedManifest, 'background_color'));
     const backgroundColor = Common.Color.parse(this.stringProperty(parsedManifest, 'background_color') || 'white') ||
         Common.Color.parse('white');
     if (backgroundColor) {
-      this.backgroundColorSwatch.renderColor(backgroundColor);
+      this.backgroundColorSwatch.color = backgroundColor;
     }
 
     this.orientationField.textContent = this.stringProperty(parsedManifest, 'orientation');

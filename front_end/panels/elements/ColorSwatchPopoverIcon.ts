@@ -200,7 +200,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       return;
     }
 
-    const color = this.swatch.getColor();
+    const color = this.swatch.color;
     if (!color) {
       return;
     }
@@ -277,7 +277,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       return;
     }
 
-    this.swatch.renderColor(color);
+    this.swatch.color = color;
     this.dispatchEventToListeners(ColorSwatchPopoverIconEvents.COLOR_CHANGED, color);
   }
 

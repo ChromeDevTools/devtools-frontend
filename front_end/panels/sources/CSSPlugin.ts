@@ -163,7 +163,7 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
 
   toDOM(view: CodeMirror.EditorView): HTMLElement {
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString(UIStrings.openColorPicker));
-    swatch.renderColor(this.#color);
+    swatch.color = this.#color;
     const value = swatch.createChild('span');
     value.textContent = this.#text;
     value.setAttribute('hidden', 'true');
@@ -171,13 +171,13 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
       const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
       view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
       this.#text = insert;
-      this.#color = swatch.getColor() as Common.Color.Color;
+      this.#color = swatch.color as Common.Color.Color;
     });
     swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, event => {
       const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
       view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
       this.#text = insert;
-      this.#color = swatch.getColor() as Common.Color.Color;
+      this.#color = swatch.color as Common.Color.Color;
     });
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, event => {
       event.consume(true);

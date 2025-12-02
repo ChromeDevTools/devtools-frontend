@@ -9,13 +9,14 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import {Directives, html, render} from '../../third_party/lit/lit.js';
+import {Directives, html, nothing, render} from '../../third_party/lit/lit.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type {LitTemplate} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
@@ -60,8 +61,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const elementToConsolePin = new WeakMap<Element, ConsolePinPresenter>();
-
 export class ConsolePinPane extends UI.Widget.VBox {
   private pins: Set<ConsolePinPresenter>;
   private readonly pinsSetting: Common.Settings.Setting<string[]>;
@@ -97,10 +96,10 @@ export class ConsolePinPane extends UI.Widget.VBox {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const target = UI.UIUtils.deepElementFromEvent(event);
     if (target) {
-      const targetPinElement = target.enclosingNodeOrSelfWithClass('console-pin');
+      const targetPinElement = target.enclosingNodeOrSelfWithClass('widget');
       if (targetPinElement) {
-        const targetPin = elementToConsolePin.get(targetPinElement);
-        if (targetPin) {
+        const targetPin = UI.Widget.Widget.get(targetPinElement);
+        if (targetPin instanceof ConsolePinPresenter) {
           contextMenu.editSection().appendItem(
               i18nString(UIStrings.removeExpression), this.removePin.bind(this, targetPin),
               {jslogContext: 'remove-expression'});
@@ -121,7 +120,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   removePin(pin: ConsolePinPresenter): void {
-    pin.element().remove();
+    pin.detach();
     const newFocusedPin = this.focusedPinAfterDeletion(pin);
     this.pins.delete(pin);
     this.savePins();
@@ -134,11 +133,11 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
   addPin(expression: string, userGesture?: boolean): void {
     const pin = new ConsolePinPresenter(expression, this, this.focusOut);
-    this.contentElement.appendChild(pin.element());
+    pin.show(this.contentElement);
     this.pins.add(pin);
     this.savePins();
     if (userGesture) {
-      void pin.focus();
+      void pin.performUpdate().then(() => void pin.focus());
     }
     this.requestUpdate();
   }
@@ -168,7 +167,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
     if (!this.pins.size || !this.isShowing()) {
       return;
     }
-    const updatePromises = Array.from(this.pins, pin => pin.updatePreview());
+    const updatePromises = Array.from(this.pins, pin => pin.performUpdate());
     await Promise.all(updatePromises);
     this.updatedForTest();
     void this.throttler.schedule(this.requestUpdate.bind(this));
@@ -181,29 +180,30 @@ export class ConsolePinPane extends UI.Widget.VBox {
 export interface ViewInput {
   expression: string;
   editorState: CodeMirror.EditorState;
+  result: SDK.RuntimeModel.EvaluationResult|null;
+  isEditing: boolean;
   onDelete: () => void;
   onPreviewHoverChange: (hovered: boolean) => void;
   onPreviewClick: (event: MouseEvent) => void;
 }
 
-// TODO(crbug.com/407750444): Temporary for migration.
 export interface ViewOutput {
-  pinElement?: HTMLElement;
   deletePinIcon?: Buttons.Button.Button;
   editor?: TextEditor.TextEditor.TextEditor;
-  previewElement?: HTMLElement;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment): void => {
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const deleteIconLabel = input.expression ? i18nString(UIStrings.removeExpressionS, {PH1: input.expression}) :
                                              i18nString(UIStrings.removeBlankExpression);
-  const pinRef = createRef<HTMLElement>();
   const deleteRef = createRef<Buttons.Button.Button>();
   const editorRef = createRef<TextEditor.TextEditor.TextEditor>();
-  const previewRef = createRef<HTMLElement>();
+  const isError = input.result && !('error' in input.result) && input.result?.exceptionDetails &&
+      !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(input.result);
   // clang-format off
   render(html`
-    <div class='console-pin' ${ref(pinRef)}>
+    <style>${consolePinPaneStyles}</style>
+    <style>${objectValueStyles}</style>
+    <div class='console-pin ${isError ? 'error-level' : ''}'>
       <devtools-button class='close-button'
           .iconName=${'cross'}
           .variant=${Buttons.Button.Variant.ICON}
@@ -239,25 +239,42 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           @mouseenter=${() => input.onPreviewHoverChange(true)}
           @mouseleave=${() => input.onPreviewHoverChange(false)}
           @click=${(event: MouseEvent) => input.onPreviewClick(event)}
-          ${ref(previewRef)}
-      ></div>
+      >
+        ${renderResult(input.result, input.isEditing)}
+      </div>
     </div>
     `, target);
   // clang-format on
   Object.assign(output, {
-    pinElement: pinRef.value,
     deletePinIcon: deleteRef.value,
     editor: editorRef.value,
-    previewElement: previewRef.value,
   });
 };
 
-export class ConsolePinPresenter {
+// RemoteObjectPreviewFormatter is stateless, so we can just keep a global copy around.
+const FORMATTER = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+
+function renderResult(result: SDK.RuntimeModel.EvaluationResult|null, isEditing: boolean): LitTemplate {
+  if (!result) {
+    return nothing;
+  }
+
+  if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
+    return html`<span class='object-value-calculate-value-button' title=${
+        i18nString(UIStrings.evaluateAllowingSideEffects)}>(…)</span>`;
+  }
+
+  const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
+  if (renderedPreview === nothing && !isEditing) {
+    return html`${i18nString(UIStrings.notAvailable)}`;
+  }
+  return renderedPreview;
+}
+
+export class ConsolePinPresenter extends UI.Widget.Widget {
   private readonly view: typeof DEFAULT_VIEW;
   private readonly pin: ConsolePin;
   private readonly pinEditor: ConsolePinEditor;
-  private pinElement!: Element;
-  private pinPreview!: HTMLElement;
   private editor?: TextEditor.TextEditor.TextEditor;
   private hovered = false;
   private lastNode: SDK.RemoteObject.RemoteObject|null = null;
@@ -266,6 +283,7 @@ export class ConsolePinPresenter {
   constructor(
       expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void,
       view = DEFAULT_VIEW) {
+    super();
     this.view = view;
 
     this.pinEditor = {
@@ -274,8 +292,6 @@ export class ConsolePinPresenter {
       isEditing: () => Boolean(this.editor?.editor.hasFocus),
     };
     this.pin = new ConsolePin(this.pinEditor, expression);
-
-    this.performUpdate();
   }
 
   #createInitialEditorState(doc: string): CodeMirror.EditorState {
@@ -375,11 +391,7 @@ export class ConsolePinPresenter {
     return this.pin.expression;
   }
 
-  element(): Element {
-    return this.pinElement;
-  }
-
-  async focus(): Promise<void> {
+  override async focus(): Promise<void> {
     const editor = this.editor;
     if (editor) {
       editor.editor.focus();
@@ -398,57 +410,17 @@ export class ConsolePinPresenter {
     }
   }
 
-  async updatePreview(): Promise<void> {
-    if (!this.editor) {
-      return;
-    }
+  override async performUpdate(): Promise<void> {
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    if (!executionContext) {
-      return;
-    }
+    const {result, node} = executionContext ? await this.pin.evaluate(executionContext) : {result: null, node: null};
 
-    const {result, node} = await this.pin.evaluate(executionContext);
-
-    const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    const preview =
-        result ? formatter.renderEvaluationResultPreviewFragment(result) : document.createDocumentFragment();
-
-    const previewText = preview.deepTextContent();
-    if (!previewText || previewText !== this.pinPreview.deepTextContent()) {
-      this.pinPreview.removeChildren();
-      if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-        const sideEffectLabel = this.pinPreview.createChild('span', 'object-value-calculate-value-button');
-        sideEffectLabel.textContent = '(…)';
-        UI.Tooltip.Tooltip.install(sideEffectLabel, i18nString(UIStrings.evaluateAllowingSideEffects));
-      } else if (previewText) {
-        this.pinPreview.appendChild(preview);
-      } else if (!this.pinEditor.isEditing()) {
-        UI.UIUtils.createTextChild(this.pinPreview, i18nString(UIStrings.notAvailable));
-      }
-      UI.Tooltip.Tooltip.install(this.pinPreview, previewText);
-    }
-
-    if (this.hovered) {
-      if (node) {
-        SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
-      } else if (this.lastNode) {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-      }
-    }
-    this.lastNode = node || null;
-
-    const isError = result && !('error' in result) && result.exceptionDetails &&
-        !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
-    this.pinElement.classList.toggle('error-level', Boolean(isError));
-  }
-
-  performUpdate(): void {
-    const fragment = document.createDocumentFragment();
     const output: ViewOutput = {};
     this.view(
         {
           expression: this.pin.expression,
           editorState: this.editor?.state ?? this.#createInitialEditorState(this.pin.expression),
+          result,
+          isEditing: this.pinEditor.isEditing(),
           onDelete: () => this.pinPane.removePin(this),
           onPreviewHoverChange: hovered => this.setHovered(hovered),
           onPreviewClick: event => {
@@ -458,18 +430,23 @@ export class ConsolePinPresenter {
             }
           },
         },
-        output, fragment);
+        output, this.contentElement);
 
-    const {pinElement, deletePinIcon, previewElement, editor} = output;
-    if (!pinElement || !deletePinIcon || !editor || !previewElement) {
+    const {deletePinIcon, editor} = output;
+    if (!deletePinIcon || !editor) {
       throw new Error('Broken view function, expected output');
     }
-    this.pinElement = pinElement;
     this.deletePinIcon = deletePinIcon;
     this.editor = editor;
-    this.pinPreview = previewElement;
 
-    elementToConsolePin.set(this.pinElement, this);
+    if (this.hovered) {
+      if (node) {
+        SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
+      } else if (this.lastNode) {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      }
+    }
+    this.lastNode = node || null;
   }
 }
 

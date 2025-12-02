@@ -113,7 +113,9 @@ export class ConsolePinPane extends UI.Widget.VBox {
   removePin(presenter: ConsolePinPresenter): void {
     presenter.detach();
     this.presenters.delete(presenter);
-    this.pinModel.remove(presenter.pin);
+    if (presenter.pin) {
+      this.pinModel.remove(presenter.pin);
+    }
   }
 
   addPin(expression: string, userGesture?: boolean): void {
@@ -122,7 +124,10 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   #addPin(pin: ConsolePin, userGesture?: boolean): void {
-    const presenter = new ConsolePinPresenter(pin, this, this.focusOut);
+    const presenter = new ConsolePinPresenter();
+    presenter.pin = pin;
+    presenter.focusOut = this.focusOut;
+    presenter.onRemove = () => this.removePin(presenter);
     presenter.show(this.contentElement);
     this.presenters.add(presenter);
     if (userGesture) {
@@ -233,7 +238,9 @@ function renderResult(result: SDK.RuntimeModel.EvaluationResult|null, isEditing:
 }
 
 export class ConsolePinPresenter extends UI.Widget.Widget {
-  readonly pin: ConsolePin;
+  #pin?: ConsolePin;
+  #focusOut?: () => void;
+  #onRemove?: () => void;
 
   private readonly view: typeof DEFAULT_VIEW;
   private readonly pinEditor: ConsolePinEditor;
@@ -242,10 +249,8 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   private lastNode: SDK.RemoteObject.RemoteObject|null = null;
   private deletePinIcon!: Buttons.Button.Button;
 
-  constructor(
-      pin: ConsolePin, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void,
-      view = DEFAULT_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element);
     this.view = view;
 
     this.pinEditor = {
@@ -253,19 +258,38 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
       workingCopyWithHint: () => this.editor ? TextEditor.Config.contentIncludingHint(this.editor.editor) : '',
       isEditing: () => Boolean(this.editor?.editor.hasFocus),
     };
-    this.pin = pin;
-    this.pin.setEditor(this.pinEditor);
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.pin.addEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+    this.#pin?.addEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
-    this.pin.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+    this.#pin?.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
     this.setHovered(false);
+  }
+
+  set pin(pin: ConsolePin) {
+    this.#pin?.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+    this.#pin = pin;
+    this.#pin.setEditor(this.pinEditor);
+    this.#pin.addEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+    this.requestUpdate();
+  }
+
+  get pin(): ConsolePin|undefined {
+    return this.#pin;
+  }
+
+  set focusOut(focusOut: () => void) {
+    this.#focusOut = focusOut;
+  }
+
+  set onRemove(onRemove: () => void) {
+    this.#onRemove = onRemove;
   }
 
   #createInitialEditorState(doc: string): CodeMirror.EditorState {
@@ -279,22 +303,22 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
         {
           key: 'Escape',
           run: (view: CodeMirror.EditorView) => {
-            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
-            this.focusOut();
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? ''}});
+            this.#focusOut?.();
             return true;
           },
         },
         {
           key: 'Enter',
           run: () => {
-            this.focusOut();
+            this.#focusOut?.();
             return true;
           },
         },
         {
           key: 'Mod-Enter',
           run: () => {
-            this.focusOut();
+            this.#focusOut?.();
             return true;
           },
         },
@@ -305,8 +329,8 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done
-            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
-            this.focusOut();
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? ''}});
+            this.#focusOut?.();
             return true;
           },
         },
@@ -317,7 +341,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done
-            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? ''}});
             this.editor?.blur();
             this.deletePinIcon.focus();
             return true;
@@ -336,10 +360,13 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   }
 
   #onBlur(editor: CodeMirror.EditorView): void {
-    const commitedAsIs = this.pin.commit();
+    if (!this.#pin) {
+      return;
+    }
+    const commitedAsIs = this.#pin.commit();
     editor.dispatch({
-      selection: {anchor: this.pin.expression.length},
-      changes: !commitedAsIs ? {from: 0, to: editor.state.doc.length, insert: this.pin.expression} : undefined,
+      selection: {anchor: this.#pin.expression.length},
+      changes: !commitedAsIs ? {from: 0, to: editor.state.doc.length, insert: this.#pin.expression} : undefined,
     });
     this.requestUpdate();
   }
@@ -354,10 +381,6 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     }
   }
 
-  expression(): string {
-    return this.pin.expression;
-  }
-
   override async focus(): Promise<void> {
     const editor = this.editor;
     if (editor) {
@@ -367,25 +390,32 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   }
 
   appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    const {lastResult} = this.pin;
+    if (!this.#pin) {
+      return;
+    }
+    const {lastResult} = this.#pin;
     if (lastResult && !('error' in lastResult) && lastResult.object) {
       contextMenu.appendApplicableItems(lastResult.object);
       // Prevent result from being released automatically, since it may be used by
       // the context menu action. It will be released when the console is cleared,
       // where we release the 'live-expression' object group.
-      this.pin.skipReleaseLastResult();
+      this.#pin.skipReleaseLastResult();
     }
   }
 
   override performUpdate(): void {
+    if (!this.#pin) {
+      return;
+    }
+
     const output: ViewOutput = {};
     this.view(
         {
-          expression: this.pin.expression,
-          editorState: this.editor?.state ?? this.#createInitialEditorState(this.pin.expression),
-          result: this.pin.lastResult,
+          expression: this.#pin.expression,
+          editorState: this.editor?.state ?? this.#createInitialEditorState(this.#pin.expression),
+          result: this.#pin.lastResult,
           isEditing: this.pinEditor.isEditing(),
-          onDelete: () => this.pinPane.removePin(this),
+          onDelete: () => this.#onRemove?.(),
           onPreviewHoverChange: hovered => this.setHovered(hovered),
           onPreviewClick: event => {
             if (this.lastNode) {
@@ -403,7 +433,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     this.deletePinIcon = deletePinIcon;
     this.editor = editor;
 
-    const node = this.pin.lastNode;
+    const node = this.#pin.lastNode;
     if (this.hovered) {
       if (node) {
         SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);

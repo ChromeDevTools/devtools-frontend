@@ -2,10 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-import * as path from 'node:path';
-
-import {GEN_DIR} from '../../conductor/paths.js';
 import {
   getTotalTimeFromSummary,
   increaseTimeoutForPerfPanel,
@@ -13,6 +9,7 @@ import {
   reloadAndRecord,
   startRecording,
   stopRecording,
+  uploadTraceFile,
 } from '../helpers/performance-helpers.js';
 
 describe('The Performance panel', function() {
@@ -42,10 +39,7 @@ describe('The Performance panel', function() {
 
   it('can import a stored trace file', async ({devToolsPage, inspectedPage}) => {
     await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);
-    const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
-    assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
-    const testTrace = path.join(GEN_DIR, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
-    await uploadProfileHandle.uploadFile(testTrace);
+    await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
     const canvas = await devToolsPage.waitFor('canvas.flame-chart-canvas');
     // Check that we have rendered the timeline canvas.
     await devToolsPage.waitForFunction(async () => {

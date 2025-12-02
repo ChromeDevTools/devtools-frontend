@@ -3,38 +3,24 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as fs from 'node:fs';
-import * as path from 'node:path';
 
-import {GEN_DIR} from '../../conductor/paths.js';
 import {
   navigateToPerformanceTab,
+  uploadTraceFile,
 } from '../helpers/performance-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-
-async function uploadTraceFile(devToolsPage: DevToolsPage, name: string) {
-  const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
-  assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
-  const testTrace = path.join(GEN_DIR, `test/e2e/resources/performance/timeline/${name}`);
-  if (!fs.existsSync(testTrace)) {
-    throw new Error(`Test trace file not found: ${testTrace}`);
-  }
-
-  await uploadProfileHandle.uploadFile(testTrace);
-}
 
 describe('RPP supporting multiple traces', () => {
   setup({dockingMode: 'undocked'});
 
   it('updates the UI when a new trace is imported', async ({devToolsPage, inspectedPage}) => {
     await navigateToPerformanceTab('fake-image-lcp', devToolsPage, inspectedPage);
-    await uploadTraceFile(devToolsPage, 'web.dev-trace.json.gz');
+    await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
     const firstTimings = await devToolsPage.waitFor<HTMLElement>('.summary-range');
     const firstTimingsText = await firstTimings.evaluate(t => t.innerText.replace(/\s/g, ''));
-    assert.strictEqual(firstTimingsText, 'Range:0ms–6.25s');
-    await uploadTraceFile(devToolsPage, 'treeView-test-trace.json');
+    assert.strictEqual(firstTimingsText, 'Range:547ms–1.78s');
+    await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/treeView-test-trace.json');
     const secondTimings = await devToolsPage.waitFor<HTMLElement>('.summary-range');
     const secondTimingsText = await secondTimings.evaluate(t => t.innerText.replace(/\s/g, ''));
-    assert.strictEqual(secondTimingsText, 'Range:547ms–1.78s');
+    assert.strictEqual(secondTimingsText, 'Range:0ms–867ms');
   });
 });

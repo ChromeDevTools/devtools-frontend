@@ -3,10 +3,8 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
-import {GEN_DIR} from '../../../conductor/paths.js';
 import {
   increaseTimeoutForPerfPanel,
   navigateToBottomUpTab,
@@ -15,6 +13,7 @@ import {
   toggleCaseSensitive,
   toggleMatchWholeWordButtonBottomUp,
   toggleRegExButtonBottomUp,
+  uploadTraceFile,
 } from '../../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../../shared/frontend-helper.js';
 import type {InspectedPage} from '../../shared/target-helper.js';
@@ -42,11 +41,7 @@ describe('The Performance tool, Bottom-up panel', function() {
   /** navigate to the Performance tab and upload performance profile **/
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);
-
-    const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
-    assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
-    await uploadProfileHandle.uploadFile(
-        path.join(GEN_DIR, 'test/e2e/resources/performance/timeline/treeView-test-trace.json'));
+    await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/treeView-test-trace.json');
   }
 
   it('match case button is working as expected', async ({devToolsPage, inspectedPage}) => {

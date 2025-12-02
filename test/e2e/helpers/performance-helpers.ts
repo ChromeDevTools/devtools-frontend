@@ -2,8 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
+import {GEN_DIR} from '../../conductor/paths.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -374,4 +377,24 @@ export function veImpressionForPerformancePanel() {
 
 function veImpressionForStatusDialog() {
   return veImpression('Dialog', 'timeline-status');
+}
+
+export async function uploadTraceFile(devToolsPage: DevToolsPage, tracePath: string) {
+  const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
+  const testTrace = path.join(GEN_DIR, tracePath);
+  if (!fs.existsSync(testTrace)) {
+    throw new Error(`Test trace file not found: ${testTrace}`);
+  }
+  const panelElement = await devToolsPage.waitFor('.widget.panel.timeline');
+
+  await Promise.all([
+    panelElement.evaluate(el => {
+      return new Promise<void>(res => {
+        el.addEventListener('traceload', () => {
+          res();
+        }, {once: true});
+      });
+    }),
+    uploadProfileHandle.uploadFile(testTrace),
+  ]);
 }

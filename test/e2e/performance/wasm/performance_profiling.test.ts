@@ -3,10 +3,8 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
-import {GEN_DIR} from '../../../conductor/paths.js';
 import {
   BOTTOM_UP_SELECTOR,
   CALL_TREE_SELECTOR,
@@ -19,6 +17,7 @@ import {
   startRecording,
   stopRecording,
   SUMMARY_TAB_SELECTOR,
+  uploadTraceFile,
 } from '../../helpers/performance-helpers.js';
 import type {DevToolsPage} from '../../shared/frontend-helper.js';
 import type {InspectedPage} from '../../shared/target-helper.js';
@@ -66,12 +65,7 @@ describe('The Performance panel', function() {
 
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
-
-    const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
-    assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
-    await uploadProfileHandle.uploadFile(
-        path.join(GEN_DIR, 'test/e2e/resources/performance/wasm/mainWasm_profile.json'));
-
+    await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/wasm/mainWasm_profile.json');
     await searchForWasmCall(devToolsPage);
   }
 

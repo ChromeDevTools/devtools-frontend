@@ -2,16 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Checklist.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {LCPDiscoveryInsightModel} from '../../../../models/trace/insights/LCPDiscovery.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {Checklist} from './Checklist.js';
 import {imageRef} from './ImageRef.js';
+
+const {widgetConfig} = UI.Widget;
 
 const {UIStrings, i18nString, getImageData} = Trace.Insights.Models.LCPDiscovery;
 
@@ -89,7 +91,9 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     // clang-format off
     return html`
       <div class="insight-section">
-        <devtools-performance-checklist class="insight-section" .checklist=${imageData.checklist}></devtools-performance-checklist>
+        <devtools-widget .widgetConfig=${widgetConfig(Checklist, {
+          checklist: imageData.checklist,
+        })}></devtools-widget>
         <div class="insight-section">${imageRef(imageData.request)}${delayEl}</div>
       </div>`;
     // clang-format on

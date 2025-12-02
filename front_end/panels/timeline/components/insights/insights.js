@@ -83,6 +83,11 @@ var baseInsightComponent_css_default = `/*
   }
 }
 
+.insight.ai-assistance-context {
+  display: block;
+  min-width: 200px;
+}
+
 .insight-hover-icon {
   position: absolute;
   top: var(--sys-size-5);
@@ -347,6 +352,9 @@ var BaseInsightComponent = class extends HTMLElement {
   // This flag tracks if the Insights AI feature is enabled within Chrome for
   // the active user.
   #askAiEnabled = false;
+  // Tracks if this component is rendered withing the AI assistance panel.
+  // Currently only relevant to GreenDev.
+  #isAIAssistanceContext = false;
   #selected = false;
   #model = null;
   #agentFocus = null;
@@ -379,6 +387,10 @@ var BaseInsightComponent = class extends HTMLElement {
     this.dataset.insightName = this.internalName;
     const { devToolsAiAssistancePerformanceAgent } = Root.Runtime.hostConfig;
     this.#askAiEnabled = Boolean(devToolsAiAssistancePerformanceAgent?.enabled);
+  }
+  set isAIAssistanceContext(isAIAssistanceContext) {
+    this.#isAIAssistanceContext = isAIAssistanceContext;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   set selected(selected) {
     if (!this.#selected && selected) {
@@ -455,6 +467,9 @@ var BaseInsightComponent = class extends HTMLElement {
     this.dispatchEvent(new InsightActivated(this.model, this.data.insightSetKey));
   }
   #renderHoverIcon(insightIsActive) {
+    if (this.#isAIAssistanceContext) {
+      return Lit2.nothing;
+    }
     const containerClasses = Lit2.Directives.classMap({
       "insight-hover-icon": true,
       active: insightIsActive
@@ -597,6 +612,9 @@ var BaseInsightComponent = class extends HTMLElement {
     void action3.execute();
   }
   #canShowAskAI() {
+    if (this.#isAIAssistanceContext) {
+      return false;
+    }
     const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !== Root.Runtime.GenAiEnterprisePolicyValue.DISABLE && this.#askAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
     return aiAvailable && this.hasAskAiSupport();
   }
@@ -632,7 +650,8 @@ var BaseInsightComponent = class extends HTMLElement {
     }
     const containerClasses = Lit2.Directives.classMap({
       insight: true,
-      closed: !this.#selected
+      closed: !this.#selected || this.#isAIAssistanceContext,
+      "ai-assistance-context": this.#isAIAssistanceContext
     });
     const estimatedSavingsString = this.#getEstimatedSavingsString();
     const estimatedSavingsAriaLabel = this.#getEstimatedSavingsAriaLabel();

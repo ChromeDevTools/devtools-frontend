@@ -11,9 +11,10 @@ export default `/**
 
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   /* From the other bubble */
   background-color: var(--color-background-inverted);
@@ -28,6 +29,19 @@ export default `/**
   font-size: var(--sys-typescale-body2-size);
   font-weight: var(--ref-typeface-weight-medium);
   outline: 2px solid var(--color-background);
+}
+
+.connectorContainer {
+  z-index: 1000;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.close-button {
+  position: absolute;
+  top:1px;
+  z-index: 1000;
+  cursor: pointer;
 }
 
 /*# sourceURL=${import.meta.resolve('./annotation.css')} */`;

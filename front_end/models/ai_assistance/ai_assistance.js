@@ -351,12 +351,12 @@ var AiAgent = class {
     }
     const enableAidaFunctionCalling = declarations.length;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
-    const preamble6 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
+    const preamble5 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
     const facts = Array.from(this.#facts);
     const request = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
-      preamble: preamble6,
+      preamble: preamble5,
       historical_contexts: history.length ? history : void 0,
       facts: facts.length ? facts : void 0,
       ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
@@ -743,6 +743,7 @@ var NetworkRequestFormatter_exports = {};
 __export(NetworkRequestFormatter_exports, {
   NetworkRequestFormatter: () => NetworkRequestFormatter
 });
+import * as Annotations from "./../../ui/components/annotations/annotations.js";
 import * as Logs from "./../logs/logs.js";
 import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
 import * as TextUtils3 from "./../text_utils/text_utils.js";
@@ -956,7 +957,9 @@ ${dataAsText}`;
 ${responseBody}`;
     }
     return `Request: ${this.#request.url()}
-
+${Annotations.AnnotationRepository.annotationsEnabled() ? `
+Request ID: ${this.#request.requestId()}
+` : ""}
 ${this.formatRequestHeaders()}
 
 ${this.formatResponseHeaders()}${responseBody}
@@ -1744,7 +1747,7 @@ import * as Platform from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
-import * as Annotations from "./../../ui/components/annotations/annotations.js";
+import * as Annotations3 from "./../../ui/components/annotations/annotations.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as Trace6 from "./../trace/trace.js";
 
@@ -1761,6 +1764,7 @@ var PerformanceTraceFormatter_exports = {};
 __export(PerformanceTraceFormatter_exports, {
   PerformanceTraceFormatter: () => PerformanceTraceFormatter
 });
+import * as Annotations2 from "./../../ui/components/annotations/annotations.js";
 import * as CrUXManager from "./../crux-manager/crux-manager.js";
 import * as Trace3 from "./../trace/trace.js";
 
@@ -2313,9 +2317,9 @@ var PerformanceTraceFormatter = class {
     parts.push("\n# Available insight sets\n");
     parts.push("The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.");
     for (const insightSet of parsedTrace.insights?.values() ?? []) {
-      const lcp = insightSet ? Trace3.Insights.Common.getLCP(insightSet) : null;
-      const cls = insightSet ? Trace3.Insights.Common.getCLS(insightSet) : null;
-      const inp = insightSet ? Trace3.Insights.Common.getINP(insightSet) : null;
+      const lcp = Trace3.Insights.Common.getLCP(insightSet);
+      const cls = Trace3.Insights.Common.getCLS(insightSet);
+      const inp = Trace3.Insights.Common.getINP(insightSet);
       parts.push(`
 ## insight set id: ${insightSet.id}
 `);
@@ -2324,10 +2328,10 @@ var PerformanceTraceFormatter = class {
       if (lcp || cls || inp) {
         parts.push("Metrics (lab / observed):");
         if (lcp) {
-          const nodeId = insightSet?.model.LCPBreakdown.lcpEvent?.args.data?.nodeId;
+          const nodeId = insightSet.model.LCPBreakdown?.lcpEvent?.args.data?.nodeId;
           const nodeIdText = nodeId !== void 0 ? `, nodeId: ${nodeId}` : "";
           parts.push(`  - LCP: ${Math.round(lcp.value / 1e3)} ms, event: ${this.serializeEvent(lcp.event)}${nodeIdText}`);
-          const subparts = insightSet?.model.LCPBreakdown.subparts;
+          const subparts = insightSet.model.LCPBreakdown?.subparts;
           if (subparts) {
             const serializeSubpart = (subpart) => {
               return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
@@ -2349,6 +2353,13 @@ var PerformanceTraceFormatter = class {
         if (cls) {
           const eventText = cls.worstClusterEvent ? `, event: ${this.serializeEvent(cls.worstClusterEvent)}` : "";
           parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
+          if (Annotations2.AnnotationRepository.annotationsEnabled()) {
+            const worstClusterEvent = cls.worstClusterEvent;
+            const layoutShiftData = worstClusterEvent?.worstShiftEvent?.args?.data;
+            if (layoutShiftData?.impacted_nodes && layoutShiftData.impacted_nodes?.length > 0) {
+              Annotations2.AnnotationRepository.instance().addElementsAnnotation("This element is impacted by a layout shift", layoutShiftData.impacted_nodes[0].node_id.toString());
+            }
+          }
         }
       } else {
         parts.push("Metrics (lab / observed): n/a");
@@ -2424,7 +2435,7 @@ var PerformanceTraceFormatter = class {
           criticalRequests.push(node.request);
           node.children.forEach(walkRequest);
         };
-        insightSet.model.NetworkDependencyTree.rootNodes.forEach(walkRequest);
+        insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
         return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, { verbose: false }) : null;
       }
     });
@@ -2647,7 +2658,7 @@ IMPORTANT: Never show eventKey to the user.`;
    * talk to jacktfranklin@.
    */
   #networkRequestVerbosely(request, options) {
-    const { url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol } = request.args.data;
+    const { url, requestId, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol } = request.args.data;
     const parsedTrace = this.#parsedTrace;
     const titlePrefix = `## ${options?.customTitle ?? "Network request"}`;
     const navigationForEvent = Trace3.Helpers.Trace.getNavigationForTraceEvent(request, request.args.data.frame, parsedTrace.data.Meta.navigationsByFrameId);
@@ -2680,7 +2691,8 @@ IMPORTANT: Never show eventKey to the user.`;
     const eventKey = this.#eventsSerializer.keyForEvent(request);
     const eventKeyLine = eventKey ? `eventKey: ${eventKey}
 ` : "";
-    return `${titlePrefix}: ${url}
+    return `${titlePrefix}: ${url}${Annotations2.AnnotationRepository.annotationsEnabled() ? `
+requestId: ${requestId}` : ""}
 ${eventKeyLine}Timings:
 - Queued at: ${micros(startTimesForLifecycle.queuedAt)}
 - Request sent at: ${micros(startTimesForLifecycle.requestSentAt)}
@@ -2941,9 +2953,6 @@ var PerformanceInsightFormatter = class {
     return parts.join("\n");
   }
   insightIsSupported() {
-    if (this.#insight instanceof Error) {
-      return false;
-    }
     return this.#description().length > 0;
   }
   getSuggestions() {
@@ -3023,7 +3032,7 @@ var PerformanceInsightFormatter = class {
           { title: "How can I reduce the amount of legacy JavaScript on my page?" }
         ];
       default:
-        throw new Error("Unknown insight key");
+        throw new Error(`Unknown insight key '${this.#insight.insightKey}'`);
     }
   }
   /**
@@ -3992,16 +4001,50 @@ var UIStringsNotTranslated = {
   mainThreadActivity: "Investigating main thread activity\u2026"
 };
 var lockedString3 = i18n5.i18n.lockedString;
-var annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
-var greenDevAdditionalFunction = `
-- CRITICAL:You also have access to a function called addElementAnnotation, which should be used to highlight elements.`;
-var greenDevAdditionalGuidelines = `
-- CRITICAL: Each time an element with a nodeId is mentioned, you MUST ALSO call the function addElementAnnotation for that element.
-- The addElementAnnotation function should be called as soon as you identify an element that needs to be highlighted.
-- The addElementAnnotation function should always be called for the LCP element, if known.
-- The annotationMessage should be descriptive and relevant to why the element is being highlighted.
+var greenDevAdditionalAnnotationsFunction = `
+- CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
+which should be used to highlight elements and network requests (respectively).`;
+var greenDevAdditionalAnnotationsGuidelines = `
+- CRITICAL: Each time an element or a network request is mentioned, you MUST ALSO call the functions
+  addElementAnnotation (for an element) or addNeworkRequestAnnotation (for a network request).
+- CRITICAL: Don't add more than one annotation per element or network request.
+- These functions should be called as soon as you identify the entity that needs to be highlighted.
+- In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
+- The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
 `;
-var preamble4 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+var greenDevAdditionalWidgetGuidelines = `
+- **Visualizing Insights**: When discussing the breakdown of specific metrics or a performance problem,
+you must render the appropriate Insight Overview component. Use these tags on a new line within your response:
+  - For LCP breakdown: <ai-insight value="LCPBreakdown">
+  - For INP breakdown: <ai-insight value="INPBreakdown">
+  - For CLS culprits: <ai-insight value="CLSCulprits">
+  - For third parties: <ai-insight value="ThirdParties">
+  - For document latency: <ai-insight value="DocumentLatency">
+  - For DOM size: <ai-insight value="DOMSize">
+  - For duplicate JavaScript: <ai-insight value="DuplicatedJavaScript">
+  - For font display: <ai-insight value="FontDisplay">
+  - For forced reflow: <ai-insight value="ForcedReflow">
+  - For image delivery: <ai-insight value="ImageDelivery">
+  - For LCP discovery: <ai-insight value="LCPDiscovery">
+  - For legacy JavaScript: <ai-insight value="LegacyJavaScript">
+  - For network dependency tree: <ai-insight value="NetworkDependencyTree">
+  - For render blocking: <ai-insight value="RenderBlocking">
+  - For slow CSS selector: <ai-insight value="SlowCSSSelector">
+  - For viewport: <ai-insight value="Viewport">
+  - For modern HTTP: <ai-insight value="ModernHTTP">
+  - For cache: <ai-insight value="Cache">
+- Do not place the <ai-insight> tag inside markdown code blocks (backticks). Output the tag directly as raw text.
+- **Visualizing Network Request Details**: When discussing a specific network request, represent its details in a structured widget for improved readability and focus.
+Use this tag on a new line within your response, replacing \`EVENT_KEY\` (only the number, no letters prefix or -) with the actual trace event key:
+  - For network event details: <network-request-widget value="EVENT_KEY">
+- **Visualizing Flamechart**: When discussing an interesting part of the trace, represent its details in a structured widget for improved readability and focus.
+Use this tag on a new line within your response, replacing "MIN_MICROSECONDS" and "MAX_MICROSECONDS" with the actual start and end times in microseconds:
+  - For a flame chart of a specific time range: <flame-chart-widget start="MIN_MICROSECONDS" end="MAX_MICROSECONDS">
+`;
+var buildPreamble = () => {
+  const greenDevEnabled = Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled;
+  const annotationsEnabled = Annotations3.AnnotationRepository.annotationsEnabled();
+  return `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
 
@@ -4011,7 +4054,7 @@ Don't mention anything about an insight without first getting more data about it
 
 You have many functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
 
-${annotationsEnabled ? greenDevAdditionalFunction : ""}
+${annotationsEnabled ? greenDevAdditionalAnnotationsFunction : ""}
 
 You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
 
@@ -4053,7 +4096,8 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Structure your response using markdown headings and bullet points for improved readability.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
-${annotationsEnabled ? greenDevAdditionalGuidelines : ""}
+${annotationsEnabled ? greenDevAdditionalAnnotationsGuidelines : ""}
+${greenDevEnabled ? greenDevAdditionalWidgetGuidelines : ""}
 
 ## Strict Constraints
 
@@ -4071,6 +4115,7 @@ Adhere to the following critical requirements:
 - If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
 - Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
 `;
+};
 var extraPreambleWhenNotExternal = `Additional notes:
 
 When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
@@ -4080,11 +4125,26 @@ When referring to a trace event that has a corresponding \`eventKey\`, annotate 
 
 When asking the user to make a choice between multiple options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
-var greenDevAdditionalGuidelineFreshTrace = `
-When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying the id and an annotation reason.
+var buildExtraPreambleWhenFreshTrace = () => {
+  const annotationsEnabled = Annotations3.AnnotationRepository.annotationsEnabled();
+  const greenDevAdditionalGuidelineFreshTrace = `
+When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying
+the id and an annotation reason.
+When referring to a network request for which you know the eventKey for, always call the function
+addNetworkRequestAnnotation, specifying the id and an annotation reason.
 - CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
+- CRITICAL: Each time you describe an element or network request as being problematic you MUST call the function
+addElementAnnotation and specify an annotation reason.
+- CRITICAL: Each time you describe a network request as being problematic you MUST call the function
+addNetworkRequestAnnotation and specify an annotation reason.
+- CRITICAL: If you spot ANY of the following problems:
+  - Render blocking elements/network requests.
+  - Significant long task (especially on main thread).
+  - Layout shifts (e.g. due to unsized images).
+  ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
+  elements described in your conclusion.
 `;
-var extraPreambleWhenFreshTrace = `Additional notes:
+  const extraPreambleWhenFreshTrace = `Additional notes:
 
 When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
 - For example, if nodeId is 23: [LCP element](#node-23)
@@ -4093,6 +4153,8 @@ When referring to an element for which you know the nodeId, annotate your output
 - When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
 
 ${annotationsEnabled ? greenDevAdditionalGuidelineFreshTrace : ""}`;
+  return extraPreambleWhenFreshTrace;
+};
 var ScorePriority;
 (function(ScorePriority2) {
   ScorePriority2[ScorePriority2["REQUIRED"] = 3] = "REQUIRED";
@@ -4203,7 +4265,7 @@ var PerformanceAgent = class extends AiAgent {
     metadata: { source: "devtools", score: ScorePriority.CRITICAL }
   };
   #freshTraceExtraPreambleFact = {
-    text: extraPreambleWhenFreshTrace,
+    text: buildExtraPreambleWhenFreshTrace(),
     metadata: { source: "devtools", score: ScorePriority.CRITICAL }
   };
   #networkDataDescriptionFact = {
@@ -4216,13 +4278,13 @@ var PerformanceAgent = class extends AiAgent {
   };
   #traceFacts = [];
   get preamble() {
-    return preamble4;
+    return buildPreamble();
   }
   get clientFeature() {
     return Host5.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
-    return annotationsEnabled ? "TESTERS" : Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Boolean(Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
     const temperature = Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
@@ -4499,9 +4561,9 @@ ${result}`,
           const valid = [...parsedTrace.insights?.values() ?? []].map((insightSet2) => `id: ${insightSet2.id}, url: ${insightSet2.url}, bounds: ${this.#formatter?.serializeBounds(insightSet2.bounds)}`).join("; ");
           return { error: `Invalid insight set id. Valid insight set ids are: ${valid}` };
         }
-        const insight = insightSet?.model[params.insightName];
+        const insight = insightSet.model[params.insightName];
         if (!insight) {
-          const valid = Object.keys(insightSet?.model).join(", ");
+          const valid = Object.keys(insightSet.model).join(", ");
           return { error: `No insight available. Valid insight names are: ${valid}` };
         }
         const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
@@ -4680,7 +4742,7 @@ ${result}`,
         return { result: { callTree } };
       }
     });
-    if (annotationsEnabled) {
+    if (Annotations3.AnnotationRepository.annotationsEnabled()) {
       this.declareFunction("addElementAnnotation", {
         description: "Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.",
         parameters: {
@@ -4702,6 +4764,29 @@ ${result}`,
         },
         handler: async (params) => {
           return await this.addElementAnnotation(params.elementId, params.annotationMessage);
+        }
+      });
+      this.declareFunction("addNetworkRequestAnnotation", {
+        description: "Adds a visual annotation in the Network panel, attached to the request with the specific UID provided. Use it to highlight requests in the Network panel and provide contextual suggestions to the user related to their queries.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            eventKey: {
+              type: 1,
+              description: "The event key of the network request to annotate.",
+              nullable: false
+            },
+            annotationMessage: {
+              type: 1,
+              description: "The message the annotation should show to the user.",
+              nullable: false
+            }
+          }
+        },
+        handler: async (params) => {
+          return await this.addNetworkRequestAnnotation(params.eventKey, params.annotationMessage);
         }
       });
     }
@@ -4764,7 +4849,7 @@ ${result}`,
     const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
     const isTraceApp = Root5.Runtime.Runtime.isTraceApp();
     this.declareFunction("getResourceContent", {
-      description: "Returns the content of the resource with the given url. Only use this for text resource types. Prefer getFunctionCode when possible.",
+      description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
       parameters: {
         type: 6,
         description: "",
@@ -4837,12 +4922,32 @@ ${result}`,
     }
   }
   async addElementAnnotation(elementId, annotationMessage) {
-    if (!Annotations.AnnotationRepository.annotationsEnabled()) {
-      console.warn("Received agent request to add annotation with annotations disabled");
+    if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
+      console.warn("Received agent request to add element annotation with annotations disabled");
       return { error: "Annotations are not currently enabled" };
     }
     console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
-    Annotations.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
+    Annotations3.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
+    return { result: { success: true } };
+  }
+  async addNetworkRequestAnnotation(eventKey, annotationMessage) {
+    if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
+      console.warn("Received agent request to add network request annotation with annotations disabled");
+      return { error: "Annotations are not currently enabled" };
+    }
+    console.log(`AI AGENT EVENT: Performance Agent adding annotation for network request ${eventKey}: '${annotationMessage}'`);
+    let requestId = void 0;
+    const focus = this.context?.getItem();
+    if (focus) {
+      const event = focus.lookupEvent(eventKey);
+      if (event && Trace6.Types.Events.isSyntheticNetworkRequest(event)) {
+        requestId = event.args.data.requestId;
+      }
+    }
+    if (!requestId) {
+      console.warn("Unable to lookup requestId for request with event key", eventKey);
+    }
+    Annotations3.AnnotationRepository.instance().addNetworkRequestAnnotation(annotationMessage, requestId);
     return { result: { success: true } };
   }
 };
@@ -5015,7 +5120,7 @@ import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as Annotations2 from "./../../ui/components/annotations/annotations.js";
+import * as Annotations4 from "./../../ui/components/annotations/annotations.js";
 
 // gen/front_end/models/ai_assistance/ChangeManager.js
 var ChangeManager_exports = {};
@@ -5740,7 +5845,7 @@ var UIStringsNotTranslate3 = {
   dataUsed: "Data used"
 };
 var lockedString5 = i18n9.i18n.lockedString;
-var preamble5 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
+var preamble4 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
 First, examine the provided context, then use the functions to gather additional context and resolve the user request.
@@ -5884,7 +5989,7 @@ var NodeContext = class extends ConversationContext {
   }
 };
 var StylingAgent = class _StylingAgent extends AiAgent {
-  preamble = preamble5;
+  preamble = preamble4;
   clientFeature = Host7.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -6034,7 +6139,7 @@ const data = {
         return await this.executeAction(params.code, options);
       }
     });
-    if (Annotations2.AnnotationRepository.annotationsEnabled()) {
+    if (Annotations4.AnnotationRepository.annotationsEnabled()) {
       this.declareFunction("addElementAnnotation", {
         description: "Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.",
         parameters: {
@@ -6292,7 +6397,7 @@ const data = {
     }
   }
   async addElementAnnotation(elementId, annotationMessage) {
-    if (!Annotations2.AnnotationRepository.annotationsEnabled()) {
+    if (!Annotations4.AnnotationRepository.annotationsEnabled()) {
       console.warn("Received agent request to add annotation with annotations disabled");
       return { error: "Annotations are not currently enabled" };
     }
@@ -6308,7 +6413,7 @@ const data = {
     if (!node) {
       return { error: `Error: Could not find the element with backendNodeId=${elementId}` };
     }
-    Annotations2.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, node);
+    Annotations4.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, node);
     return {
       result: `Annotation added for element ${elementId}: ${annotationMessage}`
     };

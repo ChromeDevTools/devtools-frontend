@@ -1,3 +1,4 @@
+import type * as Extensions from '../../models/extensions/extensions.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { ExtensionServer } from './ExtensionServer.js';
 interface ViewInput {
@@ -22,5 +23,12 @@ export declare class ExtensionNotifierView extends UI.Widget.VBox {
     constructor(server: ExtensionServer, id: string);
     wasShown(): void;
     willHide(): void;
+}
+export declare class ExtensionIframe {
+    #private;
+    constructor(descriptor: Extensions.RecorderPluginManager.ViewDescriptor);
+    show(): void;
+    hide(): void;
+    frame(): HTMLIFrameElement;
 }
 export {};

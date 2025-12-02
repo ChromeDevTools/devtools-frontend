@@ -2447,7 +2447,7 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
     return Lit8.nothing;
   }
   const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
-  if (!clsInsight || clsInsight instanceof Error) {
+  if (!clsInsight) {
     return Lit8.nothing;
   }
   const rootCauses = clsInsight.shifts.get(layoutShift);
@@ -2484,7 +2484,7 @@ function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEv
     return Lit8.nothing;
   }
   const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
-  if (!clsInsight || clsInsight instanceof Error) {
+  if (!clsInsight) {
     return Lit8.nothing;
   }
   const clusterCulprits = Array.from(clsInsight.shifts.entries()).filter(([key]) => cluster.events.includes(key)).map(([, value]) => value).flatMap((x) => Object.values(x)).flat();
@@ -6013,10 +6013,7 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends HTMLElement {
     this.#render();
   }
   set data(data) {
-    if (this.#data.networkRequest === data.networkRequest) {
-      return;
-    }
-    if (this.#data.entityMapper === data.entityMapper) {
+    if (this.#data.networkRequest === data.networkRequest && this.#data.entityMapper === data.entityMapper) {
       return;
     }
     this.#data = { networkRequest: data.networkRequest, entityMapper: data.entityMapper };
@@ -7632,9 +7629,6 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends HTMLElement
         continue;
       }
       if (!model || !shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
-        continue;
-      }
-      if (model instanceof Error) {
         continue;
       }
       if (model.state === "pass") {

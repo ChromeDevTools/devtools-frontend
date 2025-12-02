@@ -14,6 +14,7 @@ import { LowTextContrastIssue } from './LowTextContrastIssue.js';
 import type { MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
+import { PermissionElementIssue } from './PermissionElementIssue.js';
 import { QuirksModeIssue } from './QuirksModeIssue.js';
 import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
 export interface IssuesProvider extends Common.EventTarget.EventTarget<IssuesManagerEventsTypes> {
@@ -69,6 +70,7 @@ export declare class AggregatedIssue extends Issue {
     getCategory(): IssueCategory;
     getAggregatedIssuesCount(): number;
     getPartitioningBlobURLIssues(): Iterable<PartitioningBlobURLIssue>;
+    getPermissionElementIssues(): Iterable<PermissionElementIssue>;
     addInstance(issue: Issue): void;
     getKind(): IssueKind;
     getAllIssues(): Issue[];

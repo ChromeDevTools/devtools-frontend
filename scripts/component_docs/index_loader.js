@@ -11,6 +11,7 @@
 'Tooltip': () => import('../../front_end/ui/components/tooltips/Tooltip.docs.js'),
 'Card': () => import('../../front_end/ui/kit/cards/Card.docs.js'),
 'Icon': () => import('../../front_end/ui/kit/icons/Icon.docs.js'),
+'Link': () => import('../../front_end/ui/kit/link/Link.docs.js'),
 'ContextMenu': () => import('../../front_end/ui/legacy/ContextMenu.docs.js'),
 'RadioButton': () => import('../../front_end/ui/legacy/RadioButton.docs.js'),
 'SelectMenu': () => import('../../front_end/ui/legacy/SelectMenu.docs.js'),

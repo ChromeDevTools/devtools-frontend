@@ -80,4 +80,5 @@ export * as ExtensionServer from './ExtensionServer.js';
 export * as ExtensionView from './ExtensionView.js';
 export * as PersistenceUtils from './PersistenceUtils.js';
 export * as DOMLinkifier from './DOMLinkifier.js';
+export * as ExtensionIframe from './ExtensionView.js';
 //# sourceMappingURL=common.prebundle.js.map

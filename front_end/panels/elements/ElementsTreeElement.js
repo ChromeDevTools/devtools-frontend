@@ -347,6 +347,12 @@ function adornerRef(input) {
         }
         adorner = el;
         if (adorner) {
+            if (ElementsPanel.instance().isAdornerEnabled(adorner.name)) {
+                adorner.show();
+            }
+            else {
+                adorner.hide();
+            }
             input.onAdornerAdded(adorner);
         }
     });
@@ -358,8 +364,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const gridAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
     const subgridAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID);
     const gridLanesAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES);
+    const mediaAdornerConfig = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
     const hasAdorners = input.adorners?.size || input.showAdAdorner || input.showContainerAdorner ||
-        input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner;
+        input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner;
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
@@ -453,6 +460,25 @@ export const DEFAULT_VIEW = (input, output, target) => {
     }}
           ${adornerRef(input)}>
           <span>${gridLanesAdornerConfig.name}</span>
+        </devtools-adorner>` : nothing}
+        ${input.showMediaAdorner ? html `<devtools-adorner
+          class=clickable
+          role=button
+          tabindex=0
+          .data=${{ name: mediaAdornerConfig.name, jslogContext: mediaAdornerConfig.name }}
+          jslog=${VisualLogging.adorner(mediaAdornerConfig.name).track({ click: true })}
+          aria-label=${i18nString(UIStrings.openMediaPanel)}
+          @click=${input.onMediaAdornerClick}
+          @keydown=${(event) => {
+        if (event.code === 'Enter' || event.code === 'Space') {
+            input.onMediaAdornerClick(event);
+            event.stopPropagation();
+        }
+    }}
+          ${adornerRef(input)}>
+          <span class="adorner-with-icon">
+            ${mediaAdornerConfig.name}<devtools-icon name="select-element"></devtools-icon>
+          </span>
         </devtools-adorner>` : nothing}
         ${repeat(Array.from((input.adorners ?? new Set()).values()).sort(adornerComparator), adorner => {
         return adorner;
@@ -611,17 +637,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         DEFAULT_VIEW({
             containerAdornerActive: this.#containerAdornerActive,
             adorners: !this.isClosingTag() ? this.#adorners : undefined,
-            showAdAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.AD) &&
-                this.nodeInternal.isAdFrameNode(),
-            showContainerAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER) &&
-                Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
-            showFlexAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX) &&
-                Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
+            showAdAdorner: this.nodeInternal.isAdFrameNode(),
+            showContainerAdorner: Boolean(this.#layout?.isContainer) && !this.isClosingTag(),
+            showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
             flexAdornerActive: this.#flexAdornerActive,
-            showGridAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.GRID) &&
-                Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
-            showGridLanesAdorner: ElementsPanel.instance().isAdornerEnabled(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES) &&
-                Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
+            showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
+            showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
+            showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
             gridAdornerActive: this.#gridAdornerActive,
             isSubgrid: Boolean(this.#layout?.isSubgrid),
             nodeInfo: this.#nodeInfo,
@@ -635,6 +657,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onContainerAdornerClick: (event) => this.#onContainerAdornerClick(event),
             onFlexAdornerClick: (event) => this.#onFlexAdornerClick(event),
             onGridAdornerClick: (event) => this.#onGridAdornerClick(event),
+            onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event),
         }, this, this.listItemElement);
     }
     #onContainerAdornerClick(event) {
@@ -695,6 +718,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
         }
         void this.updateAdorners();
+    }
+    async #onMediaAdornerClick(event) {
+        event.stopPropagation();
+        await UI.ViewManager.ViewManager.instance().showView('medias');
+        const view = UI.ViewManager.ViewManager.instance().view('medias');
+        if (view) {
+            const widget = await view.widget();
+            if (widget instanceof Media.MainView.MainView) {
+                await widget.waitForInitialPlayers();
+                widget.selectPlayerByDOMNodeId(this.node().backendNodeId());
+            }
+        }
     }
     highlightAttribute(attributeName) {
         // If the attribute is not found, we highlight the tag name instead.
@@ -2369,25 +2404,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.updateAdorners();
         return adorner;
     }
-    adornMedia({ name }) {
-        const adornerContent = document.createElement('span');
-        adornerContent.textContent = name;
-        adornerContent.classList.add('adorner-with-icon');
-        const linkIcon = createIcon('select-element');
-        adornerContent.append(linkIcon);
-        const adorner = new Adorners.Adorner.Adorner();
-        adorner.data = {
-            name,
-            content: adornerContent,
-            jslogContext: 'media',
-        };
-        if (isOpeningTag(this.tagTypeContext)) {
-            this.#adorners.add(adorner);
-            ElementsPanel.instance().registerAdorner(adorner);
-            this.updateAdorners();
-        }
-        return adorner;
-    }
     removeAdorner(adornerToRemove) {
         ElementsPanel.instance().deregisterAdorner(adornerToRemove);
         adornerToRemove.remove();
@@ -2452,9 +2468,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             if (layout.hasScroll) {
                 this.pushScrollSnapAdorner();
             }
-        }
-        if (node.isMediaNode()) {
-            this.pushMediaAdorner();
         }
         if (Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
             const affectedByStartingStyles = node.affectedByStartingStyles();
@@ -2556,34 +2569,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             shouldPropagateOnKeydown: false,
             ariaLabelDefault: i18nString(UIStrings.enableStartingStyle),
             ariaLabelActive: i18nString(UIStrings.disableStartingStyle),
-        });
-        this.#adorners.add(adorner);
-    }
-    pushMediaAdorner() {
-        const node = this.node();
-        const nodeId = node.id;
-        if (!nodeId) {
-            return;
-        }
-        const config = ElementsComponents.AdornerManager.getRegisteredAdorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA);
-        const adorner = this.adornMedia(config);
-        adorner.classList.add('media');
-        const onClick = (async () => {
-            await UI.ViewManager.ViewManager.instance().showView('medias');
-            const view = UI.ViewManager.ViewManager.instance().view('medias');
-            if (view) {
-                const widget = await view.widget();
-                if (widget instanceof Media.MainView.MainView) {
-                    await widget.waitForInitialPlayers();
-                    widget.selectPlayerByDOMNodeId(node.backendNodeId());
-                }
-            }
-        });
-        adorner.addInteraction(onClick, {
-            isToggle: false,
-            shouldPropagateOnKeydown: false,
-            ariaLabelDefault: i18nString(UIStrings.openMediaPanel),
-            ariaLabelActive: i18nString(UIStrings.openMediaPanel),
         });
         this.#adorners.add(adorner);
     }

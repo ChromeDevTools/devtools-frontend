@@ -9,7 +9,7 @@ import * as Host8 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as UI13 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/common.css.js
 var common_css_default = `/*
@@ -600,7 +600,8 @@ import * as Annotations2 from "./../../ui/components/annotations/annotations.js"
 // gen/front_end/panels/common/Annotation.js
 import * as Annotations from "./../../ui/components/annotations/annotations.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
-import { html as html4, render as render4 } from "./../../ui/lit/lit.js";
+import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
+import { html as html4, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/annotation.css.js
@@ -612,9 +613,10 @@ var annotation_css_default = `/**
 
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   /* From the other bubble */
   background-color: var(--color-background-inverted);
@@ -631,40 +633,97 @@ var annotation_css_default = `/**
   outline: 2px solid var(--color-background);
 }
 
+.connectorContainer {
+  z-index: 1000;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.close-button {
+  position: absolute;
+  top:1px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
 /*# sourceURL=${import.meta.resolve("./annotation.css")} */`;
 
 // gen/front_end/panels/common/Annotation.js
+var LABEL_AND_CONNECTOR_SHIFT_LENGTH = 8;
+var LABEL_CONNECTOR_HEIGHT = 7;
 var DEFAULT_VIEW3 = (input, _, target) => {
-  const { inputText: label, isExpanded, clickHandler } = input;
+  const { inputText: label, isExpanded, anchored, expandable, showCloseButton, clickHandler, closeHandler } = input;
+  const connectorColor = ThemeSupport.ThemeSupport.instance().getComputedValue("--color-text-primary");
+  const overlayStyles = [
+    anchored ? "left: 17px; top: 11px;" : "",
+    !expandable ? "pointer-events: none;" : ""
+  ].join(" ");
   render4(html4`
     <style>${annotation_css_default}</style>
-    <div class='overlay' @click=${clickHandler}>${isExpanded ? label : "!"}</div>
+    ${anchored ? html4`
+      <svg class="connectorContainer"
+        width=${LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2}
+        height=${LABEL_CONNECTOR_HEIGHT}>
+        <line
+          x1=${LABEL_AND_CONNECTOR_SHIFT_LENGTH}
+          y1=0
+          x2=${LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2}
+          y2=${LABEL_CONNECTOR_HEIGHT}
+          stroke=${connectorColor}
+          stroke-width=2
+        />
+        <circle
+          cx=${LABEL_AND_CONNECTOR_SHIFT_LENGTH}
+          cy=0
+          r=3
+          fill=${connectorColor}
+        />
+      </svg>
+    ` : nothing2}
+    <div class='overlay' style=${overlayStyles} @click=${expandable ? clickHandler : null}>
+      ${isExpanded ? label : "!"}
+    </div>
+    ${showCloseButton ? html4`<svg @click=${closeHandler} class="close-button" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="7.5" fill="#EEE" stroke="#888"/>
+          <path d="M5 5L11 11M5 11L11 5" stroke="#888" stroke-width="2"/>
+        </svg>` : nothing2}
     `, target);
 };
 var Annotation = class extends UI4.Widget.Widget {
   #view;
-  #type;
+  #id;
   #inputText;
   #x = 0;
   #y = 0;
   #isExpanded = false;
-  constructor(label, type, element, view = DEFAULT_VIEW3) {
+  #hasShown = false;
+  #anchored = false;
+  #expandable = false;
+  #showCloseButton = false;
+  constructor(id, label, showExpanded, anchored, expandable, showCloseButton, view = DEFAULT_VIEW3) {
     super({ jslog: `${VisualLogging2.panel("annotation").track({ resize: true })}`, useShadowDom: true });
+    this.#id = id;
     this.#view = view;
-    this.#type = type;
-    this.#isExpanded = this.#type === Annotations.AnnotationType.STYLE_RULE;
+    this.#isExpanded = showExpanded;
     this.#inputText = label;
+    this.#anchored = anchored;
+    this.#expandable = expandable;
+    this.#showCloseButton = showCloseButton;
   }
   #toggle() {
     this.#isExpanded = !this.#isExpanded;
-    this.element.style.left = this.#isExpanded ? `${this.#x}px` : "0px";
     this.requestUpdate();
+  }
+  #closeHandler() {
+    this.hide();
+    Annotations.AnnotationRepository.instance().deleteAnnotation(this.#id);
   }
   wasShown() {
     this.element.style.position = "absolute";
-    this.element.style.left = this.#isExpanded ? `${this.#x}px` : "0px";
+    this.element.style.left = `${this.#x}px`;
     this.element.style.top = `${this.#y}px`;
     super.wasShown();
+    this.#hasShown = true;
     this.requestUpdate();
   }
   performUpdate() {
@@ -674,11 +733,24 @@ var Annotation = class extends UI4.Widget.Widget {
     const input = {
       inputText: this.#inputText,
       isExpanded: this.#isExpanded,
+      anchored: this.#anchored,
+      expandable: this.#expandable,
+      showCloseButton: this.#showCloseButton,
       x: this.#x,
       y: this.#y,
-      clickHandler: this.#toggle.bind(this)
+      clickHandler: this.#toggle.bind(this),
+      closeHandler: this.#closeHandler.bind(this)
     };
     this.#view(input, void 0, this.contentElement);
+    if (this.#showCloseButton) {
+      const overlay = this.contentElement.querySelector(".overlay");
+      const closeButton = this.contentElement.querySelector(".close-button");
+      if (overlay && closeButton) {
+        const overlayLeft = parseFloat(overlay.style.left || "0");
+        const overlayWidth = overlay.getBoundingClientRect().width;
+        closeButton.style.left = `${overlayLeft + overlayWidth - 16}px`;
+      }
+    }
   }
   hide() {
     this.detach();
@@ -690,10 +762,13 @@ var Annotation = class extends UI4.Widget.Widget {
     this.#x = x;
     this.#y = y;
     if (this.isShowing()) {
-      this.element.style.left = this.#isExpanded ? `${this.#x}px` : "0px";
+      this.element.style.left = `${this.#x}px`;
       this.element.style.top = `${this.#y}px`;
     }
     this.requestUpdate();
+  }
+  hasShown() {
+    return this.#hasShown;
   }
 };
 
@@ -709,6 +784,8 @@ var AnnotationManager = class _AnnotationManager {
       return;
     }
     Annotations2.AnnotationRepository.instance().addEventListener("AnnotationAdded", this.#onAnnotationAdded, this);
+    Annotations2.AnnotationRepository.instance().addEventListener("AnnotationDeleted", this.#onAnnotationDeleted, this);
+    Annotations2.AnnotationRepository.instance().addEventListener("AllAnnotationsDeleted", this.#onAllAnnotationsDeleted, this);
   }
   static instance() {
     if (!_AnnotationManager.#instance) {
@@ -716,14 +793,14 @@ var AnnotationManager = class _AnnotationManager {
     }
     return _AnnotationManager.#instance;
   }
-  initializePlacementForAnnotationType(type, resolveRelativePosition, parentElement, insertBefore = null) {
+  initializePlacementForAnnotationType(type, resolveInitialState, parentElement, insertBefore = null) {
     if (!Annotations2.AnnotationRepository.annotationsEnabled()) {
       return;
     }
     if (!this.#annotationPlacements) {
       this.#annotationPlacements = /* @__PURE__ */ new Map();
     }
-    this.#annotationPlacements.set(type, { parentElement, insertBefore, resolveRelativePosition });
+    this.#annotationPlacements.set(type, { parentElement, insertBefore, resolveInitialState });
     console.log(`[AnnotationManager] initializing placement for ${Annotations2.AnnotationType[type]}`, { parentElement }, "placement count:", this.#annotationPlacements);
     this.#syncAnnotations();
   }
@@ -743,18 +820,45 @@ var AnnotationManager = class _AnnotationManager {
     }
     this.#synced = true;
   }
+  #onAllAnnotationsDeleted() {
+    for (const annotation of this.#annotations.values()) {
+      annotation.annotation.hide();
+    }
+    this.#annotations = /* @__PURE__ */ new Map();
+    console.log("[AnnotationManager] deleted all annotations");
+  }
+  #onAnnotationDeleted(event) {
+    const { id } = event.data;
+    const annotation = this.#annotations.get(id);
+    if (annotation) {
+      annotation.annotation.hide();
+      this.#annotations.delete(id);
+    }
+    console.log(`[AnnotationManager] Deleted annotation with id ${id}`);
+  }
   #onAnnotationAdded(event) {
     const annotationData = event.data;
     console.log("[AnnotationManager] handleAddAnnotation", annotationData);
     this.#addAnnotation(annotationData);
   }
   #addAnnotation(annotationData) {
-    const annotation = new Annotation(annotationData.message, annotationData.type);
-    this.#annotations.set(annotationData.id, { type: annotationData.type, annotation });
+    const expandable = annotationData.type !== Annotations2.AnnotationType.NETWORK_REQUEST;
+    const showExpanded = annotationData.type !== Annotations2.AnnotationType.NETWORK_REQUEST;
+    const showAnchored = annotationData.type !== Annotations2.AnnotationType.NETWORK_REQUEST;
+    const showCloseButton = annotationData.type !== Annotations2.AnnotationType.NETWORK_REQUEST;
+    const annotation = new Annotation(annotationData.id, annotationData.message, showExpanded, showAnchored, expandable, showCloseButton);
+    this.#annotations.set(annotationData.id, { id: annotationData.id, type: annotationData.type, annotation });
     console.log("[AnnotationManager] addAnnotation called. Annotations now", this.#annotations);
     requestAnimationFrame(async () => {
       await this.#resolveAnnotationWithId(annotationData.id);
     });
+  }
+  async resolveAnnotationsOfType(type) {
+    for (const annotationData of this.#annotations.values()) {
+      if (annotationData.type === type) {
+        await this.#resolveAnnotationWithId(annotationData.id);
+      }
+    }
   }
   async #resolveAnnotationWithId(id) {
     const annotation = this.#annotations.get(id);
@@ -764,31 +868,37 @@ var AnnotationManager = class _AnnotationManager {
     }
     const placement = this.#annotationPlacements?.get(annotation.type);
     if (!placement) {
-      console.warn("Unable to find placement for annotation with id", id);
+      console.warn("Unable to find placement for annotation with id", id, "(note: this is expected if its panel hasn't been shown yet).");
       return;
     }
     let position = void 0;
     const annotationRegistration = Annotations2.AnnotationRepository.instance().getAnnotationDataById(id);
-    if (annotationRegistration?.type === Annotations2.AnnotationType.ELEMENT_NODE) {
-      const elementData = annotationRegistration;
-      position = await placement.resolveRelativePosition(
-        placement.parentElement,
-        /* revealNode */
-        true,
-        elementData.lookupId,
-        elementData.anchor
-      );
-    } else {
-      console.warn("[AnnotationManager] Unknown AnnotationType", annotationRegistration?.type);
+    const reveal = !annotation.annotation.hasShown();
+    switch (annotationRegistration?.type) {
+      case Annotations2.AnnotationType.ELEMENT_NODE: {
+        const elementData = annotationRegistration;
+        position = await placement.resolveInitialState(placement.parentElement, reveal, elementData.lookupId, elementData.anchor);
+        break;
+      }
+      case Annotations2.AnnotationType.NETWORK_REQUEST: {
+        const networkRequestData = annotationRegistration;
+        position = await placement.resolveInitialState(placement.parentElement, reveal, networkRequestData.lookupId, networkRequestData.anchor);
+        break;
+      }
+      case Annotations2.AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS: {
+        const networkRequestDetailsData = annotationRegistration;
+        position = await placement.resolveInitialState(placement.parentElement, reveal, networkRequestDetailsData.lookupId, networkRequestDetailsData.anchor);
+        break;
+      }
+      default:
+        console.warn("[AnnotationManager] Unknown AnnotationType", annotationRegistration?.type);
     }
     if (!position) {
       console.log(`Unable to calculate position for annotation with id ${annotationRegistration?.id}`);
       return;
     }
-    console.log(`Annotation placed at relative positions ${position.x}, ${position.y}${annotation.annotation.isShowing() ? " (already showing)" : " (and showing)"}`);
     annotation.annotation.setCoordinates(position.x, position.y);
     if (!annotation.annotation.isShowing()) {
-      console.log("Annotation was not showing, showing now");
       annotation.annotation.show(placement.parentElement, placement.insertBefore);
     }
   }
@@ -1132,7 +1242,7 @@ import * as Host4 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html6, nothing as nothing2, render as render6 } from "./../../ui/lit/lit.js";
+import { Directives, html as html6, nothing as nothing3, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionDisclaimer.css.js
@@ -1230,7 +1340,7 @@ var UIStringsNotTranslate3 = {
 var lockedString3 = i18n9.i18n.lockedString;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
   if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId) {
-    render6(nothing2, target);
+    render6(nothing3, target);
     return;
   }
   render6(html6`
@@ -1382,7 +1492,7 @@ import "./../../ui/components/tooltips/tooltips.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing3, render as render7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html7, nothing as nothing4, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
@@ -1504,7 +1614,7 @@ var UIStringsNotTranslate4 = {
 var lockedString4 = i18n11.i18n.lockedString;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
   if (input.aidaAvailability !== "available") {
-    render7(nothing3, target);
+    render7(nothing4, target);
     return;
   }
   const toolbarClasses = Directives2.classMap({
@@ -1518,7 +1628,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading
-  })} class="disclaimer-widget"></devtools-widget>` : nothing3;
+  })} class="disclaimer-widget"></devtools-widget>` : nothing4;
   const recitationNotice = input.citations && input.citations.size > 0 ? html7`<div class="ai-code-completion-recitation-notice">
                 ${lockedString4(UIStringsNotTranslate4.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
@@ -1539,7 +1649,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
                         jslog=${VisualLogging4.link("ai-code-completion-citations.citation-link").track({
     click: true
   })}>${citation}</x-link>`)}</div></devtools-tooltip>
-            </div>` : nothing3;
+            </div>` : nothing4;
   render7(html7`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
@@ -1991,6 +2101,7 @@ import * as UI10 from "./../../ui/legacy/legacy.js";
 // gen/front_end/panels/common/ExtensionView.js
 var ExtensionView_exports = {};
 __export(ExtensionView_exports, {
+  ExtensionIframe: () => ExtensionIframe,
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
@@ -2073,6 +2184,44 @@ var ExtensionNotifierView = class extends UI9.Widget.VBox {
   willHide() {
     super.willHide();
     this.server.notifyViewHidden(this.id);
+  }
+};
+var ExtensionIframe = class {
+  #descriptor;
+  #iframe;
+  #isShowing = false;
+  #isLoaded = false;
+  constructor(descriptor) {
+    this.#descriptor = descriptor;
+    this.#iframe = document.createElement("iframe");
+    this.#iframe.src = descriptor.pagePath;
+    this.#iframe.onload = this.#onIframeLoad;
+  }
+  #onIframeLoad = () => {
+    this.#isLoaded = true;
+    if (this.#isShowing) {
+      this.#descriptor.onShown();
+    }
+  };
+  show() {
+    if (this.#isShowing) {
+      return;
+    }
+    this.#isShowing = true;
+    if (this.#isLoaded) {
+      this.#descriptor.onShown();
+    }
+  }
+  hide() {
+    if (!this.#isShowing) {
+      return;
+    }
+    this.#isShowing = false;
+    this.#isLoaded = false;
+    this.#descriptor.onHidden();
+  }
+  frame() {
+    return this.#iframe;
   }
 };
 
@@ -2264,7 +2413,7 @@ import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
+import * as ThemeSupport3 from "./../../ui/legacy/theme_support/theme_support.js";
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var kPermittedSchemes = ["http:", "https:", "file:", "data:", "chrome-extension:", "about:"];
 var extensionServerInstance;
@@ -2424,19 +2573,19 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     }
     Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     this.initExtensions();
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+    ThemeSupport3.ThemeSupport.instance().addEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
   get isEnabledForTest() {
     return this.extensionsEnabled;
   }
   dispose() {
-    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+    ThemeSupport3.ThemeSupport.instance().removeEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#onThemeChange);
     SDK2.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
     Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host7.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     window.removeEventListener("message", this.onWindowMessage, false);
   }
   #onThemeChange = () => {
-    const themeName = ThemeSupport.ThemeSupport.instance().themeName();
+    const themeName = ThemeSupport3.ThemeSupport.instance().themeName();
     for (const port of this.themeChangeHandlers.values()) {
       port.postMessage({ command: "host-theme-change", themeName });
     }
@@ -3306,7 +3455,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
         return;
       }
       if (!this.registeredExtensions.get(extensionOrigin)) {
-        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(), UI11.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
+        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport3.ThemeSupport.instance().themeName(), UI11.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
         Host7.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this.registeredExtensions.set(extensionOrigin, extensionRegistration);
       }
@@ -3578,14 +3727,14 @@ __export(PersistenceUtils_exports, {
   LinkDecorator: () => LinkDecorator,
   PersistenceUtils: () => PersistenceUtils
 });
+import "./../../ui/kit/kit.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
-import { Icon } from "./../../ui/kit/kit.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
+import { html as html10 } from "./../../ui/lit/lit.js";
 var UIStrings4 = {
   /**
    * @description Text in Persistence Utils of the Workspace settings in Settings
@@ -3620,32 +3769,20 @@ var PersistenceUtils = class _PersistenceUtils {
       if (!Common5.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
-      const icon2 = new Icon();
-      icon2.name = "document";
-      icon2.classList.add("small");
-      UI12.Tooltip.Tooltip.install(icon2, _PersistenceUtils.tooltipForUISourceCode(binding.network));
-      if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
-        icon2.classList.add("dot", "purple");
-      } else {
-        icon2.classList.add("dot", "green");
-      }
-      return icon2;
+      const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
+      return html10`<devtools-icon class="small dot ${dotClass}" name="document"
+                                 title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
+                  </devtools-icon>`;
     }
     if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common5.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
-      const icon2 = new Icon();
-      icon2.name = "document";
-      icon2.classList.add("small");
-      icon2.classList.add("dot", "purple");
-      return icon2;
+      return html10`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    const icon = new Icon();
-    icon.name = "document";
-    icon.classList.add("small");
-    UI12.Tooltip.Tooltip.install(icon, _PersistenceUtils.tooltipForUISourceCode(uiSourceCode));
-    return icon;
+    return html10`<devtools-icon class="small" name="document"
+                               title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
+                </devtools-icon>`;
   }
 };
 var LinkDecorator = class extends Common5.ObjectWrapper.ObjectWrapper {
@@ -3673,8 +3810,8 @@ __export(DOMLinkifier_exports, {
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html10, nothing as nothing4, render as render10 } from "./../../ui/lit/lit.js";
+import * as UI12 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html11, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -3748,7 +3885,7 @@ var UIStrings5 = {
 var str_5 = i18n19.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
 var i18nString5 = i18n19.i18n.getLocalizedString.bind(void 0, str_5);
 var DEFAULT_VIEW7 = (input, _output, target) => {
-  render10(html10`${input.tagName || input.pseudo ? html10`
+  render10(html11`${input.tagName || input.pseudo ? html11`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
@@ -3766,14 +3903,14 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html10`<span class="node-label-name">${input.tagName}</span>` : nothing4,
-    input.id ? html10`<span class="node-label-id">#${input.id}</span>` : nothing4,
-    ...input.classes.map((className) => html10`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html10`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing4
+    input.tagName ? html11`<span class="node-label-name">${input.tagName}</span>` : nothing5,
+    input.id ? html11`<span class="node-label-id">#${input.id}</span>` : nothing5,
+    ...input.classes.map((className) => html11`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html11`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing5
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };
-var DOMNodeLink = class extends UI13.Widget.Widget {
+var DOMNodeLink = class extends UI12.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
@@ -3868,7 +4005,7 @@ var DOMNodeLink = class extends UI13.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render10(html10`
+  render10(html11`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
           jslog=${VisualLogging6.link("node").track({ click: true })}
@@ -3878,7 +4015,7 @@ var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
         <slot></slot>
       </button>`, target);
 };
-var DeferredDOMNodeLink = class extends UI13.Widget.Widget {
+var DeferredDOMNodeLink = class extends UI12.Widget.Widget {
   #deferredNode = void 0;
   #options = void 0;
   #view;
@@ -3915,12 +4052,12 @@ var Linkifier2 = class _Linkifier {
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
       const link5 = document.createElement("devtools-widget");
-      link5.widgetConfig = UI13.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
+      link5.widgetConfig = UI12.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
       return link5;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
       const link5 = document.createElement("devtools-widget");
-      link5.widgetConfig = UI13.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
+      link5.widgetConfig = UI12.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
       return link5;
     }
     throw new Error("Can't linkify non-node");
@@ -3942,14 +4079,14 @@ var str_6 = i18n21.i18n.registerUIStrings("panels/common/common.ts", UIStrings6)
 var i18nString6 = i18n21.i18n.getLocalizedString.bind(void 0, str_6);
 var TypeToAllowDialog = class {
   static async show(options) {
-    const dialog2 = new UI14.Dialog.Dialog(options.jslogContext.dialog);
+    const dialog2 = new UI13.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry2.Size(504, 340));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
       /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
     );
     dialog2.setDimmed(true);
-    const shadowRoot = UI14.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
+    const shadowRoot = UI13.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
     const content = shadowRoot.createChild("div", "type-to-allow-dialog");
     const result = await new Promise((resolve) => {
       const header = content.createChild("div", "header");
@@ -3966,12 +4103,12 @@ var TypeToAllowDialog = class {
         /* Buttons.Button.Size.SMALL */
       );
       content.createChild("div", "message").textContent = options.message;
-      const input = UI14.UIUtils.createInput("text-input", "text", options.jslogContext.input);
+      const input = UI13.UIUtils.createInput("text-input", "text", options.jslogContext.input);
       input.placeholder = options.inputPlaceholder;
       content.appendChild(input);
       const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI14.UIUtils.createTextButton(i18nString6(UIStrings6.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI14.UIUtils.createTextButton(i18nString6(UIStrings6.allow), () => {
+      const cancelButton = UI13.UIUtils.createTextButton(i18nString6(UIStrings6.cancel), () => resolve(false), { jslogContext: "cancel" });
+      const allowButton = UI13.UIUtils.createTextButton(i18nString6(UIStrings6.allow), () => {
         resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
       }, {
         jslogContext: "confirm",
@@ -4005,6 +4142,7 @@ export {
   AnnotationManager,
   BadgeNotification,
   DOMLinkifier_exports as DOMLinkifier,
+  ExtensionView_exports as ExtensionIframe,
   ExtensionPanel_exports as ExtensionPanel,
   ExtensionServer_exports as ExtensionServer,
   ExtensionView_exports as ExtensionView,

@@ -19,7 +19,6 @@ export function render(container) {
     function onChange(event) {
         const menu = event.target;
         if (menu instanceof HTMLSelectElement) {
-            // eslint-disable-next-line no-console
             console.log('Option selected: ', menu.value);
         }
     }

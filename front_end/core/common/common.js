@@ -5349,7 +5349,7 @@ function getLocalizedSettingsCategory(category) {
 var Settings_exports = {};
 __export(Settings_exports, {
   Deprecation: () => Deprecation,
-  NOOP_STORAGE: () => NOOP_STORAGE,
+  InMemoryStorage: () => InMemoryStorage,
   RegExpSetting: () => RegExpSetting,
   Setting: () => Setting,
   Settings: () => Settings,
@@ -5524,22 +5524,28 @@ var Settings = class _Settings {
     return this.#registry;
   }
 };
-var NOOP_STORAGE = {
-  register: () => {
-  },
-  set: () => {
-  },
-  get: () => Promise.resolve(""),
-  remove: () => {
-  },
-  clear: () => {
+var InMemoryStorage = class {
+  #store = /* @__PURE__ */ new Map();
+  register(_setting) {
+  }
+  set(key, value) {
+    this.#store.set(key, value);
+  }
+  get(key) {
+    return this.#store.get(key);
+  }
+  remove(key) {
+    this.#store.delete(key);
+  }
+  clear() {
+    this.#store.clear();
   }
 };
 var SettingsStorage = class {
   object;
   backingStore;
   storagePrefix;
-  constructor(object, backingStore = NOOP_STORAGE, storagePrefix = "") {
+  constructor(object, backingStore = new InMemoryStorage(), storagePrefix = "") {
     this.object = object;
     this.backingStore = backingStore;
     this.storagePrefix = storagePrefix;

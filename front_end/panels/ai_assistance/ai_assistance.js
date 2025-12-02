@@ -5,22 +5,23 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-import "./../../ui/legacy/legacy.js";
+import "./../../ui/kit/kit.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root7 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace6 from "./../../models/workspace/workspace.js";
+import * as Annotations from "./../../ui/components/annotations/annotations.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
@@ -4104,23 +4105,312 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
   }
 };
 
+// gen/front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.js
+import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
+
+// gen/front_end/panels/ai_assistance/components/collapsibleAssistanceContentWidget.css.js
+var collapsibleAssistanceContentWidget_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: block;
+  border: 1px solid var(--sys-color-outline);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+.header {
+  padding: 10px 16px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.header::after {
+  content: '\u25B6';
+  display: inline-block;
+  margin-left: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+:host([open]) .header {
+  border-bottom: 1px solid var(--sys-color-outline);
+}
+
+:host([open]) .header::after {
+  transform: rotate(90deg);
+}
+
+.content {
+  background-color: var(--sys-color-surface);
+  padding: 12px 16px;
+}
+
+/*# sourceURL=${import.meta.resolve("././components/collapsibleAssistanceContentWidget.css")} */`;
+
+// gen/front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.js
+var CollapsibleAssistanceContentWidget = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #isCollapsed = true;
+  #headerText = "Details";
+  set data(data) {
+    this.#headerText = data.headerText;
+    this.#render();
+  }
+  connectedCallback() {
+    this.#render();
+  }
+  #toggleCollapse() {
+    this.#isCollapsed = !this.#isCollapsed;
+    this.#render();
+  }
+  #render() {
+    const output = html7`
+      <style>${collapsibleAssistanceContentWidget_css_default}</style>
+      <details>
+      <summary class="header" @click=${this.#toggleCollapse}>
+        ${this.#headerText}
+      </summary>
+      <div class="content">
+        <slot></slot>
+      </div>
+      </details>
+    `;
+    render7(output, this.#shadow, { host: this });
+  }
+};
+customElements.define("devtools-collapsible-assistance-content-widget", CollapsibleAssistanceContentWidget);
+
+// gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
+import "./../../models/trace/insights/insights.js";
+import "./../timeline/components/components.js";
+
+// gen/front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.js
+import * as Trace2 from "./../../models/trace/trace.js";
+import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
+import * as Timeline from "./../timeline/timeline.js";
+var { html: html8 } = Lit3;
+var PerformanceAgentFlameChart = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #flameChartContainer = document.createElement("div");
+  #flameChart;
+  #dataProvider;
+  #parsedTrace = null;
+  constructor() {
+    super();
+    this.#flameChartContainer.classList.add("container");
+    this.#dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
+    this.#flameChart.markAsRoot();
+    this.#flameChart.show(this.#flameChartContainer);
+  }
+  set data(data) {
+    if (!data.parsedTrace) {
+      return;
+    }
+    if (data.parsedTrace === this.#parsedTrace) {
+      return;
+    }
+    this.#parsedTrace = data.parsedTrace;
+    const entityMapper = new Trace2.EntityMapper.EntityMapper(data.parsedTrace);
+    this.#dataProvider.setModel(data.parsedTrace, entityMapper);
+    this.#dataProvider.buildWithCustomTracksForTest({
+      filterTracks: (trackName) => trackName.startsWith("Main"),
+      expandTracks: () => true
+    });
+    const bounds = Trace2.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
+      min: Trace2.Types.Timing.Micro(data.start),
+      max: Trace2.Types.Timing.Micro(data.end),
+      range: Trace2.Types.Timing.Micro(data.end - data.start)
+    });
+    this.#flameChart.setWindowTimes(bounds.min, bounds.max);
+    this.#flameChart.setSize(600, 200);
+    this.#render();
+  }
+  #render() {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    const output = html8`
+        <style>
+          :host {
+            display: flex;
+          }
+
+          .container {
+            display: flex;
+            width: 600px;
+            height: 200px;
+          }
+
+          .flex-auto {
+            flex: auto;
+          }
+
+          .vbox {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+          }
+        </style>
+        ${this.#flameChartContainer}
+      `;
+    Lit3.render(output, this.#shadow, { host: this });
+    this.#flameChart.update();
+    this.#flameChart.setSize(600, 200);
+  }
+  windowChanged(startTime, endTime, animate) {
+    this.#flameChart.setWindowTimes(startTime, endTime, animate);
+  }
+  updateRangeSelection(startTime, endTime) {
+    this.#flameChart.updateRangeSelection(startTime, endTime);
+  }
+  updateSelectedEntry(_entryIndex) {
+  }
+  updateSelectedGroup(_flameChart, _group) {
+  }
+};
+customElements.define("devtools-performance-agent-flame-chart", PerformanceAgentFlameChart);
+
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
 import * as Common4 from "./../../core/common/common.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as Trace2 from "./../../models/trace/trace.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
+import * as Logs from "./../../models/logs/logs.js";
+import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
+import * as Helpers2 from "./../../models/trace/helpers/helpers.js";
+import * as Trace3 from "./../../models/trace/trace.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
-var { html: html7 } = Lit3;
-var { ref: ref3, createRef } = Lit3.Directives;
+import * as Network from "./../network/network.js";
+import * as Insights from "./../timeline/components/insights/insights.js";
+var { html: html9 } = Lit4.StaticHtml;
+var { ref: ref3, createRef } = Lit4.Directives;
+var INSIGHT_NAME_TO_COMPONENT = {
+  Cache: Insights.Cache.Cache,
+  CLSCulprits: Insights.CLSCulprits.CLSCulprits,
+  DocumentLatency: Insights.DocumentLatency.DocumentLatency,
+  DOMSize: Insights.DOMSize.DOMSize,
+  DuplicatedJavaScript: Insights.DuplicatedJavaScript.DuplicatedJavaScript,
+  FontDisplay: Insights.FontDisplay.FontDisplay,
+  ForcedReflow: Insights.ForcedReflow.ForcedReflow,
+  ImageDelivery: Insights.ImageDelivery.ImageDelivery,
+  INPBreakdown: Insights.INPBreakdown.INPBreakdown,
+  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
+  LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
+  LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
+  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
+  NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
+  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
+  SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
+  ThirdParties: Insights.ThirdParties.ThirdParties,
+  Viewport: Insights.Viewport.Viewport
+};
+function renderInsight(insightName, model) {
+  const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
+  if (!componentClass) {
+    return Lit4.nothing;
+  }
+  return html9`<div><${componentClass.litTagName}
+  .model=${model}
+  .selected=${true}
+  .isAIAssistanceContext=${true}>
+  </${componentClass.litTagName}></div>`;
+}
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
-  constructor(mainFrameId = "", lookupEvent = () => null) {
+  parsedTrace;
+  constructor(mainFrameId = "", lookupEvent = () => null, parsedTrace = null) {
     super();
     this.mainFrameId = mainFrameId;
     this.lookupEvent = lookupEvent;
+    this.parsedTrace = parsedTrace;
   }
   templateForToken(token) {
+    if (token.type === "html" && Boolean(Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled)) {
+      if (token.text.includes("<flame-chart-widget")) {
+        const startMatch = token.text.match(/start="?(\d+)"?/);
+        const endMatch = token.text.match(/end="?(\d+)"?/);
+        if (this.parsedTrace) {
+          const start = startMatch ? Number(startMatch[1]) : this.parsedTrace.data.Meta.traceBounds.min;
+          const end = endMatch ? Number(endMatch[1]) : this.parsedTrace.data.Meta.traceBounds.max;
+          return html9`<devtools-performance-agent-flame-chart .data=${{
+            parsedTrace: this.parsedTrace,
+            start,
+            end
+          }}
+          }></devtools-performance-agent-flame-chart>`;
+        }
+      }
+      const regex = /<([a-z-]+)\s+value="([^"]+)">/;
+      const match = token.text.match(regex);
+      if (!match) {
+        return null;
+      }
+      const tagName = match[1];
+      const value = match[2];
+      if (tagName === "ai-insight" && value) {
+        const componentName = value;
+        const insightSet = this.parsedTrace?.insights?.values().next().value;
+        const insightM = insightSet?.model[componentName];
+        if (!insightM) {
+          return null;
+        }
+        return html9`<devtools-collapsible-assistance-content-widget  .data=${{
+          headerText: "Insight"
+        }}>
+        ${renderInsight(componentName, insightM)}
+        </devtools-collapsible-assistance-content-widget>`;
+      }
+      if (tagName === "network-request-widget" && value) {
+        const rawTraceEvent = Helpers2.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents().at(Number(value));
+        if (rawTraceEvent && Trace3.Types.Events.isSyntheticNetworkRequest(rawTraceEvent)) {
+          const rawTraceEventId = rawTraceEvent?.args?.data?.requestId;
+          const rawTraceEventUrl = rawTraceEvent?.args?.data?.url;
+          const networkRequest = rawTraceEvent ? Logs.NetworkLog.NetworkLog.instance().requestsForId(rawTraceEventId).find((r) => r.url() === rawTraceEventUrl) : null;
+          if (networkRequest) {
+            const calculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
+            return html9`<devtools-collapsible-assistance-content-widget
+            .data=${{
+              headerText: "Network Request"
+            }}>
+            <devtools-widget class="actions" .widgetConfig=${UI7.Widget.widgetConfig(Network.RequestTimingView.RequestTimingView, {
+              request: networkRequest,
+              calculator
+            })}></devtools-widget>
+            </devtools-collapsible-assistance-content-widget>`;
+          }
+        }
+        const syntheticRequest = Helpers2.SyntheticEvents.SyntheticEventsManager.getActiveManager().syntheticEventForRawEventIndex(Number(value));
+        let networkTooltip = null;
+        if (syntheticRequest && Trace3.Types.Events.isSyntheticNetworkRequest(syntheticRequest)) {
+          networkTooltip = html9`<devtools-performance-network-request-tooltip
+              .data=${{
+            networkRequest: syntheticRequest,
+            entityMapper: null
+          }}
+            ></devtools-performance-network-request-tooltip>`;
+        }
+        return html9`<devtools-collapsible-assistance-content-widget
+        .data=${{
+          headerText: "Network Request"
+        }}>
+          ${networkTooltip}
+          </devtools-collapsible-assistance-content-widget>`;
+      }
+      return null;
+    }
     if (token.type === "link" && token.href.startsWith("#")) {
       if (token.href.startsWith("#node-")) {
         const nodeId = Number(token.href.replace("#node-", ""));
@@ -4132,20 +4422,20 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
           templateRef.value.textContent = "";
           templateRef.value.append(node);
         });
-        return html7`<span ${ref3(templateRef)}>${token.text}</span>`;
+        return html9`<span ${ref3(templateRef)}>${token.text}</span>`;
       }
       const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
-        return html7`${token.text}`;
+        return html9`${token.text}`;
       }
       let label = token.text;
       let title = "";
-      if (Trace2.Types.Events.isSyntheticNetworkRequest(event)) {
+      if (Trace3.Types.Events.isSyntheticNetworkRequest(event)) {
         title = event.args.data.url;
       } else {
         label += ` (${event.name})`;
       }
-      return html7`<a href="#" draggable=false .title=${title} @click=${(e) => {
+      return html9`<a href="#" draggable=false .title=${title} @click=${(e) => {
         e.stopPropagation();
         void Common4.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
       }}>${label}</a>`;
@@ -4178,7 +4468,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html8 } = Lit4;
+var { html: html10 } = Lit5;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var SCREENSHOT_QUALITY = 100;
@@ -4383,7 +4673,7 @@ function getMarkdownRenderer(context, conversation) {
   if (context instanceof AiAssistanceModel3.PerformanceAgent.PerformanceTraceContext) {
     if (!context.external) {
       const focus = context.getItem();
-      return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+      return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus), focus.parsedTrace);
     }
   } else if (conversation?.type === "drjones-performance-full") {
     return new PerformanceAgentMarkdownRenderer();
@@ -4391,10 +4681,10 @@ function getMarkdownRenderer(context, conversation) {
   return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
-  return html8`
+  return html10`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging7.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-      ${input.showChatActions ? html8`<devtools-button
+      ${input.showChatActions ? html10`<devtools-button
           title=${i18nString3(UIStrings3.newChat)}
           aria-label=${i18nString3(UIStrings3.newChat)}
           .iconName=${"plus"}
@@ -4408,8 +4698,8 @@ function toolbarView(input) {
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit4.nothing}
-        ${input.showActiveConversationActions ? html8`
+        ></devtools-menu-button>` : Lit5.nothing}
+        ${input.showActiveConversationActions ? html10`
           <devtools-button
               title=${i18nString3(UIStrings3.deleteChat)}
               aria-label=${i18nString3(UIStrings3.deleteChat)}
@@ -4426,15 +4716,15 @@ function toolbarView(input) {
             .jslogContext=${"export-ai-conversation"}
             .variant=${"toolbar"}
             @click=${input.onExportConversationClick}>
-          </devtools-button>` : Lit4.nothing}
+          </devtools-button>` : Lit5.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
-        <x-link
-          class="toolbar-feedback-link devtools-link"
+        <devtools-link
+          class="toolbar-feedback-link"
           title=${i18nString3(UIStrings3.sendFeedback)}
           href=${AI_ASSISTANCE_SEND_FEEDBACK}
-          jslog=${VisualLogging7.link().track({ click: true, keydown: "Enter|Space" }).context("freestyler.send-feedback")}
-        >${i18nString3(UIStrings3.sendFeedback)}</x-link>
+          jslogcontext=${"freestyler.send-feedback"}
+        >${i18nString3(UIStrings3.sendFeedback)}</devtools-link>
         <div class="toolbar-divider"></div>
         <devtools-button
           title=${i18nString3(UIStrings3.help)}
@@ -4458,9 +4748,9 @@ function defaultView(input, output, target) {
   function renderState() {
     switch (input.state) {
       case "chat-view":
-        return html8`<devtools-ai-chat-view
+        return html10`<devtools-ai-chat-view
           .props=${input.props}
-          ${Lit4.Directives.ref((el) => {
+          ${Lit5.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -4468,18 +4758,18 @@ function defaultView(input, output, target) {
         })}
         ></devtools-ai-chat-view>`;
       case "explore-view":
-        return html8`<devtools-widget
+        return html10`<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI7.Widget.widgetConfig(ExploreWidget)}
+          .widgetConfig=${UI8.Widget.widgetConfig(ExploreWidget)}
         ></devtools-widget>`;
       case "disabled-view":
-        return html8`<devtools-widget
+        return html10`<devtools-widget
           class="fill-panel"
-          .widgetConfig=${UI7.Widget.widgetConfig(DisabledWidget, input.props)}
+          .widgetConfig=${UI8.Widget.widgetConfig(DisabledWidget, input.props)}
         ></devtools-widget>`;
     }
   }
-  Lit4.render(html8`
+  Lit5.render(html10`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">${renderState()}</div>
     `, target);
@@ -4510,7 +4800,7 @@ function createPerformanceTraceContext(focus) {
   return new AiAssistanceModel3.PerformanceAgent.PerformanceTraceContext(focus);
 }
 var panelInstance;
-var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
+var AiAssistancePanel = class _AiAssistancePanel extends UI8.Panel.Panel {
   view;
   static panelName = "freestyler";
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
@@ -4557,13 +4847,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       accountImage: syncInfo.accountImage,
       accountFullName: syncInfo.accountFullName
     };
-    if (UI7.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
-      this.#toggleSearchElementAction = UI7.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
+    if (UI8.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
+      this.#toggleSearchElementAction = UI8.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
     AiAssistanceModel3.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
   }
   async #getPanelViewInput() {
-    const blockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const blockedByAge = Root7.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#aidaAvailability !== "available" || !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
       return {
         state: "disabled-view",
@@ -4647,7 +4937,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
    * the performance panel but have no trace imported.
    */
   #bindTimelineTraceListener() {
-    const timelinePanel = UI7.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+    const timelinePanel = UI8.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
     if (timelinePanel === this.#timelinePanelInstance) {
       return;
     }
@@ -4658,7 +4948,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
   }
   #bindFloatyListener() {
-    const additionalContexts = UI7.Context.Context.instance().flavor(UI7.Floaty.FloatyFlavor);
+    const additionalContexts = UI8.Context.Context.instance().flavor(UI8.Floaty.FloatyFlavor);
     if (!additionalContexts) {
       return;
     }
@@ -4666,8 +4956,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.requestUpdate();
   }
   #getDefaultConversationType() {
-    const { hostConfig } = Root6.Runtime;
-    const viewManager = UI7.ViewManager.ViewManager.instance();
+    const { hostConfig } = Root7.Runtime;
+    const viewManager = UI8.ViewManager.ViewManager.instance();
     const isElementsPanelVisible = viewManager.isViewVisible("elements");
     const isNetworkPanelVisible = viewManager.isViewVisible("network");
     const isSourcesPanelVisible = viewManager.isViewVisible("sources");
@@ -4718,28 +5008,28 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.#viewOutput.chatView?.restoreScrollPosition();
     this.#viewOutput.chatView?.focusTextInput();
     void this.#handleAidaAvailabilityChange();
-    this.#selectedElement = createNodeContext(selectedElementFilter(UI7.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
-    this.#selectedRequest = createRequestContext(UI7.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
-    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI7.Context.Context.instance().flavor(AiAssistanceModel3.AIContext.AgentFocus));
-    this.#selectedFile = createFileContext(UI7.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
+    this.#selectedElement = createNodeContext(selectedElementFilter(UI8.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
+    this.#selectedRequest = createRequestContext(UI8.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
+    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI8.Context.Context.instance().flavor(AiAssistanceModel3.AIContext.AgentFocus));
+    this.#selectedFile = createFileContext(UI8.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
-    UI7.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI7.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI7.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel3.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI7.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI7.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel3.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI8.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI8.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-    UI7.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI8.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
     Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistancePanelOpened);
-    if (Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
-      UI7.Context.Context.instance().addFlavorChangeListener(UI7.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
+    if (Root7.Runtime.hostConfig.devToolsGreenDevUi?.enabled) {
+      UI8.Context.Context.instance().addFlavorChangeListener(UI8.Floaty.FloatyFlavor, this.#bindFloatyListener, this);
       this.#bindFloatyListener();
     }
   }
@@ -4748,12 +5038,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
-    UI7.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI7.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI7.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel3.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI7.Context.Context.instance().removeFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI7.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    UI7.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel3.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI8.Context.Context.instance().removeFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI8.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
+    UI8.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.DOMModel.DOMModel, SDK3.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
@@ -4845,7 +5135,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
         UIHelpers2.openInNewTab(AI_ASSISTANCE_HELP);
       },
       onSettingsClick: () => {
-        void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
+        void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
       }
     };
   }
@@ -4865,7 +5155,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
   }
   #handleSelectElementClick() {
-    UI7.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
+    UI8.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
     void this.#toggleSearchElementAction?.execute();
   }
   #isTextInputDisabled() {
@@ -4879,7 +5169,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   }
   #shouldShowChatActions() {
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    const isBlockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const isBlockedByAge = Root7.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (!aiAssistanceSetting || isBlockedByAge) {
       return false;
     }
@@ -4903,7 +5193,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
       case "drjones-network-request":
         return this.#selectedContext ? lockedString6(UIStringsNotTranslate6.inputPlaceholderForNetwork) : lockedString6(UIStringsNotTranslate6.inputPlaceholderForNetworkNoContext);
       case "drjones-performance-full": {
-        const perfPanel = UI7.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+        const perfPanel = UI8.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#selectedContext ? lockedString6(UIStringsNotTranslate6.inputPlaceholderForPerformanceTrace) : lockedString6(UIStringsNotTranslate6.inputPlaceholderForPerformanceTraceNoContext);
         }
@@ -4915,7 +5205,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     if (!this.#conversation || this.#conversation.isReadOnly) {
       return i18nString3(UIStrings3.inputDisclaimerForEmptyState);
     }
-    const noLogging = Root6.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root6.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const noLogging = Root7.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root7.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     switch (this.#conversation.type) {
       case "freestyler":
         if (noLogging) {
@@ -4981,8 +5271,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
   }
   #canExecuteQuery() {
-    const isBrandedBuild = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.enabled);
-    const isBlockedByAge = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge);
+    const isBrandedBuild = Boolean(Root7.Runtime.hostConfig.aidaAvailability?.enabled);
+    const isBlockedByAge = Boolean(Root7.Runtime.hostConfig.aidaAvailability?.blockedByAge);
     const isAidaAvailable = Boolean(
       this.#aidaAvailability === "available"
       /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */
@@ -5089,7 +5379,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
     }
     void AiAssistanceModel3.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
-    UI7.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.chatDeleted));
+    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.chatDeleted));
   }
   async #onExportConversationClick() {
     if (!this.#conversation) {
@@ -5118,7 +5408,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
   }
   #handleNewChatRequest() {
     this.#updateConversationState();
-    UI7.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.newChatCreated));
+    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.newChatCreated));
+    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+      Annotations.AnnotationRepository.instance().deleteAllAnnotations();
+    }
   }
   async #handleTakeScreenshot() {
     const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -5425,15 +5718,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI7.Panel.Panel {
           }
           switch (data.type) {
             case "context":
-              UI7.ARIAUtils.LiveAnnouncer.status(data.title);
+              UI8.ARIAUtils.LiveAnnouncer.status(data.title);
               break;
             case "answer": {
               if (!data.complete && !announcedAnswerLoading) {
                 announcedAnswerLoading = true;
-                UI7.ARIAUtils.LiveAnnouncer.status(lockedString6(UIStringsNotTranslate6.answerLoading));
+                UI8.ARIAUtils.LiveAnnouncer.status(lockedString6(UIStringsNotTranslate6.answerLoading));
               } else if (data.complete && !announcedAnswerReady) {
                 announcedAnswerReady = true;
-                UI7.ARIAUtils.LiveAnnouncer.status(lockedString6(UIStringsNotTranslate6.answerReady));
+                UI8.ARIAUtils.LiveAnnouncer.status(lockedString6(UIStringsNotTranslate6.answerReady));
               }
             }
           }
@@ -5492,14 +5785,14 @@ var ActionDelegate = class {
       case "drjones.sources-floating-button":
       case "drjones.sources-panel-context": {
         void (async () => {
-          const view = UI7.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
+          const view = UI8.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
           if (!view) {
             return;
           }
-          await UI7.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
-          const minDrawerSize = UI7.InspectorView.InspectorView.instance().totalSize() / 4;
-          if (UI7.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
-            UI7.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
+          await UI8.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
+          const minDrawerSize = UI8.InspectorView.InspectorView.instance().totalSize() / 4;
+          if (UI8.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
+            UI8.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
           }
           const widget = await view.widget();
           void widget.handleAction(actionId, opts);
@@ -5511,13 +5804,13 @@ var ActionDelegate = class {
   }
 };
 function isAiAssistanceMultimodalUploadInputEnabled() {
-  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root7.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
 }
 function isAiAssistanceMultimodalInputEnabled() {
-  return Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+  return Boolean(Root7.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root6.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root7.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 export {
   ActionDelegate,
@@ -5527,6 +5820,7 @@ export {
   ExploreWidget_exports as ExploreWidget,
   MarkdownRendererWithCodeBlock,
   PatchWidget_exports as PatchWidget,
+  PerformanceAgentFlameChart,
   SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW,
   SelectWorkspaceDialog,
   UserActionRow_exports as UserActionRow,

@@ -304,10 +304,10 @@ export class TraceProcessor extends EventTarget {
         const observedInpScore = Insights.Common.evaluateINPMetricScore(observedInp);
         const observedClsScore = Insights.Common.evaluateCLSMetricScore(observedCls);
         const insightToSortingRank = new Map();
-        for (const [name, model] of Object.entries(insightSet.model)) {
-            const lcp = model.metricSavings?.LCP ?? 0;
-            const inp = model.metricSavings?.INP ?? 0;
-            const cls = model.metricSavings?.CLS ?? 0;
+        for (const [name, insight] of Object.entries(insightSet.model)) {
+            const lcp = insight.metricSavings?.LCP ?? 0;
+            const inp = insight.metricSavings?.INP ?? 0;
+            const cls = insight.metricSavings?.CLS ?? 0;
             const lcpPostSavings = observedLcp !== undefined ? Math.max(0, observedLcp - lcp) : undefined;
             const inpPostSavings = Math.max(0, observedInp - inp);
             const clsPostSavings = Math.max(0, observedCls - cls);
@@ -365,11 +365,11 @@ export class TraceProcessor extends EventTarget {
             urlString = data.Meta.finalDisplayUrlByNavigationId.get('') ?? data.Meta.mainFrameURL;
         }
         const insightSetModel = {};
+        const insightSetModelErrors = {};
         for (const [name, insight] of Object.entries(_a.getInsightRunners())) {
-            let model;
             try {
                 logger?.start(`insights:${name}`);
-                model = insight.generateInsight(data, context);
+                const model = insight.generateInsight(data, context);
                 model.frameId = context.frameId;
                 const navId = context.navigation?.args.data?.navigationId;
                 if (navId) {
@@ -379,14 +379,14 @@ export class TraceProcessor extends EventTarget {
                     // @ts-expect-error: model is a union of all possible insight model types.
                     return insight.createOverlays(model);
                 };
+                Object.assign(insightSetModel, { [name]: model });
             }
             catch (err) {
-                model = err;
+                Object.assign(insightSetModelErrors, { [name]: err });
             }
             finally {
                 logger?.end(`insights:${name}`);
             }
-            Object.assign(insightSetModel, { [name]: model });
         }
         // We may choose to exclude the insightSet if it's trivial. Trivial means:
         //   1. There's no navigation (it's an initial trace period)
@@ -396,12 +396,10 @@ export class TraceProcessor extends EventTarget {
         // Generally, these cases are the short time ranges before a page reload starts.
         const isNavigation = id === Types.Events.NO_NAVIGATION;
         const trivialThreshold = Helpers.Timing.milliToMicro(Types.Timing.Milli(5000));
-        const everyInsightPasses = Object.values(insightSetModel)
-            .filter(model => !(model instanceof Error))
-            .every(model => model.state === 'pass');
-        const noLcp = !insightSetModel.LCPBreakdown.lcpEvent;
-        const noInp = !insightSetModel.INPBreakdown.longestInteractionEvent;
-        const noLayoutShifts = insightSetModel.CLSCulprits.shifts?.size === 0;
+        const everyInsightPasses = Object.values(insightSetModel).every(model => model && model.state === 'pass');
+        const noLcp = !insightSetModel.LCPBreakdown?.lcpEvent;
+        const noInp = !insightSetModel.INPBreakdown?.longestInteractionEvent;
+        const noLayoutShifts = insightSetModel.CLSCulprits?.shifts?.size === 0;
         const shouldExclude = isNavigation && context.bounds.range < trivialThreshold && everyInsightPasses && noLcp &&
             noInp && noLayoutShifts;
         if (shouldExclude) {
@@ -423,6 +421,7 @@ export class TraceProcessor extends EventTarget {
             frameId: context.frameId,
             bounds: context.bounds,
             model: insightSetModel,
+            modelErrors: insightSetModelErrors,
         };
         this.#insights.set(insightSet.id, insightSet);
         this.sortInsightSet(insightSet, context.options.metadata ?? null);

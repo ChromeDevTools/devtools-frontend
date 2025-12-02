@@ -60,6 +60,7 @@
     "../../../../../../front_end/models/issues_manager/MarkdownIssueDescription.ts",
     "../../../../../../front_end/models/issues_manager/MixedContentIssue.ts",
     "../../../../../../front_end/models/issues_manager/PartitioningBlobURLIssue.ts",
+    "../../../../../../front_end/models/issues_manager/PermissionElementIssue.ts",
     "../../../../../../front_end/models/issues_manager/PropertyRuleIssue.ts",
     "../../../../../../front_end/models/issues_manager/QuirksModeIssue.ts",
     "../../../../../../front_end/models/issues_manager/RelatedIssue.ts",

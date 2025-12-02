@@ -41,8 +41,10 @@ import * as Logs from '../../models/logs/logs.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as PanelCommon from '../../panels/common/common.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Tracing from '../../services/tracing/tracing.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -295,6 +297,12 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.fileSelectorElement =
             UI.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView));
         panel.element.appendChild(this.fileSelectorElement);
+        if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            const dataGrid = this.networkLogView.getDataGrid();
+            if (dataGrid) {
+                PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.NETWORK_REQUEST, this.resolveInitialState.bind(this), dataGrid.scrollContainer);
+            }
+        }
         this.detailsWidget = new UI.Widget.VBox();
         this.detailsWidget.element.classList.add('network-details-view');
         this.splitWidget.setMainWidget(this.detailsWidget);
@@ -534,6 +542,9 @@ export class NetworkPanel extends UI.Panel.Panel {
         UI.Context.Context.instance().setFlavor(NetworkPanel, this);
         // Record the network tool load time after the panel has loaded.
         Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
+        if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.NETWORK_REQUEST);
+        }
     }
     willHide() {
         UI.Context.Context.instance().setFlavor(NetworkPanel, null);
@@ -619,6 +630,38 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.splitWidget.showBoth();
         return this.networkItemView;
     }
+    async resolveInitialState(parentElement, reveal, lookupId, anchor) {
+        let request = anchor;
+        if (!this.isShowing()) {
+            return null;
+        }
+        if (!request) {
+            const networkManager = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.NetworkManager.NetworkManager);
+            if (!networkManager) {
+                return null;
+            }
+            const requests = Logs.NetworkLog.NetworkLog.instance().requestsForId(lookupId);
+            if (requests.length === 0) {
+                console.warn('Network Request list is empty');
+                return null;
+            }
+            request = requests[0];
+        }
+        if (reveal) {
+            await Common.Revealer.reveal(request);
+            await this.selectAndActivateRequest(request);
+        }
+        const requestNode = this.networkLogView?.nodeForRequest(request);
+        if (requestNode?.element()) {
+            const targetRect = requestNode.element().getBoundingClientRect();
+            const parentRect = parentElement.getBoundingClientRect();
+            const relativeX = 4;
+            const relativeY = targetRect.y - parentRect.y + parentElement.scrollTop;
+            return { x: relativeX, y: relativeY };
+        }
+        console.warn('Could not find element for request:', anchor);
+        return null;
+    }
     updateUI() {
         if (this.detailsWidget) {
             this.detailsWidget.element.classList.toggle('network-details-view-tall-header', this.networkLogLargeRowsSetting.get());
@@ -697,6 +740,11 @@ export class NetworkPanel extends UI.Panel.Panel {
         // FIXME: Unify all time units across the frontend!
         this.overviewPane.setBounds(Trace.Types.Timing.Milli(this.calculator.minimumBoundary() * 1000), Trace.Types.Timing.Milli(this.calculator.maximumBoundary() * 1000));
         this.networkOverview.updateRequest(request);
+        if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            requestAnimationFrame(() => {
+                void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.NETWORK_REQUEST);
+            });
+        }
     }
     resolveLocation(locationName) {
         if (locationName === 'network-sidebar') {

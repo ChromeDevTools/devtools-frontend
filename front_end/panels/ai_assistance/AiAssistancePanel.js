@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -12,6 +12,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as Badges from '../../models/badges/badges.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
@@ -236,7 +237,7 @@ function getMarkdownRenderer(context, conversation) {
     if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
         if (!context.external) {
             const focus = context.getItem();
-            return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+            return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus), focus.parsedTrace);
         }
     }
     else if (conversation?.type === "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */) {
@@ -288,12 +289,12 @@ function toolbarView(input) {
         : Lit.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
-        <x-link
-          class="toolbar-feedback-link devtools-link"
+        <devtools-link
+          class="toolbar-feedback-link"
           title=${i18nString(UIStrings.sendFeedback)}
           href=${AI_ASSISTANCE_SEND_FEEDBACK}
-          jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('freestyler.send-feedback')}
-        >${i18nString(UIStrings.sendFeedback)}</x-link>
+          jslogcontext=${'freestyler.send-feedback'}
+        >${i18nString(UIStrings.sendFeedback)}</devtools-link>
         <div class="toolbar-divider"></div>
         <devtools-button
           title=${i18nString(UIStrings.help)}
@@ -1011,6 +1012,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #handleNewChatRequest() {
         this.#updateConversationState();
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
+        if (Annotations.AnnotationRepository.annotationsEnabled()) {
+            Annotations.AnnotationRepository.instance().deleteAllAnnotations();
+        }
     }
     async #handleTakeScreenshot() {
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

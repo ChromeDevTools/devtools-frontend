@@ -118,7 +118,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
         }
     }
     addPin(expression, userGesture) {
-        const pin = new ConsolePin(expression, this, this.focusOut);
+        const pin = new ConsolePinPresenter(expression, this, this.focusOut);
         this.contentElement.appendChild(pin.element());
         this.pins.add(pin);
         this.savePins();
@@ -158,15 +158,14 @@ export class ConsolePinPane extends UI.Widget.VBox {
     updatedForTest() {
     }
 }
-export class ConsolePin {
+export class ConsolePinPresenter {
     pinPane;
     focusOut;
+    pin;
+    pinEditor;
     pinElement;
     pinPreview;
-    lastResult;
-    lastExecutionContext;
     editor;
-    committedExpression;
     hovered;
     lastNode;
     deletePinIcon;
@@ -202,12 +201,15 @@ export class ConsolePin {
         const nameElement = fragment.$('name');
         UI.Tooltip.Tooltip.install(nameElement, expression);
         elementToConsolePin.set(this.pinElement, this);
-        this.lastResult = null;
-        this.lastExecutionContext = null;
-        this.committedExpression = expression;
         this.hovered = false;
         this.lastNode = null;
-        this.editor = this.createEditor(expression, nameElement);
+        this.editor = this.#createEditor(expression, nameElement);
+        this.pinEditor = {
+            workingCopy: () => this.editor.state.doc.toString(),
+            workingCopyWithHint: () => TextEditor.Config.contentIncludingHint(this.editor.editor),
+            isEditing: () => this.pinElement.hasFocus(),
+        };
+        this.pin = new ConsolePin(this.pinEditor, expression);
         this.pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
         this.pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
         this.pinPreview.addEventListener('click', (event) => {
@@ -223,7 +225,7 @@ export class ConsolePin {
             }
         });
     }
-    createEditor(doc, parent) {
+    #createInitialEditorState(doc) {
         const extensions = [
             CodeMirror.EditorView.contentAttributes.of({ 'aria-label': i18nString(UIStrings.liveExpressionEditor) }),
             CodeMirror.EditorView.lineWrapping,
@@ -234,7 +236,7 @@ export class ConsolePin {
                 {
                     key: 'Escape',
                     run: (view) => {
-                        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.committedExpression } });
+                        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.pin.expression } });
                         this.focusOut();
                         return true;
                     },
@@ -260,7 +262,7 @@ export class ConsolePin {
                             return false;
                         }
                         // User should be able to tab out of edit field after auto complete is done
-                        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.committedExpression } });
+                        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.pin.expression } });
                         this.focusOut();
                         return true;
                     },
@@ -272,14 +274,14 @@ export class ConsolePin {
                             return false;
                         }
                         // User should be able to tab out of edit field after auto complete is done
-                        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.committedExpression } });
+                        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: this.pin.expression } });
                         this.editor.blur();
                         this.deletePinIcon.focus();
                         return true;
                     },
                 },
             ]),
-            CodeMirror.EditorView.domEventHandlers({ blur: (_e, view) => this.onBlur(view) }),
+            CodeMirror.EditorView.domEventHandlers({ blur: (_e, view) => this.#onBlur(view) }),
             TextEditor.Config.baseConfiguration(doc),
             TextEditor.Config.closeBrackets.instance(),
             TextEditor.Config.autocompletion.instance(),
@@ -287,24 +289,26 @@ export class ConsolePin {
         if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
             extensions.push(TextEditor.JavaScript.completion());
         }
-        const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({ doc, extensions }));
+        return CodeMirror.EditorState.create({ doc, extensions });
+    }
+    #createEditor(doc, parent) {
+        const editor = new TextEditor.TextEditor.TextEditor(this.#createInitialEditorState(doc));
         parent.appendChild(editor);
         return editor;
     }
-    onBlur(editor) {
-        const text = editor.state.doc.toString();
-        const trimmedText = text.trim();
-        this.committedExpression = trimmedText;
+    #onBlur(editor) {
+        const commitedAsIs = this.pin.commit();
         this.pinPane.savePins();
-        if (this.committedExpression.length) {
-            UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeExpressionS, { PH1: this.committedExpression }));
+        const newExpression = this.pin.expression;
+        if (newExpression.length) {
+            UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeExpressionS, { PH1: newExpression }));
         }
         else {
             UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeBlankExpression));
         }
         editor.dispatch({
-            selection: { anchor: trimmedText.length },
-            changes: trimmedText !== text ? { from: 0, to: text.length, insert: trimmedText } : undefined,
+            selection: { anchor: this.pin.expression.length },
+            changes: !commitedAsIs ? { from: 0, to: this.editor.state.doc.length, insert: newExpression } : undefined,
         });
     }
     setHovered(hovered) {
@@ -317,7 +321,7 @@ export class ConsolePin {
         }
     }
     expression() {
-        return this.committedExpression;
+        return this.pin.expression;
     }
     element() {
         return this.pinElement;
@@ -328,29 +332,26 @@ export class ConsolePin {
         editor.dispatch({ selection: { anchor: editor.state.doc.length } });
     }
     appendToContextMenu(contextMenu) {
-        if (this.lastResult && !('error' in this.lastResult) && this.lastResult.object) {
-            contextMenu.appendApplicableItems(this.lastResult.object);
+        const { lastResult } = this.pin;
+        if (lastResult && !('error' in lastResult) && lastResult.object) {
+            contextMenu.appendApplicableItems(lastResult.object);
             // Prevent result from being released automatically, since it may be used by
             // the context menu action. It will be released when the console is cleared,
             // where we release the 'live-expression' object group.
-            this.lastResult = null;
+            this.pin.skipReleaseLastResult();
         }
     }
     async updatePreview() {
         if (!this.editor) {
             return;
         }
-        const text = TextEditor.Config.contentIncludingHint(this.editor.editor);
-        const isEditing = this.pinElement.hasFocus();
-        const throwOnSideEffect = isEditing && text !== this.committedExpression;
-        const timeout = throwOnSideEffect ? 250 : undefined;
         const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-        const { preview, result } = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(text, throwOnSideEffect, true /* replMode */, timeout, !isEditing /* allowErrors */, 'live-expression', true /* awaitPromise */, true /* silent */);
-        if (this.lastResult && this.lastExecutionContext) {
-            this.lastExecutionContext.runtimeModel.releaseEvaluationResult(this.lastResult);
+        if (!executionContext) {
+            return;
         }
-        this.lastResult = result || null;
-        this.lastExecutionContext = executionContext || null;
+        const { result, node } = await this.pin.evaluate(executionContext);
+        const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+        const preview = result ? formatter.renderEvaluationResultPreview(result) : document.createDocumentFragment();
         const previewText = preview.deepTextContent();
         if (!previewText || previewText !== this.pinPreview.deepTextContent()) {
             this.pinPreview.removeChildren();
@@ -362,14 +363,10 @@ export class ConsolePin {
             else if (previewText) {
                 this.pinPreview.appendChild(preview);
             }
-            else if (!isEditing) {
+            else if (!this.pinEditor.isEditing()) {
                 UI.UIUtils.createTextChild(this.pinPreview, i18nString(UIStrings.notAvailable));
             }
             UI.Tooltip.Tooltip.install(this.pinPreview, previewText);
-        }
-        let node = null;
-        if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
-            node = result.object;
         }
         if (this.hovered) {
             if (node) {
@@ -383,6 +380,58 @@ export class ConsolePin {
         const isError = result && !('error' in result) && result.exceptionDetails &&
             !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
         this.pinElement.classList.toggle('error-level', Boolean(isError));
+    }
+}
+/**
+ * A pinned console expression.
+ */
+export class ConsolePin {
+    #editor;
+    #expression;
+    // We track the last evaluation result for this pin so we can release the RemoteObject.
+    #lastResult = null;
+    #lastExecutionContext = null;
+    #releaseLastResult = true;
+    constructor(editor, expression) {
+        this.#editor = editor;
+        this.#expression = expression;
+    }
+    get expression() {
+        return this.#expression;
+    }
+    get lastResult() {
+        return this.#lastResult;
+    }
+    skipReleaseLastResult() {
+        this.#releaseLastResult = false;
+    }
+    /**
+     * Commit the current working copy from the editor.
+     * @returns true, iff the working copy was commited as-is.
+     */
+    commit() {
+        const text = this.#editor.workingCopy();
+        const trimmedText = text.trim();
+        this.#expression = trimmedText;
+        return this.#expression === text;
+    }
+    /** Evaluates the current working copy of the pinned expression. If the result is a DOM node, we return that separately for convenience.  */
+    async evaluate(executionContext) {
+        const editorText = this.#editor.workingCopyWithHint();
+        const throwOnSideEffect = this.#editor.isEditing() && editorText !== this.#expression;
+        const timeout = throwOnSideEffect ? 250 : undefined;
+        const result = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluate(editorText, executionContext, throwOnSideEffect, /* replMode*/ true, timeout, 'live-expression', 
+        /* awaitPromise */ true, /* silent */ true);
+        if (this.#lastResult && this.#releaseLastResult) {
+            this.#lastExecutionContext?.runtimeModel.releaseEvaluationResult(this.#lastResult);
+        }
+        this.#lastResult = result;
+        this.#lastExecutionContext = executionContext;
+        this.#releaseLastResult = true;
+        if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
+            return { result, node: result.object };
+        }
+        return { result, node: null };
     }
 }
 //# sourceMappingURL=ConsolePinPane.js.map

@@ -6,12 +6,7 @@ import * as Types from '../types/types.js';
 import { getLogNormalScore } from './Statistics.js';
 const GRAPH_SAVINGS_PRECISION = 50;
 export function getInsight(insightName, insightSet) {
-    const insight = insightSet.model[insightName];
-    if (insight instanceof Error) {
-        return null;
-    }
-    // For some reason typescript won't narrow the type by removing Error, so do it manually.
-    return insight;
+    return insightSet.model[insightName];
 }
 export function getLCP(insightSet) {
     const insight = getInsight("LCPBreakdown" /* InsightKeys.LCP_BREAKDOWN */, insightSet);

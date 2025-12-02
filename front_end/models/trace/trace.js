@@ -835,10 +835,10 @@ var TraceProcessor = class extends EventTarget {
     const observedInpScore = Insights.Common.evaluateINPMetricScore(observedInp);
     const observedClsScore = Insights.Common.evaluateCLSMetricScore(observedCls);
     const insightToSortingRank = /* @__PURE__ */ new Map();
-    for (const [name, model] of Object.entries(insightSet.model)) {
-      const lcp = model.metricSavings?.LCP ?? 0;
-      const inp = model.metricSavings?.INP ?? 0;
-      const cls = model.metricSavings?.CLS ?? 0;
+    for (const [name, insight] of Object.entries(insightSet.model)) {
+      const lcp = insight.metricSavings?.LCP ?? 0;
+      const inp = insight.metricSavings?.INP ?? 0;
+      const cls = insight.metricSavings?.CLS ?? 0;
       const lcpPostSavings = observedLcp !== void 0 ? Math.max(0, observedLcp - lcp) : void 0;
       const inpPostSavings = Math.max(0, observedInp - inp);
       const clsPostSavings = Math.max(0, observedCls - cls);
@@ -893,11 +893,11 @@ var TraceProcessor = class extends EventTarget {
       urlString = data.Meta.finalDisplayUrlByNavigationId.get("") ?? data.Meta.mainFrameURL;
     }
     const insightSetModel = {};
+    const insightSetModelErrors = {};
     for (const [name, insight] of Object.entries(_a.getInsightRunners())) {
-      let model;
       try {
         logger?.start(`insights:${name}`);
-        model = insight.generateInsight(data, context);
+        const model = insight.generateInsight(data, context);
         model.frameId = context.frameId;
         const navId = context.navigation?.args.data?.navigationId;
         if (navId) {
@@ -906,19 +906,19 @@ var TraceProcessor = class extends EventTarget {
         model.createOverlays = () => {
           return insight.createOverlays(model);
         };
+        Object.assign(insightSetModel, { [name]: model });
       } catch (err) {
-        model = err;
+        Object.assign(insightSetModelErrors, { [name]: err });
       } finally {
         logger?.end(`insights:${name}`);
       }
-      Object.assign(insightSetModel, { [name]: model });
     }
     const isNavigation = id === Types3.Events.NO_NAVIGATION;
     const trivialThreshold = Helpers4.Timing.milliToMicro(Types3.Timing.Milli(5e3));
-    const everyInsightPasses = Object.values(insightSetModel).filter((model) => !(model instanceof Error)).every((model) => model.state === "pass");
-    const noLcp = !insightSetModel.LCPBreakdown.lcpEvent;
-    const noInp = !insightSetModel.INPBreakdown.longestInteractionEvent;
-    const noLayoutShifts = insightSetModel.CLSCulprits.shifts?.size === 0;
+    const everyInsightPasses = Object.values(insightSetModel).every((model) => model && model.state === "pass");
+    const noLcp = !insightSetModel.LCPBreakdown?.lcpEvent;
+    const noInp = !insightSetModel.INPBreakdown?.longestInteractionEvent;
+    const noLayoutShifts = insightSetModel.CLSCulprits?.shifts?.size === 0;
     const shouldExclude = isNavigation && context.bounds.range < trivialThreshold && everyInsightPasses && noLcp && noInp && noLayoutShifts;
     if (shouldExclude) {
       return;
@@ -935,7 +935,8 @@ var TraceProcessor = class extends EventTarget {
       navigation,
       frameId: context.frameId,
       bounds: context.bounds,
-      model: insightSetModel
+      model: insightSetModel,
+      modelErrors: insightSetModelErrors
     };
     this.#insights.set(insightSet.id, insightSet);
     this.sortInsightSet(insightSet, context.options.metadata ?? null);

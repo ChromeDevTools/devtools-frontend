@@ -56,8 +56,13 @@ export function getInsightSetOrError(insights, navigationOrNavigationId) {
 export function getInsightOrError(insightName, insights, navigation) {
     const insightSet = getInsightSetOrError(insights, navigation);
     const insight = insightSet.model[insightName];
-    if (insight instanceof Error) {
-        throw insight;
+    const error = insightSet.modelErrors[insightName];
+    if (error) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw error;
+    }
+    if (!insight) {
+        throw new Error('missing insight');
     }
     return insight;
 }

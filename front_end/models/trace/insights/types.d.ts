@@ -95,14 +95,23 @@ export interface InsightSet {
     url: URL;
     frameId: string;
     bounds: Types.Timing.TraceWindowMicro;
+    /** Contains results for all non-errored insights. */
     model: InsightModels;
+    /** Contains errors for all insights that had an internal error. */
+    modelErrors: InsightModelErrors;
     navigation?: Types.Events.NavigationStart;
 }
 /**
- * Contains insights for a specific insight set.
+ * Contains insights for a specific insight set. If missing, it error'd.
  */
 export type InsightModels = {
-    [I in keyof InsightModelsType]: ReturnType<InsightModelsType[I]['generateInsight']>;
+    [I in keyof InsightModelsType]?: ReturnType<InsightModelsType[I]['generateInsight']>;
+};
+/**
+ * Contains an internal error for each insight in a specific insight set.
+ */
+export type InsightModelErrors = {
+    [I in keyof InsightModelsType]?: Error;
 };
 /**
  * Contains insights for the entire trace. Insights are mostly grouped by `navigationId`, with one exception:

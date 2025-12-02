@@ -740,7 +740,7 @@ __export(ContextMenu_exports, {
 import * as Host6 from "./../../core/host/host.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
-import { html as html2, render as render2 } from "./../lit/lit.js";
+import { html as html2, render as render3 } from "./../lit/lit.js";
 import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
@@ -4530,6 +4530,7 @@ import * as Platform8 from "./../../core/platform/platform.js";
 import * as Geometry3 from "./../../models/geometry/geometry.js";
 import * as Annotations from "./../components/annotations/annotations.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
+import { render as render2 } from "./../lit/lit.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon2, Icon } from "./../kit/kit.js";
 
@@ -5190,7 +5191,9 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     ZoomManager.instance().addEventListener("ZoomChanged", this.zoomChanged, this);
     this.makeTabSlider();
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      Annotations.AnnotationRepository.instance().addEventListener("AnnotationAdded", this.#onAnnotationAdded, this);
+      Annotations.AnnotationRepository.instance().addEventListener("AnnotationAdded", this.#onUpdateAnnotations, this);
+      Annotations.AnnotationRepository.instance().addEventListener("AnnotationDeleted", this.#onUpdateAnnotations, this);
+      Annotations.AnnotationRepository.instance().addEventListener("AllAnnotationsDeleted", this.#onUpdateAnnotations, this);
     }
   }
   setAccessibleName(name) {
@@ -5914,7 +5917,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
       tab.tabAnnotationIcon = iconVisible;
     }
   }
-  #onAnnotationAdded() {
+  #onUpdateAnnotations() {
     this.updateTabAnnotationIcons();
   }
   keyDown(event) {
@@ -6124,8 +6127,12 @@ var TabbedPaneTab = class {
     }
     const suffixElementContainer = document.createElement("span");
     suffixElementContainer.classList.add("tabbed-pane-header-tab-suffix-element");
-    const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
-    suffixElementContainer.appendChild(suffixElement);
+    if (this.suffixElement instanceof HTMLElement) {
+      const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
+      suffixElementContainer.appendChild(suffixElement);
+    } else {
+      render2(this.suffixElement, suffixElementContainer);
+    }
     titleElement.insertAdjacentElement("afterend", suffixElementContainer);
     tabSuffixElements.set(tabElement, suffixElementContainer);
   }
@@ -9587,7 +9594,7 @@ var MenuButton = class extends HTMLElement {
     if (!this.iconName) {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
-    render2(html2`
+    render3(html2`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
                          .variant=${"icon"}
@@ -14189,7 +14196,7 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // gen/front_end/ui/legacy/UIUtils.js
-var { Directives: Directives2, render: render3 } = Lit2;
+var { Directives: Directives2, render: render4 } = Lit2;
 var UIStrings11 = {
   /**
    * @description label to open link externally
@@ -15790,7 +15797,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       this.#mutationObserver.observe(this.#contentTemplate.content, { childList: true, attributes: true, subtree: true, characterData: true });
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render3(template, this.#contentTemplate.content);
+    render4(template, this.#contentTemplate.content);
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
@@ -16843,7 +16850,7 @@ __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
 import * as i18n24 from "./../../core/i18n/i18n.js";
-import { Directives as Directives3, html as html4, render as render4 } from "./../lit/lit.js";
+import { Directives as Directives3, html as html4, render as render5 } from "./../lit/lit.js";
 import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -17248,7 +17255,7 @@ var str_12 = i18n24.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings
 var i18nString12 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 var { ref } = Directives3;
 var DEFAULT_VIEW = (input, output, target) => {
-  render4(html4`
+  render5(html4`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging17.section("empty-view")}
@@ -18191,7 +18198,7 @@ __export(ListWidget_exports, {
 import * as i18n28 from "./../../core/i18n/i18n.js";
 import * as Platform23 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html5, render as render5 } from "./../lit/lit.js";
+import { html as html5, render as render6 } from "./../lit/lit.js";
 import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -18527,7 +18534,7 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render5(html5`
+    render6(html5`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
@@ -19220,7 +19227,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n30 from "./../../core/i18n/i18n.js";
 import * as Buttons9 from "./../components/buttons/buttons.js";
-import { html as html6, render as render6 } from "./../lit/lit.js";
+import { html as html6, render as render7 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -19285,7 +19292,7 @@ var UIStrings15 = {
 var str_15 = i18n30.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings15);
 var i18nString15 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render6(html6`
+  render7(html6`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString15(UIStrings15.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -20882,7 +20889,7 @@ __export(TargetCrashedScreen_exports, {
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n36 from "./../../core/i18n/i18n.js";
-import { html as html7, render as render7 } from "./../lit/lit.js";
+import { html as html7, render as render8 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -20918,7 +20925,7 @@ var UIStrings18 = {
 var str_18 = i18n36.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings18);
 var i18nString18 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render7(html7`
+  render8(html7`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString18(UIStrings18.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString18(UIStrings18.oncePageIsReloadedDevtoolsWill)}</div>`, target);
@@ -21269,7 +21276,7 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 
 // gen/front_end/ui/legacy/Treeoutline.js
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render8 } = Lit3;
+var { render: render9 } = Lit3;
 var Events2;
 (function(Events3) {
   Events3["ElementAttached"] = "ElementAttached";
@@ -21904,7 +21911,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render8(icons, this.leadingIconsElement);
+    render9(icons, this.leadingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;

@@ -1,4 +1,4 @@
-import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ChatView, type ModelChatMessage, type Props as ChatViewProps } from './components/ChatView.js';

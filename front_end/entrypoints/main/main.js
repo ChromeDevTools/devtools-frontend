@@ -513,11 +513,29 @@ var UIStrings2 = {
   /**
    * @description Notification shown to the user whenever DevTools receives an external request.
    */
-  externalRequestReceived: "`DevTools` received an external request"
+  externalRequestReceived: "`DevTools` received an external request",
+  /**
+   * @description Notification shown to the user whenever DevTools has finished downloading a local AI model.
+   */
+  aiModelDownloaded: "AI model downloaded"
 };
 var str_2 = i18n3.i18n.registerUIStrings("entrypoints/main/MainImpl.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var loadedPanelCommonModule;
+var WINDOW_LOCAL_STORAGE = {
+  register(_setting) {
+  },
+  async get(setting) {
+    return window.localStorage.getItem(setting);
+  },
+  set(setting, value) {
+    window.localStorage.setItem(setting, value);
+  },
+  remove(setting) {
+    window.localStorage.removeItem(setting);
+  },
+  clear: () => window.localStorage.clear()
+};
 var MainImpl = class {
   #readyForTestPromise = Promise.withResolvers();
   #veStartPromise;
@@ -625,13 +643,9 @@ var MainImpl = class {
     }
     let localStorage;
     if (!Host.InspectorFrontendHost.isUnderTest() && window.localStorage) {
-      const localbackingStore = {
-        ...Common2.Settings.NOOP_STORAGE,
-        clear: () => window.localStorage.clear()
-      };
-      localStorage = new Common2.Settings.SettingsStorage(window.localStorage, localbackingStore, storagePrefix);
+      localStorage = new Common2.Settings.SettingsStorage(window.localStorage, WINDOW_LOCAL_STORAGE, storagePrefix);
     } else {
-      localStorage = new Common2.Settings.SettingsStorage({}, Common2.Settings.NOOP_STORAGE, storagePrefix);
+      localStorage = new Common2.Settings.SettingsStorage({}, void 0, storagePrefix);
     }
     const hostUnsyncedStorage = {
       register: (name) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerPreference(name, { synced: false }),
@@ -774,7 +788,8 @@ var MainImpl = class {
     AutofillManager.AutofillManager.AutofillManager.instance();
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();
-    AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    builtInAi.addEventListener("downloadedAndSessionCreated", () => Snackbar.Snackbar.Snackbar.show({ message: i18nString2(UIStrings2.aiModelDownloaded) }));
     new PauseListener();
     const actionRegistryInstance = UI2.ActionRegistry.ActionRegistry.instance({ forceNew: true });
     UI2.ShortcutRegistry.ShortcutRegistry.instance({ forceNew: true, actionRegistry: actionRegistryInstance });

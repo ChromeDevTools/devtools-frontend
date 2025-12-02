@@ -6,6 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../../models/har/har.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type EventTypes, NetworkGroupNode, type NetworkLogViewInterface, type NetworkNode, NetworkRequestNode } from './NetworkDataGridNode.js';
@@ -106,6 +107,7 @@ export declare class NetworkLogView extends NetworkLogView_base implements SDK.T
     setRecording(recording: boolean): void;
     columns(): NetworkLogViewColumns;
     summaryToolbar(): UI.Toolbar.Toolbar;
+    getDataGrid(): DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode> | null;
     modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void;
     modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void;
     linkifier(): Components.Linkifier.Linkifier;

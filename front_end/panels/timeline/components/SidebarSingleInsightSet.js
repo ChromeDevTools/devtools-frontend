@@ -330,9 +330,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
             if (!model || !shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
                 continue;
             }
-            if (model instanceof Error) {
-                continue;
-            }
             if (model.state === 'pass') {
                 passedInsights.push({ componentClass, model });
             }

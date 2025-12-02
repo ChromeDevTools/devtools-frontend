@@ -162,18 +162,28 @@ export class Settings {
         return this.#registry;
     }
 }
-export const NOOP_STORAGE = {
-    register: () => { },
-    set: () => { },
-    get: () => Promise.resolve(''),
-    remove: () => { },
-    clear: () => { },
-};
+export class InMemoryStorage {
+    #store = new Map();
+    register(_setting) {
+    }
+    set(key, value) {
+        this.#store.set(key, value);
+    }
+    get(key) {
+        return this.#store.get(key);
+    }
+    remove(key) {
+        this.#store.delete(key);
+    }
+    clear() {
+        this.#store.clear();
+    }
+}
 export class SettingsStorage {
     object;
     backingStore;
     storagePrefix;
-    constructor(object, backingStore = NOOP_STORAGE, storagePrefix = '') {
+    constructor(object, backingStore = new InMemoryStorage(), storagePrefix = '') {
         this.object = object;
         this.backingStore = backingStore;
         this.storagePrefix = storagePrefix;

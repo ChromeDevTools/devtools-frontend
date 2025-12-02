@@ -1187,6 +1187,9 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Zoom out"
   },
+  "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
+    "message": "AI model downloaded"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Customize and control DevTools"
   },
@@ -8063,6 +8066,9 @@
   "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
     "message": "No Blob URL available for this issue."
   },
+  "panels/issues/AffectedPermissionElementsView.ts | nElements": {
+    "message": "{n, plural, =1 {# element} other {# elements}}"
+  },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Click to reveal the frame's DOM node in the Elements panel"
   },
@@ -8290,6 +8296,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Other"
+  },
+  "panels/issues/IssuesPane.ts | permissionElement": {
+    "message": "PEPC Element"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
     "message": "Quirks Mode"
@@ -11846,6 +11855,9 @@
   "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Speed"
   },
+  "panels/recorder/components/SelectorPicker.ts | selectorPicker": {
+    "message": "Select an element in the page to update selectors"
+  },
   "panels/recorder/components/StepEditor.ts | addAttribute": {
     "message": "Add {attributeName}"
   },
@@ -11872,9 +11884,6 @@
   },
   "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
     "message": "Remove a selector part"
-  },
-  "panels/recorder/components/StepEditor.ts | selectorPicker": {
-    "message": "Select an element in the page to update selectors"
   },
   "panels/recorder/components/StepEditor.ts | unknownActionType": {
     "message": "Unknown action type."

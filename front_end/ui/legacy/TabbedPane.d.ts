@@ -2,6 +2,7 @@ import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import { Icon } from '../kit/kit.js';
 import { ContextMenu } from './ContextMenu.js';
 import type { Toolbar } from './Toolbar.js';
@@ -73,8 +74,8 @@ export declare class TabbedPane extends TabbedPane_base {
     moveTabForward(id: string, index: number): void;
     lastOpenedTabIds(tabsCount: number): string[];
     setTabIcon(id: string, icon: Icon | null): void;
-    setTrailingTabIcon(id: string, icon: Icon | null): void;
-    setSuffixElement(id: string, suffixElement: HTMLElement | null): void;
+    setTrailingTabIcon(id: string, icon: Icon | LitTemplate | null): void;
+    setSuffixElement(id: string, suffixElement: HTMLElement | LitTemplate | null): void;
     setBadge(id: string, content: string | null): void;
     setTabEnabled(id: string, enabled: boolean): void;
     tabIsDisabled(id: string): boolean;
@@ -165,7 +166,7 @@ export declare class TabbedPaneTab {
     set tabAnnotationIcon(iconVisible: boolean);
     isCloseable(): boolean;
     setIcon(icon: Icon | null): void;
-    setSuffixElement(suffixElement: HTMLElement | null): void;
+    setSuffixElement(suffixElement: HTMLElement | LitTemplate | null): void;
     toggleClass(className: string, force?: boolean): boolean;
     get view(): Widget;
     set view(view: Widget);

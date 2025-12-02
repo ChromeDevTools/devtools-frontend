@@ -10325,9 +10325,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       }
       let responseTextForNonPassedInsights = "";
       let responseTextForPassedInsights = "";
-      for (const modelName in insightsForNav.model) {
-        const model = modelName;
-        const insight = insightsForNav.model[model];
+      for (const insight of Object.values(insightsForNav.model)) {
         const focus = AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(parsedTrace);
         const formatter = new AiAssistanceModel.PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
         if (!formatter.insightIsSupported()) {

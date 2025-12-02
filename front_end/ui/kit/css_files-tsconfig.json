@@ -5,6 +5,7 @@
     },
     "files": [
         "cards/card.css.js",
-        "icons/icon.css.js"
+        "icons/icon.css.js",
+        "link/link.css.js"
     ]
 }

@@ -92,7 +92,7 @@ div.raw-headers-row {
 .green-circle::before,
 .red-circle::before,
 .yellow-circle::before {
-  content: "";
+  content: '';
   display: inline-block;
   width: 12px;
   height: 12px;

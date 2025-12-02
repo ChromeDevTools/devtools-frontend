@@ -2871,6 +2871,251 @@ var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
   }
 };
 
+// gen/front_end/models/issues_manager/PermissionElementIssue.js
+var PermissionElementIssue_exports = {};
+__export(PermissionElementIssue_exports, {
+  PermissionElementIssue: () => PermissionElementIssue
+});
+var PermissionElementIssue = class _PermissionElementIssue extends Issue {
+  #issueDetails;
+  constructor(issueDetails, issuesModel) {
+    const issueCode = [
+      "PermissionElementIssue",
+      issueDetails.issueType
+    ].join("::");
+    super(issueCode, issueDetails, issuesModel);
+    this.#issueDetails = issueDetails;
+  }
+  getCategory() {
+    return "PermissionElement";
+  }
+  getDescription() {
+    const issueType = this.#issueDetails.issueType;
+    switch (issueType) {
+      case "InvalidType":
+        return {
+          file: "permissionElementInvalidType.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "FencedFrameDisallowed":
+        return {
+          file: "permissionElementFencedFrameDisallowed.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "CspFrameAncestorsMissing":
+        return {
+          file: "permissionElementCspFrameAncestorsMissing.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "PermissionsPolicyBlocked":
+        return {
+          file: "permissionElementPermissionsPolicyBlocked.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""],
+            ["PLACEHOLDER_PermissionName", this.#issueDetails.permissionName || ""]
+          ]),
+          links: []
+        };
+      case "PaddingRightUnsupported":
+        return {
+          file: "permissionElementPaddingRightUnsupported.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "PaddingBottomUnsupported":
+        return {
+          file: "permissionElementPaddingBottomUnsupported.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "InsetBoxShadowUnsupported":
+        return {
+          file: "permissionElementInsetBoxShadowUnsupported.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "RequestInProgress":
+        return {
+          file: "permissionElementRequestInProgress.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "UntrustedEvent":
+        return {
+          file: "permissionElementUntrustedEvent.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "RegistrationFailed":
+        return {
+          file: "permissionElementRegistrationFailed.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "TypeNotSupported":
+        return {
+          file: "permissionElementTypeNotSupported.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "InvalidTypeActivation":
+        return {
+          file: "permissionElementInvalidTypeActivation.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "SecurityChecksFailed":
+        return {
+          file: "permissionElementSecurityChecksFailed.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "ActivationDisabled": {
+        if (this.#issueDetails.occluderNodeInfo && this.#issueDetails.occluderParentNodeInfo) {
+          return {
+            file: "permissionElementActivationDisabledWithOccluderParent.md",
+            substitutions: /* @__PURE__ */ new Map([
+              ["PLACEHOLDER_DisableReason", this.#issueDetails.disableReason || ""],
+              ["PLACEHOLDER_OccluderInfo", this.#issueDetails.occluderNodeInfo || ""],
+              ["PLACEHOLDER_Type", this.#issueDetails.type || ""],
+              ["PLACEHOLDER_OccluderParentInfo", this.#issueDetails.occluderParentNodeInfo || ""]
+            ]),
+            links: []
+          };
+        }
+        if (this.#issueDetails.occluderNodeInfo) {
+          return {
+            file: "permissionElementActivationDisabledWithOccluder.md",
+            substitutions: /* @__PURE__ */ new Map([
+              ["PLACEHOLDER_DisableReason", this.#issueDetails.disableReason || ""],
+              ["PLACEHOLDER_OccluderInfo", this.#issueDetails.occluderNodeInfo || ""],
+              ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+            ]),
+            links: []
+          };
+        }
+        return {
+          file: "permissionElementActivationDisabled.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_DisableReason", this.#issueDetails.disableReason || ""],
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      }
+      case "GeolocationDeprecated":
+        return {
+          file: "permissionElementGeolocationDeprecated.md",
+          links: []
+        };
+      case "InvalidDisplayStyle":
+        return {
+          file: "permissionElementInvalidDisplayStyle.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "NonOpaqueColor":
+        return {
+          file: "permissionElementNonOpaqueColor.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "LowContrast":
+        return {
+          file: "permissionElementLowContrast.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "FontSizeTooSmall":
+        return {
+          file: "permissionElementFontSizeTooSmall.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "FontSizeTooLarge":
+        return {
+          file: "permissionElementFontSizeTooLarge.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      case "InvalidSizeValue":
+        return {
+          file: "permissionElementInvalidSizeValue.md",
+          substitutions: /* @__PURE__ */ new Map([
+            ["PLACEHOLDER_Type", this.#issueDetails.type || ""]
+          ]),
+          links: []
+        };
+      default:
+        console.warn("Unknown PermissionElementIssueType:", issueType);
+        return null;
+    }
+  }
+  elements() {
+    if (this.#issueDetails.nodeId) {
+      const target = this.model()?.target();
+      const result = [{
+        backendNodeId: this.#issueDetails.nodeId,
+        nodeName: this.#issueDetails.type || "Affected element",
+        target: target || null
+      }];
+      return result;
+    }
+    return [];
+  }
+  getKind() {
+    return this.#issueDetails.isWarning ? "Improvement" : "PageError";
+  }
+  primaryKey() {
+    return `${"PermissionElementIssue"}-${JSON.stringify(this.#issueDetails)}`;
+  }
+  static fromInspectorIssue(issuesModel, inspectorIssue) {
+    const permissionElementIssueDetails = inspectorIssue.details.permissionElementIssueDetails;
+    if (!permissionElementIssueDetails) {
+      console.warn("Permission element issue without details received.");
+      return [];
+    }
+    return [new _PermissionElementIssue(permissionElementIssueDetails, issuesModel)];
+  }
+};
+
 // gen/front_end/models/issues_manager/QuirksModeIssue.js
 var QuirksModeIssue_exports = {};
 __export(QuirksModeIssue_exports, {
@@ -2991,6 +3236,7 @@ var AggregatedIssue = class extends Issue {
   #cookieDeprecationMetadataIssues = /* @__PURE__ */ new Set();
   #mixedContentIssues = /* @__PURE__ */ new Set();
   #partitioningBlobURLIssues = /* @__PURE__ */ new Set();
+  #permissionElementIssues = /* @__PURE__ */ new Set();
   #sharedArrayBufferIssues = /* @__PURE__ */ new Set();
   #quirksModeIssues = /* @__PURE__ */ new Set();
   #attributionReportingIssues = /* @__PURE__ */ new Set();
@@ -3084,6 +3330,9 @@ var AggregatedIssue = class extends Issue {
   getPartitioningBlobURLIssues() {
     return this.#partitioningBlobURLIssues;
   }
+  getPermissionElementIssues() {
+    return this.#permissionElementIssues;
+  }
   /**
    * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
    * case new fields are added to `AffectedCookie`.
@@ -3174,6 +3423,9 @@ var AggregatedIssue = class extends Issue {
     }
     if (issue instanceof PartitioningBlobURLIssue) {
       this.#partitioningBlobURLIssues.add(issue);
+    }
+    if (issue instanceof PermissionElementIssue) {
+      this.#permissionElementIssues.add(issue);
     }
   }
   getKind() {
@@ -4306,6 +4558,10 @@ var issueCodeHandlers = /* @__PURE__ */ new Map([
   [
     "UnencodedDigestIssue",
     UnencodedDigestIssue.fromInspectorIssue
+  ],
+  [
+    "PermissionElementIssue",
+    PermissionElementIssue.fromInspectorIssue
   ]
 ]);
 function createIssuesFromProtocolIssue(issuesModel, inspectorIssue) {
@@ -4695,6 +4951,7 @@ export {
   MarkdownIssueDescription_exports as MarkdownIssueDescription,
   MixedContentIssue_exports as MixedContentIssue,
   PartitioningBlobURLIssue_exports as PartitioningBlobURLIssue,
+  PermissionElementIssue_exports as PermissionElementIssue,
   PropertyRuleIssue_exports as PropertyRuleIssue,
   QuirksModeIssue_exports as QuirksModeIssue,
   RelatedIssue_exports as RelatedIssue,

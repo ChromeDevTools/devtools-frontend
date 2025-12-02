@@ -64,7 +64,14 @@ export interface SettingsBackingStore {
     remove(setting: string): void;
     clear(): void;
 }
-export declare const NOOP_STORAGE: SettingsBackingStore;
+export declare class InMemoryStorage implements SettingsBackingStore {
+    #private;
+    register(_setting: string): void;
+    set(key: string, value: string): void;
+    get(key: string): Promise<string>;
+    remove(key: string): void;
+    clear(): void;
+}
 export declare class SettingsStorage {
     private object;
     private readonly backingStore;

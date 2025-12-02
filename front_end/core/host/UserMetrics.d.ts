@@ -255,7 +255,9 @@ export declare enum Action {
     InsightTeaserGenerationErrored = 194,
     AiCodeGenerationSuggestionDisplayed = 195,
     AiCodeGenerationSuggestionAccepted = 196,
-    MAX_VALUE = 197
+    InsightTeaserModelDownloadStarted = 197,
+    InsightTeaserModelDownloadCompleted = 198,
+    MAX_VALUE = 199
 }
 export declare enum PanelCodes {
     elements = 1,

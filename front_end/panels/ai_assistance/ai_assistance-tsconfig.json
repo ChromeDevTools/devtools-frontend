@@ -39,9 +39,11 @@
     "../../../../../../front_end/panels/ai_assistance/PatchWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatView.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/CollapsibleAssistanceContentWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ExploreWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentFlameChart.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/UserActionRow.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -72,6 +74,9 @@
     },
     {
       "path": "../../models/persistence/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/trace/bundle-tsconfig.json"
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"
@@ -116,7 +121,13 @@
       "path": "../../ui/i18n/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/kit/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.json"

@@ -50,14 +50,14 @@ export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapp
     #private;
     constructor(targetManager: TargetManager, settings: Common.Settings.Settings, userAgentProvider: UserAgentProvider, loadOverride: ((arg0: string) => Promise<{
         success: boolean;
-        content: string;
+        content: string | Uint8Array<ArrayBuffer>;
         errorDescription: Host.ResourceLoader.LoadErrorDescription;
     }>) | null, maxConcurrentLoads?: number);
     static instance({ forceNew, targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads }?: {
         forceNew: boolean;
         loadOverride: (null | ((arg0: string) => Promise<{
             success: boolean;
-            content: string;
+            content: string | Uint8Array<ArrayBuffer>;
             errorDescription: Host.ResourceLoader.LoadErrorDescription;
         }>));
         targetManager?: TargetManager;

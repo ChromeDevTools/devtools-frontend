@@ -20,6 +20,7 @@ import { HeavyAdIssue } from './HeavyAdIssue.js';
 import { LowTextContrastIssue } from './LowTextContrastIssue.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
+import { PermissionElementIssue } from './PermissionElementIssue.js';
 import { PropertyRuleIssue } from './PropertyRuleIssue.js';
 import { QuirksModeIssue } from './QuirksModeIssue.js';
 import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
@@ -129,6 +130,10 @@ const issueCodeHandlers = new Map([
     [
         "UnencodedDigestIssue" /* Protocol.Audits.InspectorIssueCode.UnencodedDigestIssue */,
         UnencodedDigestIssue.fromInspectorIssue,
+    ],
+    [
+        "PermissionElementIssue" /* Protocol.Audits.InspectorIssueCode.PermissionElementIssue */,
+        PermissionElementIssue.fromInspectorIssue,
     ],
 ]);
 /**

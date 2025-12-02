@@ -850,13 +850,10 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     if (!decorator || !info.uiLocation) {
       return;
     }
-    if (info.icon?.parentElement) {
-      anchor.removeChild(info.icon);
-    }
     const icon = decorator.linkIcon(info.uiLocation.uiSourceCode);
-    if (icon) {
-      icon.style.setProperty("margin-right", "2px");
-      anchor.insertBefore(icon, anchor.firstChild);
+    if (icon && anchor instanceof HTMLElement && anchor.firstElementChild instanceof HTMLElement) {
+      anchor.firstElementChild?.style.setProperty("margin-left", "2px");
+      render(icon, anchor, { renderBefore: anchor.firstElementChild });
     }
     info.icon = icon;
   }

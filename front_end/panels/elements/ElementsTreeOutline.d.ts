@@ -53,6 +53,8 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     }>) => void;
     onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
     onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void;
+    onElementExpanded: () => void;
+    onElementCollapsed: () => void;
     set visibleWidth(width: number);
     set rootDOMNode(node: SDK.DOMModel.DOMNode | null);
     get rootDOMNode(): SDK.DOMModel.DOMNode | null;

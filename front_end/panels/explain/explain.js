@@ -939,10 +939,81 @@ function renderHeader({ headerText, showIcon = false, showSpinner = false, onClo
     </header>
   `;
 }
+var DEFAULT_VIEW = (input, output, target) => {
+  const { state, noLogging, callbacks } = input;
+  const { onClose, onDisclaimerSettingsLink } = callbacks;
+  const jslog = `${VisualLogging.section(state.type).track({ resize: true })}`;
+  let header = Lit.nothing;
+  let main = Lit.nothing;
+  const mainClasses = {};
+  let footer;
+  switch (state.type) {
+    case "loading":
+      header = renderHeader({ headerText: i18nString(UIStrings.generating), onClose }, output.headerRef);
+      main = renderLoading();
+      break;
+    case "insight":
+      header = renderHeader({ headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed }, output.headerRef);
+      main = renderInsight(state, input, output);
+      footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
+      break;
+    case "error":
+      header = renderHeader({ headerText: i18nString(UIStrings.error), onClose }, output.headerRef);
+      main = renderError(i18nString(UIStrings.errorBody));
+      footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
+      break;
+    case "consent-reminder":
+      header = renderHeader({ headerText: "Understand console messages with AI", onClose, showIcon: true }, output.headerRef);
+      mainClasses["reminder-container"] = true;
+      main = renderConsentReminder(noLogging);
+      footer = renderConsentReminderFooter(callbacks.onReminderSettingsLink, callbacks.onConsentReminderConfirmed);
+      break;
+    case "setting-is-not-true":
+      mainClasses["opt-in-teaser"] = true;
+      main = renderSettingIsNotTrue(callbacks.onEnableInsightsInSettingsLink);
+      break;
+    case "not-logged-in":
+    case "sync-is-paused":
+      header = renderHeader({ headerText: i18nString(UIStrings.signInToUse), onClose }, output.headerRef);
+      main = renderNotLoggedIn();
+      footer = renderSignInFooter(callbacks.onGoToSignIn);
+      break;
+    case "offline":
+      header = renderHeader({ headerText: i18nString(UIStrings.offlineHeader), onClose }, output.headerRef);
+      main = renderError(i18nString(UIStrings.offline));
+      footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
+      break;
+  }
+  render(html`
+    <style>${consoleInsight_css_default}</style>
+    <style>${Input.checkboxStyles}</style>
+    <div
+      class=${Directives.classMap({ wrapper: true, closing: input.closing })}
+      jslog=${VisualLogging.pane("console-insights").track({ resize: true })}
+      @animationend=${callbacks.onAnimationEnd}
+      @keydown=${blockPropagation}
+      @keyup=${blockPropagation}
+      @keypress=${blockPropagation}
+      @click=${blockPropagation}
+    >
+      <div class="animation-wrapper">
+        ${header}
+        <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>
+          ${main}
+        </main>
+        ${footer ? html`<footer jslog=${VisualLogging.section("footer")}>
+          ${footer}
+        </footer>` : Lit.nothing}
+      </div>
+    </div>
+  `, target);
+};
 var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
   static async create(promptBuilder, aidaClient) {
     const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    return new _ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
+    const component = new _ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
+    component.classList.add("devtools-console-insight");
+    return component;
   }
   #shadow = this.attachShadow({ mode: "open" });
   disableAnimations = false;
@@ -1356,75 +1427,7 @@ var ConsoleInsight = class _ConsoleInsight extends HTMLElement {
       headerRef: this.#headerRef,
       citationLinks: []
     };
-    const { state, noLogging, callbacks } = input;
-    const { onClose, onDisclaimerSettingsLink } = callbacks;
-    const jslog = `${VisualLogging.section(state.type).track({ resize: true })}`;
-    let header = Lit.nothing;
-    let main = Lit.nothing;
-    const mainClasses = {};
-    let footer;
-    switch (state.type) {
-      case "loading":
-        header = renderHeader({ headerText: i18nString(UIStrings.generating), onClose }, output.headerRef);
-        main = renderLoading();
-        break;
-      case "insight":
-        header = renderHeader({ headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed }, output.headerRef);
-        main = renderInsight(state, input, output);
-        footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
-        break;
-      case "error":
-        header = renderHeader({ headerText: i18nString(UIStrings.error), onClose }, output.headerRef);
-        main = renderError(i18nString(UIStrings.errorBody));
-        footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
-        break;
-      case "consent-reminder":
-        header = renderHeader({ headerText: "Understand console messages with AI", onClose, showIcon: true }, output.headerRef);
-        mainClasses["reminder-container"] = true;
-        main = renderConsentReminder(noLogging);
-        footer = renderConsentReminderFooter(callbacks.onReminderSettingsLink, callbacks.onConsentReminderConfirmed);
-        break;
-      case "setting-is-not-true":
-        mainClasses["opt-in-teaser"] = true;
-        main = renderSettingIsNotTrue(callbacks.onEnableInsightsInSettingsLink);
-        break;
-      case "not-logged-in":
-      case "sync-is-paused":
-        header = renderHeader({ headerText: i18nString(UIStrings.signInToUse), onClose }, output.headerRef);
-        main = renderNotLoggedIn();
-        footer = renderSignInFooter(callbacks.onGoToSignIn);
-        break;
-      case "offline":
-        header = renderHeader({ headerText: i18nString(UIStrings.offlineHeader), onClose }, output.headerRef);
-        main = renderError(i18nString(UIStrings.offline));
-        footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
-        break;
-    }
-    render(html`
-      <style>${consoleInsight_css_default}</style>
-      <style>${Input.checkboxStyles}</style>
-      <div
-        class=${Directives.classMap({ wrapper: true, closing: input.closing })}
-        jslog=${VisualLogging.pane("console-insights").track({ resize: true })}
-        @animationend=${callbacks.onAnimationEnd}
-        @keydown=${blockPropagation}
-        @keyup=${blockPropagation}
-        @keypress=${blockPropagation}
-        @click=${blockPropagation}
-      >
-        <div class="animation-wrapper">
-          ${header}
-          <main jslog=${jslog} class=${Directives.classMap(mainClasses)}>
-            ${main}
-          </main>
-          ${footer ? html`<footer jslog=${VisualLogging.section("footer")}>
-            ${footer}
-          </footer>` : Lit.nothing}
-        </div>
-      </div>
-    `, this.#shadow, {
-      host: this
-    });
+    DEFAULT_VIEW(input, output, this.#shadow);
     this.#citationLinks = output.citationLinks;
   }
 };
@@ -1467,6 +1470,7 @@ var ActionDelegate = class {
 export {
   ActionDelegate,
   CloseEvent,
-  ConsoleInsight
+  ConsoleInsight,
+  DEFAULT_VIEW
 };
 //# sourceMappingURL=explain.js.map

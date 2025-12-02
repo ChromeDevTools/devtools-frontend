@@ -543,7 +543,7 @@ export default `/* Copyright 2021 The Chromium Authors
   height: 0;
 }
 
-devtools-console-insight {
+.devtools-console-insight {
   margin: 9px 22px 11px 24px;
 }
 

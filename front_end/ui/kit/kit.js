@@ -331,9 +331,130 @@ var createIcon = (name, className) => {
   return icon;
 };
 customElements.define("devtools-icon", Icon);
+
+// gen/front_end/ui/kit/link/Link.js
+import * as Platform from "./../../core/platform/platform.js";
+import * as UIHelpers from "./../helpers/helpers.js";
+import { html as html2, render as render2 } from "./../lit/lit.js";
+import * as VisualLogging from "./../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/kit/link/link.css.js
+var link_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--text-link);
+}
+
+@media (forced-colors: active) {
+  :host {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+:host(:focus-visible) {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
+  /* stylelint-disable-next-line declaration-no-important */
+  outline-style: solid !important;
+  border-radius: var(--sys-shape-corner-extra-small);
+}
+
+/*# sourceURL=${import.meta.resolve("./link/link.css")} */`;
+
+// gen/front_end/ui/kit/link/Link.js
+var Link = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  static observedAttributes = ["href", "jslogcontext"];
+  connectedCallback() {
+    if (!this.hasAttribute("tabindex")) {
+      this.setAttribute("tabindex", "0");
+    }
+    this.#setDefaultTitle();
+    this.setAttribute("role", "link");
+    this.setAttribute("target", "_blank");
+    this.addEventListener("click", this.#onClick);
+    this.addEventListener("keydown", this.#onKeyDown);
+    this.#render();
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", this.#onClick);
+    this.removeEventListener("keydown", this.#onKeyDown);
+  }
+  #handleOpeningLink(event) {
+    const href = this.href;
+    if (!href) {
+      return;
+    }
+    UIHelpers.openInNewTab(href);
+    event.consume();
+  }
+  get href() {
+    return this.getAttribute("href");
+  }
+  set href(href) {
+    this.setAttribute("href", href);
+  }
+  get jslogContext() {
+    return this.getAttribute("jslogcontext");
+  }
+  set jslogContext(jslogContext) {
+    this.setAttribute("jslogcontext", jslogContext);
+  }
+  #onJslogContextChange() {
+    const href = this.href;
+    if (!href) {
+      throw new Error("`href` is a required attribute.");
+    }
+    const urlForContext = new URL(href);
+    urlForContext.search = "";
+    const jslogContext = Platform.StringUtilities.toKebabCase(this.jslogContext ?? urlForContext.toString());
+    const jslog = VisualLogging.link().track({ click: true, keydown: "Enter|Space" }).context(jslogContext);
+    this.setAttribute("jslog", jslog.toString());
+  }
+  #setDefaultTitle() {
+    if (!this.hasAttribute("title") && this.href) {
+      this.setAttribute("title", this.href);
+    }
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      return;
+    }
+    if (name === "jslogcontext") {
+      return this.#onJslogContextChange();
+    }
+    if (name === "href") {
+      this.#setDefaultTitle();
+    }
+    this.#render();
+  }
+  #onClick = (event) => {
+    this.#handleOpeningLink(event);
+  };
+  #onKeyDown = (event) => {
+    if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      this.#handleOpeningLink(event);
+    }
+  };
+  #render() {
+    render2(html2`<style>
+          ${link_css_default}
+        </style><slot></slot>`, this.#shadow, { host: this });
+  }
+};
+customElements.define("devtools-link", Link);
 export {
   Card,
   Icon,
+  Link,
   createIcon
 };
 //# sourceMappingURL=kit.js.map

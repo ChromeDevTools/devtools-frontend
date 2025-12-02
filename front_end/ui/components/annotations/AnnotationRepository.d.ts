@@ -12,11 +12,25 @@ export interface ElementsAnnotationData extends BaseAnnotationData {
     type: AnnotationType.ELEMENT_NODE;
     anchor?: SDK.DOMModel.DOMNode;
 }
+export interface NetworkRequestAnnotationData extends BaseAnnotationData {
+    type: AnnotationType.NETWORK_REQUEST;
+    anchor?: SDK.NetworkRequest.NetworkRequest;
+}
+export interface NetworkRequestDetailsAnnotationData extends BaseAnnotationData {
+    type: AnnotationType.NETWORK_REQUEST_SUBPANEL_HEADERS;
+    anchor?: SDK.NetworkRequest.NetworkRequest;
+}
 export declare const enum Events {
-    ANNOTATION_ADDED = "AnnotationAdded"
+    ANNOTATION_ADDED = "AnnotationAdded",
+    ANNOTATION_DELETED = "AnnotationDeleted",
+    ALL_ANNOTATIONS_DELETED = "AllAnnotationsDeleted"
 }
 export interface EventTypes {
     [Events.ANNOTATION_ADDED]: BaseAnnotationData;
+    [Events.ANNOTATION_DELETED]: {
+        id: number;
+    };
+    [Events.ALL_ANNOTATIONS_DELETED]: void;
 }
 export declare class AnnotationRepository {
     #private;
@@ -26,4 +40,7 @@ export declare class AnnotationRepository {
     getAnnotationDataByType(type: AnnotationType): BaseAnnotationData[];
     getAnnotationDataById(id: number): BaseAnnotationData | undefined;
     addElementsAnnotation(label: string, anchor?: SDK.DOMModel.DOMNode | string, anchorToString?: string): void;
+    addNetworkRequestAnnotation(label: string, anchor?: SDK.NetworkRequest.NetworkRequest | string, anchorToString?: string): void;
+    deleteAllAnnotations(): void;
+    deleteAnnotation(id: number): void;
 }

@@ -433,28 +433,39 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         aria-label=${i18nString(UIStrings.general)}
       >
       <div jslog=${VisualLogging.section('general')}>
-        ${this.#renderGeneralRow(i18nString(UIStrings.requestUrl), this.#request.url())}
-        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString(UIStrings.requestMethod), this.#request.requestMethod) : Lit.nothing}
-        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString(UIStrings.statusCode), statusText, statusClasses) : Lit.nothing}
-        ${this.#request.remoteAddress() ? this.#renderGeneralRow(i18nString(UIStrings.remoteAddress), this.#request.remoteAddress()) : Lit.nothing}
-        ${this.#request.referrerPolicy() ? this.#renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(this.#request.referrerPolicy())) : Lit.nothing}
+        ${this.#renderGeneralRow(i18nString(UIStrings.requestUrl), this.#request.url(), 'request-url')}
+        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString(UIStrings.requestMethod), this.#request.requestMethod, 'request-method') : Lit.nothing}
+        ${this.#request.statusCode ? this.#renderGeneralRow(i18nString(UIStrings.statusCode), statusText, 'status-code', statusClasses) : Lit.nothing}
+        ${this.#request.remoteAddress() ? this.#renderGeneralRow(i18nString(UIStrings.remoteAddress), this.#request.remoteAddress(), 'remote-address') : Lit.nothing}
+        ${this.#request.referrerPolicy() ? this.#renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(this.#request.referrerPolicy()), 'referrer-policy') : Lit.nothing}
       </div>
       </devtools-request-headers-category>
     `;
         // clang-format on
     }
-    #renderGeneralRow(name, value, classNames) {
+    #renderGeneralRow(name, value, id, classNames) {
         const isHighlighted = this.#toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */ &&
             name.toLowerCase() === this.#toReveal?.header?.toLowerCase();
         return html `
       <div class="row ${isHighlighted ? 'header-highlight' : ''}">
         <div class="header-name">${name}</div>
         <div
+          id=${id}
           class="header-value ${classNames?.join(' ')}"
           @copy=${() => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >${value}</div>
       </div>
     `;
+    }
+    getHeaderElementById(id) {
+        const categories = this.#shadow.querySelectorAll('devtools-request-headers-category');
+        for (const category of categories) {
+            const element = category.querySelector(`#${id}`);
+            if (element) {
+                return element;
+            }
+        }
+        return null;
     }
 }
 export class ToggleRawHeadersEvent extends Event {

@@ -4,7 +4,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as PanelCommon from '../../panels/common/common.js';
+import * as PanelCommon from '../../panels/common/common.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -81,6 +81,10 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private updateNetworkItemView;
     private clearNetworkItemView;
     private createNetworkItemView;
+    resolveInitialState(parentElement: Element, reveal: boolean, lookupId: string, anchor?: SDK.DOMModel.DOMNode | SDK.NetworkRequest.NetworkRequest): Promise<{
+        x: number;
+        y: number;
+    } | null>;
     private updateUI;
     appendApplicableItems(this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | Workspace.UISourceCode.UISourceCode | SDK.TraceObject.RevealableNetworkRequest): void;
     private onFilmFrameSelected;

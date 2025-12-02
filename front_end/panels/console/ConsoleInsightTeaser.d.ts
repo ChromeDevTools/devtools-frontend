@@ -2,6 +2,8 @@ import '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
 declare const enum State {
+    NO_MODEL = "no-model",
+    DOWNLOADING = "downloading",
     READY = "ready",
     GENERATING = "generating",// Before receiving first chunk
     PARTIAL_TEASER = "partial-teaser",// After receiving first chunk
@@ -17,7 +19,10 @@ interface ViewInput {
     dontShowChanged: (e: Event) => void;
     hasTellMeMoreButton: boolean;
     isSlowGeneration: boolean;
+    onDownloadModelClick: (event: Event) => void;
+    downloadProgress: number | null;
     state: State;
+    isForWarning: boolean;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;

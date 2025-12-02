@@ -18,6 +18,8 @@ export default `/*
 
   .response-container {
     height: 85px;
+    display: flex;
+    flex-direction: column;
   }
 
   @keyframes gradient {
@@ -97,6 +99,27 @@ export default `/*
 
     devtools-checkbox {
       margin-left: auto;
+    }
+  }
+
+  .progress-line {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+
+    .label {
+      margin-right: var(--sys-size-6);
+    }
+
+    .indicator-container {
+      height: var(--sys-size-5);
+      background-color: var(--sys-color-surface5);
+      flex-grow: 1
+    }
+
+    .indicator {
+      background-color: var(--sys-color-primary);
+      height: 100%;
     }
   }
 }

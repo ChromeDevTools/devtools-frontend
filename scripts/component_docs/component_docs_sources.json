@@ -8,6 +8,7 @@
   "../../front_end/ui/components/tooltips/Tooltip.docs.js",
   "../../front_end/ui/kit/cards/Card.docs.js",
   "../../front_end/ui/kit/icons/Icon.docs.js",
+  "../../front_end/ui/kit/link/Link.docs.js",
   "../../front_end/ui/legacy/ContextMenu.docs.js",
   "../../front_end/ui/legacy/RadioButton.docs.js",
   "../../front_end/ui/legacy/SelectMenu.docs.js",

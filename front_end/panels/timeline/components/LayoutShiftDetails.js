@@ -160,7 +160,7 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
         return Lit.nothing;
     }
     const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
-    if (!clsInsight || clsInsight instanceof Error) {
+    if (!clsInsight) {
         return Lit.nothing;
     }
     const rootCauses = clsInsight.shifts.get(layoutShift);
@@ -201,7 +201,7 @@ function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEv
         return Lit.nothing;
     }
     const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
-    if (!clsInsight || clsInsight instanceof Error) {
+    if (!clsInsight) {
         return Lit.nothing;
     }
     // This finds the culprits of the cluster and returns an array of the culprits.

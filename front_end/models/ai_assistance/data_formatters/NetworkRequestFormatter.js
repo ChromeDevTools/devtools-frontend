@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 var _a;
+import * as Annotations from '../../../ui/components/annotations/annotations.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
@@ -79,7 +80,7 @@ export class NetworkRequestFormatter {
             responseBody = `\n\n${responseBody}`;
         }
         return `Request: ${this.#request.url()}
-
+${Annotations.AnnotationRepository.annotationsEnabled() ? `\nRequest ID: ${this.#request.requestId()}\n` : ''}
 ${this.formatRequestHeaders()}
 
 ${this.formatResponseHeaders()}${responseBody}

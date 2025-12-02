@@ -744,7 +744,7 @@ export interface TraceImpactedNode {
     old_rect: TraceRect;
     debug_name?: string;
 }
-type LayoutShiftData = ArgsData & {
+export type LayoutShiftData = ArgsData & {
     cumulative_score: number;
     frame_max_distance: number;
     had_recent_input: boolean;

@@ -65,6 +65,11 @@ export default `/*
   }
 }
 
+.insight.ai-assistance-context {
+  display: block;
+  min-width: 200px;
+}
+
 .insight-hover-icon {
   position: absolute;
   top: var(--sys-size-5);

@@ -65,6 +65,7 @@ models/issues_manager/IssueAggregator.test.js
 models/issues_manager/IssueResolver.test.js
 models/issues_manager/LowTextContrastIssue.test.js
 models/issues_manager/MarkdownIssueDescription.test.js
+models/issues_manager/PermissionElementIssue.test.js
 models/issues_manager/PropertyRuleIssue.test.js
 models/issues_manager/RelatedIssue.test.js
 models/issues_manager/SRIMessageSignatureIssue.test.js
@@ -666,6 +667,7 @@ ui/helpers/OpenInNewTab.test.js
 ui/i18n/i18n.test.js
 ui/kit/cards/Card.test.js
 ui/kit/icons/Icon.test.js
+ui/kit/link/Link.test.js
 ui/legacy/ARIAUtils.test.js
 ui/legacy/ActionRegistration.test.js
 ui/legacy/Context.test.js

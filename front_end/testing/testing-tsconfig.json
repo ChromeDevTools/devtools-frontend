@@ -65,7 +65,6 @@
     "../../../../../front_end/testing/MockIssuesModel.ts",
     "../../../../../front_end/testing/MockNetworkLog.ts",
     "../../../../../front_end/testing/MockScopeChain.ts",
-    "../../../../../front_end/testing/MockSettingStorage.ts",
     "../../../../../front_end/testing/MutationHelpers.ts",
     "../../../../../front_end/testing/NetworkHelpers.ts",
     "../../../../../front_end/testing/OverridesHelpers.ts",

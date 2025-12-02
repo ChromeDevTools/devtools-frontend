@@ -22,6 +22,7 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     protected scheduleRender(): void;
     protected hasAskAiSupport(): boolean;
     connectedCallback(): void;
+    set isAIAssistanceContext(isAIAssistanceContext: boolean);
     set selected(selected: boolean);
     get selected(): boolean;
     set parsedTrace(trace: Trace.TraceModel.ParsedTrace | null);

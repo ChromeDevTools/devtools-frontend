@@ -45,6 +45,7 @@
     "../../../../../../front_end/panels/issues/AffectedHeavyAdView.ts",
     "../../../../../../front_end/panels/issues/AffectedMetadataAllowedSitesView.ts",
     "../../../../../../front_end/panels/issues/AffectedPartitioningBlobURLView.ts",
+    "../../../../../../front_end/panels/issues/AffectedPermissionElementsView.ts",
     "../../../../../../front_end/panels/issues/AffectedResourcesView.ts",
     "../../../../../../front_end/panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts",
     "../../../../../../front_end/panels/issues/AffectedSourcesView.ts",

@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Annotations from '../../../ui/components/annotations/annotations.js';
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Trace from '../../trace/trace.js';
 import { AIQueries } from '../performance/AIQueries.js';
@@ -101,19 +102,19 @@ export class PerformanceTraceFormatter {
         parts.push('\n# Available insight sets\n');
         parts.push('The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.');
         for (const insightSet of parsedTrace.insights?.values() ?? []) {
-            const lcp = insightSet ? Trace.Insights.Common.getLCP(insightSet) : null;
-            const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
-            const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
+            const lcp = Trace.Insights.Common.getLCP(insightSet);
+            const cls = Trace.Insights.Common.getCLS(insightSet);
+            const inp = Trace.Insights.Common.getINP(insightSet);
             parts.push(`\n## insight set id: ${insightSet.id}\n`);
             parts.push(`URL: ${insightSet.url}`);
             parts.push(`Bounds: ${this.serializeBounds(insightSet.bounds)}`);
             if (lcp || cls || inp) {
                 parts.push('Metrics (lab / observed):');
                 if (lcp) {
-                    const nodeId = insightSet?.model.LCPBreakdown.lcpEvent?.args.data?.nodeId;
+                    const nodeId = insightSet.model.LCPBreakdown?.lcpEvent?.args.data?.nodeId;
                     const nodeIdText = nodeId !== undefined ? `, nodeId: ${nodeId}` : '';
                     parts.push(`  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}${nodeIdText}`);
-                    const subparts = insightSet?.model.LCPBreakdown.subparts;
+                    const subparts = insightSet.model.LCPBreakdown?.subparts;
                     if (subparts) {
                         const serializeSubpart = (subpart) => {
                             return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
@@ -135,6 +136,13 @@ export class PerformanceTraceFormatter {
                 if (cls) {
                     const eventText = cls.worstClusterEvent ? `, event: ${this.serializeEvent(cls.worstClusterEvent)}` : '';
                     parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
+                    if (Annotations.AnnotationRepository.annotationsEnabled()) {
+                        const worstClusterEvent = cls.worstClusterEvent;
+                        const layoutShiftData = worstClusterEvent?.worstShiftEvent?.args?.data;
+                        if (layoutShiftData?.impacted_nodes && layoutShiftData.impacted_nodes?.length > 0) {
+                            Annotations.AnnotationRepository.instance().addElementsAnnotation('This element is impacted by a layout shift', layoutShiftData.impacted_nodes[0].node_id.toString());
+                        }
+                    }
                 }
             }
             else {
@@ -210,7 +218,7 @@ export class PerformanceTraceFormatter {
                     criticalRequests.push(node.request);
                     node.children.forEach(walkRequest);
                 };
-                insightSet.model.NetworkDependencyTree.rootNodes.forEach(walkRequest);
+                insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
                 return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, { verbose: false }) : null;
             },
         });
@@ -445,7 +453,7 @@ export class PerformanceTraceFormatter {
      * talk to jacktfranklin@.
      */
     #networkRequestVerbosely(request, options) {
-        const { url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol } = request.args.data;
+        const { url, requestId, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol } = request.args.data;
         const parsedTrace = this.#parsedTrace;
         const titlePrefix = `## ${options?.customTitle ?? 'Network request'}`;
         // Note: unlike other agents, we do have the ability to include
@@ -483,7 +491,7 @@ export class PerformanceTraceFormatter {
         const initiatorUrls = initiators.map(initiator => initiator.args.data.url);
         const eventKey = this.#eventsSerializer.keyForEvent(request);
         const eventKeyLine = eventKey ? `eventKey: ${eventKey}\n` : '';
-        return `${titlePrefix}: ${url}
+        return `${titlePrefix}: ${url}${Annotations.AnnotationRepository.annotationsEnabled() ? `\nrequestId: ${requestId}` : ''}
 ${eventKeyLine}Timings:
 - Queued at: ${micros(startTimesForLifecycle.queuedAt)}
 - Request sent at: ${micros(startTimesForLifecycle.requestSentAt)}

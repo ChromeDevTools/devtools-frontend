@@ -16,6 +16,7 @@ import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
 import { PromptBuilder } from './PromptBuilder.js';
 const { render, html } = Lit;
+const BUILT_IN_AI_DOCUMENTATION = 'https://developer.chrome.com/docs/ai/built-in';
 const UIStringsNotTranslate = {
     /**
      * @description Link text in the disclaimer dialog, linking to a settings page containing more information
@@ -77,12 +78,120 @@ const UIStringsNotTranslate = {
      * @description Header text if there was an error during AI summary generation
      */
     summaryNotAvailable: 'Summary not available',
+    /**
+     * @description Header text informing the user that they can get an AI-generated explanation
+     */
+    getHelpForWarning: 'Get help understanding this warning',
+    /**
+     * @description Header text informing the user that they can get an AI-generated explanation
+     */
+    getHelpForError: 'Get help understanding this error',
+    /**
+     * @description Call to action for downloading an AI model
+     */
+    toUseDownload: 'To use Chrome’s Built-in AI here and elsewhere, download the AI model (~4 GB).',
+    /**
+     * @description Button text to trigger model download
+     */
+    downloadModel: 'Download model',
+    /**
+     * @description Header text while the model download is in progress
+     */
+    downloadingAiModel: 'Downloading AI model',
+    /**
+     * @description Label for a progress bar for the AI model download
+     */
+    progress: 'Progress',
+    /**
+     * @description Progress indicator when the progress status is unknown. If the
+     * progress status is known, this is replaced by a progress bar.
+     */
+    progressUnknown: 'Progress: unknown',
 };
 const lockedString = i18n.i18n.lockedString;
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 const DATA_USAGE_URL = 'https://developer.chrome.com/docs/devtools/ai-assistance/get-started#data-use';
 const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
 const SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
+function renderNoModel(input) {
+    // clang-format off
+    return html `
+    <div class="teaser-tooltip-container">
+      <div class="response-container">
+        <h2>${input.isForWarning ?
+        lockedString(UIStringsNotTranslate.getHelpForWarning) :
+        lockedString(UIStringsNotTranslate.getHelpForError)}
+        </h2>
+        <div>You can get quick answers from
+          <x-link
+            .jslog=${VisualLogging.link().track({ click: true, keydown: 'Enter|Space' }).context('insights-teaser-built-in-ai-documentation')}
+            class="link"
+            href=${BUILT_IN_AI_DOCUMENTATION}
+          >
+            Chrome’s Built-in AI
+          </x-link>
+          , without any data leaving your device.
+        </div>
+        <div>${lockedString(UIStringsNotTranslate.toUseDownload)}</div>
+      </div>
+      <div class="tooltip-footer">
+        <devtools-button
+          title=${lockedString(UIStringsNotTranslate.downloadModel)}
+          .jslogContext=${'insights-teaser-download-model'}
+          .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
+          @click=${input.onDownloadModelClick}
+          @focusout=${(e) => {
+        e.stopPropagation();
+    }}
+        >
+          ${lockedString(UIStringsNotTranslate.downloadModel)}
+        </devtools-button>
+        ${renderDontShowCheckbox(input)}
+      </div>
+    </div>
+  `;
+    // clang-format on
+}
+function renderDownloading(input) {
+    const percent = ((input.downloadProgress || 0) * 100).toFixed(0);
+    // clang-format off
+    return html `
+    <div class="teaser-tooltip-container">
+      <div class="response-container">
+        <h2>${lockedString(UIStringsNotTranslate.downloadingAiModel)}</h2>
+        <div class="progress-line">
+          ${input.downloadProgress === null ?
+        html `
+              <div class="label">${lockedString(UIStringsNotTranslate.progressUnknown)}</div>
+            ` : html `
+              <div class="label">${lockedString(UIStringsNotTranslate.progress)}</div>
+              <div class="indicator-container">
+                <div
+                  class="indicator"
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow=${percent}
+                  style="width: ${percent}%"
+                ></div>
+              </div>
+          `}
+        </div>
+      </div>
+      <div class="tooltip-footer">
+        <devtools-button
+          title=${lockedString(UIStringsNotTranslate.downloadModel)}
+          .jslogContext=${'insights-teaser-download-model'}
+          .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
+          .disabled=${true}
+        >
+          ${lockedString(UIStringsNotTranslate.downloadModel)}
+        </devtools-button>
+      </div>
+    </div>
+  `;
+    // clang-format on
+}
 function renderGenerating(input) {
     // clang-format off
     return html `
@@ -209,6 +318,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     >
       ${(() => {
         switch (input.state) {
+            case "no-model" /* State.NO_MODEL */:
+                return renderNoModel(input);
+            case "downloading" /* State.DOWNLOADING */:
+                return renderDownloading(input);
             case "ready" /* State.READY */:
             case "generating" /* State.GENERATING */:
                 return renderGenerating(input);
@@ -237,16 +350,24 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     #timeoutId = null;
     #aidaAvailability;
     #boundOnAidaAvailabilityChange;
+    #boundOnDownloadProgressChange;
+    #boundOnSessionCreation;
+    #downloadProgress = null;
     #state;
+    #eventListeners = [];
+    #isForWarning;
     constructor(uuid, consoleViewMessage, element, view) {
         super(element);
         this.#view = view ?? DEFAULT_VIEW;
         this.#uuid = uuid;
         this.#promptBuilder = new PromptBuilder(consoleViewMessage);
         this.#consoleViewMessage = consoleViewMessage;
+        this.#isForWarning = this.#consoleViewMessage.consoleMessage().level === "warning" /* Protocol.Log.LogEntryLevel.Warning */;
         this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+        this.#boundOnDownloadProgressChange = this.#onDownloadProgressChange.bind(this);
+        this.#boundOnSessionCreation = this.#onSessionCreation.bind(this);
         this.#builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
-        this.#state = "ready" /* State.READY */;
+        this.#state = this.#builtInAi.hasSession() ? "ready" /* State.READY */ : "no-model" /* State.NO_MODEL */;
         this.requestUpdate();
     }
     #getConsoleInsightsEnabledSetting() {
@@ -280,6 +401,24 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             return;
         }
         void this.#showFreDialog();
+    }
+    #onDownloadModelClick(event) {
+        event.stopPropagation();
+        this.#state = "downloading" /* State.DOWNLOADING */;
+        this.#builtInAi.startDownloadingModel();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserModelDownloadStarted);
+        this.requestUpdate();
+    }
+    #onDownloadProgressChange(event) {
+        this.#downloadProgress = event.data;
+        this.requestUpdate();
+    }
+    #onSessionCreation() {
+        if (this.#builtInAi.hasSession() && (this.#state === "no-model" /* State.NO_MODEL */ || this.#state === "downloading" /* State.DOWNLOADING */)) {
+            this.#state = "ready" /* State.READY */;
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightTeaserModelDownloadCompleted);
+            this.maybeGenerateTeaser();
+        }
     }
     async #showFreDialog() {
         const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
@@ -322,12 +461,36 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         }
     }
     maybeGenerateTeaser() {
+        const startGeneratingTeaser = () => {
+            if (!this.#isInactive &&
+                Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
+                void this.#generateTeaserText();
+            }
+        };
+        const hasSession = this.#builtInAi.hasSession();
         switch (this.#state) {
-            case "ready" /* State.READY */:
-                if (!this.#isInactive &&
-                    Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
-                    void this.#generateTeaserText();
+            case "no-model" /* State.NO_MODEL */:
+            case "downloading" /* State.DOWNLOADING */:
+                if (hasSession) {
+                    this.#state = "ready" /* State.READY */;
+                    startGeneratingTeaser();
                 }
+                else {
+                    if (this.#eventListeners.length === 0) {
+                        this.#eventListeners = [
+                            this.#builtInAi.addEventListener("downloadProgressChanged" /* AiAssistanceModel.BuiltInAi.Events.DOWNLOAD_PROGRESS_CHANGED */, this.#boundOnDownloadProgressChange),
+                            this.#builtInAi.addEventListener("downloadedAndSessionCreated" /* AiAssistanceModel.BuiltInAi.Events.DOWNLOADED_AND_SESSION_CREATED */, this.#boundOnSessionCreation),
+                        ];
+                    }
+                    if (this.#builtInAi.isDownloading()) {
+                        this.#state = "downloading" /* State.DOWNLOADING */;
+                        this.#downloadProgress = this.#builtInAi.getDownloadProgress();
+                    }
+                }
+                this.requestUpdate();
+                return;
+            case "ready" /* State.READY */:
+                startGeneratingTeaser();
                 this.requestUpdate();
                 return;
             case "generating" /* State.GENERATING */:
@@ -354,6 +517,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         if (this.#timeoutId) {
             clearTimeout(this.#timeoutId);
         }
+        Common.EventTarget.removeEventListeners(this.#eventListeners);
     }
     setInactive(isInactive) {
         if (this.#isInactive === isInactive) {
@@ -443,7 +607,10 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             dontShowChanged: this.#dontShowChanged.bind(this),
             hasTellMeMoreButton: this.#hasTellMeMoreButton(),
             isSlowGeneration: this.#isSlow,
+            onDownloadModelClick: this.#onDownloadModelClick.bind(this),
+            downloadProgress: this.#downloadProgress,
             state: this.#state,
+            isForWarning: this.#isForWarning,
         }, undefined, this.contentElement);
     }
     wasShown() {

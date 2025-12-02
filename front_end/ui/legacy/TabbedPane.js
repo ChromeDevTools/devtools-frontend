@@ -1,7 +1,7 @@
 // Copyright 2010 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
 import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -9,6 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Annotations from '../../ui/components/annotations/annotations.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { createIcon, Icon } from '../kit/kit.js';
 import * as ARIAUtils from './ARIAUtils.js';
@@ -119,7 +120,9 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
         ZoomManager.instance().addEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.zoomChanged, this);
         this.makeTabSlider();
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            Annotations.AnnotationRepository.instance().addEventListener("AnnotationAdded" /* Annotations.Events.ANNOTATION_ADDED */, this.#onAnnotationAdded, this);
+            Annotations.AnnotationRepository.instance().addEventListener("AnnotationAdded" /* Annotations.Events.ANNOTATION_ADDED */, this.#onUpdateAnnotations, this);
+            Annotations.AnnotationRepository.instance().addEventListener("AnnotationDeleted" /* Annotations.Events.ANNOTATION_DELETED */, this.#onUpdateAnnotations, this);
+            Annotations.AnnotationRepository.instance().addEventListener("AllAnnotationsDeleted" /* Annotations.Events.ALL_ANNOTATIONS_DELETED */, this.#onUpdateAnnotations, this);
         }
     }
     setAccessibleName(name) {
@@ -857,7 +860,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
             tab.tabAnnotationIcon = iconVisible;
         }
     }
-    #onAnnotationAdded() {
+    #onUpdateAnnotations() {
         this.updateTabAnnotationIcons();
     }
     keyDown(event) {
@@ -1074,8 +1077,13 @@ export class TabbedPaneTab {
         }
         const suffixElementContainer = document.createElement('span');
         suffixElementContainer.classList.add('tabbed-pane-header-tab-suffix-element');
-        const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
-        suffixElementContainer.appendChild(suffixElement);
+        if (this.suffixElement instanceof HTMLElement) {
+            const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
+            suffixElementContainer.appendChild(suffixElement);
+        }
+        else {
+            render(this.suffixElement, suffixElementContainer);
+        }
         titleElement.insertAdjacentElement('afterend', suffixElementContainer);
         tabSuffixElements.set(tabElement, suffixElementContainer);
     }

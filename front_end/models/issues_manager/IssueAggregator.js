@@ -15,6 +15,7 @@ import { Issue, unionIssueKind } from './Issue.js';
 import { LowTextContrastIssue } from './LowTextContrastIssue.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
+import { PermissionElementIssue } from './PermissionElementIssue.js';
 import { QuirksModeIssue } from './QuirksModeIssue.js';
 import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
 /**
@@ -40,6 +41,7 @@ export class AggregatedIssue extends Issue {
     #cookieDeprecationMetadataIssues = new Set();
     #mixedContentIssues = new Set();
     #partitioningBlobURLIssues = new Set();
+    #permissionElementIssues = new Set();
     #sharedArrayBufferIssues = new Set();
     #quirksModeIssues = new Set();
     #attributionReportingIssues = new Set();
@@ -133,6 +135,9 @@ export class AggregatedIssue extends Issue {
     getPartitioningBlobURLIssues() {
         return this.#partitioningBlobURLIssues;
     }
+    getPermissionElementIssues() {
+        return this.#permissionElementIssues;
+    }
     /**
      * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
      * case new fields are added to `AffectedCookie`.
@@ -224,6 +229,9 @@ export class AggregatedIssue extends Issue {
         }
         if (issue instanceof PartitioningBlobURLIssue) {
             this.#partitioningBlobURLIssues.add(issue);
+        }
+        if (issue instanceof PermissionElementIssue) {
+            this.#permissionElementIssues.add(issue);
         }
     }
     getKind() {

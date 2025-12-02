@@ -6499,6 +6499,7 @@ import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import { Icon as Icon4 } from "./../../ui/kit/kit.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
+import { html as html3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
 import * as Snippets3 from "./../snippets/snippets.js";
@@ -7922,10 +7923,9 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     return tabId2;
   }
   addLoadErrorIcon(tabId2) {
-    const icon = new Icon4();
-    icon.name = "cross-circle-filled";
-    icon.classList.add("small");
-    UI15.Tooltip.Tooltip.install(icon, i18nString13(UIStrings14.unableToLoadThisContent));
+    const icon = html3`<devtools-icon class="small" name="cross-circle-filled"
+                                     title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
+                      </devtools-icon>`;
     if (this.tabbedPane.tabView(tabId2)) {
       this.tabbedPane.setTrailingTabIcon(tabId2, icon);
     }
@@ -7986,10 +7986,9 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       const tooltip = this.tooltipForFile(uiSourceCode);
       this.tabbedPane.changeTabTitle(tabId2, title, tooltip);
       if (uiSourceCode.loadError()) {
-        const icon = new Icon4();
-        icon.name = "cross-circle-filled";
-        icon.classList.add("small");
-        UI15.Tooltip.Tooltip.install(icon, i18nString13(UIStrings14.unableToLoadThisContent));
+        const icon = html3`<devtools-icon class="small" name="cross-circle-filled"
+                                         title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
+                          </devtools-icon>`;
         this.tabbedPane.setTrailingTabIcon(tabId2, icon);
       } else if (Persistence9.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
         const suffixElement = document.createElement("div");
@@ -12346,7 +12345,7 @@ import * as Root4 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives, html as html3 } from "./../../ui/lit/lit.js";
+import { Directives, html as html4 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -12524,7 +12523,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
         subtitleRanges.push({ offset: indexes[i], length: 1 });
       }
     }
-    return html3`
+    return html4`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -12548,7 +12547,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html3`
+    return html4`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -12611,7 +12610,7 @@ import "./../../ui/kit/kit.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html4 } from "./../../ui/lit/lit.js";
+import { html as html5 } from "./../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -12675,7 +12674,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html4`
+    return html5`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -12878,7 +12877,7 @@ import "./../../ui/kit/kit.js";
 import * as Common15 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
-import { Directives as Directives2, html as html5 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html6 } from "./../../ui/lit/lit.js";
 var { styleMap } = Directives2;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   constructor() {
@@ -12904,7 +12903,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html5`
+    return html6`
       <devtools-icon class="large" name=${iconName} style=${styleMap({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -12922,7 +12921,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing2 } from "./../../ui/lit/lit.js";
+import { html as html7, nothing as nothing2 } from "./../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
@@ -13223,10 +13222,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html6`
+    return html7`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html6`<span class="tag">${location}</span>` : nothing2}`;
+      ${location ? html7`<span class="tag">${location}</span>` : nothing2}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {

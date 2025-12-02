@@ -97,12 +97,6 @@ export class PerformanceInsightFormatter {
         return parts.join('\n');
     }
     insightIsSupported() {
-        // Although our types don't show it, Insights can end up as Errors if there
-        // is an issue in the processing stage. In this case we should gracefully
-        // ignore this error.
-        if (this.#insight instanceof Error) {
-            return false;
-        }
         return this.#description().length > 0;
     }
     getSuggestions() {
@@ -179,7 +173,7 @@ export class PerformanceInsightFormatter {
                     { title: 'How can I reduce the amount of legacy JavaScript on my page?' },
                 ];
             default:
-                throw new Error('Unknown insight key');
+                throw new Error(`Unknown insight key '${this.#insight.insightKey}'`);
         }
     }
     /**

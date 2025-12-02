@@ -121,10 +121,27 @@ const UIStrings = {
      * @description Notification shown to the user whenever DevTools receives an external request.
      */
     externalRequestReceived: '`DevTools` received an external request',
+    /**
+     * @description Notification shown to the user whenever DevTools has finished downloading a local AI model.
+     */
+    aiModelDownloaded: 'AI model downloaded',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let loadedPanelCommonModule;
+const WINDOW_LOCAL_STORAGE = {
+    register(_setting) { },
+    async get(setting) {
+        return window.localStorage.getItem(setting);
+    },
+    set(setting, value) {
+        window.localStorage.setItem(setting, value);
+    },
+    remove(setting) {
+        window.localStorage.removeItem(setting);
+    },
+    clear: () => window.localStorage.clear(),
+};
 export class MainImpl {
     #readyForTestPromise = Promise.withResolvers();
     #veStartPromise;
@@ -247,14 +264,10 @@ export class MainImpl {
         }
         let localStorage;
         if (!Host.InspectorFrontendHost.isUnderTest() && window.localStorage) {
-            const localbackingStore = {
-                ...Common.Settings.NOOP_STORAGE,
-                clear: () => window.localStorage.clear(),
-            };
-            localStorage = new Common.Settings.SettingsStorage(window.localStorage, localbackingStore, storagePrefix);
+            localStorage = new Common.Settings.SettingsStorage(window.localStorage, WINDOW_LOCAL_STORAGE, storagePrefix);
         }
         else {
-            localStorage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, storagePrefix);
+            localStorage = new Common.Settings.SettingsStorage({}, undefined, storagePrefix);
         }
         const hostUnsyncedStorage = {
             register: (name) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerPreference(name, { synced: false }),
@@ -414,7 +427,8 @@ export class MainImpl {
         AutofillManager.AutofillManager.AutofillManager.instance();
         LiveMetrics.LiveMetrics.instance();
         CrUXManager.CrUXManager.instance();
-        AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+        const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+        builtInAi.addEventListener("downloadedAndSessionCreated" /* AiAssistanceModel.BuiltInAi.Events.DOWNLOADED_AND_SESSION_CREATED */, () => Snackbar.Snackbar.Snackbar.show({ message: i18nString(UIStrings.aiModelDownloaded) }));
         new PauseListener();
         const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({ forceNew: true });
         // Required for legacy a11y layout tests

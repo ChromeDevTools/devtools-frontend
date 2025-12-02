@@ -64,7 +64,7 @@ __export(ObjectPropertiesSection_exports, {
 import * as Common from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
 import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
+import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
 import * as uiI18n from "./../../../i18n/i18n.js";
@@ -79,12 +79,10 @@ var JavaScriptREPL_exports = {};
 __export(JavaScriptREPL_exports, {
   JavaScriptREPL: () => JavaScriptREPL
 });
-import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
 import * as Formatter from "./../../../../models/formatter/formatter.js";
 import * as SourceMapScopes from "./../../../../models/source_map_scopes/source_map_scopes.js";
 import * as Acorn from "./../../../../third_party/acorn/acorn.js";
-import { render } from "./../../../lit/lit.js";
 import * as UI from "./../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.js
@@ -97,7 +95,7 @@ __export(RemoteObjectPreviewFormatter_exports, {
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform from "./../../../../core/platform/platform.js";
 import * as SDK from "./../../../../core/sdk/sdk.js";
-import { Directives, html, nothing } from "./../../../lit/lit.js";
+import { Directives, html, nothing, render } from "./../../../lit/lit.js";
 var { ifDefined, repeat } = Directives;
 var UIStrings = {
   /**
@@ -258,6 +256,26 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
     const preview = () => type === "accessor" ? "(...)" : type === "function" ? "\u0192" : type === "object" && subtype === "trustedtype" && className ? renderTrustedType(description ?? "", className) : type === "object" && subtype === "node" && description ? renderNodeTitle(description) : type === "string" ? Platform.StringUtilities.formatAsJSLiteral(description ?? "") : type === "object" && !subtype ? abbreviateFullQualifiedClassName(description ?? "") : description;
     return html`<span class='object-value-${subtype || type}' title=${ifDefined(title)}>${preview()}</span>`;
   }
+  renderEvaluationResultPreview(result, allowErrors) {
+    const fragment = document.createDocumentFragment();
+    if ("error" in result) {
+      return fragment;
+    }
+    if (result.exceptionDetails?.exception?.description) {
+      const exception = result.exceptionDetails.exception.description;
+      if (exception.startsWith("TypeError: ") || allowErrors) {
+        render(html`<span>${result.exceptionDetails.text} ${exception}</span>`, fragment);
+      }
+      return fragment;
+    }
+    const { preview, type, subtype, className, description } = result.object;
+    if (preview && type === "object" && subtype !== "node" && subtype !== "trustedtype") {
+      render(this.renderObjectPreview(preview), fragment);
+    } else {
+      render(this.renderPropertyPreview(type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || "", 400)), fragment);
+    }
+    return fragment;
+  }
 };
 function renderNodeTitle(nodeTitle) {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
@@ -296,11 +314,10 @@ var JavaScriptREPL = class _JavaScriptREPL {
       return code;
     }
   }
-  static async evaluateAndBuildPreview(text, throwOnSideEffect, replMode, timeout, allowErrors, objectGroup, awaitPromise = false, silent = false) {
-    const executionContext = UI.Context.Context.instance().flavor(SDK2.RuntimeModel.ExecutionContext);
+  static async evaluate(text, executionContext, throwOnSideEffect, replMode, timeout, objectGroup, awaitPromise = false, silent = false) {
     const isTextLong = text.length > maxLengthForEvaluation;
-    if (!text || !executionContext || throwOnSideEffect && isTextLong) {
-      return { preview: document.createDocumentFragment(), result: null };
+    if (!text || throwOnSideEffect && isTextLong) {
+      return null;
     }
     let expression = text;
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
@@ -323,30 +340,20 @@ var JavaScriptREPL = class _JavaScriptREPL {
       replMode,
       silent
     };
-    const result = await executionContext.evaluate(options, false, awaitPromise);
-    const preview = _JavaScriptREPL.buildEvaluationPreview(result, allowErrors);
-    return { preview, result };
+    return await executionContext.evaluate(options, false, awaitPromise);
   }
-  static buildEvaluationPreview(result, allowErrors) {
-    const fragment = document.createDocumentFragment();
-    if ("error" in result) {
-      return fragment;
+  static async evaluateAndBuildPreview(text, throwOnSideEffect, replMode, timeout, allowErrors, objectGroup, awaitPromise = false, silent = false) {
+    const executionContext = UI.Context.Context.instance().flavor(SDK2.RuntimeModel.ExecutionContext);
+    if (!executionContext) {
+      return { preview: document.createDocumentFragment(), result: null };
     }
-    if (result.exceptionDetails?.exception?.description) {
-      const exception = result.exceptionDetails.exception.description;
-      if (exception.startsWith("TypeError: ") || allowErrors) {
-        fragment.createChild("span").textContent = result.exceptionDetails.text + " " + exception;
-      }
-      return fragment;
+    const result = await _JavaScriptREPL.evaluate(text, executionContext, throwOnSideEffect, replMode, timeout, objectGroup, awaitPromise, silent);
+    if (!result) {
+      return { preview: document.createDocumentFragment(), result: null };
     }
     const formatter = new RemoteObjectPreviewFormatter();
-    const { preview, type, subtype, className, description } = result.object;
-    if (preview && type === "object" && subtype !== "node" && subtype !== "trustedtype") {
-      render(formatter.renderObjectPreview(preview), fragment);
-    } else {
-      render(formatter.renderPropertyPreview(type, subtype, className, Platform2.StringUtilities.trimEndWithMaxLength(description || "", 400)), fragment);
-    }
-    return fragment;
+    const preview = formatter.renderEvaluationResultPreview(result, allowErrors);
+    return { preview, result };
   }
 };
 var maxLengthForEvaluation = 2e3;
@@ -973,7 +980,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     if (b.startsWith("_") && !a.startsWith("_")) {
       return -1;
     }
-    return Platform3.StringUtilities.naturalOrderComparator(a, b);
+    return Platform2.StringUtilities.naturalOrderComparator(a, b);
   }
   static createNameElement(name, isPrivate) {
     if (name === null) {
@@ -1040,7 +1047,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     const maxFunctionBodyLength = 200;
     return html2`<span
       class="object-value-function ${className ?? ""}"
-      title=${Platform3.StringUtilities.trimEndWithMaxLength(description ?? "", 500)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform3.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
+      title=${Platform2.StringUtilities.trimEndWithMaxLength(description ?? "", 500)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform2.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
     function nameAndArguments(contents2) {
       const startOfArgumentsIndex = contents2.indexOf("(");
       const endOfArgumentsMatch = contents2.match(/\)\s*{/);
@@ -1087,7 +1094,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (type === "object" && subtype === "internal#location") {
         const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
         if (rawLocation && linkifier) {
-          return html2`${linkifier.linkifyRawLocation(rawLocation, Platform3.DevToolsPath.EmptyUrlString, "value")}`;
+          return html2`${linkifier.linkifyRawLocation(rawLocation, Platform2.DevToolsPath.EmptyUrlString, "value")}`;
         }
         return html2`<span class=value title=${description}>${"<" + i18nString2(UIStrings2.unknown) + ">"}</span>`;
       }
@@ -1334,7 +1341,7 @@ var TREE_ELEMENT_DEFAULT_VIEW = (input, output, target) => {
                 ?editing=${input.editing}>
                   ${input.expanded && isExpandable && property.value ? html2`<span
                       class="value object-value-${property.value.subtype || property.value.type}"
-                      title=${ifDefined2(property.value.description)}>${property.value.description === "Object" ? "" : Platform3.StringUtilities.trimMiddle(property.value.description ?? "", maxRenderableStringLength)}${property.synthetic ? nothing2 : ObjectPropertiesSection.getMemoryIcon(property.value)}</span>` : value()}
+                      title=${ifDefined2(property.value.description)}>${property.value.description === "Object" ? "" : Platform2.StringUtilities.trimMiddle(property.value.description ?? "", maxRenderableStringLength)}${property.synthetic ? nothing2 : ObjectPropertiesSection.getMemoryIcon(property.value)}</span>` : value()}
                   <datalist id=${completionsId}>${repeat2(input.completions, (c) => html2`<option>${c}</option>`)}</datalist>
                 </devtools-prompt></span>`}</span>`, target);
 };
@@ -1604,7 +1611,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       void this.editingCommitted(originalContent);
       return;
     }
-    if (keyboardEvent.key === Platform3.KeyboardUtilities.ESCAPE_KEY) {
+    if (keyboardEvent.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
       keyboardEvent.consume();
       this.editingEnded();
       return;
@@ -1786,7 +1793,7 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
   linkifier;
   #child;
   constructor(child, linkifier) {
-    super(Platform3.StringUtilities.sprintf("[%d \u2026 %d]", child.range.fromIndex, child.range.toIndex), true);
+    super(Platform2.StringUtilities.sprintf("[%d \u2026 %d]", child.range.fromIndex, child.range.toIndex), true);
     this.#child = child;
     this.toggleOnClick = true;
     this.linkifier = linkifier;
@@ -1977,7 +1984,7 @@ var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2
   }
   set text(text) {
     this.#text = text;
-    this.#byteCount = Platform3.StringUtilities.countWtf8Bytes(text);
+    this.#byteCount = Platform2.StringUtilities.countWtf8Bytes(text);
     this.requestUpdate();
   }
   set maxLength(maxLength) {
@@ -2191,7 +2198,7 @@ __export(ObjectPopoverHelper_exports, {
   ObjectPopoverHelper: () => ObjectPopoverHelper
 });
 import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as Platform4 from "./../../../../core/platform/platform.js";
+import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
 import * as Geometry from "./../../../../models/geometry/geometry.js";
 import { render as render3 } from "./../../../lit/lit.js";
@@ -2277,7 +2284,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
     }
   }
   static async buildObjectPopover(result, popover) {
-    const description = Platform4.StringUtilities.trimEndWithMaxLength(result.description || "", MaxPopoverTextLength);
+    const description = Platform3.StringUtilities.trimEndWithMaxLength(result.description || "", MaxPopoverTextLength);
     let popoverContentElement = null;
     if (result.type === "function" || result.type === "object") {
       let linkifier = null;

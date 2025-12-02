@@ -82,4 +82,44 @@ export class ExtensionNotifierView extends UI.Widget.VBox {
         this.server.notifyViewHidden(this.id);
     }
 }
+export class ExtensionIframe {
+    #descriptor;
+    #iframe;
+    #isShowing = false;
+    #isLoaded = false;
+    constructor(descriptor) {
+        this.#descriptor = descriptor;
+        // We are creating a single iframe here.
+        /* eslint-disable-next-line @devtools/no-imperative-dom-api */
+        this.#iframe = document.createElement('iframe');
+        this.#iframe.src = descriptor.pagePath;
+        this.#iframe.onload = this.#onIframeLoad;
+    }
+    #onIframeLoad = () => {
+        this.#isLoaded = true;
+        if (this.#isShowing) {
+            this.#descriptor.onShown();
+        }
+    };
+    show() {
+        if (this.#isShowing) {
+            return;
+        }
+        this.#isShowing = true;
+        if (this.#isLoaded) {
+            this.#descriptor.onShown();
+        }
+    }
+    hide() {
+        if (!this.#isShowing) {
+            return;
+        }
+        this.#isShowing = false;
+        this.#isLoaded = false;
+        this.#descriptor.onHidden();
+    }
+    frame() {
+        return this.#iframe;
+    }
+}
 //# sourceMappingURL=ExtensionView.js.map

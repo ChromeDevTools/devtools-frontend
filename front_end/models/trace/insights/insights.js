@@ -105,11 +105,7 @@ function linearInterpolation(x0, y0, x1, y1, x) {
 // gen/front_end/models/trace/insights/Common.js
 var GRAPH_SAVINGS_PRECISION = 50;
 function getInsight(insightName, insightSet) {
-  const insight = insightSet.model[insightName];
-  if (insight instanceof Error) {
-    return null;
-  }
-  return insight;
+  return insightSet.model[insightName];
 }
 function getLCP(insightSet) {
   const insight = getInsight("LCPBreakdown", insightSet);

@@ -72,7 +72,6 @@ GENERATE_DEPRECATIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
                                          'generate_deprecations.py')
 
 NODE_LOCATION = devtools_paths.node_path()
-TSC_LOCATION = devtools_paths.typescript_compiler_path()
 
 
 def parse_options(cli_args):
@@ -93,23 +92,6 @@ def popen(arguments, cwd=ROOT_DIRECTORY, env=os.environ.copy()):
         sys.exit(process.returncode)
 
 
-def runTsc(file_to_compile, options):
-    process = subprocess.Popen([
-        options.node_path,
-        TSC_LOCATION,
-        "--module",
-        "NodeNext",
-        "--moduleResolution",
-        "NodeNext",
-        file_to_compile,
-    ],
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
-    return process.returncode, stdout + stderr
-
-
 def runNode(file_to_execute, options):
     process = subprocess.Popen([options.node_path, file_to_execute],
                                stdout=subprocess.PIPE,
@@ -119,25 +101,12 @@ def runNode(file_to_execute, options):
 
 
 def generate_protocol_typescript_definitions(options):
-    generator_script_to_compile = path.join(ROOT_DIRECTORY, 'scripts',
-                                            'protocol_typescript',
-                                            'protocol_dts_generator.ts')
-    # first run TSC to convert the script from TS to JS
-    typescript_found_errors, typescript_stderr = runTsc(
-        generator_script_to_compile, options)
+    protocol_generator_script = path.join(ROOT_DIRECTORY, 'scripts',
+                                          'protocol_typescript',
+                                          'protocol_dts_generator.ts')
 
-    if typescript_found_errors:
-        print('')
-        print('TypeScript compilation failed on %s' %
-              generator_script_to_compile)
-        print('')
-        print(typescript_stderr)
-        print('')
-        return 1
-
-    outputted_file_path = generator_script_to_compile.replace('.ts', '.js')
-
-    node_found_errors, node_stderr = runNode(outputted_file_path, options)
+    node_found_errors, node_stderr = runNode(protocol_generator_script,
+                                             options)
 
     if node_found_errors:
         print('')
@@ -148,7 +117,8 @@ def generate_protocol_typescript_definitions(options):
         return 1
 
 
-# Generate the required `front_end/generated` files that are based on files living in Blink
+# Generate the required `front_end/generated` files that are based on files
+# living in Blink
 def main():
     options = parse_options(sys.argv[1:])
 

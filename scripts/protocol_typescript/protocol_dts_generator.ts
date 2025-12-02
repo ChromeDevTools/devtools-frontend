@@ -9,12 +9,10 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import protocolJson from '../../third_party/blink/public/devtools_protocol/browser_protocol.json' with {type : 'json'};
+
 import type {Protocol} from './protocol_schema.js';
 
-const PROTOCOL_JSON_PATH = path.resolve(
-    __dirname, path.join('..', '..', 'third_party', 'blink', 'public', 'devtools_protocol', 'browser_protocol.json'));
-
-const protocolJson = require(PROTOCOL_JSON_PATH);
 const removedDomains = new Set(['Console']);
 const protocolDomains: Protocol.Domain[] = protocolJson.domains.filter(({domain}) => !removedDomains.has(domain));
 
@@ -452,7 +450,7 @@ const flushEmitToFile = (path: string) => {
 };
 
 const main = () => {
-  const FRONTEND_GENERATED_DIR = path.resolve(__dirname, path.join('../../front_end/generated'));
+  const FRONTEND_GENERATED_DIR = path.resolve(import.meta.dirname, path.join('../../front_end/generated'));
 
   const destProtocolFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol.ts');
   const protocolModuleName = path.basename(destProtocolFilePath, '.ts');

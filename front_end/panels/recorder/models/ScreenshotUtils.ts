@@ -49,8 +49,13 @@ export async function resizeScreenshot(data: Screenshot): Promise<Screenshot> {
   context.drawImage(bitmap, 0, 0);
 
   const blob = await canvas.convertToBlob({type: 'image/png'});
-  const url = URL.createObjectURL(blob);
-  return url as Screenshot;
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+  return dataUrl as Screenshot;
 }
 
 export async function takeScreenshot(): Promise<Screenshot> {

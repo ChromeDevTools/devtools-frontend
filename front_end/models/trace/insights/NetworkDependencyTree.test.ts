@@ -21,6 +21,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     const {data, insights} = await processTrace(this, 'lcp-multiple-frames.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+    assert.isOk(insight);
   });
 
   it('calculates network dependency tree', () => {
@@ -29,6 +30,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     // |
     // | | .../app.js (ts:566782574106, dur:11790)
     // | | .../app.css (ts:566782573909, dur:7205)
+    assert.isOk(insight);
     assert.lengthOf(insight.rootNodes, 1);
 
     const root = insight.rootNodes[0];
@@ -51,6 +53,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
 
   it('Calculate the max critical path latency', () => {
     // The chain |index.html(root) -> app.js(child0)| is the longest
+    assert.isOk(insight);
     const root = insight.rootNodes[0];
     const child0 = root.children[0];
     assert.strictEqual(
@@ -58,6 +61,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
   });
 
   it('Marks the longest network dependency chain', () => {
+    assert.isOk(insight);
     const root = insight.rootNodes[0];
     const [child0, child1] = root.children;
 
@@ -69,6 +73,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
   });
 
   it('Store the all parents and children events for all requests', () => {
+    assert.isOk(insight);
     const root = insight.rootNodes[0];
     const [child0, child1] = root.children;
 
@@ -85,6 +90,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
   });
 
   it('Fail the audit when there at least one chain with at least two requests', () => {
+    assert.isOk(insight);
     assert.isTrue(insight.fail);
   });
 
@@ -257,12 +263,14 @@ describe('generatePreconnectedOrigins', () => {
       const {data, insights} = await processTrace(this, 'preconnect-advice.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
       insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+      assert.isOk(insight);
       documentRequest =
           data.NetworkRequests.byTime.find(req => req.args.data.requestId === firstNav.args.data?.navigationId);
     });
 
     it('correctly generate the preconnected origins', () => {
       // There are 4 preconnected origins, 3 from DOM, and 1 from response header.
+      assert.isOk(insight);
       assert.lengthOf(insight.preconnectedOrigins, 4);
 
       // A sanity check to avoid TS error.
@@ -302,7 +310,7 @@ describe('generatePreconnectedOrigins', () => {
         },
       ];
 
-      assert.deepEqual(insight.preconnectedOrigins, expected);
+      assert.deepEqual(insight?.preconnectedOrigins, expected);
     });
   });
 

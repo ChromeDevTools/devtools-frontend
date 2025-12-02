@@ -18,6 +18,7 @@ describeWithEnvironment('CLSCulprits component', () => {
     const firstNavInsights = traceData.insights?.values().next()?.value;
     assert.isOk(firstNavInsights);
     const clsModel = firstNavInsights.model.CLSCulprits;
+    assert.isOk(clsModel);
     const component = new Insights.CLSCulprits.CLSCulprits();
     component.model = clsModel;
     component.insightSetKey = firstNavInsights.id;

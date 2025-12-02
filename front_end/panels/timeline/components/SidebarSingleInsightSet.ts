@@ -399,10 +399,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
         continue;
       }
 
-      if (model instanceof Error) {
-        continue;
-      }
-
       if (model.state === 'pass') {
         passedInsights.push({componentClass, model});
       } else {

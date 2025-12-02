@@ -326,7 +326,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
       // Add up to 3 suggestions from the top failing insights.
       const top3FailingInsightSuggestions =
           Object.values(insightSet.model)
-              .filter(model => model.state !== 'pass' && !(model instanceof Error))
+              .filter(model => model.state !== 'pass')
               .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
               .filter(suggestion => !!suggestion)
               .slice(0, 3);
@@ -743,9 +743,9 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return {error: `Invalid insight set id. Valid insight set ids are: ${valid}`};
         }
 
-        const insight = insightSet?.model[params.insightName as keyof Trace.Insights.Types.InsightModels];
+        const insight = insightSet.model[params.insightName as keyof Trace.Insights.Types.InsightModels];
         if (!insight) {
-          const valid = Object.keys(insightSet?.model).join(', ');
+          const valid = Object.keys(insightSet.model).join(', ');
           return {error: `No insight available. Valid insight names are: ${valid}`};
         }
 

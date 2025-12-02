@@ -22,14 +22,8 @@ import {
 const GRAPH_SAVINGS_PRECISION = 50;
 
 export function getInsight<InsightName extends keyof InsightModels>(
-    insightName: InsightName, insightSet: InsightSet): InsightModels[InsightName]|null {
-  const insight = insightSet.model[insightName];
-  if (insight instanceof Error) {
-    return null;
-  }
-
-  // For some reason typescript won't narrow the type by removing Error, so do it manually.
-  return insight;
+    insightName: InsightName, insightSet: InsightSet): InsightModels[InsightName] {
+  return insightSet.model[insightName];
 }
 
 export function getLCP(insightSet: InsightSet):

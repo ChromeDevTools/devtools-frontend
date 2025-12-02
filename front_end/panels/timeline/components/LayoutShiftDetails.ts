@@ -206,7 +206,7 @@ function renderLayoutShiftDetails(
   }
 
   const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
-  if (!clsInsight || clsInsight instanceof Error) {
+  if (!clsInsight) {
     return Lit.nothing;
   }
 
@@ -256,7 +256,7 @@ function renderLayoutShiftClusterDetails(
   }
 
   const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
-  if (!clsInsight || clsInsight instanceof Error) {
+  if (!clsInsight) {
     return Lit.nothing;
   }
 

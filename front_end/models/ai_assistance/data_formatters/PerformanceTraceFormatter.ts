@@ -141,9 +141,9 @@ export class PerformanceTraceFormatter {
         'The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.');
 
     for (const insightSet of parsedTrace.insights?.values() ?? []) {
-      const lcp = insightSet ? Trace.Insights.Common.getLCP(insightSet) : null;
-      const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
-      const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
+      const lcp = Trace.Insights.Common.getLCP(insightSet);
+      const cls = Trace.Insights.Common.getCLS(insightSet);
+      const inp = Trace.Insights.Common.getINP(insightSet);
 
       parts.push(`\n## insight set id: ${insightSet.id}\n`);
       parts.push(`URL: ${insightSet.url}`);
@@ -151,11 +151,11 @@ export class PerformanceTraceFormatter {
       if (lcp || cls || inp) {
         parts.push('Metrics (lab / observed):');
         if (lcp) {
-          const nodeId = insightSet?.model.LCPBreakdown.lcpEvent?.args.data?.nodeId;
+          const nodeId = insightSet.model.LCPBreakdown?.lcpEvent?.args.data?.nodeId;
           const nodeIdText = nodeId !== undefined ? `, nodeId: ${nodeId}` : '';
           parts.push(
               `  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}${nodeIdText}`);
-          const subparts = insightSet?.model.LCPBreakdown.subparts;
+          const subparts = insightSet.model.LCPBreakdown?.subparts;
           if (subparts) {
             const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {
               return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
@@ -270,7 +270,7 @@ export class PerformanceTraceFormatter {
           criticalRequests.push(node.request);
           node.children.forEach(walkRequest);
         };
-        insightSet.model.NetworkDependencyTree.rootNodes.forEach(walkRequest);
+        insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
 
         return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, {verbose: false}) : null;
       },

@@ -64,10 +64,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsolePinPane extends UI.Widget.VBox {
   private pinModel: ConsolePinModel;
   private presenters: Set<ConsolePinPresenter>;
-  private readonly throttler: Common.Throttler.Throttler;
   constructor(private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void) {
     super({useShadowDom: true});
-    this.throttler = new Common.Throttler.Throttler(250);
     this.registerRequiredCSS(consolePinPaneStyles, objectValueStyles);
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
@@ -82,6 +80,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
   override willHide(): void {
     super.willHide();
+    this.pinModel.stopPeriodicEvaluate();
     for (const pin of this.presenters) {
       pin.setHovered(false);
     }
@@ -136,7 +135,8 @@ export class ConsolePinPane extends UI.Widget.VBox {
     presenter.show(this.contentElement);
     this.presenters.add(presenter);
     if (userGesture) {
-      void presenter.performUpdate().then(() => void presenter.focus());
+      presenter.performUpdate();
+      void presenter.focus();
     }
     this.requestUpdate();
   }
@@ -159,20 +159,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-    void this.throttler.schedule(this.requestUpdate.bind(this));
-  }
-
-  override async performUpdate(): Promise<void> {
-    if (!this.presenters.size || !this.isShowing()) {
-      return;
-    }
-    const updatePromises = Array.from(this.presenters, pin => pin.performUpdate());
-    await Promise.all(updatePromises);
-    this.updatedForTest();
-    void this.throttler.schedule(this.requestUpdate.bind(this));
-  }
-
-  private updatedForTest(): void {
+    this.pinModel.startPeriodicEvaluate();
   }
 }
 
@@ -295,6 +282,16 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     this.pin.setEditor(this.pinEditor);
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    this.pin.addEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.pin.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+  }
+
   #createInitialEditorState(doc: string): CodeMirror.EditorState {
     const extensions = [
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
@@ -410,16 +407,13 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     }
   }
 
-  override async performUpdate(): Promise<void> {
-    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    const {result, node} = executionContext ? await this.pin.evaluate(executionContext) : {result: null, node: null};
-
+  override performUpdate(): void {
     const output: ViewOutput = {};
     this.view(
         {
           expression: this.pin.expression,
           editorState: this.editor?.state ?? this.#createInitialEditorState(this.pin.expression),
-          result,
+          result: this.pin.lastResult,
           isEditing: this.pinEditor.isEditing(),
           onDelete: () => this.pinPane.removePin(this),
           onPreviewHoverChange: hovered => this.setHovered(hovered),
@@ -439,6 +433,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     this.deletePinIcon = deletePinIcon;
     this.editor = editor;
 
+    const node = this.pin.lastNode;
     if (this.hovered) {
       if (node) {
         SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
@@ -453,6 +448,9 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
 export class ConsolePinModel {
   readonly #setting: Common.Settings.Setting<string[]>;
   readonly #pins = new Set<ConsolePin>();
+
+  readonly #throttler = new Common.Throttler.Throttler(250);
+  #active = false;
 
   constructor(settings: Common.Settings.Settings) {
     this.#setting = settings.createLocalSetting('console-pins', []);
@@ -477,6 +475,27 @@ export class ConsolePinModel {
     this.#save();
   }
 
+  startPeriodicEvaluate(): void {
+    this.#active = true;
+    void this.#evaluateAllPins();
+  }
+
+  stopPeriodicEvaluate(): void {
+    this.#active = false;
+  }
+
+  async #evaluateAllPins(): Promise<void> {
+    if (!this.#active) {
+      return;
+    }
+
+    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+    if (executionContext) {
+      await Promise.all(this.#pins.values().map(pin => pin.evaluate(executionContext)));
+    }
+    void this.#throttler.schedule(this.#evaluateAllPins.bind(this));
+  }
+
   #save(): void {
     const expressions = this.#pins.values().map(pin => pin.expression).toArray();
     this.#setting.set(expressions);
@@ -495,7 +514,7 @@ interface ConsolePinEditor {
 /**
  * A pinned console expression.
  */
-export class ConsolePin {
+export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper<ConsolePinEvents> {
   #expression: string;
   readonly #onCommit: () => void;
 
@@ -503,10 +522,12 @@ export class ConsolePin {
 
   // We track the last evaluation result for this pin so we can release the RemoteObject.
   #lastResult: SDK.RuntimeModel.EvaluationResult|null = null;
+  #lastNode: SDK.RemoteObject.RemoteObject|null = null;
   #lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null = null;
   #releaseLastResult = true;
 
   constructor(expression: string, onCommit: () => void) {
+    super();
     this.#expression = expression;
     this.#onCommit = onCommit;
   }
@@ -517,6 +538,11 @@ export class ConsolePin {
 
   get lastResult(): SDK.RuntimeModel.EvaluationResult|null {
     return this.#lastResult;
+  }
+
+  /** A short cut in case `lastResult` is a DOM node */
+  get lastNode(): SDK.RemoteObject.RemoteObject|null {
+    return this.#lastNode;
   }
 
   skipReleaseLastResult(): void {
@@ -543,8 +569,7 @@ export class ConsolePin {
   }
 
   /** Evaluates the current working copy of the pinned expression. If the result is a DOM node, we return that separately for convenience.  */
-  async evaluate(executionContext: SDK.RuntimeModel.ExecutionContext):
-      Promise<{result: SDK.RuntimeModel.EvaluationResult | null, node: SDK.RemoteObject.RemoteObject|null}> {
+  async evaluate(executionContext: SDK.RuntimeModel.ExecutionContext): Promise<void> {
     const editorText = this.#editor?.workingCopyWithHint() ?? '';
     const throwOnSideEffect = Boolean(this.#editor?.isEditing()) && editorText !== this.#expression;
     const timeout = throwOnSideEffect ? 250 : undefined;
@@ -562,8 +587,19 @@ export class ConsolePin {
     this.#releaseLastResult = true;
 
     if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
-      return {result, node: result.object};
+      this.#lastNode = result.object;
+    } else {
+      this.#lastNode = null;
     }
-    return {result, node: null};
+
+    this.dispatchEventToListeners(ConsolePinEvent.EVALUATE_RESULT_READY, this);
   }
+}
+
+export const enum ConsolePinEvent {
+  EVALUATE_RESULT_READY = 'EVALUATE_RESULT_READY',
+}
+
+export interface ConsolePinEvents {
+  [ConsolePinEvent.EVALUATE_RESULT_READY]: ConsolePin;
 }

@@ -4,7 +4,6 @@
 
 import '../../../ui/kit/kit.js';
 import './ExtensionView.js';
-import './ControlButton.js';
 import './ReplaySection.js';
 
 import * as Host from '../../../core/host/host.js';
@@ -29,6 +28,7 @@ import * as Models from '../models/models.js';
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
+import {ControlButton} from './ControlButton.js';
 import recordingViewStyles from './recordingView.css.js';
 import type {ReplaySectionData, StartReplayEvent} from './ReplaySection.js';
 import {
@@ -37,6 +37,7 @@ import {
   type StepView,
   type StepViewData,
 } from './StepView.js';
+
 const {html} = Lit;
 
 const UIStrings = {
@@ -844,18 +845,21 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         `}
         ${input.isRecording ? html`<div class="footer">
           <div class="controls">
-            <devtools-control-button
+            <devtools-widget
+              class="control-button"
+              .widgetConfig=${UI.Widget.widgetConfig(ControlButton, {
+                label: footerButtonTitle,
+                shape: 'square',
+                disabled: input.recordingTogglingInProgress,
+                onClick: input.onRecordingFinished,
+              })}
               jslog=${VisualLogging.toggle('toggle-recording').track({click: true})}
-              @click=${input.onRecordingFinished}
-              .disabled=${input.recordingTogglingInProgress}
-              .shape=${'square'}
-              .label=${footerButtonTitle}
               title=${Models.Tooltip.getTooltipForActions(
                 footerButtonTitle,
                 Actions.RecorderActions.START_RECORDING,
               )}
             >
-            </devtools-control-button>
+            </devtools-widget>
           </div>
         </div>`: Lit.nothing}
       </div>

@@ -2,51 +2,85 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import controlButtonStyles from './controlButton.css.js';
 
-const {html, Decorators, LitElement} = Lit;
-const {customElement, property} = Decorators;
+const {html} = Lit;
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-control-button': ControlButton;
-  }
+export interface ViewInput {
+  label: string;
+  shape: string;
+  disabled: boolean;
+  onClick: (event: Event) => void;
 }
 
-@customElement('devtools-control-button')
-export class ControlButton extends LitElement {
-  @property() declare label: string;
-  @property() declare shape: string;
-  @property({type: Boolean}) declare disabled: boolean;
-
-  constructor() {
-    super();
-    this.label = '';
-    this.shape = 'square';
-    this.disabled = false;
-  }
-
-  #handleClickEvent = (event: Event): void => {
-    if (this.disabled) {
+export const DEFAULT_VIEW = (input: ViewInput, _output: unknown, target: HTMLElement): void => {
+  const {label, shape, disabled, onClick} = input;
+  const handleClickEvent = (event: Event): void => {
+    if (disabled) {
       event.stopPropagation();
       event.preventDefault();
+    } else {
+      onClick(event);
     }
   };
+  // clang-format off
+  Lit.render(html`
+    <style>${controlButtonStyles}</style>
+    <button
+        @click=${handleClickEvent}
+        .disabled=${disabled}
+        class="control">
+      <div class="icon ${shape}"></div>
+      <div class="label">${label}</div>
+    </button>
+  `, target);
+  // clang-format on
+};
 
-  protected override render(): unknown {
-    // clang-format off
-    return html`
-            <style>${controlButtonStyles}</style>
-            <button
-                @click=${this.#handleClickEvent}
-                .disabled=${this.disabled}
-                class="control">
-              <div class="icon ${this.shape}"></div>
-              <div class="label">${this.label}</div>
-            </button>
-        `;
-    // clang-format on
+export class ControlButton extends UI.Widget.Widget {
+  #label = '';
+  #shape = 'square';
+  #disabled = false;
+  #onClick: (event: Event) => void = () => {};
+
+  #view: typeof DEFAULT_VIEW;
+
+  constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, classes: ['flex-none']});
+    this.#view = view || DEFAULT_VIEW;
+  }
+
+  set label(label: string) {
+    this.#label = label;
+    this.requestUpdate();
+  }
+
+  set shape(shape: string) {
+    this.#shape = shape;
+    this.requestUpdate();
+  }
+
+  set disabled(disabled: boolean) {
+    this.#disabled = disabled;
+    this.requestUpdate();
+  }
+
+  set onClick(onClick: (event: Event) => void) {
+    this.#onClick = onClick;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          label: this.#label,
+          shape: this.#shape,
+          disabled: this.#disabled,
+          onClick: this.#onClick,
+        },
+        {}, this.contentElement);
   }
 }

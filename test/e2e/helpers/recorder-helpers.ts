@@ -107,7 +107,7 @@ export async function createAndStartRecording(name?: string, selectorAttribute?:
   }
   await createRecording(name ?? TEST_RECORDING_NAME, selectorAttribute, devToolsPage);
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
-  await devToolsPage.click('devtools-control-button');
+  await devToolsPage.click('.control-button');
   await devToolsPage.waitFor('.recording-view');
   await onRecordingStarted;
 }

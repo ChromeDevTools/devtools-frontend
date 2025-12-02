@@ -32,22 +32,18 @@ describeWithEnvironment('ReplaySection', () => {
 
   it('should change the button value when another option is selected in select menu', async () => {
     const component = await createReplaySection();
-    const selectButton = component.shadowRoot?.querySelector(
-        'devtools-select-button',
-    );
+    const select = component.shadowRoot?.querySelector(
+                       'select',
+                       ) as HTMLSelectElement;
     assert.strictEqual(
-        selectButton?.value,
+        select?.value,
         Models.RecordingPlayer.PlayRecordingSpeed.NORMAL,
     );
 
-    selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
-            Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
-            ),
-    );
+    component.changeSpeed(Models.RecordingPlayer.PlayRecordingSpeed.SLOW);
     await RenderCoordinator.done();
     assert.strictEqual(
-        selectButton?.value,
+        select?.value,
         Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
     );
   });
@@ -60,17 +56,11 @@ describeWithEnvironment('ReplaySection', () => {
         },
     );
 
+    component.changeSpeed(Models.RecordingPlayer.PlayRecordingSpeed.SLOW);
     const selectButton = component.shadowRoot?.querySelector(
-        'devtools-select-button',
-    );
-    selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
-            Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
-            ),
-    );
-    selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectButtonClickEvent(),
-    );
+                             'devtools-button',
+                             ) as HTMLElement;
+    selectButton?.click();
 
     const event = await onceClicked;
     assert.deepEqual(
@@ -81,15 +71,7 @@ describeWithEnvironment('ReplaySection', () => {
 
   it('should save the changed button when option is selected in select menu', async () => {
     const component = await createReplaySection();
-    const selectButton = component.shadowRoot?.querySelector(
-        'devtools-select-button',
-    );
-
-    selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
-            Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
-            ),
-    );
+    component.changeSpeed(Models.RecordingPlayer.PlayRecordingSpeed.SLOW);
 
     assert.strictEqual(
         settings.speed,
@@ -102,11 +84,11 @@ describeWithEnvironment('ReplaySection', () => {
 
     const component = await createReplaySection();
 
-    const selectButton = component.shadowRoot?.querySelector(
-        'devtools-select-button',
-    );
+    const select = component.shadowRoot?.querySelector(
+                       'select',
+                       ) as HTMLSelectElement;
     assert.strictEqual(
-        selectButton?.value,
+        select?.value,
         Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
     );
   });

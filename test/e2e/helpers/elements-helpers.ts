@@ -213,7 +213,7 @@ export const waitForPartialContentOfSelectedElementsNode =
  */
 export const getContentOfSelectedNode = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const selectedNode = await devToolsPage.waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
-  return await selectedNode.evaluate(node => node.textContent as string);
+  return await selectedNode.evaluate(node => node.textContent);
 };
 
 export const waitForSelectedNodeChange = async (
@@ -227,7 +227,7 @@ export const waitForSelectedNodeChange = async (
 export const assertSelectedElementsNodeTextIncludes =
     async (expectedTextContent: string, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const selectedNode = await devtoolsPage.waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
-  const selectedTextContent = await selectedNode.evaluate(node => node.textContent as string);
+  const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
   assert.include(selectedTextContent, expectedTextContent);
 };
 
@@ -350,7 +350,7 @@ export const isDOMBreakpointEnabled = async (
     breakpoint: puppeteer.ElementHandle<Element>,
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const checkbox = await devToolsPage.waitFor('input[type="checkbox"]', breakpoint);
-  return await checkbox!.evaluate(node => (node as HTMLInputElement).checked);
+  return await checkbox!.evaluate(node => node.checked);
 };
 
 export const setDOMBreakpointOnSelectedNode =
@@ -364,11 +364,11 @@ export const toggleDOMBreakpointCheckbox = async (
     breakpoint: puppeteer.ElementHandle<Element>, wantChecked: boolean,
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const checkbox = await devToolsPage.waitFor('input[type="checkbox"]', breakpoint);
-  const checked = await checkbox!.evaluate(box => (box as HTMLInputElement).checked);
+  const checked = await checkbox!.evaluate(box => box.checked);
   if (checked !== wantChecked) {
     await checkbox!.click();
   }
-  assert.strictEqual(await checkbox!.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
+  assert.strictEqual(await checkbox!.evaluate(box => box.checked), wantChecked);
 };
 
 export const waitForElementsComputedSection = async (devToolsPage?: DevToolsPage) => {
@@ -382,7 +382,7 @@ export const getContentOfComputedPane = async (devToolsPage?: DevToolsPage) => {
   devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   const pane = await devToolsPage.waitFor('Computed panel', undefined, undefined, 'aria');
   const tree = await devToolsPage.waitFor('[role="tree"]', pane, undefined, 'aria');
-  return await tree.evaluate(node => node.textContent as string);
+  return await tree.evaluate(node => node.textContent);
 };
 
 export const waitForComputedPaneChange = async (initialValue: string, devToolsPage: DevToolsPage) => {
@@ -455,8 +455,8 @@ export const findElementById = async (id: string, devToolsPage = getBrowserAndPa
 };
 
 function veImpressionForSelectedNodeMenu(content: string) {
-  const isPeudoElement = content.startsWith('::');
-  if (isPeudoElement) {
+  const isPseudoElement = content.startsWith('::');
+  if (isPseudoElement) {
     return veImpressionsUnder('Panel: elements > Tree: elements > TreeItem', [veImpression('Menu', undefined, [
                                 veImpression('Action', 'expand-recursively'),
                                 veImpression('Action', 'scroll-into-view'),
@@ -933,7 +933,7 @@ export async function waitForPropertyToHighlight(
     assert.isOk(property, `Could not find property ${propertyName} in rule ${ruleSelector}`);
     // StylePropertyHighlighter temporarily highlights the property using the Web Animations API, so the only way to
     // know it's happening is by listing all animations.
-    const animationCount = await property.evaluate(node => (node as HTMLElement).getAnimations().length);
+    const animationCount = await property.evaluate(node => node.getAnimations().length);
     return animationCount > 0;
   });
 }

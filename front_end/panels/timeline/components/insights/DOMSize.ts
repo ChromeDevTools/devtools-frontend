@@ -4,7 +4,6 @@
 
 import '../../../../ui/kit/kit.js';
 import './Table.js';
-import './NodeLink.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
@@ -14,7 +13,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import {md} from './Helpers.js';
-import type * as NodeLink from './NodeLink.js';
+import {nodeLink} from './NodeLink.js';
 import type {TableData, TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.DOMSize;
@@ -34,33 +33,21 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
 
     if (domStatsData.maxDepth) {
       const {nodeId, nodeName} = domStatsData.maxDepth;
-      // clang-format off
-      const template = html`
-        <devtools-performance-node-link
-          .data=${{
-            backendNodeId: nodeId,
-            frame: domStatsData.frame,
-            fallbackText: nodeName,
-          } as NodeLink.NodeLinkData}>
-        </devtools-performance-node-link>
-      `;
-      // clang-format on
+      const template = nodeLink({
+        backendNodeId: nodeId,
+        frame: domStatsData.frame,
+        fallbackText: nodeName,
+      });
       rows.push({values: [i18nString(UIStrings.maxDOMDepth), template]});
     }
 
     if (domStatsData.maxChildren) {
       const {nodeId, nodeName} = domStatsData.maxChildren;
-      // clang-format off
-      const template = html`
-        <devtools-performance-node-link
-          .data=${{
-            backendNodeId: nodeId,
-            frame: domStatsData.frame,
-            fallbackText: nodeName,
-          } as NodeLink.NodeLinkData}>
-        </devtools-performance-node-link>
-      `;
-      // clang-format on
+      const template = nodeLink({
+        backendNodeId: nodeId,
+        frame: domStatsData.frame,
+        fallbackText: nodeName,
+      });
       rows.push({values: [i18nString(UIStrings.maxChildren), template]});
     }
 

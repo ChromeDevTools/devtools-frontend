@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './NodeLink.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import type {CLSCulpritsInsightModel} from '../../../../models/trace/insights/CLSCulprits.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
-import type * as NodeLink from './NodeLink.js';
+import {nodeLink} from './NodeLink.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.CLSCulprits;
 
@@ -52,13 +51,11 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
               return html`
                 <li>
                   ${culprit.description}
-                  <devtools-performance-node-link
-                    .data=${{
-                      backendNodeId: culprit.backendNodeId,
-                      frame: culprit.frame,
-                      fallbackUrl: culprit.url,
-                    } as NodeLink.NodeLinkData}>
-                  </devtools-performance-node-link>
+                  ${nodeLink({
+                    backendNodeId: culprit.backendNodeId,
+                    frame: culprit.frame,
+                    fallbackUrl: culprit.url as Platform.DevToolsPath.UrlString,
+                  })}
                 </li>`;
             }
 

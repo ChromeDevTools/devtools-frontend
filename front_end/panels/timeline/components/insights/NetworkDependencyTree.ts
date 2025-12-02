@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import './Table.js';
-import './NodeLink.js';
 import '../../../../ui/kit/kit.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -17,7 +16,7 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import {md} from './Helpers.js';
 import networkDependencyTreeInsightStyles from './networkDependencyTreeInsight.css.js';
-import type {NodeLinkData} from './NodeLink.js';
+import {nodeLink} from './NodeLink.js';
 import {renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.NetworkDependencyTree;
@@ -225,16 +224,11 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
         };
       }
 
-      // clang-format off
-      const nodeEl = html`
-        <devtools-performance-node-link
-          .data=${{
-            backendNodeId: preconnectOrigin.node_id,
-            frame: preconnectOrigin.frame,
-            fallbackHtmlSnippet: `<link rel="preconnect" href="${preconnectOrigin.url}">`,
-          } as NodeLinkData}>
-        </devtools-performance-node-link>`;
-      // clang-format on
+      const nodeEl = nodeLink({
+        backendNodeId: preconnectOrigin.node_id,
+        frame: preconnectOrigin.frame,
+        fallbackHtmlSnippet: `<link rel="preconnect" href="${preconnectOrigin.url}">`,
+      });
 
       return {
         values: [preconnectOrigin.url, nodeEl],

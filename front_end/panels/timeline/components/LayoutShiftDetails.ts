@@ -14,6 +14,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import * as Insights from './insights/insights.js';
+import {nodeLink} from './insights/NodeLink.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
 
 const {html, render} = Lit;
@@ -374,14 +375,11 @@ function renderShiftedElements(
     return html`
       ${elementsShifted?.map(el => {
         if (el.node_id !== undefined) {
-          return html`
-            <devtools-performance-node-link
-              .data=${{
-                backendNodeId: el.node_id,
-                frame: shift.args.frame,
-                fallbackHtmlSnippet: el.debug_name,
-              } as Insights.NodeLink.NodeLinkData}>
-            </devtools-performance-node-link>`;
+          return nodeLink({
+            backendNodeId: el.node_id,
+            frame: shift.args.frame,
+            fallbackHtmlSnippet: el.debug_name,
+          });
         }
           return Lit.nothing;
       })}`;
@@ -408,20 +406,17 @@ function renderAnimation(
 
 function renderUnsizedImage(
     frame: string, unsizedImage: Trace.Insights.Models.CLSCulprits.UnsizedImage): Lit.LitTemplate {
+  const nodeLinkEl = nodeLink({
+    backendNodeId: unsizedImage.backendNodeId,
+    frame,
+    fallbackUrl: unsizedImage.paintImageEvent.args.data.url as Platform.DevToolsPath.UrlString | undefined,
+  });
   // clang-format off
-    const el = html`
-      <devtools-performance-node-link
-        .data=${{
-          backendNodeId: unsizedImage.backendNodeId,
-          frame,
-          fallbackUrl: unsizedImage.paintImageEvent.args.data.url,
-        } as Insights.NodeLink.NodeLinkData}>
-      </devtools-performance-node-link>`;
-    return html`
-      <span class="culprit">
-        <span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span>
-        <span class="culprit-value">${el}</span>
-      </span>`;
+  return html`
+    <span class="culprit">
+      <span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span>
+      <span class="culprit-value">${nodeLinkEl}</span>
+    </span>`;
   // clang-format on
 }
 

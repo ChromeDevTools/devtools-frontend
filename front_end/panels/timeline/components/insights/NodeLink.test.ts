@@ -55,11 +55,10 @@ describeWithMockConnection('NodeLink', () => {
     renderElementIntoDOM(component);
     // await new Promise(r => setTimeout(r, 1000));
     await raf();
-    assert.isOk(component.shadowRoot);
 
     // Check that linkify was called with the right Node and we rendered the linkified node.
     sinon.assert.calledWith(linkifyStub, domNode);
-    assert.instanceOf(component.shadowRoot.querySelector('.fake-linkify-node'), Element);
+    assert.instanceOf(component.element.shadowRoot?.querySelector('.fake-linkify-node'), Element);
   });
 
   it('falls back to an HTML snippet if one is passed in', async () => {
@@ -85,7 +84,7 @@ describeWithMockConnection('NodeLink', () => {
     };
     renderElementIntoDOM(component);
     await raf();
-    const fallback = component.shadowRoot?.querySelector('pre');
+    const fallback = component.element.shadowRoot?.querySelector('pre');
     assert.isOk(fallback);
     assert.strictEqual(fallback.innerText, '<p class=\"fallback\">fallback html</p>');
   });
@@ -109,7 +108,7 @@ describeWithMockConnection('NodeLink', () => {
     component.data = {backendNodeId: nodeId(2), frame: domNode.frameId() as string, fallbackText: 'Fallback text'};
     renderElementIntoDOM(component);
     await raf();
-    const fallback = component.shadowRoot?.querySelector('span');
+    const fallback = component.element.shadowRoot?.querySelector('span');
     assert.isOk(fallback);
     assert.strictEqual(fallback.innerText, 'Fallback text');
   });

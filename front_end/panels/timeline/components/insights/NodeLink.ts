@@ -1,24 +1,67 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
-// TODO: move to ui/components/node_link?
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 
 const {html} = Lit;
+const {widgetConfig} = UI.Widget;
+
+interface ViewInput {
+  relatedNodeEl: Node|undefined;
+  fallbackUrl?: Platform.DevToolsPath.UrlString;
+  fallbackHtmlSnippet?: string;
+  fallbackText?: string;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const {
+    relatedNodeEl,
+    fallbackUrl,
+    fallbackHtmlSnippet,
+    fallbackText,
+  } = input;
+
+  let template;
+  if (relatedNodeEl) {
+    template = html`<div class='node-link'>${relatedNodeEl}</div>`;
+  } else if (fallbackUrl) {
+    const MAX_URL_LENGTH = 20;
+    const options = {
+      tabStop: true,
+      showColumnNumber: false,
+      inlineFrameIndex: 0,
+      maxLength: MAX_URL_LENGTH,
+    };
+    const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
+    template = html`<div class='node-link'>
+      <style>${Buttons.textButtonStyles}</style>
+      ${linkEl}
+    </div>`;
+  } else if (fallbackHtmlSnippet) {
+    // TODO: Use CodeHighlighter.
+    template = html`<pre style='text-wrap: auto'>${fallbackHtmlSnippet}</pre>`;
+  } else if (fallbackText) {
+    template = html`<span>${fallbackText}</span>`;
+  } else {
+    template = Lit.nothing;
+  }
+
+  Lit.render(template, target);
+};
 
 export interface NodeLinkData {
   backendNodeId: Protocol.DOM.BackendNodeId;
-  frame: string;
+  frame?: string;
   options?: PanelsCommon.DOMLinkifier.Options;
   /**
    * URL to display if backendNodeId cannot be resolved (ie for traces loaded from disk).
@@ -37,8 +80,8 @@ export interface NodeLinkData {
   fallbackText?: string;
 }
 
-export class NodeLink extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class NodeLink extends UI.Widget.Widget {
+  #view: View;
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   #frame?: string;
   #options?: PanelsCommon.DOMLinkifier.Options;
@@ -51,6 +94,11 @@ export class NodeLink extends HTMLElement {
    */
   #linkifiedNodeForBackendId = new Map<Protocol.DOM.BackendNodeId, Node|'NO_NODE_FOUND'>();
 
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+  }
+
   set data(data: NodeLinkData) {
     this.#backendNodeId = data.backendNodeId;
     this.#frame = data.frame;
@@ -58,7 +106,7 @@ export class NodeLink extends HTMLElement {
     this.#fallbackUrl = data.fallbackUrl;
     this.#fallbackHtmlSnippet = data.fallbackHtmlSnippet;
     this.#fallbackText = data.fallbackText;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.requestUpdate();
   }
 
   async #linkify(): Promise<Node|undefined> {
@@ -97,42 +145,19 @@ export class NodeLink extends HTMLElement {
     return linkedNode;
   }
 
-  async #render(): Promise<void> {
-    const relatedNodeEl = await this.#linkify();
-
-    let template;
-    if (relatedNodeEl) {
-      template = html`<div class='node-link'>${relatedNodeEl}</div>`;
-    } else if (this.#fallbackUrl) {
-      const MAX_URL_LENGTH = 20;
-      const options = {
-        tabStop: true,
-        showColumnNumber: false,
-        inlineFrameIndex: 0,
-        maxLength: MAX_URL_LENGTH,
-      };
-      const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(this.#fallbackUrl, options);
-      template = html`<div class='node-link'>
-        <style>${Buttons.textButtonStyles}</style>
-        ${linkEl}
-      </div>`;
-    } else if (this.#fallbackHtmlSnippet) {
-      // TODO: Use CodeHighlighter.
-      template = html`<pre style='text-wrap: auto'>${this.#fallbackHtmlSnippet}</pre>`;
-    } else if (this.#fallbackText) {
-      template = html`<span>${this.#fallbackText}</span>`;
-    } else {
-      template = Lit.nothing;
-    }
-
-    Lit.render(template, this.#shadow, {host: this});
+  override async performUpdate(): Promise<void> {
+    const input: ViewInput = {
+      relatedNodeEl: await this.#linkify(),
+      fallbackUrl: this.#fallbackUrl,
+      fallbackHtmlSnippet: this.#fallbackHtmlSnippet,
+      fallbackText: this.#fallbackText,
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-node-link': NodeLink;
-  }
+export function nodeLink(data: NodeLinkData): Lit.TemplateResult {
+  return html`<devtools-widget .widgetConfig=${widgetConfig(NodeLink, {
+    data,
+  })}></devtools-widget>`;
 }
-
-customElements.define('devtools-performance-node-link', NodeLink);

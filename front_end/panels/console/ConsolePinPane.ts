@@ -180,7 +180,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
 export interface ViewInput {
   expression: string;
-  initialState: CodeMirror.EditorState;
+  editorState: CodeMirror.EditorState;
   onDelete: () => void;
   onPreviewHoverChange: (hovered: boolean) => void;
   onPreviewClick: (event: MouseEvent) => void;
@@ -232,7 +232,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
             }
           }}
       >
-        <devtools-text-editor .state=${input.initialState} ${ref(editorRef)}
+        <devtools-text-editor .state=${input.editorState} ${ref(editorRef)}
         ></devtools-text-editor>
       </div>
       <div class='console-pin-preview'
@@ -253,55 +253,29 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 };
 
 export class ConsolePinPresenter {
+  private readonly view: typeof DEFAULT_VIEW;
   private readonly pin: ConsolePin;
   private readonly pinEditor: ConsolePinEditor;
-  private readonly pinElement: Element;
-  private readonly pinPreview: HTMLElement;
-  private editor: TextEditor.TextEditor.TextEditor;
-  private hovered: boolean;
-  private lastNode: SDK.RemoteObject.RemoteObject|null;
-  private deletePinIcon: Buttons.Button.Button;
+  private pinElement!: Element;
+  private pinPreview!: HTMLElement;
+  private editor?: TextEditor.TextEditor.TextEditor;
+  private hovered = false;
+  private lastNode: SDK.RemoteObject.RemoteObject|null = null;
+  private deletePinIcon!: Buttons.Button.Button;
 
   constructor(
       expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void,
       view = DEFAULT_VIEW) {
-    const fragment = document.createDocumentFragment();
-    const output: ViewOutput = {};
-    view(
-        {
-          expression,
-          initialState: this.#createInitialEditorState(expression),
-          onDelete: () => pinPane.removePin(this),
-          onPreviewHoverChange: hovered => this.setHovered(hovered),
-          onPreviewClick: event => {
-            if (this.lastNode) {
-              void Common.Revealer.reveal(this.lastNode);
-              event.consume();
-            }
-          },
-        },
-        output, fragment);
-
-    const {pinElement, deletePinIcon, previewElement, editor} = output;
-    if (!pinElement || !deletePinIcon || !editor || !previewElement) {
-      throw new Error('Broken view function, expected output');
-    }
-    this.pinElement = pinElement;
-    this.deletePinIcon = deletePinIcon;
-    this.editor = editor;
-    this.pinPreview = previewElement;
-
-    elementToConsolePin.set(this.pinElement, this);
-
-    this.hovered = false;
-    this.lastNode = null;
+    this.view = view;
 
     this.pinEditor = {
-      workingCopy: () => this.editor.state.doc.toString(),
-      workingCopyWithHint: () => TextEditor.Config.contentIncludingHint(this.editor.editor),
-      isEditing: () => this.pinElement.hasFocus(),
+      workingCopy: () => this.editor?.state.doc.toString() ?? '',
+      workingCopyWithHint: () => this.editor ? TextEditor.Config.contentIncludingHint(this.editor.editor) : '',
+      isEditing: () => Boolean(this.editor?.editor.hasFocus),
     };
     this.pin = new ConsolePin(this.pinEditor, expression);
+
+    this.performUpdate();
   }
 
   #createInitialEditorState(doc: string): CodeMirror.EditorState {
@@ -337,7 +311,7 @@ export class ConsolePinPresenter {
         {
           key: 'Tab',
           run: (view: CodeMirror.EditorView) => {
-            if (CodeMirror.completionStatus(this.editor.state) !== null) {
+            if (CodeMirror.completionStatus(view.state) !== null) {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done
@@ -349,12 +323,12 @@ export class ConsolePinPresenter {
         {
           key: 'Shift-Tab',
           run: (view: CodeMirror.EditorView) => {
-            if (CodeMirror.completionStatus(this.editor.state) !== null) {
+            if (CodeMirror.completionStatus(view.state) !== null) {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done
             view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.pin.expression}});
-            this.editor.blur();
+            this.editor?.blur();
             this.deletePinIcon.focus();
             return true;
           },
@@ -383,7 +357,7 @@ export class ConsolePinPresenter {
     }
     editor.dispatch({
       selection: {anchor: this.pin.expression.length},
-      changes: !commitedAsIs ? {from: 0, to: this.editor.state.doc.length, insert: newExpression} : undefined,
+      changes: !commitedAsIs ? {from: 0, to: editor.state.doc.length, insert: newExpression} : undefined,
     });
   }
 
@@ -407,8 +381,10 @@ export class ConsolePinPresenter {
 
   async focus(): Promise<void> {
     const editor = this.editor;
-    editor.editor.focus();
-    editor.dispatch({selection: {anchor: editor.state.doc.length}});
+    if (editor) {
+      editor.editor.focus();
+      editor.dispatch({selection: {anchor: editor.state.doc.length}});
+    }
   }
 
   appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
@@ -463,6 +439,36 @@ export class ConsolePinPresenter {
     const isError = result && !('error' in result) && result.exceptionDetails &&
         !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
     this.pinElement.classList.toggle('error-level', Boolean(isError));
+  }
+
+  performUpdate(): void {
+    const fragment = document.createDocumentFragment();
+    const output: ViewOutput = {};
+    this.view(
+        {
+          expression: this.pin.expression,
+          editorState: this.editor?.state ?? this.#createInitialEditorState(this.pin.expression),
+          onDelete: () => this.pinPane.removePin(this),
+          onPreviewHoverChange: hovered => this.setHovered(hovered),
+          onPreviewClick: event => {
+            if (this.lastNode) {
+              void Common.Revealer.reveal(this.lastNode);
+              event.consume();
+            }
+          },
+        },
+        output, fragment);
+
+    const {pinElement, deletePinIcon, previewElement, editor} = output;
+    if (!pinElement || !deletePinIcon || !editor || !previewElement) {
+      throw new Error('Broken view function, expected output');
+    }
+    this.pinElement = pinElement;
+    this.deletePinIcon = deletePinIcon;
+    this.editor = editor;
+    this.pinPreview = previewElement;
+
+    elementToConsolePin.set(this.pinElement, this);
   }
 }
 

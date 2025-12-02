@@ -8,8 +8,8 @@ import {
   getContentOfSelectedNode,
   waitForAndClickTreeElementWithPartialText,
   waitForChildrenOfSelectedElementNode,
-  waitForContentOfSelectedElementsNode,
   waitForPartialContentOfSelectedElementsNode,
+  waitForSelectedNodeChange,
 } from '../helpers/elements-helpers.js';
 
 function assertStartsWith(actual: string, expected: string): void {
@@ -54,11 +54,13 @@ describe('The Elements tab', function() {
     await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/);
 
     // Check to make sure we have the correct node selected after opening a file
-    await waitForContentOfSelectedElementsNode('<body>\u200B', devToolsPage);
-
-    // Expand and navigate to a child node.
+    await waitForPartialContentOfSelectedElementsNode('<body>', devToolsPage);
+    // This isn't consistently expanded, so this arrow right might expand it
+    // or it might move the selected node, but either way it should change
+    // the text of the selected node.
+    const bodyNodeText = await getContentOfSelectedNode(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('<div ', devToolsPage);
+    await waitForSelectedNodeChange(bodyNodeText, devToolsPage);
 
     // Click the node for this test.
     await waitForAndClickTreeElementWithPartialText('"with-constructed-stylesheet-import"', devToolsPage);

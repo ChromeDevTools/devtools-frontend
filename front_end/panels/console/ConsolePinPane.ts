@@ -359,17 +359,11 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
 
   #onBlur(editor: CodeMirror.EditorView): void {
     const commitedAsIs = this.pin.commit();
-    const newExpression = this.pin.expression;
-
-    if (newExpression.length) {
-      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeExpressionS, {PH1: newExpression}));
-    } else {
-      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeBlankExpression));
-    }
     editor.dispatch({
       selection: {anchor: this.pin.expression.length},
-      changes: !commitedAsIs ? {from: 0, to: editor.state.doc.length, insert: newExpression} : undefined,
+      changes: !commitedAsIs ? {from: 0, to: editor.state.doc.length, insert: this.pin.expression} : undefined,
     });
+    this.requestUpdate();
   }
 
   setHovered(hovered: boolean): void {

@@ -89,6 +89,12 @@ export class EmptyWidget extends VBox {
     this.performUpdate();
   }
 
+  set extraElements(elements: HTMLElement[]) {
+    this.#extraElements = elements;
+    this.#firstUpdate = false;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
     if (this.#firstUpdate) {
       this.#extraElements = [...this.element.children];

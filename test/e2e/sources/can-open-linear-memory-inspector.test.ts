@@ -14,31 +14,32 @@ import {
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
 } from '../helpers/sources-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR = '.tabbed-pane-header-tab';
 const LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR = '.tabbed-pane-header-tab-title';
+const VALUE_INTERPRETER_SELECTOR = 'devtools-linear-memory-inspector-interpreter';
+
+describe('Linear Memory Inspector', () => {
+  it('renders selectable values', async ({devToolsPage, inspectedPage}) => {
+    await openLMI(devToolsPage, inspectedPage);
+    const lmiTabbedPane = await devToolsPage.waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
+    const interpreter = await lmiTabbedPane.waitForSelector(VALUE_INTERPRETER_SELECTOR);
+    assert.isNotNull(interpreter);
+    const textContent = await devToolsPage.getTextContent('div + .selectable-text', interpreter);
+    await devToolsPage.debuggerStatement();
+    await devToolsPage.doubleClick('div + .selectable-text', {root: interpreter, clickOptions: {offset: {x: 5, y: 5}}});
+    const selection = await devToolsPage.evaluate(() => window.getSelection()?.toString());
+    assert.strictEqual(selection, textContent);
+  });
+});
 
 describe('Scope View', () => {
   it('opens linear memory inspector', async ({devToolsPage, inspectedPage}) => {
-    const breakpointLine = '0x039';
-    const fileName = 'memory.wasm';
-
-    await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html', devToolsPage, inspectedPage);
-
-    await addBreakpointForLine(breakpointLine, devToolsPage);
-
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
-
-    await devToolsPage.click('[aria-label="Module"]');
-    await devToolsPage.waitFor('[aria-label="Module"][aria-expanded="true"]');
-
-    await devToolsPage.waitFor('[data-object-property-name-for-test="memories"][aria-expanded="true"]');
-    await inspectMemory('$imports.memory', devToolsPage);
-
-    const drawerIsOpen = await checkIfTabExistsInDrawer(LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR, devToolsPage);
-    assert.isTrue(drawerIsOpen);
+    await openLMI(devToolsPage, inspectedPage);
 
     const lmiTabbedPane = await devToolsPage.waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
     const titleElement = await devToolsPage.waitFor(LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR, lmiTabbedPane);
@@ -124,3 +125,23 @@ describe('Scope View', () => {
     });
   });
 });
+
+async function openLMI(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+  const breakpointLine = '0x039';
+  const fileName = 'memory.wasm';
+
+  await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html', devToolsPage, inspectedPage);
+
+  await addBreakpointForLine(breakpointLine, devToolsPage);
+
+  await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+
+  await devToolsPage.click('[aria-label="Module"]');
+  await devToolsPage.waitFor('[aria-label="Module"][aria-expanded="true"]');
+
+  await devToolsPage.waitFor('[data-object-property-name-for-test="memories"][aria-expanded="true"]');
+  await inspectMemory('$imports.memory', devToolsPage);
+
+  const drawerIsOpen = await checkIfTabExistsInDrawer(LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR, devToolsPage);
+  assert.isTrue(drawerIsOpen);
+}

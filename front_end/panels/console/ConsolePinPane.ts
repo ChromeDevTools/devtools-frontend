@@ -86,20 +86,19 @@ export class ConsolePinPane extends UI.Widget.VBox {
   readonly #view: typeof DEFAULT_PANE_VIEW;
   /** When creating a new pin, we'll focus it after rendering the editor */
   #newPin?: ConsolePin;
-  private pinModel: ConsolePinModel;
+  readonly #pinModel: ConsolePinModel;
+  readonly #focusOut: () => void;
 
-  constructor(
-      private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void,
-      view = DEFAULT_PANE_VIEW) {
+  constructor(focusOut: () => void, view = DEFAULT_PANE_VIEW) {
     super({useShadowDom: true});
+    this.#focusOut = focusOut;
     this.#view = view;
-
-    this.pinModel = new ConsolePinModel(Common.Settings.Settings.instance());
+    this.#pinModel = new ConsolePinModel(Common.Settings.Settings.instance());
   }
 
   override willHide(): void {
     super.willHide();
-    this.pinModel.stopPeriodicEvaluate();
+    this.#pinModel.stopPeriodicEvaluate();
   }
 
   private contextMenuEventFired(event: Event): void {
@@ -124,17 +123,17 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   private removeAllPins(): void {
-    this.pinModel.removeAll();
+    this.#pinModel.removeAll();
     this.requestUpdate();
   }
 
   removePin(pin: ConsolePin): void {
-    this.pinModel.remove(pin);
+    this.#pinModel.remove(pin);
     this.requestUpdate();
   }
 
   addPin(expression: string, userGesture?: boolean): void {
-    const pin = this.pinModel.add(expression);
+    const pin = this.#pinModel.add(expression);
     if (userGesture) {
       this.#newPin = pin;
     }
@@ -143,15 +142,15 @@ export class ConsolePinPane extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-    this.pinModel.startPeriodicEvaluate();
+    this.#pinModel.startPeriodicEvaluate();
     this.requestUpdate();
   }
 
   override performUpdate(): void {
     this.#view(
         {
-          pins: [...this.pinModel.pins],
-          focusOut: this.focusOut,
+          pins: [...this.#pinModel.pins],
+          focusOut: this.#focusOut,
           onRemove: (pin: ConsolePin) => this.removePin(pin),
           onContextMenu: this.contextMenuEventFired.bind(this),
         },
@@ -267,21 +266,21 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   #focusOut?: () => void;
   #onRemove?: () => void;
 
-  private readonly view: typeof DEFAULT_VIEW;
-  private readonly pinEditor: ConsolePinEditor;
-  private editor?: TextEditor.TextEditor.TextEditor;
-  private hovered = false;
-  private lastNode: SDK.RemoteObject.RemoteObject|null = null;
-  private deletePinIcon!: Buttons.Button.Button;
+  readonly #view: typeof DEFAULT_VIEW;
+  readonly #pinEditor: ConsolePinEditor;
+  #editor?: TextEditor.TextEditor.TextEditor;
+  #hovered = false;
+  #lastNode: SDK.RemoteObject.RemoteObject|null = null;
+  #deletePinIcon!: Buttons.Button.Button;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element);
-    this.view = view;
+    this.#view = view;
 
-    this.pinEditor = {
-      workingCopy: () => this.editor?.state.doc.toString() ?? '',
-      workingCopyWithHint: () => this.editor ? TextEditor.Config.contentIncludingHint(this.editor.editor) : '',
-      isEditing: () => Boolean(this.editor?.editor.hasFocus),
+    this.#pinEditor = {
+      workingCopy: () => this.#editor?.state.doc.toString() ?? '',
+      workingCopyWithHint: () => this.#editor ? TextEditor.Config.contentIncludingHint(this.#editor.editor) : '',
+      isEditing: () => Boolean(this.#editor?.editor.hasFocus),
     };
   }
 
@@ -300,7 +299,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   set pin(pin: ConsolePin) {
     this.#pin?.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
     this.#pin = pin;
-    this.#pin.setEditor(this.pinEditor);
+    this.#pin.setEditor(this.#pinEditor);
     this.#pin.addEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
     this.requestUpdate();
   }
@@ -367,8 +366,8 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
             }
             // User should be able to tab out of edit field after auto complete is done
             view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.#pin?.expression ?? ''}});
-            this.editor?.blur();
-            this.deletePinIcon.focus();
+            this.#editor?.blur();
+            this.#deletePinIcon.focus();
             return true;
           },
         },
@@ -397,17 +396,17 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   }
 
   setHovered(hovered: boolean): void {
-    if (this.hovered === hovered) {
+    if (this.#hovered === hovered) {
       return;
     }
-    this.hovered = hovered;
-    if (!hovered && this.lastNode) {
+    this.#hovered = hovered;
+    if (!hovered && this.#lastNode) {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
   }
 
   override async focus(): Promise<void> {
-    const editor = this.editor;
+    const editor = this.#editor;
     if (editor) {
       editor.editor.focus();
       editor.dispatch({selection: {anchor: editor.state.doc.length}});
@@ -434,17 +433,17 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     }
 
     const output: ViewOutput = {};
-    this.view(
+    this.#view(
         {
           expression: this.#pin.expression,
-          editorState: this.editor?.state ?? this.#createInitialEditorState(this.#pin.expression),
+          editorState: this.#editor?.state ?? this.#createInitialEditorState(this.#pin.expression),
           result: this.#pin.lastResult,
-          isEditing: this.pinEditor.isEditing(),
+          isEditing: this.#pinEditor.isEditing(),
           onDelete: () => this.#onRemove?.(),
           onPreviewHoverChange: hovered => this.setHovered(hovered),
           onPreviewClick: event => {
-            if (this.lastNode) {
-              void Common.Revealer.reveal(this.lastNode);
+            if (this.#lastNode) {
+              void Common.Revealer.reveal(this.#lastNode);
               event.consume();
             }
           },
@@ -455,18 +454,18 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
     if (!deletePinIcon || !editor) {
       throw new Error('Broken view function, expected output');
     }
-    this.deletePinIcon = deletePinIcon;
-    this.editor = editor;
+    this.#deletePinIcon = deletePinIcon;
+    this.#editor = editor;
 
     const node = this.#pin.lastNode;
-    if (this.hovered) {
+    if (this.#hovered) {
       if (node) {
         SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
-      } else if (this.lastNode) {
+      } else if (this.#lastNode) {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
       }
     }
-    this.lastNode = node || null;
+    this.#lastNode = node || null;
   }
 }
 

@@ -506,7 +506,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.showSettingsPaneSetting.addChangeListener(
         () => settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
 
-    this.pinPane = new ConsolePinPane(liveExpressionButton, () => this.prompt.focus());
+    this.pinPane = new ConsolePinPane(() => this.prompt.focus());
     this.pinPane.element.classList.add('console-view-pinpane');
     this.pinPane.element.classList.remove('flex-auto');
     this.pinPane.show(this.contentsElement);

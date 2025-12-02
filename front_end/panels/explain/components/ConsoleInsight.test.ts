@@ -19,6 +19,17 @@ import * as Explain from '../explain.js';
 describeWithEnvironment('ConsoleInsight', () => {
   let component: Explain.ConsoleInsight|undefined;
 
+  function createConsoleInsight(
+      promptBuilder: Explain.PublicPromptBuilder,
+      aidaClient: Explain.PublicAidaClient,
+      aidaPreconditions: Host.AidaClient.AidaAccessPreconditions,
+  ) {
+    const checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
+    checkAccessPreconditionsStub.callsFake(() => Promise.resolve(aidaPreconditions));
+    const component = new Explain.ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
+    return {component, checkAccessPreconditionsStub};
+  }
+
   const containerCss = `
       box-sizing: border-box;
       background-color: aqua;
@@ -29,7 +40,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   afterEach(() => {
-    component?.remove();
+    component?.detach();
     Common.Settings.settingForTest('console-insights-enabled').set(true);
     Common.Settings.settingForTest('console-insights-onboarding-finished').set(true);
   });
@@ -64,19 +75,15 @@ describeWithEnvironment('ConsoleInsight', () => {
     };
   }
 
-  async function drainMicroTasks() {
-    await new Promise(resolve => setTimeout(resolve, 0));
-  }
-
   it('shows opt-in teaser when setting is turned off', async () => {
     Common.Settings.settingForTest('console-insights-enabled').set(false);
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    assert.isNotNull(component.shadowRoot);
+    await component.updateComplete;
+    assert.isNotNull(component.contentElement);
     assert.deepEqual(
-        getCleanTextContentFromElements(component.shadowRoot, 'main'),
+        getCleanTextContentFromElements(component.contentElement, 'main'),
         [
           'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
         ],
@@ -92,13 +99,13 @@ describeWithEnvironment('ConsoleInsight', () => {
         enabled: true,
       },
     });
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    assert.isNotNull(component.shadowRoot);
+    await component.updateComplete;
+    assert.isNotNull(component.contentElement);
     assert.deepEqual(
-        getCleanTextContentFromElements(component.shadowRoot, 'main'),
+        getCleanTextContentFromElements(component.contentElement, 'main'),
         [
           'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
         ],
@@ -106,25 +113,27 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('generates an explanation when the user logs in', async () => {
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+    let checkAccessPreconditionsStub;
+    ({component, checkAccessPreconditionsStub} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    assert.isNotNull(component.shadowRoot);
+    await component.updateComplete;
+    assert.isNotNull(component.contentElement);
     assert.deepEqual(
-        getCleanTextContentFromElements(component.shadowRoot, 'main'),
+        getCleanTextContentFromElements(component.contentElement, 'main'),
         [
           'This feature is only available when you sign into Chrome with your Google account.',
         ],
     );
 
-    const stub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
-                     .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
+    checkAccessPreconditionsStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
-    await drainMicroTasks();
-    assert.deepEqual(getCleanTextContentFromElements(component.shadowRoot, 'h2'), ['Explanation']);
-    stub.restore();
+    // wait for availability async read
+    await raf();
+    // and for component to render afterwards
+    await component.updateComplete;
+    assert.deepEqual(getCleanTextContentFromElements(component.contentElement, 'h2'), ['Explanation']);
   });
 
   it('shows opt-in teaser when setting is disabled via disabledCondition', async () => {
@@ -137,13 +146,13 @@ describeWithEnvironment('ConsoleInsight', () => {
         return {disabled: true, reasons: ['disabled for test' as Platform.UIString.LocalizedString]};
       },
     });
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    assert.isNotNull(component.shadowRoot);
+    await component.updateComplete;
+    assert.isNotNull(component.contentElement);
     assert.deepEqual(
-        getCleanTextContentFromElements(component.shadowRoot, 'main'),
+        getCleanTextContentFromElements(component.contentElement, 'main'),
         [
           'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
         ],
@@ -158,20 +167,20 @@ describeWithEnvironment('ConsoleInsight', () => {
 
   it('shows reminder on first run of console insights', async () => {
     Common.Settings.settingForTest('console-insights-onboarding-finished').set(false);
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    assert.isNotNull(component.shadowRoot);
-    assert.strictEqual(component.shadowRoot.querySelector('h2')?.innerText, 'Understand console messages with AI');
+    await component.updateComplete;
+    assert.isNotNull(component.contentElement);
+    assert.strictEqual(component.contentElement.querySelector('h2')?.innerText, 'Understand console messages with AI');
 
-    dispatchClickEvent(component.shadowRoot.querySelector('.continue-button')!, {
+    dispatchClickEvent(component.contentElement.querySelector('.continue-button')!, {
       bubbles: true,
       composed: true,
     });
-    await drainMicroTasks();
+    await component.updateComplete;
     // Rating buttons are shown.
-    assert(component.shadowRoot.querySelector('.rating'));
+    assert(component.contentElement.querySelector('.rating'));
   });
 
   it('shows an error message on timeout', async () => {
@@ -192,13 +201,13 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getAidaClientWithTimeout(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getAidaClientWithTimeout(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    assert.isNotNull(component.shadowRoot);
+    await component.updateComplete;
+    assert.isNotNull(component.contentElement);
     assert.strictEqual(
-        component.shadowRoot.querySelector('.error-message')?.textContent,
+        component.contentElement.querySelector('.error-message')?.textContent,
         'Generating a response took too long. Please try again.');
   });
 
@@ -210,11 +219,11 @@ describeWithEnvironment('ConsoleInsight', () => {
     });
     const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
     const aidaClient = getTestAidaClient();
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), aidaClient, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} =
+         createConsoleInsight(getTestPromptBuilder(), aidaClient, Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    dispatchClickEvent(component.shadowRoot!.querySelector(`.rating [data-rating=${positive}]`)!, {
+    await component.updateComplete;
+    dispatchClickEvent(component.contentElement!.querySelector(`.rating [data-rating=${positive}]`)!, {
       bubbles: true,
       composed: true,
     });
@@ -231,7 +240,7 @@ describeWithEnvironment('ConsoleInsight', () => {
         actionTaken,
         positive ? Host.UserMetrics.Action.InsightRatedPositive : Host.UserMetrics.Action.InsightRatedNegative);
 
-    dispatchClickEvent(component.shadowRoot!.querySelector(`.rating [data-rating=${positive}]`)!, {
+    dispatchClickEvent(component.contentElement!.querySelector(`.rating [data-rating=${positive}]`)!, {
       bubbles: true,
       composed: true,
     });
@@ -258,31 +267,31 @@ describeWithEnvironment('ConsoleInsight', () => {
         enabled: true,
       },
     });
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    const thumbsUpButton = component.shadowRoot!.querySelector('.rating [data-rating="true"]');
+    await component.updateComplete;
+    const thumbsUpButton = component.contentElement!.querySelector('.rating [data-rating="true"]');
     assert.isNotNull(thumbsUpButton);
-    const thumbsDownButton = component.shadowRoot!.querySelector('.rating [data-rating="false"]');
+    const thumbsDownButton = component.contentElement!.querySelector('.rating [data-rating="false"]');
     assert.isNotNull(thumbsDownButton);
   });
 
   it('report if the user is not logged in', async () => {
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
+    await component.updateComplete;
+    const content = component.contentElement!.querySelector('main')!.innerText.trim();
     assert.strictEqual(content, 'This feature is only available when you sign into Chrome with your Google account.');
   });
 
   it('report if the navigator is offline', async () => {
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_INTERNET);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_INTERNET));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
+    await component.updateComplete;
+    const content = component.contentElement!.querySelector('main')!.innerText.trim();
     assert.strictEqual(content, 'Check your internet connection and try again.');
   });
 
@@ -309,11 +318,11 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
-    const details = component.shadowRoot!.querySelector('details');
+    await component.updateComplete;
+    const details = component.contentElement!.querySelector('details');
     assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
     const xLinks = details!.querySelectorAll('x-link');
     assert.strictEqual(xLinks[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
@@ -361,16 +370,16 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
+    await component.updateComplete;
 
-    const markdownView = component.shadowRoot!.querySelector('devtools-markdown-view');
+    const markdownView = component.contentElement!.querySelector('devtools-markdown-view');
     assert.strictEqual(
         getCleanTextContentFromElements(markdownView!.shadowRoot!, '.message')[0],
         'This is not[1] a real answer[2], it is just a test.');
-    const details = component.shadowRoot!.querySelector('details');
+    const details = component.contentElement!.querySelector('details');
     assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
     const directCitations = details!.querySelectorAll('ol x-link');
     assert.lengthOf(directCitations, 2);
@@ -387,6 +396,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.isFalse(directCitations[0].classList.contains('highlighted'));
     const link = markdownView!.shadowRoot?.querySelector('sup button') as HTMLElement;
     link.click();
+    await component.updateComplete;
     assert.isTrue(details?.hasAttribute('open'));
     assert.isTrue(directCitations[0].classList.contains('highlighted'));
   });
@@ -437,19 +447,19 @@ after
       };
     }
 
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
+    await component.updateComplete;
 
-    const markdownView = component.shadowRoot!.querySelector('devtools-markdown-view');
+    const markdownView = component.contentElement!.querySelector('devtools-markdown-view');
     const codeBlock = markdownView!.shadowRoot!.querySelector('devtools-code-block');
     const citations = codeBlock!.shadowRoot!.querySelectorAll('button.citation');
     assert.lengthOf(citations, 2);
     assert.strictEqual(citations[0].textContent, '[1]');
     assert.strictEqual(citations[1].textContent, '[2]');
 
-    const details = component.shadowRoot!.querySelector('details');
+    const details = component.contentElement!.querySelector('details');
     const directCitations = details!.querySelectorAll('ol x-link');
     assert.lengthOf(directCitations, 2);
     assert.strictEqual(directCitations[0].textContent?.trim(), 'https://www.wiki.test/directSource');
@@ -460,6 +470,7 @@ after
     assert.isFalse(details?.hasAttribute('open'));
     assert.isFalse(directCitations[0].classList.contains('highlighted'));
     (citations[0] as HTMLElement).click();
+    await component.updateComplete;
     assert.isTrue(details?.hasAttribute('open'));
     assert.isTrue(directCitations[0].classList.contains('highlighted'));
   });
@@ -503,12 +514,12 @@ after
       };
     }
 
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
+    await component.updateComplete;
 
-    const details = component.shadowRoot!.querySelector('details');
+    const details = component.contentElement!.querySelector('details');
     assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
     const xLinks = details!.querySelectorAll('x-link');
     assert.lengthOf(xLinks, 3);
@@ -574,12 +585,12 @@ after
       };
     }
 
-    component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    ({component} = createConsoleInsight(
+         getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     renderElementIntoDOM(component);
-    await drainMicroTasks();
+    await component.updateComplete;
 
-    const details = component.shadowRoot!.querySelector('details');
+    const details = component.contentElement!.querySelector('details');
     assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
     const xLinks = details!.querySelectorAll('x-link');
     assert.lengthOf(xLinks, 4);
@@ -596,17 +607,18 @@ after
   it('renders the opt-in teaser', async () => {
     Common.Settings.settingForTest('console-insights-enabled').set(false);
 
-    const component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
-
     const container = document.createElement('div');
     container.style.cssText = containerCss;
-    component.style.width = '574px';
-    component.style.height = '64px';
-    container.appendChild(component);
+    container.style.width = '574px';
+    container.style.height = '64px';
     renderElementIntoDOM(container);
 
-    await drainMicroTasks();
+    const {component} = createConsoleInsight(
+        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    component.markAsRoot();
+    component.show(container);
+
+    await component.updateComplete;
     await assertScreenshot('explain/console_insight_optin.png');
   });
 
@@ -704,18 +716,19 @@ document.querySelector('test').style = 'black';
 
     Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(false);
 
-    const component = new Explain.ConsoleInsight(
-        getPromptBuilderForConsentReminder(), getAidaClientForConsentReminder(),
-        Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
-
     const container = document.createElement('div');
     container.style.cssText = containerCss;
-    component.style.width = '574px';
-    component.style.height = '271px';
-    container.appendChild(component);
+    container.style.width = '574px';
+    container.style.height = '271px';
     renderElementIntoDOM(container);
 
-    await drainMicroTasks();
+    const {component} = createConsoleInsight(
+        getPromptBuilderForConsentReminder(), getAidaClientForConsentReminder(),
+        Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    component.markAsRoot();
+    component.show(container);
+
+    await component.updateComplete;
     await assertScreenshot('explain/console_insight_reminder.png');
   });
 
@@ -791,21 +804,22 @@ Images: ![https://example.com](https://example.com)
       };
     }
 
-    const component = new Explain.ConsoleInsight(
-        getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
-    component.disableAnimations = true;
-
     const container = document.createElement('div');
     container.style.cssText = containerCss;
-    component.style.width = '574px';
-    component.style.height = '530px';
-    container.appendChild(component);
+    container.style.width = '574px';
+    container.style.height = '530px';
     renderElementIntoDOM(container);
+
+    const {component} = createConsoleInsight(
+        getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    component.disableAnimations = true;
+    component.markAsRoot();
+    component.show(container);
 
     // Animation are hidden and started one by one so
     // so we need multiple drains
-    await drainMicroTasks();
-    await drainMicroTasks();
+    await component.updateComplete;
+    await component.updateComplete;
     await assertScreenshot('explain/console_insight.png');
   });
 
@@ -901,26 +915,22 @@ A direct citation is a link to a reference, but it only applies to a specific pa
       };
     }
 
-    const component = new Explain.ConsoleInsight(
-        getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
-
     const container = document.createElement('div');
     container.style.cssText = containerCss;
-    component.style.width = '576px';
-    component.style.height = '463px';
-    container.appendChild(component);
+    container.style.width = '576px';
+    container.style.height = '463px';
     renderElementIntoDOM(container);
-    await raf();
 
-    const detailsElement = component.shadowRoot!.querySelector('details.references')!;
-    const transitioned = new Promise<void>(resolve => {
-      detailsElement.addEventListener('transitionend', () => {
-        resolve();
-      });
-    });
-    await raf();
+    const {component} = createConsoleInsight(
+        getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    component.markAsRoot();
+    component.show(container);
+
+    await component.updateComplete;
+
+    const detailsElement = component.contentElement!.querySelector('details.references')!;
     detailsElement.querySelector('summary')!.click();
-    await transitioned;
+    await component.updateComplete;
 
     await assertScreenshot('explain/console_insight_references.png');
   });

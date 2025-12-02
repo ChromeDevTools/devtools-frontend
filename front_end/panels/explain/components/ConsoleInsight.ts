@@ -161,8 +161,8 @@ export class CloseEvent extends Event {
   }
 }
 
-type PublicPromptBuilder = Pick<Console.PromptBuilder.PromptBuilder, 'buildPrompt'|'getSearchQuery'>;
-type PublicAidaClient = Pick<Host.AidaClient.AidaClient, 'doConversation'|'registerClientEvent'>;
+export type PublicPromptBuilder = Pick<Console.PromptBuilder.PromptBuilder, 'buildPrompt'|'getSearchQuery'>;
+export type PublicAidaClient = Pick<Host.AidaClient.AidaClient, 'doConversation'|'registerClientEvent'>;
 
 function localizeType(sourceType: Console.PromptBuilder.SourceType): string {
   switch (sourceType) {
@@ -185,11 +185,12 @@ const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=e
     Platform.DevToolsPath.UrlString;
 const SIGN_IN_URL = 'https://accounts.google.com' as Platform.DevToolsPath.UrlString;
 
-interface ViewInput {
-  state: StateData;
+export interface ViewInput {
+  state: Extract<StateData, {type: State.INSIGHT}>|{type: Exclude<State, State.INSIGHT>};
   closing: boolean;
   disableAnimations: boolean;
   renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
+  citationClickHandler: (index: number) => void;
   selectedRating?: boolean;
   noLogging: boolean;
   areReferenceDetailsOpen: boolean;
@@ -197,6 +198,7 @@ interface ViewInput {
   callbacks: {
     onClose: () => void,
     onAnimationEnd: () => void,
+    onCitationAnimationEnd: () => void,
     onSearch: () => void,
     onRating: (isPositive: boolean) => void,
     onReport: () => void,
@@ -210,12 +212,12 @@ interface ViewInput {
   };
 }
 
-interface ViewOutput {
+export interface ViewOutput {
   headerRef: Lit.Directives.Ref<HTMLHeadingElement>;
   citationLinks: HTMLElement[];
 }
 
-const enum State {
+export const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
   ERROR = 'error',
@@ -304,7 +306,8 @@ function renderLearnMoreAboutInsights(): Lit.TemplateResult {
 }
 
 function maybeRenderSources(
-    directCitationUrls: string[], highlightedCitationIndex: number, output: ViewOutput): Lit.LitTemplate {
+    directCitationUrls: string[], highlightedCitationIndex: number, onCitationAnimationEnd: () => void,
+    output: ViewOutput): Lit.LitTemplate {
   if (!directCitationUrls.length) {
     return Lit.nothing;
   }
@@ -319,6 +322,7 @@ function maybeRenderSources(
             class=${Directives.classMap({link: true, highlighted: index === highlightedCitationIndex})}
             jslog=${VisualLogging.link('references.console-insights').track({click: true})}
             ${Directives.ref(e => { output.citationLinks[index] = e as HTMLElement; })}
+            @animationend=${onCitationAnimationEnd}
           >
             ${url}
           </x-link>
@@ -409,7 +413,7 @@ function renderInsight(
             @transitionend=${callbacks.onReferencesOpen}
           >
             <summary>${i18nString(UIStrings.references)}</summary>
-            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, output)}
+            ${maybeRenderSources(insight.directCitationUrls, highlightedCitationIndex, callbacks.onCitationAnimationEnd, output)}
             ${maybeRenderRelatedContent(insight.relatedUrls, insight.directCitationUrls)}
           </details>
         ` : Lit.nothing}
@@ -743,18 +747,21 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
 export type ViewFunction = typeof DEFAULT_VIEW;
 
-export class ConsoleInsight extends HTMLElement {
-  static async create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient): Promise<ConsoleInsight> {
+export class ConsoleInsight extends UI.Widget.Widget {
+  static async create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient):
+      Promise<UI.Widget.WidgetElement<ConsoleInsight>> {
     const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    const component = new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions);
-    component.classList.add('devtools-console-insight');
-    return component;
+    const widget = document.createElement('devtools-widget') as UI.Widget.WidgetElement<ConsoleInsight>;
+    widget.classList.add('devtools-console-insight');
+    widget.widgetConfig = UI.Widget.widgetConfig(
+        element => new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element),
+    );
+    return widget;
   }
-
-  readonly #shadow = this.attachShadow({mode: 'open'});
 
   disableAnimations = false;
 
+  #view: ViewFunction;
   #promptBuilder: PublicPromptBuilder;
   #aidaClient: PublicAidaClient;
   #renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
@@ -777,9 +784,14 @@ export class ConsoleInsight extends HTMLElement {
   #marked: Marked.Marked.Marked;
 
   constructor(
-      promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient,
-      aidaPreconditions: Host.AidaClient.AidaAccessPreconditions) {
-    super();
+      promptBuilder: PublicPromptBuilder,
+      aidaClient: PublicAidaClient,
+      aidaPreconditions: Host.AidaClient.AidaAccessPreconditions,
+      element?: HTMLElement,
+      view: ViewFunction = DEFAULT_VIEW,
+  ) {
+    super(element);
+    this.#view = view;
     this.#promptBuilder = promptBuilder;
     this.#aidaClient = aidaClient;
     this.#aidaPreconditions = aidaPreconditions;
@@ -789,8 +801,7 @@ export class ConsoleInsight extends HTMLElement {
 
     this.#state = this.#getStateFromAidaAvailability();
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-    this.#render();
-    this.focus();
+    this.requestUpdate();
   }
 
   #citationClickHandler(index: number): void {
@@ -801,7 +812,7 @@ export class ConsoleInsight extends HTMLElement {
     this.#areReferenceDetailsOpen = true;
     // index is 1-based, #currentHighlightedCitationIndex is 0-based
     this.#highlightedCitationIndex = index - 1;
-    this.#render();
+    this.requestUpdate();
 
     // If details are open, focus and scroll to citation immediately. Otherwise wait for opening transition.
     if (areDetailsAlreadyExpanded) {
@@ -861,7 +872,9 @@ export class ConsoleInsight extends HTMLElement {
     return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false);
   }
 
-  connectedCallback(): void {
+  override wasShown(): void {
+    super.wasShown();
+    this.focus();
     this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#state.type === State.LOADING && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true &&
@@ -880,7 +893,8 @@ export class ConsoleInsight extends HTMLElement {
     void this.#generateInsightIfNeeded();
   }
 
-  disconnectedCallback(): void {
+  override willHide(): void {
+    super.willHide();
     this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
@@ -922,7 +936,7 @@ export class ConsoleInsight extends HTMLElement {
   #transitionTo(newState: StateData): void {
     this.#stateChanging = this.#state.type !== newState.type;
     this.#state = newState;
-    this.#render();
+    this.requestUpdate();
   }
 
   async #generateInsightIfNeeded(): Promise<void> {
@@ -955,20 +969,23 @@ export class ConsoleInsight extends HTMLElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
     }
     this.#closing = true;
-    this.#render();
+    this.requestUpdate();
   }
 
   #onAnimationEnd(): void {
     if (this.#closing) {
-      this.dispatchEvent(new CloseEvent());
+      this.contentElement.dispatchEvent(new CloseEvent());
       return;
     }
     if (this.#stateChanging) {
       this.#headerRef.value?.focus();
     }
+  }
+
+  #onCitationAnimationEnd(): void {
     if (this.#highlightedCitationIndex !== -1) {
       this.#highlightedCitationIndex = -1;
-      this.#render();
+      this.requestUpdate();
     }
   }
 
@@ -985,7 +1002,7 @@ export class ConsoleInsight extends HTMLElement {
     }
 
     this.#selectedRating = isPositive;
-    this.#render();
+    this.requestUpdate();
     if (this.#selectedRating) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
     } else {
@@ -1193,7 +1210,7 @@ export class ConsoleInsight extends HTMLElement {
       if (!detailsElement.open) {
         this.#highlightedCitationIndex = -1;
       }
-      this.#render();
+      this.requestUpdate();
     }
   }
 
@@ -1211,12 +1228,13 @@ export class ConsoleInsight extends HTMLElement {
     void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
-  #render(): void {
+  override performUpdate(): void {
     const input: ViewInput = {
       state: this.#state,
       closing: this.#closing,
       disableAnimations: this.disableAnimations,
       renderer: this.#renderer,
+      citationClickHandler: this.#citationClickHandler.bind(this),
       selectedRating: this.#selectedRating,
       noLogging: Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
           Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
@@ -1225,6 +1243,7 @@ export class ConsoleInsight extends HTMLElement {
       callbacks: {
         onClose: this.#onClose.bind(this),
         onAnimationEnd: this.#onAnimationEnd.bind(this),
+        onCitationAnimationEnd: this.#onCitationAnimationEnd.bind(this),
         onSearch: this.#onSearch.bind(this),
         onRating: this.#onRating.bind(this),
         onReport: this.#onReport.bind(this),
@@ -1242,16 +1261,8 @@ export class ConsoleInsight extends HTMLElement {
       citationLinks: [],
     };
 
-    DEFAULT_VIEW(input, output, this.#shadow);
+    this.#view(input, output, this.contentElement);
 
     this.#citationLinks = output.citationLinks;
-  }
-}
-
-customElements.define('devtools-console-insight', ConsoleInsight);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-console-insight': ConsoleInsight;
   }
 }

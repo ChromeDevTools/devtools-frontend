@@ -62,8 +62,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ConsolePinPane extends UI.Widget.VBox {
-  private pins: Set<ConsolePinPresenter>;
-  private readonly pinsSetting: Common.Settings.Setting<string[]>;
+  private pinModel: ConsolePinModel;
+  private presenters: Set<ConsolePinPresenter>;
   private readonly throttler: Common.Throttler.Throttler;
   constructor(private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void) {
     super({useShadowDom: true});
@@ -73,23 +73,18 @@ export class ConsolePinPane extends UI.Widget.VBox {
     this.contentElement.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('console-pins')}`);
 
-    this.pins = new Set();
-    this.pinsSetting = Common.Settings.Settings.instance().createLocalSetting('console-pins', []);
-    for (const expression of this.pinsSetting.get()) {
-      this.addPin(expression);
+    this.presenters = new Set();
+    this.pinModel = new ConsolePinModel(Common.Settings.Settings.instance());
+    for (const pin of this.pinModel.pins) {
+      this.#addPin(pin);
     }
   }
 
   override willHide(): void {
     super.willHide();
-    for (const pin of this.pins) {
+    for (const pin of this.presenters) {
       pin.setHovered(false);
     }
-  }
-
-  savePins(): void {
-    const toSave = Array.from(this.pins).map(pin => pin.expression());
-    this.pinsSetting.set(toSave);
   }
 
   private contextMenuEventFired(event: Event): void {
@@ -114,16 +109,16 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   private removeAllPins(): void {
-    for (const pin of this.pins) {
+    for (const pin of this.presenters) {
       this.removePin(pin);
     }
   }
 
-  removePin(pin: ConsolePinPresenter): void {
-    pin.detach();
-    const newFocusedPin = this.focusedPinAfterDeletion(pin);
-    this.pins.delete(pin);
-    this.savePins();
+  removePin(presenter: ConsolePinPresenter): void {
+    presenter.detach();
+    const newFocusedPin = this.focusedPinAfterDeletion(presenter);
+    this.presenters.delete(presenter);
+    this.pinModel.remove(presenter.pin);
     if (newFocusedPin) {
       void newFocusedPin.focus();
     } else {
@@ -132,18 +127,22 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   addPin(expression: string, userGesture?: boolean): void {
-    const pin = new ConsolePinPresenter(expression, this, this.focusOut);
-    pin.show(this.contentElement);
-    this.pins.add(pin);
-    this.savePins();
+    const pin = this.pinModel.add(expression);
+    this.#addPin(pin, userGesture);
+  }
+
+  #addPin(pin: ConsolePin, userGesture?: boolean): void {
+    const presenter = new ConsolePinPresenter(pin, this, this.focusOut);
+    presenter.show(this.contentElement);
+    this.presenters.add(presenter);
     if (userGesture) {
-      void pin.performUpdate().then(() => void pin.focus());
+      void presenter.performUpdate().then(() => void presenter.focus());
     }
     this.requestUpdate();
   }
 
   private focusedPinAfterDeletion(deletedPin: ConsolePinPresenter): ConsolePinPresenter|null {
-    const pinArray = Array.from(this.pins);
+    const pinArray = Array.from(this.presenters);
     for (let i = 0; i < pinArray.length; i++) {
       if (pinArray[i] === deletedPin) {
         if (pinArray.length === 1) {
@@ -164,10 +163,10 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   override async performUpdate(): Promise<void> {
-    if (!this.pins.size || !this.isShowing()) {
+    if (!this.presenters.size || !this.isShowing()) {
       return;
     }
-    const updatePromises = Array.from(this.pins, pin => pin.performUpdate());
+    const updatePromises = Array.from(this.presenters, pin => pin.performUpdate());
     await Promise.all(updatePromises);
     this.updatedForTest();
     void this.throttler.schedule(this.requestUpdate.bind(this));
@@ -272,8 +271,9 @@ function renderResult(result: SDK.RuntimeModel.EvaluationResult|null, isEditing:
 }
 
 export class ConsolePinPresenter extends UI.Widget.Widget {
+  readonly pin: ConsolePin;
+
   private readonly view: typeof DEFAULT_VIEW;
-  private readonly pin: ConsolePin;
   private readonly pinEditor: ConsolePinEditor;
   private editor?: TextEditor.TextEditor.TextEditor;
   private hovered = false;
@@ -281,7 +281,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   private deletePinIcon!: Buttons.Button.Button;
 
   constructor(
-      expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void,
+      pin: ConsolePin, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void,
       view = DEFAULT_VIEW) {
     super();
     this.view = view;
@@ -291,7 +291,8 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
       workingCopyWithHint: () => this.editor ? TextEditor.Config.contentIncludingHint(this.editor.editor) : '',
       isEditing: () => Boolean(this.editor?.editor.hasFocus),
     };
-    this.pin = new ConsolePin(this.pinEditor, expression);
+    this.pin = pin;
+    this.pin.setEditor(this.pinEditor);
   }
 
   #createInitialEditorState(doc: string): CodeMirror.EditorState {
@@ -363,7 +364,6 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
 
   #onBlur(editor: CodeMirror.EditorView): void {
     const commitedAsIs = this.pin.commit();
-    this.pinPane.savePins();
     const newExpression = this.pin.expression;
 
     if (newExpression.length) {
@@ -450,6 +450,39 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   }
 }
 
+export class ConsolePinModel {
+  readonly #setting: Common.Settings.Setting<string[]>;
+  readonly #pins = new Set<ConsolePin>();
+
+  constructor(settings: Common.Settings.Settings) {
+    this.#setting = settings.createLocalSetting('console-pins', []);
+    for (const expression of this.#setting.get()) {
+      this.add(expression);
+    }
+  }
+
+  get pins(): ReadonlySet<ConsolePin> {
+    return this.#pins;
+  }
+
+  add(expression: string): ConsolePin {
+    const pin = new ConsolePin(expression, () => this.#save());
+    this.#pins.add(pin);
+    this.#save();
+    return pin;
+  }
+
+  remove(pin: ConsolePin): void {
+    this.#pins.delete(pin);
+    this.#save();
+  }
+
+  #save(): void {
+    const expressions = this.#pins.values().map(pin => pin.expression).toArray();
+    this.#setting.set(expressions);
+  }
+}
+
 /**
  * Small helper interface to allow `ConsolePin` to retrieve the current working copy.
  */
@@ -463,17 +496,19 @@ interface ConsolePinEditor {
  * A pinned console expression.
  */
 export class ConsolePin {
-  readonly #editor: ConsolePinEditor;
   #expression: string;
+  readonly #onCommit: () => void;
+
+  #editor?: ConsolePinEditor;
 
   // We track the last evaluation result for this pin so we can release the RemoteObject.
   #lastResult: SDK.RuntimeModel.EvaluationResult|null = null;
   #lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null = null;
   #releaseLastResult = true;
 
-  constructor(editor: ConsolePinEditor, expression: string) {
-    this.#editor = editor;
+  constructor(expression: string, onCommit: () => void) {
     this.#expression = expression;
+    this.#onCommit = onCommit;
   }
 
   get expression(): string {
@@ -488,22 +523,30 @@ export class ConsolePin {
     this.#releaseLastResult = false;
   }
 
+  setEditor(editor: ConsolePinEditor): void {
+    this.#editor = editor;
+  }
+
   /**
    * Commit the current working copy from the editor.
    * @returns true, iff the working copy was commited as-is.
    */
   commit(): boolean {
+    if (!this.#editor) {
+      return false;
+    }
     const text = this.#editor.workingCopy();
     const trimmedText = text.trim();
     this.#expression = trimmedText;
+    this.#onCommit();
     return this.#expression === text;
   }
 
   /** Evaluates the current working copy of the pinned expression. If the result is a DOM node, we return that separately for convenience.  */
   async evaluate(executionContext: SDK.RuntimeModel.ExecutionContext):
       Promise<{result: SDK.RuntimeModel.EvaluationResult | null, node: SDK.RemoteObject.RemoteObject|null}> {
-    const editorText = this.#editor.workingCopyWithHint();
-    const throwOnSideEffect = this.#editor.isEditing() && editorText !== this.#expression;
+    const editorText = this.#editor?.workingCopyWithHint() ?? '';
+    const throwOnSideEffect = Boolean(this.#editor?.isEditing()) && editorText !== this.#expression;
     const timeout = throwOnSideEffect ? 250 : undefined;
 
     const result = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluate(

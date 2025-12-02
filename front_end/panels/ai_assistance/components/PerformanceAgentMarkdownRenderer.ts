@@ -118,7 +118,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
         }
 
         return html`<devtools-collapsible-assistance-content-widget  .data=${{
-          headerText: 'Insight'
+          headerText: `Insight - ${componentName}`
         }
         }>
         ${renderInsight(componentName, insightM)}
@@ -143,7 +143,8 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
             const calculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
             return html`<devtools-collapsible-assistance-content-widget
             .data=${{
-              headerText: 'Network Request'
+              headerText: `Network Request: ${
+                  networkRequest.url().length > 80 ? networkRequest.url().slice(0, 80) + '...' : networkRequest.url()}`
             }
             }>
             <devtools-widget class="actions" .widgetConfig=${

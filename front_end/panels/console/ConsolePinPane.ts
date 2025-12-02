@@ -410,7 +410,8 @@ export class ConsolePinPresenter {
     const {result, node} = await this.pin.evaluate(executionContext);
 
     const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    const preview = result ? formatter.renderEvaluationResultPreview(result) : document.createDocumentFragment();
+    const preview =
+        result ? formatter.renderEvaluationResultPreviewFragment(result) : document.createDocumentFragment();
 
     const previewText = preview.deepTextContent();
     if (!previewText || previewText !== this.pinPreview.deepTextContent()) {

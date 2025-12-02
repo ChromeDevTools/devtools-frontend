@@ -97,7 +97,7 @@ export class JavaScriptREPL {
     }
 
     const formatter = new RemoteObjectPreviewFormatter();
-    const preview = formatter.renderEvaluationResultPreview(result, allowErrors);
+    const preview = formatter.renderEvaluationResultPreviewFragment(result, allowErrors);
     return {preview, result};
   }
 }

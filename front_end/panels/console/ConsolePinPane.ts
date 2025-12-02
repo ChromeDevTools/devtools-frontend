@@ -5,9 +5,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import {Directives, html, render} from '../../third_party/lit/lit.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -17,6 +19,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
+
+const {createRef, ref} = Directives;
 
 const UIStrings = {
   /**
@@ -174,6 +178,80 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 }
 
+export interface ViewInput {
+  expression: string;
+  initialState: CodeMirror.EditorState;
+  onDelete: () => void;
+  onPreviewHoverChange: (hovered: boolean) => void;
+  onPreviewClick: (event: MouseEvent) => void;
+}
+
+// TODO(crbug.com/407750444): Temporary for migration.
+export interface ViewOutput {
+  pinElement?: HTMLElement;
+  deletePinIcon?: Buttons.Button.Button;
+  editor?: TextEditor.TextEditor.TextEditor;
+  previewElement?: HTMLElement;
+}
+
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment): void => {
+  const deleteIconLabel = input.expression ? i18nString(UIStrings.removeExpressionS, {PH1: input.expression}) :
+                                             i18nString(UIStrings.removeBlankExpression);
+  const pinRef = createRef<HTMLElement>();
+  const deleteRef = createRef<Buttons.Button.Button>();
+  const editorRef = createRef<TextEditor.TextEditor.TextEditor>();
+  const previewRef = createRef<HTMLElement>();
+  // clang-format off
+  render(html`
+    <div class='console-pin' ${ref(pinRef)}>
+      <devtools-button class='close-button'
+          .iconName=${'cross'}
+          .variant=${Buttons.Button.Variant.ICON}
+          .size=${Buttons.Button.Size.MICRO}
+          tabIndex=0
+          aria-label=${deleteIconLabel}
+          @click=${(event: MouseEvent) => {
+            input.onDelete();
+            event.consume(true);
+          }}
+          @keydown=${(event: KeyboardEvent) => {
+            if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+              input.onDelete();
+              event.consume(true);
+            }
+          }}
+          ${ref(deleteRef)}
+      ></devtools-button>
+      <div class='console-pin-name'
+          title=${input.expression}
+          jslog=${VisualLogging.textField().track({change: true})}
+          @keydown=${(event: KeyboardEvent) => {
+            // Prevent Esc from toggling the drawer.
+            if (event.key === 'Escape') {
+              event.consume();
+            }
+          }}
+      >
+        <devtools-text-editor .state=${input.initialState} ${ref(editorRef)}
+        ></devtools-text-editor>
+      </div>
+      <div class='console-pin-preview'
+          @mouseenter=${() => input.onPreviewHoverChange(true)}
+          @mouseleave=${() => input.onPreviewHoverChange(false)}
+          @click=${(event: MouseEvent) => input.onPreviewClick(event)}
+          ${ref(previewRef)}
+      ></div>
+    </div>
+    `, target);
+  // clang-format on
+  Object.assign(output, {
+    pinElement: pinRef.value,
+    deletePinIcon: deleteRef.value,
+    editor: editorRef.value,
+    previewElement: previewRef.value,
+  });
+};
+
 export class ConsolePinPresenter {
   private readonly pin: ConsolePin;
   private readonly pinEditor: ConsolePinEditor;
@@ -184,41 +262,39 @@ export class ConsolePinPresenter {
   private lastNode: SDK.RemoteObject.RemoteObject|null;
   private deletePinIcon: Buttons.Button.Button;
 
-  constructor(expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void) {
-    this.deletePinIcon = new Buttons.Button.Button();
-    this.deletePinIcon
-        .data = {variant: Buttons.Button.Variant.ICON, iconName: 'cross', size: Buttons.Button.Size.MICRO};
-    this.deletePinIcon.classList.add('close-button');
-    this.deletePinIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
-    this.deletePinIcon.tabIndex = 0;
+  constructor(
+      expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void,
+      view = DEFAULT_VIEW) {
+    const fragment = document.createDocumentFragment();
+    const output: ViewOutput = {};
+    view(
+        {
+          expression,
+          initialState: this.#createInitialEditorState(expression),
+          onDelete: () => pinPane.removePin(this),
+          onPreviewHoverChange: hovered => this.setHovered(hovered),
+          onPreviewClick: event => {
+            if (this.lastNode) {
+              void Common.Revealer.reveal(this.lastNode);
+              event.consume();
+            }
+          },
+        },
+        output, fragment);
 
-    if (expression.length) {
-      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeExpressionS, {PH1: expression}));
-    } else {
-      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeBlankExpression));
+    const {pinElement, deletePinIcon, previewElement, editor} = output;
+    if (!pinElement || !deletePinIcon || !editor || !previewElement) {
+      throw new Error('Broken view function, expected output');
     }
-    self.onInvokeElement(this.deletePinIcon, event => {
-      pinPane.removePin(this);
-      event.consume(true);
-    });
+    this.pinElement = pinElement;
+    this.deletePinIcon = deletePinIcon;
+    this.editor = editor;
+    this.pinPreview = previewElement;
 
-    const fragment = UI.Fragment.Fragment.build`
-  <div class='console-pin'>
-  ${this.deletePinIcon}
-  <div class='console-pin-name' $='name' jslog="${VisualLogging.textField().track({
-      change: true,
-    })}"></div>
-  <div class='console-pin-preview' $='preview'></div>
-  </div>`;
-    this.pinElement = fragment.element();
-    this.pinPreview = (fragment.$('preview') as HTMLElement);
-    const nameElement = (fragment.$('name') as HTMLElement);
-    UI.Tooltip.Tooltip.install(nameElement, expression);
     elementToConsolePin.set(this.pinElement, this);
 
     this.hovered = false;
     this.lastNode = null;
-    this.editor = this.#createEditor(expression, nameElement);
 
     this.pinEditor = {
       workingCopy: () => this.editor.state.doc.toString(),
@@ -226,22 +302,6 @@ export class ConsolePinPresenter {
       isEditing: () => this.pinElement.hasFocus(),
     };
     this.pin = new ConsolePin(this.pinEditor, expression);
-
-    this.pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
-    this.pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
-    this.pinPreview.addEventListener('click', (event: Event) => {
-      if (this.lastNode) {
-        void Common.Revealer.reveal(this.lastNode);
-        event.consume();
-      }
-    }, false);
-
-    // Prevent Esc from toggling the drawer
-    nameElement.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        event.consume();
-      }
-    });
   }
 
   #createInitialEditorState(doc: string): CodeMirror.EditorState {
@@ -309,12 +369,6 @@ export class ConsolePinPresenter {
       extensions.push(TextEditor.JavaScript.completion());
     }
     return CodeMirror.EditorState.create({doc, extensions});
-  }
-
-  #createEditor(doc: string, parent: HTMLElement): TextEditor.TextEditor.TextEditor {
-    const editor = new TextEditor.TextEditor.TextEditor(this.#createInitialEditorState(doc));
-    parent.appendChild(editor);
-    return editor;
   }
 
   #onBlur(editor: CodeMirror.EditorView): void {

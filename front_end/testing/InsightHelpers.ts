@@ -75,11 +75,16 @@ export function getInsightSetOrError(
 
 export function getInsightOrError<InsightName extends keyof Trace.Insights.Types.InsightModels>(
     insightName: InsightName, insights: Trace.Insights.Types.TraceInsightSets,
-    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightModels[InsightName] {
+    navigation?: Trace.Types.Events.NavigationStart): NonNullable<Trace.Insights.Types.InsightModels[InsightName]> {
   const insightSet = getInsightSetOrError(insights, navigation);
   const insight = insightSet.model[insightName];
-  if (insight instanceof Error) {
-    throw insight;
+  const error = insightSet.modelErrors[insightName];
+  if (error) {
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
+    throw error;
+  }
+  if (!insight) {
+    throw new Error('missing insight');
   }
 
   return insight;

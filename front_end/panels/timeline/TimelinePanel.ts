@@ -3120,9 +3120,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       let responseTextForPassedInsights = '';
 
       // TODO(b/442392194): use PerformanceTraceFormatter summary instead.
-      for (const modelName in insightsForNav.model) {
-        const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
-        const insight = insightsForNav.model[model];
+      for (const insight of Object.values(insightsForNav.model)) {
         const focus = AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(parsedTrace);
         const formatter = new AiAssistanceModel.PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
         if (!formatter.insightIsSupported()) {

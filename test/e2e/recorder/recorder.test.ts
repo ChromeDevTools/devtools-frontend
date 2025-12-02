@@ -1292,7 +1292,7 @@ describe('Recorder', function() {
     await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
     const steps = await devToolsPage.waitForFunction(async () => {
-      const steps = await devToolsPage.$$('devtools-step-view');
+      const steps = await devToolsPage.$$('.step-view-widget');
       return steps.length === 3 ? steps : undefined;
     });
     const lastStep = steps.pop();
@@ -1350,7 +1350,7 @@ describe('Recorder', function() {
 
     await devToolsPage.bringToFront();
     const steps = await devToolsPage.waitForFunction(async () => {
-      const steps = await devToolsPage.$$('devtools-step-view');
+      const steps = await devToolsPage.$$('.step-view-widget');
       return steps.length === 5 ? steps : undefined;
     });
     const step = steps.pop();
@@ -1360,7 +1360,7 @@ describe('Recorder', function() {
 
     const input = await step.waitForSelector(
         ':scope >>>> devtools-recorder-step-editor >>>> div:nth-of-type(1) > devtools-suggestion-input');
-    await input!.focus();
+    await input!.click();
 
     const eventPromise = step.evaluate(element => {
       return new Promise(resolve => {
@@ -1405,7 +1405,7 @@ describe('Recorder', function() {
     await devToolsPage.renderCoordinatorQueueEmpty();
 
     // Get the latest step.
-    const step = await devToolsPage.waitFor('.section:last-child devtools-step-view:last-of-type');
+    const step = await devToolsPage.waitFor('.section:last-child .step-view-widget:last-of-type');
 
     // Check that it's expanded.
     if (!(await step.waitForSelector('pierce/.step.expanded'))) {

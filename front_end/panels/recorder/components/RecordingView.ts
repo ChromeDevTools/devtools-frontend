@@ -33,8 +33,7 @@ import {ReplaySection} from './ReplaySection.js';
 import {
   type CopyStepEvent,
   State,
-  type StepView,
-  type StepViewData,
+  StepView,
 } from './StepView.js';
 
 const {html} = Lit;
@@ -595,65 +594,61 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
               </div>
               <div class="content">
                 <div class="steps">
-                  <devtools-step-view
-                    @click=${input.onStepClick}
-                    @mouseover=${input.onStepHover}
-                    .data=${
-                      {
-                        section,
-                        state: input.getSectionState(section),
-                        isStartOfGroup: true,
-                        isEndOfGroup: section.steps.length === 0,
-                        isFirstSection: i === 0,
-                        isLastSection:
-                          i === input.sections.length - 1 &&
-                          section.steps.length === 0,
-                        isSelected:
-                          input.selectedStep === (section.causingStep || null),
-                        sectionIndex: i,
-                        isRecording: input.isRecording,
-                        isPlaying: input.replayState.isPlaying,
-                        error:
-                          input.getSectionState(section) === State.ERROR
-                            ? input.currentError
-                            : undefined,
-                        hasBreakpoint: false,
-                        removable: input.recording.steps.length > 1 && section.causingStep,
-                      } as StepViewData
-                    }
+                  <devtools-widget
+                    .widgetConfig=${UI.Widget.widgetConfig(StepView, {
+                      section,
+                      state: input.getSectionState(section),
+                      isStartOfGroup: true,
+                      isEndOfGroup: section.steps.length === 0,
+                      isFirstSection: i === 0,
+                      isLastSection:
+                        i === input.sections.length - 1 &&
+                        section.steps.length === 0,
+                      isSelected:
+                        input.selectedStep === (section.causingStep || null),
+                      sectionIndex: i,
+                      isRecording: input.isRecording,
+                      isPlaying: input.replayState.isPlaying,
+                      error:
+                        input.getSectionState(section) === State.ERROR
+                          ? (input.currentError ?? undefined)
+                          : undefined,
+                      hasBreakpoint: false,
+                      removable: input.recording.steps.length > 1 && Boolean(section.causingStep),
+                      onStepClick: input.onStepClick,
+                      onStepHover: input.onStepHover,
+                    })}
                   >
-                  </devtools-step-view>
+                  </devtools-widget>
                   ${section.steps.map(step => {
                     const stepIndex = input.recording.steps.indexOf(step);
                     return html`
-                      <devtools-step-view
-                      @click=${input.onStepClick}
-                      @mouseover=${input.onStepHover}
+                      <devtools-widget
                       @copystep=${input.onCopyStep}
-                      .data=${
-                        {
-                          step,
-                          state: input.getStepState(step),
-                          error: input.currentStep === step ? input.currentError : undefined,
-                          isFirstSection: false,
-                          isLastSection:
-                            i === input.sections.length - 1 && input.recording.steps[input.recording.steps.length - 1] === step,
-                          isStartOfGroup: false,
-                          isEndOfGroup: section.steps[section.steps.length - 1] === step,
-                          stepIndex,
-                          hasBreakpoint: input.breakpointIndexes.has(stepIndex),
-                          sectionIndex: -1,
-                          isRecording: input.isRecording,
-                          isPlaying: input.replayState.isPlaying,
-                          removable: input.recording.steps.length > 1,
-                          builtInConverters: input.builtInConverters,
-                          extensionConverters: input.extensionConverters,
-                          isSelected: input.selectedStep === step,
-                          recorderSettings: input.recorderSettings,
-                        } as StepViewData
-                      }
+                      .widgetConfig=${UI.Widget.widgetConfig(StepView, {
+                        step,
+                        state: input.getStepState(step),
+                        error: input.currentStep === step ? (input.currentError ?? undefined) : undefined,
+                        isFirstSection: false,
+                        isLastSection:
+                          i === input.sections.length - 1 && input.recording.steps[input.recording.steps.length - 1] === step,
+                        isStartOfGroup: false,
+                        isEndOfGroup: section.steps[section.steps.length - 1] === step,
+                        stepIndex,
+                        hasBreakpoint: input.breakpointIndexes.has(stepIndex),
+                        sectionIndex: -1,
+                        isRecording: input.isRecording,
+                        isPlaying: input.replayState.isPlaying,
+                        removable: input.recording.steps.length > 1,
+                        builtInConverters: input.builtInConverters as Converters.Converter.Converter[],
+                        extensionConverters: input.extensionConverters as Converters.Converter.Converter[],
+                        isSelected: input.selectedStep === step,
+                        recorderSettings: input.recorderSettings ?? undefined,
+                        onStepClick: input.onStepClick,
+                        onStepHover: input.onStepHover,
+                      })}
                       jslog=${VisualLogging.section('step').track({click: true})}
-                      ></devtools-step-view>
+                      ></devtools-widget>
                     `;
                   })}
                   ${!input.recordingTogglingInProgress && input.isRecording && i === input.sections.length - 1 ? html`<devtools-button
@@ -681,7 +676,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
       )}
       </div>
     `;
-        // clang-format on
+    // clang-format on
 }
 
 function renderHeader(input: ViewInput): Lit.LitTemplate {
@@ -795,8 +790,8 @@ interface ViewInput {
   onNetworkConditionsChange: (event: Event) => void;
   onReplaySettingsKeydown: (event: Event) => void;
   onSelectMenuLabelClick: (event: Event) => void;
-  onStepClick: (event: Event) => void;
-  onStepHover: (event: MouseEvent) => void;
+  onStepClick: (step: Models.Schema.Step|Models.Section.Section) => void;
+  onStepHover: (step: Models.Schema.Step|Models.Section.Section) => void;
   onTimeoutInput: (event: Event) => void;
   onTitleBlur: (event: Event) => void;
   onTitleInputKeyDown: (event: KeyboardEvent) => void;
@@ -1074,19 +1069,16 @@ export class RecordingView extends UI.Widget.Widget {
     return index >= ownIndex ? State.SUCCESS : State.OUTSTANDING;
   }
 
-  #onStepHover = (event: MouseEvent): void => {
-    const stepView = event.target as StepView;
-    const step = stepView.step || stepView.section?.causingStep;
+  #onStepHover = (stepOrSection: Models.Schema.Step|Models.Section.Section): void => {
+    const step = 'type' in stepOrSection ? stepOrSection : stepOrSection.causingStep;
     if (!step || this.#selectedStep) {
       return;
     }
     this.#highlightCodeForStep(step);
   };
 
-  #onStepClick(event: Event): void {
-    event.stopPropagation();
-    const stepView = event.target as StepView;
-    const selectedStep = stepView.step || stepView.section?.causingStep || null;
+  #onStepClick(stepOrSection: Models.Schema.Step|Models.Section.Section): void {
+    const selectedStep = 'type' in stepOrSection ? stepOrSection : stepOrSection.causingStep || null;
     if (this.#selectedStep === selectedStep) {
       return;
     }

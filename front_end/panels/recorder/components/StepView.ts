@@ -2,11 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* Some view input callbacks might be handled outside of Lit and we
-   bind all of them upfront. We disable the lit_html_host_this since we
-   do not define any host for Lit.render and the rule is not happy
-   about it. */
-
 import '../../../ui/kit/kit.js';
 import './StepEditor.js';
 
@@ -138,12 +133,6 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-step-view': StepView;
-  }
-}
-
 export const enum State {
   DEFAULT = 'default',
   SUCCESS = 'success',
@@ -151,27 +140,6 @@ export const enum State {
   OUTSTANDING = 'outstanding',
   ERROR = 'error',
   STOPPED = 'stopped',
-}
-
-export interface StepViewData {
-  state: State;
-  step?: Models.Schema.Step;
-  section?: Models.Section.Section;
-  error?: Error;
-  hasBreakpoint: boolean;
-  isEndOfGroup: boolean;
-  isStartOfGroup: boolean;
-  isFirstSection: boolean;
-  isLastSection: boolean;
-  stepIndex: number;
-  sectionIndex: number;
-  isRecording: boolean;
-  isPlaying: boolean;
-  removable: boolean;
-  builtInConverters: Converters.Converter.Converter[];
-  extensionConverters: Converters.Converter.Converter[];
-  isSelected: boolean;
-  recorderSettings?: Models.RecorderSettings.RecorderSettings;
 }
 
 export class CaptureSelectorsEvent extends Event {
@@ -183,16 +151,6 @@ export class CaptureSelectorsEvent extends Event {
   ) {
     super(CaptureSelectorsEvent.eventName, {bubbles: true, composed: true});
     this.data = step;
-  }
-}
-
-export class StopSelectorsCaptureEvent extends Event {
-  static readonly eventName = 'stopselectorscapture';
-  constructor() {
-    super(StopSelectorsCaptureEvent.eventName, {
-      bubbles: true,
-      composed: true,
-    });
   }
 }
 
@@ -277,7 +235,7 @@ interface Action {
   jslogContext?: string;
 }
 
-export interface ViewInput extends StepViewData {
+export interface ViewInput {
   step?: Models.Schema.Step;
   section?: Models.Section.Section;
   state: State;
@@ -306,6 +264,8 @@ export interface ViewInput extends StepViewData {
   toggleShowDetails: () => void;
   onToggleShowDetailsKeydown: (event: Event) => void;
   populateStepContextMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;
+  onStepClick: (step: Models.Schema.Step|Models.Section.Section) => void;
+  onStepHover: (step: Models.Schema.Step|Models.Section.Section) => void;
 }
 
 export type ViewOutput = unknown;
@@ -408,7 +368,7 @@ function renderStepActions(input: ViewInput): Lit.TemplateResult|null {
   // clang-format on
 }
 
-function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement|ShadowRoot): void {
+export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement|ShadowRoot): void => {
   if (!input.step && !input.section) {
     return;
   }
@@ -430,7 +390,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
     step: input.step,
     section: input.section,
   });
-  const subtitle = input.step ? getSelectorPreview(input.step) : getSectionPreview();
+  const subtitle = input.step ? getSelectorPreview(input.step) : getSectionPreview(input.section);
 
   // clang-format off
   Lit.render(
@@ -452,6 +412,18 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
         }
         data-step-index=${input.stepIndex}
         data-section-index=${input.sectionIndex}
+        @click=${() => {
+          const stepOrSection = input.step || input.section;
+          if (stepOrSection) {
+            input.onStepClick(stepOrSection);
+          }
+        }}
+        @mouseover=${() => {
+          const stepOrSection = input.step || input.section;
+          if (stepOrSection) {
+            input.onStepHover(stepOrSection);
+          }
+        }}
         class=${Lit.Directives.classMap(stepClasses)}>
         <svg slot="icon" width="24" height="24" class="icon">
           <circle class="circle-icon"/>
@@ -463,9 +435,9 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
         </svg>
         <div class="summary">
           <div class="title-container ${isExpandable ? 'action' : ''}"
-            @click=${isExpandable && input.toggleShowDetails}
+            @click=${isExpandable ? input.toggleShowDetails : undefined}
             @keydown=${
-              isExpandable && input.onToggleShowDetailsKeydown
+              isExpandable ? input.onToggleShowDetailsKeydown : undefined
             }
             tabindex="0"
             jslog=${VisualLogging.sectionHeader().track({click: true})}
@@ -523,11 +495,9 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
     target,
   );
   // clang-format on
-}
+};
 
-export class StepView extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-
+export class StepView extends UI.Widget.Widget {
   #observer: IntersectionObserver = new IntersectionObserver(result => {
     this.#viewInput.isVisible = result[0].isIntersecting;
   });
@@ -557,44 +527,118 @@ export class StepView extends HTMLElement {
     toggleShowDetails: this.#toggleShowDetails.bind(this),
     onToggleShowDetailsKeydown: this.#onToggleShowDetailsKeydown.bind(this),
     populateStepContextMenu: this.#populateStepContextMenu.bind(this),
+    onStepClick: () => {},
+    onStepHover: () => {},
   };
-  #view = viewFunction;
+  #view: typeof DEFAULT_VIEW;
 
-  constructor(view?: typeof viewFunction) {
-    super();
-    if (view) {
-      this.#view = view;
-    }
-    this.setAttribute('jslog', `${VisualLogging.section('step-view')}`);
+  constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, classes: ['step-view-widget']});
+    this.#view = view || DEFAULT_VIEW;
   }
 
-  set data(data: StepViewData) {
+  set step(step: Models.Schema.Step|undefined) {
+    this.#viewInput.step = step;
+    this.requestUpdate();
+  }
+
+  set section(section: Models.Section.Section|undefined) {
+    this.#viewInput.section = section;
+    this.requestUpdate();
+  }
+
+  set state(state: State) {
     const prevState = this.#viewInput.state;
-    this.#viewInput.step = data.step;
-    this.#viewInput.section = data.section;
-    this.#viewInput.state = data.state;
-    this.#viewInput.error = data.error;
-    this.#viewInput.isEndOfGroup = data.isEndOfGroup;
-    this.#viewInput.isStartOfGroup = data.isStartOfGroup;
-    this.#viewInput.stepIndex = data.stepIndex;
-    this.#viewInput.sectionIndex = data.sectionIndex;
-    this.#viewInput.isFirstSection = data.isFirstSection;
-    this.#viewInput.isLastSection = data.isLastSection;
-    this.#viewInput.isRecording = data.isRecording;
-    this.#viewInput.isPlaying = data.isPlaying;
-    this.#viewInput.hasBreakpoint = data.hasBreakpoint;
-    this.#viewInput.removable = data.removable;
-    this.#viewInput.builtInConverters = data.builtInConverters;
-    this.#viewInput.extensionConverters = data.extensionConverters;
-    this.#viewInput.isSelected = data.isSelected;
-    this.#viewInput.recorderSettings = data.recorderSettings;
-    this.#viewInput.actions = this.#getActions();
-
-    this.#render();
-
+    this.#viewInput.state = state;
+    this.performUpdate();
     if (this.#viewInput.state !== prevState && this.#viewInput.state === 'current' && !this.#viewInput.isVisible) {
-      this.scrollIntoView();
+      this.contentElement.scrollIntoView();
     }
+  }
+
+  set error(error: Error|undefined) {
+    this.#viewInput.error = error;
+    this.requestUpdate();
+  }
+
+  set isEndOfGroup(isEndOfGroup: boolean) {
+    this.#viewInput.isEndOfGroup = isEndOfGroup;
+    this.requestUpdate();
+  }
+
+  set isStartOfGroup(isStartOfGroup: boolean) {
+    this.#viewInput.isStartOfGroup = isStartOfGroup;
+    this.requestUpdate();
+  }
+
+  set stepIndex(stepIndex: number) {
+    this.#viewInput.stepIndex = stepIndex;
+    this.requestUpdate();
+  }
+
+  set sectionIndex(sectionIndex: number) {
+    this.#viewInput.sectionIndex = sectionIndex;
+    this.requestUpdate();
+  }
+
+  set isFirstSection(isFirstSection: boolean) {
+    this.#viewInput.isFirstSection = isFirstSection;
+    this.requestUpdate();
+  }
+
+  set isLastSection(isLastSection: boolean) {
+    this.#viewInput.isLastSection = isLastSection;
+    this.requestUpdate();
+  }
+
+  set isRecording(isRecording: boolean) {
+    this.#viewInput.isRecording = isRecording;
+    this.requestUpdate();
+  }
+
+  set isPlaying(isPlaying: boolean) {
+    this.#viewInput.isPlaying = isPlaying;
+    this.requestUpdate();
+  }
+
+  set hasBreakpoint(hasBreakpoint: boolean) {
+    this.#viewInput.hasBreakpoint = hasBreakpoint;
+    this.requestUpdate();
+  }
+
+  set removable(removable: boolean) {
+    this.#viewInput.removable = removable;
+    this.requestUpdate();
+  }
+
+  set builtInConverters(builtInConverters: Converters.Converter.Converter[]) {
+    this.#viewInput.builtInConverters = builtInConverters;
+    this.requestUpdate();
+  }
+
+  set extensionConverters(extensionConverters: Converters.Converter.Converter[]) {
+    this.#viewInput.extensionConverters = extensionConverters;
+    this.requestUpdate();
+  }
+
+  set isSelected(isSelected: boolean) {
+    this.#viewInput.isSelected = isSelected;
+    this.requestUpdate();
+  }
+
+  set recorderSettings(recorderSettings: Models.RecorderSettings.RecorderSettings|undefined) {
+    this.#viewInput.recorderSettings = recorderSettings;
+    this.requestUpdate();
+  }
+
+  set onStepClick(onStepClick: (step: Models.Schema.Step|Models.Section.Section) => void) {
+    this.#viewInput.onStepClick = onStepClick;
+    this.requestUpdate();
+  }
+
+  set onStepHover(onStepHover: (step: Models.Schema.Step|Models.Section.Section) => void) {
+    this.#viewInput.onStepHover = onStepHover;
+    this.requestUpdate();
   }
 
   get step(): Models.Schema.Step|undefined {
@@ -605,18 +649,20 @@ export class StepView extends HTMLElement {
     return this.#viewInput.section;
   }
 
-  connectedCallback(): void {
-    this.#observer.observe(this);
-    this.#render();
+  override wasShown(): void {
+    super.wasShown();
+    this.#observer.observe(this.contentElement);
+    this.requestUpdate();
   }
 
-  disconnectedCallback(): void {
-    this.#observer.unobserve(this);
+  override willHide(): void {
+    super.willHide();
+    this.#observer.unobserve(this.contentElement);
   }
 
   #toggleShowDetails(): void {
     this.#viewInput.showDetails = !this.#viewInput.showDetails;
-    this.#render();
+    this.requestUpdate();
   }
 
   #onToggleShowDetailsKeydown(event: Event): void {
@@ -633,7 +679,7 @@ export class StepView extends HTMLElement {
     if (!step) {
       throw new Error('Expected step.');
     }
-    this.dispatchEvent(new StepChanged(step, event.data));
+    this.contentElement.dispatchEvent(new StepChanged(step, event.data));
   }
 
   #handleStepAction(event: Menus.Menu.MenuItemSelectedEvent): void {
@@ -643,7 +689,7 @@ export class StepView extends HTMLElement {
         if (!stepOrSection) {
           throw new Error('Expected step or section.');
         }
-        this.dispatchEvent(new AddStep(stepOrSection, AddStepPosition.BEFORE));
+        this.contentElement.dispatchEvent(new AddStep(stepOrSection, AddStepPosition.BEFORE));
         break;
       }
       case 'add-step-after': {
@@ -651,7 +697,7 @@ export class StepView extends HTMLElement {
         if (!stepOrSection) {
           throw new Error('Expected step or section.');
         }
-        this.dispatchEvent(new AddStep(stepOrSection, AddStepPosition.AFTER));
+        this.contentElement.dispatchEvent(new AddStep(stepOrSection, AddStepPosition.AFTER));
         break;
       }
       case 'remove-step': {
@@ -659,7 +705,7 @@ export class StepView extends HTMLElement {
         if (!this.#viewInput.step && !causingStep) {
           throw new Error('Expected step.');
         }
-        this.dispatchEvent(
+        this.contentElement.dispatchEvent(
             new RemoveStep(this.#viewInput.step || (causingStep as Models.Schema.Step)),
         );
         break;
@@ -668,14 +714,14 @@ export class StepView extends HTMLElement {
         if (!this.#viewInput.step) {
           throw new Error('Expected step');
         }
-        this.dispatchEvent(new AddBreakpointEvent(this.#viewInput.stepIndex));
+        this.contentElement.dispatchEvent(new AddBreakpointEvent(this.#viewInput.stepIndex));
         break;
       }
       case 'remove-breakpoint': {
         if (!this.#viewInput.step) {
           throw new Error('Expected step');
         }
-        this.dispatchEvent(new RemoveBreakpointEvent(this.#viewInput.stepIndex));
+        this.contentElement.dispatchEvent(new RemoveBreakpointEvent(this.#viewInput.stepIndex));
         break;
       }
       default: {
@@ -694,18 +740,18 @@ export class StepView extends HTMLElement {
           this.#viewInput.recorderSettings.preferredCopyFormat = converterId;
         }
 
-        this.dispatchEvent(new CopyStepEvent(structuredClone(copyStep)));
+        this.contentElement.dispatchEvent(new CopyStepEvent(structuredClone(copyStep)));
       }
     }
   }
 
   #onBreakpointClick(): void {
     if (this.#viewInput.hasBreakpoint) {
-      this.dispatchEvent(new RemoveBreakpointEvent(this.#viewInput.stepIndex));
+      this.contentElement.dispatchEvent(new RemoveBreakpointEvent(this.#viewInput.stepIndex));
     } else {
-      this.dispatchEvent(new AddBreakpointEvent(this.#viewInput.stepIndex));
+      this.contentElement.dispatchEvent(new AddBreakpointEvent(this.#viewInput.stepIndex));
     }
-    this.#render();
+    this.requestUpdate();
   }
 
   #getActions = (): Action[] => {
@@ -823,10 +869,8 @@ export class StepView extends HTMLElement {
     }
   }
 
-  #render(): void {
-    const output: ViewOutput = {};
-    this.#view(this.#viewInput, output, this.#shadow);
+  override performUpdate(): void {
+    this.#viewInput.actions = this.#getActions();
+    this.#view(this.#viewInput, undefined, this.contentElement);
   }
 }
-
-customElements.define('devtools-step-view', StepView);

@@ -36,6 +36,14 @@ describe('Recorder', function() {
   }
 
   async function assertStepList(expectedStepList: string[], devToolsPage: DevToolsPage) {
+    await devToolsPage.waitForFunction(async () => {
+      const steps = await devToolsPage.page.$$eval(
+          'pierce/.step:not(.is-start-of-group) .action .main-title',
+          actions => actions.map(e => (e as HTMLElement).innerText),
+      );
+      return steps.length === expectedStepList.length;
+    });
+
     const actualStepList = await devToolsPage.page.$$eval(
         'pierce/.step:not(.is-start-of-group) .action .main-title',
         actions => actions.map(e => (e as HTMLElement).innerText),
@@ -79,15 +87,13 @@ describe('Recorder', function() {
 
         await stopRecording(devToolsPage);
 
-        const steps = await devToolsPage.page.$$eval(
-            'pierce/.step:not(.is-start-of-group) .action .main-title',
-            actions => actions.map(e => (e as HTMLElement).innerText),
-        );
-        assert.deepEqual(steps, [
-          'Set viewport',
-          'Navigate' as StepType.Navigate,
-          'Click' as StepType.Click,
-        ]);
+        await assertStepList(
+            [
+              'Set viewport',
+              'Navigate' as StepType.Navigate,
+              'Click' as StepType.Click,
+            ],
+            devToolsPage);
 
         await inspectedPage.page.goto('about:blank');
 
@@ -97,7 +103,7 @@ describe('Recorder', function() {
               'pierce/.step:not(.is-start-of-group).is-success .action .main-title',
               actions => actions.map(e => (e as HTMLElement).innerText),
           );
-          return steps.length === successfulSteps.length;
+          return successfulSteps.length === 3;
         });
         await clickSelectButtonItem('Normal (Default)', '.select-button', devToolsPage);
         await inspectedPage.bringToFront();

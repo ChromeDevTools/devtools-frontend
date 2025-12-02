@@ -1,7 +1,9 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
+
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -10,11 +12,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as uiI18n from '../../ui/i18n/i18n.js';
-import {createIcon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, i18nTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import appManifestViewStyles from './appManifestView.css.js';
@@ -695,8 +696,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.reportView.showWidget();
     this.dispatchEventToListeners(Events.MANIFEST_DETECTED, true);
 
-    const link = Components.Linkifier.Linkifier.linkifyURL(url);
-    link.tabIndex = 0;
+    const link = Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true});
     this.reportView.setURL(link);
 
     if (!data) {
@@ -777,39 +777,34 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (appId && recommendedId) {
       const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
       UI.ARIAUtils.setLabel(appIdField, 'App Id');
-      appIdField.textContent = appId;
-
-      const helpIcon = createIcon('help', 'inline-icon');
-      helpIcon.title = i18nString(UIStrings.appIdExplainer);
-      helpIcon.setAttribute('jslog', `${VisualLogging.action('help').track({hover: true})}`);
-      appIdField.appendChild(helpIcon);
-
-      const learnMoreLink = UI.XLink.XLink.create(
-          'https://developer.chrome.com/blog/pwa-manifest-id/', i18nString(UIStrings.learnMore), undefined, undefined,
-          'learn-more');
-      appIdField.appendChild(learnMoreLink);
-
-      if (!this.stringProperty(parsedManifest, 'id')) {
-        const suggestedIdNote = appIdField.createChild('div', 'multiline-value');
-        const suggestedIdSpan = document.createElement('code');
-        suggestedIdSpan.textContent = recommendedId;
-
-        const copyButton = new Buttons.Button.Button();
-        copyButton.data = {
-          variant: Buttons.Button.Variant.ICON,
-          iconName: 'copy',
-          size: Buttons.Button.Size.SMALL,
-          jslogContext: 'manifest.copy-id',
-          title: i18nString(UIStrings.copyToClipboard),
-        };
-        copyButton.className = 'inline-button';
-        copyButton.addEventListener('click', () => {
-          UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
-        });
-        suggestedIdNote.appendChild(
-            uiI18n.getFormatLocalizedString(str_, UIStrings.appIdNote, {PH1: suggestedIdSpan, PH2: copyButton}));
-      }
+      const onCopy = (): void => {
+        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
+      };
+      // clang-format off
+      render(html`
+        ${appId}
+        <devtools-icon class="inline-icon" name="help" title=${i18nString(UIStrings.appIdExplainer)}
+            jslog=${VisualLogging.action('help').track({hover: true})}>
+        </devtools-icon>
+        <devtools-link href="https://developer.chrome.com/blog/pwa-manifest-id/"
+                      .jslogContext=${'learn-more'}>
+          ${i18nString(UIStrings.learnMore)}
+        </devtools-link>
+        ${!this.stringProperty(parsedManifest, 'id') ? html`
+          <div class="multiline-value">
+            ${i18nTemplate(str_, UIStrings.appIdNote, {
+              PH1: html`<code>${recommendedId}</code>`,
+              PH2: html`<devtools-button class="inline-button" @click=${onCopy}
+                          .iconName=${'copy'}
+                          .variant=${Buttons.Button.Variant.ICON}
+                          .size=${Buttons.Button.Size.SMALL}
+                          .jslogContext=${'manifest.copy-id'}
+                          .title=${i18nString(UIStrings.copyToClipboard)}>
+                        </devtools-button>`,
+            })}
+        </div>` : nothing}`, appIdField);
+      // clang-format on
     } else {
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
     }
@@ -823,9 +818,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const completeURL = Common.ParsedURL.ParsedURL.completeURL(url, startURL);
       if (completeURL) {
         const link = Components.Linkifier.Linkifier.linkifyURL(
-            completeURL, ({text: startURL} as Components.Linkifier.LinkifyURLOptions));
-        link.tabIndex = 0;
-        link.setAttribute('jslog', `${VisualLogging.link('start-url').track({click: true})}`);
+            completeURL, ({text: startURL, tabStop: true, jslogContext: 'start-url'}));
         this.startURLField.appendChild(link);
       }
     }
@@ -854,9 +847,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.newNoteUrlField.removeChildren();
     if (hasNewNoteUrl) {
       const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as Platform.DevToolsPath.UrlString);
-      const link = Components.Linkifier.Linkifier.linkifyURL(
-          completeURL, ({text: newNoteUrl} as Components.Linkifier.LinkifyURLOptions));
-      link.tabIndex = 0;
+      const link = Components.Linkifier.Linkifier.linkifyURL(completeURL, ({text: newNoteUrl, tabStop: true}));
       this.newNoteUrlField.appendChild(link);
     }
   }
@@ -874,20 +865,23 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     const imageErrors: Platform.UIString.LocalizedString[] = [];
 
-    const setIconMaskedCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor));
-    setIconMaskedCheckbox.classList.add('mask-checkbox');
-    setIconMaskedCheckbox.setAttribute(
-        'jslog', `${VisualLogging.toggle('show-minimal-safe-area-for-maskable-icons').track({change: true})}`);
-    setIconMaskedCheckbox.addEventListener('click', () => {
-      this.iconsSection.setIconMasked(setIconMaskedCheckbox.checked);
-    });
-    this.iconsSection.appendRow().appendChild(setIconMaskedCheckbox);
-    const documentationLink = UI.XLink.XLink.create(
-        'https://web.dev/maskable-icon/', i18nString(UIStrings.documentationOnMaskableIcons), undefined, undefined,
-        'learn-more');
-    this.iconsSection.appendRow().appendChild(
-        uiI18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOurS, {PH1: documentationLink}));
+    // clang-format off
+    render(html`<devtools-checkbox class="mask-checkbox"
+        jslog=${VisualLogging.toggle('show-minimal-safe-area-for-maskable-icons')
+                              .track({change: true})}
+        @click=${(event: Event) => { this.iconsSection.setIconMasked((event.target as HTMLInputElement).checked); }}>
+      ${i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor)}
+    </devtools-checkbox>`, this.iconsSection.appendRow());
+    // clang-format on
 
+    render(
+        i18nTemplate(str_, UIStrings.needHelpReadOurS, {
+          PH1: html`
+            <devtools-link href="https://web.dev/maskable-icon/" .jslogContext=${'learn-more'}>
+              ${i18nString(UIStrings.documentationOnMaskableIcons)}
+            </devtools-link>`,
+        }),
+        this.iconsSection.appendRow());
     let squareSizedIconAvailable = false;
     for (const icon of icons) {
       const result = await this.appendImageResourceToSection(url, icon, this.iconsSection, /** isScreenshot= */ false);
@@ -930,9 +924,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const urlField = shortcutSection.appendFlexedField(i18nString(UIStrings.url));
       const shortcutUrl = Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as Platform.DevToolsPath.UrlString;
       const link = Components.Linkifier.Linkifier.linkifyURL(
-          shortcutUrl, ({text: shortcut.url} as Components.Linkifier.LinkifyURLOptions));
-      link.setAttribute('jslog', `${VisualLogging.link('shortcut').track({click: true})}`);
-      link.tabIndex = 0;
+          shortcutUrl, ({text: shortcut.url, tabStop: true, jslogContext: 'shortcut'}));
       urlField.appendChild(link);
 
       const shortcutIcons = shortcut.icons || [];
@@ -1047,44 +1039,45 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.windowControlsSection.clearContent();
     const displayOverride = parsedManifest['display_override'] || [];
     const hasWco = displayOverride.includes('window-controls-overlay');
-
-    const displayOverrideLink = UI.XLink.XLink.create(
-        'https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override', 'display-override', undefined,
-        undefined, 'display-override');
-    const displayOverrideText = document.createElement('code');
-    displayOverrideText.appendChild(displayOverrideLink);
-
-    const wcoStatusMessage = this.windowControlsSection.appendRow();
-
     if (hasWco) {
-      const checkmarkIcon = createIcon('check-circle', 'inline-icon');
-      wcoStatusMessage.appendChild(checkmarkIcon);
-
-      const wco = document.createElement('code');
-      wco.classList.add('wco');
-      wco.textContent = 'window-controls-overlay';
-      const link = Components.Linkifier.Linkifier.linkifyURL(url);
-      wcoStatusMessage.appendChild(
-          uiI18n.getFormatLocalizedString(str_, UIStrings.wcoFound, {PH1: wco, PH2: displayOverrideText, PH3: link}));
-
+      // clang-format off
+      render(html`
+        <devtools-icon class="inline-icon" name="check-circle"></devtools-icon>
+        ${i18nTemplate(str_, UIStrings.wcoFound, {
+          PH1: html`<code class="wco">window-controls-overlay</code>`,
+          PH2: html`<code>
+            <devtools-link href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
+                          .jslogContext=${'display-override'}>
+              display-override
+            </devtools-link>
+          </code>`,
+          PH3: html`${Components.Linkifier.Linkifier.linkifyURL(url)}`,
+        })}`, this.windowControlsSection.appendRow());
+      // clang-format on
       if (this.overlayModel) {
         await this.appendWindowControlsToSection(
             this.overlayModel, url, this.stringProperty(parsedManifest, 'theme_color'));
       }
     } else {
-      const infoIcon = createIcon('info', 'inline-icon');
-
-      wcoStatusMessage.appendChild(infoIcon);
-
-      wcoStatusMessage.appendChild(
-          uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNotFound, {PH1: displayOverrideText}));
+      // clang-format off
+      render(html`
+        <devtools-icon class="inline-icon" name="info"></devtools-icon>
+        ${i18nTemplate(str_, UIStrings.wcoNotFound, {
+          PH1: html`<code>
+              <devtools-link href="https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override"
+                            .jslogContext=${'display-override'}>
+                display-override
+            </devtools-link>
+          </code>`})}`, this.windowControlsSection.appendRow());
+      // clang-format on
     }
-
-    const wcoDocumentationLink = UI.XLink.XLink.create(
-        'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay',
-        i18nString(UIStrings.customizePwaTitleBar), undefined, undefined, 'customize-pwa-tittle-bar');
-    this.windowControlsSection.appendRow().appendChild(
-        uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
+    // clang-format off
+    render(i18nTemplate(str_, UIStrings.wcoNeedHelpReadMore, { PH1: html`<devtools-link
+        href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
+        .jslogContext=${'customize-pwa-tittle-bar'}>
+      ${i18nString(UIStrings.customizePwaTitleBar)}
+    </devtools-link>`}), this.windowControlsSection.appendRow());
+    // clang-format on
   }
 
   getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[] {
@@ -1373,34 +1366,42 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
 
     await overlayModel.toggleWindowControlsToolbar(false);
-
-    const wcoOsCheckbox =
-        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectWindowControlsOverlayEmulationOs), false);
-
-    wcoOsCheckbox.addEventListener('click', async () => {
-      await this.overlayModel?.toggleWindowControlsToolbar(wcoOsCheckbox.checked);
-    });
-
-    const osSelectElement = wcoOsCheckbox.createChild('select');
-    osSelectElement.appendChild(UI.UIUtils.createOption('Windows', SDK.OverlayModel.EmulatedOSType.WINDOWS, 'windows'));
-    osSelectElement.appendChild(UI.UIUtils.createOption('macOS', SDK.OverlayModel.EmulatedOSType.MAC, 'macos'));
-    osSelectElement.appendChild(UI.UIUtils.createOption('Linux', SDK.OverlayModel.EmulatedOSType.LINUX, 'linux'));
-    osSelectElement.selectedIndex = 0;
-
-    if (this.overlayModel) {
-      osSelectElement.value = this.overlayModel?.getWindowControlsConfig().selectedPlatform;
-    }
-
-    osSelectElement.addEventListener('change', async () => {
+    let wcoToolbarEnabled = false;
+    const onSelectOs = async(event: Event): Promise<void> => {
+      const osSelectElement = event.target as HTMLSelectElement;
       const selectedOS =
           osSelectElement.options[osSelectElement.selectedIndex].value as SDK.OverlayModel.EmulatedOSType;
       if (this.overlayModel) {
         this.overlayModel.setWindowControlsPlatform(selectedOS);
-        await this.overlayModel.toggleWindowControlsToolbar(wcoOsCheckbox.checked);
+        await this.overlayModel.toggleWindowControlsToolbar(wcoToolbarEnabled);
       }
-    });
+    };
 
-    this.windowControlsSection.appendRow().appendChild(wcoOsCheckbox);
+    // clang-format off
+    render(html`
+      <devtools-checkbox @click=${async (event: Event) => {
+            wcoToolbarEnabled = (event.target as HTMLInputElement).checked;
+            await this.overlayModel?.toggleWindowControlsToolbar(wcoToolbarEnabled);
+          }}
+          title=${i18nString(UIStrings.selectWindowControlsOverlayEmulationOs)}>
+        ${i18nString(UIStrings.selectWindowControlsOverlayEmulationOs)}
+      </devtools-checkbox>
+      <select value=${this.overlayModel?.getWindowControlsConfig().selectedPlatform ?? ''}
+              @change=${onSelectOs} .selectedIndex=${0}>
+        <option value=${SDK.OverlayModel.EmulatedOSType.WINDOWS}
+                jslog=${VisualLogging.item('windows').track({click: true})}>
+          Windows
+        </option>
+        <option value=${SDK.OverlayModel.EmulatedOSType.MAC}
+                jslog=${VisualLogging.item('macos').track({click: true })}>
+          macOS
+        </option>
+        <option value=${SDK.OverlayModel.EmulatedOSType.LINUX}
+                jslog=${VisualLogging.item('linux').track({click: true})}>
+          Linux
+        </option>
+      </select>`, this.windowControlsSection.appendRow());
+    // clang-format on
 
     overlayModel.setWindowControlsThemeColor(themeColor);
   }

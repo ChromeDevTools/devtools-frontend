@@ -104,6 +104,7 @@ devtools_ui_module("application") {
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit:bundle",
     "./components:bundle",
     "./preloading/components:bundle",
     "./preloading/helper:bundle",

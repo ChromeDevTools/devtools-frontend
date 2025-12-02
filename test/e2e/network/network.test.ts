@@ -104,15 +104,19 @@ describe('The Network Tab', function() {
 
        await clearTimeWindow(devToolsPage);
 
-       // Alow for some time to pass; otherwise this is to fast in non-hosted
-       await devToolsPage.timeout(100);
-       const numberOfRequestsAfterFilter = await getNumberOfRequests(devToolsPage);
        // Time filter is cleared so the number of requests must be greater than the initial number.
-       assert.isTrue(numberOfRequestsAfterFilter > initialNumberOfRequests);
+       const numOfRequest = await devToolsPage.waitForFunction(async () => {
+         const numberOfRequestsAfterFilter = await getNumberOfRequests(devToolsPage);
+         if (numberOfRequestsAfterFilter < initialNumberOfRequests) {
+           return false;
+         }
+
+         return numberOfRequestsAfterFilter;
+       });
 
        // After some time we expect new requests to come so it must be
        // that the number of requests increased.
-       await waitForSomeRequestsToAppear(numberOfRequestsAfterFilter + 1, devToolsPage);
+       await waitForSomeRequestsToAppear(numOfRequest + 1, devToolsPage);
      });
 
   describe('with durable messages', function() {

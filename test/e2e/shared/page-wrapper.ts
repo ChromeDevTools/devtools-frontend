@@ -40,7 +40,7 @@ export class PageWrapper {
         const result = await fn();
         signal?.throwIfAborted();
         if (result) {
-          return result;
+          return result as Exclude<NonNullable<T>, false>;
         }
         await this.timeout(100);
       }

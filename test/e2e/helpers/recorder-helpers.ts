@@ -280,7 +280,7 @@ export async function setupRecorderWithScriptAndReplay(
     ): Promise<void> {
   await setupRecorderWithScript(script, path, devToolsPage, inspectedPage);
   const onceFinished = onReplayFinished(devToolsPage);
-  await clickSelectButtonItem('Normal (Default)', 'devtools-replay-section', devToolsPage);
+  await clickSelectButtonItem('Normal (Default)', '.select-button', devToolsPage);
   await onceFinished;
 }
 

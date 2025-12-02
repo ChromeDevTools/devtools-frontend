@@ -710,7 +710,7 @@ describe('Recorder', function() {
       );
 
       const onceFinished = onReplayFinished(devToolsPage);
-      await clickSelectButtonItem('Slow', 'devtools-replay-section', devToolsPage);
+      await clickSelectButtonItem('Slow', '.select-button', devToolsPage);
       await onceFinished;
 
       assert.strictEqual(

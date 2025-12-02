@@ -4,7 +4,6 @@
 
 import '../../../ui/kit/kit.js';
 import './ExtensionView.js';
-import './ReplaySection.js';
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -30,7 +29,7 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import {ControlButton} from './ControlButton.js';
 import recordingViewStyles from './recordingView.css.js';
-import type {ReplaySectionData, StartReplayEvent} from './ReplaySection.js';
+import {ReplaySection} from './ReplaySection.js';
 import {
   type CopyStepEvent,
   State,
@@ -550,17 +549,15 @@ function renderReplayOrAbortButton(input: ViewInput): Lit.LitTemplate {
   }
 
   // clang-format off
-    return html`<devtools-replay-section
-        .data=${
-          {
-            settings: input.recorderSettings,
-            replayExtensions: input.replayExtensions,
-          } as ReplaySectionData
-        }
-        .disabled=${input.replayState.isPlaying}
-        @startreplay=${input.onTogglePlaying}
+    return html`<devtools-widget
+        .widgetConfig=${UI.Widget.widgetConfig(ReplaySection, {
+          settings: input.recorderSettings,
+          replayExtensions: input.replayExtensions,
+          onStartReplay: input.onTogglePlaying,
+          disabled: input.replayState.isPlaying,
+        })}
         >
-      </devtools-replay-section>`;
+      </devtools-widget>`;
   // clang-format on
 }
 
@@ -791,7 +788,7 @@ interface ViewInput {
   getStepState: (step: Models.Schema.Step) => State;
   onAbortReplay: () => void;
   onMeasurePerformanceClick: (event: Event) => void;
-  onTogglePlaying: (event: StartReplayEvent) => void;
+  onTogglePlaying: (speed: PlayRecordingSpeed, extension?: Extensions.ExtensionManager.Extension) => void;
   onCodeFormatChange: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
   onCopyStep: (event: CopyStepEvent) => void;
   onEditTitleButtonClick: (event: Event) => void;
@@ -981,11 +978,11 @@ export class RecordingView extends UI.Widget.Widget {
             this.abortReplay?.();
           },
           onMeasurePerformanceClick: this.#handleMeasurePerformanceClickEvent.bind(this),
-          onTogglePlaying: (event: StartReplayEvent) => {
+          onTogglePlaying: (speed: PlayRecordingSpeed, extension?: Extensions.ExtensionManager.Extension) => {
             this.playRecording?.({
               targetPanel: TargetPanel.DEFAULT,
-              speed: event.speed,
-              extension: event.extension,
+              speed,
+              extension,
             });
           },
           onCodeFormatChange: this.#onCodeFormatChange.bind(this),

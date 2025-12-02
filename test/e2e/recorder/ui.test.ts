@@ -99,7 +99,7 @@ describe('Recorder', function() {
           );
           return steps.length === successfulSteps.length;
         });
-        await clickSelectButtonItem('Normal (Default)', 'devtools-replay-section', devToolsPage);
+        await clickSelectButtonItem('Normal (Default)', '.select-button', devToolsPage);
         await inspectedPage.bringToFront();
         await promise;
         assert.strictEqual(

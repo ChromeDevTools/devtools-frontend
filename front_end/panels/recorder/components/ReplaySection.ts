@@ -7,7 +7,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -67,33 +66,6 @@ const UIStrings = {
   extensionGroup: 'Extensions',
 } as const;
 
-const items = [
-  {
-    value: PlayRecordingSpeed.NORMAL,
-    buttonIconName: 'play',
-    buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
-    label: () => i18nString(UIStrings.ReplayNormalItemLabel),
-  },
-  {
-    value: PlayRecordingSpeed.SLOW,
-    buttonIconName: 'play',
-    buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
-    label: () => i18nString(UIStrings.ReplaySlowItemLabel),
-  },
-  {
-    value: PlayRecordingSpeed.VERY_SLOW,
-    buttonIconName: 'play',
-    buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
-    label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
-  },
-  {
-    value: PlayRecordingSpeed.EXTREMELY_SLOW,
-    buttonIconName: 'play',
-    buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
-    label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
-  },
-];
-
 const replaySpeedToMetricSpeedMap = {
   [PlayRecordingSpeed.NORMAL]: Host.UserMetrics.RecordingReplaySpeed.NORMAL,
   [PlayRecordingSpeed.SLOW]: Host.UserMetrics.RecordingReplaySpeed.SLOW,
@@ -107,191 +79,84 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class StartReplayEvent extends Event {
-  static readonly eventName = 'startreplay';
-
-  constructor(
-      public speed: PlayRecordingSpeed,
-      public extension?: Extensions.ExtensionManager.Extension,
-  ) {
-    super(StartReplayEvent.eventName, {bubbles: true, composed: true});
-  }
-}
-
-export interface ReplaySectionProps {
-  disabled: boolean;
-}
-
-export interface ReplaySectionData {
-  settings: Models.RecorderSettings.RecorderSettings;
-  replayExtensions: Extensions.ExtensionManager.Extension[];
-}
-
 const REPLAY_EXTENSION_PREFIX = 'extension';
 
-export class ReplaySection extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #props: ReplaySectionProps = {disabled: false};
-  #settings?: Models.RecorderSettings.RecorderSettings;
-  #replayExtensions: Extensions.ExtensionManager.Extension[] = [];
+interface Item {
+  value: string;
+  buttonIconName: string;
+  buttonLabel?: () => Platform.UIString.LocalizedString;
+  label: () => Platform.UIString.LocalizedString;
+}
 
-  set data(data: ReplaySectionData) {
-    this.#settings = data.settings;
-    this.#replayExtensions = data.replayExtensions;
-  }
+interface Group {
+  name: string;
+  items: Item[];
+}
 
-  get disabled(): boolean {
-    return this.#props.disabled;
-  }
+interface ViewInput {
+  disabled: boolean;
+  groups: Group[];
+  selectedItem: Item;
+  actionTitle: string;
+  onButtonClick: () => void;
+  onItemSelected: (item: string) => void;
+}
 
-  set disabled(disabled: boolean) {
-    this.#props.disabled = disabled;
-    void ComponentHelpers.ScheduledRender.scheduleRender(
-        this,
-        this.#render,
-    );
-  }
+export type ViewOutput = undefined;
 
-  connectedCallback(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(
-        this,
-        this.#render,
-    );
-  }
+export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+  const {disabled, groups, selectedItem, actionTitle, onButtonClick, onItemSelected} = input;
+  const buttonVariant = Buttons.Button.Variant.PRIMARY;
 
-  #handleClick(ev: Event, value?: string): void {
+  const handleClick = (ev: Event): void => {
     ev.stopPropagation();
-    if (value?.startsWith(REPLAY_EXTENSION_PREFIX)) {
-      if (this.#settings) {
-        this.#settings.replayExtension = value;
-      }
-      const extensionIdx = Number(
-          value.substring(REPLAY_EXTENSION_PREFIX.length),
-      );
-      this.dispatchEvent(
-          new StartReplayEvent(
-              PlayRecordingSpeed.NORMAL,
-              this.#replayExtensions[extensionIdx],
-              ),
-      );
-      void ComponentHelpers.ScheduledRender.scheduleRender(
-          this,
-          this.#render,
-      );
-      return;
-    }
+    onButtonClick();
+  };
 
-    this.dispatchEvent(new StartReplayEvent(this.#settings ? this.#settings.speed : PlayRecordingSpeed.NORMAL));
-    void ComponentHelpers.ScheduledRender.scheduleRender(
-        this,
-        this.#render,
-    );
-  }
-
-  #handleSelectMenuSelect(
+  const handleSelectMenuSelect = (
       event: Event,
-      ): void {
+      ): void => {
     if (event.target instanceof HTMLSelectElement) {
-      const speed = event.target.value as PlayRecordingSpeed;
-      this.changeSpeed(speed);
+      onItemSelected(event.target.value);
     }
-  }
+  };
 
-  changeSpeed(speed: PlayRecordingSpeed): void {
-    if (this.#settings && speed) {
-      this.#settings.speed = speed;
-      this.#settings.replayExtension = '';
-    }
-
-    if (replaySpeedToMetricSpeedMap[speed]) {
-      Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
-    }
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  #getTitle(label: string): string {
-    return Models.Tooltip.getTooltipForActions(label, Actions.RecorderActions.REPLAY_RECORDING);
-  }
-
-  #render(): void {
-    const groups = [{name: i18nString(UIStrings.speedGroup), items}];
-
-    if (this.#replayExtensions.length) {
-      groups.push({
-        name: i18nString(UIStrings.extensionGroup),
-        items: this.#replayExtensions.map((extension, idx) => {
-          return {
-            value: (REPLAY_EXTENSION_PREFIX + idx) as PlayRecordingSpeed,
-            buttonIconName: 'play',
-            buttonLabel: () => extension.getName() as Platform.UIString.LocalizedString,
-            label: () => extension.getName() as Platform.UIString.LocalizedString,
-          };
-        }),
-      });
-    }
-
-    const value = this.#settings?.replayExtension || this.#settings?.speed || '';
-    const selectedItem = items.find(item => item.value === value) || items[0];
-    if (!selectedItem) {
-      return;
-    }
-
-    const buttonVariant = Buttons.Button.Variant.PRIMARY;
-    const menuLabel = selectedItem.buttonLabel ? selectedItem.buttonLabel() : selectedItem.label();
-
-    // clang-format off
-    Lit.render(
-      html`
-        <style>
-          ${UI.inspectorCommonStyles}
-        </style>
-        <style>
-          ${replaySectionStyles}
-        </style>
-        <div
-          class="select-button"
-          title=${ifDefined(this.#getTitle(menuLabel))}
-        >
-          <label>
-            ${groups.length > 1
-              ? html`
-                  <div
-                    class="groups-label"
-                    >${groups
-                      .map(group => {
-                        return group.name;
-                      })
-                      .join(' & ')}</div>`
-              : Lit.nothing}
-            <select
-              class="primary"
-              ?disabled=${this.#props.disabled}
-              jslog=${VisualLogging.dropDown('network-conditions').track({
-                change: true,
-              })}
-              @change=${this.#handleSelectMenuSelect}
-            >
-              ${groups.length > 1
-                ? repeat(groups, group => group.name, group =>
-                    html`
-                      <optgroup label=${group.name}>
-                        ${repeat(group.items, item => item.value, item => {
-                          const selected = item.value === selectedItem.value;
-                          return html`
-                            <option
-                              .title=${item.label()}
-                              value=${item.value}
-                              ?selected=${selected}
-                              jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}
-                            >
-                              ${(selected && item.buttonLabel) ? item.buttonLabel() : item.label()}
-                            </option>
-                          `;
-                        })}
-                      </optgroup>
-                    `,
-                  )
-                : repeat(items, item => item.value, item => {
+  // clang-format off
+  Lit.render(
+    html`
+      <style>
+        ${UI.inspectorCommonStyles}
+      </style>
+      <style>
+        ${replaySectionStyles}
+      </style>
+      <div
+        class="select-button"
+        title=${ifDefined(actionTitle)}
+      >
+        <label>
+          ${groups.length > 1
+            ? html`
+                <div
+                  class="groups-label"
+                  >${groups
+                    .map(group => {
+                      return group.name;
+                    })
+                    .join(' & ')}</div>`
+            : Lit.nothing}
+          <select
+            class="primary"
+            ?disabled=${disabled}
+            jslog=${VisualLogging.dropDown('network-conditions').track({
+              change: true,
+            })}
+            @change=${handleSelectMenuSelect}
+          >
+            ${repeat(groups, group => group.name, group =>
+              html`
+                <optgroup label=${group.name}>
+                  ${repeat(group.items, item => item.value, item => {
                     const selected = item.value === selectedItem.value;
                     return html`
                       <option
@@ -304,36 +169,175 @@ export class ReplaySection extends HTMLElement {
                       </option>
                     `;
                   })}
-            </select>
-          </label>
-          <devtools-button
-            .disabled=${this.#props.disabled}
-            .variant=${buttonVariant}
-            .iconName=${selectedItem.buttonIconName}
-            @click=${(ev: Event) => this.#handleClick(ev, value)}
-            jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}
-          >
-            ${i18nString(UIStrings.Replay)}
-          </devtools-button>
-        </div>`,
-      this.#shadow,
-      { host: this },
+                </optgroup>
+              `,
+            )}
+          </select>
+        </label>
+        <devtools-button
+          .disabled=${disabled}
+          .variant=${buttonVariant}
+          .iconName=${selectedItem.buttonIconName}
+          @click=${handleClick}
+          jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}
+        >
+          ${i18nString(UIStrings.Replay)}
+        </devtools-button>
+      </div>`,
+    target,
+    { host: target },
+  );
+  // clang-format on
+};
+
+/**
+ * This presenter combines built-in replay speeds and extensions into a single
+ * select menu + a button.
+ */
+export class ReplaySection extends UI.Widget.Widget {
+  onStartReplay?: (speed: PlayRecordingSpeed, extension?: Extensions.ExtensionManager.Extension) => void;
+
+  #disabled = false;
+  #settings?: Models.RecorderSettings.RecorderSettings;
+  #replayExtensions: Extensions.ExtensionManager.Extension[] = [];
+  #view: typeof DEFAULT_VIEW;
+  #groups: Group[] = [];
+
+  constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view || DEFAULT_VIEW;
+    this.#groups = this.#computeGroups();
+  }
+
+  set settings(settings: Models.RecorderSettings.RecorderSettings|undefined) {
+    this.#settings = settings;
+    this.performUpdate();
+  }
+
+  set replayExtensions(replayExtensions: Extensions.ExtensionManager.Extension[]) {
+    this.#replayExtensions = replayExtensions;
+    this.#groups = this.#computeGroups();
+    this.performUpdate();
+  }
+
+  get disabled(): boolean {
+    return this.#disabled;
+  }
+
+  set disabled(disabled: boolean) {
+    this.#disabled = disabled;
+    this.performUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    const selectedItem = this.#getSelectedItem();
+    this.#view(
+        {
+          disabled: this.#disabled,
+          groups: this.#groups,
+          selectedItem,
+          actionTitle:
+              Models.Tooltip.getTooltipForActions(selectedItem.label(), Actions.RecorderActions.REPLAY_RECORDING),
+          onButtonClick: () => this.#onStartReplay(),
+          onItemSelected: (item: string) => this.#onItemSelected(item),
+        },
+        undefined,
+        this.contentElement,
     );
-    // clang-format on
-  }
-}
-
-customElements.define(
-    'devtools-replay-section',
-    ReplaySection,
-);
-
-declare global {
-  interface HTMLElementEventMap {
-    startreplay: StartReplayEvent;
   }
 
-  interface HTMLElementTagNameMap {
-    'devtools-replay-section': ReplaySection;
+  #computeGroups(): Group[] {
+    const groups: Group[] = [{
+      name: i18nString(UIStrings.speedGroup),
+      items: [
+        {
+          value: PlayRecordingSpeed.NORMAL,
+          buttonIconName: 'play',
+          buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
+          label: () => i18nString(UIStrings.ReplayNormalItemLabel),
+        },
+        {
+          value: PlayRecordingSpeed.SLOW,
+          buttonIconName: 'play',
+          buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
+          label: () => i18nString(UIStrings.ReplaySlowItemLabel),
+        },
+        {
+          value: PlayRecordingSpeed.VERY_SLOW,
+          buttonIconName: 'play',
+          buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
+          label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
+        },
+        {
+          value: PlayRecordingSpeed.EXTREMELY_SLOW,
+          buttonIconName: 'play',
+          buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
+          label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
+        },
+      ]
+    }];
+    if (this.#replayExtensions.length) {
+      groups.push({
+        name: i18nString(UIStrings.extensionGroup),
+        items: this.#replayExtensions.map((extension, idx) => {
+          return {
+            value: (REPLAY_EXTENSION_PREFIX + idx),
+            buttonIconName: 'play',
+            buttonLabel: () => extension.getName() as Platform.UIString.LocalizedString,
+            label: () => extension.getName() as Platform.UIString.LocalizedString,
+          };
+        }),
+      });
+    }
+    return groups;
+  }
+
+  #getSelectedItem(): Item {
+    const value = this.#settings?.replayExtension || this.#settings?.speed || '';
+    for (const group of this.#groups) {
+      for (const item of group.items) {
+        if (item.value === value) {
+          return item;
+        }
+      }
+    }
+    return this.#groups[0].items[0];
+  }
+
+  #onStartReplay(): void {
+    const value = this.#settings?.replayExtension || this.#settings?.speed || '';
+    if (value?.startsWith(REPLAY_EXTENSION_PREFIX)) {
+      const extensionIdx = Number(
+          value.substring(REPLAY_EXTENSION_PREFIX.length),
+      );
+      const extension = this.#replayExtensions[extensionIdx];
+      if (this.#settings) {
+        this.#settings.replayExtension = REPLAY_EXTENSION_PREFIX + extensionIdx;
+      }
+      if (this.onStartReplay) {
+        this.onStartReplay(PlayRecordingSpeed.NORMAL, extension);
+      }
+    } else if (this.onStartReplay) {
+      this.onStartReplay(this.#settings ? this.#settings.speed : PlayRecordingSpeed.NORMAL);
+    }
+    this.performUpdate();
+  }
+
+  #onItemSelected(item: string): void {
+    const speed = item as PlayRecordingSpeed;
+    if (this.#settings && speed) {
+      this.#settings.speed = speed;
+      this.#settings.replayExtension = '';
+    }
+
+    if (replaySpeedToMetricSpeedMap[speed]) {
+      Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
+    }
+    this.performUpdate();
   }
 }

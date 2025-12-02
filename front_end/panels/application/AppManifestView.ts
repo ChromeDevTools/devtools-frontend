@@ -454,6 +454,44 @@ interface Screenshot {
   platform?: string;
 }
 
+/* eslint-disable @typescript-eslint/naming-convention */
+interface Manifest {
+  background_color?: string;
+  description?: string;
+  display?: string;
+  display_override?: string[];
+  icons?: Array<{
+    src: string,
+    sizes?: string,
+    type?: string,
+    purpose?: string,
+  }>;
+  id?: string;
+  name?: string;
+  note_taking?: {
+    new_note_url?: string,
+  };
+  orientation?: string;
+  protocol_handlers?: Protocol.Page.ProtocolHandler[];
+  screenshots?: Screenshot[];
+  short_name?: string;
+  shortcuts?: Array<{
+    name: string,
+    url: string,
+    description?: string,
+    short_name?: string,
+    icons?: Array<{
+           src: string,
+           sizes?: string,
+           type?: string,
+           purpose?: string,
+         }>,
+  }>;
+  start_url?: string;
+  theme_color?: string;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
 export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements SDK.TargetManager.Observer {
   private readonly emptyView: UI.EmptyWidget.EmptyWidget;
@@ -679,7 +717,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       data = data.slice(1);
     }  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
 
-    const parsedManifest = JSON.parse(data);
+    const parsedManifest: Manifest = JSON.parse(data);
     this.nameField.textContent = stringProperty('name');
     this.shortNameField.textContent = stringProperty('short_name');
 
@@ -850,7 +888,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         imageErrors.push(...shortcutIconErrors);
         if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
-          if (shortcutIconSize && shortcutIconSize[1] >= 96 && shortcutIconSize[2] >= 96) {
+          if (shortcutIconSize && Number(shortcutIconSize[1]) >= 96 && Number(shortcutIconSize[2]) >= 96) {
             hasShortcutIconLargeEnough = true;
           }
         }
@@ -935,7 +973,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.errorsSection.appendRow().appendChild(msgElement);
     }
 
-    function stringProperty(name: string): string {
+    function stringProperty(name: keyof Manifest): string {
       const value = parsedManifest[name];
       if (typeof value !== 'string') {
         return '';

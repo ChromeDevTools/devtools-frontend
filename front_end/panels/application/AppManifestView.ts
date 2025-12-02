@@ -15,7 +15,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, i18nTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {html, i18nTemplate, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import appManifestViewStyles from './appManifestView.css.js';
@@ -883,10 +883,21 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         }),
         this.iconsSection.appendRow());
     let squareSizedIconAvailable = false;
+    const fields = new Map<string, LitTemplate[]>();
     for (const icon of icons) {
-      const result = await this.appendImageResourceToSection(url, icon, this.iconsSection, /** isScreenshot= */ false);
+      const result = await this.processImageResource(url, icon, /** isScreenshot= */ false);
+      if (result.title && result.content) {
+        const fieldContent: LitTemplate[] = fields.get(result.title) || [];
+        if (!fields.has(result.title)) {
+          fields.set(result.title, fieldContent);
+        }
+        fieldContent.push(result.content);
+      }
       imageErrors.push(...result.imageResourceErrors);
       squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
+    }
+    for (const [title, content] of fields) {
+      render(content, this.iconsSection.appendFlexedField(title));
     }
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
@@ -929,9 +940,17 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
       const shortcutIcons = shortcut.icons || [];
       let hasShortcutIconLargeEnough = false;
+      const fields = new Map<string, LitTemplate[]>();
       for (const shortcutIcon of shortcutIcons) {
-        const {imageResourceErrors: shortcutIconErrors} =
-            await this.appendImageResourceToSection(url, shortcutIcon, shortcutSection, /** isScreenshot= */ false);
+        const {imageResourceErrors: shortcutIconErrors, title, content} =
+            await this.processImageResource(url, shortcutIcon, /** isScreenshot= */ false);
+        if (title && content) {
+          const fieldContent: LitTemplate[] = fields.get(title) || [];
+          if (!fields.has(title)) {
+            fields.set(title, fieldContent);
+          }
+          fieldContent.push(content);
+        }
         imageErrors.push(...shortcutIconErrors);
         if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
@@ -939,6 +958,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
             hasShortcutIconLargeEnough = true;
           }
         }
+      }
+      for (const [title, content] of fields) {
+        render(content, shortcutSection.appendFlexedField(title));
       }
       if (!hasShortcutIconLargeEnough) {
         imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, {PH1: shortcutIndex}));
@@ -976,8 +998,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         screenshotSection.appendFlexedField(i18nString(UIStrings.platform), screenshot.platform);
       }
 
-      const {imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height} =
-          await this.appendImageResourceToSection(url, screenshot, screenshotSection, /** isScreenshot= */ true);
+      const {imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height, title, content} =
+          await this.processImageResource(url, screenshot, /** isScreenshot= */ true);
+      if (title) {
+        render(content, screenshotSection.appendFlexedField(title));
+      }
       imageErrors.push(...screenshotErrors);
 
       if (screenshot.form_factor && width && height) {
@@ -1180,8 +1205,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   private async loadImage(url: Platform.DevToolsPath.UrlString): Promise<{
-    image: HTMLImageElement,
-    wrapper: Element,
+    naturalWidth: number,
+    naturalHeight: number,
+    src: string,
   }|null> {
     const frameId = this.resourceTreeModel?.mainFrame?.id;
     if (!this.target) {
@@ -1197,8 +1223,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           initiatorUrl: this.target.inspectedURL(),
         },
         /* isBinary=*/ true);
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('image-wrapper');
     const image = document.createElement('img');
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
@@ -1208,11 +1232,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     // does not work, we can parse mimeType out of the response headers
     // using front_end/core/platform/MimeType.ts.
     image.src = 'data:application/octet-stream;base64,' + await Common.Base64.encode(content);
-    image.alt = i18nString(UIStrings.imageFromS, {PH1: url});
-    wrapper.appendChild(image);
     try {
       await result;
-      return {wrapper, image};
+      return {naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, src: image.src};
     } catch {
     }
     return null;
@@ -1244,17 +1266,17 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   checkSizeProblem(
-      size: ParsedSize, image: HTMLImageElement, resourceName: Platform.UIString.LocalizedString,
+      size: ParsedSize, naturalWidth: number, naturalHeight: number, resourceName: Platform.UIString.LocalizedString,
       imageUrl: string): {hasSquareSize: boolean, error?: Platform.UIString.LocalizedString} {
     if ('any' in size) {
-      return {hasSquareSize: image.naturalWidth === image.naturalHeight};
+      return {hasSquareSize: naturalWidth === naturalHeight};
     }
     const hasSquareSize = size.width === size.height;
-    if (image.naturalWidth !== size.width && image.naturalHeight !== size.height) {
+    if (naturalWidth !== size.width && naturalHeight !== size.height) {
       return {
         error: i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
-          PH1: image.naturalWidth,
-          PH2: image.naturalHeight,
+          PH1: naturalWidth,
+          PH2: naturalHeight,
           PH3: resourceName,
           PH4: imageUrl,
           PH5: size.width,
@@ -1263,31 +1285,32 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         hasSquareSize,
       };
     }
-    if (image.naturalWidth !== size.width) {
+    if (naturalWidth !== size.width) {
       return {
         error: i18nString(
             UIStrings.actualWidthSpxOfSSDoesNotMatch,
-            {PH1: image.naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width}),
+            {PH1: naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width}),
         hasSquareSize,
       };
     }
-    if (image.naturalHeight !== size.height) {
+    if (naturalHeight !== size.height) {
       return {
         error: i18nString(
             UIStrings.actualHeightSpxOfSSDoesNotMatch,
-            {PH1: image.naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height}),
+            {PH1: naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height}),
         hasSquareSize,
       };
     }
     return {hasSquareSize};
   }
 
-  private async appendImageResourceToSection(
+  private async processImageResource(
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      baseUrl: Platform.DevToolsPath.UrlString, imageResource: any, section: UI.ReportView.Section,
-      isScreenshot: boolean): Promise<{
+      baseUrl: Platform.DevToolsPath.UrlString, imageResource: any, isScreenshot: boolean): Promise<{
     imageResourceErrors: Platform.UIString.LocalizedString[],
+    title?: string,
+    content?: LitTemplate,
     squareSizedIconAvailable?: boolean,
     naturalWidth?: number,
     naturalHeight?: number,
@@ -1309,11 +1332,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       imageResourceErrors.push(i18nString(UIStrings.sSFailedToLoad, {PH1: resourceName, PH2: imageUrl}));
       return {imageResourceErrors};
     }
-    const {wrapper, image} = result;
-    const {naturalWidth, naturalHeight} = image;
+    const {src, naturalWidth, naturalHeight} = result;
     const sizes = this.parseSizes(imageResource['sizes'], resourceName, imageUrl, imageResourceErrors);
     const title = sizes.map(x => x.formatted).join(' ') + '\n' + (imageResource['type'] || '');
-    const field = section.appendFlexedField(title);
     let squareSizedIconAvailable = false;
     if (!imageResource.sizes) {
       imageResourceErrors.push(i18nString(UIStrings.sSDoesNotSpecifyItsSizeInThe, {PH1: resourceName, PH2: imageUrl}));
@@ -1322,13 +1343,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         imageResourceErrors.push(i18nString(UIStrings.screenshotPixelSize, {url: imageUrl}));
       }
       for (const size of sizes) {
-        const {error, hasSquareSize} = this.checkSizeProblem(size, image, resourceName, imageUrl);
+        const {error, hasSquareSize} = this.checkSizeProblem(size, naturalWidth, naturalHeight, resourceName, imageUrl);
         squareSizedIconAvailable = squareSizedIconAvailable || hasSquareSize;
         if (error) {
           imageResourceErrors.push(error);
         } else if (isScreenshot) {
-          const width = 'any' in size ? image.naturalWidth : size.width;
-          const height = 'any' in size ? image.naturalHeight : size.height;
+          const width = 'any' in size ? naturalWidth : size.width;
+          const height = 'any' in size ? naturalHeight : size.height;
           if (width < 320 || height < 320) {
             imageResourceErrors.push(
                 i18nString(UIStrings.sSSizeShouldBeAtLeast320, {PH1: resourceName, PH2: imageUrl}));
@@ -1345,15 +1366,20 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         }
       }
     }
-    image.width = image.naturalWidth;
 
     const purpose = typeof imageResource['purpose'] === 'string' ? imageResource['purpose'].toLowerCase() : '';
     if (purpose.includes('any') && purpose.includes('maskable')) {
       imageResourceErrors.push(i18nString(UIStrings.avoidPurposeAnyAndMaskable));
     }
 
-    field.appendChild(wrapper);
-    return {imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight};
+    // clang-format off
+    const content = html`
+      <div class="image-wrapper">
+        <img src=${src} alt=${i18nString(UIStrings.imageFromS, {PH1: imageUrl})}
+            width=${naturalWidth}>
+      </div>`;
+    // clang-format on
+    return {imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight, title, content};
   }
 
   private async appendWindowControlsToSection(

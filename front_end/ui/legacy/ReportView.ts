@@ -182,7 +182,7 @@ export class Section extends VBox {
     return row.lastElementChild as HTMLElement;
   }
 
-  appendFlexedField(title: string, textValue?: string): Element {
+  appendFlexedField(title: string, textValue?: string): HTMLElement {
     const field = this.appendField(title, textValue);
     field.classList.add('report-field-value-is-flexed');
     return field;

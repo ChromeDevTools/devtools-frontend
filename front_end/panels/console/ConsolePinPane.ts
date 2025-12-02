@@ -81,9 +81,6 @@ export class ConsolePinPane extends UI.Widget.VBox {
   override willHide(): void {
     super.willHide();
     this.pinModel.stopPeriodicEvaluate();
-    for (const pin of this.presenters) {
-      pin.setHovered(false);
-    }
   }
 
   private contextMenuEventFired(event: Event): void {
@@ -290,6 +287,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   override willHide(): void {
     super.willHide();
     this.pin.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
+    this.setHovered(false);
   }
 
   #createInitialEditorState(doc: string): CodeMirror.EditorState {

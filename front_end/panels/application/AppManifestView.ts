@@ -698,9 +698,50 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const link = Components.Linkifier.Linkifier.linkifyURL(url);
     link.tabIndex = 0;
     this.reportView.setURL(link);
+
+    if (!data) {
+      this.renderErrors([], errors, []);
+      return;
+    }
+
+    if (data.charCodeAt(0) === 0xFEFF) {
+      data = data.slice(1);
+    }  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
+
+    const parsedManifest = JSON.parse(data);
+
+    const warnings = this.renderIdentity(parsedManifest, appId, recommendedId);
+
+    this.renderPresentation(parsedManifest, url);
+    this.renderProtocolHandlers(parsedManifest, url);
+
+    const {imageResourceErrors: iconErrors} = await this.renderIcons(parsedManifest, url);
+    const {warnings: shortcutWarnings, imageResourceErrors: shortcutImageErrors} =
+        await this.renderShortcuts(parsedManifest, url);
+    warnings.push(...shortcutWarnings);
+
+    const {warnings: screenshotWarnings, imageResourceErrors: screenshotImageErrors} =
+        await this.renderScreenshots(parsedManifest, url);
+    warnings.push(...screenshotWarnings);
+
+    const imageErrors = [...iconErrors, ...shortcutImageErrors, ...screenshotImageErrors];
+
+    this.renderInstallability(installabilityErrors);
+    await this.renderWindowControls(parsedManifest, url);
+
+    this.renderErrors(warnings, errors, imageErrors);
+
+    this.dispatchEventToListeners(Events.MANIFEST_RENDERED);
+  }
+
+  private renderErrors(
+      warnings: Platform.UIString.LocalizedString[], manifestErrors: Protocol.Page.AppManifestError[],
+      imageErrors: Platform.UIString.LocalizedString[]): void {
     this.errorsSection.clearContent();
-    this.errorsSection.element.classList.toggle('hidden', !errors.length);
-    for (const error of errors) {
+    this.errorsSection.element.classList.toggle(
+        'hidden', !manifestErrors.length && !warnings.length && !imageErrors.length);
+
+    for (const error of manifestErrors) {
       const icon = UI.UIUtils.createIconLabel({
         title: error.message,
         iconName: error.critical ? 'cross-circle-filled' : 'warning-filled',
@@ -709,28 +750,30 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.errorsSection.appendRow().appendChild(icon);
     }
 
-    if (!data) {
-      return;
+    for (const warning of warnings) {
+      const msgElement = document.createTextNode(warning);
+      this.errorsSection.appendRow().appendChild(msgElement);
     }
+    for (const error of imageErrors) {
+      const msgElement = document.createTextNode(error);
+      this.errorsSection.appendRow().appendChild(msgElement);
+    }
+  }
 
-    if (data.charCodeAt(0) === 0xFEFF) {
-      data = data.slice(1);
-    }  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
-
-    const parsedManifest: Manifest = JSON.parse(data);
-    this.nameField.textContent = stringProperty('name');
-    this.shortNameField.textContent = stringProperty('short_name');
+  private renderIdentity(parsedManifest: Manifest, appId: string|null, recommendedId: string|null):
+      Platform.UIString.LocalizedString[] {
+    this.nameField.textContent = this.stringProperty(parsedManifest, 'name');
+    this.shortNameField.textContent = this.stringProperty(parsedManifest, 'short_name');
 
     const warnings = [];
 
-    const description = stringProperty('description');
+    const description = this.stringProperty(parsedManifest, 'description');
     this.descriptionField.textContent = description;
     // See https://crbug.com/1354304 for details.
     if (description.length > 300) {
       warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
     }
 
-    const startURL = stringProperty('start_url');
     if (appId && recommendedId) {
       const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
       UI.ARIAUtils.setLabel(appIdField, 'App Id');
@@ -746,7 +789,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           'learn-more');
       appIdField.appendChild(learnMoreLink);
 
-      if (!stringProperty('id')) {
+      if (!this.stringProperty(parsedManifest, 'id')) {
         const suggestedIdNote = appIdField.createChild('div', 'multiline-value');
         const suggestedIdSpan = document.createElement('code');
         suggestedIdSpan.textContent = recommendedId;
@@ -770,7 +813,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     } else {
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
     }
+    return warnings;
+  }
 
+  private renderPresentation(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): void {
+    const startURL = this.stringProperty(parsedManifest, 'start_url');
     this.startURLField.removeChildren();
     if (startURL) {
       const completeURL = Common.ParsedURL.ParsedURL.completeURL(url, startURL);
@@ -783,20 +830,21 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       }
     }
 
-    this.themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
-    const themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
+    this.themeColorSwatch.classList.toggle('hidden', !this.stringProperty(parsedManifest, 'theme_color'));
+    const themeColor = Common.Color.parse(this.stringProperty(parsedManifest, 'theme_color') || 'white') ||
+        Common.Color.parse('white');
     if (themeColor) {
       this.themeColorSwatch.renderColor(themeColor);
     }
-    this.backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
-    const backgroundColor =
-        Common.Color.parse(stringProperty('background_color') || 'white') || Common.Color.parse('white');
+    this.backgroundColorSwatch.classList.toggle('hidden', !this.stringProperty(parsedManifest, 'background_color'));
+    const backgroundColor = Common.Color.parse(this.stringProperty(parsedManifest, 'background_color') || 'white') ||
+        Common.Color.parse('white');
     if (backgroundColor) {
       this.backgroundColorSwatch.renderColor(backgroundColor);
     }
 
-    this.orientationField.textContent = stringProperty('orientation');
-    const displayType = stringProperty('display');
+    this.orientationField.textContent = this.stringProperty(parsedManifest, 'orientation');
+    const displayType = this.stringProperty(parsedManifest, 'display');
     this.displayField.textContent = displayType;
 
     const noteTaking = parsedManifest['note_taking'] || {};
@@ -811,23 +859,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       link.tabIndex = 0;
       this.newNoteUrlField.appendChild(link);
     }
+  }
 
+  private renderProtocolHandlers(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): void {
     const protocolHandlers = parsedManifest['protocol_handlers'] || [];
     this.protocolHandlersView.protocolHandlers = protocolHandlers;
     this.protocolHandlersView.manifestLink = url;
+  }
 
+  private async renderIcons(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString):
+      Promise<{imageResourceErrors: Platform.UIString.LocalizedString[]}> {
     const icons = parsedManifest['icons'] || [];
     this.iconsSection.clearContent();
-
-    const shortcuts = parsedManifest['shortcuts'] || [];
-    for (const shortcutsSection of this.shortcutSections) {
-      shortcutsSection.detach(/** overrideHideOnDetach= */ true);
-    }
-
-    const screenshots: Screenshot[] = parsedManifest['screenshots'] || [];
-    for (const screenshotSection of this.screenshotsSections) {
-      screenshotSection.detach(/** overrideHideOnDetach= */ true);
-    }
 
     const imageErrors: Platform.UIString.LocalizedString[] = [];
 
@@ -854,6 +897,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
+    return {imageResourceErrors: imageErrors};
+  }
+
+  private async renderShortcuts(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): Promise<
+      {warnings: Platform.UIString.LocalizedString[], imageResourceErrors: Platform.UIString.LocalizedString[]}> {
+    const shortcuts = parsedManifest['shortcuts'] || [];
+    for (const shortcutsSection of this.shortcutSections) {
+      shortcutsSection.detach(/** overrideHideOnDetach= */ true);
+    }
+
+    const warnings: Platform.UIString.LocalizedString[] = [];
+    const imageErrors: Platform.UIString.LocalizedString[] = [];
 
     if (shortcuts.length > 4) {
       warnings.push(i18nString(UIStrings.shortcutsMayBeNotAvailable));
@@ -898,6 +953,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       }
       shortcutIndex++;
     }
+    return {warnings, imageResourceErrors: imageErrors};
+  }
+
+  private async renderScreenshots(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): Promise<
+      {warnings: Platform.UIString.LocalizedString[], imageResourceErrors: Platform.UIString.LocalizedString[]}> {
+    const screenshots: Screenshot[] = parsedManifest['screenshots'] || [];
+    for (const screenshotSection of this.screenshotsSections) {
+      screenshotSection.detach(/** overrideHideOnDetach= */ true);
+    }
+
+    const warnings: Platform.UIString.LocalizedString[] = [];
+    const imageErrors: Platform.UIString.LocalizedString[] = [];
 
     let screenshotIndex = 1;
     const formFactorScreenshotDimensions = new Map<string, {width: number, height: number}>();
@@ -955,6 +1022,10 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       warnings.push(i18nString(UIStrings.tooManyScreenshotsForMobile));
     }
 
+    return {warnings, imageResourceErrors: imageErrors};
+  }
+
+  private renderInstallability(installabilityErrors: Protocol.Page.InstallabilityError[]): void {
     this.installabilitySection.clearContent();
     this.installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     const errorMessages = this.getInstallabilityErrorMessages(installabilityErrors);
@@ -962,25 +1033,17 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const msgElement = document.createTextNode(error);
       this.installabilitySection.appendRow().appendChild(msgElement);
     }
+  }
 
-    this.errorsSection.element.classList.toggle('hidden', !errors.length && !imageErrors.length && !warnings.length);
-    for (const warning of warnings) {
-      const msgElement = document.createTextNode(warning);
-      this.errorsSection.appendRow().appendChild(msgElement);
+  private stringProperty(parsedManifest: Manifest, name: keyof Manifest): string {
+    const value = parsedManifest[name];
+    if (typeof value !== 'string') {
+      return '';
     }
-    for (const error of imageErrors) {
-      const msgElement = document.createTextNode(error);
-      this.errorsSection.appendRow().appendChild(msgElement);
-    }
+    return value;
+  }
 
-    function stringProperty(name: keyof Manifest): string {
-      const value = parsedManifest[name];
-      if (typeof value !== 'string') {
-        return '';
-      }
-      return value;
-    }
-
+  private async renderWindowControls(parsedManifest: Manifest, url: Platform.DevToolsPath.UrlString): Promise<void> {
     this.windowControlsSection.clearContent();
     const displayOverride = parsedManifest['display_override'] || [];
     const hasWco = displayOverride.includes('window-controls-overlay');
@@ -1000,11 +1063,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       const wco = document.createElement('code');
       wco.classList.add('wco');
       wco.textContent = 'window-controls-overlay';
+      const link = Components.Linkifier.Linkifier.linkifyURL(url);
       wcoStatusMessage.appendChild(
           uiI18n.getFormatLocalizedString(str_, UIStrings.wcoFound, {PH1: wco, PH2: displayOverrideText, PH3: link}));
 
       if (this.overlayModel) {
-        await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty('theme_color'));
+        await this.appendWindowControlsToSection(
+            this.overlayModel, url, this.stringProperty(parsedManifest, 'theme_color'));
       }
     } else {
       const infoIcon = createIcon('info', 'inline-icon');
@@ -1020,8 +1085,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         i18nString(UIStrings.customizePwaTitleBar), undefined, undefined, 'customize-pwa-tittle-bar');
     this.windowControlsSection.appendRow().appendChild(
         uiI18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
-
-    this.dispatchEventToListeners(Events.MANIFEST_RENDERED);
   }
 
   getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[] {

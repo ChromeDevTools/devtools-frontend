@@ -91,7 +91,7 @@ describeWithMockConnection('AppManifestView', () => {
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
     await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
+      view.addEventListener(Application.AppManifestView.Events.MANIFEST_RENDERED, resolve, {once: true});
     });
 
     const manifestSections = view.getStaticSections();

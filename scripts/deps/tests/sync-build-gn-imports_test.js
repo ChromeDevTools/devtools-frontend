@@ -3,11 +3,15 @@
 // found in the LICENSE file.
 
 // This script takes a path to a BUILD.gn and ensures that its DEPS are in sync for each file in that BUILD.gn.
-const {assert} = require('chai');
-const path = require('node:path');
+import {assert} from 'chai';
+import path from 'node:path';
 
-const {compareDeps, parseBuildGN, parseSourceFileForImports, validateDirectory} =
-    require('../sync-build-gn-imports.js');
+import {
+  compareDeps,
+  parseBuildGN,
+  parseSourceFileForImports,
+  validateDirectory,
+} from '../sync-build-gn-imports.js';
 
 describe('parsing a BUILD.gn file to find its modules', () => {
   it('can parse a BUILD.gn that has sources and deps on one line', () => {
@@ -17,12 +21,14 @@ describe('parsing a BUILD.gn file to find its modules', () => {
   deps = ["../../../core/platform:bundle"]
 }`;
     const result = parseBuildGN(input);
-    assert.deepEqual(result, [{
-                       template: 'devtools_module',
-                       moduleName: 'handlers',
-                       sources: ['TestHandler.ts'],
-                       deps: ['../../../core/platform:bundle']
-                     }]);
+    assert.deepEqual(result, [
+      {
+        template: 'devtools_module',
+        moduleName: 'handlers',
+        sources: ['TestHandler.ts'],
+        deps: ['../../../core/platform:bundle'],
+      },
+    ]);
   });
 
   it('can parse a BUILD.gn that has sources and deps over multiple lines', () => {
@@ -37,12 +43,14 @@ describe('parsing a BUILD.gn file to find its modules', () => {
   ]
 }`;
     const result = parseBuildGN(input);
-    assert.deepEqual(result, [{
-                       template: 'devtools_module',
-                       moduleName: 'handlers',
-                       sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
-                       deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle']
-                     }]);
+    assert.deepEqual(result, [
+      {
+        template: 'devtools_module',
+        moduleName: 'handlers',
+        sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
+        deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle'],
+      },
+    ]);
   });
 
   it('can ignore other GN parts that we do not need to care about', () => {
@@ -60,12 +68,14 @@ describe('parsing a BUILD.gn file to find its modules', () => {
   ]
 }`;
     const result = parseBuildGN(input);
-    assert.deepEqual(result, [{
-                       template: 'devtools_module',
-                       moduleName: 'handlers',
-                       sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
-                       deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle']
-                     }]);
+    assert.deepEqual(result, [
+      {
+        template: 'devtools_module',
+        moduleName: 'handlers',
+        sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
+        deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle'],
+      },
+    ]);
   });
 
   it('ignores any sources or inputs that are commented out', () => {
@@ -83,12 +93,14 @@ describe('parsing a BUILD.gn file to find its modules', () => {
   ]
 }`;
     const result = parseBuildGN(input);
-    assert.deepEqual(result, [{
-                       template: 'devtools_module',
-                       moduleName: 'handlers',
-                       sources: ['HandlerTwo.ts'],
-                       deps: ['../../../core/sdk:bundle']
-                     }]);
+    assert.deepEqual(result, [
+      {
+        template: 'devtools_module',
+        moduleName: 'handlers',
+        sources: ['HandlerTwo.ts'],
+        deps: ['../../../core/sdk:bundle'],
+      },
+    ]);
   });
 
   it('can parse multiple modules', () => {
@@ -113,9 +125,14 @@ devtools_module("other") {
         template: 'devtools_module',
         moduleName: 'handlers',
         sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
-        deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle']
+        deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle'],
       },
-      {template: 'devtools_module', moduleName: 'other', sources: ['foo.ts'], deps: []}
+      {
+        template: 'devtools_module',
+        moduleName: 'other',
+        sources: ['foo.ts'],
+        deps: [],
+      },
     ]);
   });
 
@@ -140,9 +157,14 @@ devtools_module("other") {
         template: 'devtools_module',
         moduleName: 'handlers',
         sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
-        deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle']
+        deps: ['../../../core/platform:bundle', '../../../core/sdk:bundle'],
       },
-      {template: 'devtools_module', moduleName: 'other', sources: ['foo.ts'], deps: []}
+      {
+        template: 'devtools_module',
+        moduleName: 'other',
+        sources: ['foo.ts'],
+        deps: [],
+      },
     ]);
   });
 
@@ -158,8 +180,18 @@ devtools_module("other") {
 }`;
     const result = parseBuildGN(input);
     assert.deepEqual(result, [
-      {template: 'devtools_module', moduleName: 'handlers', sources: ['HandlerOne.ts', 'HandlerTwo.ts'], deps: []},
-      {template: 'devtools_module', moduleName: 'other', sources: [], deps: []}
+      {
+        template: 'devtools_module',
+        moduleName: 'handlers',
+        sources: ['HandlerOne.ts', 'HandlerTwo.ts'],
+        deps: [],
+      },
+      {
+        template: 'devtools_module',
+        moduleName: 'other',
+        sources: [],
+        deps: [],
+      },
     ]);
   });
 });
@@ -172,14 +204,13 @@ import {type Foo} from './types.js';
 import {Bar} from './utils.js';
     `;
 
-    const result = parseSourceFileForImports(input, 'front_end/components/example.ts');
+    const result = parseSourceFileForImports(
+        input,
+        'front_end/components/example.ts',
+    );
     assert.deepEqual(result, {
       filePath: 'front_end/components/example.ts',
-      imports: [
-        '../core/sdk/sdk.js',
-        './types.js',
-        './utils.js',
-      ]
+      imports: ['../core/sdk/sdk.js', './types.js', './utils.js'],
     });
   });
 });
@@ -203,7 +234,10 @@ describe('comparing imports from BUILD.gn and a source file', () => {
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
   `;
-    const sourceCode = parseSourceFileForImports(sourceCodeFileContents, 'front_end/components/HandlerOne.ts');
+    const sourceCode = parseSourceFileForImports(
+        sourceCodeFileContents,
+        'front_end/components/HandlerOne.ts',
+    );
 
     const result = compareDeps({buildGN, sourceCode});
     assert.deepEqual(result, {
@@ -233,7 +267,10 @@ devtools_module("handlers") {
     const sourceCodeFileContents = `
 import * as Helpers from './helpers/helpers.js';
   `;
-    const sourceCode = parseSourceFileForImports(sourceCodeFileContents, 'front_end/components/HandlerOne.ts');
+    const sourceCode = parseSourceFileForImports(
+        sourceCodeFileContents,
+        'front_end/components/HandlerOne.ts',
+    );
 
     const result = compareDeps({buildGN, sourceCode});
     assert.deepEqual(result, {
@@ -264,7 +301,10 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Something from '../only-in-source-code/only-in-source-code.js';
   `;
-    const sourceCode = parseSourceFileForImports(sourceCodeFileContents, 'front_end/components/HandlerOne.ts');
+    const sourceCode = parseSourceFileForImports(
+        sourceCodeFileContents,
+        'front_end/components/HandlerOne.ts',
+    );
 
     const result = compareDeps({buildGN, sourceCode});
     assert.deepEqual(result, {
@@ -293,7 +333,10 @@ import * as Something from '../only-in-source-code/only-in-source-code.js';
 import * as Platform from '../../../core/platform/platform.js';
 import {Utils} from './Utils.js';
   `;
-    const sourceCode = parseSourceFileForImports(sourceCodeFileContents, 'front_end/components/HandlerOne.ts');
+    const sourceCode = parseSourceFileForImports(
+        sourceCodeFileContents,
+        'front_end/components/HandlerOne.ts',
+    );
 
     const result = compareDeps({buildGN, sourceCode});
     // We don't expect any errors for Utils.js, because it's a file in the same
@@ -335,7 +378,10 @@ import * as Services from './services/services.js';
 
 export {HandlerOne, HandlerTwo, Services};
   `;
-    const sourceCode = parseSourceFileForImports(sourceCodeFileContents, 'front_end/handlers/handlers.ts');
+    const sourceCode = parseSourceFileForImports(
+        sourceCodeFileContents,
+        'front_end/handlers/handlers.ts',
+    );
 
     // We don't check entrypoint files, all they do is provide the entrypoint
     // and depend on a devtools_module, which is where the real logic is.
@@ -365,7 +411,10 @@ export {HandlerOne, HandlerTwo, Services};
 import * as Platform from '../../../core/platform/platform.js';
 import {Utils} from './Utils.js';
   `;
-    const sourceCode = parseSourceFileForImports(sourceCodeFileContents, 'front_end/components/HandlerOne.ts');
+    const sourceCode = parseSourceFileForImports(
+        sourceCodeFileContents,
+        'front_end/components/HandlerOne.ts',
+    );
 
     const result = compareDeps({buildGN, sourceCode});
     // We don't expect any errors for Utils.js, because it's a file in the same
@@ -382,12 +431,16 @@ import {Utils} from './Utils.js';
 
 describe('executing the checker on a directory', () => {
   it('finds missing imports that need to be in the BUILD.gn and extraneous imports in the BUILD.gn', () => {
-    const result = validateDirectory(path.join(__dirname, 'fixtures', 'missing-deps'));
+    const result = validateDirectory(
+        path.join(import.meta.dirname, 'fixtures', 'missing-deps'),
+    );
     assert.deepEqual(result.missingBuildGNDeps, [
       {importPath: '../../missing-one', sourceFile: 'HandlerOne.ts'},
       {importPath: '../../missing-two', sourceFile: 'HandlerTwo.ts'},
     ]);
-    assert.deepEqual(Array.from(result.unusedBuildGNDeps), ['../../../not-used-in-source-code']);
+    assert.deepEqual(Array.from(result.unusedBuildGNDeps), [
+      '../../../not-used-in-source-code',
+    ]);
   });
 });
 

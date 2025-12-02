@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-
-const fs = require('node:fs');
-const https = require('node:https');
-const path = require('node:path');
-const ts = require('typescript');
+import fs from 'node:fs';
+import https from 'node:https';
+import path from 'node:path';
+import ts from 'typescript';
 
 const readDirAsync = fs.promises.readdir;
 const readFileAsync = fs.promises.readFile;
@@ -18,13 +16,9 @@ const ORIGIN_PATTERNS_TO_CHECK = [
   new RegExp('^https://developer[s]?.chrome.com'),
 ];
 
-const DIRECTORIES_TO_CHECK = [
-  'front_end',
-];
+const DIRECTORIES_TO_CHECK = ['front_end'];
 
-const EXCLUDE_DIRECTORIES = [
-  'front_end/third_party',
-];
+const EXCLUDE_DIRECTORIES = ['front_end/third_party'];
 
 const REQUEST_TIMEOUT = 5000;
 
@@ -34,8 +28,10 @@ const REDIRECTS_CONSIDERED_ERROR = new Set([
   /* Permament redirect */ 308,
 ]);
 
-const ROOT_REPOSITORY_PATH = path.resolve(__dirname, '..');
-const DIRECTORIES_TO_CHECK_PATHS = DIRECTORIES_TO_CHECK.map(directory => path.resolve(ROOT_REPOSITORY_PATH, directory));
+const ROOT_REPOSITORY_PATH = path.resolve(import.meta.dirname, '..');
+const DIRECTORIES_TO_CHECK_PATHS = DIRECTORIES_TO_CHECK.map(
+    directory => path.resolve(ROOT_REPOSITORY_PATH, directory),
+);
 
 async function findAllSourceFiles(directory) {
   if (EXCLUDE_DIRECTORIES.includes(path.relative(ROOT_REPOSITORY_PATH, directory))) {
@@ -43,16 +39,18 @@ async function findAllSourceFiles(directory) {
   }
 
   const dirEntries = await readDirAsync(directory, {withFileTypes: true});
-  const files = await Promise.all(dirEntries.map(dirEntry => {
-    const resolvedPath = path.resolve(directory, dirEntry.name);
-    if (dirEntry.isDirectory()) {
-      return findAllSourceFiles(resolvedPath);
-    }
-    if (dirEntry.isFile() && /\.(js|ts)$/.test(dirEntry.name)) {
-      return resolvedPath;
-    }
-    return [];  // Let Array#flat filter out files we are not interested in.
-  }));
+  const files = await Promise.all(
+      dirEntries.map(dirEntry => {
+        const resolvedPath = path.resolve(directory, dirEntry.name);
+        if (dirEntry.isDirectory()) {
+          return findAllSourceFiles(resolvedPath);
+        }
+        if (dirEntry.isFile() && /\.(js|ts)$/.test(dirEntry.name)) {
+          return resolvedPath;
+        }
+        return [];  // Let Array#flat filter out files we are not interested in.
+      }),
+  );
   return files.flat();
 }
 
@@ -63,7 +61,9 @@ function collectUrlsToCheck(node) {
     const currentNode = nodesToVisit.shift();
     if (currentNode.kind === ts.SyntaxKind.StringLiteral ||
         currentNode.kind === ts.SyntaxKind.NoSubstitutionTemplateLiteral) {
-      const checkUrl = ORIGIN_PATTERNS_TO_CHECK.some(originPattern => originPattern.test(currentNode.text));
+      const checkUrl = ORIGIN_PATTERNS_TO_CHECK.some(
+          originPattern => originPattern.test(currentNode.text),
+      );
       if (checkUrl) {
         urlsToCheck.push(currentNode.text);
       }
@@ -75,25 +75,33 @@ function collectUrlsToCheck(node) {
 
 async function collectUrlsToCheckFromFile(filePath) {
   const content = await readFileAsync(filePath, 'utf8');
-  const sourceFile = ts.createSourceFile(filePath, content, ts.ScriptTarget.ESNext, true);
+  const sourceFile = ts.createSourceFile(
+      filePath,
+      content,
+      ts.ScriptTarget.ESNext,
+      true,
+  );
   return collectUrlsToCheck(sourceFile);
 }
 
 async function checkUrls(urls) {
   // clang-format off
-  const requestPromises = urls.map(url => new Promise(resolve => {
-    const request = https.request(url, {method: 'HEAD'}, response => {
-      resolve({url, statusCode: response.statusCode});
-    });
+  const requestPromises = urls.map(
+    url =>
+      new Promise(resolve => {
+        const request = https.request(url, { method: 'HEAD' }, response => {
+          resolve({ url, statusCode: response.statusCode });
+        });
 
-    request.on('error', err => {
-      resolve({url, error: err});
-    });
-    request.setTimeout(REQUEST_TIMEOUT, _ => {
-      resolve({url, error: `Timed out after ${REQUEST_TIMEOUT}`});
-    });
-    request.end();
-  }));
+        request.on('error', err => {
+          resolve({ url, error: err });
+        });
+        request.setTimeout(REQUEST_TIMEOUT, _ => {
+          resolve({ url, error: `Timed out after ${REQUEST_TIMEOUT}` });
+        });
+        request.end();
+      }),
+  );
   // clang-format on
 
   return Promise.all(requestPromises);
@@ -122,9 +130,13 @@ function printSelectedRequestResults(requestResults) {
     if (requestResult.error) {
       console.error(`[Failure] ${requestResult.error} - ${requestResult.url}`);
     } else if (isErrorStatusCode(requestResult.statusCode)) {
-      console.error(`[Failure] Status Code: ${requestResult.statusCode} - ${requestResult.url}`);
+      console.error(
+          `[Failure] Status Code: ${requestResult.statusCode} - ${requestResult.url}`,
+      );
     } else {
-      console.log(`Status Code: ${requestResult.statusCode} - ${requestResult.url}`);
+      console.log(
+          `Status Code: ${requestResult.statusCode} - ${requestResult.url}`,
+      );
     }
   }
 }

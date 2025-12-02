@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const glob = require('glob');
-const childProcess = require('node:child_process');
-const fs = require('node:fs');
-const path = require('node:path');
-const util = require('node:util');
-const yargs = require('yargs');
-const {hideBin} = require('yargs/helpers');
-const exec = util.promisify(childProcess.exec);
+import glob from 'glob';
+import childProcess from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import {promisify} from 'node:util';
+import yargs from 'yargs';
+import {hideBin} from 'yargs/helpers';
+
+const exec = promisify(childProcess.exec);
 
 const yargsObject = yargs(hideBin(process.argv))
                         .option('remove-files', {
@@ -20,7 +21,7 @@ const yargsObject = yargs(hideBin(process.argv))
                         .parseSync();
 
 const shouldRemoveFiles = yargsObject.removeFiles === true;
-const SOURCE_ROOT = path.resolve(__dirname, path.join('..', '..'));
+const SOURCE_ROOT = path.resolve(import.meta.dirname, path.join('..', '..'));
 const unitTestRoot = path.join(SOURCE_ROOT, 'front_end');
 const GOLDENS_LOCATION = path.join(SOURCE_ROOT, 'test', 'goldens');
 const unitTestFiles = glob.sync('**/*.test.ts', {cwd: unitTestRoot}).map(file => path.join(unitTestRoot, file));

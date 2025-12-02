@@ -3,14 +3,11 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
-const {
-  devtoolsRootPath,
-} = require('./devtools_paths.js');
+import {devtoolsRootPath} from './devtools_paths.js';
 
 function bail(message) {
   console.error(message);
@@ -20,7 +17,9 @@ function bail(message) {
 function findVersionFromDepsFile() {
   const filePath = path.join(devtoolsRootPath(), 'DEPS');
   const contents = fs.readFileSync(filePath, 'utf8').split('\n');
-  const esbuildPackageLine = contents.findIndex(line => line.match(/infra\/3pp\/tools\/esbuild/));
+  const esbuildPackageLine = contents.findIndex(
+      line => line.match(/infra\/3pp\/tools\/esbuild/),
+  );
   if (esbuildPackageLine === -1) {
     bail('Could not find ESBuild within DEPS file.');
   }

@@ -4,14 +4,12 @@
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-'use strict';
 
 /* eslint-disable no-console */
 
-const fs = require('fs');
-const path = require('path');
-
-const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js');
+import * as fs from 'fs';
+import * as path from 'path';
+import {writeIfChanged} from '../../scripts/build/ninja/write-if-changed.js';
 
 /**
  * @typedef CtcMessage
@@ -66,7 +64,7 @@ const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js'
  * @param {Set<string>=} allowedKeys Only include messages where keys are present in this set.
  * @return {Record<string, LhlMessage>}
  */
-function bakePlaceholders(messages, allowedKeys) {
+export function bakePlaceholders(messages, allowedKeys) {
   /** @type {Record<string, LhlMessage>} */
   const bakedMessages = {};
 
@@ -82,7 +80,9 @@ function bakePlaceholders(messages, allowedKeys) {
     if (placeholders) {
       for (const [placeholder, {content}] of Object.entries(placeholders)) {
         if (!message.includes('$' + placeholder + '$')) {
-          throw Error(`Provided placeholder "${placeholder}" not found in message "${message}".`);
+          throw Error(
+              `Provided placeholder "${placeholder}" not found in message "${message}".`,
+          );
         }
         // Need a global replace due to plural ICU copying placeholders
         // (and therefore ICU vars) multiple times.
@@ -93,7 +93,12 @@ function bakePlaceholders(messages, allowedKeys) {
 
     // Sanity check that all placeholders are gone
     if (message.match(/\$\w+\$/)) {
-      throw Error(`Message "${message}" is missing placeholder(s): ${message.match(/\$\w+\$/g)}`);
+      throw Error(
+          `Message "${message}" is missing placeholder(s): ${
+              message.match(
+                  /\$\w+\$/g,
+                  )}`,
+      );
     }
 
     bakedMessages[key] = {message};
@@ -129,7 +134,7 @@ function saveLhlStrings(path, localeStrings) {
  * @param {Set<string>=} allowedKeys Only include messages where keys are present in this set.
  * @return {Array<string>}
  */
-function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
+export function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
   const lhlFilenames = [];
   for (const filename of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, filename);
@@ -137,15 +142,13 @@ function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
     if (filename.endsWith('.ctc.json')) {
       const ctcStrings = loadCtcStrings(fullPath);
       const strings = bakePlaceholders(ctcStrings, allowedKeys);
-      const outputFile = path.join(outputDir, path.basename(filename).replace('.ctc', ''));
+      const outputFile = path.join(
+          outputDir,
+          path.basename(filename).replace('.ctc', ''),
+      );
       saveLhlStrings(outputFile, strings);
       lhlFilenames.push(path.basename(filename));
     }
   }
   return lhlFilenames;
 }
-
-module.exports = {
-  collectAndBakeCtcStrings,
-  bakePlaceholders,
-};

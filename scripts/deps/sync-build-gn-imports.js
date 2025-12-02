@@ -13,11 +13,11 @@
  * You can also execute the tests: `./node_modules/.bin/mocha.js scripts/deps/tests
  **/
 
-const fs = require('node:fs');
-const path = require('node:path');
-const ts = require('typescript');
-const yargs = require('yargs');
-const {hideBin} = require('yargs/helpers');
+import fs from 'node:fs';
+import path from 'node:path';
+import ts from 'typescript';
+import yargs from 'yargs';
+import {hideBin} from 'yargs/helpers';
 
 /**
  * Parses the inputs listed when they are all on one line, for example:
@@ -129,7 +129,7 @@ function parseBuildGNSection(section, lines, startIndex) {
  * @param input
  * @returns modules
  */
-function parseBuildGN(input) {
+export function parseBuildGN(input) {
   const lines = input.split('\n');
   const modules = [];
   let currentSection = null;
@@ -169,7 +169,7 @@ function parseBuildGN(input) {
  * @param fileName
  * @returns
  */
-function parseSourceFileForImports(code, fileName) {
+export function parseSourceFileForImports(code, fileName) {
   const file = ts.createSourceFile(fileName, code);
 
   const foundImportPaths = [];
@@ -200,7 +200,7 @@ function parseSourceFileForImports(code, fileName) {
  * @param data
  * @returns
  */
-function compareDeps({buildGN, sourceCode}) {
+export function compareDeps({buildGN, sourceCode}) {
   const sourceImportsWithFileNameRemoved = sourceCode.imports
                                                .map(importPath => {
                                                  // If a file imports `../core/sdk/sdk.js`, in the BUILD.gn that is
@@ -329,7 +329,7 @@ function compareDeps({buildGN, sourceCode}) {
  * @param dirPath
  * @returns
  */
-function validateDirectory(dirPath) {
+export function validateDirectory(dirPath) {
   const buildGNPath = path.join(dirPath, 'BUILD.gn');
   const buildGNContents = fs.readFileSync(buildGNPath, 'utf8');
   const parsedBuildGN = parseBuildGN(buildGNContents);
@@ -382,15 +382,8 @@ function validateDirectory(dirPath) {
   return result;
 }
 
-module.exports = {
-  compareDeps,
-  parseBuildGN,
-  parseSourceFileForImports,
-  validateDirectory,
-};
-
 // If invoked as CLI
-if (require.main === module) {
+if (import.meta.main) {
   const argv = yargs(hideBin(process.argv))
                    .option('directory', {
                      type: 'string',

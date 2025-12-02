@@ -2,17 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = require('chai');
-const path = require('node:path');
-const stylelint = require('stylelint');
+import {assert} from 'chai';
+import path from 'node:path';
+import stylelint from 'stylelint';
 
 const configBase = {
   config: {
-    plugins: [path.resolve(__dirname, '../lib/use_theme_colors.mjs')],
+    plugins: [path.resolve(import.meta.dirname, '../lib/use_theme_colors.mjs')],
     rules: {'plugin/use_theme_colors': [true]},
   },
-  // Remove once we use a ESM test runner
-  quietDeprecationWarnings: true,
 };
 
 async function lintAndGetWarnings(code) {

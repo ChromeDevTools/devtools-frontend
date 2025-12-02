@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const path = require('node:path');
+import * as path from 'node:path';
 
-const {writeIfChanged} = require('../../../scripts/build/ninja/write-if-changed.js');
+import {writeIfChanged} from '../../../scripts/build/ninja/write-if-changed.js';
+
 const [, , targetGenDir] = process.argv;
 
 let value = 'false';
@@ -13,4 +14,7 @@ if (process.argv.includes('--should-enable')) {
   value = 'true';
 }
 
-writeIfChanged(path.join(targetGenDir, 'EasterEgg.js'), `export const SHOULD_SHOW_EASTER_EGG = ${value};`);
+writeIfChanged(
+    path.join(targetGenDir, 'EasterEgg.js'),
+    `export const SHOULD_SHOW_EASTER_EGG = ${value};`,
+);

@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {Project, SyntaxKind} = require('ts-morph');
-const path = require('path');
+import path from 'path';
+import {Project, SyntaxKind} from 'ts-morph';
+
 const project = new Project({
   tsConfigFilePath: '../devtools-frontend/tsconfig.json',
 });

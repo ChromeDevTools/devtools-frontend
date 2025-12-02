@@ -1,11 +1,10 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const espree = require('@typescript-eslint/parser');
-const fs = require('node:fs');
-const path = require('node:path');
+import espree from '@typescript-eslint/parser';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const parseOptions = {
   ecmaVersion: 'latest',
@@ -253,7 +252,7 @@ function compareExperimentLists(mainImplList, userMetricsList) {
 
 function main() {
   const mainImplPath = path.resolve(
-      __dirname,
+      import.meta.dirname,
       '..',
       'front_end',
       'entrypoints',
@@ -263,7 +262,7 @@ function main() {
   const mainImplFile = fs.readFileSync(mainImplPath, 'utf-8');
 
   const userMetricsPath = path.resolve(
-      __dirname,
+      import.meta.dirname,
       '..',
       'front_end',
       'core',
@@ -273,7 +272,7 @@ function main() {
   const userMetricsFile = fs.readFileSync(userMetricsPath, 'utf-8');
 
   const runtimePath = path.resolve(
-      __dirname,
+      import.meta.dirname,
       '..',
       'front_end',
       'core',

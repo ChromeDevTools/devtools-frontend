@@ -4,8 +4,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Converts a string to camelCase.
@@ -61,8 +61,12 @@ function toKebabCase(str) {
 function main() {
   const args = process.argv.slice(2);
   if (args.length !== 2) {
-    console.error('Usage: node scaffold-widget.js <path-to-create-component> <ComponentName>');
-    console.error('Example: node scaffold-widget.js front_end/panels/ai_assistance ChatInputWidget');
+    console.error(
+        'Usage: node scaffold-widget.js <path-to-create-component> <ComponentName>',
+    );
+    console.error(
+        'Example: node scaffold-widget.js front_end/panels/ai_assistance ChatInputWidget',
+    );
     process.exit(1);
   }
 
@@ -100,11 +104,22 @@ function main() {
   let cssTemplateContent;
 
   try {
-    tsTemplateContent = fs.readFileSync(path.resolve(__dirname, 'templates', 'WidgetTemplate.ts.txt'), 'utf8');
-    cssTemplateContent = fs.readFileSync(path.resolve(__dirname, 'templates', 'WidgetTemplate.css.txt'), 'utf8');
+    tsTemplateContent = fs.readFileSync(
+        path.resolve(import.meta.dirname, 'templates', 'WidgetTemplate.ts.txt'),
+        'utf8',
+    );
+    cssTemplateContent = fs.readFileSync(
+        path.resolve(import.meta.dirname, 'templates', 'WidgetTemplate.css.txt'),
+        'utf8',
+    );
   } catch (error) {
-    console.error('Error reading template files (WidgetTemplate.ts.txt or WidgetTemplate.css.txt):', error.message);
-    console.error('Make sure these files are in a "templates" subdirectory where the script is run.');
+    console.error(
+        'Error reading template files (WidgetTemplate.ts.txt or WidgetTemplate.css.txt):',
+        error.message,
+    );
+    console.error(
+        'Make sure these files are in a "templates" subdirectory where the script is run.',
+    );
     process.exit(1);
   }
 
@@ -112,13 +127,17 @@ function main() {
   let processedTsContent = tsTemplateContent;
   for (const placeholder in tsReplacements) {
     processedTsContent = processedTsContent.replace(
-        new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), tsReplacements[placeholder]);
+        new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        tsReplacements[placeholder],
+    );
   }
 
   let processedCssContent = cssTemplateContent;
   for (const placeholder in cssReplacements) {
     processedCssContent = processedCssContent.replace(
-        new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), cssReplacements[placeholder]);
+        new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        cssReplacements[placeholder],
+    );
   }
 
   // --- Write Output Files ---
@@ -144,22 +163,32 @@ function main() {
     // Paths for build system (relative, forward slashes)
     const grdTsPath = path.join(componentDestPath, `${pascalCaseName}.js`).replace(/\\/g, '/');
     const grdCssPath = path.join(componentDestPath, `${camelCaseName}.css.js`).replace(/\\/g, '/');
-    console.log('1. Update \'grd_files_unbundled_sources\' in \'devtools_grd_files.gni\':');
+    console.log(
+        '1. Update \'grd_files_unbundled_sources\' in \'devtools_grd_files.gni\':',
+    );
     console.log('   Add the following generated JavaScript files:');
     console.log(`     "${grdTsPath}",`);
     console.log(`     "${grdCssPath}",`);
-    console.log('   (Note: The .ts file becomes .js, and .css becomes .css.js in GRD entries)');
+    console.log(
+        '   (Note: The .ts file becomes .js, and .css becomes .css.js in GRD entries)',
+    );
 
-    console.log('\n2. Update \'devtools_module("<module-name>")\' in the relevant \'BUILD.gn\' file:');
+    console.log(
+        '\n2. Update \'devtools_module("<module-name>")\' in the relevant \'BUILD.gn\' file:',
+    );
     console.log('   Add the source TypeScript file to the \'sources\' list:');
     console.log(`     "${outputTsFilename}",`);
 
-    console.log('\n3. Update \'generate_css("css_files")\' in the relevant \'BUILD.gn\' file:');
+    console.log(
+        '\n3. Update \'generate_css("css_files")\' in the relevant \'BUILD.gn\' file:',
+    );
     console.log('   Add the source CSS file to the \'sources\' list:');
     console.log(`     "${outputCssFilename}",`);
-
   } catch (error) {
-    console.error(`Error writing output files to ${componentDestPath}:`, error.message);
+    console.error(
+        `Error writing output files to ${componentDestPath}:`,
+        error.message,
+    );
     process.exit(1);
   }
 }

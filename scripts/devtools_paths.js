@@ -10,15 +10,15 @@
  * here. Please add any paths you need that are missing.
  */
 
-const os = require('node:os');
-const path = require('node:path');
+import os from 'node:os';
+import path from 'node:path';
 
 /**
- * You would think we can use __filename here but we cannot because __filename
+ * You would think we can use import.meta.filename here but we cannot because import.meta.filename
  * has any symlinks resolved. This means we can't use it to tell if the user is
  * using the external repo with a standalone build setup because the symlink
  * from chromium/src/third_party/devtools-frontend => devtools-frontend repo
- * gets resolved by Node before it gives us __filename.
+ * gets resolved by Node before it gives us import.meta.filename.
  *
  * We can use process.argv[1], which is the path to the file currently being
  * executed without any symlinks resolution. If we assume that file is always in
@@ -42,7 +42,7 @@ const _lookUpCaches = new Map();
  *
  * @returns {{isInChromium: boolean, chromiumDirectory: string}}
  */
-function isInChromiumDirectory() {
+export function isInChromiumDirectory() {
   const cached = _lookUpCaches.get('chromium');
   if (cached) {
     return cached;
@@ -65,8 +65,8 @@ function isInChromiumDirectory() {
  * If we're in Chromium, this will be /path/to/chromium/src/third_party/devtools-frontend/src
  * If it's standalone, it will be /path/to/devtools-frontend
  */
-function devtoolsRootPath() {
-  return path.dirname(__dirname);
+export function devtoolsRootPath() {
+  return path.dirname(import.meta.dirname);
 }
 
 /**
@@ -77,7 +77,7 @@ function devtoolsRootPath() {
  * Note this is different to devtoolsRootPath(), which always returns the path
  * to the devtools-frontend source code.
  */
-function rootPath() {
+export function rootPath() {
   const {isInChromium, chromiumDirectory} = isInChromiumDirectory();
   if (isInChromium) {
     return chromiumDirectory;
@@ -90,11 +90,11 @@ function rootPath() {
  * land we need to use e.g. the Node executable from Chromium's third_party
  * directory, not from the devtools-frontend third_party directory.
  */
-function thirdPartyPath() {
+export function thirdPartyPath() {
   return path.join(rootPath(), 'third_party');
 }
 
-function devToolsThirdPartyPath() {
+export function devToolsThirdPartyPath() {
   const {isInChromium} = isInChromiumDirectory();
   if (isInChromium) {
     return path.join(
@@ -108,7 +108,7 @@ function devToolsThirdPartyPath() {
   return thirdPartyPath();
 }
 
-function nodePath() {
+export function nodePath() {
   const paths = {
     darwin: path.join(
         process.arch === 'arm64' ? 'mac_arm64' : 'mac',
@@ -125,15 +125,15 @@ function nodePath() {
 /**
  * The path to the devtools-frontend node_modules folder.
  */
-function nodeModulesPath() {
+export function nodeModulesPath() {
   return path.join(devtoolsRootPath(), 'node_modules');
 }
 
-function autoninjaPyPath() {
+export function autoninjaPyPath() {
   return path.join(thirdPartyPath(), 'depot_tools', 'autoninja.py');
 }
 
-function vpython3ExecutablePath() {
+export function vpython3ExecutablePath() {
   return path.join(
       thirdPartyPath(),
       'depot_tools',
@@ -141,19 +141,19 @@ function vpython3ExecutablePath() {
   );
 }
 
-function gnPyPath() {
+export function gnPyPath() {
   return path.join(thirdPartyPath(), 'depot_tools', 'gn.py');
 }
 
-function stylelintExecutablePath() {
+export function stylelintExecutablePath() {
   return path.join(nodeModulesPath(), 'stylelint', 'bin', 'stylelint.js');
 }
 
-function mochaExecutablePath() {
+export function mochaExecutablePath() {
   return path.join(nodeModulesPath(), 'mocha', 'bin', 'mocha');
 }
 
-function litAnalyzerExecutablePath() {
+export function litAnalyzerExecutablePath() {
   return path.join(nodeModulesPath(), 'lit-analyzer', 'cli.js');
 }
 
@@ -162,11 +162,11 @@ function litAnalyzerExecutablePath() {
  *
  * @returns the path to the toplevel `tsconfig.json`.
  */
-function tsconfigJsonPath() {
+export function tsconfigJsonPath() {
   return path.join(devtoolsRootPath(), 'front_end', 'tsconfig.json');
 }
 
-function downloadedChromeBinaryPath() {
+export function downloadedChromeBinaryPath() {
   const paths = {
     linux: path.join('chrome-linux', 'chrome'),
     darwin: path.join(
@@ -180,20 +180,3 @@ function downloadedChromeBinaryPath() {
   };
   return path.join(devToolsThirdPartyPath(), 'chrome', paths[os.platform()]);
 }
-
-module.exports = {
-  autoninjaPyPath,
-  devtoolsRootPath,
-  downloadedChromeBinaryPath,
-  isInChromiumDirectory,
-  gnPyPath,
-  litAnalyzerExecutablePath,
-  mochaExecutablePath,
-  nodeModulesPath,
-  nodePath,
-  rootPath,
-  stylelintExecutablePath,
-  thirdPartyPath,
-  tsconfigJsonPath,
-  vpython3ExecutablePath,
-};

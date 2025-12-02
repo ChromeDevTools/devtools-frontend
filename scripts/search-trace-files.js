@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
 /**
  * Finds trace files in fixtures/traces with references to the provided string.
@@ -10,11 +9,19 @@
  * node scripts/search-trace-files.js "v8.parse"
  */
 
-const child_process = require('node:child_process');
-const fs = require('node:fs');
-const path = require('node:path');
+import childProcess from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const TRACE_FILES_DIR = path.join(__dirname, '..', 'front_end', 'panels', 'timeline', 'fixtures', 'traces');
+const TRACE_FILES_DIR = path.join(
+    import.meta.dirname,
+    '..',
+    'front_end',
+    'panels',
+    'timeline',
+    'fixtures',
+    'traces',
+);
 
 // Get a list of all trace files (gzipped or otherwise)
 const filesInDir = fs.readdirSync(TRACE_FILES_DIR, 'utf8').filter(file => file.includes('.json'));
@@ -32,9 +39,15 @@ for (const fileNameWithExt of filesInDir) {
   // them being committed.
   if (!fs.existsSync(path.join(TRACE_FILES_DIR, `${fileName}.json`))) {
     console.log('[One time operation] Extracting gzip:', fileName);
-    const result = child_process.spawnSync('gzip', ['--keep', '-d', `${fullPath}`]);
+    const result = childProcess.spawnSync('gzip', [
+      '--keep',
+      '-d',
+      `${fullPath}`,
+    ]);
     if (result.status !== 0) {
-      console.error(`Error extracting ${path.basename(fullPath)}: ${result.output}`);
+      console.error(
+          `Error extracting ${path.basename(fullPath)}: ${result.output}`,
+      );
     }
   }
   extractedFilePaths.add(path.join(TRACE_FILES_DIR, `${fileName}.json`));
@@ -47,7 +60,7 @@ const matches = new Set();
 
 Array.from(extractedFilePaths).forEach(fileToCheck => {
   if (!fs.existsSync(fileToCheck)) {
-    return null;
+    return;
   }
   // Yes, this is pretty inefficient to read the entire file sync, but this
   // is only a hacky helper script so it will do :)

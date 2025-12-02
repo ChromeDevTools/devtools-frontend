@@ -22,3 +22,5 @@ Local Modifications:
 6. Remove backtick for locked term after converting it to placeholder in ctc.json
 7. Enable the scanning of files with .ts extensions
 8. Add checks for ICU plural format
+9. Migrated to ESM
+

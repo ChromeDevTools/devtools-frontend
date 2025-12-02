@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {execSync: shell} = require('node:child_process');
-const fs = require('node:fs');
-const http = require('node:http');
-const https = require('node:https');
-const path = require('node:path');
-const {Transform: Stream} = require('node:stream');
-const {parse: parseURL} = require('node:url');
+import {execSync as shell} from 'node:child_process';
+import fs from 'node:fs';
+import http from 'node:http';
+import https from 'node:https';
+import path from 'node:path';
+import {Transform as Stream} from 'node:stream';
+import {parse as parseURL} from 'node:url';
 
-function fetch(url) {
+export function fetch(url) {
   return new Promise(fetchPromise);
 
   function fetchPromise(resolve, reject) {
@@ -39,11 +39,11 @@ function fetch(url) {
   }
 }
 
-function atob(str) {
+export function atob(str) {
   return new Buffer(str, 'base64').toString('binary');
 }
 
-function isFile(path) {
+export function isFile(path) {
   try {
     return fs.statSync(path).isFile();
   } catch {
@@ -51,7 +51,7 @@ function isFile(path) {
   }
 }
 
-function isDir(path) {
+export function isDir(path) {
   try {
     return fs.statSync(path).isDirectory();
   } catch {
@@ -59,7 +59,7 @@ function isDir(path) {
   }
 }
 
-function copy(src, dest) {
+export function copy(src, dest) {
   try {
     const targetFilePath = path.resolve(dest, path.basename(src));
     fs.writeFileSync(targetFilePath, fs.readFileSync(src));
@@ -70,7 +70,7 @@ function copy(src, dest) {
   }
 }
 
-function copyRecursive(src, dest) {
+export function copyRecursive(src, dest) {
   try {
     if (isFile(src)) {
       copy(src, dest);
@@ -102,7 +102,7 @@ function copyRecursive(src, dest) {
   }
 }
 
-function removeRecursive(filePath) {
+export function removeRecursive(filePath) {
   try {
     if (fs.existsSync(filePath)) {
       if (isFile(filePath)) {
@@ -127,15 +127,15 @@ function removeRecursive(filePath) {
   }
 }
 
-function includes(sequence, target) {
+export function includes(sequence, target) {
   return sequence.indexOf(target) > -1;
 }
 
-function shellOutput(command) {
+export function shellOutput(command) {
   return shell(command).toString().trim();
 }
 
-function parseArgs(args) {
+export function parseArgs(args) {
   const argObject = {};
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -145,16 +145,3 @@ function parseArgs(args) {
   }
   return argObject;
 }
-
-module.exports = {
-  atob,
-  copy,
-  copyRecursive,
-  fetch,
-  includes,
-  isDir,
-  isFile,
-  parseArgs,
-  removeRecursive,
-  shellOutput,
-};
